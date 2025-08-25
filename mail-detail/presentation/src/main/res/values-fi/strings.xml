@@ -58,7 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Keskustelu siirrettiin kohteeseen %1$s</string>
   <string name="conversation_moved_to_spam">Keskustelu siirrettiin roskapostiin</string>
   <string name="conversation_moved_to_archive">Keskustelu siirrettiin arkistoon</string>
-  <string name="error_print_message">Unable to print message. Please retry.</string>
+  <string name="error_print_message">Viestin tulostus ei onnistunut. Yritä uudelleen.</string>
   <string name="error_move_conversation_failed">Keskustelun siirto epäonnistui. Yritä uudelleen.</string>
   <string name="error_offline_loading_message">Ei yhteyttä. Viestin sisällön näyttäminen vaatii Internet-yhteyden.</string>
   <string name="error_get_attachment_failed">Liitteen nouto epäonnistui.</string>
@@ -128,14 +128,14 @@
   <string name="schedule_message_sent_at_banner_title">Tämä viesti lähetetään</string>
   <string name="schedule_message_edit_message_button">Muokkaa viestiä</string>
   <string name="schedule_send_tomorrow">huomenna klo %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="error_cancel_schedule_send_failed">Tämän viestin ajoitetun lähetysajan peruuttaminen epäonnistui.</string>
+  <string name="offline_error_cancel_schedule_send_failed">Ei voi peruuttaa ajastettua viestiä yhteydettömänä</string>
   <string name="message_cancel_schedule_send_dialog_confim_button">Muokkaa luonnosta</string>
   <string name="message_cancel_schedule_send_dialog_cancel_button">Peruuta</string>
   <string name="message_cancel_schedule_send_dialog_title">Muokkaa ja ajoita uudelleen</string>
   <string name="message_cancel_schedule_send_dialog_message">Viesti siirretään luonnoksiin, jotta voit muokata sitä. Joudut ajoittamaan sen lähettämisen uudelleen.</string>
   <!-- RSVP widget -->
-  <string name="rsvp_widget_no_title">(no title)</string>
+  <string name="rsvp_widget_no_title">(ei nimeä)</string>
   <string name="rsvp_widget_attendance_optional">(osallistuminen on vapaaehtoista)</string>
   <string name="rsvp_widget_attending">Osallistutko?</string>
   <string name="rsvp_widget_yes">Kyllä</string>
@@ -151,23 +151,23 @@
     <item quantity="other">%1$d osallistujaa</item>
   </plurals>
   <string name="rsvp_widget_happening_now">Tapahtuu <b>nyt</b></string>
-  <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
-  <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b></string>
+  <string name="rsvp_widget_event_ended">Tapahtuma <b>päättyi</b></string>
+  <string name="rsvp_widget_event_cancelled">Tapahtuma <b>peruutettu</b></string>
   <string name="rsvp_widget_invite_outdated">Tämä kutsu on vanhentunut</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">Tapahtuma peruutettu. Tämä kutsu on vanhentunut.</string>
-  <string name="rsvp_widget_offline_invite_outdated">You\'re offline. The displayed information may be out of date.</string>
-  <string name="rsvp_widget_address_is_incorrect">Your address can\'t be used to reply. Please update your account information.</string>
-  <string name="rsvp_widget_user_is_organizer">You are the organizer.</string>
-  <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Olet yhteydetön. Näytetyt tiedot voivat olla vanhentuneita.</string>
+  <string name="rsvp_widget_address_is_incorrect">Osoitettasi ei voi käyttää vastaamiseen. Päivitäthän tilitietosi.</string>
+  <string name="rsvp_widget_user_is_organizer">Olet järjestäjä.</string>
+  <string name="rsvp_widget_event_does_not_exist">Tämä tapahtuma ei ole kalenterissasi, joten et voi vastata siihen.</string>
   <string name="rsvp_widget_today">Tänään</string>
   <string name="rsvp_widget_tomorrow">Huomenna</string>
-  <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
-  <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
-  <string name="rsvp_widget_button_retry">Retry</string>
-  <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
-  <string name="rsvp_widget_open_in_proton_calendar">Open in Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copy address</string>
-  <string name="rsvp_widget_message">Message</string>
-  <string name="snooze_message_snoozed_until_banner_title">Snoozed until</string>
-  <string name="snooze_message_unsnooze_banner_button">Unsnooze</string>
+  <string name="rsvp_widget_invite_details_unavailable">Kutsun tiedot eivät ole saatavilla</string>
+  <string name="rsvp_widget_could_not_load">Emme voineet ladata tietoja.\nYritä uudelleen.</string>
+  <string name="rsvp_widget_button_retry">Yritä uudelleen</string>
+  <string name="rsvp_widget_error_answering">Virhe vastattaessa tähän tapahtumaan</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Avaa Proton Calendarissa</string>
+  <string name="rsvp_widget_copy_address">Kopioi osoite</string>
+  <string name="rsvp_widget_message">Viesti</string>
+  <string name="snooze_message_snoozed_until_banner_title">Torkutettu asti</string>
+  <string name="snooze_message_unsnooze_banner_button">Peru torkutus</string>
 </resources>

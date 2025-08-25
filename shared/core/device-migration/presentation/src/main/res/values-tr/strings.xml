@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Kare kod oluştur</string>
   <string name="target_sign_in_error_back_to_signin">Oturum açmaya dön</string>
   <string name="target_sign_in_learn_more">Ayrıntılı bilgi alın</string>
+  <string name="proton_error_non_processable_actions">Bir ya da birkaç işlem yapılamadı. Lütfen hesabınızın oturumunu kapatıp yeniden açın.</string>
 </resources>

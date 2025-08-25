@@ -42,4 +42,5 @@
   <string name="payment_subscription_managed_by_google">Tilaustasi hallinnoi Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Tilauksesi hallinnoi Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Et voi hallita tilaustasi mobiilisovelluksesta.</string>
+  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
 </resources>

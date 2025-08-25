@@ -35,6 +35,7 @@
   <string name="mail_settings_privacy_and_security">プライバシーとセキュリティ</string>
   <string name="mail_settings_fido_keys">セキュリティキー</string>
   <string name="mail_settings_change_password">パスワード管理</string>
+  <string name="mail_settings_storage_quota">%2$s の中の%1$d%%</string>
   <string name="mail_settings_privacy_and_security_hint">メールトラッキング防止</string>
   <string name="mail_settings_app_hint">モバイルアプリのカスタマイズ</string>
   <string name="mail_settings_theme">テーマ</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">システムの通知設定に移動します</string>
   <string name="mail_settings_notifications_update_error">設定更新エラー</string>
   <string name="mail_settings_notifications_loading_error">設定の読み込みエラー</string>
+  <string name="notifications_on">オン</string>
+  <string name="notifications_off">オフ</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">エラーが発生しました。再度お試しください。</string>
 </resources>

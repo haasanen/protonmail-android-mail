@@ -103,16 +103,16 @@
   <string name="mailbox_search_no_results_title">Немає збігів</string>
   <string name="mailbox_search_no_results_explanation">Ви можете оновити пошуковий запит або очистити його.</string>
   <plurals name="mailbox_action_move_conversation">
-    <item quantity="one">Conversation moved to %s</item>
-    <item quantity="few">Conversations moved to %s</item>
-    <item quantity="many">Conversations moved to %s</item>
-    <item quantity="other">Conversations moved to %s</item>
+    <item quantity="one">Розмову переміщено до %s</item>
+    <item quantity="few">Розмови переміщено до %s</item>
+    <item quantity="many">Розмов переміщено до %s</item>
+    <item quantity="other">Розмов переміщено до %s</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
-    <item quantity="one">Message moved to %s</item>
-    <item quantity="few">Messages moved to %s</item>
-    <item quantity="many">Messages moved to %s</item>
-    <item quantity="other">Messages moved to %s</item>
+    <item quantity="one">Повідомлення переміщено до %s</item>
+    <item quantity="few">Повідомлення переміщено до %s</item>
+    <item quantity="many">Повідомлень переміщено до %s</item>
+    <item quantity="other">Повідомлень переміщено до %s</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">Очистити смітник</string>
   <string name="mailbox_action_button_clear_spam">Очистити спам</string>

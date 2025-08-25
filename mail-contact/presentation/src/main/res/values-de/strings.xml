@@ -60,7 +60,7 @@
   <string name="contact_type_fax">Fax</string>
   <string name="contact_type_pager">Pager</string>
   <string name="contact_type_address">Adresse</string>
-  <string name="contact_type_text">Text</string>
+  <string name="contact_type_text">Textnachricht</string>
   <string name="contact_type_text_phone">Telefon für Textnachrichten</string>
   <string name="contact_type_video">Video</string>
   <string name="contact_type_voice">Sprachanrufe</string>
@@ -81,7 +81,7 @@
   <string name="contact_gender_male">Männlich</string>
   <string name="contact_gender_none">Keine</string>
   <string name="contact_gender_not_applicable">Nicht zutreffend</string>
-  <string name="contact_gender_other">Weitere</string>
+  <string name="contact_gender_other">Sonstige</string>
   <string name="contact_gender_unknown">Unbekannt</string>
   <string name="contact_details_missing_date">Fehlendes Datum</string>
   <string name="contact_details_quick_action_message">Nachricht</string>
@@ -89,7 +89,7 @@
   <string name="contact_details_quick_action_share">Teilen</string>
   <string name="contact_details_action_copy_label">Kopieren</string>
   <string name="contact_details_action_message_label">Nachricht</string>
-  <string name="contact_details_action_call_label">Anruf</string>
+  <string name="contact_details_action_call_label">Anrufen</string>
   <string name="contact_group_details_send_message_action">Gruppennachricht senden</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="one">%1$d Kontakt</item>

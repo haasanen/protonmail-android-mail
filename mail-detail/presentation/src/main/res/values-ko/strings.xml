@@ -165,6 +165,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar에서 열기</string>
   <string name="rsvp_widget_copy_address">주소 복사하기</string>
   <string name="rsvp_widget_message">메시지</string>
-  <string name="snooze_message_snoozed_until_banner_title">Snoozed until</string>
-  <string name="snooze_message_unsnooze_banner_button">Unsnooze</string>
+  <string name="snooze_message_snoozed_until_banner_title">방해금지 종료</string>
+  <string name="snooze_message_unsnooze_banner_button">방해 금지 해제</string>
 </resources>

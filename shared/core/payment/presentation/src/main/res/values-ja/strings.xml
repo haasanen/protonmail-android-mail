@@ -40,4 +40,5 @@
   <string name="payment_subscription_managed_by_google">サブスクリプションは Google Play によって管理されています。</string>
   <string name="payment_subscription_managed_by_apple">サブスクリプションは Apple Store によって管理されています。</string>
   <string name="payment_subscription_managed_by_other">サブスクリプションはモバイル アプリ内では管理できません。</string>
+  <string name="proton_error_non_processable_actions">1つまたは複数の操作が処理できません。アカウントからログアウトし、再度ログインしてください。</string>
 </resources>

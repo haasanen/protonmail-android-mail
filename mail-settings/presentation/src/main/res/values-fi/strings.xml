@@ -33,8 +33,9 @@
   <string name="mail_settings_spam_and_custom_filters">Roskaposti ja suodattimet</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automaattiset toiminnot ja lajittelu</string>
   <string name="mail_settings_privacy_and_security">Yksityisyys ja suojaus</string>
-  <string name="mail_settings_fido_keys">Security keys</string>
-  <string name="mail_settings_change_password">Password management</string>
+  <string name="mail_settings_fido_keys">Suojausavaimet</string>
+  <string name="mail_settings_change_password">Salasanan hallinta</string>
+  <string name="mail_settings_storage_quota">%1$d%% of %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Sähköpostin seurantasuojaus</string>
   <string name="mail_settings_app_hint">Mobiilisovelluksen mukautukset</string>
   <string name="mail_settings_theme">Teema</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Siirry järjestelmän ilmoitusasetuksiin</string>
   <string name="mail_settings_notifications_update_error">Virhe päivitettäessä asetuksia</string>
   <string name="mail_settings_notifications_loading_error">Virhe ladattaessa asetuksia</string>
+  <string name="notifications_on">On</string>
+  <string name="notifications_off">Off</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Tapahtui virhe. Yritä uudelleen.</string>
 </resources>

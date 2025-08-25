@@ -21,7 +21,7 @@
   <string name="upselling_button_item_content_description">Botão de upgrade</string>
   <string name="upselling_close_button_content_description">Botão Fechar</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">Para obter mais armazenamento e recursos premium.</string>
+  <string name="upselling_mailbox_plus_description_override">Para obter mais armazenamento e recursos Premium.</string>
   <string name="upselling_mailbox_plus_title">Faça upgrade para o Mail Plus</string>
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Iniciar o Mail Plus</string>
@@ -35,25 +35,25 @@
   <string name="upselling_contact_groups_plus_description_override">Envie e-mails em grupo com facilidade. Aproveite isso e muito mais com o Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Agrupar seus contatos</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Crie tudo o que você precisa para se manter organizado. Tenha isso e muito mais com o Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">Crie tudo o que você precisa para manter a organização. Tenha isso e muito mais com o Mail Plus. </string>
   <string name="upselling_labels_plus_title">Precisa de mais marcadores ou pastas?</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Crie tudo o que você precisa para se manter organizado. Tenha isso e muito mais com o Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">Crie tudo o que você precisa para se manter a organização. Tenha isso e muito mais com o Mail Plus. </string>
   <string name="upselling_folders_plus_title">Precisa de mais marcadores ou pastas?</string>
   <!-- Upselling: Mobile Signature -->
   <string name="upselling_mobile_signature_plus_description_override">Crie sua própria assinatura móvel. Aproveite isso e muito mais com o Mail Plus.</string>
   <string name="upselling_mobile_signature_plus_title">Personalize sua assinatura</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Exclui spam e lixeira após 30 dias. Tenha isso e mais com o Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_description_override">Exclui o Spam e a Lixeira após 30 dias. Tenha isso e mais com o Mail Plus.</string>
   <string name="upselling_auto_delete_plus_title">Remoção automática da Lixeira</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Personalize quando um e-mail será enviado. Aproveite isso e muito mais com o Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_description_override">Personalize o horário de envio de um e-mail. Aproveite isso e muito mais com o Mail Plus.</string>
   <string name="upselling_schedule_send_plus_title">Agende agora, envie depois</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Adie-o — e receba-o mais tarde. Aproveite isso e muito mais com o Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Não é o momento para enviar este e-mail?</string>
+  <string name="upselling_snooze_plus_description_override">Adie os envios para mais tarde. Aproveite isso e muito mais com o Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Não é a hora ideal para enviar este e-mail?</string>
   <!-- Upselling - Misc buttons -->
-  <string name="upselling_button_hint">Faça upgrade para obter flexibilidade total</string>
+  <string name="upselling_button_hint">Faça upgrade para ter flexibilidade total</string>
   <string name="upselling_upgrade_plan_generic">Você precisa de uma assinatura paga do Proton Mail para acessar este recurso</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB de armazenamento</string>
@@ -61,7 +61,7 @@
   <string name="upselling_plus_feature_email_addresses">10 endereços de e-mail</string>
   <string name="upselling_plus_feature_custom_domain">Suporte a domínios de e-mail personalizados</string>
   <string name="upselling_plus_feature_desktop_app">Novo aplicativo do Proton Mail para desktop</string>
-  <string name="upselling_plus_feature_calendar">Recursos do calendário premium</string>
+  <string name="upselling_plus_feature_calendar">Recursos Premium de calendário</string>
   <string name="upselling_plus_feature_folders_labels">Pastas, marcadores e filtros ilimitados</string>
   <string name="upselling_plus_feature_plus_7_features">+7 recursos premium</string>
   <!-- Unlimited -->
@@ -102,12 +102,12 @@
   <string name="upselling_select_plan_year">12 meses</string>
   <string name="upselling_select_plan_month">1 mês</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Renovação automática com o mesmo preço e condições, a menos que você cancele o plano</string>
-  <string name="upselling_auto_renew_text_promo">Oferta de boas-vindas. Renovação automática em %s%s, a menos que seja cancelada</string>
+  <string name="upselling_auto_renew_text">Renovação automática com o mesmo preço e condições, a menos que seja cancelado</string>
+  <string name="upselling_auto_renew_text_promo">Oferta de boas-vindas. Renovação automática em %s%s, a menos que você cancele o plano</string>
   <string name="upselling_auto_renew_text_promo_short">Oferta de boas-vindas. Renovação automática em %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Renovação automática em %s%s, a menos que seja cancelada</string>
-  <string name="upselling_social_proof_reviews">MAIS DE 2 MIL AVALIAÇÕES</string>
-  <string name="upselling_description_social_proof">Atualize para a experiência que milhões de assinantes estão adorando.</string>
+  <string name="upselling_auto_renew_text_standard">Renovação automática em %s%s, a menos que você cancele o plano</string>
+  <string name="upselling_social_proof_reviews">+ DE 2 MIL AVALIAÇÕES</string>
+  <string name="upselling_description_social_proof">Faça upgrade para a experiência que milhões de assinantes já amam.</string>
   <string name="upselling_discount_tag">ECONOMIZE %s%%</string>
   <string name="upselling_month">/mês</string>
   <string name="upselling_year">/ano</string>

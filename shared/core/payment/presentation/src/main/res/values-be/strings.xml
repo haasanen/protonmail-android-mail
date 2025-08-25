@@ -46,4 +46,5 @@
   <string name="payment_subscription_managed_by_google">Ваша падпіска кіруецца Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Ваша падпіска кіруецца Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Вашай падпіскай нельга кіраваць унутры мабільнай праграмы.</string>
+  <string name="proton_error_non_processable_actions">Адно ці некалькі дзеянняў не могуць быць апрацаваны. Калі ласка, выйдзіце з сістэмы і ўвайдзіце зноў у свой уліковы запіс.</string>
 </resources>

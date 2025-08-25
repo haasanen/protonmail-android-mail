@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Generer QR-kode</string>
   <string name="target_sign_in_error_back_to_signin">Tilbake til pålogging</string>
   <string name="target_sign_in_learn_more">Lær mer</string>
+  <string name="proton_error_non_processable_actions">Én eller flere handlinger kan ikke behandles. Logg av og logg inn igjen på kontoen din.</string>
 </resources>

@@ -36,7 +36,7 @@
   <string name="report_a_problem_leave_dialog_description_2">Cualquier información que hayas ingresado se perderá.</string>
   <string name="report_a_problem_leave_dialog_cancel_btn">Cancelar</string>
   <string name="report_a_problem_leave_dialog_close_btn">Cerrar</string>
-  <string name="report_a_problem_success">Gracias por tu informe. Nuestro soporte al cliente se pondrá en contacto contigo.</string>
-  <string name="report_a_problem_generic_error">Se ha producido un error. Vuelva a intentarlo.</string>
-  <string name="report_a_problem_offline_error">Estás sin conexión. Inténtalo de nuevo con conexión a internet.</string>
+  <string name="report_a_problem_success">Gracias por tu informe. Nuestro equipo de atención al cliente se pondrá en contacto contigo.</string>
+  <string name="report_a_problem_generic_error">Se ha producido un error. Vuelve a intentarlo.</string>
+  <string name="report_a_problem_offline_error">Estás sin conexión. Inténtalo de nuevo con conexión a Internet.</string>
 </resources>

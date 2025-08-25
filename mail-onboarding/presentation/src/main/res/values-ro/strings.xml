@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Intimitate pentru toți</string>
-  <string name="onboarding_privacy_for_all_description">Invitați alte persoane la Proton Mail, astfel încât să puteți beneficia cu toții de criptarea bilaterală.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Ușor de actualizat</string>
-  <string name="onboarding_easily_up_to_date_description">Parcurgeți rapid mesajele înșiruite în modul conversație.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Curată și ordonată</string>
-  <string name="onboarding_neat_and_tidy_description">Clasificați, etichetați și atribuiți culori mesajelor ușurându-vă utilizarea.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Bun venit la\nnoua aplicație Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Transformată din temelii</string>
-  <string name="onboarding_welcome_description">Vă mulțumim că v-ați alăturat acestui grup limitat de testatori beta timpurii. Părerea dvs. este esențială pentru a ne ajuta să construim un Proton Mail și mai bun, gata pentru lansarea publică.</string>
+  <string name="onboarding_welcome_title">Bun venit la Proton Mail, unde confidențialitatea este implicită</string>
+  <string name="onboarding_welcome_description">Bucurați-vă de mesaje criptate, mai puține mesaje nedorite, protecție împotriva înșelăciunii și urmăritori blocați. Bun venit la confidențialitate.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Refăcut pentru a fi mai bun și mai rapid</string>
-  <string name="onboarding_rebuilt_headline">Prezentare nouă cont</string>
-  <string name="onboarding_rebuilt_description">Noul Proton Mail este mai rapid, cu un design vibrant și funcții foarte solicitate, precum modul deconectat.</string>
+  <string name="onboarding_rebuilt_title">Concentrare la dispoziție</string>
+  <string name="onboarding_rebuilt_description">Petreceți mai puțin timp sortând și mai mult timp lucrând. Contul de e-mail este conceput pentru a fi mai ușor de navigat, astfel încât să puteți ajunge mai rapid la ceea ce este important.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Vă mulțumim pentru participare!</string>
-  <string name="onboarding_feedback_headline">Sugestiile primite sunt esențiale</string>
-  <string name="onboarding_feedback_description">Vom lansa noi funcții în lunile următoare. Vă rugăm să testați aplicația și să accesați secțiunea „Raportare problemă” pentru a ne spune cum o putem îmbunătăți în continuare. Contribuția dumneavoastră este neprețuită!</string>
+  <string name="onboarding_feedback_title">Rămâneți la zi , chiar și fără conexiune</string>
+  <string name="onboarding_feedback_description">Citiți, scrieți și gestionați mesaje de oriunde v-ați afla. Totul se sincronizează automat în momentul în care aveți conexiune la internet.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Înainte</string>
-  <string name="onboarding_get_started">Start testare</string>
+  <string name="onboarding_get_started">Începeți</string>
   <string name="onboarding_illustration_content_description">Ilustrație de integrare</string>
   <string name="onboarding_close_content_description">Închidere</string>
-  <string name="onboarding_introducing_next_gen_app">Vă prezentăm noua aplicație!</string>
 </resources>

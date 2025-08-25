@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Generar código QR</string>
   <string name="target_sign_in_error_back_to_signin">Volver a inicio de sesión</string>
   <string name="target_sign_in_learn_more">Más información</string>
+  <string name="proton_error_non_processable_actions">Una o más acciones no se pueden procesar. Cierre sesión y vuelve a iniciarla en su cuenta.</string>
 </resources>

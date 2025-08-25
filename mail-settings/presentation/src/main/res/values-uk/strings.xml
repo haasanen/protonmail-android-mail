@@ -34,7 +34,8 @@
   <string name="mail_settings_spam_and_custom_filters_hint">Автоматичні дії та сортування</string>
   <string name="mail_settings_privacy_and_security">Приватність і безпека</string>
   <string name="mail_settings_fido_keys">Ключі безпеки</string>
-  <string name="mail_settings_change_password">Password management</string>
+  <string name="mail_settings_change_password">Керування паролями</string>
+  <string name="mail_settings_storage_quota">%1$d%% з %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Захист від стеження за поштою</string>
   <string name="mail_settings_app_hint">Налаштування мобільного застосунку</string>
   <string name="mail_settings_theme">Тема</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Перейдіть до налаштувань системних сповіщень</string>
   <string name="mail_settings_notifications_update_error">Помилка оновлення налаштувань</string>
   <string name="mail_settings_notifications_loading_error">Помилка завантаження налаштувань</string>
+  <string name="notifications_on">Увімк</string>
+  <string name="notifications_off">Вимк</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Сталася помилка. Спробуйте знову.</string>
 </resources>

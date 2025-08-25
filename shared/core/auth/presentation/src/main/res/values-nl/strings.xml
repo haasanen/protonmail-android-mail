@@ -33,7 +33,7 @@
   <string name="auth_login_close">Sluiten</string>
   <string name="auth_login_help">Hulp</string>
   <string name="auth_sign_in">Inloggen</string>
-  <string name="auth_username">Gebruikersnaam</string>
+  <string name="auth_login_username">Gebruikersnaam of e-mailadres</string>
   <string name="auth_email">E-mail</string>
   <string name="auth_password">Wachtwoord</string>
   <string name="auth_username_placeholder">Gebruikersnaam of e-mailadres</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">De gebruikersnaam mag niet leeg zijn.</string>
   <string name="auth_signup_email_assistive_text">E-mail mag niet leeg zijn.</string>
   <string name="auth_signup_next">Volgende</string>
-  <string name="auth_signup_email_username">Gebruikersnaam of e-mailadres</string>
+  <string name="auth_signup_username">Gebruikersnaam</string>
   <string name="auth_signup_create_password">Maak uw wachtwoord</string>
   <string name="auth_signup_password">Wachtwoord</string>
   <string name="auth_signup_repeat_password">Wachtwoord herhalen</string>
@@ -127,11 +127,11 @@
   </plurals>
   <string name="common_error_something_went_wrong">Er is iets fout gegaan. Probeer het later nog eens.</string>
   <string name="auth_fido_config_error">Fout bij het ophalen van opgeslagen sleutels.</string>
-  <string name="auth_fido_reading_key_error">Error reading security key.</string>
-  <string name="auth_fido_submit_key_error">Error submitting key data.</string>
-  <string name="auth_fido_reading_key_progress">Reading security key.</string>
-  <string name="auth_fido_authenticating_in_progress">Authenticating with security key.</string>
-  <string name="auth_fido_security_key">Security Key</string>
+  <string name="auth_fido_reading_key_error">Fout bij het uitlezen van de beveiligingssleutel.</string>
+  <string name="auth_fido_submit_key_error">Fout bij het verzenden van sleutelgegevens.</string>
+  <string name="auth_fido_reading_key_progress">Beveiligingssleutel wordt uitgelezen.</string>
+  <string name="auth_fido_authenticating_in_progress">Authenticatie met beveiligingssleutel...</string>
+  <string name="auth_fido_security_key">Beveiligingssleutel</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Wachtwoord moet tenminste 1 teken bevatten</item>
     <item quantity="other">Wachtwoord moet tenminste %1$s tekens bevatten</item>
@@ -165,6 +165,7 @@
   <string name="settings_password_error_empty">Wachtwoord kan niet leeg zijn.</string>
   <string name="settings_password_error">Onjuiste gebruikersnaam of wachtwoord. Probeer het opnieuw.</string>
   <string name="settings_password_error_invalid_recovery">Onjuiste 2FA code. Probeer het opnieuw.</string>
-  <string name="settings_password_error_2fa_reused">Code is al gebruikt. Probeer alstublieft een andere code.</string>
+  <string name="settings_password_error_2fa_reused">Code is al gebruikt. Probeer een andere code.</string>
   <string name="settings_password_general_error">Er is iets fout gegaan.</string>
+  <string name="proton_error_non_processable_actions">Eén of meer acties kunnen niet worden verwerkt. Meld u alstublieft af en meld u opnieuw aan bij uw account.</string>
 </resources>

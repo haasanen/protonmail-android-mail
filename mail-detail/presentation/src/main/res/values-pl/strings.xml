@@ -147,14 +147,14 @@
   <string name="rsvp_widget_no">Nie</string>
   <string name="rsvp_widget_yes_long">Tak, będę uczestniczyć</string>
   <string name="rsvp_widget_maybe_long">Być może będę uczestniczyć</string>
-  <string name="rsvp_widget_no_long">Nie będę uczestniczyć</string>
+  <string name="rsvp_widget_no_long">Nie, nie będę uczestniczyć</string>
   <string name="rsvp_widget_organizer">(organizator)</string>
   <string name="rsvp_widget_you">Ty</string>
   <plurals name="rsvp_widget_participants">
     <item quantity="one">%1$d uczestnik</item>
     <item quantity="few">%1$d uczestników</item>
     <item quantity="many">%1$d uczestników</item>
-    <item quantity="other">%1$d uczestników</item>
+    <item quantity="other">%1$d uczestnika</item>
   </plurals>
   <string name="rsvp_widget_happening_now">Trwa <b>teraz</b></string>
   <string name="rsvp_widget_event_ended">Wydarzenie <b>zakończyło się</b></string>
@@ -170,10 +170,10 @@
   <string name="rsvp_widget_invite_details_unavailable">Brak szczegółów zaproszenia</string>
   <string name="rsvp_widget_could_not_load">Nie udało się załadować informacji.\nSpróbuj ponownie.</string>
   <string name="rsvp_widget_button_retry">Spróbuj ponownie</string>
-  <string name="rsvp_widget_error_answering">Wystąpił błąd podczas odpowiadania na wydarzenie</string>
+  <string name="rsvp_widget_error_answering">Wystąpił błąd podczas odpowiadania na to wydarzenie</string>
   <string name="rsvp_widget_open_in_proton_calendar">Otwórz w Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Kopiuj adres</string>
-  <string name="rsvp_widget_message">Message</string>
+  <string name="rsvp_widget_message">Napisz</string>
   <string name="snooze_message_snoozed_until_banner_title">Odłożono do</string>
   <string name="snooze_message_unsnooze_banner_button">Anuluj odłożenie</string>
 </resources>

@@ -86,8 +86,8 @@
   <string name="action_sender_emails_content_description">Ustaw akcję dla przyszłych wiadomości od tego nadawcy</string>
   <string name="action_save_attachments_content_description">Zapisz załączniki</string>
   <string name="action_more_content_description">Więcej</string>
-  <string name="action_snooze_content_description">Usypianie powiadomień</string>
-  <string name="action_snooze_description">Usypianie powiadomień</string>
+  <string name="action_snooze_content_description">Odłóż</string>
+  <string name="action_snooze_description">Odłóż</string>
   <string name="common_error_loading_actions">Ładowanie akcji nie powiodło się</string>
   <string name="yesterday">Wczoraj</string>
   <!-- notification channels -->
@@ -130,6 +130,6 @@
   <!-- date time picker -->
   <string name="time_picker_custom_time_label">Godzina</string>
   <string name="time_picker_custom_date_label">Data</string>
-  <string name="time_picker_send_dialog_ok">Ok</string>
+  <string name="time_picker_send_dialog_ok">OK</string>
   <string name="time_picker_enter_time">Wpisz czas</string>
 </resources>

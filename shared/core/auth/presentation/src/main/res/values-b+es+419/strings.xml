@@ -33,7 +33,7 @@
   <string name="auth_login_close">Cerrar</string>
   <string name="auth_login_help">Ayuda</string>
   <string name="auth_sign_in">Iniciar sesión</string>
-  <string name="auth_username">Nombre de usuario</string>
+  <string name="auth_login_username">Nombre de usuario o correo electrónico</string>
   <string name="auth_email">Correo electrónico</string>
   <string name="auth_password">Contraseña</string>
   <string name="auth_username_placeholder">Nombre de usuario o correo electrónico</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">El nombre de usuario no puede estar vacío.</string>
   <string name="auth_signup_email_assistive_text">El correo electrónico no puede estar vacío.</string>
   <string name="auth_signup_next">Siguiente</string>
-  <string name="auth_signup_email_username">Nombre de usuario o correo electrónico</string>
+  <string name="auth_signup_username">Nombre de usuario</string>
   <string name="auth_signup_create_password">Cree su contraseña</string>
   <string name="auth_signup_password">Contraseña</string>
   <string name="auth_signup_repeat_password">Repetir la contraseña</string>
@@ -163,8 +163,9 @@
   <string name="settings_password_management_2fa">Se necesita 2FA</string>
   <string name="settings_password_invalid_2fa">Código de segundo factor inválido. Intente de nuevo.</string>
   <string name="settings_password_error_empty">La contraseña no puede estar vacía.</string>
-  <string name="settings_password_error">Incorrect username or password. Please try again.</string>
-  <string name="settings_password_error_invalid_recovery">Incorrect 2FA code. Please try again.</string>
-  <string name="settings_password_error_2fa_reused">Code has already been used. Please try a different code.</string>
+  <string name="settings_password_error">Nombre de usuario o contraseña incorrectos. Inténtelo nuevamente.</string>
+  <string name="settings_password_error_invalid_recovery">Código 2FA incorrecto. Inténtelo de nuevo.</string>
+  <string name="settings_password_error_2fa_reused">El código ya fue usado. Intente con un código diferente.</string>
   <string name="settings_password_general_error">Ocurrió un error.</string>
+  <string name="proton_error_non_processable_actions">Una o más acciones no se pueden procesar. Cierre sesión y vuelve a iniciarla en su cuenta.</string>
 </resources>

@@ -46,4 +46,5 @@
   <string name="payment_subscription_managed_by_google">Вашою передплатою керує Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Вашою передплатою керує Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Вашою передплатою не можна керувати в мобільному застосунку.</string>
+  <string name="proton_error_non_processable_actions">Одну або кілька дій неможливо виконати. Вийдіть із системи та увійдіть знову у свій обліковий запис.</string>
 </resources>

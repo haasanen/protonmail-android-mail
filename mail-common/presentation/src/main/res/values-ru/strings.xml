@@ -86,8 +86,8 @@
   <string name="action_sender_emails_content_description">Установить действие для последующих писем от этого отправителя</string>
   <string name="action_save_attachments_content_description">Сохранить вложения</string>
   <string name="action_more_content_description">Ещё</string>
-  <string name="action_snooze_content_description">Snooze</string>
-  <string name="action_snooze_description">Snooze</string>
+  <string name="action_snooze_content_description">Отложить</string>
+  <string name="action_snooze_description">Отложить</string>
   <string name="common_error_loading_actions">Неудачные действия при скачивании</string>
   <string name="yesterday">Вчера</string>
   <!-- notification channels -->
@@ -128,8 +128,8 @@
   <string name="undo_failure_message">Не удалось отменить действие</string>
   <string name="feature_coming_soon">Функция скоро появится…</string>
   <!-- date time picker -->
-  <string name="time_picker_custom_time_label">Time</string>
-  <string name="time_picker_custom_date_label">Date</string>
-  <string name="time_picker_send_dialog_ok">Ok</string>
-  <string name="time_picker_enter_time">Enter time</string>
+  <string name="time_picker_custom_time_label">Время</string>
+  <string name="time_picker_custom_date_label">Дата</string>
+  <string name="time_picker_send_dialog_ok">OK</string>
+  <string name="time_picker_enter_time">Введите время</string>
 </resources>

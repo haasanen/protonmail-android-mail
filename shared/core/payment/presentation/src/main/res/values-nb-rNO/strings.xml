@@ -42,4 +42,5 @@
   <string name="payment_subscription_managed_by_google">Abonnementet ditt er forvaltet av Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Abonnementet ditt er forvaltet av Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Abonnementet ditt kan ikke forvaltes med mobilappen.</string>
+  <string name="proton_error_non_processable_actions">Én eller flere handlinger kan ikke behandles. Logg av og logg inn igjen på kontoen din.</string>
 </resources>

@@ -95,7 +95,7 @@
   <string name="phishing_link_confirmation_dialog_button_continue">Warnung ignorieren und fortfahren</string>
   <!-- Mark as legitimate confirmation dialog -->
   <string name="mark_as_legitimate_phishing_dialog_title">Markierte als legitim bestätigen</string>
-  <string name="mark_as_legitimate_phishing_dialog_message">Wir bitten um Entschuldigung. Dies könnte ein Fehler unsererseits gewesen sein. Bitte bestätigen, wenn diese E-Mail als seriös eingestuft werden soll.</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Wir bitten um Entschuldigung. Dies könnte ein Fehler unsererseits gewesen sein. Bitte bestätigen, wenn diese E-Mail als legitim eingestuft werden soll.</string>
   <string name="mark_as_legitimate_spam_dialog_title">Bestätigen, dass es sich nicht um Spam handelt</string>
   <string name="mark_as_legitimate_spam_dialog_message">Wir bitten um Entschuldigung. Dies könnte ein Fehler unsererseits gewesen sein. Bitte bestätigen, dass diese E-Mail kein Spam ist.</string>
   <!-- Delete message dialog -->
@@ -164,7 +164,7 @@
   <string name="rsvp_widget_invite_details_unavailable">Einladungsdetails nicht verfügbar</string>
   <string name="rsvp_widget_could_not_load">Die Informationen konnten nicht geladen werden.\nBitte erneut versuchen.</string>
   <string name="rsvp_widget_button_retry">Wiederholen</string>
-  <string name="rsvp_widget_error_answering">Bei Antworten auf dieses Ereignisses ist ein Fehler aufgetreten.</string>
+  <string name="rsvp_widget_error_answering">Bei Antworten auf diesen Termin ist ein Fehler aufgetreten.</string>
   <string name="rsvp_widget_open_in_proton_calendar">In Proton Calendar öffnen</string>
   <string name="rsvp_widget_copy_address">Adresse kopieren</string>
   <string name="rsvp_widget_message">Nachricht</string>

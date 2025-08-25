@@ -147,8 +147,8 @@
   <string name="rsvp_widget_organizer">(Organitzador)</string>
   <string name="rsvp_widget_you">Vós</string>
   <plurals name="rsvp_widget_participants">
-    <item quantity="one">%1$d Assistent</item>
-    <item quantity="other">%1$d Assistents</item>
+    <item quantity="one">%1$d assistent</item>
+    <item quantity="other">%1$d assistents</item>
   </plurals>
   <string name="rsvp_widget_happening_now">Està passant <b>ara</b></string>
   <string name="rsvp_widget_event_ended">L\'esdeveniment ha <b>finalitzat</b></string>

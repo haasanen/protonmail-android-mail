@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Yksityisyyttä kaikille</string>
-  <string name="onboarding_privacy_for_all_description">Kutsu muita Proton Mailiin, jotta voitte kaikki hyötyä päästä päähän -salauksesta.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Helposti ajan tasalla</string>
-  <string name="onboarding_easily_up_to_date_description">Seuraa viestiketjuja sujuvasti keskustelutilassa.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Tyylikäs ja siisti</string>
-  <string name="onboarding_neat_and_tidy_description">Lajittele, merkitse ja värikoodaa viestejä luodaksesi täydellisen, mukautetun postilaatikkosi.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Tervetuloa uuteen\nProton Mail -sovellukseen!</string>
-  <string name="onboarding_welcome_headline">Täysin uudistettu</string>
-  <string name="onboarding_welcome_description">Kiitos, että liityitte tähän rajattuun varhaisten beeta-testaajien ryhmään. Palautteenne on kriittisen tärkeää, jotta voimme rakentaa entistäkin paremman Proton Mailin, joka on valmis julkiseen julkaisuun.</string>
+  <string name="onboarding_welcome_title">Welcome to Proton Mail, where privacy is default</string>
+  <string name="onboarding_welcome_description">Enjoy encrypted messages, fewer spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Uudelleenrakennettu entistä paremmaksi ja nopeammaksi</string>
-  <string name="onboarding_rebuilt_headline">Uusi saapuneet-kansio avattu.</string>
-  <string name="onboarding_rebuilt_description">Uusi Proton Mail on nopeampi pirteämmällä ulkoasulla ja erittäin toivotuilla ominaisuuksilla, kuten yhteydetön tila.</string>
+  <string name="onboarding_rebuilt_title">Focus at your fingertips</string>
+  <string name="onboarding_rebuilt_description">Spend less time sorting and more time doing. Your inbox is designed to be easier to navigate, so you can get to what’s important faster.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Kiitos osallistumisestasi!</string>
-  <string name="onboarding_feedback_headline">Palautteesi on tärkeää</string>
-  <string name="onboarding_feedback_description">Otamme käyttöön uusia ominaisuuksia tulevien kuukausien aikana. Testatkaa sovellusta ja napauttakaa \"Ilmoita ongelmasta\" kertoaksenne meille, miten voimme jatkuvasti parantaa. Palautteenne on korvaamatonta!</string>
+  <string name="onboarding_feedback_title">Stay connected, even offline</string>
+  <string name="onboarding_feedback_description">Read, write, and manage emails wherever you are. Everything syncs automatically the moment you’re back online.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Seuraava</string>
-  <string name="onboarding_get_started">Aloita testaaminen</string>
+  <string name="onboarding_get_started">Aloita</string>
   <string name="onboarding_illustration_content_description">Kuvitus käyttöönotosta</string>
   <string name="onboarding_close_content_description">Sulje</string>
-  <string name="onboarding_introducing_next_gen_app">Esittelyssä seuraavan sukupolven sovelluksemme!</string>
 </resources>

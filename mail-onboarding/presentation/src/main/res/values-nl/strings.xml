@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Privacy voor iedereen</string>
-  <string name="onboarding_privacy_for_all_description">Nodig anderen uit voor Proton Mail, zodat u allemaal kan profiteren van end-to-end versleuteling.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Gemakkelijk up-to-date</string>
-  <string name="onboarding_easily_up_to_date_description">Snel scrollen door berichten in een thread in conversatiemodus.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Netjes en opgeruimd</string>
-  <string name="onboarding_neat_and_tidy_description">Sorteer, label en ken kleur toe aan berichten om uw perfecte inbox te creëren.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Welkom bij de\nnieuwe Proton Mail-app!</string>
-  <string name="onboarding_welcome_headline">Van de grond af getransformeerd</string>
-  <string name="onboarding_welcome_description">Bedankt dat u deelneemt aan deze beperkte groep vroege bèta-testers. Uw feedback is cruciaal om ons te helpen een nog betere Proton Mail te bouwen die klaar is voor publieke uitgave.</string>
+  <string name="onboarding_welcome_title">Welkom bij Proton Mail, waar privacy standaard is</string>
+  <string name="onboarding_welcome_description">Geniet van versleutelde berichten, minder spam, bescherming tegen phishing en geblokkeerde trackers. Welkom bij privacy.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Herbouwd om beter en sneller te zijn</string>
-  <string name="onboarding_rebuilt_headline">Nieuw inbox uitgepakt</string>
-  <string name="onboarding_rebuilt_description">De nieuwe Proton Mail is sneller met een levendig ontwerp en veelgevraagde functies, zoals de offline modus.</string>
+  <string name="onboarding_rebuilt_title">Focus binnen handbereik</string>
+  <string name="onboarding_rebuilt_description">Besteed minder tijd aan sorteren en meer tijd aan doen. Uw inbox is ontworpen om gemakkelijker te navigeren, zodat u sneller bij wat belangrijk is kunt komen.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Bedankt voor uw deelname!</string>
-  <string name="onboarding_feedback_headline">Uw feedback is essentieel</string>
-  <string name="onboarding_feedback_description">We zullen de komende maanden nieuwe functies uitrollen. Test u alstublieft de app en tik op \"Een probleem melden\" om ons te laten weten hoe we kunnen blijven verbeteren. Uw inbreng is van onschatbare waarde!</string>
+  <string name="onboarding_feedback_title">Blijf verbonden, zelfs offline</string>
+  <string name="onboarding_feedback_description">Lees, schrijf en beheer e-mails waar u ook bent. Alles synchroniseert automatisch zodra u weer online bent.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Volgende</string>
-  <string name="onboarding_get_started">Begin met testen</string>
+  <string name="onboarding_get_started">Aan de slag</string>
   <string name="onboarding_illustration_content_description">Onboardingillustratie</string>
   <string name="onboarding_close_content_description">Sluiten</string>
-  <string name="onboarding_introducing_next_gen_app">Maak kennis met onze next-gen app!</string>
 </resources>

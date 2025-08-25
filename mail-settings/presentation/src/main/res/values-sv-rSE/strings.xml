@@ -35,6 +35,7 @@
   <string name="mail_settings_privacy_and_security">Integritet och säkerhet</string>
   <string name="mail_settings_fido_keys">Säkerhetsnycklar</string>
   <string name="mail_settings_change_password">Lösenordshantering</string>
+  <string name="mail_settings_storage_quota">%1$d%% av %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">E-postspårningsskydd</string>
   <string name="mail_settings_app_hint">Anpassning av mobilapp</string>
   <string name="mail_settings_theme">Tema</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Navigera till systemets aviseringsinställningar</string>
   <string name="mail_settings_notifications_update_error">Fel vid uppdatering av inställningar</string>
   <string name="mail_settings_notifications_loading_error">Fel vid laddning av inställningar</string>
+  <string name="notifications_on">På</string>
+  <string name="notifications_off">Av</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Ett fel uppstod. Försök igen.</string>
 </resources>

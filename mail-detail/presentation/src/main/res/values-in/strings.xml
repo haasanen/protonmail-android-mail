@@ -133,7 +133,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Sunting dan jadwal ulang</string>
   <string name="message_cancel_schedule_send_dialog_message">Pesan ini akan dipindahkan ke Draf agar Anda bisa menyuntingnya. Anda perlu menjadwalkan ulang kapan akan dikirim.</string>
   <!-- RSVP widget -->
-  <string name="rsvp_widget_no_title">(no title)</string>
+  <string name="rsvp_widget_no_title">(tanpa judul)</string>
   <string name="rsvp_widget_attendance_optional">(Kehadiran tidak diwajibkan)</string>
   <string name="rsvp_widget_attending">Hadiri?</string>
   <string name="rsvp_widget_yes">Ya</string>
@@ -148,23 +148,23 @@
     <item quantity="other">%1$d Peserta</item>
   </plurals>
   <string name="rsvp_widget_happening_now"><b>Sedang berlangsung</b></string>
-  <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
-  <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b></string>
+  <string name="rsvp_widget_event_ended">Acara <b>berakhir</b></string>
+  <string name="rsvp_widget_event_cancelled">Acara <b>dibatalkan</b></string>
   <string name="rsvp_widget_invite_outdated">Undangan ini telah kedaluwarsa</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">Acara dibatalkan. Undangan ini telah kedaluwarsa.</string>
   <string name="rsvp_widget_offline_invite_outdated">Anda sedang offline. Informasi yang ditampilkan mungkin sudah tidak terkini.</string>
-  <string name="rsvp_widget_address_is_incorrect">Your address can\'t be used to reply. Please update your account information.</string>
+  <string name="rsvp_widget_address_is_incorrect">Alamat Anda tidak dapat digunakan untuk membalas. Harap perbarui informasi akun Anda.</string>
   <string name="rsvp_widget_user_is_organizer">Anda adalah penyelenggara acara.</string>
-  <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
+  <string name="rsvp_widget_event_does_not_exist">Acara ini tidak ada di kalender Anda, jadi Anda tidak dapat membalasnya.</string>
   <string name="rsvp_widget_today">Hari ini</string>
   <string name="rsvp_widget_tomorrow">Besok</string>
-  <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
-  <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
-  <string name="rsvp_widget_button_retry">Retry</string>
-  <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
-  <string name="rsvp_widget_open_in_proton_calendar">Open in Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copy address</string>
+  <string name="rsvp_widget_invite_details_unavailable">Detail undangan tidak tersedia</string>
+  <string name="rsvp_widget_could_not_load">Kami tidak dapat memuat informasi.\nSilakan coba lagi.</string>
+  <string name="rsvp_widget_button_retry">Coba lagi</string>
+  <string name="rsvp_widget_error_answering">Terjadi kesalahan saat menjawab acara ini</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Buka di Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Salin alamat</string>
   <string name="rsvp_widget_message">Kirim pesan</string>
-  <string name="snooze_message_snoozed_until_banner_title">Snoozed until</string>
-  <string name="snooze_message_unsnooze_banner_button">Unsnooze</string>
+  <string name="snooze_message_snoozed_until_banner_title">Ditunda hingga</string>
+  <string name="snooze_message_unsnooze_banner_button">Batalkan penundaan</string>
 </resources>

@@ -33,7 +33,7 @@
   <string name="auth_login_close">Tanca</string>
   <string name="auth_login_help">Ajuda</string>
   <string name="auth_sign_in">Inicia la sessió</string>
-  <string name="auth_username">Nom d\'usuari</string>
+  <string name="auth_login_username">Nom d\'usuari o correu electrònic</string>
   <string name="auth_email">Correu electrònic</string>
   <string name="auth_password">Contrasenya</string>
   <string name="auth_username_placeholder">Nom d\'usuari o correu electrònic</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">El nom d\'usuari no pot estar en blanc.</string>
   <string name="auth_signup_email_assistive_text">El correu electrònic no pot estar en blanc.</string>
   <string name="auth_signup_next">Següent</string>
-  <string name="auth_signup_email_username">Nom d\'usuari o correu electrònic</string>
+  <string name="auth_signup_username">Nom d\'usuari</string>
   <string name="auth_signup_create_password">Creeu la contrasenya</string>
   <string name="auth_signup_password">Contrasenya</string>
   <string name="auth_signup_repeat_password">Repeteix la contrasenya</string>
@@ -167,4 +167,5 @@
   <string name="settings_password_error_invalid_recovery">Codi 2FA incorrecte. Torneu-ho a provar.</string>
   <string name="settings_password_error_2fa_reused">El codi ja s\'ha utilitzat. Proveu un codi diferent.</string>
   <string name="settings_password_general_error">S\'ha produït un error.</string>
+  <string name="proton_error_non_processable_actions">Una o més accions no s\'han pogut processar. Tanqueu la sessió i torneu-la a iniciar al vostre compte.</string>
 </resources>

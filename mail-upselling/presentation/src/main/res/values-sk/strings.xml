@@ -48,13 +48,13 @@
   <string name="upselling_auto_delete_plus_title">Automatizované vyprázdňovanie koša</string>
   <!-- Upselling: Schedule Send -->
   <string name="upselling_schedule_send_plus_description_override">Prispôsobte si, kedy bude email odoslaný. To a oveľa viac si môžete užiť s aplikáciou Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <string name="upselling_schedule_send_plus_title">Naplánujte teraz, odošlite neskôr</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <string name="upselling_snooze_plus_description_override">Odložte to — a nechajte si to doručiť neskôr. Vychutnajte si túto a ďalšie funkcie s balíkom Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Nevhodný čas na tento email?</string>
   <!-- Upselling - Misc buttons -->
-  <string name="upselling_button_hint">Upgrade for full flexibility</string>
-  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
+  <string name="upselling_button_hint">Navýšte úroveň pre úplnú flexibilitu</string>
+  <string name="upselling_upgrade_plan_generic">Pre prístup k tejto funkcii potrebujete platené predplatné Proton Mail.</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB úložného priestoru</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB úložisko, 10 emailových adries</string>
@@ -103,9 +103,9 @@
   <string name="upselling_select_plan_month">1 mesiac</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Automatické obnovenie za rovnakú cenu a za rovnakých podmienok až pokým nedôjde k zrušeniu</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Uvítacia ponuka. Automaticky sa obnoví za %s%s, pokiaľ ju nezrušíte.</string>
+  <string name="upselling_auto_renew_text_promo_short">Uvítacia ponuka. Automaticky sa obnoví za %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Automaticky sa obnoví za %s%s, pokiaľ ho nezrušíte.</string>
   <string name="upselling_social_proof_reviews">2k+ RECENZIÍ</string>
   <string name="upselling_description_social_proof">Zvýšte úroveň na zážitok, ktorý si milióny predplatiteľov pochvaľujú.</string>
   <string name="upselling_discount_tag">UŠETRÍTE %s%%</string>

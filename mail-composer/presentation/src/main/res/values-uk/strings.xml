@@ -86,18 +86,18 @@
   <string name="message_sending_error_dialog_text_error">Вашого листа неможливо надіслати на вказану адресу з такої причини:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Немає довірених ключів: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Адреса %s не існує</string>
-  <string name="set_message_password_title">Set Password</string>
-  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
+  <string name="set_message_password_title">Встановити пароль</string>
+  <string name="set_message_password_info_message">Установіть пароль, щоб зашифрувати це повідомлення для одержувачів, які не користуються Proton Mail.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Докладніше</a></string>
   <string name="set_message_password_label">Пароль повідомлення</string>
   <string name="set_message_password_label_hint">Підказка до пароля (необов\'язково)</string>
-  <string name="set_message_password_supporting_text">Minimum 8 characters required.</string>
+  <string name="set_message_password_supporting_text">Мінімум 8 символів.</string>
   <string name="set_message_password_supporting_error_text">Пароль повинен мати від 8 до 21 символів</string>
   <string name="set_message_password_supporting_text_repeat">Паролі повинні збігатися</string>
   <string name="set_message_password_supporting_error_text_repeat">Паролі відрізняються</string>
   <string name="set_message_password_button_show">Показати пароль</string>
   <string name="set_message_password_button_hide">Приховати пароль</string>
-  <string name="set_message_password_button_save_changes">Save</string>
+  <string name="set_message_password_button_save_changes">Зберегти</string>
   <string name="set_message_password_button_remove_password">Вилучити пароль</string>
   <string name="respondInline">Відповісти всередині тексту</string>
   <string name="subject_placeholder">Тема</string>

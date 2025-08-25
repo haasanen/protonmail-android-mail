@@ -54,7 +54,7 @@
   <string name="message_moved_to_selected_destination">Mensagem movida para %1$s</string>
   <string name="error_move_message_failed">Erro ao mover a mensagem. Tente novamente.</string>
   <string name="conversation_moved_to_trash">Conversa movida para a lixeira</string>
-  <string name="conversation_moved_to_inbox">Conversa movida para a caixa de entrada</string>
+  <string name="conversation_moved_to_inbox">Conversa movida para a Caixa de Entrada</string>
   <string name="conversation_moved_to_selected_destination">Conversa movida para %1$s</string>
   <string name="conversation_moved_to_spam">Conversa movida para Spam</string>
   <string name="conversation_moved_to_archive">Conversa movida para o arquivo</string>
@@ -77,7 +77,7 @@
   <string name="message_phishing_banner_text">Esta mensagem foi sinalizada como suspeita pelo nosso sistema ou por você. Se você acredita que é segura, marque-a como legítima.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Marcar como legítimo</string>
   <string name="message_spam_banner_text">Esta mensagem foi sinalizada como spam pelo nosso sistema ou por você.</string>
-  <string name="message_spam_banner_not_spam_button">Não é spam</string>
+  <string name="message_spam_banner_not_spam_button">Não é Spam</string>
   <string name="message_blocked_sender_banner_text">Este remetente foi bloqueado no passado.</string>
   <string name="message_blocked_sender_button_text">Desbloquear</string>
   <string name="message_expiration_banner_text">Esta mensagem expirará em %1$s</string>
@@ -94,8 +94,8 @@
   <string name="phishing_link_confirmation_dialog_button_go_back">Voltar (recomendado)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Ignorar aviso e continuar</string>
   <!-- Mark as legitimate confirmation dialog -->
-  <string name="mark_as_legitimate_phishing_dialog_title">Confirmar marcar como legítimo</string>
-  <string name="mark_as_legitimate_phishing_dialog_message">Pedimos desculpas. Pode ter sido um erro nosso. Confirme se deseja marcar este e-mail como legítimo.</string>
+  <string name="mark_as_legitimate_phishing_dialog_title">Confirmar marcação como legítimo</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Pedimos desculpas. Pode ter sido um erro nosso. Confirme se quiser marcar este e-mail como legítimo.</string>
   <string name="mark_as_legitimate_spam_dialog_title">Confirmar que não é spam</string>
   <string name="mark_as_legitimate_spam_dialog_message">Pedimos desculpas. Pode ter sido um erro nosso. Confirme que este e-mail não é spam.</string>
   <!-- Delete message dialog -->
@@ -133,7 +133,7 @@
   <string name="message_cancel_schedule_send_dialog_confim_button">Editar rascunho</string>
   <string name="message_cancel_schedule_send_dialog_cancel_button">Cancelar</string>
   <string name="message_cancel_schedule_send_dialog_title">Editar e reagendar</string>
-  <string name="message_cancel_schedule_send_dialog_message">Esta mensagem será movida para Rascunhos para você poder editar. Você precisará reagendar quando ela será enviada.</string>
+  <string name="message_cancel_schedule_send_dialog_message">Esta mensagem será movida para Rascunhos para poder ser editada. Você precisará reagendar o envio.</string>
   <!-- RSVP widget -->
   <string name="rsvp_widget_no_title">(sem título)</string>
   <string name="rsvp_widget_attendance_optional">(Participação opcional)</string>
@@ -141,14 +141,14 @@
   <string name="rsvp_widget_yes">Sim</string>
   <string name="rsvp_widget_maybe">Talvez</string>
   <string name="rsvp_widget_no">Não</string>
-  <string name="rsvp_widget_yes_long">Sim, eu vou participar</string>
-  <string name="rsvp_widget_maybe_long">Talvez, eu vá participar</string>
+  <string name="rsvp_widget_yes_long">Sim, vou participar</string>
+  <string name="rsvp_widget_maybe_long">Talvez eu participe</string>
   <string name="rsvp_widget_no_long">Não, não vou participar</string>
-  <string name="rsvp_widget_organizer">(Organizador)</string>
+  <string name="rsvp_widget_organizer">(organizador)</string>
   <string name="rsvp_widget_you">Você</string>
   <plurals name="rsvp_widget_participants">
-    <item quantity="one">%1$d Participante</item>
-    <item quantity="other">%1$d Participantes</item>
+    <item quantity="one">%1$d participante</item>
+    <item quantity="other">%1$d participantes</item>
   </plurals>
   <string name="rsvp_widget_happening_now">Acontecendo <b>agora</b></string>
   <string name="rsvp_widget_event_ended">Evento <b>encerrado</b></string>
@@ -156,7 +156,7 @@
   <string name="rsvp_widget_invite_outdated">Este convite está desatualizado</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">Evento cancelado. Este convite está desatualizado.</string>
   <string name="rsvp_widget_offline_invite_outdated">Você está off-line. As informações exibidas podem estar desatualizadas.</string>
-  <string name="rsvp_widget_address_is_incorrect">Seu endereço não pode ser usado para responder. Por favor, atualize as informações da sua conta.</string>
+  <string name="rsvp_widget_address_is_incorrect">Seu endereço não pode ser usado para responder. Atualize as informações da sua conta.</string>
   <string name="rsvp_widget_user_is_organizer">Você é o organizador.</string>
   <string name="rsvp_widget_event_does_not_exist">Este evento não está no seu calendário, então você não pode respondê-lo.</string>
   <string name="rsvp_widget_today">Hoje</string>

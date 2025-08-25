@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">모두를 위한 개인정보 보호</string>
-  <string name="onboarding_privacy_for_all_description">Proton Mail에 다른 이들을 초대해 모두가 종단간 암호화를 누릴 수 있게 하세요.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">쉽게 최신으로 업데이트하기</string>
-  <string name="onboarding_easily_up_to_date_description">대화 모드에서 스레드된 메시지를 확인합니다.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">단정하고 깔끔한.</string>
-  <string name="onboarding_neat_and_tidy_description">폴더, 라벨 및 색상 코드 메시지를 사용하여 맞춤형 메일함을 만들어보세요.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">새로운 Proton Mail 앱에\n오신 것을 환영합니다!</string>
-  <string name="onboarding_welcome_headline">기초부터 완전히 새로워지다</string>
-  <string name="onboarding_welcome_description">소수 정예 초기 베타 테스터 그룹에 참여해 주셔서 감사합니다. 주시는 피드백은 한층 더 나은 Proton Mail의 공개 릴리즈를 만드는 데 매우 큰 도움이 됩니다.</string>
+  <string name="onboarding_welcome_title">개인정보 보호가 기본인 Proton Mail에 오신 것을 환영합니다</string>
+  <string name="onboarding_welcome_description">암호화된 메시지, 스팸 감소, 피싱 방어, 그리고 추적 차단을 경험하세요. 개인정보 보호의 세계에 오신 것을 환영합니다.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">더 좋게, 더 빠르게 재구축되다</string>
-  <string name="onboarding_rebuilt_headline">새로운 받은 편지함 개봉박두</string>
-  <string name="onboarding_rebuilt_description">더 빠른 모습으로 돌아온 새로운 Proton Mail은 생생한 디자인은 물론, 오프라인 모드와 같이 요청이 많았던 기능들을 담았습니다.</string>
+  <string name="onboarding_rebuilt_title">모든 집중을 당신의 손에서</string>
+  <string name="onboarding_rebuilt_description">분류하는 데 시간을 덜 쓰고 더 많은 시간을 활용하세요. 받은 편지함은 탐색하기 쉽도록 설계되어 있어 중요한 것을 더 빠르게 찾을 수 있습니다.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">참여해 주셔서 감사합니다!</string>
-  <string name="onboarding_feedback_headline">귀중한 피드백 감사합니다</string>
-  <string name="onboarding_feedback_description">향후 몇 달 안에 새로운 기능을 출시할 예정입니다. 앱을 테스트해 보시고, 개선할 점이 있다면 \"문제 보고\"를 눌러 알려주세요. 소중한 의견 기다리겠습니다!</string>
+  <string name="onboarding_feedback_title">오프라인에서도 연결 유지</string>
+  <string name="onboarding_feedback_description">어디에 있든 이메일을 읽고 쓰고 관리하세요. 다시 온라인 상태가 되는 순간 모든 것이 자동으로 동기화됩니다.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">다음</string>
-  <string name="onboarding_get_started">테스트 시작</string>
+  <string name="onboarding_get_started">시작하기</string>
   <string name="onboarding_illustration_content_description">온보딩 일러스트레이션</string>
   <string name="onboarding_close_content_description">닫기</string>
-  <string name="onboarding_introducing_next_gen_app">차세대 앱을 소개합니다!</string>
 </resources>

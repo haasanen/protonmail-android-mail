@@ -86,18 +86,18 @@
   <string name="message_sending_error_dialog_text_error">Vaše e-pošte ni mogoče poslati na vneseni naslov zaradi naslednjega razloga:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Ni zaupanja vrednih ključev: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Naslov ne obstaja: %s</string>
-  <string name="set_message_password_title">Set Password</string>
-  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
+  <string name="set_message_password_title">Nastavite geslo</string>
+  <string name="set_message_password_info_message">Nastavite geslo za šifriranje tega sporočila za prejemnike, ki ne uporabljajo Proton Maila.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Več informacij</a></string>
   <string name="set_message_password_label">Geslo sporočila</string>
   <string name="set_message_password_label_hint">Namig za geslo (izbirno)</string>
-  <string name="set_message_password_supporting_text">Minimum 8 characters required.</string>
-  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
+  <string name="set_message_password_supporting_text">Potrebnih je najmanj 8 znakov.</string>
+  <string name="set_message_password_supporting_error_text">Geslo mora biti dolgo najmanj 8 in največ 21 znakov</string>
   <string name="set_message_password_supporting_text_repeat">Gesli se morata ujemati</string>
   <string name="set_message_password_supporting_error_text_repeat">Gesli se ne ujemata.</string>
   <string name="set_message_password_button_show">Prikaži geslo</string>
   <string name="set_message_password_button_hide">Skrij geslo</string>
-  <string name="set_message_password_button_save_changes">Save</string>
+  <string name="set_message_password_button_save_changes">Shrani</string>
   <string name="set_message_password_button_remove_password">Odstrani geslo</string>
   <string name="respondInline">Odgovori v vrstici</string>
   <string name="subject_placeholder">Zadeva</string>
@@ -124,7 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Jutri</string>
   <string name="composer_schedule_send_monday_title">V ponedeljek</string>
   <string name="composer_schedule_send_custom_title">Po meri</string>
-  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
+  <string name="composer_schedule_send_custom_upsell_title">Datum in ura po meri</string>
   <string name="composer_schedule_send_custom_description">Izberite uro in datum</string>
   <string name="composer_error_send_message">Napaka pri pošiljanju sporočila</string>
   <string name="composer_schedule_send_previously_set">Predhodno nastavljeno</string>
@@ -139,5 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Osvežitev vsebine po spremembi pošiljatelja ni uspela. Morda ni prikazan najnovejši podpis.</string>
   <string name="composer_loading_attachments_error">Neuspešno nalaganje priponk</string>
   <string name="composer_attachment_upload_error_retry">Nekatere priponke se niso naložile. Poskusite znova.</string>
-  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
+  <string name="composer_external_encryption_unexpected_error">Nepričakovana napaka %s. Poskusite znova.</string>
 </resources>

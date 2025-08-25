@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Prywatność dla wszystkich</string>
-  <string name="onboarding_privacy_for_all_description">Zaproś innych do Proton Mail, aby korzystać z szyfrowania end-to-end.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Bądź na bieżąco</string>
-  <string name="onboarding_easily_up_to_date_description">Przeglądaj wiadomości w trybie wątku.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Schludna i uporządkowana</string>
-  <string name="onboarding_neat_and_tidy_description">Utwórz perfekcyjną, niestandardową skrzynkę. Pliki, etykiety i wiadomości są oznaczone kolorami.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Witaj w\nnowej aplikacji Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Aplikacja stworzona od podstaw</string>
-  <string name="onboarding_welcome_description">Dziękujemy za dołączenie do ograniczonej grupy beta testerów. Twoja opinia ma kluczowe znaczenie w stworzeniu jeszcze lepszej aplikacji Proton Mail.</string>
+  <string name="onboarding_welcome_title">Witaj w Proton Mail, gdzie prywatność jest domyślna</string>
+  <string name="onboarding_welcome_description">Ciesz się szyfrowanymi wiadomościami, mniejszą ilością spamu, ochroną przed phishingiem i elementami śledzącymi. Witaj w świecie prywatności.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Przebudowana, aby być lepszą i szybszą</string>
-  <string name="onboarding_rebuilt_headline">Nowa skrzynka odbiorcza</string>
-  <string name="onboarding_rebuilt_description">Nowa aplikacja Proton Mail jest szybsza, bardziej nowoczesna i zawiera nowe funkcje, takie jak tryb offline.</string>
+  <string name="onboarding_rebuilt_title">Koncentracja na wyciągnięcie ręki‎</string>
+  <string name="onboarding_rebuilt_description">Poświęcaj mniej czasu na porządkowanie, a więcej na pracę. Skrzynka odbiorcza została zaprojektowana tak, aby ułatwić nawigację, dzięki czemu szybciej dotrzesz do tego, co ważne.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Dziękujemy za udział!</string>
-  <string name="onboarding_feedback_headline">Twoja opinia jest kluczowa</string>
-  <string name="onboarding_feedback_description">W nadchodzących miesiącach będziemy wprowadzać nowe funkcje. Przetestuj aplikację i kliknij \"Zgłoś problem\", aby dać nam znać, jak możemy ją ulepszyć. Twój wkład jest nieoceniony!</string>
+  <string name="onboarding_feedback_title">Pozostań w kontakcie, nawet offline</string>
+  <string name="onboarding_feedback_description">Czytaj, pisz i zarządzaj wiadomościami, gdziekolwiek jesteś. Wszystko synchronizuje się automatycznie w momencie ponownego połączenia z Internetem.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Dalej</string>
-  <string name="onboarding_get_started">Rozpocznij testowanie</string>
+  <string name="onboarding_get_started">Rozpocznij</string>
   <string name="onboarding_illustration_content_description">Ilustracja wprowadzenia</string>
   <string name="onboarding_close_content_description">Zamknij</string>
-  <string name="onboarding_introducing_next_gen_app">Przedstawiamy aplikację nowej generacji!</string>
 </resources>

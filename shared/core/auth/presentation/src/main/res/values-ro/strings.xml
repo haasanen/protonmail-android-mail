@@ -33,7 +33,7 @@
   <string name="auth_login_close">Închidere</string>
   <string name="auth_login_help">Ajutor</string>
   <string name="auth_sign_in">Conectare</string>
-  <string name="auth_username">Nume de utilizator</string>
+  <string name="auth_login_username">Utilizator sau e-mail</string>
   <string name="auth_email">E-mail</string>
   <string name="auth_password">Parola</string>
   <string name="auth_username_placeholder">Utilizator sau e-mail</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Numele de utilizator nu poate fi gol.</string>
   <string name="auth_signup_email_assistive_text">Adresa de e-mail nu poate fi goală.</string>
   <string name="auth_signup_next">Înainte</string>
-  <string name="auth_signup_email_username">Utilizator sau e-mail</string>
+  <string name="auth_signup_username">Nume de utilizator</string>
   <string name="auth_signup_create_password">Creare parolă</string>
   <string name="auth_signup_password">Parola</string>
   <string name="auth_signup_repeat_password">Repetare parolă</string>
@@ -170,4 +170,5 @@
   <string name="settings_password_error_invalid_recovery">Cod de A2F incorect. Reîncercați.</string>
   <string name="settings_password_error_2fa_reused">Codul a fost deja folosit. Încercați un alt cod.</string>
   <string name="settings_password_general_error">A apărut o eroare.</string>
+  <string name="proton_error_non_processable_actions">Una sau mai multe acțiuni nu pot fi procesate. Deconectați-vă și reconectați-vă la cont.</string>
 </resources>

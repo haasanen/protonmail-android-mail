@@ -160,9 +160,9 @@
   <string name="rsvp_widget_event_ended">Udalosť <b>skončila</b></string>
   <string name="rsvp_widget_event_cancelled">Udalosť <b>zrušená</b></string>
   <string name="rsvp_widget_invite_outdated">Táto pozvánka je neaktuálna</string>
-  <string name="rsvp_widget_event_cancelled_invite_outdated">Event cancelled. This invitation is out of date.</string>
-  <string name="rsvp_widget_offline_invite_outdated">You\'re offline. The displayed information may be out of date.</string>
-  <string name="rsvp_widget_address_is_incorrect">Your address can\'t be used to reply. Please update your account information.</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Udalosť bola zrušená. Táto pozvánka je neaktuálna.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Ste offline. Zobrazené informácie môžu byť neaktuálne.</string>
+  <string name="rsvp_widget_address_is_incorrect">Vašu adresu nie je možné použiť na odpoveď. Aktualizujte si informácie o svojom účte.</string>
   <string name="rsvp_widget_user_is_organizer">Ste organizátor.</string>
   <string name="rsvp_widget_event_does_not_exist">Táto udalosť nie je vo vašom kalendári, takže na ňu nemôžete odpovedať.</string>
   <string name="rsvp_widget_today">Dnes</string>

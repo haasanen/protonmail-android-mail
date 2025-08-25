@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Privacidade para todos</string>
-  <string name="onboarding_privacy_for_all_description">Convide outras pessoas para o Proton Mail para que todos possam se beneficiar da criptografia de ponta a ponta.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Facilmente atualizado</string>
-  <string name="onboarding_easily_up_to_date_description">Navegue pelas mensagens encadeadas no modo de conversa.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Limpo e arrumado</string>
-  <string name="onboarding_neat_and_tidy_description">Mensagens de arquivos, etiquetas e códigos de cores para criar sua caixa de entrada personalizada e perfeita.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Boas-vindas ao\nnovo aplicativo do Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Transformado completamente</string>
-  <string name="onboarding_welcome_description">Obrigado por participar deste grupo limitado de beta testers para a versão beta. Seu feedback é fundamental para nos ajudar a desenvolver um Proton Mail ainda melhor pronto para o lançamento público.</string>
+  <string name="onboarding_welcome_title">Bem-vindo(a) ao Proton Mail, onde a privacidade é padrão</string>
+  <string name="onboarding_welcome_description">Desfrute de mensagens criptografadas, menos spam, proteção contra phishing e bloqueio de rastreadores. Bem-vindo à privacidade.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Completamente redesenhado para mais rendimento e velocidade</string>
-  <string name="onboarding_rebuilt_headline">Nova caixa de entrada revelada</string>
-  <string name="onboarding_rebuilt_description">O novo Proton Mail está mais rápido, com um desenho vibrante e recursos muito solicitados, como o modo off-line.</string>
+  <string name="onboarding_rebuilt_title">Foco ao seu alcance</string>
+  <string name="onboarding_rebuilt_description">Gaste menos tempo organizando e mais tempo fazendo. Sua caixa de entrada é projetada para ser mais fácil de navegar, para que você possa chegar ao que é importante mais rápido.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Obrigado pela sua participação!</string>
-  <string name="onboarding_feedback_headline">Seu feedback é essencial</string>
-  <string name="onboarding_feedback_description">Vamos lançar novos recursos nos próximos meses. Teste o aplicativo e toque em «Relatar um problema» para nos dizer como podemos continuar melhorando. Sua contribuição é inestimável!</string>
+  <string name="onboarding_feedback_title">Fique conectado, mesmo off-line</string>
+  <string name="onboarding_feedback_description">Ler, escrever e gerenciar e-mails onde quer que você esteja. Tudo sincroniza automaticamente no momento em que você volta a ficar on-line.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Próximo</string>
-  <string name="onboarding_get_started">Começar o teste</string>
+  <string name="onboarding_get_started">Começar</string>
   <string name="onboarding_illustration_content_description">Ilustração de integração</string>
   <string name="onboarding_close_content_description">Fechar</string>
-  <string name="onboarding_introducing_next_gen_app">Conheça nosso aplicativo da nova geração!</string>
 </resources>

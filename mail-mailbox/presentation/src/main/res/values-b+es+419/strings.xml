@@ -85,12 +85,12 @@
   <string name="mailbox_search_no_results_title">Sin coincidencias</string>
   <string name="mailbox_search_no_results_explanation">Puede actualizar la consulta de búsqueda o borrarla.</string>
   <plurals name="mailbox_action_move_conversation">
-    <item quantity="one">Conversation moved to %s</item>
-    <item quantity="other">Conversations moved to %s</item>
+    <item quantity="one">Conversación movida a %s</item>
+    <item quantity="other">Conversaciones movidas a %s</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
-    <item quantity="one">Message moved to %s</item>
-    <item quantity="other">Messages moved to %s</item>
+    <item quantity="one">Mensaje movido a %s</item>
+    <item quantity="other">Mensajes movidos a %s</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">Vaciar papelera</string>
   <string name="mailbox_action_button_clear_spam">Vaciar spam</string>

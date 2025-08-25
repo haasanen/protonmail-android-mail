@@ -35,17 +35,17 @@
   <string name="upselling_contact_groups_plus_description_override">Verzend gemakkelijk groeps-e-mails. Profiteer hiervan en van meer met Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Groepeer uw contacten</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">Creëer alles wat u nodig hebt om georganiseerd te blijven. Krijg dit en meer met Mail Plus. </string>
   <string name="upselling_labels_plus_title">Heeft u meer labels of mappen nodig?</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">Creëer alles wat u nodig hebt om georganiseerd te blijven. Krijg dit en meer met Mail Plus. </string>
   <string name="upselling_folders_plus_title">Heeft u meer labels of mappen nodig?</string>
   <!-- Upselling: Mobile Signature -->
-  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <string name="upselling_mobile_signature_plus_description_override">Maak uw mobiele handtekening persoonlijk. Geniet hiervan en van meer met Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Personaliseer uw handtekening</string>
   <!-- Upselling: Auto Delete -->
   <string name="upselling_auto_delete_plus_description_override">Verwijdert spam en inhoud prullenbak na 30 dagen. Krijg dit en meer met Mail Plus.</string>
-  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <string name="upselling_auto_delete_plus_title">Geautomatiseerde verwijdering uit Prullenbak</string>
   <!-- Upselling: Schedule Send -->
   <string name="upselling_schedule_send_plus_description_override">Pas aan wanneer een e-mail wordt verzonden. Profiteer hiervan en van meer met Mail Plus.</string>
   <string name="upselling_schedule_send_plus_title">Nu inplannen, later verzenden</string>
@@ -53,8 +53,8 @@
   <string name="upselling_snooze_plus_description_override">Snooze het — en laat het later bezorgen. Profiteer hiervan en van meer met Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Slechte tijd voor deze e-mail?</string>
   <!-- Upselling - Misc buttons -->
-  <string name="upselling_button_hint">Upgrade for full flexibility</string>
-  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
+  <string name="upselling_button_hint">Upgraden voor volledige flexibiliteit</string>
+  <string name="upselling_upgrade_plan_generic">U hebt een betaald Proton Mail-abonnement nodig om toegang te krijgen tot deze functie.</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB opslagruimte</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB opslagruimte, 10 e-mailadressen</string>
@@ -98,16 +98,16 @@
   <string name="upselling_comparison_table_unlimited_folders_labels">Onbeperkte mappen en labels</string>
   <string name="upselling_comparison_table_priority_support">Klantondersteuning met hoge prioriteit</string>
   <!-- Rectangular plan buttons -->
-  <string name="upselling_select_plan">Choose your plan</string>
-  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan">Kies uw abonnement</string>
+  <string name="upselling_select_plan_year">12 maanden</string>
   <string name="upselling_select_plan_month">1 maand</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
+  <string name="upselling_auto_renew_text">Auto-vernieuwing tegen dezelfde prijs en voorwaarden, tenzij geannuleerd</string>
   <string name="upselling_auto_renew_text_promo">Welkomstaanbieding. Automatisch verlengen op %s%s tenzij u annuleert</string>
   <string name="upselling_auto_renew_text_promo_short">Welkomstaanbieding, verlengt automatisch op %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Automatisch verlengen op %s%s tenzij u annuleert</string>
-  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
-  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_social_proof_reviews">2k+ RECENSIES</string>
+  <string name="upselling_description_social_proof">Upgrade naar de ervaring waar miljoenen abonnees enthousiast over zijn.</string>
   <string name="upselling_discount_tag">BESPAAR %s%%</string>
   <string name="upselling_month">/maand</string>
   <string name="upselling_year">/jaar</string>

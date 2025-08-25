@@ -87,7 +87,7 @@
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Žiadne dôveryhodné kľúče: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adresa neexistuje: %s</string>
   <string name="set_message_password_title">Nastaviť heslo</string>
-  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
+  <string name="set_message_password_info_message">Nastavte heslo na zašifrovanie tejto správy pre príjemcov, ktorí nepoužívajú Proton Mail.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Zistiť viac</a></string>
   <string name="set_message_password_label">Heslo správy</string>
   <string name="set_message_password_label_hint">Nápoveda k heslu (voliteľné)</string>
@@ -139,5 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Obnovenie tela po zmene odosielateľa zlyhalo. Podpis môže byť neaktuálny.</string>
   <string name="composer_loading_attachments_error">Načítanie príloh zlyhalo</string>
   <string name="composer_attachment_upload_error_retry">Niektoré prílohy sa nepodarilo nahrať. Skúste to prosím znova, prosím.</string>
-  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
+  <string name="composer_external_encryption_unexpected_error">Neočakávaná chyba %s. Skúste to znova.</string>
 </resources>

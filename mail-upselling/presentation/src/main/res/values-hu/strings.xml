@@ -21,40 +21,40 @@
   <string name="upselling_button_item_content_description">Verzió frissítés gomb</string>
   <string name="upselling_close_button_content_description">Bezárás gomb</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_description_override">Több tárhely és prémium funkciók feloldása.</string>
   <string name="upselling_mailbox_plus_title">Mail Plus előfizetés</string>
   <!-- Upselling: Social Proof -->
-  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <string name="upselling_mailbox_plus_title_social_proof">Mail Plus indítása</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Hozza ki a legtöbbet a Mailből ezzel a korlátozott idejű ajánlattal</string>
   <string name="upselling_mailbox_plus_promo_title">Próbálja ki a Mail Plus szolgáltatást %s áron</string>
-  <string name="upselling_mailbox_plus_promo_cta">Get 1 month for %s</string>
-  <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
-  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
+  <string name="upselling_mailbox_plus_promo_cta">1 hónap %s áron</string>
+  <string name="upselling_mailbox_plus_promo_skip">Ajánlat kihagyása</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s az 1. hónapban, majd havonta %s</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">Küldjön csoportos e-maileket könnyedén. Élvezze ezt és még sok mást a Mail Plus csomaggal.</string>
   <string name="upselling_contact_groups_plus_title">Csoportosítsa a kapcsolatait</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">Hozzon létre mindent, amire a rendszerezéshez szüksége van. Szerezze meg ezt és még sok mást a Mail Plus csomaggal. </string>
   <string name="upselling_labels_plus_title">Több címkére vagy mappára van szüksége?</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">Hozzon létre mindent, amire a rendszerezéshez szüksége van. Szerezze meg ezt és még sok mást a Mail Plus csomaggal. </string>
   <string name="upselling_folders_plus_title">Több címkére vagy mappára van szüksége?</string>
   <!-- Upselling: Mobile Signature -->
-  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <string name="upselling_mobile_signature_plus_description_override">Tegye egyedivé a mobilaláírását. Élvezze ezt és még sok mást a Mail Plus csomaggal.</string>
+  <string name="upselling_mobile_signature_plus_title">Aláírás személyre szabása</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
-  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <string name="upselling_auto_delete_plus_description_override">30 nap után törli a levélszemetet és a lomtár tartalmát. Szerezze meg ezt és még sok mást a Mail Plus csomaggal.</string>
+  <string name="upselling_auto_delete_plus_title">Automatikus lomtárürítés</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <string name="upselling_schedule_send_plus_description_override">Szabja testre, hogy mikor küldjön el egy e-mailt. Élvezze ezt és még sok mást a Mail Plus csomaggal.</string>
+  <string name="upselling_schedule_send_plus_title">Ütemezze most, küldje el később</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <string name="upselling_snooze_plus_description_override">Halassza el – és kézbesíttesse később. Élvezze ezt és még sok mást a Mail Plus csomaggal.</string>
+  <string name="upselling_snooze_plus_title">Nem jókor jött ez az e-mail?</string>
   <!-- Upselling - Misc buttons -->
-  <string name="upselling_button_hint">Upgrade for full flexibility</string>
-  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
+  <string name="upselling_button_hint">Frissítés a teljes rugalmasságért</string>
+  <string name="upselling_upgrade_plan_generic">A funkció eléréséhez fizetős Proton Mail-előfizetésre van szüksége</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB tárhely</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB tárhely, 10 e-mail cím</string>
@@ -98,16 +98,16 @@
   <string name="upselling_comparison_table_unlimited_folders_labels">Korlátlan mappák és címkék</string>
   <string name="upselling_comparison_table_priority_support">Elsőbbségi felhasználói támogatás</string>
   <!-- Rectangular plan buttons -->
-  <string name="upselling_select_plan">Choose your plan</string>
-  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan">Válassza ki a csomagját</string>
+  <string name="upselling_select_plan_year">12 hónap</string>
   <string name="upselling_select_plan_month">1 hónap</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
-  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
-  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_auto_renew_text">Lemondás nélkül automatikusan megújul ugyanazon az áron és feltételek mellett</string>
+  <string name="upselling_auto_renew_text_promo">Üdvözlő ajánlat. Automatikusan megújul %s%s áron, hacsak nem mondja le</string>
+  <string name="upselling_auto_renew_text_promo_short">Üdvözlő ajánlat. Automatikusan megújul %s%s áron.</string>
+  <string name="upselling_auto_renew_text_standard">Automatikusan megújul %s%s áron, hacsak nem mondja le</string>
+  <string name="upselling_social_proof_reviews">2000+ ÉRTÉKELÉS</string>
+  <string name="upselling_description_social_proof">Frissítsen arra az élményre, amelyért előfizetők milliói rajonganak.</string>
   <string name="upselling_discount_tag">%s%% kedvezmény</string>
   <string name="upselling_month">/hó</string>
   <string name="upselling_year">/év</string>

@@ -42,4 +42,5 @@
   <string name="payment_subscription_managed_by_google">Uw abonnement wordt beheerd door Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Uw abonnement wordt beheerd door Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Uw abonnement kan niet beheerd worden in de mobiele app.</string>
+  <string name="proton_error_non_processable_actions">Eén of meer acties kunnen niet worden verwerkt. Meld u alstublieft af en meld u opnieuw aan bij uw account.</string>
 </resources>

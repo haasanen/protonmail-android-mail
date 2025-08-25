@@ -86,8 +86,8 @@
   <string name="action_sender_emails_content_description">Aktion für zukünftige E-Mails von diesem Absender festlegen</string>
   <string name="action_save_attachments_content_description">Anhänge speichern</string>
   <string name="action_more_content_description">Mehr</string>
-  <string name="action_snooze_content_description">Zurückstellen</string>
-  <string name="action_snooze_description">Zurückstellen</string>
+  <string name="action_snooze_content_description">Später lesen</string>
+  <string name="action_snooze_description">Später lesen</string>
   <string name="common_error_loading_actions">Aktionen konnten nicht geladen werden</string>
   <string name="yesterday">Gestern</string>
   <!-- notification channels -->

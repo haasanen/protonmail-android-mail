@@ -18,41 +18,41 @@
   -->
 <resources>
   <!-- Snooze Bottom Sheet -->
-  <string name="snooze_sheet_option_next_week">Next week</string>
-  <string name="snooze_sheet_option_later_this_week">Later this week</string>
-  <string name="snooze_sheet_option_tomorrow">Tomorrow</string>
-  <string name="snooze_sheet_option_this_weekend">This weekend</string>
-  <string name="snooze_sheet_option_custom">Custom</string>
-  <string name="snooze_sheet_option_custom_detail">Pick date and time</string>
-  <string name="snooze_sheet_option_upsell_detail">Paid feature</string>
-  <string name="snooze_sheet_snooze_title">Snooze until</string>
-  <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
-  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
-  <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
-  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
-  <string name="snooze_sheet_success">Snoozed until %s</string>
-  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
-  <string name="snooze_picker_content_description">Snooze message</string>
-  <string name="snooze_picker_button_title">Save</string>
-  <string name="snooze_custom_upsell_title">Custom date and time</string>
-  <string name="snooze_custom_upsell_title_short">Custom</string>
-  <string name="snooze_custom_upsell_hint_short">Upgrade to access</string>
+  <string name="snooze_sheet_option_next_week">Следующая неделя</string>
+  <string name="snooze_sheet_option_later_this_week">Позже на этой неделе</string>
+  <string name="snooze_sheet_option_tomorrow">Завтра</string>
+  <string name="snooze_sheet_option_this_weekend">Эти выходные</string>
+  <string name="snooze_sheet_option_custom">Пользовательский</string>
+  <string name="snooze_sheet_option_custom_detail">Выберите дату и время</string>
+  <string name="snooze_sheet_option_upsell_detail">Платная функция</string>
+  <string name="snooze_sheet_snooze_title">Отложить до</string>
+  <string name="snooze_sheet_option_unsnooze">Не откладывать</string>
+  <string name="snooze_sheet_error_unable_to_snooze">К сожалению, при попытке отложить эту цепочку писем произошла неизвестная ошибка</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">При возвращении цепочки писем из отложенных произошла неизвестная ошибка</string>
+  <string name="snooze_sheet_error_in_the_past">Время для откладывания уже прошло</string>
+  <string name="snooze_sheet_success">Отложено до %s</string>
+  <string name="unsnooze_sheet_success">Цепочка писем больше не отложена</string>
+  <string name="snooze_picker_content_description">Отложить сообщение</string>
+  <string name="snooze_picker_button_title">Сохранить</string>
+  <string name="snooze_custom_upsell_title">Пользовательские дата и время</string>
+  <string name="snooze_custom_upsell_title_short">Пользовательский</string>
+  <string name="snooze_custom_upsell_hint_short">Улучшите, чтобы получить доступ</string>
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="few">Snoozed for %d days</item>
-    <item quantity="many">Snoozed for %d days</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">Отложено до завтра</item>
+    <item quantity="few">Отложено на %d дня</item>
+    <item quantity="many">Отложено на %d дней</item>
+    <item quantity="other">Отложено на %d дней</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="few">Snoozed for %d hours</item>
-    <item quantity="many">Snoozed for %d hours</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">Отложено на %d час</item>
+    <item quantity="few">Отложено на %d часа</item>
+    <item quantity="many">Отложено на %d часов</item>
+    <item quantity="other">Отложено на %d часов</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="few">Snoozed for %d minutes</item>
-    <item quantity="many">Snoozed for %d minutes</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">Отложено на %d минуту</item>
+    <item quantity="few">Отложено на %d минуты</item>
+    <item quantity="many">Отложено на %d минут</item>
+    <item quantity="other">Отложено на %d минут</item>
   </plurals>
 </resources>

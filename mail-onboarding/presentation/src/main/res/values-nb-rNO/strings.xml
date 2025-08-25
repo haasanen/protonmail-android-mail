@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Personvern for alle</string>
-  <string name="onboarding_privacy_for_all_description">Inviter andre til Proton Mail, slik at dere alle kan dra nytte av ende-til-ende kryptering.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Lett oppdatert</string>
-  <string name="onboarding_easily_up_to_date_description">Lek deg gjennom trådmeldinger i samtalemodus.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Pent og ryddig</string>
-  <string name="onboarding_neat_and_tidy_description">Fil-, etikett- og fargekodemeldinger for å opprette en perfekt, tilpasset innboks.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Velkommen til den\nnye Proton Mail-appen!</string>
-  <string name="onboarding_welcome_headline">Forvandlet fra grunnen av</string>
-  <string name="onboarding_welcome_description">Takk for at du deltar i denne begrensede gruppen av tidlige betatestere. Din tilbakemelding er kritisk for å hjelpe oss med å bygge en enda bedre Proton Mail, klar for offentlig utgivelse.</string>
+  <string name="onboarding_welcome_title">Velkommen til Proton Mail, hvor personvern er standard</string>
+  <string name="onboarding_welcome_description">Kos deg over krypterte meldinger, færre søppelpost, beskyttelse mot nettfisking og blokkerte sporere. Velkommen til personvern.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Gjenoppbygd til å bli bedre og raskere</string>
-  <string name="onboarding_rebuilt_headline">Ny innboks utpakket</string>
-  <string name="onboarding_rebuilt_description">Den nye Proton Mail er raskere med en levende design og svært etterspurte funksjoner, som frakoblet modus.</string>
+  <string name="onboarding_rebuilt_title">Fokus for hånden</string>
+  <string name="onboarding_rebuilt_description">Bruk mindre tid på sortering og mer tid på å gjøre ting. Innboksen din er utformet for å være enklere å navigere i, slik at du kan komme raskere til det som er viktig.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Takk for deltakelsen!</string>
-  <string name="onboarding_feedback_headline">Din tilbakemelding er viktig</string>
-  <string name="onboarding_feedback_description">Vi ruller ut nye funksjoner i månedene som kommer. Vennligst test appen og trykk på \"Rapporter et problem\" for å fortelle oss hvordan vi kan fortsette å forbedre oss. Innspillet ditt er uvurderlig!</string>
+  <string name="onboarding_feedback_title">Hold deg tilkoblet, selv uten nett</string>
+  <string name="onboarding_feedback_description">Les, skriv og administrer e-poster uansett hvor du er. Alt synkroniseres automatisk i det øyeblikket du er tilbake på nett.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Neste</string>
-  <string name="onboarding_get_started">Begynn å teste</string>
+  <string name="onboarding_get_started">Kom i gang</string>
   <string name="onboarding_illustration_content_description">Illustrasjon om introduksjon</string>
   <string name="onboarding_close_content_description">Lukk</string>
-  <string name="onboarding_introducing_next_gen_app">Vi introduserer vår neste generasjons app!</string>
 </resources>

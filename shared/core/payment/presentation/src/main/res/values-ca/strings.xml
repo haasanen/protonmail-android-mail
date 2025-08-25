@@ -42,4 +42,5 @@
   <string name="payment_subscription_managed_by_google">La subscripció és gestionada pel Google Play.</string>
   <string name="payment_subscription_managed_by_apple">La subscripció és gestionada per l\'Apple Store.</string>
   <string name="payment_subscription_managed_by_other">La subscripció no es pot gestionar des de l\'aplicació mòbil.</string>
+  <string name="proton_error_non_processable_actions">Una o més accions no s\'han pogut processar. Tanqueu la sessió i torneu-la a iniciar al vostre compte.</string>
 </resources>

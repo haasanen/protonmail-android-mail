@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Soukromí pro všechny</string>
-  <string name="onboarding_privacy_for_all_description">Pozvěte ostatní do Proton Mail, abyste všichni mohli využívat výhod koncového šifrování.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Jednoduše aktuální</string>
-  <string name="onboarding_easily_up_to_date_description">Snadné procházení zpráv ve vláknech v režimu konverzace.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Elegantní a úhledný</string>
-  <string name="onboarding_neat_and_tidy_description">Třiďte soubory, označte štítky a barevnými kódy pro perfektní schránku na míru.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Vítejte v\nnové aplikaci Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Přepracována od základů</string>
-  <string name="onboarding_welcome_description">Děkujeme, že jste se připojili k vyhrazené skupině prvních beta testerů. Vaše zpětná vazba nám pomůže vytvořit ještě lepší Proton Mail připravený k vydání pro veřejnost.</string>
+  <string name="onboarding_welcome_title">Vítejte v Proton Mail, kde soukromí je základem</string>
+  <string name="onboarding_welcome_description">Využívejte šifrované zprávy, méně spamu, ochranu před phishingem a blokované sledovací prvky. Vítejte v soukromí.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Přepracována, aby byla lepší a rychlejší</string>
-  <string name="onboarding_rebuilt_headline">Představena nová doručená pošta</string>
-  <string name="onboarding_rebuilt_description">Nový Proton Mail je rychlejší, má líbivý design a velmi žádané funkce, jako je offline režim.</string>
+  <string name="onboarding_rebuilt_title">Soustředění na dosah ruky</string>
+  <string name="onboarding_rebuilt_description">Věnujte více času práci a méně třídění. Vaše doručená pošta je navržena tak, aby se v ní snáze orientovalo, takže se rychleji dostanete k tomu, co je důležité.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Děkujeme vám za účast!</string>
-  <string name="onboarding_feedback_headline">Vaše zpětná vazba je klíčová</string>
-  <string name="onboarding_feedback_description">V nadcházejících měsících budeme zavádět nové funkce. Otestujte prosím aplikaci a klepněte na \"Nahlásit problém\", abyste nám dali vědět, jak můžeme aplikaci dále vylepšovat. Vaše zpětná vazba je neocenitelná!</string>
+  <string name="onboarding_feedback_title">Zůstaňte ve spojení, dokonce i když jste offline</string>
+  <string name="onboarding_feedback_description">Čtěte, pište a spravujte svoje emaily odkudkoliv. Vše se automaticky synchronizuje, jakmile jste znovu online.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Další</string>
-  <string name="onboarding_get_started">Začít testovat</string>
+  <string name="onboarding_get_started">Začínáme</string>
   <string name="onboarding_illustration_content_description">Znázornění registrace</string>
   <string name="onboarding_close_content_description">Zavřít</string>
-  <string name="onboarding_introducing_next_gen_app">Představujeme naši aplikaci nové generace!</string>
 </resources>

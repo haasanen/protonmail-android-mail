@@ -33,7 +33,7 @@
   <string name="auth_login_close">Zavřít</string>
   <string name="auth_login_help">Nápověda</string>
   <string name="auth_sign_in">Přihlásit se</string>
-  <string name="auth_username">Uživatelské jméno</string>
+  <string name="auth_login_username">Uživatelské jméno nebo e-mail</string>
   <string name="auth_email">E-mail</string>
   <string name="auth_password">Heslo</string>
   <string name="auth_username_placeholder">Uživatelské jméno nebo e-mail</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Uživatelské jméno nesmí být prázdné.</string>
   <string name="auth_signup_email_assistive_text">E-mail nesmí být prázdný.</string>
   <string name="auth_signup_next">Další</string>
-  <string name="auth_signup_email_username">Uživatelské jméno nebo e-mail</string>
+  <string name="auth_signup_username">Uživatelské jméno</string>
   <string name="auth_signup_create_password">Vytvořte si heslo</string>
   <string name="auth_signup_password">Heslo</string>
   <string name="auth_signup_repeat_password">Zopakovat heslo</string>
@@ -173,4 +173,5 @@
   <string name="settings_password_error_invalid_recovery">Nesprávný kód dvoufázového ověření. Zkuste to prosím znovu.</string>
   <string name="settings_password_error_2fa_reused">Kód již byl použit. Zkuste prosím zadat jiný kód.</string>
   <string name="settings_password_general_error">Došlo k chybě.</string>
+  <string name="proton_error_non_processable_actions">Nelze zpracovat jednu nebo více akcí. Prosím odhlašte se a znovu se přihlašte do vašeho účtu.</string>
 </resources>

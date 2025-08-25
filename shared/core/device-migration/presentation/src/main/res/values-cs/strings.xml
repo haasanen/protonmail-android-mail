@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Vygenerovat QR kód</string>
   <string name="target_sign_in_error_back_to_signin">Zpět k přihlášení</string>
   <string name="target_sign_in_learn_more">Více informací</string>
+  <string name="proton_error_non_processable_actions">Nelze zpracovat jednu nebo více akcí. Prosím odhlašte se a znovu se přihlašte do vašeho účtu.</string>
 </resources>

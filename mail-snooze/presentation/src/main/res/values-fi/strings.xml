@@ -22,31 +22,31 @@
   <string name="snooze_sheet_option_later_this_week">Myöhemmin tällä viikolla</string>
   <string name="snooze_sheet_option_tomorrow">Huomenna</string>
   <string name="snooze_sheet_option_this_weekend">Tänä viikonloppuna</string>
-  <string name="snooze_sheet_option_custom">Custom</string>
+  <string name="snooze_sheet_option_custom">Mukautettu</string>
   <string name="snooze_sheet_option_custom_detail">Valitse päivämäärä ja aika</string>
   <string name="snooze_sheet_option_upsell_detail">Maksullinen ominaisuus</string>
-  <string name="snooze_sheet_snooze_title">Snooze until</string>
-  <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
-  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
-  <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
-  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
-  <string name="snooze_sheet_success">Snoozed until %s</string>
-  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
-  <string name="snooze_picker_content_description">Snooze message</string>
-  <string name="snooze_picker_button_title">Save</string>
-  <string name="snooze_custom_upsell_title">Custom date and time</string>
-  <string name="snooze_custom_upsell_title_short">Custom</string>
-  <string name="snooze_custom_upsell_hint_short">Upgrade to access</string>
+  <string name="snooze_sheet_snooze_title">Torkuta</string>
+  <string name="snooze_sheet_option_unsnooze">Peru torkutus</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Anteeksi, tuntematon virhe ilmeni tätä keskustelua torkuttaessa.</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Ilmeni tuntematon virhe keskustelun torkkutilasta poistettaessa.</string>
+  <string name="snooze_sheet_error_in_the_past">Torkkuaika on menneisyydessä</string>
+  <string name="snooze_sheet_success">Torkutettu: %s</string>
+  <string name="unsnooze_sheet_success">Keskustelun torkutus peruttiin</string>
+  <string name="snooze_picker_content_description">Torkuta viesti</string>
+  <string name="snooze_picker_button_title">Tallenna</string>
+  <string name="snooze_custom_upsell_title">Mukautettu päivämäärä ja aika</string>
+  <string name="snooze_custom_upsell_title_short">Mukautettu</string>
+  <string name="snooze_custom_upsell_hint_short">Päivitä päästäksesi käyttämään</string>
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">Torkutettu huomiseen</item>
+    <item quantity="other">Torkutettu %d päiväksi</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">Torkutettu %d tunniksi</item>
+    <item quantity="other">Torkutettu %d tunniksi</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">Torkutettu %d minuutin ajaksi</item>
+    <item quantity="other">Torkutettu %d minuutin ajaksi</item>
   </plurals>
 </resources>

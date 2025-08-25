@@ -33,8 +33,9 @@
   <string name="mail_settings_spam_and_custom_filters">Спам и фильтры</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Автоматические действия и сортировка</string>
   <string name="mail_settings_privacy_and_security">Конфиденциальность и безопасность</string>
-  <string name="mail_settings_fido_keys">Security keys</string>
-  <string name="mail_settings_change_password">Password management</string>
+  <string name="mail_settings_fido_keys">Ключи безопасности</string>
+  <string name="mail_settings_change_password">Управление паролями</string>
+  <string name="mail_settings_storage_quota">%1$d%% из %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Защита от отслеживания электронной почты</string>
   <string name="mail_settings_app_hint">Настройки мобильного приложения</string>
   <string name="mail_settings_theme">Тема</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Перейти к настройкам системных оповещений</string>
   <string name="mail_settings_notifications_update_error">Ошибка сохранения настроек</string>
   <string name="mail_settings_notifications_loading_error">Ошибка загрузки настроек</string>
+  <string name="notifications_on">Вкл.</string>
+  <string name="notifications_off">Выкл.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Произошла ошибка. Попробуйте ещё раз.</string>
 </resources>

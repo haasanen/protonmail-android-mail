@@ -35,6 +35,7 @@
   <string name="mail_settings_privacy_and_security">Datenschutz und Sicherheit</string>
   <string name="mail_settings_fido_keys">Sicherheitsschlüssel</string>
   <string name="mail_settings_change_password">Passwortverwaltung</string>
+  <string name="mail_settings_storage_quota">%1$d%% von %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Schutz vor E-Mail-Trackern</string>
   <string name="mail_settings_app_hint">Anpassung der mobilen App</string>
   <string name="mail_settings_theme">Farbschema</string>
@@ -59,10 +60,10 @@
   <string name="mail_settings_app_customization_swipe_to_next_email">Zur nächsten E-Mail wischen</string>
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Schneller Wechsel zur nächsten oder vorherigen Nachricht im Posteingang.</string>
   <string name="mail_settings_app_customization_swipe_action">Wischgeste</string>
-  <string name="mail_settings_app_customization_swipe_action_hint">Lege Schnellaktionen fest, wie zum Beispiel löschen oder archivieren, wenn du nach links oder rechts wischst.</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Lege Schnellaktionen fest, wie zum Beispiel Löschen oder Archivieren, wenn du nach links oder rechts wischst.</string>
   <string name="mail_settings_app_customization_customize_toolbar">Symbolleiste anpassen</string>
   <string name="mail_settings_app_customization_alternative_routing">Alternatives Routing</string>
-  <string name="mail_settings_app_customization_alternative_routing_hint">Umgehung von Firewalls oder Netzwerkproblemen, falls Proton-Seiten geblockt werden.</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Umgehung von Firewalls oder Netzwerkproblemen, falls Proton-Websites geblockt werden.</string>
   <string name="mail_settings_app_customization_view_application_logs">Anwendungsprotokolle anzeigen</string>
   <string name="mail_settings_app_customization_mail_experience_header">E-Mail-Erfahrung</string>
   <string name="mail_settings_app_customization_advanced_header">Erweitert</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Gehe zu den System Benachrichtigungseinstellungen</string>
   <string name="mail_settings_notifications_update_error">Fehler beim Aktualisieren der Einstellungen.</string>
   <string name="mail_settings_notifications_loading_error">Fehler beim Laden der Einstellungen.</string>
+  <string name="notifications_on">Ein</string>
+  <string name="notifications_off">Aus</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Es ist ein Fehler aufgetreten. Versuche es erneut.</string>
 </resources>

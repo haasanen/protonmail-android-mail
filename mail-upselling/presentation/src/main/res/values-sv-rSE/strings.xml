@@ -30,9 +30,9 @@
   <string name="upselling_mailbox_plus_promo_title">Prova Mail Plus för %s</string>
   <string name="upselling_mailbox_plus_promo_cta">Få 1 månad för %s</string>
   <string name="upselling_mailbox_plus_promo_skip">Hoppa över erbjudande</string>
-  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s för den första månaden, sedan %s per månad</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">Skicka enkelt e-post till grupper. Njut av detta och mer med Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Gruppera dina kontakter</string>
   <!-- Upselling: Labels -->
   <string name="upselling_labels_plus_description_override">Skapa allt du behöver för att hålla ordning. Skaffa detta och mer med Mail Plus. </string>
@@ -44,7 +44,7 @@
   <string name="upselling_mobile_signature_plus_description_override">Gör din mobilsignatur till din egen. Njut av detta och mer med Mail Plus.</string>
   <string name="upselling_mobile_signature_plus_title">Personifiera din signatur</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_description_override">Tar bort skräppost och meddelanden i papperskorgen efter 30 dagar. Få detta och mer med Mail Plus.</string>
   <string name="upselling_auto_delete_plus_title">Automatisk borttagning av papperskorg</string>
   <!-- Upselling: Schedule Send -->
   <string name="upselling_schedule_send_plus_description_override">Anpassa när ett e-postmeddelande ska skickas. Njut av detta och mer med Mail Plus.</string>
@@ -102,12 +102,12 @@
   <string name="upselling_select_plan_year">12 månader</string>
   <string name="upselling_select_plan_month">1 månad</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text">Autoförnyas med samma pris och villkor tills uppsägning</string>
+  <string name="upselling_auto_renew_text_promo">Välkomsterbjudande. Förnyas automatiskt till %s%s om det inte avbryts.</string>
   <string name="upselling_auto_renew_text_promo_short">Välkomsterbjudande. Förnyas automatiskt med %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_standard">Förnyas automatiskt till %s%s om det inte avbryts.</string>
   <string name="upselling_social_proof_reviews">2 000+ RECENSIONER</string>
-  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_description_social_proof">Uppgradera till upplevelsen som miljoner prenumeranter hyllar.</string>
   <string name="upselling_discount_tag">SPARA %s %%</string>
   <string name="upselling_month">/månad</string>
   <string name="upselling_year">/år</string>

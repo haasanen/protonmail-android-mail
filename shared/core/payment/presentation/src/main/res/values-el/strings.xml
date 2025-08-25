@@ -42,4 +42,5 @@
   <string name="payment_subscription_managed_by_google">Η συνδρομή σας διαχειρίζεται από το Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Η συνδρομή σας διαχειρίζεται από το Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Δεν είναι δυνατή η διαχείριση της συνδρομής σας εντός της εφαρμογής για κινητές συσκευές.</string>
+  <string name="proton_error_non_processable_actions">Μία ή περισσότερες ενέργειες δεν μπορούν να επεξεργαστούν. Παρακαλούμε αποσυνδεθείτε και συνδεθείτε ξανά στον λογαριασμό σας.</string>
 </resources>

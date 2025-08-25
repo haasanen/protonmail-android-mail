@@ -18,35 +18,35 @@
   -->
 <resources>
   <!-- Snooze Bottom Sheet -->
-  <string name="snooze_sheet_option_next_week">Next week</string>
-  <string name="snooze_sheet_option_later_this_week">Later this week</string>
-  <string name="snooze_sheet_option_tomorrow">Tomorrow</string>
-  <string name="snooze_sheet_option_this_weekend">This weekend</string>
-  <string name="snooze_sheet_option_custom">Custom</string>
-  <string name="snooze_sheet_option_custom_detail">Pick date and time</string>
-  <string name="snooze_sheet_option_upsell_detail">Paid feature</string>
-  <string name="snooze_sheet_snooze_title">Snooze until</string>
-  <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
-  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
-  <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
-  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
-  <string name="snooze_sheet_success">Snoozed until %s</string>
-  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
-  <string name="snooze_picker_content_description">Snooze message</string>
-  <string name="snooze_picker_button_title">Save</string>
-  <string name="snooze_custom_upsell_title">Custom date and time</string>
-  <string name="snooze_custom_upsell_title_short">Custom</string>
-  <string name="snooze_custom_upsell_hint_short">Upgrade to access</string>
+  <string name="snooze_sheet_option_next_week">Következő hét</string>
+  <string name="snooze_sheet_option_later_this_week">Később ezen a héten</string>
+  <string name="snooze_sheet_option_tomorrow">Holnap</string>
+  <string name="snooze_sheet_option_this_weekend">Ezen a hétvégén</string>
+  <string name="snooze_sheet_option_custom">Egyéni</string>
+  <string name="snooze_sheet_option_custom_detail">Válasszon dátumot és időpontot</string>
+  <string name="snooze_sheet_option_upsell_detail">Fizetős szolgáltatás</string>
+  <string name="snooze_sheet_snooze_title">Halasztás eddig</string>
+  <string name="snooze_sheet_option_unsnooze">Szüneteltetés megszüntetése</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Ismeretlen hiba történt a beszélgetés halasztásakor</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Ismeretlen hiba történt a beszélgetés halasztásának visszavonásakor</string>
+  <string name="snooze_sheet_error_in_the_past">A halasztás időpontja a múltban van</string>
+  <string name="snooze_sheet_success">Halasztva eddig: %s</string>
+  <string name="unsnooze_sheet_success">A beszélgetés halasztása megszűnt</string>
+  <string name="snooze_picker_content_description">Üzenet némítása</string>
+  <string name="snooze_picker_button_title">Mentés</string>
+  <string name="snooze_custom_upsell_title">Egyéni dátum és idő</string>
+  <string name="snooze_custom_upsell_title_short">Egyéni</string>
+  <string name="snooze_custom_upsell_hint_short">Frissítsen a hozzáféréshez</string>
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">Holnapig halasztva</item>
+    <item quantity="other">Halasztva %d napra</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">Halasztva %d órára</item>
+    <item quantity="other">Halasztva %d órára</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">Halasztva %d percre</item>
+    <item quantity="other">Halasztva %d percre</item>
   </plurals>
 </resources>

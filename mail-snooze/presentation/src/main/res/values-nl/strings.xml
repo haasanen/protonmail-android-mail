@@ -29,9 +29,9 @@
   <string name="snooze_sheet_option_unsnooze">Ontsnoozen</string>
   <string name="snooze_sheet_error_unable_to_snooze">Sorry, er is een onbekende fout opgetreden bij het snoozen van dit gesprek</string>
   <string name="snooze_sheet_error_unable_to_unsnooze">Er is een onbekende fout opgetreden bij het uitzetten van de sluimerstand van het gesprek.</string>
-  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
-  <string name="snooze_sheet_success">Snoozed until %s</string>
-  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
+  <string name="snooze_sheet_error_in_the_past">Snoozetijd ligt in het verleden</string>
+  <string name="snooze_sheet_success">Gesnoozed tot %s</string>
+  <string name="unsnooze_sheet_success">Gesprek is niet langer gesnoozed</string>
   <string name="snooze_picker_content_description">Bericht snoozen</string>
   <string name="snooze_picker_button_title">Opslaan</string>
   <string name="snooze_custom_upsell_title">Aangepaste datum en tijd</string>

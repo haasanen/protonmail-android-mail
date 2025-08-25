@@ -103,21 +103,21 @@
   <string name="mailbox_search_no_results_title">Žiadne zhody</string>
   <string name="mailbox_search_no_results_explanation">Vyhľadávací dotaz môžete upraviť alebo vymazať.</string>
   <plurals name="mailbox_action_move_conversation">
-    <item quantity="one">Conversation moved to %s</item>
-    <item quantity="few">Conversations moved to %s</item>
-    <item quantity="many">Conversations moved to %s</item>
-    <item quantity="other">Conversations moved to %s</item>
+    <item quantity="one">Konverzácia presunutá do %s</item>
+    <item quantity="few">Konverzácie presunuté do %s</item>
+    <item quantity="many">Konverzácie presunuté do %s</item>
+    <item quantity="other">Konverzácie presunuté do %s</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
-    <item quantity="one">Message moved to %s</item>
-    <item quantity="few">Messages moved to %s</item>
-    <item quantity="many">Messages moved to %s</item>
-    <item quantity="other">Messages moved to %s</item>
+    <item quantity="one">Správa presunutá do %s</item>
+    <item quantity="few">Správy presunuté do %s</item>
+    <item quantity="many">Správy presunuté do %s</item>
+    <item quantity="other">Správy presunuté do %s</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">Vyprázdniť kôš</string>
   <string name="mailbox_action_button_clear_spam">Vyprázdniť spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Upgradujte svoj plán a automaticky mažte správy, ktoré boli v koši a spame viac ako 30 dní</string>
-  <string name="mailbox_action_clear_trash_spam_upsell_cta">Upgrade to Auto-delete</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_cta">Upgradujte pre automatické odstraňovanie</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Správy v koši a spame staršie ako 30 dní sa automaticky vymažú.</string>
   <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Automatické mazanie je vypnuté. Správy v koši a spame zostanú, kým ich neodstránite ručne.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Vyprázdniť priečinok Kôš</string>
@@ -166,21 +166,21 @@
   <string name="schedule_send_today">Dnes, %1$s</string>
   <!--    Snooze messages-->
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="few">Snoozed for %d days</item>
-    <item quantity="many">Snoozed for %d days</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">Odložené do zajtra</item>
+    <item quantity="few">Odložené o %d dni</item>
+    <item quantity="many">Odložené o %d dní</item>
+    <item quantity="other">Odložené o %d dní</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="few">Snoozed for %d hours</item>
-    <item quantity="many">Snoozed for %d hours</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">Odložené o %d hodinu</item>
+    <item quantity="few">Odložené o %d hodiny</item>
+    <item quantity="many">Odložené o %d hodín</item>
+    <item quantity="other">Odložené o %d hodín</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="few">Snoozed for %d minutes</item>
-    <item quantity="many">Snoozed for %d minutes</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">Odložené o %d minútu</item>
+    <item quantity="few">Odložené o %d minúty</item>
+    <item quantity="many">Odložené o %d minút</item>
+    <item quantity="other">Odložené o %d minút</item>
   </plurals>
 </resources>

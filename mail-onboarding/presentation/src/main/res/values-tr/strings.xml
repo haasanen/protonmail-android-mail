@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Herkes için gizlilik</string>
-  <string name="onboarding_privacy_for_all_description">Başkalarını Proton Mail kullanmaya çağırın ve hepiniz uçtan uca şifrelemeden yararlanın.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Kolayca güncel kalın</string>
-  <string name="onboarding_easily_up_to_date_description">Yazışma görünümünde, ileti dizileri arasında hızla gezinin.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Temiz ve düzenli</string>
-  <string name="onboarding_neat_and_tidy_description">Gelen kutunuzu düzenlemek için iletileri dosyalayın, etiketleyin ve renklendirin.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Yeni Proton Mail uygulamasına\nhoş geldiniz!</string>
-  <string name="onboarding_welcome_headline">Baştan sona dönüştürüldü</string>
-  <string name="onboarding_welcome_description">Sınırlı erken beta sürümü deneme kullanıcıları grubuna katıldığınız için teşekkür ederiz. Geri bildiriminiz, genel kullanıma hazır daha da iyi bir Proton Mail oluşturmamıza yardımcı olmak için çok önemlidir.</string>
+  <string name="onboarding_welcome_title">Gizlilik odaklı Proton Mail uygulamasına hoş geldiniz</string>
+  <string name="onboarding_welcome_description">Şifrelenmiş iletilerin, daha az istenmeyen epostanın, kimlik avına karşı korumanın ve engellenen etkinlik izleyicilerin tadını çıkarın. Gizliliğe hoş geldiniz.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Daha iyi ve daha hızlı olmak için yeniden yapıldı</string>
-  <string name="onboarding_rebuilt_headline">Yeni gelen kutusu kullanıma sunuldu</string>
-  <string name="onboarding_rebuilt_description">Yeni Proton Mail, canlı bir tasarımla daha hızlı ve çevrim dışı kip gibi sık istenilen özellikler sunuyor.</string>
+  <string name="onboarding_rebuilt_title">Odak parmaklarınızın ucunda</string>
+  <string name="onboarding_rebuilt_description">Düzenlemeye daha az, yapmaya daha çok zaman harcayın. E-posta kutunuz daha kolay kullanılacak şekilde tasarlanmıştır. Böylece önemli şeylere daha hızlı ulaşabilirsiniz.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Desteğiniz için teşekkür ederiz!</string>
-  <string name="onboarding_feedback_headline">Geri bildiriminiz çok önemli</string>
-  <string name="onboarding_feedback_description">Önümüzdeki aylarda yeni özellikler sunacağız. Lütfen uygulamayı deneyin ve geliştirmeyi nasıl sürdürebileceğimizi bize iletmek için \"Bir sorun bildireceğim\" üzerine dokunun. Katkınız çok değerli!</string>
+  <string name="onboarding_feedback_title">Çevrim dışıyken bile bağlı kalın</string>
+  <string name="onboarding_feedback_description">Nerede olursanız olun e-postaları okuyun, yazın ve yönetin. Çevrim içi olduğunuz anda her şey otomatik olarak eşitlenir.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Sonraki</string>
-  <string name="onboarding_get_started">Denemeye başlayın</string>
+  <string name="onboarding_get_started">Başlayalım</string>
   <string name="onboarding_illustration_content_description">Başlama çizimi</string>
   <string name="onboarding_close_content_description">Kapat</string>
-  <string name="onboarding_introducing_next_gen_app">Yeni nesil uygulamamızla tanışın!</string>
 </resources>

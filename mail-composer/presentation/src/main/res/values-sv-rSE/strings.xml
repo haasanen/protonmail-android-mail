@@ -51,7 +51,7 @@
   <string name="composer_too_many_attachments_error">Maximalt antal bilagor (100) har överskridits.</string>
   <string name="composer_delete_attachment_error">Ett oväntat fel uppstod när en bilaga togs bort.</string>
   <string name="composer_unexpected_attachments_error">Det uppstod ett oväntat fel relaterat med bilagor.</string>
-  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
+  <string name="composer_attach_capture_from_camera_error">Det går inte att hämta en bilaga från kameran just nu.</string>
   <string name="composer_warning_local_data_shown">Den senaste versionen av detta utkast misslyckades att laddas. Alla ändringar kommer att åsidosätta dess innehåll.</string>
   <string name="composer_button_add_password">Lägg till lösenord</string>
   <string name="composer_button_discard_draft">Kasta utkast</string>
@@ -87,7 +87,7 @@
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Det finns inga betrodda nycklar: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adress finns inte: %s</string>
   <string name="set_message_password_title">Ställ in lösenord</string>
-  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
+  <string name="set_message_password_info_message">Ange ett lösenord för att kryptera det här meddelandet för mottagare som inte använder Proton Mail.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Lär dig mer</a></string>
   <string name="set_message_password_label">Meddelandelösenord</string>
   <string name="set_message_password_label_hint">Lösenordsledtråd (valfritt)</string>
@@ -117,7 +117,7 @@
   <string name="composer_remove_recipient_action_item">Ta bort</string>
   <string name="composer_copy_recipient_action_item">Kopiera</string>
   <string name="schedule_send_content_description">Schemalägg sändning</string>
-  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
+  <string name="composer_error_retrieving_schedule_send_options">Det gick inte att generera tider för att schemalägga sändning.</string>
   <string name="composer_schedule_send_content_description">Schemalägg sändning</string>
   <string name="composer_schedule_send_tomorrow_title">Imorgon</string>
   <string name="composer_schedule_send_monday_title">Måndag</string>
@@ -131,10 +131,10 @@
   <string name="composer_schedule_send_dialog_ok">Ok</string>
   <string name="composer_schedule_send_dialog_enter_time">Ange tid</string>
   <string name="composer_change_sender_title">Från</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Det går inte att byta avsändare eftersom det inte gick att hämta användarens e-postadresser. Försök igen.</string>
   <string name="composer_change_sender_invalid_address">Den valda adressen kan inte användas för att skicka</string>
-  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
-  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_change_sender_unexpected_failure">Något gick fel vid byte av avsändare. Försök igen.</string>
+  <string name="composer_change_sender_error_refreshing_body">Uppdateringen av meddelandetexten efter bytet av avsändare misslyckades. Signaturen kan vara inaktuell.</string>
   <string name="composer_loading_attachments_error">Misslyckades ladda bilagor</string>
   <string name="composer_attachment_upload_error_retry">Några bilagor misslyckades att laddas upp. Försök igen.</string>
   <string name="composer_external_encryption_unexpected_error">Oväntat fel %s. Försök igen.</string>

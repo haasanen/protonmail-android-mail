@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Le respect de la vie privée pour tous</string>
-  <string name="onboarding_privacy_for_all_description">Invitez d\'autres personnes à utiliser Proton Mail pour bénéficier du chiffrement de bout en bout.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Facile d\'être à jour</string>
-  <string name="onboarding_easily_up_to_date_description">Consultez les messages en mode conversation.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Une bonne organisation</string>
-  <string name="onboarding_neat_and_tidy_description">Triez vos messages en utilisant des dossiers, des labels et des couleurs pour personnaliser votre boite de réception.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Bienvenue dans la\nnouvelle application Proton Mail !</string>
-  <string name="onboarding_welcome_headline">Entièrement repensé et transformé en profondeur.</string>
-  <string name="onboarding_welcome_description">Nous vous remercions de faire partie de ce groupe limité de premiers testeurs en mode bêta. Grâce à vos retours, nous pouvons améliorer Proton Mail avant son lancement officiel.</string>
+  <string name="onboarding_welcome_title">Bienvenue sur Proton Mail, où le respect de la vie privée est par défaut</string>
+  <string name="onboarding_welcome_description">Profitez de messages chiffrés, de moins de spams, d\'une protection contre l\'hameçonnage et de traqueurs bloqués. Bienvenue dans le respect de la vie privée.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Entièrement repensé pour plus de performance et de rapidité</string>
-  <string name="onboarding_rebuilt_headline">Découverte de la nouvelle boîte de réception</string>
-  <string name="onboarding_rebuilt_description">Le nouveau Proton Mail est plus rapide avec un design dynamique et des fonctionnalités très attendues, comme le mode hors ligne.</string>
+  <string name="onboarding_rebuilt_title">Tout à portée de main</string>
+  <string name="onboarding_rebuilt_description">Passez moins de temps à trier et plus de temps à agir. Votre boîte de réception est conçue pour être plus facile à naviguer, afin que vous puissiez accéder plus rapidement à ce qui est important.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Merci pour votre participation !</string>
-  <string name="onboarding_feedback_headline">Vos commentaires sont essentiels</string>
-  <string name="onboarding_feedback_description">Nous déploierons de nouvelles fonctionnalités dans les prochains mois. Nous vous invitons à tester l’application et à cliquer sur « Signaler un problème » pour nous faire part de vos suggestions d’amélioration. Votre contribution est précieuse !</string>
+  <string name="onboarding_feedback_title">Restez connecté même hors ligne</string>
+  <string name="onboarding_feedback_description">Lisez, écrivez et gérez des messages où que vous soyez. Tout se synchronise automatiquement dès que vous êtes de nouveau en ligne.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Suivant</string>
-  <string name="onboarding_get_started">Commencez le test</string>
+  <string name="onboarding_get_started">Commencer</string>
   <string name="onboarding_illustration_content_description">Illustration d\'accueil</string>
   <string name="onboarding_close_content_description">Fermer</string>
-  <string name="onboarding_introducing_next_gen_app">Découvrez notre application nouvelle génération !</string>
 </resources>

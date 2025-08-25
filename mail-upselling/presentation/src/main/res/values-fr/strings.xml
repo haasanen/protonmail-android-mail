@@ -44,13 +44,13 @@
   <string name="upselling_mobile_signature_plus_description_override">Personnalisez votre signature mobile. Profitez de tout ça et bien plus encore avec Mail Plus.</string>
   <string name="upselling_mobile_signature_plus_title">Personnalisez votre signature</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Supprime les indésirables/spam et la corbeille après 30 jours. Profitez de tout cela et bien plus encore avec Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_description_override">Supprime les indésirables/le spam et la corbeille après 30 jours. Profitez de tout cela et bien plus encore avec Mail Plus.</string>
   <string name="upselling_auto_delete_plus_title">Suppression automatique de la corbeille</string>
   <!-- Upselling: Schedule Send -->
   <string name="upselling_schedule_send_plus_description_override">Choisissez quand un message sera envoyé. Profitez de tout cela et bien plus encore avec Mail Plus.</string>
   <string name="upselling_schedule_send_plus_title">Programmez maintenant et envoyez plus tard</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Mettez-le en attente et faites-le envoyé plus tard. Profitez de tout cela et bien plus encore avec Mail Plus.</string>
+  <string name="upselling_snooze_plus_description_override">Mettez-le en attente et faites-le envoyer plus tard. Profitez de tout cela et bien plus encore avec Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Le moment est mal choisi pour cet e-mail ?</string>
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Changer d\'abonnement pour une flexibilité totale</string>

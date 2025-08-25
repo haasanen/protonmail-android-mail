@@ -33,7 +33,7 @@
   <string name="auth_login_close">Chiudi</string>
   <string name="auth_login_help">Altre opzioni</string>
   <string name="auth_sign_in">Accedi</string>
-  <string name="auth_username">Nome utente</string>
+  <string name="auth_login_username">Nome utente o indirizzo email</string>
   <string name="auth_email">Indirizzo email</string>
   <string name="auth_password">Password principale</string>
   <string name="auth_username_placeholder">Nome utente o indirizzo email</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Nome utente necessario</string>
   <string name="auth_signup_email_assistive_text">Indirizzo email necessario</string>
   <string name="auth_signup_next">Continua</string>
-  <string name="auth_signup_email_username">Nome utente o indirizzo email</string>
+  <string name="auth_signup_username">Nome utente</string>
   <string name="auth_signup_create_password">Impostazione della password</string>
   <string name="auth_signup_password">Password principale</string>
   <string name="auth_signup_repeat_password">Conferma della password</string>
@@ -167,4 +167,5 @@
   <string name="settings_password_error_invalid_recovery">Codice del secondo fattore non valido</string>
   <string name="settings_password_error_2fa_reused">Codice del secondo fattore già usato</string>
   <string name="settings_password_general_error">Si è verificato un errore</string>
+  <string name="proton_error_non_processable_actions">Azione non disponibile. Effettua nuovamente l\'accesso all\'account.</string>
 </resources>

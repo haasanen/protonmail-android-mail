@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Ιδιωτικότητα για όλους</string>
-  <string name="onboarding_privacy_for_all_description">Προσκαλέστε άλλους στο Proton Mail, ώστε να μπορείτε όλοι να επωφεληθείτε από την κρυπτογράφηση από άκρο σε άκρο.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Εύκολα ενημερωμένο</string>
-  <string name="onboarding_easily_up_to_date_description">Προσπελάστε με άνεση τα μηνύματα ενός νήματος στη λειτουργία συνομιλίας.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Τακτοποιημένα</string>
-  <string name="onboarding_neat_and_tidy_description">Αρχειοθετήστε, εφαρμόσετε ετικέτες και χρώματα στα μηνύματά σας, για να δημιουργήσετε τα τέλεια, προσαρμοσμένα εισερχόμενά σας.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Καλώς ορίσατε στην\nνέα εφαρμογή Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Μεταμορφώθηκε από το μηδέν</string>
-  <string name="onboarding_welcome_description">Ευχαριστούμε που συμμετέχετε σε αυτήν την περιορισμένη ομάδα πρώιμων Beta δοκιμαστών. Η ανατροφοδότησή σας είναι κρίσιμη για να μας βοηθήσετε να φτιάξουμε ένα ακόμα καλύτερο Proton Mail, έτοιμο για δημόσια κυκλοφορία.</string>
+  <string name="onboarding_welcome_title">Καλώς ήρθατε στο Proton Mail, όπου η ιδιωτικότητα είναι προεπιλογή</string>
+  <string name="onboarding_welcome_description">Απολαύστε κρυπτογραφημένα μηνύματα, λιγότερο ενοχλητικά, προστασία από phishing και αποκλεισμένους ιχνηλάτες. Καλωσορίσατε στην ιδιωτικότητα.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Ξαναχτίστηκε για να είναι καλύτερο και ταχύτερο</string>
-  <string name="onboarding_rebuilt_headline">Νέα εισερχόμενα αποκαλυφτήκαν</string>
-  <string name="onboarding_rebuilt_description">Το νέο Proton Mail είναι ταχύτερο με ζωντανό σχεδιασμό και χαρακτηριστικά που έχουν ζητηθεί πολύ, όπως η λειτουργία εκτός σύνδεσης.</string>
+  <string name="onboarding_rebuilt_title">Εστίαση στα δάχτυλά σας</string>
+  <string name="onboarding_rebuilt_description">Ξοδέψτε λιγότερο χρόνο στην οργάνωση και περισσότερο χρόνο στην εκτέλεση. Το εισερχόμενο ταχυδρομείο σας είναι σχεδιασμένο να είναι πιο εύκολο στην πλοήγηση, ώστε να μπορείτε να φτάσετε γρηγορότερα σε ότι είναι σημαντικό.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Ευχαριστούμε για τη συμμετοχή σας!</string>
-  <string name="onboarding_feedback_headline">Τα σχόλιά σας είναι πολύ σημαντικά</string>
-  <string name="onboarding_feedback_description">Θα κυκλοφορήσουμε νέα χαρακτηριστικά τους επόμενους μήνες. Παρακαλούμε δοκιμάστε την εφαρμογή και πατήστε \"Αναφορά προβλήματος\" για να μας πείτε πώς μπορούμε να συνεχίσουμε να βελτιωνόμαστε. Η εισαγωγή σας είναι ανεκτίμητη!</string>
+  <string name="onboarding_feedback_title">Μείνετε συνδεδεμένοι, ακόμα και όταν εκτός σύνδεσης</string>
+  <string name="onboarding_feedback_description">Διαβάστε, γράψτε και διαχειριστείτε τα email σας όπου και αν βρίσκεστε. Όλα συγχρονίζονται αυτόματα τη στιγμή που ξανασυνδέεστε.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Επόμενο</string>
-  <string name="onboarding_get_started">Ξεκινήστε τη δοκιμή</string>
+  <string name="onboarding_get_started">Ξεκινήστε</string>
   <string name="onboarding_illustration_content_description">Απεικόνιση ενσωμάτωσης</string>
   <string name="onboarding_close_content_description">Κλείσιμο</string>
-  <string name="onboarding_introducing_next_gen_app">Παρουσιάζουμε την επόμενης γενιάς εφαρμογή μας!</string>
 </resources>

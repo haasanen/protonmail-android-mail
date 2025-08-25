@@ -86,8 +86,8 @@
   <string name="action_sender_emails_content_description">Nastavi dejanje za prihodnja sporočila tega pošiljatelja</string>
   <string name="action_save_attachments_content_description">Shrani priponke</string>
   <string name="action_more_content_description">Več</string>
-  <string name="action_snooze_content_description">Snooze</string>
-  <string name="action_snooze_description">Snooze</string>
+  <string name="action_snooze_content_description">Dremež</string>
+  <string name="action_snooze_description">Dremež</string>
   <string name="common_error_loading_actions">Neuspešno nalaganje dejanj</string>
   <string name="yesterday">Včeraj</string>
   <!-- notification channels -->
@@ -128,8 +128,8 @@
   <string name="undo_failure_message">Razveljavitev dejanja ni uspela</string>
   <string name="feature_coming_soon">Funkcija bo kmalu na voljo ...</string>
   <!-- date time picker -->
-  <string name="time_picker_custom_time_label">Time</string>
-  <string name="time_picker_custom_date_label">Date</string>
-  <string name="time_picker_send_dialog_ok">Ok</string>
-  <string name="time_picker_enter_time">Enter time</string>
+  <string name="time_picker_custom_time_label">Čas</string>
+  <string name="time_picker_custom_date_label">Datum</string>
+  <string name="time_picker_send_dialog_ok">V redu</string>
+  <string name="time_picker_enter_time">Vnesite uro</string>
 </resources>

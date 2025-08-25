@@ -48,10 +48,10 @@
   <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
   <!-- Upselling: Schedule Send -->
   <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <string name="upselling_schedule_send_plus_title">現在排定，稍後寄送</string>
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <string name="upselling_snooze_plus_title">這封信來的不是時候？</string>
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Upgrade for full flexibility</string>
   <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
@@ -99,7 +99,7 @@
   <string name="upselling_comparison_table_priority_support">優先客戶專屬支援</string>
   <!-- Rectangular plan buttons -->
   <string name="upselling_select_plan">Choose your plan</string>
-  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan_year">12 個月</string>
   <string name="upselling_select_plan_month">1 個月</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>

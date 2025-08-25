@@ -33,7 +33,7 @@
   <string name="auth_login_close">Fermer</string>
   <string name="auth_login_help">Aide</string>
   <string name="auth_sign_in">Se connecter</string>
-  <string name="auth_username">Nom d\'utilisateur</string>
+  <string name="auth_login_username">Nom d\'utilisateur ou adresse e-mail</string>
   <string name="auth_email">E-mail</string>
   <string name="auth_password">Mot de passe</string>
   <string name="auth_username_placeholder">Nom d\'utilisateur ou adresse e-mail</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Le nom d\'utilisateur ne doit pas être vide.</string>
   <string name="auth_signup_email_assistive_text">L\'adresse e-mail ne doit pas être vide.</string>
   <string name="auth_signup_next">Suivant</string>
-  <string name="auth_signup_email_username">Nom d\'utilisateur ou adresse e-mail</string>
+  <string name="auth_signup_username">Nom d\'utilisateur</string>
   <string name="auth_signup_create_password">Créez votre mot de passe</string>
   <string name="auth_signup_password">Mot de passe</string>
   <string name="auth_signup_repeat_password">Confirmez le mot de passe</string>
@@ -167,4 +167,5 @@
   <string name="settings_password_error_invalid_recovery">Le code A2F n\'est pas correct. Nous vous invitons à réessayer.</string>
   <string name="settings_password_error_2fa_reused">Le code a déjà été utilisé. Veuillez essayer un code différent.</string>
   <string name="settings_password_general_error">Une erreur s’est produite.</string>
+  <string name="proton_error_non_processable_actions">Une ou plusieurs actions ne peuvent pas être traitées. Veuillez vous déconnecter et vous reconnecter à votre compte.</string>
 </resources>

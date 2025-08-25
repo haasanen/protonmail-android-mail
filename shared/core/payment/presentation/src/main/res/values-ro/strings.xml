@@ -44,4 +44,5 @@
   <string name="payment_subscription_managed_by_google">Abonamentul vă este gestionat de către Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Abonamentul vă este gestionat de Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Abonamentul nu poate fi gestionat din aplicația mobilă.</string>
+  <string name="proton_error_non_processable_actions">Una sau mai multe acțiuni nu pot fi procesate. Deconectați-vă și reconectați-vă la cont.</string>
 </resources>

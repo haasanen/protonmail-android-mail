@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Zasebnost za vse</string>
-  <string name="onboarding_privacy_for_all_description">Povabite druge v Proton Mail, da boste lahko vsi izkoristili prednosti šifriranja od konca do konca.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Preprosto posodabljanje</string>
-  <string name="onboarding_easily_up_to_date_description">Brskajte po navojnih sporočilih v načinu pogovora.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Čisto in urejeno</string>
-  <string name="onboarding_neat_and_tidy_description">Z razporejanjem, oznakami in barvnimi oznakami sporočil ustvarite popoln poštni predal po meri.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Dobrodošli v\nnovi aplikaciji Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Preoblikovano od temeljev naprej</string>
-  <string name="onboarding_welcome_description">Hvala, ker ste se pridružili tej omejeni skupini zgodnjih Beta preizkuševalcev. Vaše povratne informacije so ključnega pomena, da nam pomagate zgraditi še boljši Proton Mail, pripravljen za javno objavo.</string>
+  <string name="onboarding_welcome_title">Welcome to Proton Mail, where privacy is default</string>
+  <string name="onboarding_welcome_description">Enjoy encrypted messages, fewer spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Prenovljena za boljše in hitrejše delovanje</string>
-  <string name="onboarding_rebuilt_headline">Nov predal za prejeto pošto</string>
-  <string name="onboarding_rebuilt_description">Novi Proton Mail je hitrejši z živahnim dizajnom in zelo iskanimi funkcijami, kot je način brez povezave.</string>
+  <string name="onboarding_rebuilt_title">Focus at your fingertips</string>
+  <string name="onboarding_rebuilt_description">Spend less time sorting and more time doing. Your inbox is designed to be easier to navigate, so you can get to what’s important faster.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Hvala za sodelovanje!</string>
-  <string name="onboarding_feedback_headline">Vaše povratne informacije bodo ključne</string>
-  <string name="onboarding_feedback_description">V prihodnjih mesecih bomo uvajali nove funkcije. Prosimo, preizkusite aplikacijo in nam prek možnosti \"Prijavi težavo\" sporočite, kako se lahko še izboljšamo. Vaš prispevek je neprecenljiv!</string>
+  <string name="onboarding_feedback_title">Stay connected, even offline</string>
+  <string name="onboarding_feedback_description">Read, write, and manage emails wherever you are. Everything syncs automatically the moment you’re back online.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Naprej</string>
-  <string name="onboarding_get_started">Začni testiranje</string>
+  <string name="onboarding_get_started">Začnite</string>
   <string name="onboarding_illustration_content_description">Ilustracija upravljalske plošče</string>
   <string name="onboarding_close_content_description">Zapri</string>
-  <string name="onboarding_introducing_next_gen_app">Predstavljamo vam našo aplikacijo naslednje generacije!</string>
 </resources>

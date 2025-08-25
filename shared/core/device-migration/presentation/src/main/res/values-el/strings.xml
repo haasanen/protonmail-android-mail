@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Δημιουργία κωδικού QR</string>
   <string name="target_sign_in_error_back_to_signin">Επιστροφή στη σύνδεση</string>
   <string name="target_sign_in_learn_more">Μάθετε περισσότερα</string>
+  <string name="proton_error_non_processable_actions">Μία ή περισσότερες ενέργειες δεν μπορούν να επεξεργαστούν. Παρακαλούμε αποσυνδεθείτε και συνδεθείτε ξανά στον λογαριασμό σας.</string>
 </resources>

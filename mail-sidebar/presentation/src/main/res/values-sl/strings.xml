@@ -23,5 +23,5 @@
   <string name="drawer_title_bug_report">Prijavite težavo</string>
   <string name="drawer_item_create_label">Ustvari oznako</string>
   <string name="drawer_item_create_folder">Ustvari mapo</string>
-  <string name="drawer_upgrade_plus">Upgrade to Mail Plus</string>
+  <string name="drawer_upgrade_plus">Nadgradite na Mail Plus</string>
 </resources>

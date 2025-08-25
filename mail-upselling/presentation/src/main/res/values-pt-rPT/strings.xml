@@ -21,40 +21,40 @@
   <string name="upselling_button_item_content_description">Botão Atualizar</string>
   <string name="upselling_close_button_content_description">Botão fechar</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_description_override">Para desbloquear mais funcionalidades de armazenamento e premium.</string>
   <string name="upselling_mailbox_plus_title">Atualize para Mail Plus</string>
   <!-- Upselling: Social Proof -->
-  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <string name="upselling_mailbox_plus_title_social_proof">Começar com o Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Obtenha o melhor do Mail com esta oferta por tempo limitado</string>
   <string name="upselling_mailbox_plus_promo_title">Experimente o Mail Plus por %s</string>
-  <string name="upselling_mailbox_plus_promo_cta">Get 1 month for %s</string>
-  <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
-  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
+  <string name="upselling_mailbox_plus_promo_cta">Obtenha 1 mês por %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Ignorar oferta</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s no 1.º mês, depois %s por mês</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_contact_groups_plus_title">Agrupe seus contactos</string>
+  <string name="upselling_contact_groups_plus_description_override">Envie e-mails de grupo com facilidade. Desfrute disto e de muito mais com o Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Agrupe os seus contactos</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">Crie tudo o que precisa para se manter organizado. Obtenha isto e muito mais com o Mail Plus. </string>
   <string name="upselling_labels_plus_title">Precisa de mais etiquetas ou pastas?</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">Crie tudo o que precisa para se manter organizado. Obtenha isto e muito mais com o Mail Plus. </string>
   <string name="upselling_folders_plus_title">Precisa de mais etiquetas ou pastas?</string>
   <!-- Upselling: Mobile Signature -->
-  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <string name="upselling_mobile_signature_plus_description_override">Personalize a sua assinatura móvel. Desfrute disto e de muito mais com o Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Personalize a sua assinatura</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
-  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <string name="upselling_auto_delete_plus_description_override">Elimina spam e Lixo após 30 dias. Obtenha isto e muito mais com o Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Eliminação automática do Lixo</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <string name="upselling_schedule_send_plus_description_override">Personalize quando um e-mail será enviado. Desfrute disto e de muito mais com o Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Agende agora, envie mais tarde</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <string name="upselling_snooze_plus_description_override">Adie-o — e receba-o mais tarde. Desfrute disto e de muito mais com o Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Não é o momento ideal para este e-mail?</string>
   <!-- Upselling - Misc buttons -->
-  <string name="upselling_button_hint">Upgrade for full flexibility</string>
-  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
+  <string name="upselling_button_hint">Melhore o seu plano para ter total flexibilidade</string>
+  <string name="upselling_upgrade_plan_generic">Precisa de uma subscrição paga do Proton Mail para aceder a esta funcionalidade</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB de armazenamento</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB de armazenamento, 10 endereços de e-mail</string>
@@ -98,16 +98,16 @@
   <string name="upselling_comparison_table_unlimited_folders_labels">Pastas e etiquetas ilimitadas</string>
   <string name="upselling_comparison_table_priority_support">Apoio ao cliente prioritário</string>
   <!-- Rectangular plan buttons -->
-  <string name="upselling_select_plan">Choose your plan</string>
-  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan">Escolha o seu plano</string>
+  <string name="upselling_select_plan_year">12 meses</string>
   <string name="upselling_select_plan_month">1 mês</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
-  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
-  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_auto_renew_text">Renovação automática pelo mesmo preço e condições, exceto se for cancelada</string>
+  <string name="upselling_auto_renew_text_promo">Oferta de boas-vindas. Renovação automática por %s%s, salvo cancelamento</string>
+  <string name="upselling_auto_renew_text_promo_short">Oferta de boas-vindas. Renovação automática por %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Renovação automática por %s%s, salvo cancelamento</string>
+  <string name="upselling_social_proof_reviews">Mais de 2 mil AVALIAÇÕES</string>
+  <string name="upselling_description_social_proof">Atualize para a experiência que milhões de subscritores elogiam.</string>
   <string name="upselling_discount_tag">POUPE %s%%</string>
   <string name="upselling_month">/mês</string>
   <string name="upselling_year">/ano</string>

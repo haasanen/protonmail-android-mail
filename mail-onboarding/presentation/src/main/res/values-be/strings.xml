@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Прыватнасць для ўсяго</string>
-  <string name="onboarding_privacy_for_all_description">Запрасіце іншых у Proton Mail і вы зможаце атрымаць усе перавагі ад скразнога шыфравання.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Лёгка абнаўляць</string>
-  <string name="onboarding_easily_up_to_date_description">Праглядайце гутаркі паведамленняў у рэжыме размовы.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Просты і лаканічны</string>
-  <string name="onboarding_neat_and_tidy_description">Файл, метка і пазначэнне паведамленняў колерам дапамогуць стварыць ідэальную паштовую скрыню, якая будзе пасаваць менавіта вам.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Вітаем у новай\nпраграме Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Цалкам перапрацаваная</string>
-  <string name="onboarding_welcome_description">Дзякуй, што далучыліся да гэтай абмежаванай па колькасці групы ранніх бэта-тэсціроўшчыкаў. Ваш водгук мае рашаючае значэнне, каб дапамагчы нам пабудаваць яшчэ лепшую праграму Proton Mail</string>
+  <string name="onboarding_welcome_title">Сардэчна запрашаем у Proton Mail, дзе прыватнасць з\'яўляецца паўсядзённасцю</string>
+  <string name="onboarding_welcome_description">Атрымлівайце асалоду ад зашыфраваных паведамленняў, меншай колькасці спаму, абароны ад фішынгу і заблакіраваных праграм сачэння. Сардэчна запрашаем у прыватнасць.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Перабудавана, каб быць лепшай і хутчэйшай</string>
-  <string name="onboarding_rebuilt_headline">Прадстаўляем вам новую паштовую скрыню</string>
-  <string name="onboarding_rebuilt_description">Новы Proton Mail стаў яшчэ хутчэй, атрымаў яркі дызайн і вельмі запатрабаваныя функцыі, напрыклад рэжым па-за сеткай.</string>
+  <string name="onboarding_rebuilt_title">Фокус у вас пад рукой</string>
+  <string name="onboarding_rebuilt_description">Губляйце менш часу на сартаванне лістоў і вылучайце больш часу на патрэбныя справы. Ваша паштовая скрыня распрацавана так, каб у ёй было лягчэй арыентавацца, таму вы зможаце хутчэй знаходзіць важныя лісты.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Дзякуй за ваш удзел!</string>
-  <string name="onboarding_feedback_headline">Ваш водгук мае ключавое значэнне</string>
-  <string name="onboarding_feedback_description">У бліжэйшыя месяцы мы будзем выпускаць новыя функцыі. Пратэсціруйце праграму і націсніце \"Паведаміць аб праблеме\". Гэта дазволіць нам зразумець, якім чынам мы можам удасканаліць праграму. Ваш водгук з\'яўляецца бясцэнным!</string>
+  <string name="onboarding_feedback_title">Заставайцеся на сувязі, нават па-за сеткай</string>
+  <string name="onboarding_feedback_description">Чытайце, пішыце і кіруйце лістамі, дзе б вы не знаходзіліся. Усе элементы сінхранізуюцца аўтаматычна пасля таго, як падключэнне да сеткі зноў з\'явіцца на вашай прыладзе.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Далей</string>
-  <string name="onboarding_get_started">Пачніце тэсціраваць</string>
+  <string name="onboarding_get_started">Пачаць працу</string>
   <string name="onboarding_illustration_content_description">Ілюстрацыі для азнаямлення</string>
   <string name="onboarding_close_content_description">Закрыць</string>
-  <string name="onboarding_introducing_next_gen_app">Уводзіны ў новае пакаленне нашай праграмы!</string>
 </resources>

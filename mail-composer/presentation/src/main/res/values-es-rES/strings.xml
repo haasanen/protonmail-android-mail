@@ -30,7 +30,7 @@
   <string name="composer_error_invalid_email">La dirección de correo electrónico no es válida.</string>
   <string name="composer_error_invalid_sender">La dirección del remitente no es válida.</string>
   <string name="change_sender_button_content_description">Cambiar el remitente</string>
-  <string name="composer_change_sender_paid_feature">Mejora a un plan de pago para cambiar la dirección del remitente.</string>
+  <string name="composer_change_sender_paid_feature">Mejora a un plan de pago para cambiar la dirección del remitente</string>
   <string name="composer_error_store_draft_sender_address">Error al guardar la dirección del remitente</string>
   <string name="composer_error_store_draft_body">Error al guardar el cuerpo de este borrador</string>
   <string name="composer_error_duplicate_recipient">Se han borrado un o más destinatarios duplicados.</string>
@@ -40,7 +40,7 @@
   <string name="composer_add_attachments_content_description">Añadir archivos adjuntos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar desde…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Desde tu biblioteca de fotos</string>
-  <string name="composer_add_attachments_bottom_sheet_from_camera">Tomar una nueva foto</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Hacer una nueva foto</string>
   <string name="composer_error_loading_parent_message">No se ha podido cargar la información del mensaje.</string>
   <string name="composer_original_message_quote">Mensaje original</string>
   <string name="composer_sender_quote">El %s, %s &lt;%s&gt; ha escrito:</string>
@@ -51,7 +51,7 @@
   <string name="composer_too_many_attachments_error">Se ha excedido el número máximo de archivos adjuntos (100).</string>
   <string name="composer_delete_attachment_error">Se ha producido un error inesperado al eliminar un archivo adjunto.</string>
   <string name="composer_unexpected_attachments_error">Se ha producido un error inesperado relacionado con los archivos adjuntos.</string>
-  <string name="composer_attach_capture_from_camera_error">No es posible capturar un archivo adjunto desde la cámara en este momento.</string>
+  <string name="composer_attach_capture_from_camera_error">No es posible capturar un archivo adjunto desde la cámara en este momento</string>
   <string name="composer_warning_local_data_shown">Error al cargar la última versión de este borrador. Cualquier cambio sobrescribirá su contenido.</string>
   <string name="composer_button_add_password">Añadir una contraseña</string>
   <string name="composer_button_discard_draft">Descartar el borrador</string>
@@ -86,18 +86,18 @@
   <string name="message_sending_error_dialog_text_error">No se puede enviar el correo electrónico a la dirección indicada debido a la siguiente razón:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">No hay claves de confianza: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">La dirección no existe: %s</string>
-  <string name="set_message_password_title">Set Password</string>
-  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
+  <string name="set_message_password_title">Establecer contraseña</string>
+  <string name="set_message_password_info_message">Establece una contraseña para encriptar este mensaje para destinatarios que no sean de Proton Mail.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Más información</a></string>
   <string name="set_message_password_label">Contraseña del mensaje</string>
   <string name="set_message_password_label_hint">Pista de la contraseña (opcional)</string>
-  <string name="set_message_password_supporting_text">Minimum 8 characters required.</string>
-  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
+  <string name="set_message_password_supporting_text">Se requiere un mínimo de 8 caracteres.</string>
+  <string name="set_message_password_supporting_error_text">La contraseña debe tener entre 8 y 21 caracteres</string>
   <string name="set_message_password_supporting_text_repeat">Las contraseñas deben coincidir.</string>
   <string name="set_message_password_supporting_error_text_repeat">Las contraseñas no coinciden.</string>
   <string name="set_message_password_button_show">Mostrar la contraseña</string>
   <string name="set_message_password_button_hide">Ocultar la contraseña</string>
-  <string name="set_message_password_button_save_changes">Save</string>
+  <string name="set_message_password_button_save_changes">Guardar</string>
   <string name="set_message_password_button_remove_password">Eliminar la contraseña</string>
   <string name="respondInline">Responder en línea</string>
   <string name="subject_placeholder">Asunto</string>
@@ -122,14 +122,14 @@
   <string name="composer_schedule_send_tomorrow_title">Mañana</string>
   <string name="composer_schedule_send_monday_title">Lunes</string>
   <string name="composer_schedule_send_custom_title">Personalizado</string>
-  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
+  <string name="composer_schedule_send_custom_upsell_title">Fecha y hora personalizada</string>
   <string name="composer_schedule_send_custom_description">Seleccionar hora y fecha</string>
   <string name="composer_error_send_message">Error al enviar el mensaje</string>
   <string name="composer_schedule_send_previously_set">Establecido previamente</string>
   <string name="composer_schedule_send_custom_time_label">Hora</string>
   <string name="composer_schedule_send_custom_date_label">Fecha</string>
   <string name="composer_schedule_send_dialog_ok">Aceptar</string>
-  <string name="composer_schedule_send_dialog_enter_time">Ingresar hora</string>
+  <string name="composer_schedule_send_dialog_enter_time">Introducir hora</string>
   <string name="composer_change_sender_title">De</string>
   <string name="composer_error_change_sender_failed_getting_addresses">No se puede cambiar el remitente porque no se han podido obtener las direcciones del usuario. Inténtalo otra vez.</string>
   <string name="composer_change_sender_invalid_address">La dirección seleccionada no se puede usar para enviar</string>
@@ -137,5 +137,5 @@
   <string name="composer_change_sender_error_refreshing_body">Se ha actualizado el cuerpo tras un error al cambiar el remitente. La firma podría no estar actualizada.</string>
   <string name="composer_loading_attachments_error">Error al cargar archivos adjuntos</string>
   <string name="composer_attachment_upload_error_retry">Algunos archivos adjuntos no se han podido cargar. Inténtalo de nuevo.</string>
-  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
+  <string name="composer_external_encryption_unexpected_error">Error inesperado %s. Inténtalo de nuevo.</string>
 </resources>

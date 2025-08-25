@@ -40,4 +40,5 @@
   <string name="payment_subscription_managed_by_google">구독이 Google Play에 의해 관리됩니다.</string>
   <string name="payment_subscription_managed_by_apple">구독이 Apple App Store에 의해 관리됩니다.</string>
   <string name="payment_subscription_managed_by_other">모바일 앱에서 구독을 관리할 수 없습니다.</string>
+  <string name="proton_error_non_processable_actions">하나 이상의 작업을 처리할 수 없습니다. 로그아웃 한 후 다시 로그인하십시오.</string>
 </resources>

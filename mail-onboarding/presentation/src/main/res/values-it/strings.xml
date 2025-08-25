@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Privacy per tutti</string>
-  <string name="onboarding_privacy_for_all_description">Invita altre persone su Proton Mail così che possiate tutti approfittare della crittografia end-to-end.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Rimani facilmente aggiornato</string>
-  <string name="onboarding_easily_up_to_date_description">Scorri velocemente i messaggi raggruppati in modalità conversazione.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Preciso e ordinato</string>
-  <string name="onboarding_neat_and_tidy_description">Organizza i messaggi con cartelle, etichette e colori per personalizzare la tua casella di posta e renderla perfetta.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Ti diamo il benvenuto nella\nnuova app di Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Riprogettato da zero</string>
-  <string name="onboarding_welcome_description">Grazie per partecipare al gruppo limitato di primi tester della versione beta. ll tuo feedback è fondamentale per sviluppare una migliore app per Proton Mail, pronta per il rilascio al pubblico.</string>
+  <string name="onboarding_welcome_title">Benvenuto in Proton Mail, dove la privacy è una priorità</string>
+  <string name="onboarding_welcome_description">Approfitta di messaggi crittografati, meno spam, protezione dal phishing e nessun tracker. Benvenuto nel mondo della privacy.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Completamente riprogettato per migliori prestazioni e aspetto</string>
-  <string name="onboarding_rebuilt_headline">Nuova casella di posta</string>
-  <string name="onboarding_rebuilt_description">Il nuovo Proton Mail è più veloce, ha un design vivace e include funzionalità molto richieste come la modalità offline.</string>
+  <string name="onboarding_rebuilt_title">Tutto a portata di mano</string>
+  <string name="onboarding_rebuilt_description">Risparmia tempo con la nuova interfaccia della casella di posta, progettata per essere navigata più velocemente.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Grazie per la tua partecipazione!</string>
-  <string name="onboarding_feedback_headline">Il tuo feedback è fondamentale</string>
-  <string name="onboarding_feedback_description">Implementeremo nuove funzionalità nei prossimi mesi. Continua a testare l\'app e tocca \"Segnala un problema\" per dirci come possiamo continuare a migliorarla.</string>
+  <string name="onboarding_feedback_title">Sempre disponibile</string>
+  <string name="onboarding_feedback_description">Leggi, scrivi e gestisci i messaggi anche senza connessione a Internet. Tutto viene sincronizzato appena possibile.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Avanti</string>
   <string name="onboarding_get_started">Inizia ora</string>
   <string name="onboarding_illustration_content_description">Illustrazione della presentazione</string>
   <string name="onboarding_close_content_description">Chiudi</string>
-  <string name="onboarding_introducing_next_gen_app">Ti presentiamo la nostra app di nuova generazione!</string>
 </resources>

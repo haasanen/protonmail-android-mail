@@ -103,21 +103,21 @@
   <string name="mailbox_search_no_results_title">Ni ujemanj</string>
   <string name="mailbox_search_no_results_explanation">Iskalno poizvedbo lahko spremenite ali jo izbrišete.</string>
   <plurals name="mailbox_action_move_conversation">
-    <item quantity="one">Conversation moved to %s</item>
-    <item quantity="two">Conversations moved to %s</item>
-    <item quantity="few">Conversations moved to %s</item>
-    <item quantity="other">Conversations moved to %s</item>
+    <item quantity="one">Pogovor je premaknjen v %s</item>
+    <item quantity="two">Pogovora sta premaknjena v %s</item>
+    <item quantity="few">Pogovori so premaknjeni v %s</item>
+    <item quantity="other">Pogovori so premaknjeni v %s</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
-    <item quantity="one">Message moved to %s</item>
-    <item quantity="two">Messages moved to %s</item>
-    <item quantity="few">Messages moved to %s</item>
-    <item quantity="other">Messages moved to %s</item>
+    <item quantity="one">Sporočilo je premaknjeno v mapo %s</item>
+    <item quantity="two">Sporočili sta premaknjeni v %s</item>
+    <item quantity="few">Sporočila so premaknjena v %s</item>
+    <item quantity="other">Sporočila so premaknjena v %s</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">Izprazni smetnjak</string>
   <string name="mailbox_action_button_clear_spam">Izprazni neželeno pošto</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Nadgradite paket za samodejno brisanje sporočil, ki so v smetnjaku ali neželeni pošti več kot 30 dni</string>
-  <string name="mailbox_action_clear_trash_spam_upsell_cta">Upgrade to Auto-delete</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_cta">Nadgradite na samodejno brisanje</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Sporočila, ki so v smetnjaku in med neželeno pošto več kot 30 dni, se samodejno izbrišejo.</string>
   <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Samodejno brisanje je izklopljeno. Sporočila v smetnjaku in neželeni pošti bodo tam ostala, dokler jih ne izbrišete ročno.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Izprazni mapo Smetnjak</string>
@@ -166,21 +166,21 @@
   <string name="schedule_send_today">Danes, %1$s</string>
   <!--    Snooze messages-->
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="two">Snoozed for %d days</item>
-    <item quantity="few">Snoozed for %d days</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">V dremežu do jutri</item>
+    <item quantity="two">V dremežu za %d dneva</item>
+    <item quantity="few">V dremežu za %d dni</item>
+    <item quantity="other">V dremežu za %d dni</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="two">Snoozed for %d hours</item>
-    <item quantity="few">Snoozed for %d hours</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">V dremežu za %d uro</item>
+    <item quantity="two">V dremežu za %d uri</item>
+    <item quantity="few">V dremežu za %d ure</item>
+    <item quantity="other">V dremežu za %d ur</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="two">Snoozed for %d minutes</item>
-    <item quantity="few">Snoozed for %d minutes</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">V dremežu za %d minuto</item>
+    <item quantity="two">V dremežu za %d minuti</item>
+    <item quantity="few">V dremežu za %d minute</item>
+    <item quantity="other">V dremežu za %d minut</item>
   </plurals>
 </resources>

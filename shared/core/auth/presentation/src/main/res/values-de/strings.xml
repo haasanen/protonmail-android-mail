@@ -33,7 +33,7 @@
   <string name="auth_login_close">Schließen</string>
   <string name="auth_login_help">Hilfe</string>
   <string name="auth_sign_in">Anmelden</string>
-  <string name="auth_username">Benutzername</string>
+  <string name="auth_login_username">Benutzername oder E‐Mail‐Adresse</string>
   <string name="auth_email">E‐Mail‐Adresse</string>
   <string name="auth_password">Passwort</string>
   <string name="auth_username_placeholder">Benutzername oder E‐Mail‐Adresse</string>
@@ -43,7 +43,7 @@
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem beim Anmelden. Bitte versuche es erneut.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Eine menschliche Überprüfung ist erforderlich.</string>
   <string name="auth_login_error_invalid_action_invalid_credentials">Ungültige Anmeldedaten. Bitte erneut versuchen.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Nicht unterstützter Zwei-Faktor-Code.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Zwei-Faktor-Authentifizierung nicht unterstützt.</string>
   <string name="auth_login_general_error">Es ist ein Fehler aufgetreten.</string>
   <string name="auth_second_factor_title">Zwei-Faktor-Authentifizierung</string>
   <string name="auth_second_factor_subtitle">In diesem Konto sind mehrere 2FA-Mechanismen konfiguriert. Bitte auswählen, wie du deine Identität bestätigen möchtest.</string>
@@ -56,7 +56,7 @@
   <string name="auth_second_factor_recovery_label">Wiederherstellungscode</string>
   <string name="auth_second_factor_switch_to_recovery">Wiederherstellungscode verwenden</string>
   <string name="auth_second_factor_switch_to_totp">Zwei-Faktor-Code verwenden</string>
-  <string name="auth_second_factor_insert_security_key">Lege einen Sicherheitsschlüssel vor, der mit diesem Proton-Konto verknüpft ist. </string>
+  <string name="auth_second_factor_insert_security_key">Lege einen Sicherheitsschlüssel vor, der mit deinem Proton-Konto verknüpft ist. </string>
   <string name="auth_second_factor_insert_security_key_link">Mehr erfahren</string>
   <string name="auth_second_factor_incorrect_code">Ungültiger Code. Bitte erneut versuchen.</string>
   <string name="auth_two_pass_title">Postfach entsperren</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Bitte Benutzername eingeben</string>
   <string name="auth_signup_email_assistive_text">Bitte E-Mail-Adresse eingeben</string>
   <string name="auth_signup_next">Weiter</string>
-  <string name="auth_signup_email_username">Benutzername oder E‐Mail‐Adresse</string>
+  <string name="auth_signup_username">Benutzername</string>
   <string name="auth_signup_create_password">Passwort erstellen</string>
   <string name="auth_signup_password">Passwort</string>
   <string name="auth_signup_repeat_password">Passwort erneut eingeben</string>
@@ -167,4 +167,5 @@
   <string name="settings_password_error_invalid_recovery">Ungültiger 2FA-Code. Bitte versuche es erneut.</string>
   <string name="settings_password_error_2fa_reused">Dieser Code wurde bereits verwendet. Bitte mit einem anderen Code versuchen.</string>
   <string name="settings_password_general_error">Es ist ein Fehler aufgetreten.</string>
+  <string name="proton_error_non_processable_actions">Eine oder mehrere Aktionen können nicht verarbeitet werden. Bitte melden dich jetzt ab und erneut wieder an.</string>
 </resources>

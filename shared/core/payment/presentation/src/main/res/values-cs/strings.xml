@@ -46,4 +46,5 @@
   <string name="payment_subscription_managed_by_google">Vaše předplatné spravuje Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Vaše předplatné spravuje Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Vaše předplatné nelze spravovat v mobilní aplikaci.</string>
+  <string name="proton_error_non_processable_actions">Nelze zpracovat jednu nebo více akcí. Prosím odhlašte se a znovu se přihlašte do vašeho účtu.</string>
 </resources>

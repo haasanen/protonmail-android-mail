@@ -33,7 +33,7 @@
   <string name="auth_login_close">Kapat</string>
   <string name="auth_login_help">Yardım</string>
   <string name="auth_sign_in">Oturum aç</string>
-  <string name="auth_username">Kullanıcı adı</string>
+  <string name="auth_login_username">Kullanıcı adı ya da e-postan adresi</string>
   <string name="auth_email">E-posta</string>
   <string name="auth_password">Parola</string>
   <string name="auth_username_placeholder">Kullanıcı adı ya da e-posta</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Kullanıcı adı boş olamaz</string>
   <string name="auth_signup_email_assistive_text">E-posta adresi boş olamaz</string>
   <string name="auth_signup_next">Sonraki</string>
-  <string name="auth_signup_email_username">Kullanıcı adı ya da e-posta</string>
+  <string name="auth_signup_username">Kullanıcı adı</string>
   <string name="auth_signup_create_password">Parolanızı oluşturun</string>
   <string name="auth_signup_password">Parola</string>
   <string name="auth_signup_repeat_password">Parola onayı</string>
@@ -167,4 +167,5 @@
   <string name="settings_password_error_invalid_recovery">İki adımlı doğrulama kodu yanlış. Lütfen yeniden deneyin.</string>
   <string name="settings_password_error_2fa_reused">Kod zaten kullanılmış. Lütfen başka bir kod deneyin.</string>
   <string name="settings_password_general_error">Bir sorun çıktı.</string>
+  <string name="proton_error_non_processable_actions">Bir ya da birkaç işlem yapılamadı. Lütfen hesabınızın oturumunu kapatıp yeniden açın.</string>
 </resources>

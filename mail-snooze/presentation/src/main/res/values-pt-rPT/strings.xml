@@ -18,35 +18,35 @@
   -->
 <resources>
   <!-- Snooze Bottom Sheet -->
-  <string name="snooze_sheet_option_next_week">Next week</string>
-  <string name="snooze_sheet_option_later_this_week">Later this week</string>
-  <string name="snooze_sheet_option_tomorrow">Tomorrow</string>
-  <string name="snooze_sheet_option_this_weekend">This weekend</string>
-  <string name="snooze_sheet_option_custom">Custom</string>
-  <string name="snooze_sheet_option_custom_detail">Pick date and time</string>
-  <string name="snooze_sheet_option_upsell_detail">Paid feature</string>
-  <string name="snooze_sheet_snooze_title">Snooze until</string>
-  <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
-  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
-  <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
-  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
-  <string name="snooze_sheet_success">Snoozed until %s</string>
-  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
-  <string name="snooze_picker_content_description">Snooze message</string>
-  <string name="snooze_picker_button_title">Save</string>
-  <string name="snooze_custom_upsell_title">Custom date and time</string>
-  <string name="snooze_custom_upsell_title_short">Custom</string>
-  <string name="snooze_custom_upsell_hint_short">Upgrade to access</string>
+  <string name="snooze_sheet_option_next_week">Semana seguinte</string>
+  <string name="snooze_sheet_option_later_this_week">Mais tarde nesta semana</string>
+  <string name="snooze_sheet_option_tomorrow">Amanhã</string>
+  <string name="snooze_sheet_option_this_weekend">Este fim de semana</string>
+  <string name="snooze_sheet_option_custom">Personalizar</string>
+  <string name="snooze_sheet_option_custom_detail">Selecionar data e hora</string>
+  <string name="snooze_sheet_option_upsell_detail">Funcionalidade paga</string>
+  <string name="snooze_sheet_snooze_title">Adiar até</string>
+  <string name="snooze_sheet_option_unsnooze">Retomar</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Lamentamos, ocorreu um erro desconhecido ao adiar esta conversa</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Ocorreu um erro desconhecido ao cancelar o adiamento da conversa</string>
+  <string name="snooze_sheet_error_in_the_past">A hora de adiamento está no passado</string>
+  <string name="snooze_sheet_success">Adiado até %s</string>
+  <string name="unsnooze_sheet_success">A conversa já não está adiada</string>
+  <string name="snooze_picker_content_description">Adiar mensagem</string>
+  <string name="snooze_picker_button_title">Guardar</string>
+  <string name="snooze_custom_upsell_title">Data e hora personalizadas</string>
+  <string name="snooze_custom_upsell_title_short">Personalizar</string>
+  <string name="snooze_custom_upsell_hint_short">Atualize para aceder</string>
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">Adiado até amanhã</item>
+    <item quantity="other">Adiado por %d dias</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">Adiado por %d hora</item>
+    <item quantity="other">Adiado por %d horas</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">Adiado por %d minuto</item>
+    <item quantity="other">Adiado por %d minutos</item>
   </plurals>
 </resources>

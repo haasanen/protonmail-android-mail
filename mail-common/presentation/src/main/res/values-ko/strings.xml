@@ -128,8 +128,8 @@
   <string name="undo_failure_message">동작 되돌리기 실패</string>
   <string name="feature_coming_soon">곧 출시될 기능입니다…</string>
   <!-- date time picker -->
-  <string name="time_picker_custom_time_label">Time</string>
-  <string name="time_picker_custom_date_label">Date</string>
-  <string name="time_picker_send_dialog_ok">Ok</string>
-  <string name="time_picker_enter_time">Enter time</string>
+  <string name="time_picker_custom_time_label">시간</string>
+  <string name="time_picker_custom_date_label">날짜</string>
+  <string name="time_picker_send_dialog_ok">확인</string>
+  <string name="time_picker_enter_time">시간 입력</string>
 </resources>

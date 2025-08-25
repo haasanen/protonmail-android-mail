@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">生成二维码</string>
   <string name="target_sign_in_error_back_to_signin">返回登录</string>
   <string name="target_sign_in_learn_more">了解详情</string>
+  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
 </resources>

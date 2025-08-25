@@ -33,7 +33,7 @@
   <string name="auth_login_close">閉じる</string>
   <string name="auth_login_help">ヘルプ</string>
   <string name="auth_sign_in">サインイン</string>
-  <string name="auth_username">ユーザー名</string>
+  <string name="auth_login_username">ユーザー名もしくはメールアドレス</string>
   <string name="auth_email">メール</string>
   <string name="auth_password">パスワード</string>
   <string name="auth_username_placeholder">ユーザー名もしくはメールアドレス</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">ユーザー名を空白にすることはできません。</string>
   <string name="auth_signup_email_assistive_text">メールを空白にすることはできません。</string>
   <string name="auth_signup_next">次へ</string>
-  <string name="auth_signup_email_username">ユーザー名もしくはメールアドレス</string>
+  <string name="auth_signup_username">ユーザー名</string>
   <string name="auth_signup_create_password">パスワードを作成</string>
   <string name="auth_signup_password">パスワード</string>
   <string name="auth_signup_repeat_password">パスワードを再度入力</string>
@@ -97,7 +97,7 @@
   <string name="auth_signup_please_wait">通常1分以内に完了します。</string>
   <string name="auth_signup_congratulations_subtitle">あなたの Proton アカウントは正常に作成されました。\nプライバシーの世界をお楽しみください！</string>
   <string name="auth_signup_congratulations_title">おめでとうございます</string>
-  <string name="auth_signup_start_using_proton">Proton を始める</string>
+  <string name="auth_signup_start_using_proton">Proton を使い始める</string>
   <string name="auth_signup_validation_password">パスワードは空にできません。</string>
   <string name="auth_signup_validation_passwords_do_not_match">パスワードが一致しません。</string>
   <string name="auth_signup_validation_password_input_invalid">パスワード入力が無効です。</string>
@@ -164,4 +164,5 @@
   <string name="settings_password_error_invalid_recovery">無効な2要素認証コードです。再度お試しください。</string>
   <string name="settings_password_error_2fa_reused">コードはすでに使用されています。他のコードを試してみてください。</string>
   <string name="settings_password_general_error">エラーが発生しました。</string>
+  <string name="proton_error_non_processable_actions">1つまたは複数の操作が処理できません。アカウントからログアウトし、再度ログインしてください。</string>
 </resources>

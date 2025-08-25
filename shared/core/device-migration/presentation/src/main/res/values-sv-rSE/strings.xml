@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Generera QR-kod</string>
   <string name="target_sign_in_error_back_to_signin">Tillbaka till inloggning</string>
   <string name="target_sign_in_learn_more">Lär dig mer</string>
+  <string name="proton_error_non_processable_actions">En eller flera åtgärder kan inte bearbetas. Logga ut och logga in igen på ditt konto.</string>
 </resources>

@@ -17,8 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="payment_error_title">Se ha producido un error.</string>
-  <string name="payment_error_description">No se ha podido cargar esta página. Actualízala o comprueba tu conexión a internet.</string>
+  <string name="payment_error_title">Se ha producido un error</string>
+  <string name="payment_error_description">No se ha podido cargar esta página. Actualízala o comprueba tu conexión a Internet.</string>
   <string name="payment_purchase_button_get">Obtén %1$s</string>
   <string name="payment_purchase_button_subscribed">Suscrito a %1$s</string>
   <string name="payment_purchase_button_product_not_found">Producto no encontrado en la tienda</string>
@@ -31,7 +31,7 @@
   </plurals>
   <string name="payment_welcome_offer_renew_monthly">Oferta de bienvenida. Renovación automática por %1$s/mes</string>
   <string name="payment_welcome_offer_renew_annually">Oferta de bienvenida. Renovación automática por %1$s/año</string>
-  <string name="payment_welcome_offer_renew_biennially">Oferta de bienvenida. Se renueva automáticamente a %1$s cada 2 años</string>
+  <string name="payment_welcome_offer_renew_biennially">Oferta de bienvenida. Se renueva automáticamente por %1$s cada 2 años</string>
   <plurals name="payment_welcome_offer_renew_other">
     <item quantity="one">Oferta de bienvenida. Renovación automática por %1$s/mes</item>
     <item quantity="other">Oferta de bienvenida. Se renueva automáticamente por %1$s cada %2$s meses</item>
@@ -40,6 +40,7 @@
   <string name="payment_subscription_upgrade_your_plan">Mejora tu plan</string>
   <string name="payment_subscription_renew_auto_renew_on">El plan actual se renovará automáticamente el %1$s.</string>
   <string name="payment_subscription_managed_by_google">Google Play administra tu suscripción.</string>
-  <string name="payment_subscription_managed_by_apple">Tu suscripción la administra Apple Store.</string>
+  <string name="payment_subscription_managed_by_apple">Apple Store administra tu suscripción.</string>
   <string name="payment_subscription_managed_by_other">No se puede gestionar tu suscripción desde la aplicación móvil.</string>
+  <string name="proton_error_non_processable_actions">Una o más acciones no se pueden procesar. Cierra sesión y vuelve a iniciarla en tu cuenta.</string>
 </resources>

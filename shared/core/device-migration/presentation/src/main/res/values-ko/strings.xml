@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">QR 코드 생성</string>
   <string name="target_sign_in_error_back_to_signin">로그인으로 돌아가기</string>
   <string name="target_sign_in_learn_more">자세히 알아보기</string>
+  <string name="proton_error_non_processable_actions">하나 이상의 작업을 처리할 수 없습니다. 로그아웃 한 후 다시 로그인하십시오.</string>
 </resources>

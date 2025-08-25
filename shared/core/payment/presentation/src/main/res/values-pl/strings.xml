@@ -46,4 +46,5 @@
   <string name="payment_subscription_managed_by_google">Twoja subskrypcja jest zarządzana przez Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Twoja subskrypcja jest zarządzana przez App Store.</string>
   <string name="payment_subscription_managed_by_other">Nie możesz zarządzać subskrypcją poprzez aplikację mobilną.</string>
+  <string name="proton_error_non_processable_actions">Nie można przetworzyć co najmniej jednej akcji. Zaloguj się ponownie na swoje konto.</string>
 </resources>

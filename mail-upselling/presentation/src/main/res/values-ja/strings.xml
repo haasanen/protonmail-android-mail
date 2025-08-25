@@ -57,11 +57,11 @@
   <string name="upselling_upgrade_plan_generic">この機能にアクセスするには、有料のProton Mailサブスクリプションが必要です</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB のストレージ</string>
-  <string name="upselling_plus_feature_storage_plus_mails">ストレージ容量15 GB、メールアドレス 10 個</string>
+  <string name="upselling_plus_feature_storage_plus_mails">15 GBのストレージ、10 個のメールアドレス</string>
   <string name="upselling_plus_feature_email_addresses">10個のメールアドレス</string>
   <string name="upselling_plus_feature_custom_domain">カスタムメールドメインのサポート</string>
   <string name="upselling_plus_feature_desktop_app">新しい Proton Mail デスクトップアプリ</string>
-  <string name="upselling_plus_feature_calendar">カレンダーのプレミアム機能</string>
+  <string name="upselling_plus_feature_calendar">プレミアムカレンダー機能</string>
   <string name="upselling_plus_feature_folders_labels">無制限のフォルダー、ラベル、フィルター</string>
   <string name="upselling_plus_feature_plus_7_features">+7個のプレミアム機能</string>
   <!-- Unlimited -->

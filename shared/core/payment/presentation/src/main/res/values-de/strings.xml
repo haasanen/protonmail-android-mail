@@ -20,11 +20,11 @@
   <string name="payment_error_title">Etwas ist schiefgelaufen</string>
   <string name="payment_error_description">Diese Seite konnte nicht geladen werden. Bitte die Seite aktualisieren oder die Internetverbindung überprüfen.</string>
   <string name="payment_purchase_button_get">Hol dir %1$s</string>
-  <string name="payment_purchase_button_subscribed">Abonniert auf %1$s</string>
+  <string name="payment_purchase_button_subscribed">%1$s abonniert</string>
   <string name="payment_purchase_button_product_not_found">Produkt im Shop nicht gefunden</string>
   <string name="payment_pay_monthly">Monatlich bezahlen</string>
   <string name="payment_pay_annually">Jährlich bezahlen</string>
-  <string name="payment_pay_biennially">Zweijährlich bezahlen</string>
+  <string name="payment_pay_biennially">Alle zwei Jahre bezahlen</string>
   <plurals name="payment_pay_other">
     <item quantity="one">Für %d Monat zahlen</item>
     <item quantity="other">Für %d Monate zahlen</item>
@@ -40,6 +40,7 @@
   <string name="payment_subscription_upgrade_your_plan">Abonnement upgraden</string>
   <string name="payment_subscription_renew_auto_renew_on">Dein Abonnement wird am %1$s automatisch verlängert.</string>
   <string name="payment_subscription_managed_by_google">Dein Abonnement wird von Google Play verwaltet.</string>
-  <string name="payment_subscription_managed_by_apple">Dein Abonnement wird von Apple Store verwaltet.</string>
+  <string name="payment_subscription_managed_by_apple">Dein Abonnement wird vom Apple Store verwaltet.</string>
   <string name="payment_subscription_managed_by_other">Dein Abonnement kann nicht in der mobilen App verwaltet werden.</string>
+  <string name="proton_error_non_processable_actions">Eine oder mehrere Aktionen können nicht verarbeitet werden. Bitte melden dich jetzt ab und erneut wieder an.</string>
 </resources>

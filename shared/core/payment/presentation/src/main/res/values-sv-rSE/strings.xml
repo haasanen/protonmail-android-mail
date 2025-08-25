@@ -42,4 +42,5 @@
   <string name="payment_subscription_managed_by_google">Din prenumeration är hanterad av Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Din prenumeration är hanterad av Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Din prenumeration kan inte hanteras i mobilappen.</string>
+  <string name="proton_error_non_processable_actions">En eller flera åtgärder kan inte bearbetas. Logga ut och logga in igen på ditt konto.</string>
 </resources>

@@ -42,4 +42,5 @@
   <string name="payment_subscription_managed_by_google">A sua subscrição é gerida pelo Google Play.</string>
   <string name="payment_subscription_managed_by_apple">A sua subscrição é gerida pela Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Não é possível gerir a sua subscrição na aplicação móvel.</string>
+  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
 </resources>

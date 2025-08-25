@@ -36,8 +36,8 @@
   <string name="bottom_sheet_done_action">Concluído</string>
   <string name="bottom_sheet_archive_action">Também arquivar?</string>
   <string name="bottom_sheet_label_as_title">Marcar como</string>
-  <string name="bottom_sheet_label_as_error_fetch">Falha ao obter rótulos.</string>
+  <string name="bottom_sheet_label_as_error_fetch">Falha ao obter marcadores.</string>
   <string name="bottom_sheet_move_to_error_fetch">Falha ao obter as pastas</string>
-  <string name="bottom_sheet_label_as_error_apply">Falha ao aplicar rótulos.</string>
+  <string name="bottom_sheet_label_as_error_apply">Falha ao aplicar marcadores.</string>
   <string name="bottom_sheet_move_to_action_error">Falha ao mover.</string>
 </resources>

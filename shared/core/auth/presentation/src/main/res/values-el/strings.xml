@@ -33,7 +33,7 @@
   <string name="auth_login_close">Κλείσιμο</string>
   <string name="auth_login_help">Βοήθεια</string>
   <string name="auth_sign_in">Σύνδεση</string>
-  <string name="auth_username">Όνομα χρήστη</string>
+  <string name="auth_login_username">Όνομα χρήστη ή email</string>
   <string name="auth_email">Email</string>
   <string name="auth_password">Κωδικός πρόσβασης</string>
   <string name="auth_username_placeholder">Όνομα χρήστη ή email</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Το Όνομα Χρήστη δεν πρέπει να είναι κενό.</string>
   <string name="auth_signup_email_assistive_text">Το Email δεν πρέπει να είναι κενό.</string>
   <string name="auth_signup_next">Επόμενο</string>
-  <string name="auth_signup_email_username">Όνομα χρήστη ή email</string>
+  <string name="auth_signup_username">Όνομα χρήστη</string>
   <string name="auth_signup_create_password">Δημιουργήστε τον κωδικό πρόσβασής σας</string>
   <string name="auth_signup_password">Κωδικός πρόσβασης</string>
   <string name="auth_signup_repeat_password">Επανάληψη κωδικού πρόσβασης</string>
@@ -167,4 +167,5 @@
   <string name="settings_password_error_invalid_recovery">Λανθασμένος κωδικός πιστοποίησης δύο παραγόντων (2FA). Παρακαλούμε προσπαθήστε ξανά.</string>
   <string name="settings_password_error_2fa_reused">Ο κώδικας έχει ήδη χρησιμοποιηθεί. Παρακαλούμε δοκιμάστε έναν διαφορετικό κωδικό.</string>
   <string name="settings_password_general_error">Παρουσιάστηκε σφάλμα.</string>
+  <string name="proton_error_non_processable_actions">Μία ή περισσότερες ενέργειες δεν μπορούν να επεξεργαστούν. Παρακαλούμε αποσυνδεθείτε και συνδεθείτε ξανά στον λογαριασμό σας.</string>
 </resources>

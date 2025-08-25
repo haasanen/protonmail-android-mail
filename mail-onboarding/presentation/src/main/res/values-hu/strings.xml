@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Adatbiztonság mindenkinek</string>
-  <string name="onboarding_privacy_for_all_description">Hívjon meg másokat is a Proton Mail használatára, így ők is élvezhetik a végpontok közti titkosítás előnyeit.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Könnyen naprakész</string>
-  <string name="onboarding_easily_up_to_date_description">Beszélgetés üzemmódban könnyedén átfuthat a szálankénti üzeneteken.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Takaros</string>
-  <string name="onboarding_neat_and_tidy_description">Rendezze el, címkézze fel és lássa el színkóddal üzeneteit, hogy létrehozza a saját tökéletes fiókját.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Üdvözöljük az új\nProton Mail alkalmazásban!</string>
-  <string name="onboarding_welcome_headline">Teljesen átalakítva</string>
-  <string name="onboarding_welcome_description">Köszönjük, hogy csatlakozott a korai béta tesztelők szűk csoportjához. Az Ön visszajelzése kulcsfontosságú ahhoz, hogy még jobb, nyilvános megjelenésre kész Proton Mailt építsünk.</string>
+  <string name="onboarding_welcome_title">Üdvözöljük a Proton Mailben, ahol az adatvédelem alapértelmezett</string>
+  <string name="onboarding_welcome_description">Élvezze a titkosított üzeneteket, a kevesebb levélszemetet, védelmet az adathalászat ellen és a blokkolt követőket. Üdvözöljük az adatvédelemben.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Újraépítve, hogy jobb és gyorsabb legyen</string>
-  <string name="onboarding_rebuilt_headline">Új beérkezett üzenetek kicsomagolva</string>
-  <string name="onboarding_rebuilt_description">Az új Proton Mail gyorsabb, élénk dizájnnal és nagyon keresett funkciókkal, mint az offline mód.</string>
+  <string name="onboarding_rebuilt_title">Fókusz a keze ügyében</string>
+  <string name="onboarding_rebuilt_description">Töltsön kevesebb időt a rendszerezéssel és többet a tényleges feladatokkal. A beérkezett üzenetei úgy lettek kialakítva, hogy könnyebben navigálhatók legyenek, így gyorsabban megtalálhatja, ami fontos.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Köszönjük a részvételét!</string>
-  <string name="onboarding_feedback_headline">Az Ön visszajelzése kulcsfontosságú</string>
-  <string name="onboarding_feedback_description">Új funkciókat vezetünk be a következő hónapokban. Kérjük, tesztelje az alkalmazást, és érintse meg a „Probléma bejelentése” gombot, hogy tudassa velünk, hogyan fejlődhetünk tovább. Visszajelzése felbecsülhetetlen!</string>
+  <string name="onboarding_feedback_title">Maradjon kapcsolatban, még offline is</string>
+  <string name="onboarding_feedback_description">E-maileket olvashat, írhat és kezelhet, bárhol is legyen. Minden automatikusan szinkronizálódik abban a pillanatban, ahogy újra online lesz.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Tovább</string>
-  <string name="onboarding_get_started">Tesztelés indítása</string>
+  <string name="onboarding_get_started">Kezdés</string>
   <string name="onboarding_illustration_content_description">Indulási illusztráció</string>
   <string name="onboarding_close_content_description">Bezárás</string>
-  <string name="onboarding_introducing_next_gen_app">Bemutatjuk új generációs alkalmazásunkat!</string>
 </resources>

@@ -125,7 +125,7 @@
   <string name="composer_schedule_send_custom_upsell_title">Benutzerdefiniertes Datum und Uhrzeit</string>
   <string name="composer_schedule_send_custom_description">Datum und Uhrzeit auswählen</string>
   <string name="composer_error_send_message">Fehler beim Senden der Nachricht</string>
-  <string name="composer_schedule_send_previously_set">Zuletzt festgelegt</string>
+  <string name="composer_schedule_send_previously_set">Zuvor festgelegt</string>
   <string name="composer_schedule_send_custom_time_label">Zeit</string>
   <string name="composer_schedule_send_custom_date_label">Datum</string>
   <string name="composer_schedule_send_dialog_ok">OK</string>
@@ -135,7 +135,7 @@
   <string name="composer_change_sender_invalid_address">Die ausgewählte Adresse kann nicht zum Senden verwendet werden</string>
   <string name="composer_change_sender_unexpected_failure">Beim Ändern des Absenders ist ein Problem aufgetreten. Bitte erneut versuchen.</string>
   <string name="composer_change_sender_error_refreshing_body">Das Aktualisieren des Textes nach dem Wechsel des Absenders ist fehlgeschlagen. Die Signatur ist möglicherweise nicht mehr aktuell.</string>
-  <string name="composer_loading_attachments_error">Anhang konnten nicht geladen werden</string>
+  <string name="composer_loading_attachments_error">Anhänge konnten nicht geladen werden</string>
   <string name="composer_attachment_upload_error_retry">Einige Anhänge konnten nicht hochgeladen werden. Bitte versuche es erneut.</string>
   <string name="composer_external_encryption_unexpected_error">Unerwarteter Fehler %s. Bitte erneut versuchen.</string>
 </resources>

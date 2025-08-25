@@ -33,8 +33,9 @@
   <string name="mail_settings_spam_and_custom_filters">Spam en filters</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automatische acties en sortering</string>
   <string name="mail_settings_privacy_and_security">Privacy en beveiliging</string>
-  <string name="mail_settings_fido_keys">Security keys</string>
+  <string name="mail_settings_fido_keys">Beveiligingssleutels</string>
   <string name="mail_settings_change_password">Wachtwoordbeheer</string>
+  <string name="mail_settings_storage_quota">%1$d%% van %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Bescherming tegen e-mailtracking</string>
   <string name="mail_settings_app_hint">Mobiele app-aanpassingen</string>
   <string name="mail_settings_theme">Thema</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Navigeer naar de instellingen over systeemmeldingen</string>
   <string name="mail_settings_notifications_update_error">Fout bij het bijwerken van instellingen</string>
   <string name="mail_settings_notifications_loading_error">Fout bij het laden van instellingen</string>
+  <string name="notifications_on">Aan</string>
+  <string name="notifications_off">Uit</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Er ging iets fout. Probeer opnieuw.</string>
 </resources>

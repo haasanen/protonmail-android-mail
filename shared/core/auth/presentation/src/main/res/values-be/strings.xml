@@ -33,7 +33,7 @@
   <string name="auth_login_close">Закрыць</string>
   <string name="auth_login_help">Даведка</string>
   <string name="auth_sign_in">Увайсці</string>
-  <string name="auth_username">Імя карыстальніка</string>
+  <string name="auth_login_username">Імя карыстальніка або адрас электроннай пошты</string>
   <string name="auth_email">Электронная пошта</string>
   <string name="auth_password">Пароль</string>
   <string name="auth_username_placeholder">Імя карыстальніка або адрас электроннай пошты</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Поле з імем карыстальніка не можа быць пустым.</string>
   <string name="auth_signup_email_assistive_text">Ліст не можа быць пустым.</string>
   <string name="auth_signup_next">Далей</string>
-  <string name="auth_signup_email_username">Імя карыстальніка або адрас электроннай пошты</string>
+  <string name="auth_signup_username">Імя карыстальніка</string>
   <string name="auth_signup_create_password">Стварыць пароль</string>
   <string name="auth_signup_password">Пароль</string>
   <string name="auth_signup_repeat_password">Паўтарыце пароль</string>
@@ -173,4 +173,5 @@
   <string name="settings_password_error_invalid_recovery">Няправільны код 2ФА. Паспрабуйце яшчэ раз.</string>
   <string name="settings_password_error_2fa_reused">Код ужо выкарыстоўваўся. Паспрабуйце іншы код.</string>
   <string name="settings_password_general_error">Адбылася памылка.</string>
+  <string name="proton_error_non_processable_actions">Адно ці некалькі дзеянняў не могуць быць апрацаваны. Калі ласка, выйдзіце з сістэмы і ўвайдзіце зноў у свой уліковы запіс.</string>
 </resources>

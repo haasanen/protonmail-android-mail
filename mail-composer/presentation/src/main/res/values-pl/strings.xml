@@ -91,7 +91,7 @@
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Dowiedz się więcej</a></string>
   <string name="set_message_password_label">Hasło wiadomości</string>
   <string name="set_message_password_label_hint">Podpowiedź do hasła (opcjonalnie)</string>
-  <string name="set_message_password_supporting_text">Minimum 8 znaków.</string>
+  <string name="set_message_password_supporting_text">Wymagane jest minimum 8 znaków.</string>
   <string name="set_message_password_supporting_error_text">Hasło musi zawierać od 8 do 21 znaków</string>
   <string name="set_message_password_supporting_text_repeat">Hasła muszą pasować do siebie</string>
   <string name="set_message_password_supporting_error_text_repeat">Hasła nie pasują do siebie</string>

@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Конфиденциальность для всех</string>
-  <string name="onboarding_privacy_for_all_description">Приглашайте других пользователей в Proton Mail, чтобы вы все могли воспользоваться преимуществами сквозного шифрования.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Легко обновить</string>
-  <string name="onboarding_easily_up_to_date_description">Просматривайте потоковые сообщения в режиме цепочки писем.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Чистота и порядок</string>
-  <string name="onboarding_neat_and_tidy_description">Упорядочивайте, отмечайте и раскрашивайте зашифрованные сообщения, чтобы создать идеальный индивидуальный почтовый ящик.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Добро пожаловать в\nновое приложение Proton Mail!</string>
-  <string name="onboarding_welcome_headline">Полностью переделано</string>
-  <string name="onboarding_welcome_description">Благодарим вас за присоединение к этой ограниченной группе ранних бета-тестеров. Ваш отзыв крайне важен для создания еще лучшего Proton Mail, готового к публичному выпуску.</string>
+  <string name="onboarding_welcome_title">Welcome to Proton Mail, where privacy is default</string>
+  <string name="onboarding_welcome_description">Enjoy encrypted messages, fewer spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Создано заново: лучше и быстрее</string>
-  <string name="onboarding_rebuilt_headline">Новый вид папки «Входящие»</string>
-  <string name="onboarding_rebuilt_description">The new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
+  <string name="onboarding_rebuilt_title">Focus at your fingertips</string>
+  <string name="onboarding_rebuilt_description">Spend less time sorting and more time doing. Your inbox is designed to be easier to navigate, so you can get to what’s important faster.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Благодарим вас за участие!</string>
-  <string name="onboarding_feedback_headline">Ваш отзыв очень важен</string>
-  <string name="onboarding_feedback_description">В ближайшие месяцы мы будем добавлять новые функции. Пожалуйста, протестируйте приложение и нажмите \"Сообщить о проблеме\", чтобы рассказать нам, как мы можем улучшить его. Ваш вклад бесценен!</string>
+  <string name="onboarding_feedback_title">Stay connected, even offline</string>
+  <string name="onboarding_feedback_description">Read, write, and manage emails wherever you are. Everything syncs automatically the moment you’re back online.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Далее</string>
-  <string name="onboarding_get_started">Начать тестирование</string>
+  <string name="onboarding_get_started">Приступить к работе</string>
   <string name="onboarding_illustration_content_description">Иллюстрация использования</string>
   <string name="onboarding_close_content_description">Закрыть</string>
-  <string name="onboarding_introducing_next_gen_app">Представляем наше приложение нового поколения!</string>
 </resources>

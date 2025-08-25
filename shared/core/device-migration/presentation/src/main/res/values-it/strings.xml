@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Genera un nuovo codice QR</string>
   <string name="target_sign_in_error_back_to_signin">Torna alla pagina di accesso</string>
   <string name="target_sign_in_learn_more">Scopri di più</string>
+  <string name="proton_error_non_processable_actions">Azione non disponibile. Effettua nuovamente l\'accesso all\'account.</string>
 </resources>

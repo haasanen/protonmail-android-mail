@@ -86,8 +86,8 @@
   <string name="action_sender_emails_content_description">Definir acciones para futuros correos de este remitente</string>
   <string name="action_save_attachments_content_description">Guardar adjuntos</string>
   <string name="action_more_content_description">Más</string>
-  <string name="action_snooze_content_description">Pausar</string>
-  <string name="action_snooze_description">Pausar</string>
+  <string name="action_snooze_content_description">Posponer</string>
+  <string name="action_snooze_description">Posponer</string>
   <string name="common_error_loading_actions">Error al cargar las acciones</string>
   <string name="yesterday">Ayer</string>
   <!-- notification channels -->
@@ -131,5 +131,5 @@
   <string name="time_picker_custom_time_label">Hora</string>
   <string name="time_picker_custom_date_label">Fecha</string>
   <string name="time_picker_send_dialog_ok">Aceptar</string>
-  <string name="time_picker_enter_time">Ingresar hora</string>
+  <string name="time_picker_enter_time">Introducir hora</string>
 </resources>

@@ -85,18 +85,18 @@
   <string name="mailbox_search_no_results_title">Sin coincidencias</string>
   <string name="mailbox_search_no_results_explanation">Puedes actualizar la consulta de búsqueda o borrarla.</string>
   <plurals name="mailbox_action_move_conversation">
-    <item quantity="one">Conversation moved to %s</item>
-    <item quantity="other">Conversations moved to %s</item>
+    <item quantity="one">Conversación movida a %s</item>
+    <item quantity="other">Conversaciones movidas a %s</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
-    <item quantity="one">Message moved to %s</item>
-    <item quantity="other">Messages moved to %s</item>
+    <item quantity="one">Se ha movido el mensaje a %s.</item>
+    <item quantity="other">Se han movido los mensajes a %s</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">Vaciar papelera</string>
   <string name="mailbox_action_button_clear_spam">Vaciar spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Mejora tu plan para eliminar automáticamente los mensajes que hayan estado en la carpeta Papelera o Spam por más de 30 días</string>
-  <string name="mailbox_action_clear_trash_spam_upsell_cta">Upgrade to Auto-delete</string>
-  <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Los mensajes en la papelera o spam por más de 30 días serán eliminados automáticamente.</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_cta">Mejorar tu plan para aprovechar la eliminación automática</string>
+  <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Los mensajes en la papelera o spam de más de 30 días serán eliminados automáticamente.</string>
   <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">La eliminación automática está desactivada. Los mensajes de la papelera y el spam permanecerán hasta que los elimines manualmente.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Vaciar la papelera</string>
   <string name="mailbox_action_clear_spam_dialog_title">Vaciar spam</string>
@@ -138,15 +138,15 @@
   <string name="schedule_send_today">Hoy, %1$s</string>
   <!--    Snooze messages-->
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">Pospuesto hasta mañana</item>
+    <item quantity="other">Pospuesto durante %d días</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">Pospuesto %d hora</item>
+    <item quantity="other">Pospuesto %d horas</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">Pospuesto %d minuto</item>
+    <item quantity="other">Pospuesto %d minutos</item>
   </plurals>
 </resources>

@@ -33,8 +33,9 @@
   <string name="mail_settings_spam_and_custom_filters">Spam y filtros</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Acciones automáticas y clasificación</string>
   <string name="mail_settings_privacy_and_security">Privacidad y seguridad</string>
-  <string name="mail_settings_fido_keys">Security keys</string>
+  <string name="mail_settings_fido_keys">Claves de seguridad</string>
   <string name="mail_settings_change_password">Administrador de contraseñas</string>
+  <string name="mail_settings_storage_quota">%1$d%% de %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Protección contra rastreos de correos electrónicos</string>
   <string name="mail_settings_app_hint">Personalización de la aplicación móvil</string>
   <string name="mail_settings_theme">Tema</string>
@@ -52,8 +53,8 @@
   <string name="mail_settings_app_customization_language">Idioma</string>
   <string name="mail_settings_app_customization_appearance">Apariencia</string>
   <string name="mail_settings_app_customization_protection">Bloqueo de la aplicación</string>
-  <string name="mail_settings_app_customization_protection_enabled_description">El bloqueo automático está activado.</string>
-  <string name="mail_settings_app_customization_protection_disabled_description">El bloqueo automático está desactivado.</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">El bloqueo automático está activado</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">El bloqueo automático está desactivado</string>
   <string name="mail_settings_app_customization_use_device_contacts">Usar los contactos del dispositivo</string>
   <string name="mail_settings_app_customization_use_device_contacts_hint">Rellena automáticamente las direcciones de correo electrónico usando los contactos de tu dispositivo.</string>
   <string name="mail_settings_app_customization_swipe_to_next_email">Deslizar al correo electrónico siguiente</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Navegar a los ajustes de notificaciones del sistema</string>
   <string name="mail_settings_notifications_update_error">Error al actualizar los ajustes</string>
   <string name="mail_settings_notifications_loading_error">Error al cargar los ajustes</string>
+  <string name="notifications_on">Activado</string>
+  <string name="notifications_off">Desactivado</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Se ha producido un error. Inténtalo de nuevo.</string>
 </resources>

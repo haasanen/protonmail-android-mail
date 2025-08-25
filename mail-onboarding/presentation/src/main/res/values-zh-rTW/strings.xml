@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">人人都有專屬隱私權</string>
-  <string name="onboarding_privacy_for_all_description">廣邀親友加入 Proton Mail 一同享有端對端加密的各種優勢！</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">輕鬆更新</string>
-  <string name="onboarding_easily_up_to_date_description">在對話模式中輕鬆地穿梭各個訊息討論串</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">整齊俐落</string>
-  <string name="onboarding_neat_and_tidy_description">資料夾、標籤與顏色等模式，助您創造理想中完美、自訂的收件匣。</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">歡迎使用新的\nProton Mail 程式！</string>
-  <string name="onboarding_welcome_headline">徹底改變</string>
-  <string name="onboarding_welcome_description">感謝您加入這個有限的早期體驗版測試人員群組。您的意見反饋對於幫助我們建立一個更棒、準備好公開發布的Proton Mail至關重要。</string>
+  <string name="onboarding_welcome_title">Welcome to Proton Mail, where privacy is default</string>
+  <string name="onboarding_welcome_description">Enjoy encrypted messages, fewer spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">重新打造，更優更快</string>
-  <string name="onboarding_rebuilt_headline">開箱全新收件匣</string>
-  <string name="onboarding_rebuilt_description">全新的 Proton Mail 速度更快，設計更充滿活力，並具備眾多使用者要求的功能，例如離線模式。</string>
+  <string name="onboarding_rebuilt_title">Focus at your fingertips</string>
+  <string name="onboarding_rebuilt_description">Spend less time sorting and more time doing. Your inbox is designed to be easier to navigate, so you can get to what’s important faster.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">感謝您的參與！</string>
-  <string name="onboarding_feedback_headline">您的意見回饋非常重要</string>
-  <string name="onboarding_feedback_description">我們將在未來幾個月內推出新功能。請測試應用程式並輕點「回報問題」，以讓我們知道如何持續改進。您的輸入非常寶貴！</string>
+  <string name="onboarding_feedback_title">Stay connected, even offline</string>
+  <string name="onboarding_feedback_description">Read, write, and manage emails wherever you are. Everything syncs automatically the moment you’re back online.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">下一步</string>
-  <string name="onboarding_get_started">開始測試</string>
+  <string name="onboarding_get_started">入門指南</string>
   <string name="onboarding_illustration_content_description">入門指南</string>
   <string name="onboarding_close_content_description">關閉</string>
-  <string name="onboarding_introducing_next_gen_app">隆重推出我們的次世代應用程式！</string>
 </resources>

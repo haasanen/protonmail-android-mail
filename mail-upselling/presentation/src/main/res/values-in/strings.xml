@@ -26,11 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Mulai Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Dapatkan yang terbaik dari Mail dengan penawaran waktu terbatas ini</string>
   <string name="upselling_mailbox_plus_promo_title">Coba Mail Plus untuk %s</string>
-  <string name="upselling_mailbox_plus_promo_cta">Get 1 month for %s</string>
-  <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
-  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
+  <string name="upselling_mailbox_plus_promo_cta">Dapatkan 1 bulan seharga %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Lewati penawaran</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s untuk bulan pertama, lalu %s per bulan</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Kirim email grup dengan mudah. Nikmati ini dan banyak lagi dengan Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Kelompokkan kontak Anda</string>
@@ -53,8 +53,8 @@
   <string name="upselling_snooze_plus_description_override">Tunda ini — dan kirimkan nanti. Nikmati ini dan banyak lagi dengan Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Bukan waktu yang tepat untuk menerima email ini?</string>
   <!-- Upselling - Misc buttons -->
-  <string name="upselling_button_hint">Upgrade for full flexibility</string>
-  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
+  <string name="upselling_button_hint">Tingkatkan untuk fleksibilitas penuh</string>
+  <string name="upselling_upgrade_plan_generic">Anda memerlukan langganan Proton Mail berbayar untuk mengakses fitur ini</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">Ruang penyimpanan 15 GB</string>
   <string name="upselling_plus_feature_storage_plus_mails">Ruang penyimpanan 15 GB, 10 alamat email</string>
@@ -103,9 +103,9 @@
   <string name="upselling_select_plan_month">1 bulan</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Diperbarui secara otomatis pada harga dan ketentuan yang sama kecuali apabila dibatalkan</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Penawaran selamat datang. Diperpanjang otomatis dengan harga %s%s kecuali dibatalkan</string>
+  <string name="upselling_auto_renew_text_promo_short">Penawaran selamat datang. Diperpanjang otomatis dengan harga %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Diperpanjang otomatis dengan harga %s%s kecuali dibatalkan</string>
   <string name="upselling_social_proof_reviews">2000+ ULASAN</string>
   <string name="upselling_description_social_proof">Tingkatkan ke pengalaman yang dicintai oleh jutaan pelanggan.</string>
   <string name="upselling_discount_tag">HEMAT %s%%</string>

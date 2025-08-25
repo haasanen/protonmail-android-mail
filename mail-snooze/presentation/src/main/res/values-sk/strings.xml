@@ -38,21 +38,21 @@
   <string name="snooze_custom_upsell_title_short">Vlastné</string>
   <string name="snooze_custom_upsell_hint_short">Pre prístup navýšte účet</string>
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="few">Snoozed for %d days</item>
-    <item quantity="many">Snoozed for %d days</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">Odložené do zajtra</item>
+    <item quantity="few">Odložené o %d dni</item>
+    <item quantity="many">Odložené o %d dní</item>
+    <item quantity="other">Odložené o %d dní</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="few">Snoozed for %d hours</item>
-    <item quantity="many">Snoozed for %d hours</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">Odložené o %d hodinu</item>
+    <item quantity="few">Odložené o %d hodiny</item>
+    <item quantity="many">Odložené o %d hodín</item>
+    <item quantity="other">Odložené o %d hodín</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="few">Snoozed for %d minutes</item>
-    <item quantity="many">Snoozed for %d minutes</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">Odložené o %d minútu</item>
+    <item quantity="few">Odložené o %d minúty</item>
+    <item quantity="many">Odložené o %d minút</item>
+    <item quantity="other">Odložené o %d minút</item>
   </plurals>
 </resources>

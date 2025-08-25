@@ -17,31 +17,18 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <!--  Onboarding 1  -->
-  <string name="onboarding_privacy_for_all_headline">Privasi untuk semua</string>
-  <string name="onboarding_privacy_for_all_description">Undang pengguna lain ke Proton Mail agar Anda dan rekan Anda dapat saling memperoleh manfaat dari enkripsi end-to-end.</string>
-  <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">Selalu termutakhir</string>
-  <string name="onboarding_easily_up_to_date_description">Baca pesan berutas dengan mudah dalam mode percakapan.</string>
-  <!--  Onboarding 3  -->
-  <string name="onboarding_neat_and_tidy_headline">Rapi dan teratur</string>
-  <string name="onboarding_neat_and_tidy_description">Arsipkan, labeli, dan warnai pesan Anda untuk menciptakan kotak masuk khusus yang sempurna bagi Anda.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Selamat datang di\naplikasi Proton Mail yang baru!</string>
-  <string name="onboarding_welcome_headline">Dirombak dari dasar</string>
-  <string name="onboarding_welcome_description">Terima kasih telah bergabung dengan grup terbatas beta tester awal ini. Tanggapan Anda sangat penting untuk membantu kami membangun Proton Mail yang lebih baik, siap untuk dirilis ke publik.</string>
+  <string name="onboarding_welcome_title">Selamat datang di Proton Mail, di mana privasi merupakan hal yang baku</string>
+  <string name="onboarding_welcome_description">Nikmati pesan yang terenkripsi, lebih sedikit spam, perlindungan dari phishing, dan pelacak yang diblokir. Selamat datang di privasi.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Dibangun kembali agar lebih baik dan lebih cepat</string>
-  <string name="onboarding_rebuilt_headline">Kotak masuk yang baru</string>
-  <string name="onboarding_rebuilt_description">Proton Mail yang baru beroperasi lebih cepat dengan desain dinamis dan fitur-fitur yang sangat diminati, seperti mode luar jaringan (luring).</string>
+  <string name="onboarding_rebuilt_title">Fokus pada ujung jari Anda</string>
+  <string name="onboarding_rebuilt_description">Spend less time sorting and more time doing. Your inbox is designed to be easier to navigate, so you can get to what’s important faster.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Terima kasih atas partisipasi Anda!</string>
-  <string name="onboarding_feedback_headline">Tanggapan Anda adalah kunci</string>
-  <string name="onboarding_feedback_description">Kami akan meluncurkan fitur baru dalam beberapa bulan mendatang. Silakan uji aplikasi dan ketuk \"Laporkan masalah\" untuk memberi tahu kami bagaimana kami dapat terus meningkatkan. Masukan Anda tak ternilai!</string>
+  <string name="onboarding_feedback_title">Stay connected, even offline</string>
+  <string name="onboarding_feedback_description">Read, write, and manage emails wherever you are. Everything syncs automatically the moment you’re back online.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Selanjutnya</string>
-  <string name="onboarding_get_started">Mulai uji coba</string>
+  <string name="onboarding_get_started">Mulai</string>
   <string name="onboarding_illustration_content_description">Ilustrasi pengenalan</string>
   <string name="onboarding_close_content_description">Tutup</string>
-  <string name="onboarding_introducing_next_gen_app">Memperkenalkan aplikasi generasi terbaru kami!</string>
 </resources>

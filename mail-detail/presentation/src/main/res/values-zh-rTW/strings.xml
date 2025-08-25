@@ -133,19 +133,19 @@
   <string name="message_cancel_schedule_send_dialog_title">編輯與重新排程</string>
   <string name="message_cancel_schedule_send_dialog_message">此郵件將被移動至「草稿」，讓您可以繼續編輯。您必須重新安排寄送時間。</string>
   <!-- RSVP widget -->
-  <string name="rsvp_widget_no_title">(no title)</string>
-  <string name="rsvp_widget_attendance_optional">(Attendance optional)</string>
-  <string name="rsvp_widget_attending">Attending?</string>
-  <string name="rsvp_widget_yes">Yes</string>
-  <string name="rsvp_widget_maybe">Maybe</string>
-  <string name="rsvp_widget_no">No</string>
-  <string name="rsvp_widget_yes_long">Yes, I\'ll attend</string>
+  <string name="rsvp_widget_no_title">(無標題)</string>
+  <string name="rsvp_widget_attendance_optional">(非必要出席)</string>
+  <string name="rsvp_widget_attending">會否出席？</string>
+  <string name="rsvp_widget_yes">是</string>
+  <string name="rsvp_widget_maybe">可能</string>
+  <string name="rsvp_widget_no">否</string>
+  <string name="rsvp_widget_yes_long">是，我會出席</string>
   <string name="rsvp_widget_maybe_long">Maybe, I\'ll attend</string>
-  <string name="rsvp_widget_no_long">No, I won\'t attend</string>
-  <string name="rsvp_widget_organizer">(Organizer)</string>
-  <string name="rsvp_widget_you">You</string>
+  <string name="rsvp_widget_no_long">否，我不會出席</string>
+  <string name="rsvp_widget_organizer">(召集人)</string>
+  <string name="rsvp_widget_you">您</string>
   <plurals name="rsvp_widget_participants">
-    <item quantity="other">%1$d Participants</item>
+    <item quantity="other">%1$d 位參與者</item>
   </plurals>
   <string name="rsvp_widget_happening_now">Happening <b>now</b></string>
   <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
@@ -154,17 +154,17 @@
   <string name="rsvp_widget_event_cancelled_invite_outdated">Event cancelled. This invitation is out of date.</string>
   <string name="rsvp_widget_offline_invite_outdated">You\'re offline. The displayed information may be out of date.</string>
   <string name="rsvp_widget_address_is_incorrect">Your address can\'t be used to reply. Please update your account information.</string>
-  <string name="rsvp_widget_user_is_organizer">You are the organizer.</string>
+  <string name="rsvp_widget_user_is_organizer">您是召集人.</string>
   <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
-  <string name="rsvp_widget_today">Today</string>
-  <string name="rsvp_widget_tomorrow">Tomorrow</string>
+  <string name="rsvp_widget_today">今天</string>
+  <string name="rsvp_widget_tomorrow">明天</string>
   <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
   <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
-  <string name="rsvp_widget_button_retry">Retry</string>
+  <string name="rsvp_widget_button_retry">重試</string>
   <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
-  <string name="rsvp_widget_open_in_proton_calendar">Open in Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copy address</string>
-  <string name="rsvp_widget_message">Message</string>
+  <string name="rsvp_widget_open_in_proton_calendar">在 Proton 行事曆開啟</string>
+  <string name="rsvp_widget_copy_address">複製郵件位址</string>
+  <string name="rsvp_widget_message">郵件訊息</string>
   <string name="snooze_message_snoozed_until_banner_title">Snoozed until</string>
-  <string name="snooze_message_unsnooze_banner_button">Unsnooze</string>
+  <string name="snooze_message_unsnooze_banner_button">取消緩辦</string>
 </resources>

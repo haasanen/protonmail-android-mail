@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Duplikált címzett(ek) eltávolítva</string>
   <string name="composer_error_store_draft_subject">A tárgysor nem lett elmentve</string>
   <string name="composer_error_store_draft_recipients">A vázlat címzetteinek tárolása nem sikerült</string>
-  <string name="composer_error_loading_draft">The content of this draft is not available at this time, editing isn\'t possible.</string>
+  <string name="composer_error_loading_draft">Ennek a piszkozatnak a tartalma jelenleg nem érhető el, a szerkesztés nem lehetséges.</string>
   <string name="composer_add_attachments_content_description">Melléklet hozzáadása</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importálás innen…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">A saját fotókönyvtárból</string>
@@ -86,18 +86,18 @@
   <string name="message_sending_error_dialog_text_error">A megadott címre a következő ok miatt nem lehet elküldeni az e-mailt:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Nincs megbízható kulcs: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Cím nem létezik: %s</string>
-  <string name="set_message_password_title">Set Password</string>
-  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
+  <string name="set_message_password_title">Jelszó beállítása</string>
+  <string name="set_message_password_info_message">Állítson be jelszót az üzenet titkosításához a nem Proton Mail-fiókkal rendelkező címzettek számára.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">További információk</a></string>
   <string name="set_message_password_label">Üzenet jelszó</string>
   <string name="set_message_password_label_hint">Jelszó emlékeztető (nem kötelező)</string>
-  <string name="set_message_password_supporting_text">Minimum 8 characters required.</string>
-  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
+  <string name="set_message_password_supporting_text">Legalább 8 karakter szükséges.</string>
+  <string name="set_message_password_supporting_error_text">A jelszónak legalább 8, és legfeljebb 21 karakter hosszúnak kell lennie</string>
   <string name="set_message_password_supporting_text_repeat">A jelszavaknak egyezniük kell</string>
   <string name="set_message_password_supporting_error_text_repeat">A jelszavak nem egyeznek</string>
   <string name="set_message_password_button_show">Jelszó megjelenítése</string>
   <string name="set_message_password_button_hide">Jelszó elrejtése</string>
-  <string name="set_message_password_button_save_changes">Save</string>
+  <string name="set_message_password_button_save_changes">Mentés</string>
   <string name="set_message_password_button_remove_password">Jelszó eltávolítása</string>
   <string name="respondInline">Válaszolás az eredeti levélben</string>
   <string name="subject_placeholder">Tárgy</string>
@@ -122,7 +122,7 @@
   <string name="composer_schedule_send_tomorrow_title">Holnap</string>
   <string name="composer_schedule_send_monday_title">Hétfő</string>
   <string name="composer_schedule_send_custom_title">Egyéni</string>
-  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
+  <string name="composer_schedule_send_custom_upsell_title">Egyéni dátum és idő</string>
   <string name="composer_schedule_send_custom_description">Válasszon időt és dátumot</string>
   <string name="composer_error_send_message">Hiba az üzenet küldése közben</string>
   <string name="composer_schedule_send_previously_set">Korábban beállítva</string>
@@ -135,7 +135,7 @@
   <string name="composer_change_sender_invalid_address">A kiválasztott cím nem használható küldésre</string>
   <string name="composer_change_sender_unexpected_failure">Hiba történt a feladó módosítása során. Próbálja meg újra.</string>
   <string name="composer_change_sender_error_refreshing_body">A szövegtörzs frissítése a feladóváltás után sikertelen volt. Az aláírás elavult lehet.</string>
-  <string name="composer_loading_attachments_error">Failed loading attachments</string>
-  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
-  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
+  <string name="composer_loading_attachments_error">A csatolmányok betöltése sikertelen</string>
+  <string name="composer_attachment_upload_error_retry">Néhány csatolmány feltöltése sikertelen. Kérjük, próbálja újra.</string>
+  <string name="composer_external_encryption_unexpected_error">Váratlan hiba %s. Próbálja újra.</string>
 </resources>

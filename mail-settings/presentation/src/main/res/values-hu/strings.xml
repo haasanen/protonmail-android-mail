@@ -33,8 +33,9 @@
   <string name="mail_settings_spam_and_custom_filters">Levélszemét és szűrők</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automatikus műveletek és rendezés</string>
   <string name="mail_settings_privacy_and_security">Adatvédelem és biztonság</string>
-  <string name="mail_settings_fido_keys">Security keys</string>
-  <string name="mail_settings_change_password">Password management</string>
+  <string name="mail_settings_fido_keys">Hitelesítési kulcsok</string>
+  <string name="mail_settings_change_password">Jelszókezelő</string>
+  <string name="mail_settings_storage_quota">%1$d%% / %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">E-mail követés elleni védelem</string>
   <string name="mail_settings_app_hint">Mobilalkalmazás testreszabása</string>
   <string name="mail_settings_theme">Téma</string>
@@ -51,7 +52,7 @@
   <string name="mail_settings_app_customization_notification">Értesítések</string>
   <string name="mail_settings_app_customization_language">Nyelv</string>
   <string name="mail_settings_app_customization_appearance">Megjelenés</string>
-  <string name="mail_settings_app_customization_protection">App lock</string>
+  <string name="mail_settings_app_customization_protection">Alkalmazászár</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatikus lezárás engedélyezve</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatikus lezárás kikapcsolva</string>
   <string name="mail_settings_app_customization_use_device_contacts">Eszköz névjegyek használata</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Nyissa meg a rendszer értesítési beállításait</string>
   <string name="mail_settings_notifications_update_error">Hiba az beállítások frissítése során</string>
   <string name="mail_settings_notifications_loading_error">Hiba az beállítások betöltése során</string>
+  <string name="notifications_on">Be</string>
+  <string name="notifications_off">Ki</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Hiba történt. Próbálja újra.</string>
 </resources>

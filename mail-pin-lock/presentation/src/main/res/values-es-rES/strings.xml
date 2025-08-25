@@ -29,7 +29,7 @@
   <string name="mail_pinlock_settings_new_pin_description">Introduce un código PIN de entre 4 y 21 dígitos</string>
   <string name="mail_pinlock_settings_confirm_pin_topbar">Confirmar el código PIN</string>
   <string name="mail_pinlock_settings_confirm_pin_title">Repetir el código PIN</string>
-  <string name="mail_pinlock_settings_confirm_pin_description">Vuelve a ingresar tu código PIN para asegurarte de que sea correcto.</string>
+  <string name="mail_pinlock_settings_confirm_pin_description">Vuelve a introducir tu código PIN para asegurarte de que sea correcto.</string>
   <string name="mail_pinlock_settings_verify_pin_topbar">Introduce tu código PIN</string>
   <string name="mail_pinlock_settings_verify_pin_title">Introduce tu código PIN</string>
   <string name="mail_pinlock_settings_verify_pin_description">Confirma que eres tú para continuar</string>
@@ -52,7 +52,7 @@
     <item quantity="other">%s intentos restantes antes de cerrar sesión.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">Se ha producido un error al verificar tu código PIN.</string>
-  <string name="mail_settings_pin_insertion_error_too_short">El código PIN debe tener al menos 4 dígitos.</string>
+  <string name="mail_settings_pin_insertion_error_too_short">El código PIN debe tener al menos 4 dígitos</string>
   <string name="mail_settings_pin_verification_error_too_many">Demasiados intentos. Inténtalo de nuevo más tarde.</string>
   <string name="mail_settings_pin_verification_error_no_match">Código PIN incorrecto</string>
   <string name="mail_settings_pin_verification_error_too_many_frequent">Demasiados intentos frecuentes. Inténtalo de nuevo más tarde.</string>
@@ -73,12 +73,12 @@
   <string name="mail_settings_biometrics_unknown_lock">Se ha producido un error al obtener la política de bloqueo actual.</string>
   <!-- Auto lock dialog -->
   <string name="mail_settings_pin_lock_dialog_title">Confirmar el código PIN</string>
-  <string name="mail_settings_pin_lock_dialog_subtitle">Para seguridad, introduce tu código PIN actual para continuar.</string>
+  <string name="mail_settings_pin_lock_dialog_subtitle">Por motivos de seguridad, introduce tu código PIN actual para continuar.</string>
   <string name="mail_settings_pin_lock_dialog_button_next">Siguiente</string>
   <string name="mail_settings_pin_lock_dialog_button_cancel">Cancelar</string>
   <!-- Biometrics unlock -->
   <string name="mail_settings_biometrics_title_confirm">Confirma la operación</string>
-  <string name="mail_settings_biometrics_subtitle_default">Usa tu huella digital para confirmar la operación.</string>
+  <string name="mail_settings_biometrics_subtitle_default">Usa tu huella digital para confirmar la operación</string>
   <string name="mail_settings_biometrics_button_negative">Cancelar</string>
   <string name="mail_settings_biometrics_title_app_locked">Aplicación bloqueada</string>
   <string name="mail_settings_biometrics_subtitle_app_locked">Desbloquear usando las credenciales biométricas</string>

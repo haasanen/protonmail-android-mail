@@ -35,6 +35,7 @@
   <string name="mail_settings_privacy_and_security">Vie privée et sécurité</string>
   <string name="mail_settings_fido_keys">Clés de sécurité</string>
   <string name="mail_settings_change_password">Gestion des mots de passe</string>
+  <string name="mail_settings_storage_quota">%1$d%% sur %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Protection contre le suivi des e-mails</string>
   <string name="mail_settings_app_hint">Personnalisations de l\'application mobile</string>
   <string name="mail_settings_theme">Thème</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Accédez aux paramètres de notification du système.</string>
   <string name="mail_settings_notifications_update_error">Une erreur s\'est produite lors de la mise à jour des paramètres.</string>
   <string name="mail_settings_notifications_loading_error">Une erreur s\'est produite lors du chargement des paramètres.</string>
+  <string name="notifications_on">Activé</string>
+  <string name="notifications_off">Désactivé</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Une erreur est survenue. Veuillez réessayer.</string>
 </resources>

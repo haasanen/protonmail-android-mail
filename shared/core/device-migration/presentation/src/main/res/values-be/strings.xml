@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Згенерыраваць QR-код</string>
   <string name="target_sign_in_error_back_to_signin">Вярнуцца да ўваходу</string>
   <string name="target_sign_in_learn_more">Даведацца больш</string>
+  <string name="proton_error_non_processable_actions">Адно ці некалькі дзеянняў не могуць быць апрацаваны. Калі ласка, выйдзіце з сістэмы і ўвайдзіце зноў у свой уліковы запіс.</string>
 </resources>

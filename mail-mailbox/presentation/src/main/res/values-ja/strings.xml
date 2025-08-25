@@ -53,12 +53,10 @@
     <item quantity="other">%d個のメッセージを削除</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_message">
-    <item quantity="other">この会話を完全に削除してよろしいですか？
-
-これらの会話を完全に削除してよろしいですか？</item>
+    <item quantity="other">この会話を完全に削除してよろしいですか？</item>
   </plurals>
   <plurals name="mailbox_action_delete_message_dialog_message">
-    <item quantity="other">これらのメッセージを永久に削除してもよろしいですか？</item>
+    <item quantity="other">これらのメッセージを完全に削除してもよろしいですか？</item>
   </plurals>
   <plurals name="mailbox_action_delete_message">
     <item quantity="other">%d 個のメッセージを完全に削除しました</item>

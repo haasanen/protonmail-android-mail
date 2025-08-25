@@ -18,35 +18,35 @@
   -->
 <resources>
   <!-- Snooze Bottom Sheet -->
-  <string name="snooze_sheet_option_next_week">Next week</string>
-  <string name="snooze_sheet_option_later_this_week">Later this week</string>
-  <string name="snooze_sheet_option_tomorrow">Tomorrow</string>
-  <string name="snooze_sheet_option_this_weekend">This weekend</string>
-  <string name="snooze_sheet_option_custom">Custom</string>
-  <string name="snooze_sheet_option_custom_detail">Pick date and time</string>
-  <string name="snooze_sheet_option_upsell_detail">Paid feature</string>
-  <string name="snooze_sheet_snooze_title">Snooze until</string>
-  <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
-  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
-  <string name="snooze_sheet_error_unable_to_unsnooze">Se produjo un error desconocido al reanudar la conversación.</string>
-  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
-  <string name="snooze_sheet_success">Snoozed until %s</string>
-  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
-  <string name="snooze_picker_content_description">Pausar el mensaje</string>
+  <string name="snooze_sheet_option_next_week">La próxima semana</string>
+  <string name="snooze_sheet_option_later_this_week">A finales de esta semana</string>
+  <string name="snooze_sheet_option_tomorrow">Mañana</string>
+  <string name="snooze_sheet_option_this_weekend">Este fin de semana</string>
+  <string name="snooze_sheet_option_custom">Personalizar</string>
+  <string name="snooze_sheet_option_custom_detail">Seleccionar fecha y hora</string>
+  <string name="snooze_sheet_option_upsell_detail">Característica de pago</string>
+  <string name="snooze_sheet_snooze_title">Posponer hasta</string>
+  <string name="snooze_sheet_option_unsnooze">Dejar de posponer</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Lo sentimos, encontramos un error desconocido al posponer esta conversación</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Se produjo un error desconocido al dejar de posponer la conversación</string>
+  <string name="snooze_sheet_error_in_the_past">La hora para posponer está en el pasado</string>
+  <string name="snooze_sheet_success">Pospuesto hasta %s</string>
+  <string name="unsnooze_sheet_success">La conversación ya no está pospuesta</string>
+  <string name="snooze_picker_content_description">Posponer el mensaje</string>
   <string name="snooze_picker_button_title">Guardar</string>
-  <string name="snooze_custom_upsell_title">Custom date and time</string>
+  <string name="snooze_custom_upsell_title">Fecha y hora personalizada</string>
   <string name="snooze_custom_upsell_title_short">Personalizar</string>
   <string name="snooze_custom_upsell_hint_short">Mejora para acceder</string>
   <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozed until tomorrow</item>
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="one">Pospuesto hasta mañana</item>
+    <item quantity="other">Pospuesto durante %d días</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozed for %d hour</item>
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="one">Pospuesto %d hora</item>
+    <item quantity="other">Pospuesto %d horas</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozed for %d minute</item>
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="one">Pospuesto %d minuto</item>
+    <item quantity="other">Pospuesto %d minutos</item>
   </plurals>
 </resources>

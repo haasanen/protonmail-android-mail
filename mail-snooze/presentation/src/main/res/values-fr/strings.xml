@@ -34,7 +34,7 @@
   <string name="unsnooze_sheet_success">La conversation n\'est plus mise en attente.</string>
   <string name="snooze_picker_content_description">Mise en attente d\'un message</string>
   <string name="snooze_picker_button_title">Enregistrer</string>
-  <string name="snooze_custom_upsell_title">Sélectionner la date et l\'heure</string>
+  <string name="snooze_custom_upsell_title">Date et heure personnalisées</string>
   <string name="snooze_custom_upsell_title_short">Personnalisé</string>
   <string name="snooze_custom_upsell_hint_short">Changer d\'abonnement pour y accéder</string>
   <plurals name="snoozed_in_days">

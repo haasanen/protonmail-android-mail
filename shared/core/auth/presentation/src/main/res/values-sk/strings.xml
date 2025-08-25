@@ -33,7 +33,7 @@
   <string name="auth_login_close">Zavrieť</string>
   <string name="auth_login_help">Nápoveda</string>
   <string name="auth_sign_in">Prihlásiť sa</string>
-  <string name="auth_username">Používateľské meno</string>
+  <string name="auth_login_username">Username or email</string>
   <string name="auth_email">Email</string>
   <string name="auth_password">Heslo</string>
   <string name="auth_username_placeholder">Používateľské meno alebo email</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Používateľské meno nesmie byť prázdne.</string>
   <string name="auth_signup_email_assistive_text">Email nesmie byť prázdny.</string>
   <string name="auth_signup_next">Ďalej</string>
-  <string name="auth_signup_email_username">Používateľské meno alebo email</string>
+  <string name="auth_signup_username">Username</string>
   <string name="auth_signup_create_password">Vytvorte si heslo</string>
   <string name="auth_signup_password">Heslo</string>
   <string name="auth_signup_repeat_password">Zopakovať heslo</string>
@@ -123,9 +123,9 @@
   <string name="auth_user_check_delinquent_error">Váš účet je aktuálne pozastavený kvôli faktúre po splatnosti.</string>
   <plurals name="auth_user_check_max_free_error">
     <item quantity="one">Je povolený iba jeden bezplatný účet Proton.</item>
-    <item quantity="few">Only %d free Proton accounts are allowed.</item>
-    <item quantity="many">Only %d free Proton accounts are allowed.</item>
-    <item quantity="other">Only %d free Proton accounts are allowed.</item>
+    <item quantity="few">Sú povolené iba %d bezplatné účty Proton.</item>
+    <item quantity="many">Je povolených iba %d bezplatných účtov Proton.</item>
+    <item quantity="other">Je povolených iba %d bezplatných účtov Proton.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Niečo sa pokazilo. Skúste to prosím znova.</string>
   <string name="auth_fido_config_error">Chyba pri načítaní uložených kľúčov.</string>
@@ -166,11 +166,12 @@
   <string name="settings_password_management_login_success">Prihlasovacie heslo bolo aktualizované</string>
   <string name="settings_password_management_second_success">Druhé heslo aktualizované</string>
   <string name="settings_password_management_start_recovery">Nepoznáte svoje aktuálne heslo?</string>
-  <string name="settings_password_management_2fa">Two FA is needed</string>
+  <string name="settings_password_management_2fa">Vyžaduje sa 2FA</string>
   <string name="settings_password_invalid_2fa">Neplatný kód dvojfázového overenia. Skúste to prosím znova.</string>
-  <string name="settings_password_error_empty">Password cannot be empty.</string>
-  <string name="settings_password_error">Incorrect username or password. Please try again.</string>
-  <string name="settings_password_error_invalid_recovery">Incorrect 2FA code. Please try again.</string>
-  <string name="settings_password_error_2fa_reused">Code has already been used. Please try a different code.</string>
-  <string name="settings_password_general_error">An error occurred.</string>
+  <string name="settings_password_error_empty">Heslo nemôže byť prázdne.</string>
+  <string name="settings_password_error">Nesprávne používateľské meno alebo heslo. Skúste to znova, prosím.</string>
+  <string name="settings_password_error_invalid_recovery">Nesprávny 2FA kód. Skúste to znova, prosím.</string>
+  <string name="settings_password_error_2fa_reused">Kód už bol použitý. Skúste použiť iný kód.</string>
+  <string name="settings_password_general_error">Vyskytla sa chyba.</string>
+  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
 </resources>

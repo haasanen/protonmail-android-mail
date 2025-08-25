@@ -34,7 +34,8 @@
   <string name="mail_settings_spam_and_custom_filters_hint">Classificação e ações automáticas</string>
   <string name="mail_settings_privacy_and_security">Privacidade e segurança</string>
   <string name="mail_settings_fido_keys">Chaves de segurança</string>
-  <string name="mail_settings_change_password">Gerenciamento de senhas</string>
+  <string name="mail_settings_change_password">Gerenciamento de senha</string>
+  <string name="mail_settings_storage_quota">%1$d%% de %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Proteção de rastreamento de e-mail</string>
   <string name="mail_settings_app_hint">Personalizações do aplicativo para celular</string>
   <string name="mail_settings_theme">Tema</string>
@@ -114,6 +115,8 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Navegue até as configurações de notificação do sistema</string>
   <string name="mail_settings_notifications_update_error">Erro ao atualizar as configurações</string>
   <string name="mail_settings_notifications_loading_error">Erro ao carregar as configurações</string>
+  <string name="notifications_on">Ativado</string>
+  <string name="notifications_off">Desativado</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Ocorreu um erro. Tente novamente.</string>
 </resources>

@@ -76,10 +76,10 @@
   <string name="mailbox_search_no_results_title">일치하는 항목 없음</string>
   <string name="mailbox_search_no_results_explanation">검색 쿼리를 업데이트 및 삭제할 수 있습니다.</string>
   <plurals name="mailbox_action_move_conversation">
-    <item quantity="other">Conversations moved to %s</item>
+    <item quantity="other">대화가 %s(으)로 이동함</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
-    <item quantity="other">Messages moved to %s</item>
+    <item quantity="other">메시지가 %s(으)로 이동함</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">휴지통 비우기</string>
   <string name="mailbox_action_button_clear_spam">스팸함 비우기</string>

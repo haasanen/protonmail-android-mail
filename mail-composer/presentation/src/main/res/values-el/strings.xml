@@ -136,6 +136,6 @@
   <string name="composer_change_sender_unexpected_failure">Παρουσιάστηκε κάποιο πρόβλημα κατά την αλλαγή του αποστολέα. Παρακαλούμε προσπαθήστε ξανά.</string>
   <string name="composer_change_sender_error_refreshing_body">Η ανανέωση του σώματος απέτυχε μετά την αλλαγή αποστολέα. Η υπογραφή ενδέχεται να είναι παλιά.</string>
   <string name="composer_loading_attachments_error">Αποτυχία φόρτωσης συνημμένων</string>
-  <string name="composer_attachment_upload_error_retry">Μερικά συνημμένα απέτυχαν να ανεβούν. Παρακαλώ, δοκιμάστε ξανά.</string>
+  <string name="composer_attachment_upload_error_retry">Μερικά συνημμένα απέτυχαν να ανεβούν. Παρακαλούμε, δοκιμάστε ξανά.</string>
   <string name="composer_external_encryption_unexpected_error">Απροσδόκητο σφάλμα %s. Δοκιμάστε ξανά.</string>
 </resources>

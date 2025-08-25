@@ -55,4 +55,5 @@
   <string name="target_sign_in_error_new_qr">Générer un QR code</string>
   <string name="target_sign_in_error_back_to_signin">Retourner à la connexion</string>
   <string name="target_sign_in_learn_more">En savoir plus</string>
+  <string name="proton_error_non_processable_actions">Une ou plusieurs actions ne peuvent pas être traitées. Veuillez vous déconnecter et vous reconnecter à votre compte.</string>
 </resources>
