@@ -39,7 +39,6 @@ class MobileSignatureDataSourceImpl @Inject constructor(
         val wrapper = getCustomSettingsWrapper(userId)
             ?: return DataError.Local.NoUserSession.left()
 
-        Timber.d("mobile-signature: get signature for (userId=$userId)")
         return wrapper.getMobileSignature()
             .map { it.toDomainModel() }
     }
@@ -48,7 +47,6 @@ class MobileSignatureDataSourceImpl @Inject constructor(
         val wrapper = getCustomSettingsWrapper(userId)
             ?: return DataError.Local.NoUserSession.left()
 
-        Timber.d("mobile-signature: set signature: $signature")
         return wrapper.setMobileSignature(signature)
     }
 
@@ -56,7 +54,6 @@ class MobileSignatureDataSourceImpl @Inject constructor(
         val wrapper = getCustomSettingsWrapper(userId)
             ?: return DataError.Local.NoUserSession.left()
 
-        Timber.d("mobile-signature: toggle enabled=$enabled")
         return wrapper.setMobileSignatureEnabled(enabled)
     }
 
