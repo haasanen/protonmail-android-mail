@@ -61,6 +61,7 @@ import uniffi.proton_mail_uniffi.MessageBanner
 import uniffi.proton_mail_uniffi.MessageButtons
 import uniffi.proton_mail_uniffi.MimeType
 import uniffi.proton_mail_uniffi.MimeTypeCategory
+import uniffi.proton_mail_uniffi.MobileAction
 import uniffi.proton_mail_uniffi.MobileSettings
 import uniffi.proton_mail_uniffi.MobileSignature
 import uniffi.proton_mail_uniffi.MobileSignatureStatus
@@ -155,6 +156,7 @@ typealias RemoteMessageId = RemoteId
 typealias LocalAttachmentData = AttachmentData
 typealias LocalAppSettings = AppSettings
 typealias LocalAppSettingsDiff = AppSettingsDiff
+typealias LocalMobileAction = MobileAction
 typealias LocalAutoLock = AutoLock
 typealias LocalProtection = AppProtection
 typealias LocalAutoLockPin = List<UInt>
