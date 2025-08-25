@@ -23,7 +23,7 @@ import arrow.core.right
 import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.mapper.MobileSignatureUiModelMapper
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureState
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureViewAction
@@ -51,8 +51,8 @@ class MobileSignatureViewModelTest {
     private val userId = UserId("user-123")
     private val initialPreference = MobileSignatureTestData.PreferenceEnabled
 
-    private val userSessionRepository = mockk<UserSessionRepository> {
-        every { observePrimaryUserId() } returns flowOf(userId)
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
+        every { this@mockk.invoke() } returns flowOf(userId)
     }
 
     private val mobileSignatureRepository = mockk<MobileSignatureRepository>(relaxed = true).apply {
@@ -66,7 +66,7 @@ class MobileSignatureViewModelTest {
         // Given
         val expected = MobileSignatureState.Data(MobileSignatureUiModelMapper.toSettingsUiModel(initialPreference))
         val viewModel = MobileSignatureViewModel(
-            userSessionRepository = userSessionRepository,
+            observePrimaryUserId = observePrimaryUserId,
             mobileSignatureRepository = mobileSignatureRepository,
             reducer = reducer
         )
@@ -92,7 +92,7 @@ class MobileSignatureViewModelTest {
         every { mobileSignatureRepository.observeMobileSignature(userId) } returns mobileSignatureFlow
 
         val viewModel = MobileSignatureViewModel(
-            userSessionRepository = userSessionRepository,
+            observePrimaryUserId = observePrimaryUserId,
             mobileSignatureRepository = mobileSignatureRepository,
             reducer = reducer
         )
@@ -123,7 +123,7 @@ class MobileSignatureViewModelTest {
         every { mobileSignatureRepository.observeMobileSignature(userId) } returns flowOf(pref)
         coEvery { mobileSignatureRepository.setMobileSignatureEnabled(userId, true) } returns Unit.right()
         val viewModel = MobileSignatureViewModel(
-            userSessionRepository = userSessionRepository,
+            observePrimaryUserId = observePrimaryUserId,
             mobileSignatureRepository = mobileSignatureRepository,
             reducer = reducer
         )
@@ -149,7 +149,7 @@ class MobileSignatureViewModelTest {
         every { mobileSignatureRepository.observeMobileSignature(userId) } returns flowOf(pref)
         coEvery { mobileSignatureRepository.setMobileSignature(userId, newSignature) } returns Unit.right()
         val viewModel = MobileSignatureViewModel(
-            userSessionRepository = userSessionRepository,
+            observePrimaryUserId = observePrimaryUserId,
             mobileSignatureRepository = mobileSignatureRepository,
             reducer = reducer
         )

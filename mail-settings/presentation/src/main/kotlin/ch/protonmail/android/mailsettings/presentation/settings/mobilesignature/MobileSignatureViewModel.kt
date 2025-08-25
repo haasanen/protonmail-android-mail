@@ -20,7 +20,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.mapper.MobileSignatureUiModelMapper
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureEvent
@@ -29,11 +29,9 @@ import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureViewAction
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.reducer.MobileSignatureReducer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -41,34 +39,32 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 @HiltViewModel
 class MobileSignatureViewModel @Inject constructor(
-    private val userSessionRepository: UserSessionRepository,
+    private val observePrimaryUserId: ObservePrimaryUserId,
     private val mobileSignatureRepository: MobileSignatureRepository,
     private val reducer: MobileSignatureReducer
 ) : ViewModel() {
-
-    private val userIdFlow: Flow<UserId> =
-        userSessionRepository.observePrimaryUserId()
-            .filterNotNull()
-            .distinctUntilChanged()
 
     private val mutableState: MutableStateFlow<MobileSignatureState> = MutableStateFlow(MobileSignatureState.Loading)
     val state: StateFlow<MobileSignatureState> = mutableState.asStateFlow()
 
     init {
-        userIdFlow.flatMapLatest { userId ->
-            mobileSignatureRepository.observeMobileSignature(userId)
-        }.onEach {
-            emitNewStateFor(
-                MobileSignatureEvent.SignatureLoaded(
-                    signatureSettingsUiModel = MobileSignatureUiModelMapper.toSettingsUiModel(it)
+        observePrimaryUserId()
+            .filterNotNull()
+            .flatMapLatest { userId ->
+                mobileSignatureRepository.observeMobileSignature(userId)
+            }
+            .onEach {
+                emitNewStateFor(
+                    MobileSignatureEvent.SignatureLoaded(
+                        signatureSettingsUiModel = MobileSignatureUiModelMapper.toSettingsUiModel(it)
+                    )
                 )
-            )
-        }.launchIn(viewModelScope)
+            }
+            .launchIn(viewModelScope)
     }
 
     fun submit(action: MobileSignatureViewAction) {
@@ -92,12 +88,14 @@ class MobileSignatureViewModel @Inject constructor(
     }
 
     private suspend fun handleToggleSignatureEnabled(enabled: Boolean) {
-        val userId = userIdFlow.first()
-        mobileSignatureRepository.setMobileSignatureEnabled(userId, enabled)
+        observePrimaryUserId().first()?.let { userId ->
+            mobileSignatureRepository.setMobileSignatureEnabled(userId, enabled)
+        }
     }
 
     private suspend fun updateSignatureValue(value: String) {
-        val userId = userIdFlow.first()
-        mobileSignatureRepository.setMobileSignature(userId, value)
+        observePrimaryUserId().first()?.let { userId ->
+            mobileSignatureRepository.setMobileSignature(userId, value)
+        }
     }
 }
