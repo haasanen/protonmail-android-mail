@@ -56,6 +56,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
+import ch.protonmail.android.navigation.RouteTransitions
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
@@ -91,12 +92,20 @@ internal fun NavGraphBuilder.addConversationDetail(
         }
     }
 
-    composable(route = Destination.Screen.Conversation.route) {
+    // for now no transition as navigation library 2.9.0 has a bug where the exit transition will not work
+    // with the above intermediary destination
+    composable(
+        route = Destination.Screen.Conversation.route,
+        enterTransition = { RouteTransitions.enterTransientLeftToRight },
+        popEnterTransition = { RouteTransitions.enterTransientLeftToRight },
+        popExitTransition = { RouteTransitions.exitTransitionRightToLeft },
+        exitTransition = { RouteTransitions.exitTransitionRightToLeft }
+    ) {
         ConversationDetailScreen(actions = actions)
     }
 }
 
-@Suppress("LongParameterList")
+@Suppress("LongMethod", "LongParameterList")
 internal fun NavGraphBuilder.addMailbox(
     navController: NavHostController,
     fabHostState: ProtonFabHostState,
@@ -108,7 +117,14 @@ internal fun NavGraphBuilder.addMailbox(
     showFeatureMissingSnackbar: () -> Unit,
     onActionBarVisibilityChanged: (Boolean) -> Unit
 ) {
-    composable(route = Destination.Screen.Mailbox.route) {
+    composable(
+        route = Destination.Screen.Mailbox.route,
+        exitTransition = {
+            if (targetState.destination.route == Destination.Screen.Conversation.route) {
+                RouteTransitions.exitTransitionLeftToRight
+            } else null
+        }
+    ) {
         MailboxScreen(
             actions = MailboxScreen.Actions.Empty.copy(
                 navigateToMailboxItem = { request ->
