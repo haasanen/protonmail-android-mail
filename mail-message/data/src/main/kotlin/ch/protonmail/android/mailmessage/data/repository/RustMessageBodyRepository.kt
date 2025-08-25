@@ -51,4 +51,7 @@ class RustMessageBodyRepository @Inject constructor(
             Timber.d("RustMessage: Loaded image: $url; mime ${localAttachmentData.mime};")
             MessageBodyImage(localAttachmentData.data, localAttachmentData.mime)
         }
+
+    override suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
+        messageBodyDataSource.unsubscribeFromNewsletter(userId, messageId.toLocalMessageId())
 }

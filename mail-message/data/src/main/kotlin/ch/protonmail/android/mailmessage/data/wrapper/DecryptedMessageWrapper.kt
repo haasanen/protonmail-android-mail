@@ -31,6 +31,7 @@ import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.BodyOutputResult
 import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.TransformOpts
+import uniffi.proton_mail_uniffi.VoidActionResult
 
 class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
 
@@ -52,4 +53,10 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
     fun mimeType(): LocalMimeType = decryptedMessage.mimeType()
 
     suspend fun identifyRsvp() = decryptedMessage.identifyRsvp()
+
+    suspend fun unsubscribeFromNewsletter(): Either<DataError, Unit> =
+        when (val result = decryptedMessage.unsubscribeFromNewsletter()) {
+            is VoidActionResult.Error -> result.v1.toDataError().left()
+            is VoidActionResult.Ok -> Unit.right()
+        }
 }

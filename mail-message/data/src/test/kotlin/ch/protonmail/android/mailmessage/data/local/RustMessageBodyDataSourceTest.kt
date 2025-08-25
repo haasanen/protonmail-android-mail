@@ -159,4 +159,47 @@ class RustMessageBodyDataSourceTest {
         coVerify { rustMailboxFactory.createAllMail(userId) }
         assertEquals(expectedError.left(), result)
     }
+
+    @Test
+    fun `unsubscribe from newsletter should return Unit`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSessionWrapper>()
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+
+        val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
+            coEvery { unsubscribeFromNewsletter() } returns Unit.right()
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns decryptedMessageBodyWrapper.right()
+
+        // When
+        val result = dataSource.unsubscribeFromNewsletter(userId, messageId)
+
+        // Then
+        coVerify { rustMailboxFactory.createAllMail(userId) }
+        coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
+        assertTrue(result.isRight())
+    }
+
+    @Test
+    fun `unsubscribe from newsletter should handle error`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+        val expectedError = DataError.Local.NoDataCached
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns expectedError.left()
+
+        // When
+        val result = dataSource.unsubscribeFromNewsletter(userId, messageId)
+
+        // Then
+        coVerify { rustMailboxFactory.createAllMail(userId) }
+        assertEquals(expectedError.left(), result)
+    }
 }

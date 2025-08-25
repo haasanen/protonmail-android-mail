@@ -39,4 +39,6 @@ interface MessageBodyRepository {
         messageId: MessageId,
         url: String
     ): Either<DataError, MessageBodyImage>
+
+    suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: MessageId): Either<DataError, Unit>
 }

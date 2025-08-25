@@ -88,4 +88,17 @@ class RustMessageBodyDataSource @Inject constructor(
             }
     }
 
+    override suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+            // the current labelId is not needed to get the body and is planned to be dropped on this API
+            val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
+                ?: return@withContext DataError.Local.NoDataCached.left()
+
+            return@withContext createRustMessageBodyAccessor(mailbox, messageId)
+                .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
+                .flatMap { decryptedMessage ->
+                    decryptedMessage.unsubscribeFromNewsletter()
+                }
+        }
 }

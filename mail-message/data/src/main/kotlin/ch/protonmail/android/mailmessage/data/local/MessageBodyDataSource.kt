@@ -39,4 +39,6 @@ interface MessageBodyDataSource {
         messageId: LocalMessageId,
         url: String
     ): Either<DataError, LocalAttachmentData>
+
+    suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
 }
