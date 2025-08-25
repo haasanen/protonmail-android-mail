@@ -174,6 +174,8 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     object UnsnoozeCompleted :
         ConversationDetailEvent,
         AffectingMessageBar
+
+    data object ErrorUnsubscribingFromNewsletter : ConversationDetailEvent, AffectingErrorBar
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
@@ -354,4 +356,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         ConversationDetailViewAction,
         AffectingBottomSheet,
         AffectingMessageBar
+
+    data class UnsubscribeFromNewsletter(val messageId: MessageId) : ConversationDetailViewAction
 }

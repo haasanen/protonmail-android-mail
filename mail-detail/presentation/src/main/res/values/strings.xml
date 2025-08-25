@@ -174,4 +174,5 @@
     <string name="unsubscribe_newsletter_banner_message">This message is from a mailing list.</string>
     <string name="unsubscribe_newsletter_banner_button">Unsubscribe</string>
     <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
+    <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
 </resources>

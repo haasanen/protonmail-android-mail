@@ -91,6 +91,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewSt
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
+import ch.protonmail.android.maildetail.domain.usecase.UnsubscribeFromNewsletter
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
@@ -281,6 +282,8 @@ class ConversationDetailViewModelIntegrationTest {
     private val snoozeRepository = mockk<SnoozeRepository> {
         coEvery { this@mockk.unSnoozeConversation(any(), any(), any()) } returns Unit.right()
     }
+
+    private val unsubscribeFromNewsletter = mockk<UnsubscribeFromNewsletter>()
 
     // Privacy settings for link confirmation dialog
     private val observePrivacySettings = mockk<ObservePrivacySettings> {
@@ -2449,6 +2452,41 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
 
+    @Test
+    fun `should call use case when unsubscribing from newsletter`() = runTest {
+        // Given
+        val messageId = MessageSample.Invoice.messageId
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
+            ),
+            MessageSample.AugWeatherForecast.messageId
+        )
+        val labelId = SystemLabelId.Archive.labelId
+        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
+        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
+        coEvery { unsubscribeFromNewsletter(userId, messageId) } returns Unit.right()
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
+
+        viewModel.state.test {
+            skipItems(4)
+
+            viewModel.submit(ConversationDetailViewAction.UnsubscribeFromNewsletter(messageId))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { unsubscribeFromNewsletter(userId, messageId) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     @Suppress("LongParameterList")
     private fun buildConversationDetailViewModel(
         observePrimaryUser: ObservePrimaryUserId = observePrimaryUserId,
@@ -2524,7 +2562,8 @@ class ConversationDetailViewModelIntegrationTest {
         printMessage = printMessage,
         getRsvpEvent = getRsvpEvent,
         answerRsvpEvent = answerRsvpEvent,
-        snoozeRepository = snoozeRepository
+        snoozeRepository = snoozeRepository,
+        unsubscribeFromNewsletter = unsubscribeFromNewsletter
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

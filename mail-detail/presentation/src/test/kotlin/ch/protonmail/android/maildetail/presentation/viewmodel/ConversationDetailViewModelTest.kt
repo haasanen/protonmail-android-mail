@@ -69,6 +69,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewSt
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
+import ch.protonmail.android.maildetail.domain.usecase.UnsubscribeFromNewsletter
 import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
@@ -334,6 +335,8 @@ class ConversationDetailViewModelTest {
         coEvery { this@mockk.unSnoozeConversation(any(), any(), any()) } returns Unit.right()
     }
 
+    private val unsubscribeFromNewsletter = mockk<UnsubscribeFromNewsletter>()
+
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
     }
@@ -385,7 +388,8 @@ class ConversationDetailViewModelTest {
             printMessage = printMessage,
             getRsvpEvent = getRsvpEvent,
             answerRsvpEvent = answerRsvpEvent,
-            snoozeRepository = snoozeRepository
+            snoozeRepository = snoozeRepository,
+            unsubscribeFromNewsletter = unsubscribeFromNewsletter
         )
     }
 

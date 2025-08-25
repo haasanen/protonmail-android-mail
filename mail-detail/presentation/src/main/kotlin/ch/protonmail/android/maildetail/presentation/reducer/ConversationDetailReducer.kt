@@ -57,6 +57,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEve
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorRemoveStar
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorUnsubscribingFromNewsletter
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MessagesData
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.OpenAttachmentEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
@@ -233,6 +234,7 @@ class ConversationDetailReducer @Inject constructor(
                 is OfflineErrorCancellingScheduleSend ->
                     R.string.offline_error_cancel_schedule_send_failed
                 is ErrorAnsweringRsvpEvent -> R.string.rsvp_widget_error_answering
+                is ErrorUnsubscribingFromNewsletter -> R.string.error_unsubscribe_newsletter
             }
             Effect.of(TextUiModel(textResource))
         } else {

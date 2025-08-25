@@ -61,6 +61,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewSt
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
+import ch.protonmail.android.maildetail.domain.usecase.UnsubscribeFromNewsletter
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
@@ -208,7 +209,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val printMessage: PrintMessage,
     private val getRsvpEvent: GetRsvpEvent,
     private val answerRsvpEvent: AnswerRsvpEvent,
-    private val snoozeRepository: SnoozeRepository
+    private val snoozeRepository: SnoozeRepository,
+    private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -376,6 +378,8 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.SnoozeDismissed -> handleSnoozeDismissedAction(action)
             is ConversationDetailViewAction.SnoozeCompleted -> handleSnoozeCompletedAction(action)
             is ConversationDetailViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet()
+            is ConversationDetailViewAction.UnsubscribeFromNewsletter ->
+                handleUnsubscribeFromNewsletter(action.messageId)
         }
     }
 
@@ -1365,6 +1369,18 @@ class ConversationDetailViewModel @Inject constructor(
                     )
                 )
             }
+        }
+    }
+
+    private fun handleUnsubscribeFromNewsletter(messageId: MessageId) {
+        viewModelScope.launch {
+            unsubscribeFromNewsletter(primaryUserId.first(), messageId).fold(
+                ifLeft = {
+                    Timber.e("Failed to unsubscribe from newsletter in message ${messageId.id}")
+                    emitNewStateFrom(ConversationDetailEvent.ErrorUnsubscribingFromNewsletter)
+                },
+                ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
+            )
         }
     }
 

@@ -562,7 +562,9 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested)
                 },
                 onSnooze = { viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet) },
-                onUnsubscribeFromNewsletter = {}
+                onUnsubscribeFromNewsletter = {
+                    viewModel.submit(ConversationDetailViewAction.UnsubscribeFromNewsletter(MessageId(it.id)))
+                }
             ),
             scrollToMessageId = state.scrollToMessage?.id
         )
