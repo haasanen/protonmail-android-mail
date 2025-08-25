@@ -58,10 +58,10 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
-import ch.protonmail.android.mailcomposer.domain.usecase.LoadMessageBodyImage
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
+import ch.protonmail.android.mailcomposer.domain.usecase.LoadMessageBodyImage
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveRecipientsValidation
@@ -331,7 +331,6 @@ class ComposerViewModel @AssistedInject constructor(
     private fun observeValidatedRecipients() {
         observeRecipientsValidation()
             .onEach {
-                Timber.tag("RecipientValidation").d("validated recipients: $it")
                 recipientsStateManager.setFromDraftRecipients(it.toRecipients, it.ccRecipients, it.bccRecipients)
             }
             .launchIn(viewModelScope)

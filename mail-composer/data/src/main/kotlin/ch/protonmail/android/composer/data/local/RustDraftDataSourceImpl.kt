@@ -121,8 +121,7 @@ class RustDraftDataSourceImpl @Inject constructor(
             val bccRecipients = draftCache.get().recipientsBcc().recipients().toComposerRecipients()
             val updatedRecipients = ValidatedRecipients(toRecipients, ccRecipients, bccRecipients)
 
-            val emissionResult = mutableRecipientsUpdatedFlow.tryEmit(updatedRecipients)
-            Timber.tag("RecipientValidation").d("Emitting updated recipients validation state: $emissionResult")
+            mutableRecipientsUpdatedFlow.tryEmit(updatedRecipients)
         }
     }
 
