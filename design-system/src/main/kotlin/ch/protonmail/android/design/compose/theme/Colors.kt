@@ -101,7 +101,7 @@ private object ProtonPalette {
 
     // ------------------------ All Colors Dark UI -----------------------------
     // Gray Tones
-    val Platinum = Color(0xFFDBDBDE)
+    val Platinum = Color(0xFFEDEDEE)
     val SantasGray = Color(0xFFA4A4AB)
     val SonicSilver = Color(0xFF75757D)
     val CadetGrey = Color(0xFF50505B)
@@ -782,9 +782,7 @@ class ProtonColors(
             sidebarTextSelected = ProtonPalette.Platinum,
             sidebarIconNorm = ProtonPalette.SantasGray,
             sidebarIconWeak = ProtonPalette.SonicSilver,
-            sidebarIconSelected = ProtonPalette.BlueBell,
-            iconNorm = ProtonPalette.White,
-            textNorm = ProtonPalette.White
+            sidebarIconSelected = ProtonPalette.BlueBell
         ).let {
             it.copy(
                 interactionFabNorm = it.shade40,
