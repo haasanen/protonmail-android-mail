@@ -128,6 +128,28 @@
     <string name="notifications_on">On</string>
     <string name="notifications_off">Off</string>
 
+    <!-- Customize Toolbar -->
+    <string name="mail_settings_custom_toolbar_title">Customize toolbars</string>
+    <string name="mail_settings_custom_toolbar_list_view_title">List toolbar</string>
+    <string name="mail_settings_custom_toolbar_list_view_description">This toolbar appears when multiple messages are selected in the message list (e.g., Inbox, Trash, etc.).</string>
+    <string name="mail_settings_custom_toolbar_message_view_title">Message toolbar</string>
+    <string name="mail_settings_custom_toolbar_message_view_description">This toolbar remains consistently visible during message reading.</string>
+    <string name="mail_settings_custom_toolbar_conversation_view_title">Conversation toolbar</string>
+    <string name="mail_settings_custom_toolbar_conversation_view_description">This toolbar remains consistently visible during message reading.</string>
+    <string name="mail_settings_custom_toolbar_edit_actions">Edit actions</string>
+    <string name="mail_settings_custom_toolbar_set_actions">Toolbar actions</string>
+    <string name="mail_settings_custom_toolbar_remaining_actions">Available actions</string>
+    <string name="mail_settings_custom_toolbar_nav_title_list">Edit toolbar</string>
+    <string name="mail_settings_custom_toolbar_nav_title_convo">Conversation toolbar</string>
+    <string name="mail_settings_custom_toolbar_nav_title_message">Message toolbar</string>
+    <string name="mail_settings_custom_toolbar_nav_button_save">Save</string>
+    <string name="mail_settings_custom_toolbar_header">The toolbar can have 1–5 actions. You can\'t remove the last remaining action.</string>
+    <string name="mail_settings_custom_toolbar_reset">Reset to default</string>
+    <string name="mail_settings_custom_toolbar_reset_title">Do you want to reset the toolbar settings?</string>
+    <string name="mail_settings_custom_toolbar_reset_confirm">Confirm</string>
+    <string name="mail_settings_custom_toolbar_save_error">Unable to save toolbar actions. Please try again.</string>
+    <string name="mail_settings_custom_toolbar_read_error">Unable to read toolbar actions. Please try again.</string>
+
     <!-- Error messages -->
     <string name="mail_settings_generic_error_message">An error occurred. Try again.</string>
 </resources>
