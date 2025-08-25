@@ -66,7 +66,7 @@ internal fun SenderEmailWithSelector(
             modifier = Modifier
                 .testTag(ChipsTestTags.FieldPrefix)
                 .align(Alignment.CenterVertically),
-            color = ProtonTheme.colors.textHint,
+            color = ProtonTheme.colors.textWeak,
             style = ProtonTheme.typography.bodyMedium
         )
 

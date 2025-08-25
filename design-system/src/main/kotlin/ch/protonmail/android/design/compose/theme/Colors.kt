@@ -761,7 +761,7 @@ class ProtonColors(
             shade100 = ProtonPalette.Platinum,
             shade80 = ProtonPalette.SantasGray,
             shade60 = ProtonPalette.SonicSilver,
-            shade50 = ProtonPalette.CadetGrey,
+            shade50 = ProtonPalette.SonicSilver,
             shade45 = ProtonPalette.Tuna,
             shade40 = ProtonPalette.Gunmetal,
             shade20 = ProtonPalette.MidnightBlue,

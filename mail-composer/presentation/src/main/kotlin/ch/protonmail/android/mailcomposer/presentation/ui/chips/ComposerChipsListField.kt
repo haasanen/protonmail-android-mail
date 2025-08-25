@@ -239,7 +239,7 @@ private fun ChipsListContent(
                     .align(Alignment.Top)
                     .padding(vertical = ProtonDimens.Spacing.Large)
                     .padding(start = ProtonDimens.Spacing.Large),
-                color = ProtonTheme.colors.textHint,
+                color = ProtonTheme.colors.textWeak,
                 style = ProtonTheme.typography.bodyMedium
             )
 

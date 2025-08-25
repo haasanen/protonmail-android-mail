@@ -88,7 +88,7 @@ internal fun SubjectTextField(
                     Text(
                         text = stringResource(R.string.subject_prefix),
                         modifier = Modifier.wrapContentWidth(),
-                        color = ProtonTheme.colors.textHint,
+                        color = ProtonTheme.colors.textWeak,
                         style = ProtonTheme.typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
