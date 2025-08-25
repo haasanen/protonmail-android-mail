@@ -130,7 +130,12 @@ fun ProtonSettingsDetailsAppBar(
 ) {
     ProtonTopAppBar(
         modifier = modifier.fillMaxWidth(),
-        title = { Text(title) },
+        title = {
+            Text(
+                text = title,
+                style = ProtonTheme.typography.titleLarge
+            )
+        },
         actions = actions,
         backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
         navigationIcon = {

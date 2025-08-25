@@ -39,7 +39,9 @@ import ch.protonmail.android.mailpinlock.presentation.autolock.model.DialogType
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen.AutoLockPinModeKey
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogModeKey
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
+import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
+import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.CustomizeToolbarEditScreen
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen.UpsellingEntryPointKey
@@ -130,6 +132,15 @@ sealed class Destination(val route: String) {
 
         object ThemeSettings : Destination("settings/theme")
         object Notifications : Destination("settings/notifications")
+
+        object CustomizeToolbar : Destination("settings/customizetoolbar")
+        object EditToolbarScreen :
+            Destination("settings/customizetoolbar/${CustomizeToolbarEditScreen.OpenMode.wrap()}") {
+
+            operator fun invoke(item: ToolbarType) =
+                route.replace(CustomizeToolbarEditScreen.OpenMode.wrap(), item.serialize())
+        }
+
         object ApplicationLogs : Destination("settings/applicationLogs")
         object ApplicationLogsView : Destination("settings/applicationLogs/view/${ApplicationLogsViewMode.wrap()}") {
 

@@ -264,7 +264,9 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                     onSwipeToNextEmailClick = showFeatureMissingSnackbar,
                     onSwipeActionsClick = showFeatureMissingSnackbar,
                     onViewApplicationLogsClick = showFeatureMissingSnackbar,
-                    onCustomizeToolbarClick = showFeatureMissingSnackbar,
+                    onCustomizeToolbarClick = {
+                        navController.navigate(Destination.Screen.CustomizeToolbar.route)
+                    },
                     onBackClick = {
                         navController.navigateBack()
                     }

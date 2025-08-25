@@ -82,6 +82,7 @@ import ch.protonmail.android.mailonboarding.domain.model.OnboardingEligibilitySt
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.mailsession.data.mapper.toUserId
+import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
 import ch.protonmail.android.navigation.model.Destination.Dialog
@@ -101,6 +102,7 @@ import ch.protonmail.android.navigation.route.addContactGroupDetails
 import ch.protonmail.android.navigation.route.addContactSearch
 import ch.protonmail.android.navigation.route.addContacts
 import ch.protonmail.android.navigation.route.addConversationDetail
+import ch.protonmail.android.navigation.route.addCustomizeToolbarSettings
 import ch.protonmail.android.navigation.route.addDeepLinkHandler
 import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addExportLogsSettings
@@ -596,6 +598,9 @@ fun Home(
                                 },
                                 onNavigateToUpselling = { entryPoint, type ->
                                     navController.navigate(Screen.FeatureUpselling(entryPoint, type))
+                                },
+                                onCustomizeToolbar = {
+                                    navController.navigate(Screen.EditToolbarScreen(ToolbarType.Conversation))
                                 }
                             )
                         )
@@ -707,6 +712,7 @@ fun Home(
                         addThemeSettings(navController)
                         addAutoLockIntervalSettings(navController)
                         addNotificationsSettings(navController)
+                        addCustomizeToolbarSettings(navController)
                         addExportLogsSettings(navController)
                         addFeatureFlagsOverrides(navController)
                         addBugReporting(navController, onShowNormalSnackbar = { showNormalSnackbar(it) })

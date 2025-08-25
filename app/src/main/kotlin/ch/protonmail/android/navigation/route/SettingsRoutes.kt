@@ -51,6 +51,8 @@ import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.Edi
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionsPreferenceScreen
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsDialog
+import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.CustomizeToolbarEditScreen
+import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.CustomizeToolbarScreen
 import ch.protonmail.android.mailsettings.presentation.webaccountsettings.WebAccountSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webemailsettings.WebEmailSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webfoldersettings.WebFoldersAndLabelsSettingScreen
@@ -271,6 +273,24 @@ internal fun NavGraphBuilder.addThemeSettings(navController: NavHostController) 
 internal fun NavGraphBuilder.addNotificationsSettings(navController: NavHostController) {
     composable(route = Screen.Notifications.route) {
         PushNotificationsSettingsScreen(
+            modifier = Modifier,
+            onBackClick = { navController.navigateBack() }
+        )
+    }
+}
+
+internal fun NavGraphBuilder.addCustomizeToolbarSettings(navController: NavHostController) {
+    composable(route = Screen.CustomizeToolbar.route) {
+        CustomizeToolbarScreen(
+            modifier = Modifier,
+            onBack = { navController.navigateBack() },
+            onCustomize = { toolbarType ->
+                navController.navigate(Screen.EditToolbarScreen(toolbarType))
+            }
+        )
+    }
+    composable(route = Screen.EditToolbarScreen.route) {
+        CustomizeToolbarEditScreen(
             modifier = Modifier,
             onBackClick = { navController.navigateBack() }
         )
