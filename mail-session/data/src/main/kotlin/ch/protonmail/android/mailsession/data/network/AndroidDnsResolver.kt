@@ -28,8 +28,10 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.IpAddr
 import uniffi.proton_mail_uniffi.Resolver
+import uniffi.proton_mail_uniffi.ResolverException
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class AndroidDnsResolver @Inject constructor(
     private val networkManager: NetworkManager
@@ -44,12 +46,12 @@ class AndroidDnsResolver @Inject constructor(
 
         val network = networkManager.activeNetwork
         if (network == null) {
-            Timber.tag("DnsResolution").d("Network is unavailable! Returning null.")
-            continuation.resume(null)
-            return@suspendCancellableCoroutine
+            val exception = ResolverException.Network("Network is unavailable! Throwing")
+            Timber.tag("DnsResolution").d("Network is unavailable! Throwing $exception.")
+            continuation.resumeWithException(exception)
         }
 
-        Timber.tag("DnsResolution").d("Resolving via ${network.networkHandle}")
+        Timber.tag("DnsResolution").d("Resolving via ${network?.networkHandle}")
 
         val cancelSignal = CancellationSignal()
         continuation.invokeOnCancellation { cancelSignal.cancel() }
@@ -63,7 +65,7 @@ class AndroidDnsResolver @Inject constructor(
 
             override fun onError(error: DnsResolver.DnsException) {
                 Timber.tag("DnsResolution").d("DNS resolution for '$host' errored: $error")
-                continuation.resume(null)
+                continuation.resumeWithException(ResolverException.Other("DNS resolution for '$host' errored: $error"))
             }
         }
 
