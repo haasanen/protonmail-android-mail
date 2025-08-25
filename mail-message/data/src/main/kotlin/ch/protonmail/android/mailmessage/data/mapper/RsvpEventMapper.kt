@@ -125,6 +125,7 @@ private fun LocalRsvpUnanswerableReason.toRsvpUnanswerableReason() = when (this)
     LocalRsvpUnanswerableReason.INVITE_IS_OUTDATED -> RsvpUnanswerableReason.InviteIsOutdated
     LocalRsvpUnanswerableReason.ADDRESS_IS_INCORRECT -> RsvpUnanswerableReason.AddressIsIncorrect
     LocalRsvpUnanswerableReason.USER_IS_ORGANIZER -> RsvpUnanswerableReason.UserIsOrganizer
+    LocalRsvpUnanswerableReason.USER_IS_NOT_INVITED -> RsvpUnanswerableReason.UserIsNotInvited
     LocalRsvpUnanswerableReason.EVENT_DOES_NOT_EXIST -> RsvpUnanswerableReason.EventDoesNotExist
     LocalRsvpUnanswerableReason.NETWORK_FAILURE -> RsvpUnanswerableReason.NetworkFailure
 }

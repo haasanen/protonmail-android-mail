@@ -158,6 +158,7 @@
     <string name="rsvp_widget_offline_invite_outdated">You\'re offline. The displayed information may be out of date.</string>
     <string name="rsvp_widget_address_is_incorrect">Your address can\'t be used to reply. Please update your account information.</string>
     <string name="rsvp_widget_user_is_organizer">You are the organizer.</string>
+    <string name="rsvp_widget_user_is_not_invited">You cannot respond to event invites if you\'re not on the participants list at the moment.</string>
     <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
     <string name="rsvp_widget_today">Today</string>
     <string name="rsvp_widget_tomorrow">Tomorrow</string>

@@ -38,6 +38,7 @@ import uniffi.proton_mail_uniffi.UserSessionError
 import uniffi.uniffi_common.UserApiServiceError
 import uniffi.uniffi_common.UserApiServiceError.BadGateway
 import uniffi.uniffi_common.UserApiServiceError.BadRequest
+import uniffi.uniffi_common.UserApiServiceError.Forbidden
 import uniffi.uniffi_common.UserApiServiceError.Internal
 import uniffi.uniffi_common.UserApiServiceError.InternalServerError
 import uniffi.uniffi_common.UserApiServiceError.NotFound
@@ -98,6 +99,7 @@ fun UserApiServiceError.getErrorMessage() = when (this) {
     is Internal -> v1
     is OtherNetwork -> v1
     is TooManyRequests -> v1
+    is Forbidden -> v1
 }
 
 fun UnexpectedError.getErrorMessage() = when (this) {

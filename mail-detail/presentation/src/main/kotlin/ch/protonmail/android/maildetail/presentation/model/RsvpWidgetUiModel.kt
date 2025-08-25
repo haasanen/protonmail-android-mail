@@ -51,6 +51,7 @@ sealed interface RsvpStatusUiModel {
     data object NetworkFailure : RsvpStatusUiModel
     data object AddressIsIncorrect : RsvpStatusUiModel
     data object UserIsOrganizer : RsvpStatusUiModel
+    data object UserIsNotInvited : RsvpStatusUiModel
     data object EventDoesNotExist : RsvpStatusUiModel
 }
 

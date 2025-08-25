@@ -75,6 +75,7 @@ enum class RsvpUnanswerableReason {
     InviteIsOutdated,
     AddressIsIncorrect,
     UserIsOrganizer,
+    UserIsNotInvited,
     EventDoesNotExist,
     NetworkFailure
 }

@@ -25,6 +25,8 @@ import uniffi.proton_mail_uniffi.SessionReason
 import uniffi.proton_mail_uniffi.UserSessionError
 import uniffi.uniffi_common.UserApiServiceError
 import uniffi.uniffi_common.UserApiServiceError.BadGateway
+import uniffi.uniffi_common.UserApiServiceError.BadRequest
+import uniffi.uniffi_common.UserApiServiceError.Forbidden
 import uniffi.uniffi_common.UserApiServiceError.Internal
 import uniffi.uniffi_common.UserApiServiceError.InternalServerError
 import uniffi.uniffi_common.UserApiServiceError.NotFound
@@ -75,7 +77,8 @@ fun UserApiServiceError.toObservabilityValue(): PaymentObservabilityValue {
         is Unauthorized,
         is UnprocessableEntity,
         is NotFound,
-        is UserApiServiceError.BadRequest -> PaymentObservabilityValue.HTTP4XX
+        is BadRequest,
+        is Forbidden -> PaymentObservabilityValue.HTTP4XX
         is BadGateway,
         is Internal,
         is InternalServerError,
