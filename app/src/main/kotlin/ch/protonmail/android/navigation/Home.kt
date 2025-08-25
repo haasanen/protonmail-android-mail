@@ -667,10 +667,7 @@ fun Home(
                             }
                         )
                         addContactSearch(
-                            navController,
-                            showFeatureMissingSnackbar = {
-                                showFeatureMissingSnackbar()
-                            }
+                            navController
                         )
                         addContactGroupDetails(
                             navController,

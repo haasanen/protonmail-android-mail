@@ -20,8 +20,14 @@ package ch.protonmail.android.mailcontact.domain.usecase
 
 import app.cash.turbine.test
 import arrow.core.Either
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
+import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
+import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -36,11 +42,13 @@ import kotlin.test.assertTrue
 @Suppress("MaxLineLength")
 class SearchContactsTest {
 
-    private val observeContacts = mockk<ObserveContacts> {
-        coEvery { this@mockk.invoke(UserIdTestData.userId) } returns flowOf(Either.Right(ContactTestData.contacts))
+    private val userId = UserIdTestData.userId
+
+    private val contactRepository = mockk<ContactRepository> {
+        coEvery { this@mockk.observeAllContacts(userId) } returns flowOf(Either.Right(ContactTestData.contacts))
     }
 
-    private val searchContacts = SearchContacts(observeContacts)
+    private val searchContacts = SearchContacts(contactRepository)
 
     @Test
     fun `when there are multiple matching contacts, they are emitted`() = runTest {
@@ -48,7 +56,7 @@ class SearchContactsTest {
         val query = "cont"
 
         // When
-        searchContacts(UserIdTestData.userId, query).test {
+        searchContacts(userId, query).test {
             // Then
             val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
             assertEquals(ContactTestData.contacts, actual.value)
@@ -73,10 +81,10 @@ class SearchContactsTest {
             )
         )
         val contacts = ContactTestData.contacts + contact
-        coEvery { observeContacts(UserIdTestData.userId) } returns flowOf(Either.Right(contacts))
+        coEvery { contactRepository.observeAllContacts(userId) } returns flowOf(Either.Right(contacts))
 
         // When
-        searchContacts(UserIdTestData.userId, query).test {
+        searchContacts(userId, query).test {
             // Then
             val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
             assertEquals(listOf(contact), actual.value)
@@ -101,10 +109,10 @@ class SearchContactsTest {
             )
         )
         val contacts = ContactTestData.contacts + contact
-        coEvery { observeContacts(UserIdTestData.userId) } returns flowOf(Either.Right(contacts))
+        coEvery { contactRepository.observeAllContacts(userId) } returns flowOf(Either.Right(contacts))
 
         // When
-        searchContacts(UserIdTestData.userId, query).test {
+        searchContacts(userId, query).test {
             // Then
             val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
             assertTrue(actual.value.size == 1)
@@ -133,7 +141,7 @@ class SearchContactsTest {
         val query = "there is no contact like this"
 
         // When
-        searchContacts(UserIdTestData.userId, query).test {
+        searchContacts(userId, query).test {
             // Then
             val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
             assertEquals(emptyList(), actual.value)
@@ -145,12 +153,84 @@ class SearchContactsTest {
     fun `when observe contacts returns any error, this error is emitted`() = runTest {
         // Given
         val query = "cont"
-        coEvery { observeContacts(UserIdTestData.userId) } returns flowOf(Either.Left(GetContactError))
+        coEvery { contactRepository.observeAllContacts(userId) } returns flowOf(Either.Left(GetContactError))
 
         // When
-        searchContacts(UserIdTestData.userId, query).test {
+        searchContacts(userId, query).test {
             // Then
             assertIs<Either.Left<GetContactError>>(awaitItem())
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `group name match adds the group to results`() = runTest {
+        // Given
+        val query = "group here"
+        val group = ContactTestData.contactGroupSuggestion
+        val dataset = ContactTestData.contacts + group
+        coEvery {
+            contactRepository.observeAllContacts(userId)
+        } returns flowOf(dataset.right())
+
+        // When
+        searchContacts(userId, query).test {
+            // Then
+            val actual = awaitItem() as Either.Right<List<ContactMetadata>>
+            val groups = actual.value.filterIsInstance<ContactMetadata.ContactGroup>()
+            assertTrue(groups.any { it.id == group.id })
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `member match inside group emits contact items`() = runTest {
+        // Given
+        val memberQuery = ContactEmailSample.contactGroupSuggestionEmail1.email.substring(0, 5)
+        val group = ContactTestData.contactGroupSuggestion
+        val dataset = listOf<ContactMetadata>(group)
+        coEvery { contactRepository.observeAllContacts(userId) } returns flowOf(dataset.right())
+
+        // When
+        searchContacts(userId, memberQuery).test {
+            // Then
+            val actual = awaitItem() as Either.Right<List<ContactMetadata>>
+            val contacts = actual.value.filterIsInstance<ContactMetadata.Contact>()
+            assertTrue(contacts.any { c -> c.id == ContactEmailSample.contactGroupSuggestionEmail1.id })
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `duplicate contacts coming from multiple groups appear only once`() = runTest {
+        // Given
+        val sharedMember: ContactEmail = ContactEmailSample.contactGroupSuggestionEmail1
+        val query = sharedMember.email.substring(0, 5)
+
+        val groupA = ContactMetadata.ContactGroup(
+            id = ContactGroupId("grp-A"),
+            name = "Alpha Group",
+            color = AvatarInformationSample.avatarSample.color,
+            members = listOf(sharedMember)
+        )
+        val groupB = ContactMetadata.ContactGroup(
+            id = ContactGroupId("grp-B"),
+            name = "Beta Group",
+            color = AvatarInformationSample.avatarSample.color,
+            members = listOf(sharedMember)
+        )
+
+        val dataset = listOf<ContactMetadata>(groupA, groupB)
+        coEvery {
+            contactRepository.observeAllContacts(userId)
+        } returns flowOf(dataset.right())
+
+        // When
+        searchContacts(userId, query).test {
+            // Then
+            val actual = awaitItem() as Either.Right<List<ContactMetadata>>
+            val contacts = actual.value.filterIsInstance<ContactMetadata.Contact>()
+            assertEquals(1, contacts.count { it.id == sharedMember.id })
             awaitComplete()
         }
     }

@@ -23,6 +23,8 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
+import ch.protonmail.android.mailcontact.domain.model.toContactItem
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.transformLatest
@@ -33,11 +35,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class SearchContacts @Inject constructor(
-    private val observeContacts: ObserveContacts
+    private val contactRepository: ContactRepository
 ) {
 
     operator fun invoke(userId: UserId, query: String): Flow<Either<GetContactError, List<ContactMetadata>>> =
-        observeContacts(
+        contactRepository.observeAllContacts(
             userId
         ).distinctUntilChanged().transformLatest {
             it.onLeft {
@@ -51,43 +53,50 @@ class SearchContacts @Inject constructor(
             }
         }.distinctUntilChanged()
 
-    private fun search(contacts: List<ContactMetadata>, query: String): List<ContactMetadata> =
-        contacts.mapNotNull { contact ->
+    private fun search(contacts: List<ContactMetadata>, query: String): List<ContactMetadata> = contacts
+        .flatMap { contact ->
             when (contact) {
                 is ContactMetadata.Contact -> searchInContact(contact, query)
                 is ContactMetadata.ContactGroup -> searchInContactGroup(contact, query)
             }
         }
-
-    private fun searchInContact(contact: ContactMetadata.Contact, query: String): ContactMetadata.Contact? {
-        val nameMatches = contact.name.containsNoCase(query)
-        val anyContactEmailMatches = contact.emails.any { it.email.containsNoCase(query) }
-        return when {
-            nameMatches -> contact
-            anyContactEmailMatches -> contact
-            else -> null
-        }
-    }
-
-    private fun searchInContactGroup(
-        contactGroup: ContactMetadata.ContactGroup,
-        query: String
-    ): ContactMetadata.ContactGroup? {
-        val matchingMembers = contactGroup.members.mapNotNull { member ->
-            val nameMatches = member.name.containsNoCase(query)
-            val contactEmailMatches = member.email.containsNoCase(query)
-            when {
-                nameMatches -> member
-                contactEmailMatches -> member
-                else -> null
+        .distinctBy {
+            when (it) {
+                is ContactMetadata.Contact -> "contact-${it.id.id}" // ensure uniqueness by ContactId
+                is ContactMetadata.ContactGroup -> "group-${it.id.id}" // ensure uniqueness by GroupId
             }
         }
 
-        return if (contactGroup.name.containsNoCase(query) || matchingMembers.isNotEmpty()) {
-            contactGroup.copy(members = matchingMembers)
+    private fun searchInContact(contact: ContactMetadata.Contact, query: String): List<ContactMetadata> {
+        val nameMatches = contact.name.containsNoCase(query)
+        val anyContactEmailMatches = contact.emails.any { it.email.containsNoCase(query) }
+
+        return if (nameMatches || anyContactEmailMatches) {
+            listOf(contact)
         } else {
-            null
+            emptyList()
         }
+    }
+
+    private fun searchInContactGroup(contactGroup: ContactMetadata.ContactGroup, query: String): List<ContactMetadata> {
+        // member matches as individual Contact items
+        val matchingMembers: List<ContactMetadata.Contact> =
+            contactGroup.members.mapNotNull { member ->
+                if (member.name.containsNoCase(query) || member.email.containsNoCase(query)) {
+                    member.toContactItem()
+                } else {
+                    null
+                }
+            }
+
+        // if group name matches, include the group in the results too
+        val results = mutableListOf<ContactMetadata>()
+        if (contactGroup.name.containsNoCase(query)) {
+            results += contactGroup
+        }
+
+        results += matchingMembers
+        return results
     }
 }
 

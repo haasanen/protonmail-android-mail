@@ -331,16 +331,13 @@ internal fun NavGraphBuilder.addContactDetails(
     }
 }
 
-internal fun NavGraphBuilder.addContactSearch(
-    navController: NavHostController,
-    showFeatureMissingSnackbar: () -> Unit
-) {
+internal fun NavGraphBuilder.addContactSearch(navController: NavHostController) {
     val actions = ContactSearchScreen.Actions(
         onContactSelected = { contactId ->
             navController.navigate(Destination.Screen.ContactDetails(contactId))
         },
-        onContactGroupSelected = { _ ->
-            showFeatureMissingSnackbar()
+        onContactGroupSelected = { contactGroupId ->
+            navController.navigate(Destination.Screen.ContactGroupDetails(contactGroupId))
         },
         onClose = { navController.navigateBack() }
     )

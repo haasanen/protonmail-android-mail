@@ -28,3 +28,10 @@ data class ContactEmail(
     val name: String,
     val avatarInformation: AvatarInformation
 )
+
+fun ContactEmail.toContactItem() = ContactMetadata.Contact(
+    id = id,
+    avatar = avatarInformation,
+    name = name,
+    emails = listOf(this)
+)
