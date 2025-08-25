@@ -22,11 +22,14 @@ import android.content.Context
 import ch.protonmail.android.mailcommon.domain.repository.AppLocaleRepository
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsettings.data.InMemoryToolbarActionsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
 import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSource
 import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSourceImpl
 import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
+import ch.protonmail.android.mailsettings.data.local.RustToolbarActionSettingsDataSource
+import ch.protonmail.android.mailsettings.data.local.ToolbarActionSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AlternativeRoutingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncSettingRepositoryImpl
@@ -36,6 +39,7 @@ import ch.protonmail.android.mailsettings.data.repository.MobileSignatureReposit
 import ch.protonmail.android.mailsettings.data.repository.NotificationsSettingsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.PreventScreenshotsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.RustMailSettingsRepository
+import ch.protonmail.android.mailsettings.data.repository.ToolbarActionsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSource
 import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSourceImpl
 import ch.protonmail.android.mailsettings.domain.repository.AlternativeRoutingRepository
@@ -43,11 +47,13 @@ import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepositor
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.BackgroundSyncSettingRepository
 import ch.protonmail.android.mailsettings.domain.repository.CombinedContactsRepository
+import ch.protonmail.android.mailsettings.domain.repository.InMemoryToolbarActionsRepository
 import ch.protonmail.android.mailsettings.domain.repository.LocalStorageDataRepository
 import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
 import ch.protonmail.android.mailsettings.domain.repository.NotificationsSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.PreventScreenshotsRepository
+import ch.protonmail.android.mailsettings.domain.repository.ToolbarActionsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeObserverCoroutineScope
 import dagger.Binds
@@ -55,6 +61,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
@@ -134,6 +141,14 @@ object SettingsModule {
 
         @Binds
         @Reusable
+        fun bindToolbarActionsDataSource(impl: RustToolbarActionSettingsDataSource): ToolbarActionSettingsDataSource
+
+        @Binds
+        @Reusable
+        fun bindToolbarActionsRepository(impl: ToolbarActionsRepositoryImpl): ToolbarActionsRepository
+
+        @Binds
+        @Reusable
         fun bindLocalDataRepository(impl: LocalStorageDataRepositoryImpl): LocalStorageDataRepository
 
 
@@ -151,5 +166,15 @@ object SettingsModule {
         @Singleton
         fun bindsMobileSignatureRepository(impl: MobileSignatureRepositoryImpl): MobileSignatureRepository
 
+    }
+
+    @Module
+    @InstallIn(ViewModelComponent::class)
+    internal interface ViewModelBindings {
+
+        @Binds
+        fun bindInMemoryToolbarPreferenceRepository(
+            implementation: InMemoryToolbarActionsRepositoryImpl
+        ): InMemoryToolbarActionsRepository
     }
 }
