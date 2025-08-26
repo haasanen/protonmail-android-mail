@@ -3,6 +3,7 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 import android.content.Context
 import android.net.Uri
 import arrow.core.right
+import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachmentTypeTest.ExpectedAttachmentOperation.AddInlineAttachmentOp
@@ -44,7 +45,7 @@ class AddAttachmentTypeTest(
         }
 
         // When
-        addAttachment(fileUri = fileUri)
+        addAttachment(fileUri = fileUri, draftMimeType = DraftMimeType.Html)
 
         // Then
         when (expected) {

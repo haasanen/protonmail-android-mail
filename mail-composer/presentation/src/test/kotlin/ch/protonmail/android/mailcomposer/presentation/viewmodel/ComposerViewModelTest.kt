@@ -56,11 +56,11 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
-import ch.protonmail.android.mailcomposer.domain.usecase.LoadMessageBodyImage
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftSenderValidationError
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
+import ch.protonmail.android.mailcomposer.domain.usecase.LoadMessageBodyImage
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveRecipientsValidation
@@ -270,7 +270,7 @@ internal class ComposerViewModelTest {
         viewModel().submit(ComposerAction.AddAttachments(listOf(uri)))
 
         // Then
-        coVerify { addAttachment(uri) }
+        coVerify { addAttachment(uri, DraftMimeType.Html) }
     }
 
     @Test
@@ -1359,7 +1359,7 @@ internal class ComposerViewModelTest {
     }
 
     private fun expectAddAttachmentsSucceeds(uri: Uri) {
-        coEvery { addAttachment(uri) } returns
+        coEvery { addAttachment(uri, DraftMimeType.Html) } returns
             AddAttachment.AddAttachmentResult.StandardAttachmentAdded.right()
     }
 

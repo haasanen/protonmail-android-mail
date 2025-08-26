@@ -654,9 +654,10 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun onAttachmentsAdded(uriList: List<Uri>) {
         val contentIds = mutableListOf<String>()
+        val draftMimeType = currentMimeType()
 
         uriList.forEach { uri ->
-            addAttachment(uri).onLeft {
+            addAttachment(uri, draftMimeType).onLeft {
                 Timber.e("Failed to add attachment: $it")
                 emitNewStateFor(EffectsEvent.AttachmentEvent.AddAttachmentError(it))
             }.onRight {

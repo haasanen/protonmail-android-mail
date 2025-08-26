@@ -22,6 +22,7 @@ import android.content.Context
 import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,10 +34,14 @@ class AddAttachment @Inject constructor(
     private val addInlineAttachment: AddInlineAttachment
 ) {
 
-    suspend operator fun invoke(fileUri: Uri): Either<AttachmentAddError, AddAttachmentResult> {
+    suspend operator fun invoke(
+        fileUri: Uri,
+        draftMimeType: DraftMimeType
+    ): Either<AttachmentAddError, AddAttachmentResult> {
         val isNotImageMimeType = fileUri.mimeType() !in imageMimeTypes()
+        val draftMimeIsPlainText = draftMimeType == DraftMimeType.PlainText
 
-        if (isNotImageMimeType) {
+        if (isNotImageMimeType || draftMimeIsPlainText) {
             return addStandardAttachment(fileUri)
                 .map { AddAttachmentResult.StandardAttachmentAdded }
         }
