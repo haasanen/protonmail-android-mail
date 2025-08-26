@@ -47,7 +47,6 @@ import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarLazy
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarReportBugItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarSettingsItem
-import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarShareLogs
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarSubscriptionItem
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
@@ -153,7 +152,6 @@ fun Sidebar(
 
         item { ProtonSidebarReportBugItem(onClick = actions.onReportBug) }
 
-        item { ProtonSidebarShareLogs(onClick = actions.onExportlogs) }
         item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
 
         item { SidebarDivider() }
@@ -211,7 +209,6 @@ object Sidebar {
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
         val onReportBug: () -> Unit,
-        val onExportlogs: () -> Unit,
         val onUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit
     ) {
 
@@ -223,7 +220,6 @@ object Sidebar {
                 onSubscription = {},
                 onContacts = {},
                 onReportBug = {},
-                onExportlogs = {},
                 onUpselling = { _, _ -> }
             )
         }
@@ -236,7 +232,6 @@ object Sidebar {
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
         val onReportBug: () -> Unit,
-        val onExportLogs: () -> Unit,
         val onUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit
     ) {
 
@@ -261,10 +256,6 @@ object Sidebar {
                 onReportBug()
                 close()
             },
-            onExportlogs = {
-                onExportLogs()
-                close()
-            },
             onUpselling = { entryPoint, type ->
                 onUpselling(entryPoint, type)
                 close()
@@ -280,7 +271,6 @@ object Sidebar {
                 onSubscription = {},
                 onContacts = {},
                 onReportBug = {},
-                onExportLogs = {},
                 onUpselling = { _, _ -> }
             )
         }

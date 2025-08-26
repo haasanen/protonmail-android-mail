@@ -22,6 +22,5 @@
     <string name="drawer_title_bug_report">Report a problem</string>
     <string name="drawer_item_create_label">Create label</string>
     <string name="drawer_item_create_folder">Create folder</string>
-    <string name="drawer_title_share_logs" translatable="false">Share logs</string>
     <string name="drawer_upgrade_plus">Upgrade to Mail Plus</string>
 </resources>
