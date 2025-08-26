@@ -43,7 +43,6 @@ class ContactActionsBottomSheetReducer @Inject constructor() {
 
         val firstActionGroup = buildList {
             add(ContactActionUiModel.NewMessage(participant))
-            if (contactId == null) add(ContactActionUiModel.AddContactUiModel(participant))
         }.toImmutableList()
 
         val secondActionGroup = buildList {
@@ -51,9 +50,7 @@ class ContactActionsBottomSheetReducer @Inject constructor() {
             add(ContactActionUiModel.CopyName(participant.name))
         }.toImmutableList()
 
-        val thirdActionGroup = buildList {
-            add(ContactActionUiModel.Block(participant))
-        }.toImmutableList()
+        val thirdActionGroup = emptyList<ContactActionUiModel>().toImmutableList()
 
         return BottomSheetState(
             contentState = ContactActionsBottomSheetState.Data(

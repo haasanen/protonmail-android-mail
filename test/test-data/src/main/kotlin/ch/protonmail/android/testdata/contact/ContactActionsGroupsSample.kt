@@ -35,9 +35,7 @@ object ContactActionsGroupsSample {
             add(ContactActionUiModel.CopyName(participant.name))
         }.toImmutableList()
 
-        val thirdActionGroup = buildList {
-            add(ContactActionUiModel.Block(participant))
-        }.toImmutableList()
+        val thirdActionGroup = emptyList<ContactActionUiModel>().toImmutableList()
 
         return ContactActionsGroups(firstActionGroup, secondActionGroup, thirdActionGroup)
     }
@@ -45,7 +43,6 @@ object ContactActionsGroupsSample {
     fun defaultForNoContact(participant: Participant): ContactActionsGroups {
         val firstActionGroup = buildList {
             add(ContactActionUiModel.NewMessage(participant))
-            add(ContactActionUiModel.AddContactUiModel(participant))
         }.toImmutableList()
 
         val secondActionGroup = buildList {
@@ -53,9 +50,7 @@ object ContactActionsGroupsSample {
             add(ContactActionUiModel.CopyName(participant.name))
         }.toImmutableList()
 
-        val thirdActionGroup = buildList {
-            add(ContactActionUiModel.Block(participant))
-        }.toImmutableList()
+        val thirdActionGroup = emptyList<ContactActionUiModel>().toImmutableList()
 
         return ContactActionsGroups(firstActionGroup, secondActionGroup, thirdActionGroup)
     }
