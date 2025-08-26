@@ -29,25 +29,21 @@ internal class ToolbarActionsMapperTest {
     fun `should map mobile actions to actions correctly`() {
         // Given
         val mobileActions = listOf(
-            MobileAction.Archive,
-            MobileAction.Forward,
-            MobileAction.Label,
-            MobileAction.Move,
-            MobileAction.Print,
-            MobileAction.Remind,
-            MobileAction.Reply,
-            MobileAction.ReportPhishing,
-            MobileAction.SaveAttachments,
-            MobileAction.SenderEmails,
-            MobileAction.Snooze,
-            MobileAction.Spam,
-            MobileAction.ToggleLight,
-            MobileAction.ToggleRead,
-            MobileAction.ToggleStar,
-            MobileAction.Trash,
-            MobileAction.ViewHeaders,
-            MobileAction.ViewHtml,
-            MobileAction.Other("other-action")
+            MobileAction.ARCHIVE,
+            MobileAction.FORWARD,
+            MobileAction.LABEL,
+            MobileAction.MOVE,
+            MobileAction.PRINT,
+            MobileAction.REPLY,
+            MobileAction.REPORT_PHISHING,
+            MobileAction.SNOOZE,
+            MobileAction.SPAM,
+            MobileAction.TOGGLE_LIGHT,
+            MobileAction.TOGGLE_READ,
+            MobileAction.TOGGLE_STAR,
+            MobileAction.TRASH,
+            MobileAction.VIEW_HEADERS,
+            MobileAction.VIEW_HTML
         )
 
         val expectedActions = listOf(
@@ -56,11 +52,8 @@ internal class ToolbarActionsMapperTest {
             Action.Label,
             Action.Move,
             Action.Print,
-            Action.Remind,
             Action.Reply,
             Action.ReportPhishing,
-            Action.SaveAttachments,
-            Action.SenderEmails,
             Action.Snooze,
             Action.Spam,
             Action.ViewInLightMode,
@@ -105,48 +98,48 @@ internal class ToolbarActionsMapperTest {
             Action.ViewHeaders,
             Action.ViewHtml,
             Action.ReportPhishing,
-            Action.Remind,
-            Action.SenderEmails,
-            Action.SaveAttachments,
             Action.Snooze,
-            Action.Inbox,
-            Action.SavePdf,
-            Action.Pin,
-            Action.Unpin,
             Action.CustomizeToolbar,
-            Action.More
+            Action.Inbox,
+            Action.More,
+            Action.SavePdf,
+            Action.Remind,
+            Action.SaveAttachments,
+            Action.SenderEmails,
+            Action.Pin,
+            Action.Unpin
         )
 
         val expectedMobileActions = listOf(
-            MobileAction.Reply, // Action.Reply
-            MobileAction.Reply, // Action.ReplyAll
-            MobileAction.Forward, // Action.Forward
-            MobileAction.ToggleRead, // Action.MarkRead
-            MobileAction.ToggleRead, // Action.MarkUnread
-            MobileAction.ToggleStar, // Action.Star
-            MobileAction.ToggleStar, // Action.Unstar
-            MobileAction.Label, // Action.Label
-            MobileAction.Move, // Action.Move
-            MobileAction.Trash, // Action.Trash
-            MobileAction.Trash, // Action.Delete
-            MobileAction.Archive,
-            MobileAction.Spam,
-            MobileAction.ToggleLight, // Action.ViewInLightMode
-            MobileAction.ToggleLight, // Action.ViewInDarkMode
-            MobileAction.Print,
-            MobileAction.ViewHeaders,
-            MobileAction.ViewHtml,
-            MobileAction.ReportPhishing,
-            MobileAction.Remind,
-            MobileAction.SenderEmails,
-            MobileAction.SaveAttachments,
-            MobileAction.Snooze,
-            null, // Action.Inbox
-            null, // Action.SavePdf
-            null, // Action.Pin
-            null, // Action.Unpin
+            MobileAction.REPLY, // Action.Reply
+            MobileAction.REPLY, // Action.ReplyAll
+            MobileAction.FORWARD, // Action.Forward
+            MobileAction.TOGGLE_READ, // Action.MarkRead
+            MobileAction.TOGGLE_READ, // Action.MarkUnread
+            MobileAction.TOGGLE_STAR, // Action.Star
+            MobileAction.TOGGLE_STAR, // Action.Unstar
+            MobileAction.LABEL, // Action.Label
+            MobileAction.MOVE, // Action.Move
+            MobileAction.TRASH, // Action.Trash
+            MobileAction.TRASH, // Action.Delete
+            MobileAction.ARCHIVE,
+            MobileAction.SPAM,
+            MobileAction.TOGGLE_LIGHT, // Action.ViewInLightMode
+            MobileAction.TOGGLE_LIGHT, // Action.ViewInDarkMode
+            MobileAction.PRINT,
+            MobileAction.VIEW_HEADERS,
+            MobileAction.VIEW_HTML,
+            MobileAction.REPORT_PHISHING,
+            MobileAction.SNOOZE,
             null, // Action.CustomizeToolbar
-            null // Action.More
+            null, // Action.Inbox
+            null, // Action.More
+            null, // Action.SavePdf
+            null, // Action.Remind
+            null, // Action.SaveAttachments
+            null, // Action.SenderEmails
+            null, // Action.Pin
+            null // Action.Unpin
         )
 
         // When

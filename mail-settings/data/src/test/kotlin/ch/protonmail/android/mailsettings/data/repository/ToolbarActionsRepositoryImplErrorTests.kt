@@ -70,7 +70,7 @@ internal class ToolbarActionsRepositoryImplErrorTest {
     fun `should propagate the error on save`() = runTest {
         // Given
         val actions = listOf(Action.ReportPhishing, Action.Move)
-        val rustActions = listOf(MobileAction.ReportPhishing, MobileAction.Move)
+        val rustActions = listOf(MobileAction.REPORT_PHISHING, MobileAction.MOVE)
         coEvery { dataSource.updateMessageActions(userId, rustActions) } returns DataError.Local.NoDataCached.left()
 
         // When

@@ -23,64 +23,59 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import uniffi.proton_mail_uniffi.MobileAction
 
 fun LocalMobileAction.toAction() = when (this) {
-    MobileAction.Archive -> Action.Archive
-    MobileAction.Forward -> Action.Forward
-    MobileAction.Label -> Action.Label
-    MobileAction.Move -> Action.Move
-    MobileAction.Print -> Action.Print
-    MobileAction.Remind -> Action.Remind
-    MobileAction.Reply -> Action.Reply
-    MobileAction.ReportPhishing -> Action.ReportPhishing
-    MobileAction.SaveAttachments -> Action.SaveAttachments
-    MobileAction.SenderEmails -> Action.SenderEmails
-    MobileAction.Snooze -> Action.Snooze
-    MobileAction.Spam -> Action.Spam
-    MobileAction.ToggleLight -> Action.ViewInLightMode
-    MobileAction.ToggleRead -> Action.MarkRead
-    MobileAction.ToggleStar -> Action.Star
-    MobileAction.Trash -> Action.Trash
-    MobileAction.ViewHeaders -> Action.ViewHeaders
-    MobileAction.ViewHtml -> Action.ViewHtml
-    is MobileAction.Other -> null // We don't show unsupported actions
+    MobileAction.ARCHIVE -> Action.Archive
+    MobileAction.FORWARD -> Action.Forward
+    MobileAction.LABEL -> Action.Label
+    MobileAction.MOVE -> Action.Move
+    MobileAction.PRINT -> Action.Print
+    MobileAction.REPLY -> Action.Reply
+    MobileAction.REPORT_PHISHING -> Action.ReportPhishing
+    MobileAction.SNOOZE -> Action.Snooze
+    MobileAction.SPAM -> Action.Spam
+    MobileAction.TOGGLE_LIGHT -> Action.ViewInLightMode
+    MobileAction.TOGGLE_READ -> Action.MarkRead
+    MobileAction.TOGGLE_STAR -> Action.Star
+    MobileAction.TRASH -> Action.Trash
+    MobileAction.VIEW_HEADERS -> Action.ViewHeaders
+    MobileAction.VIEW_HTML -> Action.ViewHtml
 }
 
 fun Action.toLocalMobileAction(): MobileAction? = when (this) {
     Action.Reply,
-    Action.ReplyAll -> MobileAction.Reply
+    Action.ReplyAll -> MobileAction.REPLY
 
-    Action.Forward -> MobileAction.Forward
+    Action.Forward -> MobileAction.FORWARD
     Action.MarkRead,
-    Action.MarkUnread -> MobileAction.ToggleRead
+    Action.MarkUnread -> MobileAction.TOGGLE_READ
 
     Action.Star,
-    Action.Unstar -> MobileAction.ToggleStar
+    Action.Unstar -> MobileAction.TOGGLE_STAR
 
-    Action.Label -> MobileAction.Label
-    Action.Move -> MobileAction.Move
+    Action.Label -> MobileAction.LABEL
+    Action.Move -> MobileAction.MOVE
     Action.Trash,
-    Action.Delete -> MobileAction.Trash
+    Action.Delete -> MobileAction.TRASH
 
-    Action.Archive -> MobileAction.Archive
+    Action.Archive -> MobileAction.ARCHIVE
 
-    Action.Spam -> MobileAction.Spam
+    Action.Spam -> MobileAction.SPAM
 
     Action.ViewInLightMode,
-    Action.ViewInDarkMode -> MobileAction.ToggleLight
+    Action.ViewInDarkMode -> MobileAction.TOGGLE_LIGHT
 
-    Action.Print -> MobileAction.Print
-    Action.ViewHeaders -> MobileAction.ViewHeaders
-    Action.ViewHtml -> MobileAction.ViewHtml
-    Action.ReportPhishing -> MobileAction.ReportPhishing
-    Action.Remind -> MobileAction.Remind
-    Action.SenderEmails -> MobileAction.SenderEmails
-    Action.SaveAttachments -> MobileAction.SaveAttachments
+    Action.Print -> MobileAction.PRINT
+    Action.ViewHeaders -> MobileAction.VIEW_HEADERS
+    Action.ViewHtml -> MobileAction.VIEW_HTML
+    Action.ReportPhishing -> MobileAction.REPORT_PHISHING
+    Action.Snooze -> MobileAction.SNOOZE
 
-    Action.Snooze -> MobileAction.Snooze
-
-    Action.Inbox,
-    Action.SavePdf,
-    Action.Pin,
-    Action.Unpin,
     Action.CustomizeToolbar,
-    Action.More -> null // Not handled
+    Action.Inbox,
+    Action.More,
+    Action.SavePdf,
+    Action.Remind,
+    Action.SaveAttachments,
+    Action.SenderEmails,
+    Action.Pin,
+    Action.Unpin -> null // Not handled
 }

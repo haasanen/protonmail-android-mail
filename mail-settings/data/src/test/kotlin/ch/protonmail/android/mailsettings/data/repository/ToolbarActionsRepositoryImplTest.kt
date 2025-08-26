@@ -170,19 +170,19 @@ internal class ToolbarActionsRepositoryImplTest(
             return listOf(
                 arrayOf(
                     ToolbarType.List,
-                    listOf(MobileAction.Trash, MobileAction.Label),
+                    listOf(MobileAction.TRASH, MobileAction.LABEL),
                     listOf(Action.Trash, Action.Label),
                     "List toolbar"
                 ),
                 arrayOf(
                     ToolbarType.Conversation,
-                    listOf(MobileAction.Archive, MobileAction.Snooze),
+                    listOf(MobileAction.ARCHIVE, MobileAction.SNOOZE),
                     listOf(Action.Archive, Action.Snooze),
                     "Conversation toolbar"
                 ),
                 arrayOf(
                     ToolbarType.Message,
-                    listOf(MobileAction.ReportPhishing, MobileAction.Move),
+                    listOf(MobileAction.REPORT_PHISHING, MobileAction.MOVE),
                     listOf(Action.ReportPhishing, Action.Move),
                     "Message toolbar"
                 )
