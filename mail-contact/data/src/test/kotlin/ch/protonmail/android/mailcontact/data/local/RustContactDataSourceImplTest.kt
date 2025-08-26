@@ -60,7 +60,7 @@ import uniffi.proton_mail_uniffi.VoidActionResult
 import uniffi.proton_mail_uniffi.WatchedContactList
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 
 class RustContactDataSourceImplTest {
 
@@ -224,7 +224,7 @@ class RustContactDataSourceImplTest {
     }
 
     @Test
-    fun `creates a new watcher for each call to observe grouped contacts`() = runTest {
+    fun `does not create a new watcher for each call to observe grouped contacts`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val session = mockk<MailUserSessionWrapper>()
@@ -239,8 +239,8 @@ class RustContactDataSourceImplTest {
         val secondFlow = rustContactDataSource.observeAllGroupedContacts(userId).first()
 
         // Then
-        assertNotSame(firstFlow, secondFlow)
-        coVerify(exactly = 2) { createRustContactWatcher(session, any()) }
+        assertSame(firstFlow, secondFlow)
+        coVerify(exactly = 1) { createRustContactWatcher(session, any()) }
     }
 
     @Test

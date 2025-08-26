@@ -34,16 +34,19 @@ import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @Suppress("NotImplementedDeclaration")
+@Singleton
 class ContactRepositoryImpl @Inject constructor(
     private val localContactDataSource: RustContactDataSource
 ) : ContactRepository {
 
-    override fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>> =
-        localContactDataSource.observeAllGroupedContacts(userId)
+    override suspend fun observeAllGroupedContacts(
+        userId: UserId
+    ): Flow<Either<GetContactError, List<GroupedContacts>>> = localContactDataSource.observeAllGroupedContacts(userId)
 
-    override fun observeAllContacts(
+    override suspend fun observeAllContacts(
         userId: UserId,
         refresh: Boolean
     ): Flow<Either<GetContactError, List<ContactMetadata>>> = localContactDataSource.observeAllContacts(userId)

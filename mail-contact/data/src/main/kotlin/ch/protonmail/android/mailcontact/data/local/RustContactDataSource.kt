@@ -32,9 +32,9 @@ import me.proton.core.domain.entity.UserId
 
 interface RustContactDataSource {
 
-    fun observeAllContacts(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata>>>
+    suspend fun observeAllContacts(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata>>>
 
-    fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>>
+    suspend fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>>
 
     suspend fun deleteContact(userId: UserId, contactId: LocalContactId): Either<DataError.Local, Unit>
 

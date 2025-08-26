@@ -32,6 +32,6 @@ class ObserveGroupedContacts @Inject constructor(
 ) {
 
     @MissingRustApi
-    operator fun invoke(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>> =
+    suspend operator fun invoke(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>> =
         contactRepository.observeAllGroupedContacts(userId)
 }

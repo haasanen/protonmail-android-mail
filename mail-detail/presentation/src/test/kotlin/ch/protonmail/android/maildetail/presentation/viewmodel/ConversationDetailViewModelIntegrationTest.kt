@@ -237,7 +237,9 @@ class ConversationDetailViewModelIntegrationTest {
 
     // region mock observe use cases
     private val observeContacts: ObserveContacts = mockk {
-        every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<ContactMetadata.Contact>().right())
+        coEvery {
+            this@mockk(userId = UserIdSample.Primary)
+        } returns flowOf(emptyList<ContactMetadata.Contact>().right())
     }
     private val observeConversationUseCase: ObserveConversation = mockk {
         every {
@@ -2542,7 +2544,7 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     private fun initGenericObserverMocks() {
-        every {
+        coEvery {
             observeContacts(userId = UserIdSample.Primary)
         } returns flowOf(emptyList<ContactMetadata.Contact>().right())
         every { observeConversationUseCase(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns

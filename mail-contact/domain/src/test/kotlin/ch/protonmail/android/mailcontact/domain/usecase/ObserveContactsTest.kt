@@ -24,7 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import ch.protonmail.android.testdata.user.UserIdTestData
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -35,7 +35,7 @@ import kotlin.test.assertIs
 class ObserveContactsTest {
 
     private val contactRepository = mockk<ContactRepository> {
-        every { observeAllContacts(UserIdTestData.userId) } returns flowOf(emptyList<ContactMetadata>().right())
+        coEvery { observeAllContacts(UserIdTestData.userId) } returns flowOf(emptyList<ContactMetadata>().right())
     }
     private val observeContacts = ObserveContacts(contactRepository)
 

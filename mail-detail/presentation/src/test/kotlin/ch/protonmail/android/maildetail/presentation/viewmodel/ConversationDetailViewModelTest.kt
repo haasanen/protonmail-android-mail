@@ -217,7 +217,9 @@ class ConversationDetailViewModelTest {
     private val move: MoveConversation = mockk()
     private val deleteConversations: DeleteConversations = mockk()
     private val observeContacts: ObserveContacts = mockk {
-        every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<ContactMetadata.Contact>().right())
+        coEvery {
+            this@mockk(userId = UserIdSample.Primary)
+        } returns flowOf(emptyList<ContactMetadata.Contact>().right())
     }
     private val observeConversation: ObserveConversation = mockk {
         every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
@@ -553,7 +555,7 @@ class ConversationDetailViewModelTest {
         val expectedState = initialState.copy(
             messagesState = ConversationDetailsMessagesState.Data(messagesUiModels)
         )
-        every { observeContacts(UserIdSample.Primary) } returns flowOf(GetContactError.left())
+        coEvery { observeContacts(UserIdSample.Primary) } returns flowOf(GetContactError.left())
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,

@@ -33,7 +33,7 @@ class ObserveContacts @Inject constructor(
     private val contactRepository: ContactRepository
 ) {
 
-    operator fun invoke(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata.Contact>>> =
+    suspend operator fun invoke(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata.Contact>>> =
         contactRepository.observeAllContacts(userId).map { contactsEither ->
 
             contactsEither.fold(

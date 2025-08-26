@@ -30,7 +30,7 @@ import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.user.UserIdTestData
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -60,7 +60,7 @@ class ObserveContactGroupTest {
     private val contacts = listOf(contactGroup)
     private val contactRepository = mockk<ContactRepository> {
         // Mock repository to return contacts list
-        every { this@mockk.observeAllContacts(UserIdTestData.userId) } returns flowOf(contacts.right())
+        coEvery { this@mockk.observeAllContacts(UserIdTestData.userId) } returns flowOf(contacts.right())
     }
 
     private val observeContactGroup = ObserveContactGroup(contactRepository)
@@ -79,7 +79,7 @@ class ObserveContactGroupTest {
     @Test
     fun `when contact repository returns any data error, then emit GetContactsError`() = runTest {
         // Given
-        every { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(GetContactError.left())
+        coEvery { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(GetContactError.left())
 
         // When
         observeContactGroup(UserIdTestData.userId, testContactGroupId).test {
@@ -93,7 +93,7 @@ class ObserveContactGroupTest {
     fun `when contact group is not found, then emit ContactGroupNotFound error`() = runTest {
         // Given
         val otherContactGroupId = ContactGroupIdSample.School
-        every { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(GetContactError.left())
+        coEvery { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(GetContactError.left())
 
         // When
         observeContactGroup(UserIdTestData.userId, otherContactGroupId).test {

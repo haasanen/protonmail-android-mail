@@ -85,7 +85,7 @@ class ContactListViewModel @Inject constructor(
     }
 
 
-    private fun flowContactListEvent(userId: UserId): Flow<ContactListEvent> =
+    private suspend fun flowContactListEvent(userId: UserId): Flow<ContactListEvent> =
         observeGroupedContacts(userId).mapLatest { contactsEither ->
             contactsEither.fold(
                 ifRight = { contactList ->

@@ -56,11 +56,11 @@ object MailContactModule {
     internal interface BindsModule {
 
         @Binds
-        @Reusable
+        @Singleton
         fun bindRustContactDataSource(impl: RustContactDataSourceImpl): RustContactDataSource
 
         @Binds
-        @Reusable
+        @Singleton
         fun bindContactRepository(impl: ContactRepositoryImpl): ContactRepository
 
         @Binds

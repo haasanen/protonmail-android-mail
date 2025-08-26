@@ -33,7 +33,7 @@ class ObserveContactGroup @Inject constructor(
     private val contactRepository: ContactRepository
 ) {
 
-    operator fun invoke(
+    suspend operator fun invoke(
         userId: UserId,
         contactGroupId: ContactGroupId
     ): Flow<Either<GetContactGroupError, ContactMetadata.ContactGroup>> {

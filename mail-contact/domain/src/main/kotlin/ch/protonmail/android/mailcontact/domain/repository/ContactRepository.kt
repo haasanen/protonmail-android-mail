@@ -36,12 +36,12 @@ interface ContactRepository {
     /**
      * Observe all [GroupedContacts] from [userId].
      */
-    fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>>
+    suspend fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>>
 
     /**
      * Observe all [ContactMetadata] from [userId].
      */
-    fun observeAllContacts(
+    suspend fun observeAllContacts(
         userId: UserId,
         refresh: Boolean = false
     ): Flow<Either<GetContactError, List<ContactMetadata>>>

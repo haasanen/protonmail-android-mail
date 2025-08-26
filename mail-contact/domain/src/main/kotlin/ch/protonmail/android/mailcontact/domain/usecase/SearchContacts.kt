@@ -38,7 +38,7 @@ class SearchContacts @Inject constructor(
     private val contactRepository: ContactRepository
 ) {
 
-    operator fun invoke(userId: UserId, query: String): Flow<Either<GetContactError, List<ContactMetadata>>> =
+    suspend operator fun invoke(userId: UserId, query: String): Flow<Either<GetContactError, List<ContactMetadata>>> =
         contactRepository.observeAllContacts(
             userId
         ).distinctUntilChanged().transformLatest {
