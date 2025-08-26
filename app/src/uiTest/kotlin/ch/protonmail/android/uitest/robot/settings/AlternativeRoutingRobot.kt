@@ -21,7 +21,7 @@ package ch.protonmail.android.uitest.robot.settings
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.TEST_TAG_ALTERNATIVE_ROUTING_TOGGLE_ITEM
+import ch.protonmail.android.mailsettings.presentation.appsettings.TEST_TAG_ALTERNATIVE_ROUTING_TOGGLE_ITEM
 import ch.protonmail.android.test.ksp.annotations.VerifiesOuter
 import ch.protonmail.android.uitest.robot.ComposeRobot
 

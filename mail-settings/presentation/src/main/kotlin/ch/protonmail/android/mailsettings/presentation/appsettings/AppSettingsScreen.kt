@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,6 +71,8 @@ import ch.protonmail.android.mailsettings.presentation.settings.SettingsItemDivi
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+
+const val TEST_TAG_ALTERNATIVE_ROUTING_TOGGLE_ITEM = "AlternativeRoutingToggleItem"
 
 @Composable
 fun AppSettingsScreen(modifier: Modifier = Modifier, actions: AppSettingsScreen.Actions) {
@@ -529,7 +532,9 @@ private fun AdvancedSettingsItem(
         Column {
 
             ProtonSettingsToggleItem(
-                modifier = Modifier.padding(ProtonDimens.Spacing.Large),
+                modifier = Modifier
+                    .testTag(TEST_TAG_ALTERNATIVE_ROUTING_TOGGLE_ITEM)
+                    .padding(ProtonDimens.Spacing.Large),
                 name = stringResource(id = R.string.mail_settings_app_customization_alternative_routing),
                 hint = stringResource(id = R.string.mail_settings_app_customization_alternative_routing_hint),
                 value = alternativeRouting,

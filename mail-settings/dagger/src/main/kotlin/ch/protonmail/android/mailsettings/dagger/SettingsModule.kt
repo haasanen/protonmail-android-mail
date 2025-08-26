@@ -30,7 +30,6 @@ import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSourceIm
 import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.RustToolbarActionSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.ToolbarActionSettingsDataSource
-import ch.protonmail.android.mailsettings.data.repository.AlternativeRoutingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncSettingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.CombinedContactsRepositoryImpl
@@ -40,9 +39,6 @@ import ch.protonmail.android.mailsettings.data.repository.NotificationsSettingsR
 import ch.protonmail.android.mailsettings.data.repository.PreventScreenshotsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.RustMailSettingsRepository
 import ch.protonmail.android.mailsettings.data.repository.ToolbarActionsRepositoryImpl
-import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSource
-import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSourceImpl
-import ch.protonmail.android.mailsettings.domain.repository.AlternativeRoutingRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.BackgroundSyncSettingRepository
@@ -78,18 +74,6 @@ object SettingsModule {
     @Singleton
     fun provideDataStoreProvider(@ApplicationContext context: Context): MailSettingsDataStoreProvider =
         MailSettingsDataStoreProvider(context)
-
-    @Provides
-    @Singleton
-    fun provideAlternativeRoutingLocalDataSource(
-        dataStoreProvider: MailSettingsDataStoreProvider
-    ): AlternativeRoutingLocalDataSource = AlternativeRoutingLocalDataSourceImpl(dataStoreProvider)
-
-    @Provides
-    @Singleton
-    fun provideAlternativeRoutingRepository(
-        alternativeRoutingLocalDataSource: AlternativeRoutingLocalDataSource
-    ): AlternativeRoutingRepository = AlternativeRoutingRepositoryImpl(alternativeRoutingLocalDataSource)
 
     @Provides
     @Singleton

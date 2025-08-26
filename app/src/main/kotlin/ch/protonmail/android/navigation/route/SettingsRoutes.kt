@@ -41,7 +41,6 @@ import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinS
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogModeKey
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogResultKey
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
-import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.AlternativeRoutingSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.combinedcontacts.CombinedContactsSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsDialog
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.MobileSignatureSettingsScreen
@@ -122,15 +121,6 @@ fun NavGraphBuilder.addWebSpamFilterSettings(navController: NavHostController) {
                 )
             )
         }
-    }
-}
-
-internal fun NavGraphBuilder.addAlternativeRoutingSetting(navController: NavHostController) {
-    composable(route = Screen.AlternativeRoutingSettings.route) {
-        AlternativeRoutingSettingScreen(
-            modifier = Modifier,
-            onBackClick = { navController.navigateBack() }
-        )
     }
 }
 

@@ -119,7 +119,6 @@ sealed class Destination(val route: String) {
         object PrivacyAndSecuritySettings : Destination("settings/privacyAndSecurity")
         object SecurityKeysSettings : Destination("settings/securityKeys")
         object SpamFilterSettings : Destination("settings/spamFilter")
-        object AlternativeRoutingSettings : Destination("settings/alternativeRouting")
         object MobileSignatureSettings : Destination("settings/mobileSignature")
         object AutoLockSettings : Destination("settings/autolock")
         object AutoLockInterval : Destination("settings/autolock/interval")
