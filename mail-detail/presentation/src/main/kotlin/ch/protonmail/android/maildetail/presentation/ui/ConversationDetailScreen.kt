@@ -420,8 +420,7 @@ fun ConversationDetailScreen(
                         },
                         onNewMessageClicked = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
-                            // actions.onComposeNewMessage(it.address)
+                            actions.onComposeNewMessage(it.address)
                         },
                         onBlockClicked = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
