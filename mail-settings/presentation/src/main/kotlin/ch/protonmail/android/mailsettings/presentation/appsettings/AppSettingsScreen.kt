@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.provider.Settings
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -99,6 +104,8 @@ private fun AppSettingsScreenContent(
     onIntent: (AppSettingsAction) -> Unit
 ) {
     val context = LocalContext.current
+
+    var advancedHeaderTaps by rememberSaveable { mutableIntStateOf(0) }
 
     Scaffold(
         modifier = modifier,
@@ -168,10 +175,14 @@ private fun AppSettingsScreenContent(
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
 
-                MainSettingsHeader(titleRes = R.string.mail_settings_app_customization_advanced_header)
+                MainSettingsHeader(
+                    titleRes = R.string.mail_settings_app_customization_advanced_header,
+                    modifier = Modifier.clickable(null, null) { advancedHeaderTaps++ }
+                )
                 AdvancedSettingsItem(
                     alternativeRouting = state.settings.alternativeRoutingEnabled,
                     actions = actions,
+                    showApplicationLogsEntry = advancedHeaderTaps >= APP_LOGS_ENTRY_TAP_THRESHOLD,
                     onIntent = onIntent
                 )
 
@@ -186,6 +197,8 @@ private fun launchNotificationSettingsIntent(context: Context) {
     intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
     startActivity(context, intent, null)
 }
+
+private const val APP_LOGS_ENTRY_TAP_THRESHOLD = 5
 
 @Composable
 private fun NotificationSettingsItem(
@@ -500,6 +513,7 @@ private fun AdvancedSettingsItem(
     modifier: Modifier = Modifier,
     alternativeRouting: Boolean,
     actions: AppSettingsScreen.Actions,
+    showApplicationLogsEntry: Boolean,
     onIntent: (AppSettingsAction) -> Unit
 ) {
     Card(
@@ -520,21 +534,24 @@ private fun AdvancedSettingsItem(
                 onToggle = { onIntent(ToggleAlternativeRouting(it)) }
             )
 
-            SettingsItemDivider()
 
-            ProtonAppSettingsItemNorm(
-                name = stringResource(id = R.string.mail_settings_app_customization_view_application_logs),
-                onClick = { actions.onViewApplicationLogsClick() },
-                icon = {
-                    ProtonMainSettingsIcon(
-                        iconRes = R.drawable.ic_proton_chevron_right,
-                        contentDescription = stringResource(
-                            id = R.string.mail_settings_app_customization_view_application_logs
-                        ),
-                        tint = ProtonTheme.colors.iconHint
-                    )
-                }
-            )
+            if (showApplicationLogsEntry) {
+                SettingsItemDivider()
+
+                ProtonAppSettingsItemNorm(
+                    name = stringResource(id = R.string.mail_settings_app_customization_view_application_logs),
+                    onClick = { actions.onViewApplicationLogsClick() },
+                    icon = {
+                        ProtonMainSettingsIcon(
+                            iconRes = R.drawable.ic_proton_chevron_right,
+                            contentDescription = stringResource(
+                                id = R.string.mail_settings_app_customization_view_application_logs
+                            ),
+                            tint = ProtonTheme.colors.iconHint
+                        )
+                    }
+                )
+            }
         }
     }
 }

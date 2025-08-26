@@ -51,14 +51,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonMainSettingsItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.model.VisibilityUiModel
+import ch.protonmail.android.design.compose.model.isVisible
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
-import ch.protonmail.android.design.compose.model.VisibilityUiModel
-import ch.protonmail.android.design.compose.model.isVisible
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
@@ -203,9 +203,9 @@ fun MainSettingsScreen(
 }
 
 @Composable
-fun MainSettingsHeader(@StringRes titleRes: Int) {
+fun MainSettingsHeader(@StringRes titleRes: Int, modifier: Modifier = Modifier) {
     Text(
-        modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large),
+        modifier = modifier.padding(vertical = ProtonDimens.Spacing.Large),
         text = stringResource(id = titleRes),
         color = ProtonTheme.colors.textWeak,
         style = ProtonTheme.typography.titleMedium
