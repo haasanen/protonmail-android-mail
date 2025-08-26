@@ -19,12 +19,17 @@
 package ch.protonmail.android.mailpinlock.presentation.autolock.ui
 
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockOverlayState
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.LockScreenViewModel
@@ -40,13 +45,20 @@ fun LockScreenOverlay(
     val activity = LocalActivity.current
 
     when (state) {
-        AutoLockOverlayState.Biometrics -> LockScreenBiometricsPrompt(
-            {
-                viewModel.onSuccessfulBiometrics()
-                activity?.finish()
-            },
-            onCloseAll = { activity?.finishAffinity() }
-        )
+        AutoLockOverlayState.Biometrics ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(ProtonTheme.colors.backgroundNorm)
+            ) {
+                LockScreenBiometricsPrompt(
+                    onClose = {
+                        viewModel.onSuccessfulBiometrics()
+                        activity?.finish()
+                    },
+                    onCloseAll = { activity?.finishAffinity() }
+                )
+            }
 
         AutoLockOverlayState.Error -> onClose()
         AutoLockOverlayState.Loading -> Unit
