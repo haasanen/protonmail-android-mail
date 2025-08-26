@@ -34,7 +34,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "invoice.pdf",
-        size = 5678L
+        size = 5678L,
+        includeInPreview = true
     )
 
     val Image = AttachmentMetadata(
@@ -45,7 +46,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "profile_picture.png",
-        size = 2048L
+        size = 2048L,
+        includeInPreview = true
     )
 
     val Audio = AttachmentMetadata(
@@ -56,7 +58,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "song.mp3",
-        size = 5_242_880L
+        size = 5_242_880L,
+        includeInPreview = true
     )
 
     val Video = AttachmentMetadata(
@@ -67,7 +70,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "vacation_video.mp4",
-        size = 10_485_760L
+        size = 10_485_760L,
+        includeInPreview = true
     )
 
     val Pdf = AttachmentMetadata(
@@ -78,7 +82,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "ebook.pdf",
-        size = 302_976L
+        size = 302_976L,
+        includeInPreview = true
     )
 
     val Zip = AttachmentMetadata(
@@ -89,7 +94,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "archive.zip",
-        size = 10_240L
+        size = 10_240L,
+        includeInPreview = true
     )
 
     val InvoiceWithBinaryContentType = AttachmentMetadata(
@@ -100,7 +106,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "invoice.pdf",
-        size = 5678L
+        size = 5678L,
+        includeInPreview = true
     )
 
     val PublicKey = AttachmentMetadata(
@@ -111,7 +118,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "publickey - example@protonmail.com - 0x61DD734E.asc",
-        size = 666L
+        size = 666L,
+        includeInPreview = true
     )
 
     val Document = AttachmentMetadata(
@@ -122,7 +130,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "document.docx",
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val DocumentWithMultipleDots = AttachmentMetadata(
@@ -133,7 +142,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "complicated.document.docx",
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val DocumentWithReallyLongFileName = AttachmentMetadata(
@@ -144,7 +154,8 @@ object AttachmentMetadataSamples {
         ),
         disposition = AttachmentDisposition.Attachment,
         name = "document-with-really-long-and-unnecessary-file-name-that-should-be-truncated.pdf",
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val Calendar = AttachmentMetadata(
@@ -155,7 +166,8 @@ object AttachmentMetadataSamples {
         ),
         name = "invite.ics",
         size = 1234,
-        disposition = AttachmentDisposition.Attachment
+        disposition = AttachmentDisposition.Attachment,
+        includeInPreview = true
     )
 
     val EmbeddedImageAttachment = AttachmentMetadata(
@@ -166,7 +178,8 @@ object AttachmentMetadataSamples {
             mime = "text/calendar",
             category = MimeTypeCategory.Image
         ),
-        disposition = AttachmentDisposition.Inline
+        disposition = AttachmentDisposition.Inline,
+        includeInPreview = true
     )
 
     val SignedDocument = AttachmentMetadata(
@@ -177,7 +190,8 @@ object AttachmentMetadataSamples {
             mime = "application/doc",
             category = MimeTypeCategory.Pdf
         ),
-        disposition = AttachmentDisposition.Attachment
+        disposition = AttachmentDisposition.Attachment,
+        includeInPreview = true
     )
 
     val InvalidEmbeddedImageAttachment = AttachmentMetadata(
@@ -188,7 +202,8 @@ object AttachmentMetadataSamples {
             mime = "application/pdf",
             category = MimeTypeCategory.Pdf
         ),
-        disposition = AttachmentDisposition.Inline
+        disposition = AttachmentDisposition.Inline,
+        includeInPreview = true
     )
 
     val EmbeddedOctetStreamAttachment = AttachmentMetadata(
@@ -199,7 +214,8 @@ object AttachmentMetadataSamples {
             mime = "application/octet-stream",
             category = MimeTypeCategory.Image
         ),
-        disposition = AttachmentDisposition.Inline
+        disposition = AttachmentDisposition.Inline,
+        includeInPreview = true
     )
 
     object Ids {

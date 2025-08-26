@@ -172,14 +172,16 @@ object MailboxItemUiModelPreviewData {
                     name = "Account_statement_01.pdf",
                     icon = R.drawable.ic_file_type_pdf,
                     contentDescription = R.string.attachment_type_pdf,
-                    size = 5678L
+                    size = 5678L,
+                    includeInPreview = true
                 ),
                 AttachmentMetadataUiModel(
                     id = AttachmentIdUiModel("1"),
                     name = "Account_statement_all.zip",
                     icon = R.drawable.ic_file_type_zip,
                     contentDescription = R.string.attachment_type_archive,
-                    size = 5678L
+                    size = 5678L,
+                    includeInPreview = true
                 )
             ),
             shouldShowScheduleSendTime = false,

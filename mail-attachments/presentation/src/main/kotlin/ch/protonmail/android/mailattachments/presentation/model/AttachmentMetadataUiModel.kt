@@ -32,5 +32,6 @@ data class AttachmentMetadataUiModel(
     val size: Long,
     val status: AttachmentState? = null,
     val deletable: Boolean = false,
-    val isCalendar: Boolean = false
+    val isCalendar: Boolean = false,
+    val includeInPreview: Boolean = true
 )

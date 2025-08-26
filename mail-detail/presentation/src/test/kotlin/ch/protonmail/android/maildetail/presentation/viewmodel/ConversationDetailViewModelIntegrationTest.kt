@@ -2610,7 +2610,8 @@ internal class ConversationDetailViewModelIntegrationTest {
             mime = "application/pdf",
             category = MimeTypeCategory.Pdf
         ),
-        disposition = AttachmentDisposition.Attachment
+        disposition = AttachmentDisposition.Attachment,
+        includeInPreview = true
     )
 
     private suspend fun ReceiveTurbine<ConversationDetailState>.lastEmittedItem(): ConversationDetailState {

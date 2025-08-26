@@ -23,7 +23,8 @@ data class AttachmentMetadata(
     val mimeType: AttachmentMimeType,
     val disposition: AttachmentDisposition,
     val name: String,
-    val size: Long
+    val size: Long,
+    val includeInPreview: Boolean
 )
 
 fun AttachmentMetadata.isCalendarAttachment() = mimeType.category == MimeTypeCategory.Calendar

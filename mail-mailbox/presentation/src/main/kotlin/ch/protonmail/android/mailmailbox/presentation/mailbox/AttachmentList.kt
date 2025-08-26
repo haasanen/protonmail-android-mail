@@ -308,7 +308,8 @@ private fun MinTruncatedAttachment(maxWidth: Int) {
             "AAA... .pdf",
             R.drawable.ic_file_type_default,
             R.string.attachment_type_unknown,
-            size = 0L
+            size = 0L,
+            includeInPreview = true
         ),
         textColor = ProtonTheme.colors.textWeak,
         minWidth = 0,
@@ -419,7 +420,8 @@ private fun AttachmentPreview() {
                     "Attachment name.pdf",
                     R.drawable.ic_file_type_unknown,
                     R.string.attachment_type_unknown,
-                    size = 1024L
+                    size = 1024L,
+                    includeInPreview = true
                 )
             ),
             textColor = ProtonTheme.colors.textWeak,

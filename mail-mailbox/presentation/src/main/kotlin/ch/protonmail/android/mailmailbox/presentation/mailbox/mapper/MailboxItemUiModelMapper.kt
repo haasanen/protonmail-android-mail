@@ -88,7 +88,10 @@ class MailboxItemUiModelMapper @Inject constructor(
             expiryInformation = expiryInformationUiModelMapper.toUiModel(mailboxItem.expirationTime),
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
             shouldOpenInComposer = mailboxItem.isDraft,
-            attachments = mailboxItem.attachments.map(attachmentMetadataUiModelMapper::toUiModel).toImmutableList(),
+            attachments = mailboxItem.attachments
+                .map(attachmentMetadataUiModelMapper::toUiModel)
+                .filter { it.includeInPreview }
+                .toImmutableList(),
             shouldShowScheduleSendTime = mailboxItem.isScheduled,
             displaySnoozeReminder = mailboxItem.snoozeStatus is SnoozeReminder,
             snoozedUntil = snoozeStatusUiModelMapper.toUiModel(mailboxItem.snoozeStatus)

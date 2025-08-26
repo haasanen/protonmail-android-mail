@@ -42,7 +42,8 @@ class AttachmentMetadataUiModelMapper @Inject constructor() {
             isCalendar = attachmentMetadata.isCalendarAttachment(),
             contentDescription = getContentDescription(attachmentMetadata.mimeType.category),
             deletable = isDeletable,
-            status = status
+            status = status,
+            includeInPreview = attachmentMetadata.includeInPreview
         )
     }
 

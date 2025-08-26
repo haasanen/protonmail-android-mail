@@ -31,7 +31,8 @@ object AttachmentMetadataUiModelSamples {
         name = "invoice.pdf",
         icon = R.drawable.ic_file_type_pdf,
         contentDescription = R.string.attachment_type_pdf,
-        size = 5678L
+        size = 5678L,
+        includeInPreview = true
     )
 
     val Image = AttachmentMetadataUiModel(
@@ -39,7 +40,8 @@ object AttachmentMetadataUiModelSamples {
         name = "profile_picture.png",
         icon = R.drawable.ic_file_type_image,
         contentDescription = R.string.attachment_type_image,
-        size = 2048L
+        size = 2048L,
+        includeInPreview = true
     )
 
     val Audio = AttachmentMetadataUiModel(
@@ -47,7 +49,8 @@ object AttachmentMetadataUiModelSamples {
         name = "song.mp3",
         icon = R.drawable.ic_file_type_audio,
         contentDescription = R.string.attachment_type_audio,
-        size = 5_242_880L
+        size = 5_242_880L,
+        includeInPreview = true
     )
 
     val Video = AttachmentMetadataUiModel(
@@ -55,7 +58,8 @@ object AttachmentMetadataUiModelSamples {
         name = "vacation_video.mp4",
         icon = R.drawable.ic_file_type_video,
         contentDescription = R.string.attachment_type_video,
-        size = 10_485_760L
+        size = 10_485_760L,
+        includeInPreview = true
     )
 
     val Pdf = AttachmentMetadataUiModel(
@@ -63,7 +67,8 @@ object AttachmentMetadataUiModelSamples {
         name = "ebook.pdf",
         icon = R.drawable.ic_file_type_pdf,
         contentDescription = R.string.attachment_type_pdf,
-        size = 302_976L
+        size = 302_976L,
+        includeInPreview = true
     )
 
     val Zip = AttachmentMetadataUiModel(
@@ -71,7 +76,8 @@ object AttachmentMetadataUiModelSamples {
         name = "archive.zip",
         icon = R.drawable.ic_file_type_zip,
         contentDescription = R.string.attachment_type_archive,
-        size = 10_240L
+        size = 10_240L,
+        includeInPreview = true
     )
 
     val InvoiceWithBinaryContentType = AttachmentMetadataUiModel(
@@ -79,7 +85,8 @@ object AttachmentMetadataUiModelSamples {
         name = "invoice.pdf",
         icon = R.drawable.ic_file_type_pdf,
         contentDescription = R.string.attachment_type_pdf,
-        size = 5678L
+        size = 5678L,
+        includeInPreview = true
     )
 
     val PublicKey = AttachmentMetadataUiModel(
@@ -87,7 +94,8 @@ object AttachmentMetadataUiModelSamples {
         name = "publickey - example@protonmail.com - 0x61DD734E.asc",
         icon = R.drawable.ic_file_type_key,
         contentDescription = R.string.attachment_type_key,
-        size = 666L
+        size = 666L,
+        includeInPreview = true
     )
 
     val Document = AttachmentMetadataUiModel(
@@ -95,7 +103,8 @@ object AttachmentMetadataUiModelSamples {
         name = "document.docx",
         icon = R.drawable.ic_file_type_word,
         contentDescription = R.string.attachment_type_word,
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val DocumentWithMultipleDots = AttachmentMetadataUiModel(
@@ -103,7 +112,8 @@ object AttachmentMetadataUiModelSamples {
         name = "complicated.document.docx",
         icon = R.drawable.ic_file_type_word,
         contentDescription = R.string.attachment_type_word,
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val DocumentWithReallyLongFileName = AttachmentMetadataUiModel(
@@ -111,7 +121,8 @@ object AttachmentMetadataUiModelSamples {
         name = "document-with-really-long-and-unnecessary-file-name-that-should-be-truncated.pdf",
         icon = R.drawable.ic_file_type_pdf,
         contentDescription = R.string.attachment_type_pdf,
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val Calendar = AttachmentMetadataUiModel(
@@ -119,7 +130,8 @@ object AttachmentMetadataUiModelSamples {
         name = "invite.ics",
         icon = R.drawable.ic_file_type_calendar,
         contentDescription = R.string.attachment_type_calendar,
-        size = 1234
+        size = 1234,
+        includeInPreview = true
     )
 
     val EmbeddedImageAttachment = AttachmentMetadataUiModel(
@@ -127,7 +139,8 @@ object AttachmentMetadataUiModelSamples {
         name = "embeddedImage.png",
         icon = R.drawable.ic_file_type_image,
         contentDescription = R.string.attachment_type_image,
-        size = 1234
+        size = 1234,
+        includeInPreview = true
     )
 
     val SignedDocument = AttachmentMetadataUiModel(
@@ -135,7 +148,8 @@ object AttachmentMetadataUiModelSamples {
         name = "document_signed.pdf",
         icon = R.drawable.ic_file_type_pdf,
         contentDescription = R.string.attachment_type_pdf,
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val InvalidEmbeddedImageAttachment = AttachmentMetadataUiModel(
@@ -143,7 +157,8 @@ object AttachmentMetadataUiModelSamples {
         name = "embeddedImage.png",
         icon = R.drawable.ic_file_type_pdf,
         contentDescription = R.string.attachment_type_pdf,
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val EmbeddedOctetStreamAttachment = AttachmentMetadataUiModel(
@@ -151,7 +166,8 @@ object AttachmentMetadataUiModelSamples {
         name = "embeddedOctet.png",
         icon = R.drawable.ic_file_type_image,
         contentDescription = R.string.attachment_type_image,
-        size = 1234L
+        size = 1234L,
+        includeInPreview = true
     )
 
     val DeletableInvoice = Invoice.copy(deletable = true)

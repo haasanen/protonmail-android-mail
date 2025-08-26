@@ -114,9 +114,7 @@ class MailboxItemUiModelMapperTest {
         every { this@mockk.toUiModel(any()) } returns ExpiryInformationUiModel.NoExpiry
     }
 
-    private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper = mockk {
-        every { this@mockk.toUiModel(any()) } returns mockk()
-    }
+    private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
 
     private val snoozeStatusUiModelMapper: SnoozeStatusUiModelMapper = mockk {
         every { this@mockk.toUiModel(any()) } returns SnoozeStatusUiModel.NoStatus
@@ -468,7 +466,8 @@ class MailboxItemUiModelMapperTest {
                     mime = "application/pdf",
                     category = MimeTypeCategory.Pdf
                 ),
-                disposition = AttachmentDisposition.Attachment
+                disposition = AttachmentDisposition.Attachment,
+                includeInPreview = true
             ),
             AttachmentMetadata(
                 attachmentId = AttachmentId("456"),
@@ -477,11 +476,22 @@ class MailboxItemUiModelMapperTest {
                     mime = "image/png",
                     category = MimeTypeCategory.Image
                 ),
-                disposition = AttachmentDisposition.Attachment
+                disposition = AttachmentDisposition.Attachment,
+                includeInPreview = true
+            ),
+            AttachmentMetadata(
+                attachmentId = AttachmentId("450"),
+                name = "File2.html", size = 2048L,
+                mimeType = AttachmentMimeType(
+                    mime = "image/png",
+                    category = MimeTypeCategory.Text
+                ),
+                disposition = AttachmentDisposition.Attachment,
+                includeInPreview = false
             )
         )
         val mailboxItem = buildMailboxItem(attachments = attachments)
-        val expectedUiModels = attachments.map { attachmentMetadataUiModelMapper.toUiModel(it) }
+        val expectedUiModels = attachments.subList(0, 2).map { attachmentMetadataUiModelMapper.toUiModel(it) }
 
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
@@ -494,6 +504,31 @@ class MailboxItemUiModelMapperTest {
     fun `when mailbox item has no attachments, UI model attachments list should be empty`() = runTest {
         // Given
         val mailboxItem = buildMailboxItem(attachments = emptyList())
+
+        // When
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
+
+        // Then
+        assertTrue(actual.attachments.isEmpty())
+    }
+
+    @Test
+    fun `when mailbox item has not included attachments, UI model attachments list should not be included`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem(
+            attachments = listOf(
+                AttachmentMetadata(
+                    attachmentId = AttachmentId("450"),
+                    name = "File2.html", size = 2048L,
+                    mimeType = AttachmentMimeType(
+                        mime = "image/png",
+                        category = MimeTypeCategory.Text
+                    ),
+                    disposition = AttachmentDisposition.Attachment,
+                    includeInPreview = false
+                )
+            )
+        )
 
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)

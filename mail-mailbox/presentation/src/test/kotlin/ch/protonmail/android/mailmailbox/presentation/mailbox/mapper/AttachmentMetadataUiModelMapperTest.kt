@@ -46,7 +46,8 @@ class AttachmentMetadataUiModelMapperTest {
                 mime = "application/pdf",
                 category = MimeTypeCategory.Pdf
             ),
-            disposition = AttachmentDisposition.Attachment
+            disposition = AttachmentDisposition.Attachment,
+            includeInPreview = true
         )
 
         // When
@@ -91,7 +92,8 @@ class AttachmentMetadataUiModelMapperTest {
                     mime = "mime",
                     category = mimeTypeCategory
                 ),
-                disposition = AttachmentDisposition.Attachment
+                disposition = AttachmentDisposition.Attachment,
+                includeInPreview = true
             )
 
             // When

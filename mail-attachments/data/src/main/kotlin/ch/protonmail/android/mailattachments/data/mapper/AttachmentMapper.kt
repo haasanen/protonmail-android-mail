@@ -47,7 +47,8 @@ fun LocalAttachmentMetadata.toAttachmentMetadata(): AttachmentMetadata {
         name = this.name,
         size = this.size.toLong(),
         mimeType = this.mimeType.toAttachmentMimeType(),
-        disposition = this.disposition.toAttachmentDisposition()
+        disposition = this.disposition.toAttachmentDisposition(),
+        includeInPreview = this.isListable
     )
 }
 
