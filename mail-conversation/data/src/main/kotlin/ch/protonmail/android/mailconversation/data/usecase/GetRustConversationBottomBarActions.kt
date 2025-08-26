@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -25,19 +25,18 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
-import uniffi.proton_mail_uniffi.AllAvailableConversationActionsForActionSheetResult
-import uniffi.proton_mail_uniffi.ConversationActionSheet
-import uniffi.proton_mail_uniffi.allAvailableConversationActionsForActionSheet
+import uniffi.proton_mail_uniffi.AllAvailableConversationActionsForConversationResult
+import uniffi.proton_mail_uniffi.AllConversationActions
+import uniffi.proton_mail_uniffi.allAvailableConversationActionsForConversation
 import javax.inject.Inject
 
-class GetRustAvailableConversationActions @Inject constructor() {
-
+class GetRustConversationBottomBarActions @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
-        messageIds: LocalConversationId
-    ): Either<DataError, ConversationActionSheet> =
-        when (val result = allAvailableConversationActionsForActionSheet(mailbox.getRustMailbox(), messageIds)) {
-            is AllAvailableConversationActionsForActionSheetResult.Error -> result.v1.toDataError().left()
-            is AllAvailableConversationActionsForActionSheetResult.Ok -> result.v1.right()
+        conversationId: LocalConversationId
+    ): Either<DataError, AllConversationActions> =
+        when (val result = allAvailableConversationActionsForConversation(mailbox.getRustMailbox(), conversationId)) {
+            is AllAvailableConversationActionsForConversationResult.Error -> result.v1.toDataError().left()
+            is AllAvailableConversationActionsForConversationResult.Ok -> result.v1.right()
         }
 }

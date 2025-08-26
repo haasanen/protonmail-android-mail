@@ -30,7 +30,9 @@ import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AllConversationActions
 import uniffi.proton_mail_uniffi.AllListActions
+import uniffi.proton_mail_uniffi.ConversationAction
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.ListActions
 import uniffi.proton_mail_uniffi.MessageAction
@@ -134,12 +136,19 @@ private fun List<MessageAction>.messageActionsToActions() = this.map { messageAc
 
 fun AllListActions.toAllBottomBarActions(): AllBottomBarActions {
     return AllBottomBarActions(
-        this.hiddenListActions.bottomBarActionsToActions(),
-        this.visibleListActions.bottomBarActionsToActions()
+        this.hiddenListActions.bottomBarListActionsToActions(),
+        this.visibleListActions.bottomBarListActionsToActions()
     )
 }
 
-private fun List<ListActions>.bottomBarActionsToActions() = this.map { bottomBarAction ->
+fun AllConversationActions.toAllBottomBarActions(): AllBottomBarActions {
+    return AllBottomBarActions(
+        this.hiddenListActions.bottomBarConversationActionsToActions(),
+        this.visibleListActions.bottomBarConversationActionsToActions()
+    )
+}
+
+private fun List<ListActions>.bottomBarListActionsToActions() = this.map { bottomBarAction ->
     when (bottomBarAction) {
         ListActions.LabelAs -> Action.Label
         ListActions.MarkRead -> Action.MarkRead
@@ -155,3 +164,19 @@ private fun List<ListActions>.bottomBarActionsToActions() = this.map { bottomBar
     }
 }
 
+
+private fun List<ConversationAction>.bottomBarConversationActionsToActions() = this.map { bottomBarAction ->
+    when (bottomBarAction) {
+        ConversationAction.LabelAs -> Action.Label
+        ConversationAction.MarkRead -> Action.MarkRead
+        ConversationAction.MarkUnread -> Action.MarkUnread
+        ConversationAction.More -> Action.More
+        ConversationAction.MoveTo -> Action.Move
+        is ConversationAction.MoveToSystemFolder -> bottomBarAction.v1.name.toAction()
+        ConversationAction.PermanentDelete -> Action.Delete
+        ConversationAction.Star -> Action.Star
+        ConversationAction.Unstar -> Action.Unstar
+        is ConversationAction.NotSpam -> Action.Inbox
+        ConversationAction.Snooze -> Action.Snooze
+    }
+}

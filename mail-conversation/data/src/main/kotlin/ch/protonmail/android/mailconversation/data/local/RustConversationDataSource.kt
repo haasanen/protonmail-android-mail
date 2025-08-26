@@ -29,6 +29,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.AllConversationActions
 import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.ConversationActionSheet
 import uniffi.proton_mail_uniffi.LabelAsAction
@@ -99,11 +100,17 @@ interface RustConversationDataSource {
         conversationIds: List<LocalConversationId>
     ): Either<DataError, List<LabelAsAction>>
 
-    suspend fun getAllAvailableBottomBarActions(
+    suspend fun getAllAvailableListBottomBarActions(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): Either<DataError, AllListActions>
+
+    suspend fun getAllAvailableBottomBarActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationId: LocalConversationId
+    ): Either<DataError, AllConversationActions>
 
     suspend fun labelConversations(
         userId: UserId,

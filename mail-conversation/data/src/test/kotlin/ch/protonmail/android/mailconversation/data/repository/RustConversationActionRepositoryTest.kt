@@ -43,6 +43,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import uniffi.proton_mail_uniffi.AllConversationActions
 import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.ConversationAction
 import uniffi.proton_mail_uniffi.ConversationActionSheet
@@ -57,9 +58,7 @@ class RustConversationActionRepositoryTest {
 
     private val rustConversationDataSource: RustConversationDataSource = mockk()
 
-    private val rustConversationRepository = RustConversationActionRepository(
-        rustConversationDataSource
-    )
+    private val rustConversationRepository = RustConversationActionRepository(rustConversationDataSource)
 
     @Test
     fun `get available actions should return supported available actions when data source exposes them`() = runTest {
@@ -279,7 +278,7 @@ class RustConversationActionRepositoryTest {
         )
 
         coEvery {
-            rustConversationDataSource.getAllAvailableBottomBarActions(
+            rustConversationDataSource.getAllAvailableListBottomBarActions(
                 userId,
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
@@ -303,7 +302,7 @@ class RustConversationActionRepositoryTest {
         val expected = DataError.Local.Unknown.left()
 
         coEvery {
-            rustConversationDataSource.getAllAvailableBottomBarActions(
+            rustConversationDataSource.getAllAvailableListBottomBarActions(
                 userId,
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
@@ -347,16 +346,16 @@ class RustConversationActionRepositoryTest {
             listOf(Action.MarkRead)
         ).right()
 
-        val rustAvailableActions = AllListActions(
-            listOf(ListActions.Star),
-            listOf(ListActions.MarkRead)
+        val rustAvailableActions = AllConversationActions(
+            listOf(ConversationAction.Star),
+            listOf(ConversationAction.MarkRead)
         )
 
         coEvery {
             rustConversationDataSource.getAllAvailableBottomBarActions(
                 userId,
                 labelId.toLocalLabelId(),
-                listOf(conversationId.toLocalConversationId())
+                conversationId.toLocalConversationId()
             )
         } returns rustAvailableActions.right()
 

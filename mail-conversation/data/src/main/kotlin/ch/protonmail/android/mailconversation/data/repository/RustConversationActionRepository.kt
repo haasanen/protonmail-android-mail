@@ -91,7 +91,7 @@ class RustConversationActionRepository @Inject constructor(
         labelId: LabelId,
         conversationIds: List<ConversationId>
     ): Either<DataError, AllBottomBarActions> {
-        val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(
+        val allActions = rustConversationDataSource.getAllAvailableListBottomBarActions(
             userId,
             labelId.toLocalLabelId(),
             conversationIds.map { it.toLocalConversationId() }
@@ -113,7 +113,13 @@ class RustConversationActionRepository @Inject constructor(
             conversationResult.fold(
                 ifLeft = { error -> Either.Left(error) },
                 ifRight = { conversation ->
-                    getAllBottomBarActions(userId, labelId, listOf(conversationId))
+                    val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(
+                        userId,
+                        labelId.toLocalLabelId(),
+                        conversationId.toLocalConversationId()
+                    )
+
+                    allActions.map { it.toAllBottomBarActions() }
                 }
             )
         }.distinctUntilChanged()

@@ -25,9 +25,10 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
-import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBottomBarActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBottomSheetActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationListBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
@@ -74,8 +75,10 @@ class RustConversationDataSourceImplTest {
     private val rustMailboxFactory: RustMailboxFactory = mockk()
     private val rustConversationDetailQuery: RustConversationDetailQuery = mockk()
     private val rustConversationsQuery: RustConversationsQuery = mockk()
-    private val getRustAvailableConversationActions = mockk<GetRustAvailableConversationActions>()
-    private val getRustAllConversationBottomBarActions = mockk<GetRustAllConversationBottomBarActions>()
+    private val getRustConversationBottomSheetActions = mockk<GetRustConversationBottomSheetActions>()
+    private val getRustConversationListBottomBarActions = mockk<GetRustConversationListBottomBarActions>()
+
+    private val getRustConversationBottomBarActions = mockk<GetRustConversationBottomBarActions>()
     private val getRustConversationMoveToActions = mockk<GetRustConversationMoveToActions>()
     private val getRustConversationLabelAsActions = mockk<GetRustConversationLabelAsActions>()
     private val rustDeleteConversations = mockk<RustDeleteConversations>()
@@ -91,8 +94,9 @@ class RustConversationDataSourceImplTest {
         rustLabelConversations,
         rustConversationDetailQuery,
         rustConversationsQuery,
-        getRustAllConversationBottomBarActions,
-        getRustAvailableConversationActions,
+        getRustConversationListBottomBarActions,
+        getRustConversationBottomBarActions,
+        getRustConversationBottomSheetActions,
         getRustConversationMoveToActions,
         getRustConversationLabelAsActions,
         rustDeleteConversations,
@@ -183,7 +187,7 @@ class RustConversationDataSourceImplTest {
         val expected = ConversationActionSheet(emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAvailableConversationActions(mailbox, conversationId) } returns expected.right()
+        coEvery { getRustConversationBottomSheetActions(mailbox, conversationId) } returns expected.right()
 
         // When
         val result = dataSource.getAvailableActions(userId, labelId, conversationId)
@@ -251,10 +255,10 @@ class RustConversationDataSourceImplTest {
         val expected = AllListActions(emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } returns expected.right()
+        coEvery { getRustConversationListBottomBarActions(mailbox, conversationIds) } returns expected.right()
 
         // When
-        val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, conversationIds)
+        val result = dataSource.getAllAvailableListBottomBarActions(userId, labelId, conversationIds)
 
         // Then
         assertEquals(expected.right(), result)
@@ -270,11 +274,11 @@ class RustConversationDataSourceImplTest {
         val expectedError = DataError.Local.NoDataCached
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } returns
+        coEvery { getRustConversationListBottomBarActions(mailbox, conversationIds) } returns
             expectedError.left()
 
         // When
-        val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, conversationIds)
+        val result = dataSource.getAllAvailableListBottomBarActions(userId, labelId, conversationIds)
 
         // Then
         assertEquals(expectedError.left(), result)

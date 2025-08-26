@@ -27,9 +27,10 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
-import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
-import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBottomBarActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBottomSheetActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationListBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
@@ -44,6 +45,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AllConversationActions
 import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.ConversationActionSheet
 import uniffi.proton_mail_uniffi.LabelAsAction
@@ -58,8 +60,9 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val rustLabelConversations: RustLabelConversations,
     private val rustConversationDetailQuery: RustConversationDetailQuery,
     private val rustConversationsQuery: RustConversationsQuery,
-    private val getRustAllConversationBottomBarActions: GetRustAllConversationBottomBarActions,
-    private val getRustAvailableConversationActions: GetRustAvailableConversationActions,
+    private val getRustConversationListBottomBarActions: GetRustConversationListBottomBarActions,
+    private val getRustConversationBottomBarActions: GetRustConversationBottomBarActions,
+    private val getRustConversationBottomSheetActions: GetRustConversationBottomSheetActions,
     private val getRustConversationMoveToActions: GetRustConversationMoveToActions,
     private val getRustConversationLabelAsActions: GetRustConversationLabelAsActions,
     private val rustDeleteConversations: RustDeleteConversations,
@@ -169,10 +172,10 @@ class RustConversationDataSourceImpl @Inject constructor(
             return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return@withContext getRustAvailableConversationActions(mailbox, conversationId)
+        return@withContext getRustConversationBottomSheetActions(mailbox, conversationId)
     }
 
-    override suspend fun getAllAvailableBottomBarActions(
+    override suspend fun getAllAvailableListBottomBarActions(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
@@ -183,7 +186,21 @@ class RustConversationDataSourceImpl @Inject constructor(
             return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return@withContext getRustAllConversationBottomBarActions(mailbox, conversationIds)
+        return@withContext getRustConversationListBottomBarActions(mailbox, conversationIds)
+    }
+
+    override suspend fun getAllAvailableBottomBarActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationId: LocalConversationId
+    ): Either<DataError, AllConversationActions> = withContext(ioDispatcher) {
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
+            return@withContext DataError.Local.NoDataCached.left()
+        }
+
+        return@withContext getRustConversationBottomBarActions(mailbox, conversationId)
     }
 
     override suspend fun labelConversations(
