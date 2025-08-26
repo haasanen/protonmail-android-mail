@@ -54,13 +54,13 @@ internal class CustomizeToolbarEditViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val type by lazy {
+    private val toolbarType by lazy {
         savedStateHandle.get<String>(CustomizeToolbarEditScreen.OpenMode)
             ?.deserialize<ToolbarType>()
             ?: ToolbarType.List
     }
 
-    private val preferences = temporaryPrefs.inMemoryPreferences(type)
+    private val preferences = temporaryPrefs.inMemoryPreferences(toolbarType)
         .shareIn(viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMillis), replay = 1)
 
     private val saveEffect = MutableStateFlow<SaveEvent>(SaveEvent.None)
@@ -71,7 +71,7 @@ internal class CustomizeToolbarEditViewModel @Inject constructor(
     ) { prefsResponse, effect ->
         prefsResponse.fold(
             ifLeft = { CustomizeToolbarEditState.Error },
-            ifRight = { reducer.toNewState(it.actionsList.current, type, effect) }
+            ifRight = { reducer.toNewState(it.actionsList.current, toolbarType, effect) }
         )
     }.stateIn(
         scope = viewModelScope,
@@ -108,7 +108,7 @@ internal class CustomizeToolbarEditViewModel @Inject constructor(
         val preferences = preferences.firstOrNull()?.getOrNull()
             ?: return@launch saveEffect.emit(SaveEvent.Error)
 
-        updateToolbarPreferences(userId, type, preferences).fold(
+        updateToolbarPreferences(userId, toolbarType, preferences).fold(
             ifLeft = { saveEffect.emit(SaveEvent.Error) },
             ifRight = {
                 toolbarRefreshSignal.refresh()
