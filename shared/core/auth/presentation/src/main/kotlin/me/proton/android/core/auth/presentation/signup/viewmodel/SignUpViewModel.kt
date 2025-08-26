@@ -23,16 +23,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.R
-import me.proton.android.core.auth.presentation.login.getErrorMessage
+import me.proton.android.core.auth.presentation.flow.runWithExponentialBackoffResult
 import me.proton.android.core.auth.presentation.signup.CreatePasswordAction
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState
 import me.proton.android.core.auth.presentation.signup.CreateRecoveryAction
@@ -63,6 +64,7 @@ import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionNewSignupFlowResult
+import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.SignupScreenId
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
@@ -86,9 +88,10 @@ class SignUpViewModel @Inject constructor(
 ) {
 
     private var currentAccountType: AccountType by savedStateHandle.state(requiredAccountType)
-    private val signUpFlowDeferred = viewModelScope.async {
-        sessionInterface.newSignupFlow()
-    }
+
+    @Volatile
+    private var cachedFlow: Result<SignupFlow>? = null
+    private val flowMutex = Mutex()
 
     private val usernameHandler = UsernameHandler.create(
         getFlow = { getSignUpFlow() },
@@ -113,10 +116,36 @@ class SignUpViewModel @Inject constructor(
     @Inject
     internal lateinit var scopeProvider: CoroutineScopeProvider
 
+    private suspend fun createSignUpFlowWithBackoff(): SignupFlow {
+        return runWithExponentialBackoffResult(
+            shouldRetry = { result ->
+                result is MailSessionNewSignupFlowResult.Error &&
+                    (result.v1 == ProtonError.Network || result.v1 is ProtonError.OtherReason)
+            }
+        ) {
+            sessionInterface.newSignupFlow()
+        }.let { result ->
+            when (result) {
+                is MailSessionNewSignupFlowResult.Ok -> {
+                    result.v1
+                }
+
+                is MailSessionNewSignupFlowResult.Error -> {
+                    throw IllegalStateException("Failed to create sign-up flow: $result")
+                }
+            }
+        }
+    }
+
     private suspend fun getSignUpFlow(): SignupFlow {
-        return when (val result = signUpFlowDeferred.await()) {
-            is MailSessionNewSignupFlowResult.Ok -> result.v1
-            is MailSessionNewSignupFlowResult.Error -> error(result.v1.getErrorMessage(context))
+        cachedFlow?.let { return it.getOrThrow() }
+
+        return flowMutex.withLock {
+            cachedFlow?.let { return it.getOrThrow() }
+
+            val result = runCatching { createSignUpFlowWithBackoff() }
+            cachedFlow = result
+            result.getOrThrow()
         }
     }
 
@@ -136,7 +165,9 @@ class SignUpViewModel @Inject constructor(
             is CreateUsernameState -> usernameHandler.handleError(throwable)
             is CreatePasswordState -> passwordHandler.handleError(throwable)
             is CreateRecoveryState -> recoveryHandler.handleError(throwable)
-            else -> SignUpError(throwable.message)
+            else -> {
+                SignUpError(throwable.message)
+            }
         }
         emit(errorState)
     }

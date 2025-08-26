@@ -112,11 +112,12 @@ fun CreateUsernameScreen(
         viewModel.perform(CreateUsernameClosed(back = true))
     }
 
+    val flowError = stringResource(R.string.auth_signup_general_error)
     LaunchedEffect(state) {
         when (val s = state) {
             is CreateUsernameState.Closed -> onBackClicked()
             is SignUpState.SignUpError -> onErrorMessage(s.message, false)
-            is SignUpState.SignupFlowFailure -> onErrorMessage(s.message, true)
+            is SignUpState.SignupFlowFailure -> onErrorMessage(flowError, true)
             else -> Unit
         }
     }
