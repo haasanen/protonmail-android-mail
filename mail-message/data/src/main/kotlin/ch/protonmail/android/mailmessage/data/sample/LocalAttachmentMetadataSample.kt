@@ -31,7 +31,8 @@ object LocalAttachmentMetadataSample {
         name = "calendar.ics",
         mimeType = AttachmentMimeType("text/calendar", LocalMimeTypeCategory.CALENDAR),
         size = 1024uL,
-        disposition = LocalAttachmentDisposition.ATTACHMENT
+        disposition = LocalAttachmentDisposition.ATTACHMENT,
+        isListable = false
     )
 
     val Audio = LocalAttachmentMetadata(
@@ -39,7 +40,8 @@ object LocalAttachmentMetadataSample {
         name = "audio.mp3",
         mimeType = AttachmentMimeType("audio/mpeg", LocalMimeTypeCategory.AUDIO),
         size = 2048uL,
-        disposition = LocalAttachmentDisposition.ATTACHMENT
+        disposition = LocalAttachmentDisposition.ATTACHMENT,
+        isListable = true
     )
 
     val Code = LocalAttachmentMetadata(
@@ -47,7 +49,8 @@ object LocalAttachmentMetadataSample {
         name = "script.js",
         mimeType = AttachmentMimeType("application/javascript", LocalMimeTypeCategory.CODE),
         size = 512uL,
-        disposition = LocalAttachmentDisposition.INLINE
+        disposition = LocalAttachmentDisposition.INLINE,
+        isListable = false
     )
 
     val Compressed = LocalAttachmentMetadata(
@@ -55,7 +58,8 @@ object LocalAttachmentMetadataSample {
         name = "archive.zip",
         mimeType = AttachmentMimeType("application/zip", LocalMimeTypeCategory.COMPRESSED),
         size = 4096uL,
-        disposition = LocalAttachmentDisposition.ATTACHMENT
+        disposition = LocalAttachmentDisposition.ATTACHMENT,
+        isListable = true
     )
 
     val Image = LocalAttachmentMetadata(
@@ -63,7 +67,8 @@ object LocalAttachmentMetadataSample {
         name = "image.png",
         mimeType = AttachmentMimeType("image/png", LocalMimeTypeCategory.IMAGE),
         size = 3072uL,
-        disposition = LocalAttachmentDisposition.ATTACHMENT
+        disposition = LocalAttachmentDisposition.ATTACHMENT,
+        isListable = true
     )
 
     val Pdf = LocalAttachmentMetadata(
@@ -71,7 +76,8 @@ object LocalAttachmentMetadataSample {
         name = "document.pdf",
         mimeType = AttachmentMimeType("application/pdf", LocalMimeTypeCategory.PDF),
         size = 8192uL,
-        disposition = LocalAttachmentDisposition.ATTACHMENT
+        disposition = LocalAttachmentDisposition.ATTACHMENT,
+        isListable = true
     )
 
     val Text = LocalAttachmentMetadata(
@@ -79,7 +85,8 @@ object LocalAttachmentMetadataSample {
         name = "notes.txt",
         mimeType = AttachmentMimeType("text/plain", LocalMimeTypeCategory.TEXT),
         size = 256uL,
-        disposition = LocalAttachmentDisposition.ATTACHMENT
+        disposition = LocalAttachmentDisposition.ATTACHMENT,
+        isListable = true
     )
 
     val Video = LocalAttachmentMetadata(
@@ -87,7 +94,8 @@ object LocalAttachmentMetadataSample {
         name = "video.mp4",
         mimeType = AttachmentMimeType("video/mp4", LocalMimeTypeCategory.VIDEO),
         size = 16384uL,
-        disposition = LocalAttachmentDisposition.ATTACHMENT
+        disposition = LocalAttachmentDisposition.ATTACHMENT,
+        isListable = true
     )
 
     val Word = LocalAttachmentMetadata(
@@ -95,7 +103,8 @@ object LocalAttachmentMetadataSample {
         name = "document.docx",
         mimeType = AttachmentMimeType("application/application/vnd.openxmlformats", LocalMimeTypeCategory.WORD),
         size = 4096uL,
-        disposition = LocalAttachmentDisposition.ATTACHMENT
+        disposition = LocalAttachmentDisposition.ATTACHMENT,
+        isListable = true
     )
 
     val InlineImage = LocalAttachmentMetadata(
@@ -103,6 +112,7 @@ object LocalAttachmentMetadataSample {
         name = "image.png",
         mimeType = AttachmentMimeType("image/png", LocalMimeTypeCategory.IMAGE),
         size = 3072uL,
-        disposition = LocalAttachmentDisposition.INLINE
+        disposition = LocalAttachmentDisposition.INLINE,
+        isListable = false
     )
 }

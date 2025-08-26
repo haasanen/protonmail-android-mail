@@ -121,7 +121,8 @@ class MessageMapperTest {
             name = name,
             size = size,
             mimeType = mimeType,
-            disposition = Disposition.ATTACHMENT
+            disposition = Disposition.ATTACHMENT,
+            isListable = true
         )
 
         // When
@@ -259,14 +260,16 @@ class MessageMapperTest {
             name = "Attachment1.pdf",
             size = 2048uL,
             mimeType = LocalAttachmentMimeType("application/pdf", LocalMimeTypeCategory.PDF),
-            disposition = Disposition.ATTACHMENT
+            disposition = Disposition.ATTACHMENT,
+            isListable = true
         )
         val attachment2 = LocalAttachmentMetadata(
             id = localAttachmentId2,
             name = "Attachment2.txt",
             size = 1024uL,
             mimeType = LocalAttachmentMimeType("plain/text", LocalMimeTypeCategory.TEXT),
-            disposition = Disposition.ATTACHMENT
+            disposition = Disposition.ATTACHMENT,
+            isListable = true
         )
         val localMessageMetadata = LocalMessageMetadata(
             id = LocalMessageId(1uL),
