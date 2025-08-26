@@ -49,7 +49,7 @@ class RustConversationActionRepository @Inject constructor(
         labelId: LabelId,
         conversationId: ConversationId
     ): Either<DataError, AvailableActions> {
-        val availableActions = rustConversationDataSource.getAvailableActions(
+        val availableActions = rustConversationDataSource.getAvailableBottomSheetActions(
             userId,
             labelId.toLocalLabelId(),
             conversationId.toLocalConversationId()
@@ -86,7 +86,7 @@ class RustConversationActionRepository @Inject constructor(
         return labelAsActions.map { it.toLabelAsActions() }
     }
 
-    override suspend fun getAllBottomBarActions(
+    override suspend fun getAllListBottomBarActions(
         userId: UserId,
         labelId: LabelId,
         conversationIds: List<ConversationId>

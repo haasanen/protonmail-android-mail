@@ -67,7 +67,7 @@ import uniffi.proton_mail_uniffi.Undo
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class RustConversationDataSourceImplTest {
+internal class RustConversationDataSourceImplTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -190,7 +190,7 @@ class RustConversationDataSourceImplTest {
         coEvery { getRustConversationBottomSheetActions(mailbox, conversationId) } returns expected.right()
 
         // When
-        val result = dataSource.getAvailableActions(userId, labelId, conversationId)
+        val result = dataSource.getAvailableBottomSheetActions(userId, labelId, conversationId)
 
         // Then
         assertEquals(expected.right(), result)

@@ -54,7 +54,7 @@ import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
 import kotlin.test.assertEquals
 
-class RustConversationActionRepositoryTest {
+internal class RustConversationActionRepositoryTest {
 
     private val rustConversationDataSource: RustConversationDataSource = mockk()
 
@@ -79,7 +79,7 @@ class RustConversationActionRepositoryTest {
         )
 
         coEvery {
-            rustConversationDataSource.getAvailableActions(
+            rustConversationDataSource.getAvailableBottomSheetActions(
                 userId,
                 labelId.toLocalLabelId(),
                 conversationId.toLocalConversationId()
@@ -108,7 +108,7 @@ class RustConversationActionRepositoryTest {
         val expectedError = DataError.Local.NoDataCached
 
         coEvery {
-            rustConversationDataSource.getAvailableActions(
+            rustConversationDataSource.getAvailableBottomSheetActions(
                 userId,
                 labelId.toLocalLabelId(),
                 conversationId.toLocalConversationId()
@@ -138,7 +138,7 @@ class RustConversationActionRepositoryTest {
         )
 
         coEvery {
-            rustConversationDataSource.getAvailableActions(
+            rustConversationDataSource.getAvailableBottomSheetActions(
                 userId,
                 labelId.toLocalLabelId(),
                 conversationId.toLocalConversationId()
@@ -286,7 +286,7 @@ class RustConversationActionRepositoryTest {
         } returns rustAvailableActions.right()
 
         // When
-        val result = rustConversationRepository.getAllBottomBarActions(userId, labelId, conversationIds)
+        val result = rustConversationRepository.getAllListBottomBarActions(userId, labelId, conversationIds)
 
         // Then
         val expected = AllBottomBarActions(listOf(Action.Star), listOf(Action.MarkRead))
@@ -310,7 +310,7 @@ class RustConversationActionRepositoryTest {
         } returns expected
 
         // When
-        val result = rustConversationRepository.getAllBottomBarActions(userId, labelId, conversationIds)
+        val result = rustConversationRepository.getAllListBottomBarActions(userId, labelId, conversationIds)
 
         // Then
         assertEquals(expected, result)

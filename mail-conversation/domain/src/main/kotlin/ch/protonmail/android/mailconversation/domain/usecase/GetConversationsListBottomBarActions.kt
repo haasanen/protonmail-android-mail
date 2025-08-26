@@ -27,7 +27,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class GetAllConversationBottomBarActions @Inject constructor(
+class GetConversationsListBottomBarActions @Inject constructor(
     private val actionRepository: ConversationActionRepository
 ) {
 
@@ -36,5 +36,5 @@ class GetAllConversationBottomBarActions @Inject constructor(
         labelId: LabelId,
         conversationIds: List<ConversationId>
     ): Either<DataError, AllBottomBarActions> =
-        actionRepository.getAllBottomBarActions(userId, labelId, conversationIds)
+        actionRepository.getAllListBottomBarActions(userId, labelId, conversationIds)
 }

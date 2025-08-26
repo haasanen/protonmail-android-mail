@@ -15,11 +15,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class GetAllConversationBottomBarActionsTest {
+class GetConversationsListBottomBarActionsTest {
 
     private val actionRepository = mockk<ConversationActionRepository>()
 
-    private val getAllConversationBottomBarActions = GetAllConversationBottomBarActions(actionRepository)
+    private val getConversationsListBottomBarActions = GetConversationsListBottomBarActions(actionRepository)
 
     @Test
     fun `returns available actions when repo succeeds`() = runTest {
@@ -32,11 +32,11 @@ class GetAllConversationBottomBarActionsTest {
             listOf(Action.Star, Action.Label)
         )
         coEvery {
-            actionRepository.getAllBottomBarActions(userId, labelId, conversationIds)
+            actionRepository.getAllListBottomBarActions(userId, labelId, conversationIds)
         } returns expected.right()
 
         // When
-        val actual = getAllConversationBottomBarActions(userId, labelId, conversationIds)
+        val actual = getConversationsListBottomBarActions(userId, labelId, conversationIds)
 
         // Then
         assertEquals(expected.right(), actual)
@@ -49,10 +49,10 @@ class GetAllConversationBottomBarActionsTest {
         val labelId = LabelIdSample.Trash
         val conversationIds = listOf(ConversationIdSample.Newsletter)
         val expected = DataError.Local.Unknown.left()
-        coEvery { actionRepository.getAllBottomBarActions(userId, labelId, conversationIds) } returns expected
+        coEvery { actionRepository.getAllListBottomBarActions(userId, labelId, conversationIds) } returns expected
 
         // When
-        val actual = getAllConversationBottomBarActions(userId, labelId, conversationIds)
+        val actual = getConversationsListBottomBarActions(userId, labelId, conversationIds)
 
         // Then
         assertEquals(expected, actual)

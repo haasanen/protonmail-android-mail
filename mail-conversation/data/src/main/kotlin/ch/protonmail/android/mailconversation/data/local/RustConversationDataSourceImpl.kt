@@ -161,7 +161,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     // ET - Missing Implementation. This function requires Rust settings integration
     override fun getSenderImage(address: String, bimi: String?): ByteArray? = null
 
-    override suspend fun getAvailableActions(
+    override suspend fun getAvailableBottomSheetActions(
         userId: UserId,
         labelId: LocalLabelId,
         conversationId: LocalConversationId

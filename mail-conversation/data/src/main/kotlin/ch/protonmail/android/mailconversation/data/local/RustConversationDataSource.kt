@@ -82,7 +82,7 @@ interface RustConversationDataSource {
 
     fun getSenderImage(address: String, bimi: String?): ByteArray?
 
-    suspend fun getAvailableActions(
+    suspend fun getAvailableBottomSheetActions(
         userId: UserId,
         labelId: LocalLabelId,
         conversationId: LocalConversationId

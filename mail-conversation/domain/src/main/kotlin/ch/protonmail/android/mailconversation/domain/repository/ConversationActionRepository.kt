@@ -49,7 +49,7 @@ interface ConversationActionRepository {
         conversationIds: List<ConversationId>
     ): Either<DataError, LabelAsActions>
 
-    suspend fun getAllBottomBarActions(
+    suspend fun getAllListBottomBarActions(
         userId: UserId,
         labelId: LabelId,
         conversationIds: List<ConversationId>

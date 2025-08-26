@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.usecase.GetAllConversationBottomBarActions
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationsListBottomBarActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 class GetBottomSheetActions @Inject constructor(
     private val getAllMessageBottomBarActions: GetAllMessageBottomBarActions,
-    private val getAllConversationBottomBarActions: GetAllConversationBottomBarActions
+    private val getConversationsListBottomBarActions: GetConversationsListBottomBarActions
 ) {
 
     suspend operator fun invoke(
@@ -45,7 +45,7 @@ class GetBottomSheetActions @Inject constructor(
     ): Either<DataError, AllBottomBarActions> = when (viewMode) {
         ViewMode.ConversationGrouping -> {
             val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
-            getAllConversationBottomBarActions(userId, labelId, conversationIds).removeMoreAction()
+            getConversationsListBottomBarActions(userId, labelId, conversationIds).removeMoreAction()
         }
 
         ViewMode.NoConversationGrouping -> {
