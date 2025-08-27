@@ -23,5 +23,5 @@ import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ToolbarA
 internal sealed interface CustomizeToolbarState {
     data object Error : CustomizeToolbarState
     data object Loading : CustomizeToolbarState
-    data class Data(val toolbarActionsUiModel: ToolbarActionsUiModel) : CustomizeToolbarState
+    data class Data(val actions: List<ToolbarActionsUiModel>) : CustomizeToolbarState
 }

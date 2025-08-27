@@ -19,9 +19,12 @@
 package ch.protonmail.android.mailsettings.presentation.settings.toolbar
 
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 
 data class ToolbarActionsUiModel(
-    val list: List<ActionUiModel>,
-    val message: List<ActionUiModel>,
-    val conversation: List<ActionUiModel>
+    val headerText: TextUiModel,
+    val descriptionText: TextUiModel,
+    val type: ToolbarType,
+    val actions: List<ActionUiModel>
 )

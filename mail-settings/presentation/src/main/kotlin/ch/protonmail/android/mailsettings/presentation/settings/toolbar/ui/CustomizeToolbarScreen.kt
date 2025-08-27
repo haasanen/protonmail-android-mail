@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +43,8 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.CustomizeToolbarViewModel
@@ -116,21 +119,13 @@ private fun CustomizeToolbarScreenContent(
             .padding(horizontal = ProtonDimens.Spacing.Large),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        item {
-            ToolbarSection(
-                title = stringResource(R.string.mail_settings_custom_toolbar_list_view_title),
-                description = stringResource(R.string.mail_settings_custom_toolbar_list_view_description),
-                actions = state.toolbarActionsUiModel.list,
-                onClick = { actions.onCustomize(ToolbarType.List) }
-            )
-        }
 
-        item {
+        items(state.actions) {
             ToolbarSection(
-                title = stringResource(R.string.mail_settings_custom_toolbar_conversation_view_title),
-                description = stringResource(R.string.mail_settings_custom_toolbar_message_view_description),
-                actions = state.toolbarActionsUiModel.conversation,
-                onClick = { actions.onCustomize(ToolbarType.Conversation) }
+                title = it.headerText.string(),
+                description = it.descriptionText.string(),
+                actions = it.actions,
+                onClick = { actions.onCustomize(it.type) }
             )
         }
     }
@@ -165,24 +160,39 @@ object CustomizeToolbarScreen {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = false)
 @Composable
 private fun CustomizeToolbarScreenPreview() {
-    val actions = ToolbarActionsUiModel(
-        listOf(
-            ActionUiModel(action = Action.Move),
-            ActionUiModel(action = Action.Label),
-            ActionUiModel(action = Action.Trash),
-            ActionUiModel(action = Action.ReportPhishing)
+    val actions = listOf(
+        ToolbarActionsUiModel(
+            headerText = TextUiModel.Text("Item 1"),
+            descriptionText = TextUiModel.Text("Description 1"),
+            actions = listOf(
+                ActionUiModel(action = Action.Move),
+                ActionUiModel(action = Action.Label),
+                ActionUiModel(action = Action.Trash),
+                ActionUiModel(action = Action.ReportPhishing)
+            ),
+            type = ToolbarType.List
         ),
-        listOf(
-            ActionUiModel(action = Action.MarkRead),
-            ActionUiModel(action = Action.Snooze),
-            ActionUiModel(action = Action.Archive),
-            ActionUiModel(action = Action.SaveAttachments)
+        ToolbarActionsUiModel(
+            headerText = TextUiModel.Text("Item 2"),
+            descriptionText = TextUiModel.Text("Description 2"),
+            actions = listOf(
+                ActionUiModel(action = Action.MarkRead),
+                ActionUiModel(action = Action.Snooze),
+                ActionUiModel(action = Action.Archive),
+                ActionUiModel(action = Action.SaveAttachments)
+            ),
+            type = ToolbarType.Conversation
         ),
-        listOf(
-            ActionUiModel(action = Action.MarkRead),
-            ActionUiModel(action = Action.Snooze),
-            ActionUiModel(action = Action.Archive),
-            ActionUiModel(action = Action.SaveAttachments)
+        ToolbarActionsUiModel(
+            headerText = TextUiModel.Text("Item 3"),
+            descriptionText = TextUiModel.Text("Description 3"),
+            actions = listOf(
+                ActionUiModel(action = Action.Move),
+                ActionUiModel(action = Action.Label),
+                ActionUiModel(action = Action.Trash),
+                ActionUiModel(action = Action.ReportPhishing)
+            ),
+            type = ToolbarType.Message
         )
     )
 

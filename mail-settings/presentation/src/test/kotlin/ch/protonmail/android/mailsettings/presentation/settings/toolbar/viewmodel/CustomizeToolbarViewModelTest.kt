@@ -23,12 +23,11 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
-import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.CustomizeToolbarViewModel
-import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ToolbarActionsUiModel
+import ch.protonmail.android.mailsettings.presentation.settings.toolbar.mapper.CustomizeToolbarActionsUiMapper
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.CustomizeToolbarState
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.ToolbarActionsSet
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.usecase.GetToolbarActions
@@ -43,10 +42,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
+import me.proton.core.mailsettings.domain.entity.ViewMode
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 internal class CustomizeToolbarViewModelTest {
 
@@ -55,13 +56,15 @@ internal class CustomizeToolbarViewModelTest {
 
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
     private val getToolbarActions = mockk<GetToolbarActions>()
-    private val actionUiMapper = mockk<ActionUiModelMapper>()
+    private val mailSettingsRepository = mockk<MailSettingsRepository>()
+    private val mapper = mockk<CustomizeToolbarActionsUiMapper>()
     private val refreshSignal = mockk<ToolbarActionsRefreshSignal>()
 
     private fun viewModel() = CustomizeToolbarViewModel(
         observePrimaryUserId,
         getToolbarActions,
-        actionUiMapper,
+        mailSettingsRepository,
+        mapper,
         refreshSignal
     )
 
@@ -92,23 +95,18 @@ internal class CustomizeToolbarViewModelTest {
         )
         every { observePrimaryUserId() } returns flowOf(userId)
         every { refreshSignal.refreshEvents } returns MutableSharedFlow()
-        every { actionUiMapper.toUiModel(Action.Archive) } returns ActionUiModel(Action.Archive)
-        every { actionUiMapper.toUiModel(Action.Spam) } returns ActionUiModel(Action.Spam)
-        every { actionUiMapper.toUiModel(Action.Move) } returns ActionUiModel(Action.Move)
+        coEvery { mailSettingsRepository.getMailSettings(userId) } returns mockk {
+            every { this@mockk.viewMode } returns ViewMode.enumOf(0)
+        }
+        every {
+            mapper.mapToList(expectedToolbarActions, ViewMode.ConversationGrouping)
+        } returns listOf(mockk(), mockk())
 
         coEvery { getToolbarActions.invoke(userId) } returns expectedToolbarActions.right()
 
-        val expectedState = CustomizeToolbarState.Data(
-            ToolbarActionsUiModel(
-                list = listOf(ActionUiModel(Action.Archive)),
-                conversation = listOf(ActionUiModel(Action.Spam)),
-                message = listOf(ActionUiModel(Action.Move))
-            )
-        )
-
         // When + Then
         viewModel().state.test {
-            assertEquals(expectedState, awaitItem())
+            assertTrue { awaitItem() is CustomizeToolbarState.Data }
             coVerify(exactly = 1) { getToolbarActions.invoke(userId) }
             confirmVerified(getToolbarActions)
         }

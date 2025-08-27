@@ -20,9 +20,14 @@ package ch.protonmail.android.mailsettings.presentation.settings.toolbar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
+import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.presentation.settings.toolbar.mapper.CustomizeToolbarActionsUiMapper
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.CustomizeToolbarState
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.ToolbarActionsSet
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.usecase.GetToolbarActions
@@ -30,6 +35,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -40,9 +46,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class CustomizeToolbarViewModel @Inject constructor(
-    observePrimaryUserId: ObservePrimaryUserId,
+    private val observePrimaryUserId: ObservePrimaryUserId,
     private val getToolbarActions: GetToolbarActions,
-    private val actionUiMapper: ActionUiModelMapper,
+    private val mailSettingsRepository: MailSettingsRepository,
+    private val mapper: CustomizeToolbarActionsUiMapper,
     private val refreshSignal: ToolbarActionsRefreshSignal
 ) : ViewModel() {
 
@@ -54,13 +61,12 @@ internal class CustomizeToolbarViewModel @Inject constructor(
                 refreshSignal.refreshEvents
             ).flatMapLatest {
                 flow {
-                    val either = getToolbarActions(userId)
-                    val state = either.fold(
-                        ifLeft = { CustomizeToolbarState.Error },
-                        ifRight = { actions ->
-                            CustomizeToolbarState.Data(actions.toUiModels())
-                        }
-                    )
+                    val state = getToolbarActions(userId)
+                        .flatMap { actions -> mapActionsToToolbarList(actions) }
+                        .fold(
+                            ifLeft = { CustomizeToolbarState.Error },
+                            ifRight = { uiModels -> CustomizeToolbarState.Data(uiModels) }
+                        )
                     emit(state)
                 }
             }
@@ -71,11 +77,17 @@ internal class CustomizeToolbarViewModel @Inject constructor(
             initialValue = CustomizeToolbarState.Loading
         )
 
-    private fun ToolbarActionsSet.toUiModels(): ToolbarActionsUiModel {
-        val listActions = list.map { actionUiMapper.toUiModel(it) }
-        val conversationActions = conversation.map { actionUiMapper.toUiModel(it) }
-        val messageActions = messages.map { actionUiMapper.toUiModel(it) }
+    private suspend fun mapActionsToToolbarList(
+        actionsSet: ToolbarActionsSet
+    ): Either<CustomizeToolbarState.Error, List<ToolbarActionsUiModel>> {
 
-        return ToolbarActionsUiModel(listActions, messageActions, conversationActions)
+        val userId = observePrimaryUserId().first()
+            ?: return CustomizeToolbarState.Error.left()
+
+        val mailSettings = mailSettingsRepository.getMailSettings(userId)
+        val viewMode = mailSettings.viewMode?.enum
+            ?: return CustomizeToolbarState.Error.left()
+
+        return mapper.mapToList(actionsSet, viewMode).right()
     }
 }
