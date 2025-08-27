@@ -27,12 +27,11 @@ import android.os.Build
 import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
 import io.mockk.MockKAnnotations
 import io.mockk.Runs
+import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
+import io.mockk.mockk
 import io.mockk.slot
-import io.mockk.unmockkAll
 import io.mockk.verify
 import org.junit.After
 import org.junit.Before
@@ -44,140 +43,151 @@ import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 @Config(minSdk = Build.VERSION_CODES.Q)
-class NetworkManagerImplTest {
+internal class NetworkManagerImplTest {
 
-    @MockK
-    private lateinit var context: Context
-
-    @MockK
-    private lateinit var connectivityManager: ConnectivityManager
-
-    @RelaxedMockK
-    private lateinit var network: Network
-
-    @RelaxedMockK
-    private lateinit var networkCapabilities: NetworkCapabilities
-
-    private lateinit var networkManager: NetworkManagerImpl
-
+    private val context = mockk<Context>()
+    private val network: Network = mockk<Network>()
+    private val connectivityManager = mockk<ConnectivityManager>(relaxed = true)
+    private val networkCapabilities = mockk<NetworkCapabilities>(relaxed = true)
     private val networkCallback = slot<ConnectivityManager.NetworkCallback>()
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-
         every { context.getSystemService(Context.CONNECTIVITY_SERVICE) } returns connectivityManager
-        networkManager = NetworkManagerImpl(context)
     }
 
     @After
     fun tearDown() {
-        unmockkAll()
+        clearAllMocks()
     }
 
     @Test
     fun `networkStatus returns Disconnected when activeNetwork is null`() {
-        every { connectivityManager.activeNetwork } returns null
-        every { connectivityManager.getNetworkCapabilities(null) } returns null
+        // Given
+        setupDisconnectedNetwork()
 
-        val result = networkManager.networkStatus
+        // When
+        val result = NetworkManagerImpl(context).networkStatus
 
+        // Then
         assertEquals(NetworkStatus.Disconnected, result)
     }
 
     @Test
     fun `networkStatus returns Disconnected when networkCapabilities is null`() {
-        every { connectivityManager.activeNetwork } returns network
-        every { connectivityManager.getNetworkCapabilities(network) } returns null
+        // Given
+        setupNetworkWithNullCapabilities()
 
-        val result = networkManager.networkStatus
+        // When
+        val result = NetworkManagerImpl(context).networkStatus
 
+        // Then
         assertEquals(NetworkStatus.Disconnected, result)
     }
 
     @Test
     fun `networkStatus returns Disconnected when no internet capability`() {
-        every { connectivityManager.activeNetwork } returns network
-        every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
-        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) } returns false
+        // Given
+        setupConnectedNetwork(hasInternet = false)
 
-        val result = networkManager.networkStatus
+        // When
+        val result = NetworkManagerImpl(context).networkStatus
 
+        // Then
         assertEquals(NetworkStatus.Disconnected, result)
     }
 
     @Test
     fun `networkStatus returns Disconnected when not validated`() {
-        every { connectivityManager.activeNetwork } returns network
-        every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
-        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) } returns true
-        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) } returns false
+        // Given
+        setupConnectedNetwork(isValidated = false)
 
-        val result = networkManager.networkStatus
+        // When
+        val result = NetworkManagerImpl(context).networkStatus
 
+        // Then
         assertEquals(NetworkStatus.Disconnected, result)
     }
 
     @Test
     fun `networkStatus returns Unmetered when connected and not metered`() {
-        every { connectivityManager.activeNetwork } returns network
-        every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
-        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) } returns true
-        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) } returns true
-        every { connectivityManager.isActiveNetworkMetered } returns false
+        // Given
+        setupConnectedNetwork(isMetered = false)
 
-        val result = networkManager.networkStatus
+        // When
+        val result = NetworkManagerImpl(context).networkStatus
 
+        // Then
         assertEquals(NetworkStatus.Unmetered, result)
     }
 
     @Test
     fun `networkStatus returns Metered when connected and metered`() {
-        every { connectivityManager.activeNetwork } returns network
-        every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
-        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) } returns true
-        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) } returns true
-        every { connectivityManager.isActiveNetworkMetered } returns true
+        // Given
+        setupConnectedNetwork(isMetered = true)
 
-        val result = networkManager.networkStatus
+        // When
+        val result = NetworkManagerImpl(context).networkStatus
 
+        // Then
         assertEquals(NetworkStatus.Metered, result)
     }
 
     @Test
     fun `register calls registerDefaultNetworkCallback`() {
+        // Given
+        setupConnectedNetwork()
         every { connectivityManager.registerDefaultNetworkCallback(capture(networkCallback)) } just Runs
 
-        networkManager.register()
+        // When
+        NetworkManagerImpl(context).register()
 
+        // Then
         verify { connectivityManager.registerDefaultNetworkCallback(any()) }
     }
 
     @Test
     fun `register only registers once when called multiple times`() {
+        // Given
+        setupConnectedNetwork()
         every { connectivityManager.registerDefaultNetworkCallback(any()) } just Runs
 
+        // When
+        val networkManager = NetworkManagerImpl(context)
         networkManager.register()
         networkManager.register()
 
+        // Then
         verify(exactly = 1) { connectivityManager.registerDefaultNetworkCallback(any()) }
     }
 
     @Test
     fun `unregister calls unregisterNetworkCallback when registered`() {
+        // Given
+        setupConnectedNetwork()
         every { connectivityManager.registerDefaultNetworkCallback(capture(networkCallback)) } just Runs
         every { connectivityManager.unregisterNetworkCallback(any<ConnectivityManager.NetworkCallback>()) } just Runs
 
+        // When
+        val networkManager = NetworkManagerImpl(context)
         networkManager.register()
         networkManager.unregister()
 
+        // Then
         verify { connectivityManager.unregisterNetworkCallback(any<ConnectivityManager.NetworkCallback>()) }
     }
 
     @Test
     fun `unregister does nothing when not registered`() {
+        // Given
+        setupConnectedNetwork()
+
+        // When
+        val networkManager = NetworkManagerImpl(context)
         networkManager.unregister()
 
+        // Then
         verify(exactly = 0) {
             connectivityManager.unregisterNetworkCallback(any<ConnectivityManager.NetworkCallback>())
         }
@@ -185,15 +195,42 @@ class NetworkManagerImplTest {
 
     @Test
     fun `unregister only unregisters once when called multiple times`() {
+        // Given
+        setupConnectedNetwork()
         every { connectivityManager.registerDefaultNetworkCallback(capture(networkCallback)) } just Runs
         every { connectivityManager.unregisterNetworkCallback(any<ConnectivityManager.NetworkCallback>()) } just Runs
 
+        // When
+        val networkManager = NetworkManagerImpl(context)
         networkManager.register()
         networkManager.unregister()
         networkManager.unregister()
 
+        // Then
         verify(exactly = 1) {
             connectivityManager.unregisterNetworkCallback(any<ConnectivityManager.NetworkCallback>())
         }
+    }
+
+    private fun setupConnectedNetwork(
+        hasInternet: Boolean = true,
+        isValidated: Boolean = true,
+        isMetered: Boolean = false
+    ) {
+        every { connectivityManager.activeNetwork } returns network
+        every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
+        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) } returns hasInternet
+        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) } returns isValidated
+        every { connectivityManager.isActiveNetworkMetered } returns isMetered
+    }
+
+    private fun setupDisconnectedNetwork() {
+        every { connectivityManager.activeNetwork } returns null
+        every { connectivityManager.getNetworkCapabilities(null) } returns null
+    }
+
+    private fun setupNetworkWithNullCapabilities() {
+        every { connectivityManager.activeNetwork } returns network
+        every { connectivityManager.getNetworkCapabilities(network) } returns null
     }
 }

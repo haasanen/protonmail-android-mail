@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcommon.data.network
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -29,6 +30,7 @@ import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
+@SuppressLint("MissingPermission")
 class NetworkManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : NetworkManager() {
@@ -38,41 +40,29 @@ class NetworkManagerImpl @Inject constructor(
 
     private var registered = false
 
+    @Volatile
+    private var _networkStatus: NetworkStatus = determineCurrentNetworkStatus()
+
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            notifyObservers(networkStatus)
-        }
 
         override fun onLost(network: Network) {
-            notifyObservers(networkStatus)
+            super.onLost(network)
+            updateNetworkStatus()
+        }
+
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            updateNetworkStatus()
         }
 
         override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
-            notifyObservers(networkStatus)
+            super.onCapabilitiesChanged(network, networkCapabilities)
+            updateNetworkStatus()
         }
     }
 
-
     override val networkStatus: NetworkStatus
-        @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-        get() = with(connectivityManager) {
-            val activeNetwork = activeNetwork
-            val networkCapabilities = getNetworkCapabilities(activeNetwork)
-
-            when {
-                networkCapabilities == null -> NetworkStatus.Disconnected
-                !networkCapabilities.hasCapability(
-                    NetworkCapabilities.NET_CAPABILITY_INTERNET
-                ) -> NetworkStatus.Disconnected
-
-                !networkCapabilities.hasCapability(
-                    NetworkCapabilities.NET_CAPABILITY_VALIDATED
-                ) -> NetworkStatus.Disconnected
-
-                !isActiveNetworkMetered -> NetworkStatus.Unmetered
-                else -> NetworkStatus.Metered
-            }
-        }
+        get() = _networkStatus
 
     override val activeNetwork: Network?
         @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
@@ -82,6 +72,9 @@ class NetworkManagerImpl @Inject constructor(
     override fun register() {
         if (!registered) {
             registered = true
+
+            // Get current state before registering
+            _networkStatus = determineCurrentNetworkStatus()
             connectivityManager.registerDefaultNetworkCallback(networkCallback)
         }
     }
@@ -90,6 +83,36 @@ class NetworkManagerImpl @Inject constructor(
         if (registered) {
             registered = false
             connectivityManager.unregisterNetworkCallback(networkCallback)
+        }
+    }
+
+    private fun updateNetworkStatus() {
+        val newStatus = determineCurrentNetworkStatus()
+
+        if (_networkStatus != newStatus) {
+            _networkStatus = newStatus
+            notifyObservers(newStatus)
+        }
+    }
+
+    private fun determineCurrentNetworkStatus(): NetworkStatus {
+        val activeNetwork = connectivityManager.activeNetwork
+        if (activeNetwork == null) {
+            return NetworkStatus.Disconnected
+        }
+
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        if (capabilities == null) {
+            return NetworkStatus.Disconnected
+        }
+
+        val hasInternet = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        val isValidated = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+
+        return when {
+            !hasInternet || !isValidated -> NetworkStatus.Disconnected
+            connectivityManager.isActiveNetworkMetered -> NetworkStatus.Metered
+            else -> NetworkStatus.Unmetered
         }
     }
 }
