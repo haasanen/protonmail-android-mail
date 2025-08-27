@@ -26,7 +26,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.getOrElse
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
+import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
@@ -213,7 +213,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val answerRsvpEvent: AnswerRsvpEvent,
     private val snoozeRepository: SnoozeRepository,
     private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter,
-    isShowSingleMessageMode: IsShowSingleMessageMode
+    private val isShowSingleMessageMode: IsShowSingleMessageMode
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -231,16 +231,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val attachmentsState = MutableStateFlow<Map<MessageId, List<AttachmentMetadata>>>(emptyMap())
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
-
-    val isSingleMessageMode: StateFlow<Boolean> = flow {
-        val value = isShowSingleMessageMode(primaryUserId.first())
-        Timber.tag("SingleMessageMode").d("Show single message is: $value")
-        emit(value)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = false
-    )
 
     private val jobs = CopyOnWriteArrayList<Job>()
 
@@ -537,8 +527,14 @@ class ConversationDetailViewModel @Inject constructor(
                     ConversationDetailEvent.ErrorLoadingMessages
                 }
             }
+
+            val displayMessages = when {
+                isSingleMessageModeEnabled() -> conversationMessages.filterMessage(initialScrollToMessageId)
+                else -> conversationMessages.messages
+            }
+
             val messagesUiModels = buildMessagesUiModels(
-                messages = conversationMessages.messages,
+                messages = displayMessages,
                 primaryUserAddress = primaryUserAddress,
                 currentViewState = conversationViewState,
                 avatarImageStates = avatarImageStates
@@ -572,6 +568,20 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(event)
         }
         .launchIn(viewModelScope)
+
+    private fun ConversationMessages.filterMessage(idUiModel: MessageIdUiModel?) = this.messages
+        .filter { it.messageId.id == idUiModel?.id }
+        .toNonEmptyListOrNull()
+        ?: run {
+            Timber.tag("SingleMessageMode").w("single message requested, message is not in convo $idUiModel")
+            this.messages
+        }
+
+    suspend fun isSingleMessageModeEnabled(): Boolean {
+        val value = isShowSingleMessageMode(primaryUserId.first())
+        Timber.tag("SingleMessageMode").d("Show single message is: $value")
+        return value
+    }
 
     private fun stateIsLoading(): Boolean = state.value.messagesState == ConversationDetailsMessagesState.Loading
 

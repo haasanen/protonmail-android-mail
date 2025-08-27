@@ -90,9 +90,10 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample.InvoiceWithLabelExpanding
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
-import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.IsShowSingleMessageMode
+import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -238,7 +239,7 @@ class ConversationDetailViewModelTest {
         )
     }
     private val observeDetailBottomBarActions = mockk<ObserveDetailBottomBarActions> {
-        every {
+        coEvery {
             this@mockk(UserIdSample.Primary, any(), ConversationIdSample.WeatherForecast)
         } returns flowOf(
             listOf(Action.Archive, Action.MarkUnread).right()
@@ -336,6 +337,9 @@ class ConversationDetailViewModelTest {
     }
 
     private val unsubscribeFromNewsletter = mockk<UnsubscribeFromNewsletter>()
+    private val isShowSingleMessageMode = mockk<IsShowSingleMessageMode> {
+        coEvery { this@mockk(userId) } returns false
+    }
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -389,7 +393,8 @@ class ConversationDetailViewModelTest {
             getRsvpEvent = getRsvpEvent,
             answerRsvpEvent = answerRsvpEvent,
             snoozeRepository = snoozeRepository,
-            unsubscribeFromNewsletter = unsubscribeFromNewsletter
+            unsubscribeFromNewsletter = unsubscribeFromNewsletter,
+            isShowSingleMessageMode = isShowSingleMessageMode
         )
     }
 
@@ -676,8 +681,12 @@ class ConversationDetailViewModelTest {
         val labelId = LabelIdSample.Archive
         val expected = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
-        every {
-            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+        coEvery {
+            observeDetailBottomBarActions(
+                UserIdSample.Primary,
+                labelId,
+                ConversationIdSample.WeatherForecast
+            )
         } returns flowOf(actions.right())
         coEvery {
             reducer.newStateFrom(
@@ -713,8 +722,12 @@ class ConversationDetailViewModelTest {
             )
         } returns messages.first()
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
-        every {
-            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+        coEvery {
+            observeDetailBottomBarActions(
+                UserIdSample.Primary,
+                labelId,
+                ConversationIdSample.WeatherForecast
+            )
         } returns flowOf(DataError.Local.NoDataCached.left())
         coEvery {
             reducer.newStateFrom(

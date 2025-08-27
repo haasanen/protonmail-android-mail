@@ -134,9 +134,10 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
-import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.IsShowSingleMessageMode
+import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
@@ -147,10 +148,10 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToIte
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.EventId
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
@@ -277,6 +278,9 @@ class ConversationDetailViewModelIntegrationTest {
     }
     private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
         every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
+    }
+    private val isShowSingleMessageMode = mockk<IsShowSingleMessageMode> {
+        coEvery { this@mockk(userId) } returns false
     }
 
     private val snoozeRepository = mockk<SnoozeRepository> {
@@ -2563,7 +2567,8 @@ class ConversationDetailViewModelIntegrationTest {
         getRsvpEvent = getRsvpEvent,
         answerRsvpEvent = answerRsvpEvent,
         snoozeRepository = snoozeRepository,
-        unsubscribeFromNewsletter = unsubscribeFromNewsletter
+        unsubscribeFromNewsletter = unsubscribeFromNewsletter,
+        isShowSingleMessageMode = isShowSingleMessageMode
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(
@@ -2588,7 +2593,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(emptyList<ContactMetadata.Contact>().right())
         every { observeConversationUseCase(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
             flowOf(ConversationSample.WeatherForecast.right())
-        every {
+        coEvery {
             observeDetailBottomBarActions(
                 UserIdSample.Primary,
                 any(),
