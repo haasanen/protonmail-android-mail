@@ -159,6 +159,11 @@ fun MailboxItem(
                             .weight(1f)
                     )
 
+                    if (item.shouldShowAttachmentIcon) {
+                        SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = iconColor)
+                        Spacer(Modifier.size(ProtonDimens.Spacing.Small))
+                    }
+
                     if (item.shouldShowCalendarIcon) {
                         SmallNonClickableIcon(iconId = R.drawable.ic_proton_calendar_grid, iconColor = iconColor)
                         Spacer(Modifier.size(ProtonDimens.Spacing.Small))

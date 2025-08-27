@@ -86,6 +86,7 @@ class MailboxItemUiModelMapper @Inject constructor(
             isStarred = mailboxItem.isStarred,
             locations = getLocationIconsToDisplay(userId, mailboxItem, folderColorSettings, isShowingSearchResults),
             expiryInformation = expiryInformationUiModelMapper.toUiModel(mailboxItem.expirationTime),
+            shouldShowAttachmentIcon = areAllAttachmentsExcludedFromPreview(mailboxItem),
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
             shouldOpenInComposer = mailboxItem.isDraft,
             attachments = mailboxItem.attachments
@@ -117,6 +118,9 @@ class MailboxItemUiModelMapper @Inject constructor(
         is GetMailboxItemLocationIcon.Result.None -> emptyList()
         is GetMailboxItemLocationIcon.Result.Icon -> listOfNotNull(iconResult.icon)
     }.toImmutableList()
+
+    private fun areAllAttachmentsExcludedFromPreview(mailboxItem: MailboxItem) =
+        mailboxItem.attachments.isNotEmpty() && mailboxItem.attachments.all { it.includeInPreview.not() }
 
     private fun hasCalendarAttachment(mailboxItem: MailboxItem) = mailboxItem.calendarAttachmentCount > 0
 

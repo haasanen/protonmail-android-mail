@@ -224,6 +224,7 @@ object MailboxItemUiModelTestData {
         isStarred = false,
         locations = locations,
         expiryInformation = ExpiryInformationUiModel.NoExpiry,
+        shouldShowAttachmentIcon = false,
         shouldShowCalendarIcon = false,
         shouldOpenInComposer = shouldOpenInComposer,
         attachments = persistentListOf(),
