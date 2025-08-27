@@ -69,7 +69,6 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     private val conversationUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
-            Timber.d("conversation updated")
             coroutineScope.launch {
                 mutex.withLock {
                     val userId = currentUserId ?: run {
