@@ -26,12 +26,14 @@ import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.LinkifyUrlEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
@@ -48,6 +50,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FeatureFlagsModule {
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideMessageDetailEnabledDefinitions(): FeatureFlagDefinition = MessageDetailEnabled
+
+    @Provides
+    @Singleton
+    @IsMessageDetailEnabled
+    fun provideMessageDetailEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(MessageDetailEnabled.key, false)
+
 
     @Provides
     @IntoSet

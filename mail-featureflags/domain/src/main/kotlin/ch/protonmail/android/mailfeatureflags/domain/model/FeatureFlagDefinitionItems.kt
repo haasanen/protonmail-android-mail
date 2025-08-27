@@ -58,4 +58,11 @@ data object MessageExpirationEnabled : FeatureFlagDefinition(
     defaultValue = true
 )
 
+data object MessageDetailEnabled : FeatureFlagDefinition(
+    key = "MailAndroidV7MessageDetail",
+    name = "View Single Message Detail",
+    category = FeatureFlagCategory.Details,
+    description = "Allow to view a single message in the detail screen",
+    defaultValue = true
+)
 
