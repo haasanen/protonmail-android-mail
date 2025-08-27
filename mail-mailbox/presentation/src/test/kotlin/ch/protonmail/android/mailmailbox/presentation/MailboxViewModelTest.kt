@@ -56,7 +56,7 @@ import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.domain.model.ViewMode.ConversationGrouping
 import ch.protonmail.android.maillabel.domain.model.ViewMode.NoConversationGrouping
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewMode
+import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewModeForLabel
 import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
@@ -206,7 +206,7 @@ internal class MailboxViewModelTest {
         every { this@mockk(userId1) } returns flowOf(SwipeActionsPreference(SwipeAction.MarkRead, SwipeAction.Archive))
     }
 
-    private val getCurrentViewMode = mockk<GetCurrentViewMode> {
+    private val getCurrentViewModeForLabel = mockk<GetCurrentViewModeForLabel> {
         coEvery { this@mockk(any(), any()) } returns NoConversationGrouping
     }
 
@@ -290,7 +290,7 @@ internal class MailboxViewModelTest {
     private val mailboxViewModel by lazy {
         MailboxViewModel(
             mailboxPagerFactory = pagerFactory,
-            getCurrentViewMode = getCurrentViewMode,
+            getCurrentViewModeForLabel = getCurrentViewModeForLabel,
             observePrimaryUserId = observePrimaryUserId,
             observeMailLabels = observeMailLabels,
             observeSwipeActionsPreference = observeSwipeActionsPreference,
@@ -1338,7 +1338,7 @@ internal class MailboxViewModelTest {
             )
         )
 
-        coEvery { getCurrentViewMode(userId = any(), any()) } returns ConversationGrouping
+        coEvery { getCurrentViewModeForLabel(userId = any(), any()) } returns ConversationGrouping
 
         expectedSelectedLabelCountStateChange(intermediateState)
         every {
@@ -2325,7 +2325,9 @@ internal class MailboxViewModelTest {
         val initialMailboxState = createMailboxDataState()
         val expectedState = createMailboxDataState()
         val primaryUserFlow = MutableStateFlow<UserId?>(userId)
-        coEvery { getCurrentViewMode(userId = userId, initialLocationMailLabelId.labelId) } returns ConversationGrouping
+        coEvery {
+            getCurrentViewModeForLabel(userId = userId, initialLocationMailLabelId.labelId)
+        } returns ConversationGrouping
         every { observePrimaryUserId.invoke() } returns primaryUserFlow
         every { observeLoadedMailLabelId() } returns currentLocationFlow
         val pagingData = PagingData.from(listOf(unreadMailboxItem))
@@ -3343,7 +3345,7 @@ internal class MailboxViewModelTest {
     }
 
     private fun expectViewModeForCurrentLocation(viewMode: ViewMode) {
-        coEvery { getCurrentViewMode(any(), any()) } returns viewMode
+        coEvery { getCurrentViewModeForLabel(any(), any()) } returns viewMode
     }
 
     private fun expectBottomSheetActionsSucceeds(

@@ -24,7 +24,7 @@ import ch.protonmail.android.maillabel.domain.repository.ViewModeRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class GetCurrentViewMode @Inject constructor(
+class GetCurrentViewModeForLabel @Inject constructor(
     private val viewModeRepository: ViewModeRepository
 ) {
 

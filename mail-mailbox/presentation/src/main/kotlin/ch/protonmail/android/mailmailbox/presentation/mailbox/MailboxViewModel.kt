@@ -57,7 +57,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewMode
+import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewModeForLabel
 import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
@@ -143,7 +143,7 @@ import javax.inject.Inject
 @SuppressWarnings("LongParameterList", "TooManyFunctions", "LargeClass")
 class MailboxViewModel @Inject constructor(
     private val mailboxPagerFactory: MailboxPagerFactory,
-    private val getCurrentViewMode: GetCurrentViewMode,
+    private val getCurrentViewModeForLabel: GetCurrentViewModeForLabel,
     observePrimaryUserId: ObservePrimaryUserId,
     private val observeMailLabels: ObserveMailLabels,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
@@ -1100,9 +1100,9 @@ class MailboxViewModel @Inject constructor(
         val userId = primaryUserId.firstOrNull()
 
         return if (userId == null || state.value.isInSearchMode()) {
-            GetCurrentViewMode.DefaultViewMode
+            GetCurrentViewModeForLabel.DefaultViewMode
         } else {
-            getCurrentViewMode(userId, currentMailLabel.labelId)
+            getCurrentViewModeForLabel(userId, currentMailLabel.labelId)
         }
     }
 
