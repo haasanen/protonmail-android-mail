@@ -129,7 +129,7 @@ private fun CustomizeToolbarScreenContent(
             ToolbarSection(
                 title = stringResource(R.string.mail_settings_custom_toolbar_conversation_view_title),
                 description = stringResource(R.string.mail_settings_custom_toolbar_message_view_description),
-                actions = state.toolbarActionsUiModel.message,
+                actions = state.toolbarActionsUiModel.conversation,
                 onClick = { actions.onCustomize(ToolbarType.Conversation) }
             )
         }

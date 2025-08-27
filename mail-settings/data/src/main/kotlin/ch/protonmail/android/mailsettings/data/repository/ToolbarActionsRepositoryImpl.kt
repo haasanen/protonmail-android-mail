@@ -39,7 +39,7 @@ class ToolbarActionsRepositoryImpl @Inject constructor(
             ToolbarType.Conversation -> toolbarActionsDataSource.getConversationActions(userId)
             ToolbarType.Message -> toolbarActionsDataSource.getMessageActions(userId)
         }.map { list ->
-            list.mapNotNull { localAction ->
+            list.map { localAction ->
                 localAction.toAction()
             }
         }
@@ -50,7 +50,7 @@ class ToolbarActionsRepositoryImpl @Inject constructor(
             ToolbarType.List -> toolbarActionsDataSource.getAllListActions()
             ToolbarType.Conversation -> toolbarActionsDataSource.getAllConversationActions()
             ToolbarType.Message -> toolbarActionsDataSource.getAllMessageActions()
-        }.mapNotNull { localAction ->
+        }.map { localAction ->
             localAction.toAction()
         }
     }
