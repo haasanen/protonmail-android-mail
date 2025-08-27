@@ -78,10 +78,7 @@ internal class ObserveDetailBottomBarActionsTest {
         val conversationId = ConversationIdSample.Invoices
 
         val flow = MutableSharedFlow<Either<DataError, AllBottomBarActions>>()
-
-        coEvery {
-            observeAllConversationBottomBarActions(userId, labelId, conversationId)
-        } returns flow
+        coEvery { observeAllConversationBottomBarActions(userId, labelId, conversationId) } returns flow
 
         val actionsSet = AllBottomBarActions(
             visibleActions = listOf(Action.Spam, Action.Archive),

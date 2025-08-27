@@ -158,6 +158,7 @@ fun ConversationDetailScreen(
     val context = LocalContext.current
     val isSystemBackButtonClickEnabled = remember { mutableStateOf(true) }
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val isSingleMessageMode = viewModel.isSingleMessageMode.collectAsStateWithLifecycle()
 
     var showBottomSheet by remember { mutableStateOf(false) }
     val currentAppTheme = if (isSystemInDarkTheme())

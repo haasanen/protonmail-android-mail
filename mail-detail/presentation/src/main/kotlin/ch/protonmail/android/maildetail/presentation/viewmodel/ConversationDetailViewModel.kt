@@ -26,6 +26,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.getOrElse
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
@@ -87,9 +88,10 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMe
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
-import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.IsShowSingleMessageMode
+import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
@@ -210,7 +212,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val getRsvpEvent: GetRsvpEvent,
     private val answerRsvpEvent: AnswerRsvpEvent,
     private val snoozeRepository: SnoozeRepository,
-    private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter
+    private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter,
+    isShowSingleMessageMode: IsShowSingleMessageMode
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -228,6 +231,16 @@ class ConversationDetailViewModel @Inject constructor(
     private val attachmentsState = MutableStateFlow<Map<MessageId, List<AttachmentMetadata>>>(emptyMap())
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
+
+    val isSingleMessageMode: StateFlow<Boolean> = flow {
+        val value = isShowSingleMessageMode(primaryUserId.first())
+        Timber.tag("SingleMessageMode").d("Show single message is: $value")
+        emit(value)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        initialValue = false
+    )
 
     private val jobs = CopyOnWriteArrayList<Job>()
 
