@@ -2,13 +2,13 @@ package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,9 +23,11 @@ class GetMessageBodyWithClickableLinksTest(
 
     private val getDecryptedMessageBody = mockk<GetDecryptedMessageBody>()
 
-    private val getMessageBodyWithClikableLinks = GetMessageBodyWithClickableLinks(
+    private val getMessageBodyWithClickableLinks = GetMessageBodyWithClickableLinks(
         getDecryptedMessageBody = getDecryptedMessageBody,
-        isLinkifyUrlEnabled = flowOf(true)
+        isLinkifyUrlEnabled = mockk<FeatureFlag<Boolean>> {
+            coEvery { this@mockk.get() } returns true
+        }
     )
 
     @Test
@@ -52,7 +54,7 @@ class GetMessageBodyWithClickableLinksTest(
 
 
         // When
-        val actual = getMessageBodyWithClikableLinks(userId, messageId, transformations)
+        val actual = getMessageBodyWithClickableLinks(userId, messageId, transformations)
 
         // Then
         assertEquals(testInput.linkifiedBody, actual.getOrNull()?.value, testName)

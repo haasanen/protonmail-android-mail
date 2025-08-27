@@ -22,12 +22,12 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlanUpgrades
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlansError
 import ch.protonmail.android.mailupselling.presentation.OnboardingUpsellingReducer
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingUpsellOperation.OnboardingUpsellEvent
-import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingUpsellState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.clearAllMocks
@@ -36,14 +36,12 @@ import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.payment.domain.model.ProductDetail
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 internal class OnboardingUpsellViewModelTest {
 
@@ -53,7 +51,8 @@ internal class OnboardingUpsellViewModelTest {
     private val observePrimaryUser = mockk<ObservePrimaryUser>()
     private val reducer = mockk<OnboardingUpsellingReducer>(relaxed = true)
     private val getOnboardingPlanUpgrades = mockk<GetOnboardingPlanUpgrades>()
-    private val isUpsellEnabled = MutableSharedFlow<Boolean>()
+
+    private val isUpsellEnabled = mockk<FeatureFlag<Boolean>>()
 
     private fun viewModel() = OnboardingUpsellViewModel(
         observePrimaryUser,
@@ -71,6 +70,7 @@ internal class OnboardingUpsellViewModelTest {
     fun `should emit an error when no user is found`() = runTest {
         // Given
         every { observePrimaryUser() } returns flowOf(DataError.Local.NoUserSession.left())
+        coEvery { isUpsellEnabled.get() } returns false
 
         // When
         viewModel().state.test {
@@ -86,11 +86,10 @@ internal class OnboardingUpsellViewModelTest {
     fun `should emit unsupported flow when FF is off`() = runTest {
         // Given
         every { observePrimaryUser() } returns flowOf(UserTestData.Primary.right())
+        coEvery { isUpsellEnabled.get() } returns false
 
         // When
         viewModel().state.test {
-            isUpsellEnabled.emit(false)
-            assertEquals(OnboardingUpsellState.Loading, awaitItem())
             awaitItem() // Ignore, it's a mocked state
         }
 
@@ -103,11 +102,10 @@ internal class OnboardingUpsellViewModelTest {
     fun `should emit unsupported flow when user is paid`() = runTest {
         // Given
         every { observePrimaryUser() } returns flowOf(UserTestData.Primary.copy(subscribed = 1).right())
+        coEvery { isUpsellEnabled.get() } returns true
 
         // When
         viewModel().state.test {
-            isUpsellEnabled.emit(true)
-            assertEquals(OnboardingUpsellState.Loading, awaitItem())
             awaitItem() // Ignore, it's a mocked state
         }
 
@@ -120,14 +118,12 @@ internal class OnboardingUpsellViewModelTest {
     fun `should emit plans mismatched when product details are not fetched correctly`() = runTest {
         // Given
         val user = UserTestData.Primary.copy(subscribed = 0)
-        val expectedList = listOf<ProductDetail>(mockk())
         every { observePrimaryUser() } returns flowOf(user.right())
         coEvery { getOnboardingPlanUpgrades(user.userId) } returns GetOnboardingPlansError.MismatchingPlans.left()
+        coEvery { isUpsellEnabled.get() } returns true
 
         // When
         viewModel().state.test {
-            isUpsellEnabled.emit(true)
-            assertEquals(OnboardingUpsellState.Loading, awaitItem())
             awaitItem() // Ignore, it's a mocked state
         }
 
@@ -143,11 +139,10 @@ internal class OnboardingUpsellViewModelTest {
         val expectedList = listOf<ProductDetail>(mockk())
         every { observePrimaryUser() } returns flowOf(user.right())
         coEvery { getOnboardingPlanUpgrades(user.userId) } returns expectedList.right()
+        coEvery { isUpsellEnabled.get() } returns true
 
         // When
         viewModel().state.test {
-            isUpsellEnabled.emit(true)
-            assertEquals(OnboardingUpsellState.Loading, awaitItem())
             awaitItem() // Ignore, it's a mocked state
         }
 

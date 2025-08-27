@@ -97,6 +97,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplay
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ComposeToAddresses
@@ -116,7 +117,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -126,6 +126,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -167,10 +168,10 @@ class ComposerViewModel @AssistedInject constructor(
     private val scheduleSend: ScheduleSendMessage,
     private val getSenderAddresses: GetSenderAddresses,
     private val changeSenderAddress: ChangeSenderAddress,
-    @IsMessagePasswordEnabled private val messagePasswordEnabled: Flow<Boolean>,
+    @IsMessagePasswordEnabled private val messagePasswordEnabled: FeatureFlag<Boolean>,
     private val composerRegistry: ActiveComposerRegistry,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
-    @IsMessageExpirationEnabled private val messageExpirationEnabled: Flow<Boolean>,
+    @IsMessageExpirationEnabled private val messageExpirationEnabled: FeatureFlag<Boolean>,
     private val observeMessagePasswordChanged: ObserveMessagePasswordChanged,
     private val isMessagePasswordSet: IsMessagePasswordSet,
     private val observeRecipientsValidation: ObserveRecipientsValidation,
@@ -213,13 +214,18 @@ class ComposerViewModel @AssistedInject constructor(
 
     internal val composerStates = mutableComposerStates.asStateFlow()
 
-    val isMessageExpirationEnabled = messageExpirationEnabled.stateIn(
+
+    val isMessageExpirationEnabled: StateFlow<Boolean> = flow {
+        emit(messageExpirationEnabled.get())
+    }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
         initialValue = false
     )
 
-    val isMessagePasswordEnabled = messagePasswordEnabled.stateIn(
+    val isMessagePasswordEnabled: StateFlow<Boolean> = flow {
+        emit(messagePasswordEnabled.get())
+    }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
         initialValue = true
@@ -665,6 +671,7 @@ class ComposerViewModel @AssistedInject constructor(
                     is AddAttachment.AddAttachmentResult.InlineAttachmentAdded -> {
                         contentIds.add(it.cid)
                     }
+
                     AddAttachment.AddAttachmentResult.StandardAttachmentAdded -> Unit
                 }
             }

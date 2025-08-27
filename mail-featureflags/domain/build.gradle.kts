@@ -45,4 +45,5 @@ dependencies {
     implementation(libs.bundles.module.domain)
 
     testImplementation(libs.bundles.test)
+    testImplementation(project(":test:utils"))
 }

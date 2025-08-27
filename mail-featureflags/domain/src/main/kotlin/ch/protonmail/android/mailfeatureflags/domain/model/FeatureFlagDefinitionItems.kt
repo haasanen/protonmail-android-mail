@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,10 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailfeatureflags.domain
-
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagCategory
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
+package ch.protonmail.android.mailfeatureflags.domain.model
 
 data object DebugInspectDbEnabled : FeatureFlagDefinition(
     key = "debug_observe_db_enabled",
@@ -54,7 +51,7 @@ data object ShareViaEnabled : FeatureFlagDefinition(
 )
 
 data object UpsellingEnabled : FeatureFlagDefinition(
-    key = "upsell_enabled",
+    key = "MailAndroidV7Upselling",
     name = "Enable Feature Upsell",
     category = FeatureFlagCategory.Global,
     description = "Makes the upsell flow available for all supported entry points",

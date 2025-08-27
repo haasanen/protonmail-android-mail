@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailsession.domain.model.hasSubscription
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlanUpgrades
@@ -30,10 +31,8 @@ import ch.protonmail.android.mailupselling.presentation.OnboardingUpsellingReduc
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingUpsellOperation.OnboardingUpsellEvent
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingUpsellState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -43,7 +42,7 @@ internal class OnboardingUpsellViewModel @Inject constructor(
     observePrimaryUser: ObservePrimaryUser,
     private val onboardingUpsellReducer: OnboardingUpsellingReducer,
     private val getOnboardingPlanUpgrades: GetOnboardingPlanUpgrades,
-    @IsUpsellEnabled private val isUpsellEnabled: Flow<Boolean>
+    @IsUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
 ) : ViewModel() {
 
     val state: StateFlow<OnboardingUpsellState> = observePrimaryUser()
@@ -53,7 +52,7 @@ internal class OnboardingUpsellViewModel @Inject constructor(
                     OnboardingUpsellEvent.LoadingError.NoUserId
                 )
 
-            if (!isUpsellEnabled.first())
+            if (!isUpsellEnabled.get())
                 return@mapLatest onboardingUpsellReducer.newStateFrom(
                     OnboardingUpsellEvent.UnsupportedFlow.NotEnabled
                 )

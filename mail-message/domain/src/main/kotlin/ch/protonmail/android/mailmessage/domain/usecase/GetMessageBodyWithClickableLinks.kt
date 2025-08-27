@@ -20,12 +20,11 @@ package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.startsWith
 import timber.log.Timber
@@ -33,7 +32,7 @@ import javax.inject.Inject
 
 class GetMessageBodyWithClickableLinks @Inject constructor(
     private val getDecryptedMessageBody: GetDecryptedMessageBody,
-    @IsLinkifyUrlsEnabled private val isLinkifyUrlEnabled: Flow<Boolean>
+    @IsLinkifyUrlsEnabled private val isLinkifyUrlEnabled: FeatureFlag<Boolean>
 ) {
 
     suspend operator fun invoke(
@@ -45,7 +44,7 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         messageId,
         transformations
     ).map { decryptedBody ->
-        if (!isLinkifyUrlEnabled.first()) {
+        if (!isLinkifyUrlEnabled.get()) {
             Timber.d("linkify-body: Feature flag Disabled! Returning standard body.")
             return@map decryptedBody
         }

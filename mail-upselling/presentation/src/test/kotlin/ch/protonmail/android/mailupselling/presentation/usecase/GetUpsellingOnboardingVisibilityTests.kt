@@ -20,11 +20,11 @@ package ch.protonmail.android.mailupselling.presentation.usecase
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlanUpgrades
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlansError
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.payment.domain.model.ProductDetail
 import me.proton.core.domain.entity.UserId
@@ -41,7 +41,9 @@ internal class GetUpsellingOnboardingVisibilityTests {
     @Test
     fun `should return false when FF is disabled`() = runTest {
         // Given
-        val isUpsellEnabled = flowOf(false)
+        val isUpsellEnabled = mockk<FeatureFlag<Boolean>> {
+            coEvery { this@mockk.get() } returns false
+        }
 
         // When
         val actual = GetUpsellingOnboardingVisibility(
@@ -56,7 +58,10 @@ internal class GetUpsellingOnboardingVisibilityTests {
     @Test
     fun `should return false when FF is enabled but get plans error`() = runTest {
         // Given
-        val isUpsellEnabled = flowOf(false)
+        val isUpsellEnabled = mockk<FeatureFlag<Boolean>> {
+            coEvery { this@mockk.get() } returns false
+        }
+
         coEvery { getOnboardingPlanUpgrades.invoke(userId) } returns GetOnboardingPlansError.MismatchingPlans.left()
 
         // When
@@ -72,7 +77,10 @@ internal class GetUpsellingOnboardingVisibilityTests {
     @Test
     fun `should return true when FF is enabled but and get plans returns plans`() = runTest {
         // Given
-        val isUpsellEnabled = flowOf(true)
+        val isUpsellEnabled = mockk<FeatureFlag<Boolean>> {
+            coEvery { this@mockk.get() } returns true
+        }
+
         coEvery { getOnboardingPlanUpgrades.invoke(userId) } returns listOf<ProductDetail>(mockk(), mockk()).right()
 
         // When

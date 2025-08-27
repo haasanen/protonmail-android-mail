@@ -18,13 +18,14 @@
 
 package ch.protonmail.android.mailfeatureflags.domain
 
-import kotlinx.coroutines.flow.Flow
 
 interface FeatureFlagValueProvider {
 
     val priority: Int
 
-    fun observeFeatureFlagValue(key: String): Flow<Boolean>?
+    val name: String
+
+    suspend fun getFeatureFlagValue(key: String): Boolean?
 
     fun isEnabled(): Boolean = true
 }

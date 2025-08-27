@@ -19,17 +19,15 @@
 package ch.protonmail.android.mailupselling.presentation.usecase
 
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlanUpgrades
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetUpsellingOnboardingVisibility @Inject constructor(
     private val getOnboardingUpsellingPlans: GetOnboardingPlanUpgrades,
-    @IsUpsellEnabled private val isUpsellEnabled: Flow<Boolean>
+    @IsUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
 ) {
 
-    suspend operator fun invoke(userId: UserId) =
-        isUpsellEnabled.first() && getOnboardingUpsellingPlans(userId).isRight()
+    suspend operator fun invoke(userId: UserId) = isUpsellEnabled.get() && getOnboardingUpsellingPlans(userId).isRight()
 }

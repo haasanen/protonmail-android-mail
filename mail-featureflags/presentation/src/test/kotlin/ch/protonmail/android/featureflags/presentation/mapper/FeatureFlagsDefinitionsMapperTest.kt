@@ -26,9 +26,8 @@ import ch.protonmail.android.mailfeatureflags.presentation.model.FeatureFlagList
 import ch.protonmail.android.mailfeatureflags.presentation.model.FeatureFlagUiModel
 import ch.protonmail.android.testdata.featureflags.FeatureFlagDefinitionsTestData.buildFeatureFlagDefinition
 import ch.protonmail.android.testdata.featureflags.FeatureFlagDefinitionsTestData.buildSystemFeatureFlagDefinition
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,7 +35,8 @@ import kotlin.test.assertEquals
 internal class FeatureFlagsDefinitionsMapperTest {
 
     private val resolver = mockk<FeatureFlagResolver> {
-        every { this@mockk.observeFeatureFlag(any()) } returns flowOf(false)
+        coEvery { this@mockk.getFeatureFlag(any(), false) } returns false
+        coEvery { this@mockk.getFeatureFlag(any(), true) } returns true
     }
 
     @Test
@@ -74,7 +74,7 @@ internal class FeatureFlagsDefinitionsMapperTest {
             ),
             FeatureFlagListItem.FeatureFlag(
                 systemFlagDefinition2.toExpectedUiModel(
-                    enabled = false,
+                    enabled = true,
                     overridden = false
                 )
             ),

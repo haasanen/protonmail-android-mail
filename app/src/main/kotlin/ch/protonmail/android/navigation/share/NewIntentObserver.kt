@@ -20,20 +20,20 @@ package ch.protonmail.android.navigation.share
 
 import android.content.Intent
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class NewIntentObserver @Inject constructor(
-    @IsShareViaEnabled private val isShareViaEnabled: Flow<Boolean>
+    @IsShareViaEnabled private val isShareViaEnabled: FeatureFlag<Boolean>
 ) {
 
     private val _intentFlow = MutableStateFlow<Intent?>(null)
@@ -55,7 +55,7 @@ class NewIntentObserver @Inject constructor(
             addAll(listOf(Intent.ACTION_MAIN, Intent.ACTION_VIEW))
 
             // Share via (Send) intents
-            if (isShareViaEnabled.first()) {
+            if (isShareViaEnabled.get()) {
                 addAll(listOf(Intent.ACTION_SEND, Intent.ACTION_SEND_MULTIPLE, Intent.ACTION_SENDTO))
             } else {
                 Timber.d("Share via is currently not enabled. Check the FF definition.")

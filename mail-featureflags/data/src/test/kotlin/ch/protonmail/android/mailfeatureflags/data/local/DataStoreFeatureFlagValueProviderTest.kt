@@ -89,7 +89,7 @@ internal class DataStoreFeatureFlagValueProviderTest {
         val provider = DataStoreFeatureFlagValueProvider(knownFeatureFlagDefinitions, dataStoreProvider)
 
         // When
-        val actual = provider.observeFeatureFlagValue(flagDefinition2.key)
+        val actual = provider.getFeatureFlagValue(flagDefinition2.key)
 
         // Then
         assertNull(actual)
@@ -104,11 +104,11 @@ internal class DataStoreFeatureFlagValueProviderTest {
 
         val provider = DataStoreFeatureFlagValueProvider(knownFeatureFlagDefinitions, dataStoreProvider)
 
-        // When + Then
-        provider.observeFeatureFlagValue(flagDefinition2.key)!!.test {
-            assertTrue(awaitItem())
-            awaitComplete()
-        }
+        // When
+        val actual = provider.getFeatureFlagValue(flagDefinition2.key)
+
+        // Then
+        assertTrue(actual!!)
     }
 
     @Test

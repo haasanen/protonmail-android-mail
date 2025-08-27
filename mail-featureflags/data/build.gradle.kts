@@ -41,11 +41,15 @@ android {
 }
 
 dependencies {
+    compileOnly(libs.proton.rust.core)
+
     implementation(libs.bundles.module.data)
+    implementation(libs.proton.core.domain)
 
     implementation(libs.androidx.datastore.preferences)
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-featureflags:domain"))
+    implementation(project(":mail-session:data"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))

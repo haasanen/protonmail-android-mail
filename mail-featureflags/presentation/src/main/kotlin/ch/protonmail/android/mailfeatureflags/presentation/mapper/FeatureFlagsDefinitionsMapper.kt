@@ -25,7 +25,6 @@ import ch.protonmail.android.mailfeatureflags.presentation.model.FeatureFlagList
 import ch.protonmail.android.mailfeatureflags.presentation.model.FeatureFlagUiModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 data class FeatureFlagsDefinitionsMapper @Inject constructor(
@@ -55,7 +54,7 @@ data class FeatureFlagsDefinitionsMapper @Inject constructor(
         val isEnabled = if (isOverridden) {
             overrides[definition] ?: definition.defaultValue
         } else {
-            resolver.observeFeatureFlag(definition.key).first()
+            resolver.getFeatureFlag(definition.key, definition.defaultValue)
         }
 
         FeatureFlagUiModel(

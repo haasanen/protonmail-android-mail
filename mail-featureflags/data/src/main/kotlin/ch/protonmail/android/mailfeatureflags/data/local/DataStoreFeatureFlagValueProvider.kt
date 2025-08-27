@@ -24,9 +24,8 @@ import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagProviderPriority
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,6 +36,8 @@ class DataStoreFeatureFlagValueProvider @Inject constructor(
 ) : FeatureFlagValueProvider {
 
     override val priority: Int = FeatureFlagProviderPriority.DataStoreProvider
+
+    override val name: String = "Override FF provider"
 
     fun observeAllOverrides(): Flow<Map<FeatureFlagDefinition, Boolean>> {
         return dataStoreProvider.featureFlagOverrides.data.map { preferences ->
@@ -55,22 +56,17 @@ class DataStoreFeatureFlagValueProvider @Inject constructor(
         }
     }
 
-    override fun observeFeatureFlagValue(key: String): Flow<Boolean>? {
+    override suspend fun getFeatureFlagValue(key: String): Boolean? {
         val prefKey = getPreferenceKey(key)
 
-        // runBlocking here is fine, we're just checking if the key is present.
-        val keyExists = runBlocking {
-            dataStoreProvider.featureFlagOverrides.data.firstOrNull()?.contains(prefKey) ?: false
+        val preferences = dataStoreProvider.featureFlagOverrides.data.first()
+
+        // Check if the key exists
+        if (!preferences.contains(prefKey)) {
+            return null // Let the next provider handle it
         }
 
-        // If the key doesn't exist at all, return null to let the next provider try
-        if (!keyExists) {
-            return null
-        }
-
-        return dataStoreProvider.featureFlagOverrides.data
-            // The Elvis here is unnecessary since at this point the value is guaranteed to exist.
-            .map { preferences -> preferences[prefKey] ?: false }
+        return preferences[prefKey]
     }
 
     suspend fun toggle(definition: FeatureFlagDefinition, defaultValue: Boolean? = false) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,16 +16,20 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailfeatureflags.domain
+package ch.protonmail.android.mailfeatureflags.data.local.factory
 
-/**
- * This entity wraps all the known Feature Flag values providers priority.
- *
- * Reminder: higher priority takes precedence when resolving a Feature Flag value.
- */
-object FeatureFlagProviderPriority {
+import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
+import javax.inject.Inject
+import javax.inject.Singleton
 
-    const val DataStoreProvider = Int.MAX_VALUE // Local overrides always have the top priority.
-    const val UnleashProvider = 0
-    const val HardcodedProvider = Int.MIN_VALUE
+@Singleton
+class BooleanFeatureFlagFactory @Inject constructor(
+    private val resolver: FeatureFlagResolver
+) {
+
+    @Suppress("ExpressionBodySyntax")
+    fun create(key: String, defaultValue: Boolean): FeatureFlag<Boolean> {
+        return FeatureFlag(key, defaultValue, resolver)
+    }
 }

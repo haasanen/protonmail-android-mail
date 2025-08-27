@@ -84,6 +84,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.ActiveComposerReg
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -110,7 +111,6 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -160,7 +160,9 @@ internal class ComposerViewModelTest {
     private val composerRegistry = mockk<ActiveComposerRegistry> {
         every { this@mockk.register(any()) } just Runs
     }
-    private val isMessageExpirationEnabled = flowOf(true)
+    private val isMessageExpirationEnabled = mockk<FeatureFlag<Boolean>> {
+        coEvery { this@mockk.get() } returns true
+    }
     private val observeMessagePasswordChanged = mockk<ObserveMessagePasswordChanged> {
         every { this@mockk.invoke() } returns flowOf()
     }
@@ -179,7 +181,9 @@ internal class ComposerViewModelTest {
         }
     }
     private val reducer = ComposerStateReducer()
-    private val isMessagePasswordEnabled = MutableStateFlow(true)
+    private val isMessagePasswordEnabled = mockk<FeatureFlag<Boolean>> {
+        coEvery { this@mockk.get() } returns true
+    }
 
     @AfterTest
     fun teardown() {

@@ -18,126 +18,134 @@
 
 package ch.protonmail.android.mailfeatureflags.domain
 
-import app.cash.turbine.test
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class FeatureFlagResolverTest {
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    private val coroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
+
+
     @Test
-    fun `should default to false when no providers are present`() = runTest {
+    fun `should default to the default value when no providers are present`() = runTest {
         // Given
-        val resolver = FeatureFlagResolver(emptySet())
+        val resolver = FeatureFlagResolver(emptySet(), coroutineScope)
 
         // When + Then
-        resolver.observeFeatureFlag(FeatureFlagKey).test {
-            assertFalse(awaitItem())
-            awaitComplete()
-        }
+        val actual = resolver.getFeatureFlag(FeatureFlagKey, false)
+        assertFalse(actual)
     }
 
     @Test
-    fun `should default to false when no provider is enabled`() = runTest {
+    fun `should return default value when no provider is enabled`() = runTest {
         // Given
         val notEnabledProvider1 = mockk<FeatureFlagValueProvider> {
-            every { this@mockk.observeFeatureFlagValue(FeatureFlagKey) } returns flowOf(true)
+            coEvery { this@mockk.getFeatureFlagValue(FeatureFlagKey) } returns true
+            every { name } returns "name"
             every { priority } returns 0
             every { isEnabled() } returns false
         }
 
         val notEnabledProvider2 = mockk<FeatureFlagValueProvider> {
-            every { this@mockk.observeFeatureFlagValue(FeatureFlagKey) } returns flowOf(true)
+            coEvery { this@mockk.getFeatureFlagValue(FeatureFlagKey) } returns true
+            every { name } returns "name"
             every { priority } returns 10
             every { isEnabled() } returns false
         }
-        val resolver = FeatureFlagResolver(setOf(notEnabledProvider1, notEnabledProvider2))
+        val resolver = FeatureFlagResolver(setOf(notEnabledProvider1, notEnabledProvider2), coroutineScope)
 
-        // When + Then
-        resolver.observeFeatureFlag("some-flag").test {
-            assertFalse(awaitItem())
-            awaitComplete()
-        }
+        // When
+        val actual = resolver.getFeatureFlag(FeatureFlagKey, false)
 
-        verify(exactly = 0) { notEnabledProvider1.observeFeatureFlagValue(FeatureFlagKey) }
-        verify(exactly = 0) { notEnabledProvider2.observeFeatureFlagValue(FeatureFlagKey) }
+        // Then
+        assertFalse(actual)
+        coVerify(exactly = 0) { notEnabledProvider1.getFeatureFlagValue(FeatureFlagKey) }
+        coVerify(exactly = 0) { notEnabledProvider2.getFeatureFlagValue(FeatureFlagKey) }
     }
 
     @Test
     fun `should ignore higher priority providers that are not enabled`() = runTest {
         // Given
         val enabledProvider = mockk<FeatureFlagValueProvider> {
-            every { this@mockk.observeFeatureFlagValue(FeatureFlagKey) } returns flowOf(true)
+            coEvery { this@mockk.getFeatureFlagValue(FeatureFlagKey) } returns true
+            every { name } returns "name"
             every { priority } returns 0
             every { isEnabled() } returns true
         }
 
         val notEnabledProvider = mockk<FeatureFlagValueProvider> {
-            every { this@mockk.observeFeatureFlagValue(FeatureFlagKey) } returns flowOf(false)
+            coEvery { this@mockk.getFeatureFlagValue(FeatureFlagKey) } returns false
+            every { name } returns "name"
             every { priority } returns 10
             every { isEnabled() } returns false
         }
-        val resolver = FeatureFlagResolver(setOf(enabledProvider, notEnabledProvider))
+        val resolver = FeatureFlagResolver(setOf(enabledProvider, notEnabledProvider), coroutineScope)
 
         // When + Then
-        resolver.observeFeatureFlag(FeatureFlagKey).test {
-            assertTrue(awaitItem())
-            awaitComplete()
-        }
+        val actual = resolver.getFeatureFlag(FeatureFlagKey, false)
+        assertTrue(actual)
 
-        verify(exactly = 1) { enabledProvider.observeFeatureFlagValue(FeatureFlagKey) }
-        verify(exactly = 0) { notEnabledProvider.observeFeatureFlagValue(FeatureFlagKey) }
+        coVerify(exactly = 1) { enabledProvider.getFeatureFlagValue(FeatureFlagKey) }
+        coVerify(exactly = 0) { notEnabledProvider.getFeatureFlagValue(FeatureFlagKey) }
     }
 
     @Test
-    fun `should return false when the feature key is unknown to the given providers`() = runTest {
+    fun `should return default when the feature key is unknown to the given providers`() = runTest {
         // Given
         val provider = mockk<FeatureFlagValueProvider> {
-            every { this@mockk.observeFeatureFlagValue(FeatureFlagKey) } returns null
+            coEvery { this@mockk.getFeatureFlagValue(FeatureFlagKey) } returns null
+            every { name } returns "name"
             every { priority } returns 0
             every { isEnabled() } returns true
         }
-        val resolver = FeatureFlagResolver(setOf(provider))
+        val resolver = FeatureFlagResolver(setOf(provider), coroutineScope)
 
-        // When + Then
-        resolver.observeFeatureFlag(FeatureFlagKey).test {
-            assertFalse(awaitItem())
-            awaitComplete()
-        }
+        // When
+        val actual = resolver.getFeatureFlag(FeatureFlagKey, false)
 
-        verify(exactly = 1) { provider.observeFeatureFlagValue(FeatureFlagKey) }
+        // Then
+        assertFalse(actual)
+        coVerify(exactly = 1) { provider.getFeatureFlagValue(FeatureFlagKey) }
     }
 
     @Test
     fun `should respect providers priority when resolving a feature flag`() = runTest {
         // Given
         val lowPriorityProvider = mockk<FeatureFlagValueProvider> {
-            every { this@mockk.observeFeatureFlagValue(any<String>()) } returns flowOf(false)
+            coEvery { this@mockk.getFeatureFlagValue(any<String>()) } returns false
+            every { name } returns "name"
             every { priority } returns 0
             every { isEnabled() } returns true
         }
 
         val topPriorityProvider = mockk<FeatureFlagValueProvider> {
-            every { this@mockk.observeFeatureFlagValue(any<String>()) } returns flowOf(true)
+            coEvery { this@mockk.getFeatureFlagValue(any<String>()) } returns true
+            every { name } returns "name"
             every { priority } returns 10
             every { isEnabled() } returns true
         }
 
-        val resolver = FeatureFlagResolver(setOf(lowPriorityProvider, topPriorityProvider))
+        val resolver = FeatureFlagResolver(setOf(lowPriorityProvider, topPriorityProvider), coroutineScope)
 
-        // When + Then
-        resolver.observeFeatureFlag(FeatureFlagKey).test {
-            assertTrue(awaitItem())
-            awaitComplete()
-        }
+        // When
+        val actual = resolver.getFeatureFlag(FeatureFlagKey, false)
 
-        verify(exactly = 1) { topPriorityProvider.observeFeatureFlagValue(FeatureFlagKey) }
-        verify(exactly = 0) { lowPriorityProvider.observeFeatureFlagValue(FeatureFlagKey) }
+        // Then
+        assertTrue(actual)
+        coVerify(exactly = 1) { topPriorityProvider.getFeatureFlagValue(FeatureFlagKey) }
+        coVerify(exactly = 0) { lowPriorityProvider.getFeatureFlagValue(FeatureFlagKey) }
     }
 
     private companion object {

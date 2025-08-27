@@ -20,6 +20,7 @@ package ch.protonmail.android.mailupselling.presentation.usecase
 
 import app.cash.turbine.test
 import arrow.core.right
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
 import ch.protonmail.android.mailupselling.domain.usecase.GetPromotionStatus
@@ -49,7 +50,7 @@ internal class ObserveUpsellingVisibilityTest {
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
 
     private val mutableFlow = MutableStateFlow(true)
-    private val isUpsellEnabled = mutableFlow
+    private val isUpsellEnabled = mockk<FeatureFlag<Boolean>>()
 
     private lateinit var observeUpselling: ObserveUpsellingVisibility
 
@@ -75,7 +76,7 @@ internal class ObserveUpsellingVisibilityTest {
     @Test
     fun `should return hidden when FF is off`() = runTest {
         // Given
-        mutableFlow.emit(false)
+        coEvery { isUpsellEnabled.get() } returns false
 
         // When
         observeUpselling().test {
@@ -91,6 +92,7 @@ internal class ObserveUpsellingVisibilityTest {
         every { observeUser(userId = UserIdTestData.userId) } returns flowOf(UserTestData.freeUser.right())
         coEvery { observeMailPlusPlanUpgrades() } returns flowOf(listOf())
         coEvery { getPromotionStatus(any()) } returns PromoStatus.NO_PLANS
+        coEvery { isUpsellEnabled.get() } returns true
 
         // When
         observeUpselling().test {
@@ -107,6 +109,7 @@ internal class ObserveUpsellingVisibilityTest {
         val expectedPlans = listOf(mockk<ProductDetail>())
         coEvery { observeMailPlusPlanUpgrades() } returns flowOf(expectedPlans)
         every { getPromotionStatus(expectedPlans) } returns PromoStatus.NORMAL
+        coEvery { isUpsellEnabled.get() } returns true
 
         // When
         observeUpselling().test {
@@ -123,6 +126,7 @@ internal class ObserveUpsellingVisibilityTest {
         val expectedPlans = listOf(mockk<ProductDetail>())
         coEvery { observeMailPlusPlanUpgrades() } returns flowOf(expectedPlans)
         every { getPromotionStatus(expectedPlans) } returns PromoStatus.PROMO
+        coEvery { isUpsellEnabled.get() } returns true
 
         // When
         observeUpselling().test {

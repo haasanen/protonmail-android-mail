@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailupselling.presentation.usecase
 
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailsession.domain.model.hasSubscription
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
@@ -29,7 +30,6 @@ import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import me.proton.android.core.payment.domain.model.ProductDetail
@@ -41,13 +41,13 @@ class ObserveUpsellingVisibility @Inject constructor(
     private val observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades,
     private val observeUser: ObserveUser,
     private val observePrimaryUserId: ObservePrimaryUserId,
-    @IsUpsellEnabled private val isUpsellEnabled: Flow<Boolean>
+    @IsUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
 ) {
 
     operator fun invoke(): Flow<UpsellingVisibility> = observePrimaryUserId().flatMapLatest { userId ->
         userId ?: return@flatMapLatest flowOf(UpsellingVisibility.HIDDEN)
 
-        if (!isUpsellEnabled.first()) {
+        if (!isUpsellEnabled.get()) {
             Timber.d("user-subscription: upsell FF disabled - hiding entry point")
             return@flatMapLatest flowOf(UpsellingVisibility.HIDDEN)
         }

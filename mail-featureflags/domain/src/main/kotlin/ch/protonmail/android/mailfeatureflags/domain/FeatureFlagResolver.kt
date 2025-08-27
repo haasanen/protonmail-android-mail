@@ -18,26 +18,36 @@
 
 package ch.protonmail.android.mailfeatureflags.domain
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
+import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FeatureFlagResolver @Inject constructor(
-    private val providers: Set<@JvmSuppressWildcards FeatureFlagValueProvider>
+    private val providers: Set<@JvmSuppressWildcards FeatureFlagValueProvider>,
+    @FeatureFlagsCoroutineScope private val coroutineScope: CoroutineScope
 ) {
 
     /**
-     * Resolves the value of a feature flag by its key, taking provider priorities into account.
+     * Gets the value of a feature flag by its key, taking provider priorities into account.
      */
-    fun observeFeatureFlag(key: String): Flow<Boolean> {
-        return providers
-            .filter { it.isEnabled() }
-            .sortedByDescending { it.priority }
-            .firstNotNullOfOrNull { it.observeFeatureFlagValue(key) }
-            ?.distinctUntilChanged()
-            ?: flowOf(false) // Default fallback value if the key isn't found anywhere.
+    suspend fun getFeatureFlag(key: String, defaultValue: Boolean): Boolean {
+        return withContext(coroutineScope.coroutineContext) {
+            providers
+                .filter { it.isEnabled() }
+                .sortedByDescending { it.priority }
+                .firstNotNullOfOrNull { provider ->
+                    val value = runCatching {
+                        provider.getFeatureFlagValue(key)
+                    }.getOrNull()
+
+                    Timber.d("'${provider.name}' - Resolved FF '$key': $value")
+                    value
+                }
+                ?: defaultValue
+        }
     }
 }

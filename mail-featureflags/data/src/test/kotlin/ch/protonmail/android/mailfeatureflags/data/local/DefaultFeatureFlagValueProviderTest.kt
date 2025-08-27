@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailfeatureflags.data.local
 
-import app.cash.turbine.test
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagCategory
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import kotlinx.coroutines.test.runTest
@@ -36,21 +35,20 @@ internal class DefaultFeatureFlagValueProviderTest {
         val provider = DefaultFeatureFlagValueProvider(emptySet())
 
         // When
-        assertNull(provider.observeFeatureFlagValue(definition.key))
+        assertNull(provider.getFeatureFlagValue(definition.key))
     }
 
     @Test
     fun `should return the default value of the given definition`() = runTest {
         // Given
         val definition = TestFeatureFlagDefinition
-
         val provider = DefaultFeatureFlagValueProvider(setOf(definition))
 
         // When
-        provider.observeFeatureFlagValue(definition.key)!!.test {
-            assertTrue(awaitItem())
-            awaitComplete()
-        }
+        val actual = provider.getFeatureFlagValue(definition.key)
+
+        // Then
+        assertTrue(actual!!)
     }
 
     private object TestFeatureFlagDefinition : FeatureFlagDefinition(

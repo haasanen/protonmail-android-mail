@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,16 +16,25 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailfeatureflags.domain
+package ch.protonmail.android.mailfeatureflags.domain.model
+
+import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 
 /**
- * This entity wraps all the known Feature Flag values providers priority.
+ * The base FeatureFlag entity.
  *
- * Reminder: higher priority takes precedence when resolving a Feature Flag value.
+ * There is some minor overlaps with [FeatureFlagDefinition] which needs to be addressed.
  */
-object FeatureFlagProviderPriority {
-
-    const val DataStoreProvider = Int.MAX_VALUE // Local overrides always have the top priority.
-    const val UnleashProvider = 0
-    const val HardcodedProvider = Int.MIN_VALUE
+class FeatureFlag<T>(
+    private val key: String,
+    private val defaultValue: T,
+    private val resolver: FeatureFlagResolver
+) {
+    suspend fun get(): T {
+        return when (defaultValue) {
+            is Boolean -> resolver.getFeatureFlag(key, defaultValue) as T
+            // Add other types as needed
+            else -> defaultValue
+        }
+    }
 }

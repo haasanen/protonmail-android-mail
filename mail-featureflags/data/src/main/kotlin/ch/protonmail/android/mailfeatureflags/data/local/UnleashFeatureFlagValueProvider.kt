@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -20,22 +20,24 @@ package ch.protonmail.android.mailfeatureflags.data.local
 
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagProviderPriority
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
+import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
+import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultFeatureFlagValueProvider @Inject constructor(
-    private val definitions: Set<@JvmSuppressWildcards FeatureFlagDefinition>
+class UnleashFeatureFlagValueProvider @Inject constructor(
+    private val mailSessionRepository: MailSessionRepository,
+    @FeatureFlagsCoroutineScope private val coroutineScope: CoroutineScope
 ) : FeatureFlagValueProvider {
 
-    override val priority: Int = FeatureFlagProviderPriority.HardcodedProvider
+    override val priority: Int = FeatureFlagProviderPriority.UnleashProvider
 
-    override val name: String = "Hardcoded FF provider"
+    override val name: String = "Unleash FF provider"
 
-    private val definitionsByKey: Map<String, FeatureFlagDefinition> by lazy {
-        definitions.associateBy { it.key }
+    override suspend fun getFeatureFlagValue(key: String): Boolean? = with(coroutineScope) {
+        val mailSession = mailSessionRepository.getMailSession().getRustMailSession()
+        return@with mailSession.isFeatureEnabled(key)
     }
-
-    override suspend fun getFeatureFlagValue(key: String): Boolean? = definitionsByKey[key]?.defaultValue
 }
