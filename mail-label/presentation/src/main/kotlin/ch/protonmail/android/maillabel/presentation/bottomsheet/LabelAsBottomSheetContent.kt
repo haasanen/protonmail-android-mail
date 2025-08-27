@@ -179,8 +179,8 @@ private fun SelectableLabelGroupItem(
     onClick: () -> Unit
 ) {
     val backgroundColor = when (labelUiModelWithSelectedState.selectedState) {
-        LabelSelectedState.Selected -> ProtonTheme.colors.interactionWeakPressed
         LabelSelectedState.PartiallySelected -> ProtonTheme.colors.interactionWeakPressed
+        LabelSelectedState.Selected,
         LabelSelectedState.NotSelected -> Color.Transparent
     }
 
