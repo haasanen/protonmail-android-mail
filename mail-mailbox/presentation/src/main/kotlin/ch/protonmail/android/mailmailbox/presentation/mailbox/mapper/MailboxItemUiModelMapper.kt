@@ -90,7 +90,6 @@ class MailboxItemUiModelMapper @Inject constructor(
             shouldOpenInComposer = mailboxItem.isDraft,
             attachments = mailboxItem.attachments
                 .map(attachmentMetadataUiModelMapper::toUiModel)
-                .filter { it.includeInPreview }
                 .toImmutableList(),
             shouldShowScheduleSendTime = mailboxItem.isScheduled,
             displaySnoozeReminder = mailboxItem.snoozeStatus is SnoozeReminder,

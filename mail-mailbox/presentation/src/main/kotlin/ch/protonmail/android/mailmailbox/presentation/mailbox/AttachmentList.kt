@@ -96,6 +96,8 @@ private fun SubcomposeMeasureScope.measureAttachments(
     onAttachmentClicked: (AttachmentIdUiModel) -> Unit
 ): MeasureResult {
 
+    val filteredAttachments = attachments.filter { it.includeInPreview }
+
     val (plusOneDigitWidth, plusTwoDigitWidth, plusThreeDigitWidth) = measurePlusWidths(constraints)
 
     val iconAndPaddingWidth = TotalIconAndPaddingDp.roundToPx()
@@ -103,7 +105,7 @@ private fun SubcomposeMeasureScope.measureAttachments(
 
     val minTruncatedAttachmentWidth = measureMinTruncatedWidth(constraints)
     val attachmentsFullWidth =
-        measureAttachmentsFullWidth(attachments, textColor, constraints, onAttachmentClicked = onAttachmentClicked)
+        measureAttachmentsFullWidth(filteredAttachments, textColor, constraints, onAttachmentClicked)
 
     var attachmentsWidth = 0
     var notPlacedCount = attachments.size
@@ -126,7 +128,7 @@ private fun SubcomposeMeasureScope.measureAttachments(
 
         // For the first attachment, if there's only one attachment total, use full width
         // Otherwise, use at most half of the available width
-        val maxAttachmentWidth = if (index == 0 && attachments.size > 1) {
+        val maxAttachmentWidth = if (index == 0 && filteredAttachments.size > 1) {
             constraints.maxWidth / 2
         } else {
             availableWidth

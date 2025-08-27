@@ -478,16 +478,6 @@ class MailboxItemUiModelMapperTest {
                 ),
                 disposition = AttachmentDisposition.Attachment,
                 includeInPreview = true
-            ),
-            AttachmentMetadata(
-                attachmentId = AttachmentId("450"),
-                name = "File2.html", size = 2048L,
-                mimeType = AttachmentMimeType(
-                    mime = "image/png",
-                    category = MimeTypeCategory.Text
-                ),
-                disposition = AttachmentDisposition.Attachment,
-                includeInPreview = false
             )
         )
         val mailboxItem = buildMailboxItem(attachments = attachments)
@@ -504,31 +494,6 @@ class MailboxItemUiModelMapperTest {
     fun `when mailbox item has no attachments, UI model attachments list should be empty`() = runTest {
         // Given
         val mailboxItem = buildMailboxItem(attachments = emptyList())
-
-        // When
-        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
-
-        // Then
-        assertTrue(actual.attachments.isEmpty())
-    }
-
-    @Test
-    fun `when mailbox item has not included attachments, UI model attachments list should not be included`() = runTest {
-        // Given
-        val mailboxItem = buildMailboxItem(
-            attachments = listOf(
-                AttachmentMetadata(
-                    attachmentId = AttachmentId("450"),
-                    name = "File2.html", size = 2048L,
-                    mimeType = AttachmentMimeType(
-                        mime = "image/png",
-                        category = MimeTypeCategory.Text
-                    ),
-                    disposition = AttachmentDisposition.Attachment,
-                    includeInPreview = false
-                )
-            )
-        )
 
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
