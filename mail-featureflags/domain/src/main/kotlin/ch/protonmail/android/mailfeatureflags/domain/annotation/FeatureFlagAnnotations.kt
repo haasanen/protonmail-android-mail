@@ -30,10 +30,6 @@ annotation class IsLinkifyUrlsEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsShareViaEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class IsUpsellEnabled
 
 @Qualifier

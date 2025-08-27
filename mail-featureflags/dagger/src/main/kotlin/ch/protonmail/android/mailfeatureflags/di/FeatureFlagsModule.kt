@@ -28,14 +28,12 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDb
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessagePasswordEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.ShareViaEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
 import dagger.Module
 import dagger.Provides
@@ -82,16 +80,6 @@ object FeatureFlagsModule {
     @Singleton
     @IsUpsellEnabled
     fun provideUpsellEnabled(factory: BooleanFeatureFlagFactory) = factory.create(key = UpsellingEnabled.key, false)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideShareViaDefinition(): FeatureFlagDefinition = ShareViaEnabled
-
-    @Provides
-    @Singleton
-    @IsShareViaEnabled
-    fun provideShareViaEnabled(factory: BooleanFeatureFlagFactory) = factory.create(key = ShareViaEnabled.key, false)
 
     @Provides
     @IntoSet

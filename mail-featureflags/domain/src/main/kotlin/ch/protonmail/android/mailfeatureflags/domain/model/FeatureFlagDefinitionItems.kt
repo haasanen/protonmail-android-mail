@@ -42,14 +42,6 @@ data object MessagePasswordEnabled : FeatureFlagDefinition(
     defaultValue = true
 )
 
-data object ShareViaEnabled : FeatureFlagDefinition(
-    key = "share_via_enabled",
-    name = "Share via",
-    category = FeatureFlagCategory.Composer,
-    description = "Enables the \"Share via\" feature",
-    defaultValue = true
-)
-
 data object UpsellingEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7Upselling",
     name = "Enable Feature Upsell",
