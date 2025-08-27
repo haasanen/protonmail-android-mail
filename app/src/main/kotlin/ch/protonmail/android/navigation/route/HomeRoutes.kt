@@ -44,6 +44,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
 import ch.protonmail.android.navigation.model.Destination
@@ -105,7 +106,10 @@ internal fun NavGraphBuilder.addMailbox(
                     setDrawerEnabled(true)
                 },
                 onAttachmentReady = onAttachmentReady,
-                onActionBarVisibilityChanged = onActionBarVisibilityChanged
+                onActionBarVisibilityChanged = onActionBarVisibilityChanged,
+                onCustomizeToolbar = {
+                    navController.navigate(Destination.Screen.EditToolbarScreen(ToolbarType.List))
+                }
             ),
             onEvent = onEvent,
             fabHostState = fabHostState

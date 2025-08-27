@@ -361,9 +361,8 @@ fun MailboxScreen(
                         onInbox = { viewModel.submit(MailboxViewAction.MoveToInbox) },
                         onMoveTo = { viewModel.submit(MailboxViewAction.RequestMoveToBottomSheet) },
                         onCustomizeToolbar = {
-//                            viewModel.submit(MailboxViewAction.CustomizeToolbar)
                             showBottomSheet = false
-                            actions.showMissingFeature()
+                            actions.onCustomizeToolbar()
                         },
                         onSnooze = { viewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet) }
                     )
@@ -1190,7 +1189,8 @@ object MailboxScreen {
         val onClearAllConfirmed: () -> Unit,
         val onClearAllDismissed: () -> Unit,
         val onSnooze: () -> Unit,
-        val onActionBarVisibilityChanged: (visible: Boolean) -> Unit
+        val onActionBarVisibilityChanged: (visible: Boolean) -> Unit,
+        val onCustomizeToolbar: () -> Unit
     ) {
 
         companion object {
@@ -1253,6 +1253,7 @@ object MailboxScreen {
                 onClearAllDismissed = {},
                 onNavigateToUpselling = { _, _ -> },
                 onSnooze = {},
+                onCustomizeToolbar = {},
                 onActionBarVisibilityChanged = {}
             )
         }
