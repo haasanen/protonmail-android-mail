@@ -59,7 +59,6 @@ class RustMailboxFactory @Inject constructor(
         Timber.d("rust-mailbox-factory: (deprecated) Looking up cache for user: $userId, label: $currentLabelId")
 
         mailboxCache[mailboxCacheKey]?.let {
-            Timber.d("rust-mailbox-factory: (deprecated) Cache hit for user: $userId, label: $currentLabelId")
             return it.right()
         }
 
@@ -68,7 +67,6 @@ class RustMailboxFactory @Inject constructor(
         return mutex.withLock {
             // Double check: if we missed the cache earlier, it should be hit now if the value is present.
             mailboxCache[mailboxCacheKey]?.let {
-                Timber.d("rust-mailbox-factory: (deprecated) Cache hit for user: $userId, label: $currentLabelId")
                 return it.right()
             }
 
@@ -89,7 +87,6 @@ class RustMailboxFactory @Inject constructor(
         Timber.d("rust-mailbox-factory: Looking up cache for user: $userId, label: $labelId")
 
         mailboxCache[mailboxCacheKey]?.let {
-            Timber.d("rust-mailbox-factory: (deprecated) Cache hit for user: $userId, label: $labelId")
             return it.right()
         }
 
@@ -97,7 +94,6 @@ class RustMailboxFactory @Inject constructor(
         return mutex.withLock {
             // Double check: if we missed the cache earlier, it should be hit now if the value is present.
             mailboxCache[mailboxCacheKey]?.let {
-                Timber.d("rust-mailbox-factory: (deprecated) Cache hit for user: $userId, label: $labelId")
                 return it.right()
             }
 
