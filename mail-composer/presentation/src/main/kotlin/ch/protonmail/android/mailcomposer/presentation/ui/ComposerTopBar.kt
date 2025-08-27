@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.labelLargeInverted
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.uicomponents.thenIf
 
@@ -95,7 +96,7 @@ internal fun ComposerTopBar(
                         .thenIf(!isSendMessageEnabled) { semantics { disabled() } },
                     shape = ProtonTheme.shapes.huge,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = ProtonTheme.colors.interactionBrandWeakNorm,
+                        containerColor = ProtonTheme.colors.interactionBrandDefaultNorm,
                         disabledContainerColor = ProtonTheme.colors.interactionBrandWeakDisabled,
                         contentColor = ProtonTheme.colors.textAccent,
                         disabledContentColor = ProtonTheme.colors.brandMinus20
@@ -107,7 +108,7 @@ internal fun ComposerTopBar(
                 ) {
                     Text(
                         text = stringResource(R.string.send_button_title),
-                        style = ProtonTheme.typography.titleSmall
+                        style = ProtonTheme.typography.labelLargeInverted
                     )
                 }
             }

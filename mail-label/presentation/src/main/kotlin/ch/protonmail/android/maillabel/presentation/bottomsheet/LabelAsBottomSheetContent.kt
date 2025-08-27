@@ -59,6 +59,7 @@ import ch.protonmail.android.design.compose.component.ProtonSwitch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.labelLargeInverted
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -263,7 +264,7 @@ private fun TopBar(
             modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
             shape = ProtonTheme.shapes.huge,
             colors = ButtonDefaults.buttonColors(
-                containerColor = ProtonTheme.colors.interactionBrandWeakNorm,
+                containerColor = ProtonTheme.colors.interactionBrandDefaultNorm,
                 disabledContainerColor = ProtonTheme.colors.interactionBrandWeakDisabled,
                 contentColor = ProtonTheme.colors.textAccent,
                 disabledContentColor = ProtonTheme.colors.brandMinus20
@@ -275,7 +276,7 @@ private fun TopBar(
         ) {
             Text(
                 text = stringResource(R.string.bottom_sheet_save_action),
-                style = ProtonTheme.typography.titleSmall
+                style = ProtonTheme.typography.labelLargeInverted
             )
         }
     }

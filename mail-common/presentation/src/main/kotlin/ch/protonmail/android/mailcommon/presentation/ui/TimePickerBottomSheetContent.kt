@@ -80,6 +80,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.labelLargeInverted
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.R
 import kotlinx.datetime.Clock
@@ -389,7 +390,7 @@ private fun TopBar(
             modifier = Modifier,
             shape = ProtonTheme.shapes.huge,
             colors = ButtonDefaults.buttonColors(
-                containerColor = ProtonTheme.colors.interactionBrandWeakNorm,
+                containerColor = ProtonTheme.colors.interactionBrandDefaultNorm,
                 disabledContainerColor = ProtonTheme.colors.interactionBrandWeakDisabled,
                 contentColor = ProtonTheme.colors.textAccent,
                 disabledContentColor = ProtonTheme.colors.brandMinus20
@@ -401,7 +402,7 @@ private fun TopBar(
         ) {
             Text(
                 text = stringResource(uiModel.sendButton),
-                style = ProtonTheme.typography.titleSmall
+                style = ProtonTheme.typography.labelLargeInverted
             )
         }
     }
