@@ -62,7 +62,8 @@ class MainInitializer : Initializer<Unit> {
         NotificationHandlersInitializer::class.java,
         RustMailCommonInitializer::class.java,
         ChallengeInitializer::class.java,
-        BackgroundExecutionInitializer::class.java
+        BackgroundExecutionInitializer::class.java,
+        RustNetworkObserverInitializer::class.java
     )
 
     companion object {
