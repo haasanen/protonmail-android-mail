@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.toolbar.model
 
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 internal class ToolbarActionsRefreshSignal @Inject constructor() {
 
     private val _refreshEvents = MutableSharedFlow<Unit>(
