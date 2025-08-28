@@ -33,6 +33,7 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.AllListActions
+import uniffi.proton_mail_uniffi.AllMessageActions
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.MoveAction
@@ -90,6 +91,13 @@ interface RustMessageDataSource {
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): Either<DataError, AllListActions>
+
+    suspend fun getAllAvailableBottomBarActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageId: LocalMessageId,
+        themeOpts: ThemeOpts
+    ): Either<DataError, AllMessageActions>
 
     suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError, Unit>
 

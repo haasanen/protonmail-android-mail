@@ -98,4 +98,19 @@ class RustMessageActionRepository @Inject constructor(
         )
         return allActions.map { it.toAllBottomBarActions() }
     }
+
+    override suspend fun getAllBottomBarActions(
+        userId: UserId,
+        labelId: LabelId,
+        messageId: MessageId,
+        messageThemeOptions: MessageThemeOptions
+    ): Either<DataError, AllBottomBarActions> {
+        val allActions = rustMessageDataSource.getAllAvailableBottomBarActions(
+            userId,
+            labelId.toLocalLabelId(),
+            messageId.toLocalMessageId(),
+            messageThemeOptions.toLocalThemeOptions()
+        )
+        return allActions.map { it.toAllBottomBarActions() }
+    }
 }

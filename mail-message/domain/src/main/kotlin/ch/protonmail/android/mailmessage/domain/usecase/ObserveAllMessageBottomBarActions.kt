@@ -16,50 +16,36 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.domain.repository
+package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
+import arrow.core.flatMap
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
-import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
+import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-interface MessageActionRepository {
+class ObserveAllMessageBottomBarActions @Inject constructor(
+    private val actionRepository: MessageActionRepository,
+    private val observeMessage: ObserveMessage
+) {
 
-    suspend fun getAvailableActions(
+    suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
         messageId: MessageId,
-        messageThemeOptions: MessageThemeOptions
-    ): Either<DataError, AvailableActions>
-
-    suspend fun getSystemMoveToLocations(
-        userId: UserId,
-        labelId: LabelId,
-        messageIds: List<MessageId>
-    ): Either<DataError, List<MailLabel.System>>
-
-    suspend fun getAvailableLabelAsActions(
-        userId: UserId,
-        labelId: LabelId,
-        messageIds: List<MessageId>
-    ): Either<DataError, LabelAsActions>
-
-    suspend fun getAllListBottomBarActions(
-        userId: UserId,
-        labelId: LabelId,
-        messageIds: List<MessageId>
-    ): Either<DataError, AllBottomBarActions>
-
-    suspend fun getAllBottomBarActions(
-        userId: UserId,
-        labelId: LabelId,
-        messageId: MessageId,
-        messageThemeOptions: MessageThemeOptions
-    ): Either<DataError, AllBottomBarActions>
+        themeOptions: MessageThemeOptions
+    ): Flow<Either<DataError, AllBottomBarActions>> = observeMessage(userId, messageId)
+        .mapLatest { messageEither ->
+            messageEither
+                .flatMap {
+                    actionRepository.getAllBottomBarActions(userId, labelId, messageId, themeOptions)
+                }
+        }
 }

@@ -47,6 +47,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import junit.framework.TestCase.assertNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
@@ -85,14 +86,14 @@ internal class RustMessageRepositoryImplTest {
     }
 
     @Test
-    fun `observe cached message should return the local message`() = runTest {
+    fun `observe message should return the local message`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
         val expectedMessage = LocalMessageTestData.AugWeatherForecast.toMessage()
         coEvery {
-            rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
-        } returns LocalMessageTestData.AugWeatherForecast.right()
+            rustMessageDataSource.observeMessage(userId, messageId.toLocalMessageId())
+        } returns flowOf(LocalMessageTestData.AugWeatherForecast.right())
 
         // When
         repository.observeMessage(userId, messageId).test {
@@ -100,7 +101,7 @@ internal class RustMessageRepositoryImplTest {
 
             // Then
             assertEquals(expectedMessage, result)
-            coVerify { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) }
+            coVerify { rustMessageDataSource.observeMessage(userId, messageId.toLocalMessageId()) }
 
             awaitComplete()
         }
@@ -129,20 +130,20 @@ internal class RustMessageRepositoryImplTest {
     }
 
     @Test
-    fun `observe cached message should return DataError when no message not found`() = runTest {
+    fun `observe message should return DataError when no message not found`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
 
-        coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns
-            DataError.Local.NoDataCached.left()
+        coEvery { rustMessageDataSource.observeMessage(userId, messageId.toLocalMessageId()) } returns
+            flowOf(DataError.Local.NoDataCached.left())
 
         // When
         repository.observeMessage(userId, messageId).test {
             val result = awaitItem()
 
             // Then
-            coVerify { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) }
+            coVerify { rustMessageDataSource.observeMessage(userId, messageId.toLocalMessageId()) }
             assert(result.isLeft())
             assertEquals(DataError.Local.NoDataCached, result.swap().getOrElse { null })
             awaitComplete()
@@ -150,7 +151,7 @@ internal class RustMessageRepositoryImplTest {
     }
 
     @Test
-    fun `observe cached message from a remote messageId should return DataError when no message not found`() = runTest {
+    fun `observe message from a remote messageId should return DataError when no message not found`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val messageId = RemoteMessageIdSample.AugWeatherForecast

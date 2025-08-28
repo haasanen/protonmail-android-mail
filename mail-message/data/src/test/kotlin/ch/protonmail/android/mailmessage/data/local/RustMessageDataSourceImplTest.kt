@@ -30,6 +30,7 @@ import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
+import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageListBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
@@ -88,13 +89,15 @@ internal class RustMessageDataSourceImplTest {
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val rustMailboxFactory: RustMailboxFactory = mockk()
     private val rustMessageListQuery: RustMessageListQuery = mockk()
+    private val rustMessageQuery: RustMessageQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
     private val getRustSenderImage = mockk<GetRustSenderImage>()
     private val rustMarkMessagesRead = mockk<RustMarkMessagesRead>()
     private val rustMarkMessagesUnread = mockk<RustMarkMessagesUnread>()
     private val rustStarMessages = mockk<RustStarMessages>()
     private val rustUnstarMessages = mockk<RustUnstarMessages>()
-    private val getRustAllBottomBarActions = mockk<GetRustAllMessageListBottomBarActions>()
+    private val getRustAllListBottomBarActions = mockk<GetRustAllMessageListBottomBarActions>()
+    private val getRustAllMessageBottomBarActions = mockk<GetRustAllMessageBottomBarActions>()
     private val rustDeleteMessages = mockk<RustDeleteMessages>()
     private val rustMoveMessages = mockk<RustMoveMessages>()
     private val rustLabelMessages = mockk<RustLabelMessages>()
@@ -114,13 +117,15 @@ internal class RustMessageDataSourceImplTest {
         userSessionRepository,
         rustMailboxFactory,
         rustMessageListQuery,
+        rustMessageQuery,
         createRustMessageAccessor,
         getRustSenderImage,
         rustMarkMessagesRead,
         rustMarkMessagesUnread,
         rustStarMessages,
         rustUnstarMessages,
-        getRustAllBottomBarActions,
+        getRustAllListBottomBarActions,
+        getRustAllMessageBottomBarActions,
         rustDeleteMessages,
         rustMoveMessages,
         rustLabelMessages,
@@ -508,7 +513,7 @@ internal class RustMessageDataSourceImplTest {
             val expected = AllListActions(emptyList(), emptyList())
 
             coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-            coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.right()
+            coEvery { getRustAllListBottomBarActions(mailbox, messageIds) } returns expected.right()
 
             // When
             val result = dataSource.getAllAvailableListBottomBarActions(userId, labelId, messageIds)
@@ -528,7 +533,7 @@ internal class RustMessageDataSourceImplTest {
             val expected = DataError.Local.Unknown
 
             coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-            coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.left()
+            coEvery { getRustAllListBottomBarActions(mailbox, messageIds) } returns expected.left()
 
             // When
             val result = dataSource.getAllAvailableListBottomBarActions(userId, labelId, messageIds)

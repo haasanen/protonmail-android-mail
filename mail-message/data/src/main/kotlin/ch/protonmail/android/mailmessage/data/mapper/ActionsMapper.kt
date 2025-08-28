@@ -32,6 +32,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllConversationActions
 import uniffi.proton_mail_uniffi.AllListActions
+import uniffi.proton_mail_uniffi.AllMessageActions
 import uniffi.proton_mail_uniffi.ConversationAction
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.ListActions
@@ -148,6 +149,13 @@ fun AllConversationActions.toAllBottomBarActions(): AllBottomBarActions {
     )
 }
 
+fun AllMessageActions.toAllBottomBarActions(): AllBottomBarActions {
+    return AllBottomBarActions(
+        this.hiddenMessageActions.bottomBarActionsToActions(),
+        this.visibleMessageActions.bottomBarActionsToActions()
+    )
+}
+
 private fun List<ListActions>.bottomBarListActionsToActions() = this.map { bottomBarAction ->
     when (bottomBarAction) {
         ListActions.LabelAs -> Action.Label
@@ -180,3 +188,29 @@ private fun List<ConversationAction>.bottomBarConversationActionsToActions() = t
         ConversationAction.Snooze -> Action.Snooze
     }
 }
+
+private fun List<MessageAction>.bottomBarActionsToActions() = this.map { bottomBarAction ->
+    when (bottomBarAction) {
+        MessageAction.Forward -> Action.Forward
+        MessageAction.LabelAs -> Action.Label
+        MessageAction.MarkRead -> Action.MarkRead
+        MessageAction.MarkUnread -> Action.MarkUnread
+        MessageAction.More -> Action.More
+        is MessageAction.MoveToSystemFolder,
+        MessageAction.MoveTo -> Action.Move
+
+        is MessageAction.NotSpam -> Action.Inbox
+        MessageAction.PermanentDelete -> Action.Delete
+        MessageAction.Print -> Action.Print
+        MessageAction.Reply -> Action.Reply
+        MessageAction.ReplyAll -> Action.ReplyAll
+        MessageAction.ReportPhishing -> Action.ReportPhishing
+        MessageAction.Star -> Action.Star
+        MessageAction.Unstar -> Action.Unstar
+        MessageAction.ViewHeaders -> Action.ViewHeaders
+        MessageAction.ViewHtml -> Action.ViewHtml
+        MessageAction.ViewInDarkMode -> Action.ViewInDarkMode
+        MessageAction.ViewInLightMode -> Action.ViewInLightMode
+    }
+}
+

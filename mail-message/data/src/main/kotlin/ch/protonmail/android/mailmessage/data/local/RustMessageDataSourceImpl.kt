@@ -33,6 +33,7 @@ import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toPreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
+import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageListBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
@@ -63,6 +64,7 @@ import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllListActions
+import uniffi.proton_mail_uniffi.AllMessageActions
 import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
@@ -81,6 +83,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustStarMessages: RustStarMessages,
     private val rustUnstarMessages: RustUnstarMessages,
     private val getRustAllMessageListBottomBarActions: GetRustAllMessageListBottomBarActions,
+    private val getRustAllMessageBottomBarActions: GetRustAllMessageBottomBarActions,
     private val rustDeleteMessages: RustDeleteMessages,
     private val rustMoveMessages: RustMoveMessages,
     private val rustLabelMessages: RustLabelMessages,
@@ -260,6 +263,21 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
 
         return@withContext getRustAllMessageListBottomBarActions(mailbox, messageIds)
+    }
+
+    override suspend fun getAllAvailableBottomBarActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageId: LocalMessageId,
+        themeOpts: ThemeOpts
+    ): Either<DataError, AllMessageActions> = withContext(ioDispatcher) {
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to get all available message actions for null Mailbox! failing")
+            return@withContext DataError.Local.NoDataCached.left()
+        }
+
+        return@withContext getRustAllMessageBottomBarActions(mailbox, themeOpts, messageId)
     }
 
     override suspend fun getAvailableSystemMoveToActions(
