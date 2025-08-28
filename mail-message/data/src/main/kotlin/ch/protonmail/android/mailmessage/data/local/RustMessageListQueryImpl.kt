@@ -42,11 +42,11 @@ import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import javax.inject.Inject
 
-class RustMessageQueryImpl @Inject constructor(
+class RustMessageListQueryImpl @Inject constructor(
     private val messagePaginatorManager: MessagePaginatorManager,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope,
     private val invalidationRepository: PageInvalidationRepository
-) : RustMessageQuery {
+) : RustMessageListQuery {
 
     private val pagingEvents = MutableSharedFlow<PagingEvent<Message>>()
     private val refreshRequested = AtomicBoolean(false)

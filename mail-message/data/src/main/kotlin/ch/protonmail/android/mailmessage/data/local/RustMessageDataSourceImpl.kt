@@ -70,7 +70,7 @@ import javax.inject.Inject
 class RustMessageDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailboxFactory: RustMailboxFactory,
-    private val rustMessageQuery: RustMessageQuery,
+    private val rustMessageListQuery: RustMessageListQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
     private val getRustSenderImage: GetRustSenderImage,
     private val rustMarkMessagesRead: RustMarkMessagesRead,
@@ -124,7 +124,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> =
         withContext(ioDispatcher) {
             Timber.d("rust-message: getMessages for pageKey: $pageKey")
-            val messages = rustMessageQuery.getMessages(userId, pageKey)
+            val messages = rustMessageListQuery.getMessages(userId, pageKey)
             Timber.d("rust-message: paginator returned ${messages.map { it.joinToString { it.id.toString() } }}")
             return@withContext messages
         }

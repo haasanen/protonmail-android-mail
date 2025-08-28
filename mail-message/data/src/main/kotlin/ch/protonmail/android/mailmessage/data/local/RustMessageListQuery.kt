@@ -24,6 +24,6 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.Message
 
-interface RustMessageQuery {
+interface RustMessageListQuery {
     suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>>
 }

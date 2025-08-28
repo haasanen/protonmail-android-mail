@@ -24,8 +24,8 @@ import ch.protonmail.android.mailmessage.data.local.MessageBodyDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageBodyDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
-import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
-import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
+import ch.protonmail.android.mailmessage.data.local.RustMessageListQuery
+import ch.protonmail.android.mailmessage.data.local.RustMessageListQueryImpl
 import ch.protonmail.android.mailmessage.data.local.RustRsvpEventDataSource
 import ch.protonmail.android.mailmessage.data.local.RustRsvpEventDataSourceImpl
 import ch.protonmail.android.mailmessage.data.repository.InMemoryAvatarImageStateRepositoryImpl
@@ -77,7 +77,7 @@ object MailMessageModule {
 
         @Binds
         @Singleton
-        fun bindRustMessageQuery(impl: RustMessageQueryImpl): RustMessageQuery
+        fun bindRustMessageQuery(impl: RustMessageListQueryImpl): RustMessageListQuery
 
         @Binds
         @Singleton

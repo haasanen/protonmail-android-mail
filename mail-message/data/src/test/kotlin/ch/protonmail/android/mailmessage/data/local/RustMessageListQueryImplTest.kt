@@ -48,7 +48,7 @@ import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RustMessageQueryImplTest {
+class RustMessageListQueryImplTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -64,7 +64,7 @@ class RustMessageQueryImplTest {
     private val messagePaginatorManager = mockk<MessagePaginatorManager>()
     private val invalidationRepository = mockk<PageInvalidationRepository>()
 
-    private val rustMessageQuery = RustMessageQueryImpl(
+    private val rustMessageQuery = RustMessageListQueryImpl(
         messagePaginatorManager,
         CoroutineScope(mainDispatcherRule.testDispatcher),
         invalidationRepository

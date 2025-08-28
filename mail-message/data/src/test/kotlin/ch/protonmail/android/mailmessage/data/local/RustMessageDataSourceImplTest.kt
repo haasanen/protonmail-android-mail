@@ -87,7 +87,7 @@ internal class RustMessageDataSourceImplTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val rustMailboxFactory: RustMailboxFactory = mockk()
-    private val rustMessageQuery: RustMessageQuery = mockk()
+    private val rustMessageListQuery: RustMessageListQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
     private val getRustSenderImage = mockk<GetRustSenderImage>()
     private val rustMarkMessagesRead = mockk<RustMarkMessagesRead>()
@@ -113,7 +113,7 @@ internal class RustMessageDataSourceImplTest {
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
         rustMailboxFactory,
-        rustMessageQuery,
+        rustMessageListQuery,
         createRustMessageAccessor,
         getRustSenderImage,
         rustMarkMessagesRead,
@@ -184,13 +184,13 @@ internal class RustMessageDataSourceImplTest {
             LocalMessageTestData.SepWeatherForecast,
             LocalMessageTestData.OctWeatherForecast
         )
-        coEvery { rustMessageQuery.getMessages(userId, pageKey) } returns messages.right()
+        coEvery { rustMessageListQuery.getMessages(userId, pageKey) } returns messages.right()
 
         // When
         val result = dataSource.getMessages(userId, pageKey)
 
         // Then
-        coVerify { rustMessageQuery.getMessages(userId, pageKey) }
+        coVerify { rustMessageListQuery.getMessages(userId, pageKey) }
         assertEquals(messages.right(), result)
     }
 
