@@ -391,6 +391,8 @@ private fun MailExperienceSettingsItem(
                 }
             )
 
+            SettingsItemDivider()
+
             if (mobileSignature.signatureStatus == MobileSignatureStatus.NeedsPaidVersion) {
                 MobileSignatureSettingsItemForFreePlan(
                     modifier = modifier,
