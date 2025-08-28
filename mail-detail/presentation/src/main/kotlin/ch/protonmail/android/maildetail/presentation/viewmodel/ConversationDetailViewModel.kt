@@ -49,7 +49,6 @@ import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
-import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsLegitimate
@@ -115,6 +114,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformationsOverride
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
@@ -151,6 +151,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
@@ -682,17 +683,36 @@ class ConversationDetailViewModel @Inject constructor(
     private fun observeBottomBarActions(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
         val errorEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions)
         val labelId = openedFromLocation
+        val themeOptions = MessageThemeOptions(MessageTheme.Dark)
 
-        observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
-            either.fold(
-                ifLeft = { errorEvent },
-                ifRight = { actions ->
-                    val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
-                    ConversationDetailEvent.ConversationBottomBarEvent(
-                        BottomBarEvent.ShowAndUpdateActionsData(actionUiModels)
-                    )
-                }
-            )
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) }
+            if (messageId == null) {
+                return@flatMapLatest flowOf(errorEvent)
+            }
+            observeDetailActions(userId, labelId, messageId, themeOptions).mapLatest { either ->
+                either.fold(
+                    ifLeft = { errorEvent },
+                    ifRight = { actions ->
+                        val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
+                        ConversationDetailEvent.ConversationBottomBarEvent(
+                            BottomBarEvent.ShowAndUpdateActionsData(actionUiModels)
+                        )
+                    }
+                )
+            }
+        } else {
+            observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
+                either.fold(
+                    ifLeft = { errorEvent },
+                    ifRight = { actions ->
+                        val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
+                        ConversationDetailEvent.ConversationBottomBarEvent(
+                            BottomBarEvent.ShowAndUpdateActionsData(actionUiModels)
+                        )
+                    }
+                )
+            }
         }
     }.onEach { event ->
         emitNewStateFrom(event)

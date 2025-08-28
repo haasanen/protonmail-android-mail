@@ -78,7 +78,6 @@ import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
-import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsLegitimate
@@ -263,8 +262,12 @@ class ConversationDetailViewModelIntegrationTest {
         )
     }
     private val observeDetailBottomBarActions = mockk<ObserveDetailBottomBarActions> {
-        every {
-            this@mockk(UserIdSample.Primary, filterByLocationLabelId, ConversationIdSample.WeatherForecast)
+        coEvery {
+            this@mockk(
+                UserIdSample.Primary,
+                filterByLocationLabelId,
+                ConversationIdSample.WeatherForecast
+            )
         } returns flowOf(listOf(Action.Archive, Action.MarkUnread).right())
     }
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {

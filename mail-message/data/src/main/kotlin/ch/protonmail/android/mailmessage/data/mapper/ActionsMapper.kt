@@ -196,9 +196,8 @@ private fun List<MessageAction>.bottomBarActionsToActions() = this.map { bottomB
         MessageAction.MarkRead -> Action.MarkRead
         MessageAction.MarkUnread -> Action.MarkUnread
         MessageAction.More -> Action.More
-        is MessageAction.MoveToSystemFolder,
+        is MessageAction.MoveToSystemFolder -> bottomBarAction.v1.name.toAction()
         MessageAction.MoveTo -> Action.Move
-
         is MessageAction.NotSpam -> Action.Inbox
         MessageAction.PermanentDelete -> Action.Delete
         MessageAction.Print -> Action.Print

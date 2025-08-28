@@ -30,8 +30,14 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveAllConversationBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
+import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveAllMessageBottomBarActions
+import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -41,9 +47,11 @@ import kotlin.test.assertEquals
 internal class ObserveDetailBottomBarActionsTest {
 
     private val observeAllConversationBottomBarActions = mockk<ObserveAllConversationBottomBarActions>()
+    private val observeAllMessageBottomBarActions = mockk<ObserveAllMessageBottomBarActions>()
     private val observeDetailActions by lazy {
         ObserveDetailBottomBarActions(
-            observeAllConversationBottomBarActions
+            observeAllConversationBottomBarActions,
+            observeAllMessageBottomBarActions
         )
     }
 
@@ -68,6 +76,31 @@ internal class ObserveDetailBottomBarActionsTest {
             assertEquals(expected.right(), awaitItem())
             awaitComplete()
         }
+    }
+
+    @Test
+    fun `returns visible bottom bar actions for message when single message mode is enabled`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val messageId = MessageIdSample.PlainTextMessage
+        val allActions = AllBottomBarActions(
+            hiddenActions = listOf(Action.Star, Action.Label),
+            visibleActions = listOf(Action.Spam, Action.Archive)
+        )
+        val themeOptions = MessageThemeOptions(MessageTheme.Dark)
+        coEvery {
+            observeAllMessageBottomBarActions(userId, labelId, messageId, themeOptions)
+        } returns flowOf(allActions.right())
+
+        // When
+        observeDetailActions(userId, labelId, messageId, themeOptions).test {
+            // Then
+            val expected = listOf(Action.Spam, Action.Archive)
+            assertEquals(expected.right(), awaitItem())
+            awaitComplete()
+        }
+        verify { observeAllConversationBottomBarActions wasNot Called }
     }
 
     @Test

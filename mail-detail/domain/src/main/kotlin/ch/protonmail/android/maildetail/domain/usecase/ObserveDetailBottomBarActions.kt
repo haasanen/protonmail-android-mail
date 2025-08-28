@@ -24,13 +24,17 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveAllConversationBottomBarActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveAllMessageBottomBarActions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class ObserveDetailBottomBarActions @Inject constructor(
-    private val observeAllConversationBottomBarActions: ObserveAllConversationBottomBarActions
+    private val observeAllConversationBottomBarActions: ObserveAllConversationBottomBarActions,
+    private val observeAllMessageBottomBarActions: ObserveAllMessageBottomBarActions
 ) {
 
     operator fun invoke(
@@ -43,4 +47,17 @@ class ObserveDetailBottomBarActions @Inject constructor(
                 allBottomBarActions.visibleActions
             }
         }
+
+    suspend operator fun invoke(
+        userId: UserId,
+        labelId: LabelId,
+        messageId: MessageId,
+        themeOptions: MessageThemeOptions
+    ): Flow<Either<DataError, List<Action>>> =
+        observeAllMessageBottomBarActions(userId, labelId, messageId, themeOptions)
+            .map { eitherResult ->
+                eitherResult.map { allBottomBarActions ->
+                    allBottomBarActions.visibleActions
+                }
+            }
 }

@@ -56,7 +56,6 @@ import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
-import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsLegitimate
@@ -679,11 +678,7 @@ class ConversationDetailViewModelTest {
         val expected = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
-            observeDetailBottomBarActions(
-                UserIdSample.Primary,
-                labelId,
-                ConversationIdSample.WeatherForecast
-            )
+            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(actions.right())
         coEvery {
             reducer.newStateFrom(
@@ -720,11 +715,7 @@ class ConversationDetailViewModelTest {
         } returns messages.first()
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
-            observeDetailBottomBarActions(
-                UserIdSample.Primary,
-                labelId,
-                ConversationIdSample.WeatherForecast
-            )
+            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(DataError.Local.NoDataCached.left())
         coEvery {
             reducer.newStateFrom(
