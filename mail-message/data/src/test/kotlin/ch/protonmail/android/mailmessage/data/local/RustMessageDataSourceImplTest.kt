@@ -30,7 +30,7 @@ import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
-import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
+import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageListBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
@@ -94,7 +94,7 @@ internal class RustMessageDataSourceImplTest {
     private val rustMarkMessagesUnread = mockk<RustMarkMessagesUnread>()
     private val rustStarMessages = mockk<RustStarMessages>()
     private val rustUnstarMessages = mockk<RustUnstarMessages>()
-    private val getRustAllBottomBarActions = mockk<GetRustAllMessageBottomBarActions>()
+    private val getRustAllBottomBarActions = mockk<GetRustAllMessageListBottomBarActions>()
     private val rustDeleteMessages = mockk<RustDeleteMessages>()
     private val rustMoveMessages = mockk<RustMoveMessages>()
     private val rustLabelMessages = mockk<RustLabelMessages>()
@@ -511,7 +511,7 @@ internal class RustMessageDataSourceImplTest {
             coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.right()
 
             // When
-            val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, messageIds)
+            val result = dataSource.getAllAvailableListBottomBarActions(userId, labelId, messageIds)
 
             // Then
             assertEquals(expected.right(), result)
@@ -531,7 +531,7 @@ internal class RustMessageDataSourceImplTest {
             coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.left()
 
             // When
-            val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, messageIds)
+            val result = dataSource.getAllAvailableListBottomBarActions(userId, labelId, messageIds)
 
             // Then
             assertEquals(expected.left(), result)

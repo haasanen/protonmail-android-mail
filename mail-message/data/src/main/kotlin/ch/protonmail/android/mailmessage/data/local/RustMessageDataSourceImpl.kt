@@ -33,7 +33,7 @@ import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toPreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
-import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
+import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageListBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
@@ -80,7 +80,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMarkMessagesUnread: RustMarkMessagesUnread,
     private val rustStarMessages: RustStarMessages,
     private val rustUnstarMessages: RustUnstarMessages,
-    private val getRustAllMessageBottomBarActions: GetRustAllMessageBottomBarActions,
+    private val getRustAllMessageListBottomBarActions: GetRustAllMessageListBottomBarActions,
     private val rustDeleteMessages: RustDeleteMessages,
     private val rustMoveMessages: RustMoveMessages,
     private val rustLabelMessages: RustLabelMessages,
@@ -248,7 +248,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         return@withContext getRustAvailableMessageActions(mailbox, messageId, themeOpts)
     }
 
-    override suspend fun getAllAvailableBottomBarActions(
+    override suspend fun getAllAvailableListBottomBarActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
@@ -259,7 +259,7 @@ class RustMessageDataSourceImpl @Inject constructor(
             return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return@withContext getRustAllMessageBottomBarActions(mailbox, messageIds)
+        return@withContext getRustAllMessageListBottomBarActions(mailbox, messageIds)
     }
 
     override suspend fun getAvailableSystemMoveToActions(

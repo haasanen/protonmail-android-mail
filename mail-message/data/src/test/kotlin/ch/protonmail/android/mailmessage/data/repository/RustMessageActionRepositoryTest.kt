@@ -243,7 +243,7 @@ class RustMessageActionRepositoryTest {
         )
 
         coEvery {
-            rustMessageDataSource.getAllAvailableBottomBarActions(
+            rustMessageDataSource.getAllAvailableListBottomBarActions(
                 userId,
                 labelId.toLocalLabelId(),
                 messageIds.map { it.toLocalMessageId() }
@@ -251,7 +251,7 @@ class RustMessageActionRepositoryTest {
         } returns rustAvailableActions.right()
 
         // When
-        val result = repository.getAllBottomBarActions(userId, labelId, messageIds)
+        val result = repository.getAllListBottomBarActions(userId, labelId, messageIds)
 
         // Then
         val expected = AllBottomBarActions(listOf(Action.Star), listOf(Action.MarkRead))
@@ -267,7 +267,7 @@ class RustMessageActionRepositoryTest {
         val expected = DataError.Local.Unknown.left()
 
         coEvery {
-            rustMessageDataSource.getAllAvailableBottomBarActions(
+            rustMessageDataSource.getAllAvailableListBottomBarActions(
                 userId,
                 labelId.toLocalLabelId(),
                 messageIds.map { it.toLocalMessageId() }
@@ -275,7 +275,7 @@ class RustMessageActionRepositoryTest {
         } returns expected
 
         // When
-        val result = repository.getAllBottomBarActions(userId, labelId, messageIds)
+        val result = repository.getAllListBottomBarActions(userId, labelId, messageIds)
 
         // Then
         assertEquals(expected, result)

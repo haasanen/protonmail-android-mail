@@ -31,7 +31,7 @@ class GetAllMessageBottomBarActionsTest {
             listOf(Action.MarkRead, Action.MarkUnread),
             listOf(Action.Star, Action.Label)
         )
-        coEvery { actionRepository.getAllBottomBarActions(userId, labelId, messageIds) } returns expected.right()
+        coEvery { actionRepository.getAllListBottomBarActions(userId, labelId, messageIds) } returns expected.right()
 
         // When
         val actual = getAllMessageBottomBarActions(userId, labelId, messageIds)
@@ -47,7 +47,7 @@ class GetAllMessageBottomBarActionsTest {
         val labelId = LabelIdSample.Trash
         val messageIds = listOf(MessageIdSample.AlphaAppQAReport)
         val expected = DataError.Local.Unknown.left()
-        coEvery { actionRepository.getAllBottomBarActions(userId, labelId, messageIds) } returns expected
+        coEvery { actionRepository.getAllListBottomBarActions(userId, labelId, messageIds) } returns expected
 
         // When
         val actual = getAllMessageBottomBarActions(userId, labelId, messageIds)

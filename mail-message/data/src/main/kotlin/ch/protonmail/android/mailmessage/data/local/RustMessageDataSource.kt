@@ -85,7 +85,7 @@ interface RustMessageDataSource {
         messageIds: List<LocalMessageId>
     ): Either<DataError, List<LocalLabelAsAction>>
 
-    suspend fun getAllAvailableBottomBarActions(
+    suspend fun getAllAvailableListBottomBarActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>

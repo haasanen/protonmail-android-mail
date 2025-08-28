@@ -50,7 +50,7 @@ interface MessageActionRepository {
         messageIds: List<MessageId>
     ): Either<DataError, LabelAsActions>
 
-    suspend fun getAllBottomBarActions(
+    suspend fun getAllListBottomBarActions(
         userId: UserId,
         labelId: LabelId,
         messageIds: List<MessageId>

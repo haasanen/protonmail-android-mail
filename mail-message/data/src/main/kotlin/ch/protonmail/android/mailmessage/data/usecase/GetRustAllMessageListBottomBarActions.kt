@@ -30,7 +30,7 @@ import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.allAvailableListActionsForMessages
 import javax.inject.Inject
 
-class GetRustAllMessageBottomBarActions @Inject constructor() {
+class GetRustAllMessageListBottomBarActions @Inject constructor() {
 
     suspend operator fun invoke(
         mailbox: MailboxWrapper,

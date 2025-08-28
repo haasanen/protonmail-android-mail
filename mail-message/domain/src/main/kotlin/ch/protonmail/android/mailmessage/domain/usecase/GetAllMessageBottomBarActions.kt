@@ -35,5 +35,5 @@ class GetAllMessageBottomBarActions @Inject constructor(
         userId: UserId,
         labelId: LabelId,
         messageIds: List<MessageId>
-    ): Either<DataError, AllBottomBarActions> = actionRepository.getAllBottomBarActions(userId, labelId, messageIds)
+    ): Either<DataError, AllBottomBarActions> = actionRepository.getAllListBottomBarActions(userId, labelId, messageIds)
 }
