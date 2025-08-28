@@ -130,6 +130,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
@@ -156,6 +157,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -213,7 +215,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val getRsvpEvent: GetRsvpEvent,
     private val answerRsvpEvent: AnswerRsvpEvent,
     private val snoozeRepository: SnoozeRepository,
-    private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter
+    private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter,
+    private val toolbarRefreshSignal: ToolbarActionsRefreshSignal
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -680,7 +683,12 @@ class ConversationDetailViewModel @Inject constructor(
         rsvpEvent
     )
 
-    private fun observeBottomBarActions(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
+    private fun observeBottomBarActions(conversationId: ConversationId) = combine(
+        primaryUserId,
+        toolbarRefreshSignal.refreshEvents.onStart { emit(Unit) }
+    ) { userId, _ ->
+        userId
+    }.flatMapLatest { userId ->
         val errorEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions)
         val labelId = openedFromLocation
         val themeOptions = MessageThemeOptions(MessageTheme.Dark)

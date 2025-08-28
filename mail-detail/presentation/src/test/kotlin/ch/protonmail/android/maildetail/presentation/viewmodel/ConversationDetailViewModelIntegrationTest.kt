@@ -189,6 +189,7 @@ import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsB
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
@@ -212,6 +213,7 @@ import io.mockk.verify
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -231,7 +233,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 
-class ConversationDetailViewModelIntegrationTest {
+internal class ConversationDetailViewModelIntegrationTest {
 
     private val userId = UserIdSample.Primary
     private val conversationId = ConversationIdSample.WeatherForecast
@@ -465,6 +467,11 @@ class ConversationDetailViewModelIntegrationTest {
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
     private val messageViewStateCache = MessageViewStateCache(inMemoryConversationStateRepository)
     private val observeConversationViewState = spyk(ObserveConversationViewState(inMemoryConversationStateRepository))
+
+    private val refreshToolbarSharedFlow = MutableSharedFlow<Unit>()
+    private val toolbarRefreshSignal = mockk<ToolbarActionsRefreshSignal> {
+        every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
+    }
     private val testDispatcher: TestDispatcher by lazy { StandardTestDispatcher() }
 
     @BeforeTest
@@ -2591,7 +2598,8 @@ class ConversationDetailViewModelIntegrationTest {
         getRsvpEvent = getRsvpEvent,
         answerRsvpEvent = answerRsvpEvent,
         snoozeRepository = snoozeRepository,
-        unsubscribeFromNewsletter = unsubscribeFromNewsletter
+        unsubscribeFromNewsletter = unsubscribeFromNewsletter,
+        toolbarRefreshSignal = toolbarRefreshSignal
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

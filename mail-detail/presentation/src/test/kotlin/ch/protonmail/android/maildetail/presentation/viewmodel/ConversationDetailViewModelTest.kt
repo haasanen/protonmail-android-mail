@@ -122,6 +122,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactA
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
@@ -141,6 +142,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -338,6 +340,11 @@ class ConversationDetailViewModelTest {
 
     private val unsubscribeFromNewsletter = mockk<UnsubscribeFromNewsletter>()
 
+    private val refreshToolbarSharedFlow = MutableSharedFlow<Unit>()
+    private val toolbarRefreshSignal = mockk<ToolbarActionsRefreshSignal> {
+        every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
+    }
+
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
     }
@@ -390,7 +397,8 @@ class ConversationDetailViewModelTest {
             getRsvpEvent = getRsvpEvent,
             answerRsvpEvent = answerRsvpEvent,
             snoozeRepository = snoozeRepository,
-            unsubscribeFromNewsletter = unsubscribeFromNewsletter
+            unsubscribeFromNewsletter = unsubscribeFromNewsletter,
+            toolbarRefreshSignal = toolbarRefreshSignal
         )
     }
 
@@ -730,6 +738,42 @@ class ConversationDetailViewModelTest {
 
             // Then
             assertEquals(expected.bottomBarState, awaitItem().bottomBarState)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when toolbar refresh signal is emitted, bottom bar actions are updated and emitted`() = runTest {
+        // Given
+        val actions = listOf(Action.Archive, Action.MarkUnread)
+        val actionUiModels = listOf(ActionUiModelTestData.archive, ActionUiModelTestData.markUnread).toImmutableList()
+        val labelId = LabelIdSample.AllMail
+        val expectedState = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
+
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        every {
+            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+        } returns flowOf(actions.right())
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = ofType<ConversationDetailEvent.ConversationBottomBarEvent>()
+            )
+        } returns expectedState
+
+        // When + Then
+        viewModel.state.test {
+            initialStateEmitted()
+            assertEquals(expectedState.bottomBarState, awaitItem().bottomBarState)
+
+            // Emit toolbar refresh signal to trigger a new observeDetailBottomBarActions call
+            refreshToolbarSharedFlow.emit(Unit)
+            advanceUntilIdle()
+
+            verify(exactly = 2) {
+                observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+            }
+
             cancelAndIgnoreRemainingEvents()
         }
     }
