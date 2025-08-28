@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -41,7 +42,7 @@ internal class ObserveMessageTest {
             this@mockk.observeMessage(userId, any<RemoteMessageId>())
         } returns flowOf(DataError.Local.NoDataCached.left())
 
-        every {
+        coEvery {
             this@mockk.observeMessage(userId, any<MessageId>())
         } returns flowOf(DataError.Local.NoDataCached.left())
     }
@@ -53,7 +54,7 @@ internal class ObserveMessageTest {
         // Given
         val messageId = MessageId(MessageTestData.RAW_MESSAGE_ID)
         val error = DataError.Local.NoDataCached
-        every { repository.observeMessage(userId, messageId) } returns flowOf(error.left())
+        coEvery { repository.observeMessage(userId, messageId) } returns flowOf(error.left())
 
         // When
         observeMessage(userId, messageId).test {
@@ -68,7 +69,7 @@ internal class ObserveMessageTest {
         // Given
         val messageId = MessageId(MessageTestData.RAW_MESSAGE_ID)
         val message = MessageTestData.message
-        every { repository.observeMessage(userId, messageId) } returns flowOf(message.right())
+        coEvery { repository.observeMessage(userId, messageId) } returns flowOf(message.right())
 
         // When
         observeMessage(userId, messageId).test {
@@ -83,7 +84,7 @@ internal class ObserveMessageTest {
         // Given
         val messageId = MessageId(MessageTestData.RAW_MESSAGE_ID)
         val error = DataError.Local.NoDataCached
-        every { repository.observeMessage(userId, messageId) } returns flowOf(error.left())
+        coEvery { repository.observeMessage(userId, messageId) } returns flowOf(error.left())
 
         // When
         observeMessage(userId, messageId).test {

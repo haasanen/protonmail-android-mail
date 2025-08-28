@@ -39,6 +39,7 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -66,16 +67,9 @@ class RustMessageRepositoryImpl @Inject constructor(
         rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
             .map { it.toMessage() }
 
-    @Deprecated(
-        message = "Observing is faked! This won't reflect changes to the message after the first emission",
-        replaceWith = ReplaceWith("getMessage(userId, messageId)")
-    )
-    override fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> = flow {
-        val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
-            .map { it.toMessage() }
-
-        emit(message)
-    }
+    override suspend fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> =
+        rustMessageDataSource.observeMessage(userId, messageId.toLocalMessageId())
+            .map { either -> either.map { it.toMessage() } }
 
     @Deprecated(
         message = "Observing is faked! This won't reflect changes to the message after the first emission",

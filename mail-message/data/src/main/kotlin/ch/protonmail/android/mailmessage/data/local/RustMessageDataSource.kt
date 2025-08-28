@@ -30,6 +30,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
+import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.Message
@@ -44,6 +45,8 @@ interface RustMessageDataSource {
     suspend fun getMessage(userId: UserId, messageId: RemoteMessageId): Either<DataError, LocalMessageMetadata>
 
     suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>>
+
+    suspend fun observeMessage(userId: UserId, messageId: LocalMessageId): Flow<Either<DataError, LocalMessageMetadata>>
 
     suspend fun getSenderImage(
         userId: UserId,

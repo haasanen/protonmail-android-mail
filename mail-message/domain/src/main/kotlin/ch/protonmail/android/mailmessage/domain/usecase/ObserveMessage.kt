@@ -32,7 +32,7 @@ class ObserveMessage @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
 
-    operator fun invoke(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> =
+    suspend operator fun invoke(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> =
         messageRepository.observeMessage(userId, messageId)
 
     operator fun invoke(userId: UserId, messageId: RemoteMessageId): Flow<Either<DataError, Message>> =

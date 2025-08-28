@@ -56,11 +56,13 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllListActions
-import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
@@ -71,6 +73,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailboxFactory: RustMailboxFactory,
     private val rustMessageListQuery: RustMessageListQuery,
+    private val rustMessageQuery: RustMessageQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
     private val getRustSenderImage: GetRustSenderImage,
     private val rustMarkMessagesRead: RustMarkMessagesRead,
@@ -121,13 +124,28 @@ class RustMessageDataSourceImpl @Inject constructor(
             .onLeft { Timber.e("rust-message: Failed to get remote message $it") }
     }
 
-    override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> =
-        withContext(ioDispatcher) {
-            Timber.d("rust-message: getMessages for pageKey: $pageKey")
-            val messages = rustMessageListQuery.getMessages(userId, pageKey)
-            Timber.d("rust-message: paginator returned ${messages.map { it.joinToString { it.id.toString() } }}")
-            return@withContext messages
+    override suspend fun getMessages(
+        userId: UserId,
+        pageKey: PageKey
+    ): Either<PaginationError, List<LocalMessageMetadata>> = withContext(ioDispatcher) {
+        Timber.d("rust-message: getMessages for pageKey: $pageKey")
+        val messages = rustMessageListQuery.getMessages(userId, pageKey)
+        Timber.d("rust-message: paginator returned ${messages.map { it.joinToString { it.id.toString() } }}")
+        return@withContext messages
+    }
+
+    override suspend fun observeMessage(
+        userId: UserId,
+        messageId: LocalMessageId
+    ): Flow<Either<DataError, LocalMessageMetadata>> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-message: trying to fetch remote message with a null session")
+            return flowOf(DataError.Local.NoUserSession.left())
         }
+
+        return rustMessageQuery.observeMessage(session, messageId).flowOn(ioDispatcher)
+    }
 
     override suspend fun getSenderImage(
         userId: UserId,
