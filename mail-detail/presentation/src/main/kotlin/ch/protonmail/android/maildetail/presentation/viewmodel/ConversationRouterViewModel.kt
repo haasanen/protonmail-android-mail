@@ -19,7 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import ch.protonmail.android.maildetail.presentation.usecase.IsShowSingleMessageMode
+import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

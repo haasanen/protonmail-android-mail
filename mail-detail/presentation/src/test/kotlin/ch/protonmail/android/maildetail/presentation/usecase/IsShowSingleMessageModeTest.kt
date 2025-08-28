@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.usecase
 
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailsettings.domain.usecase.GetUserPreferredViewMode
