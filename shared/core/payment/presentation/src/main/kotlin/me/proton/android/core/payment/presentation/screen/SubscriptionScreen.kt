@@ -53,6 +53,7 @@ import me.proton.android.core.payment.presentation.component.SubscriptionList
 import me.proton.android.core.payment.presentation.component.SubscriptionListAction
 import me.proton.android.core.payment.presentation.component.SubscriptionListState
 import me.proton.android.core.payment.presentation.component.SubscriptionListViewModel
+import me.proton.android.core.payment.presentation.model.LocalUpsellEnabled
 import me.proton.android.core.payment.presentation.model.Product
 import me.proton.android.core.payment.presentation.model.Subscription
 
@@ -62,13 +63,13 @@ fun SubscriptionScreen(
     onSuccess: (Product) -> Unit = {},
     onErrorMessage: (String) -> Unit = {},
     subscriptionViewModel: SubscriptionListViewModel? = hiltViewModelOrNull(),
-    productViewModel: ProductListViewModel? = hiltViewModelOrNull()
+    productViewModel: ProductListViewModel? = if (LocalUpsellEnabled.current) hiltViewModelOrNull() else null
 ) {
     val subscriptionState = subscriptionViewModel?.state?.collectAsStateWithLifecycle()?.value
         ?: SubscriptionListState.Data(listOf(Subscription.test_free))
 
     val productState = productViewModel?.state?.collectAsStateWithLifecycle()?.value
-        ?: ProductListState.Data(listOf(Product.test, Product.test_mail2022_1))
+        ?: ProductListState.Data(emptyList())
 
     SubscriptionScreen(
         onClose = onClose,
@@ -122,7 +123,9 @@ fun SubscriptionScreen(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
                 SubscriptionList(
-                    modifier = Modifier.padding(Spacing.Medium).height(subscriptionHeight),
+                    modifier = Modifier
+                        .padding(Spacing.Medium)
+                        .height(subscriptionHeight),
                     onRetryClicked = onRetryClicked,
                     state = subscriptionState
                 )
@@ -130,7 +133,9 @@ fun SubscriptionScreen(
                 if (areUpgradeAvailable) {
                     Text(
                         text = stringResource(R.string.payment_subscription_upgrade_your_plan),
-                        modifier = Modifier.padding(bottom = Spacing.Medium).fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(bottom = Spacing.Medium)
+                            .fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         style = ProtonTheme.typography.titleLargeNorm
                     )

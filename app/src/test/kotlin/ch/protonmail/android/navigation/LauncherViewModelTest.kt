@@ -19,9 +19,13 @@
 package ch.protonmail.android.navigation
 
 import app.cash.turbine.test
+import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
 import ch.protonmail.android.legacymigration.domain.usecase.ObserveLegacyMigrationStatus
 import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
@@ -29,22 +33,24 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.usecase.SetPrimaryAccount
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import io.mockk.every
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.payment.presentation.PaymentOrchestrator
 import org.junit.Rule
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
-import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
-import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
-import kotlinx.coroutines.flow.MutableSharedFlow
 
 @ExperimentalCoroutinesApi
 class LauncherViewModelTest {
@@ -62,7 +68,9 @@ class LauncherViewModelTest {
     private val migrateLegacyApplication = mockk<MigrateLegacyApplication>(relaxUnitFun = true)
     private val shouldMigrateLegacyAccount = mockk<ShouldMigrateLegacyAccount>()
 
-    private lateinit var viewModel: LauncherViewModel
+    private val isUpsellEnabled = mockk<FeatureFlag<Boolean>> {
+        coEvery { this@mockk.get() } returns true
+    }
 
     private val readyAccount = Account(
         userId = UserIdSample.Primary,
@@ -71,25 +79,31 @@ class LauncherViewModelTest {
         primaryAddress = "address"
     )
 
+    private fun viewModel() = LauncherViewModel(
+        authOrchestrator,
+        paymentOrchestrator,
+        setPrimaryAccount,
+        userSessionRepository,
+        notificationsPermissionOrchestrator,
+        observeLegacyMigrationStatus,
+        setLegacyMigrationStatus,
+        migrateLegacyApplication,
+        shouldMigrateLegacyAccount,
+        isUpsellEnabled
+    )
+
+    @AfterTest
+    fun teardown() {
+        clearAllMocks()
+    }
+
     @Test
     fun `state should be AccountNeeded when userSession is not available`() =
         runTest(mainDispatcherRule.testDispatcher) {
             every { observeLegacyMigrationStatus() } returns flowOf(LegacyMigrationStatus.Done)
             every { userSessionRepository.observeAccounts() } returns flowOf(emptyList())
 
-            viewModel = LauncherViewModel(
-                authOrchestrator,
-                paymentOrchestrator,
-                setPrimaryAccount,
-                userSessionRepository,
-                notificationsPermissionOrchestrator,
-                observeLegacyMigrationStatus,
-                setLegacyMigrationStatus,
-                migrateLegacyApplication,
-                shouldMigrateLegacyAccount
-            )
-
-            viewModel.state.test {
+            viewModel().state.test {
                 assertEquals(LauncherState.AccountNeeded, awaitItem())
             }
         }
@@ -99,19 +113,7 @@ class LauncherViewModelTest {
         every { observeLegacyMigrationStatus() } returns flowOf(LegacyMigrationStatus.Done)
         every { userSessionRepository.observeAccounts() } returns flowOf(listOf(readyAccount))
 
-        viewModel = LauncherViewModel(
-            authOrchestrator,
-            paymentOrchestrator,
-            setPrimaryAccount,
-            userSessionRepository,
-            notificationsPermissionOrchestrator,
-            observeLegacyMigrationStatus,
-            setLegacyMigrationStatus,
-            migrateLegacyApplication,
-            shouldMigrateLegacyAccount
-        )
-
-        viewModel.state.test {
+        viewModel().state.test {
             assertEquals(LauncherState.PrimaryExist, awaitItem())
         }
     }
@@ -123,19 +125,7 @@ class LauncherViewModelTest {
         every { userSessionRepository.observeAccounts() } returns flowOf(listOf(readyAccount))
         coEvery { migrateLegacyApplication() } returns Unit
 
-        viewModel = LauncherViewModel(
-            authOrchestrator,
-            paymentOrchestrator,
-            setPrimaryAccount,
-            userSessionRepository,
-            notificationsPermissionOrchestrator,
-            observeLegacyMigrationStatus,
-            setLegacyMigrationStatus,
-            migrateLegacyApplication,
-            shouldMigrateLegacyAccount
-        )
-
-        viewModel.state.test {
+        viewModel().state.test {
             skipItems(1)
             migrationStatusFlow.emit(LegacyMigrationStatus.NotDone)
 
@@ -146,5 +136,39 @@ class LauncherViewModelTest {
 
         coVerify(exactly = 1) { migrateLegacyApplication() }
         coVerify(exactly = 1) { setLegacyMigrationStatus(LegacyMigrationStatus.Done) }
+    }
+
+    @Test
+    fun `should start subscription flow with upselling disabled when FF is off`() = runTest {
+        // Given
+        every { observeLegacyMigrationStatus() } returns flowOf(LegacyMigrationStatus.Done)
+        every { userSessionRepository.observeAccounts() } returns flowOf(listOf(readyAccount))
+
+        coEvery { isUpsellEnabled.get() } returns false
+        coEvery { paymentOrchestrator.startSubscriptionWorkflow(false) } just runs
+
+        // When
+        viewModel().submit(LauncherViewModel.Action.OpenSubscription)
+
+        // Then
+        coVerify(exactly = 1) { paymentOrchestrator.startSubscriptionWorkflow(false) }
+        confirmVerified(paymentOrchestrator)
+    }
+
+    @Test
+    fun `should start subscription flow with upselling enabled when FF is on`() = runTest {
+        // Given
+        every { observeLegacyMigrationStatus() } returns flowOf(LegacyMigrationStatus.Done)
+        every { userSessionRepository.observeAccounts() } returns flowOf(listOf(readyAccount))
+
+        coEvery { isUpsellEnabled.get() } returns true
+        coEvery { paymentOrchestrator.startSubscriptionWorkflow(true) } just runs
+
+        // When
+        viewModel().submit(LauncherViewModel.Action.OpenSubscription)
+
+        // Then
+        coVerify(exactly = 1) { paymentOrchestrator.startSubscriptionWorkflow(true) }
+        confirmVerified(paymentOrchestrator)
     }
 }

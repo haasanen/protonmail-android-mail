@@ -22,7 +22,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
 import ch.protonmail.android.legacymigration.domain.usecase.ObserveLegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.data.mapper.toUserId
@@ -30,18 +36,24 @@ import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.usecase.SetPrimaryAccount
 import ch.protonmail.android.mailsession.presentation.observe
+import ch.protonmail.android.mailsession.presentation.onAccountNewPasswordNeeded
 import ch.protonmail.android.mailsession.presentation.onAccountTwoFactorNeeded
 import ch.protonmail.android.mailsession.presentation.onAccountTwoPasswordNeeded
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.navigation.model.LauncherState.AccountNeeded
+import ch.protonmail.android.navigation.model.LauncherState.MigrationInProgress
 import ch.protonmail.android.navigation.model.LauncherState.PrimaryExist
 import ch.protonmail.android.navigation.model.LauncherState.Processing
-import ch.protonmail.android.navigation.model.LauncherState.StepNeeded
-import ch.protonmail.android.navigation.model.LauncherState.MigrationInProgress
 import ch.protonmail.android.navigation.model.LauncherState.ProcessingAfterMigration
+import ch.protonmail.android.navigation.model.LauncherState.StepNeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.login.LoginInput
@@ -51,18 +63,8 @@ import me.proton.android.core.auth.presentation.onSignUpResult
 import me.proton.android.core.payment.presentation.PaymentOrchestrator
 import me.proton.android.core.payment.presentation.onUpgradeResult
 import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
-import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
-import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
-import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
-import ch.protonmail.android.mailsession.presentation.onAccountNewPasswordNeeded
-import kotlinx.coroutines.flow.first
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 @SuppressWarnings("NotImplementedDeclaration", "UnusedPrivateMember")
@@ -75,7 +77,8 @@ class LauncherViewModel @Inject constructor(
     private val observeLegacyMigrationStatus: ObserveLegacyMigrationStatus,
     private val setLegacyMigrationStatus: SetLegacyMigrationStatus,
     private val migrateLegacyApplication: MigrateLegacyApplication,
-    private val shouldMigrateLegacyAccount: ShouldMigrateLegacyAccount
+    private val shouldMigrateLegacyAccount: ShouldMigrateLegacyAccount,
+    @IsUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(Processing)
@@ -218,7 +221,7 @@ class LauncherViewModel @Inject constructor(
     }
 
     private fun onOpenSubscription() = viewModelScope.launch {
-        paymentOrchestrator.startSubscriptionWorkflow()
+        paymentOrchestrator.startSubscriptionWorkflow(isUpsellEnabled.get())
     }
 
     private fun onOpenSecurityKeys() {

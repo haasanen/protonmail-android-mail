@@ -21,12 +21,17 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
+import me.proton.android.core.payment.presentation.model.SubscriptionFlowLaunchOptions
 
-object StartSubscription : ActivityResultContract<Unit, Boolean>() {
+object StartSubscription : ActivityResultContract<SubscriptionFlowLaunchOptions, Boolean>() {
 
-    override fun createIntent(context: Context, input: Unit) = Intent(context, SubscriptionActivity::class.java).apply {
-        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-    }
+    const val UPSELLING_ENABLED_EXTRA_KEY = "is_upselling_enabled"
+
+    override fun createIntent(context: Context, input: SubscriptionFlowLaunchOptions) =
+        Intent(context, SubscriptionActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            putExtra(UPSELLING_ENABLED_EXTRA_KEY, input.isAllowedToUpgrade)
+        }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
         Activity.RESULT_OK -> true

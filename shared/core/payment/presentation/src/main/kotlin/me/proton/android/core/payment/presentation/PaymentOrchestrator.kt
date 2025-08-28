@@ -20,18 +20,20 @@ package me.proton.android.core.payment.presentation
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
+import me.proton.android.core.payment.presentation.model.SubscriptionFlowLaunchOptions
 import javax.inject.Inject
 
 class PaymentOrchestrator @Inject constructor() {
 
-    private var subscriptionWorkflowLauncher: ActivityResultLauncher<Unit>? = null
+    private var subscriptionWorkflowLauncher: ActivityResultLauncher<SubscriptionFlowLaunchOptions>? = null
 
     private var onUpgradeResultListener: ((result: Boolean) -> Unit)? = {}
 
-    private fun registerUpgradeResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
-        caller.registerForActivityResult(StartSubscription) {
-            onUpgradeResultListener?.invoke(it)
-        }
+    private fun registerUpgradeResult(
+        caller: ActivityResultCaller
+    ): ActivityResultLauncher<SubscriptionFlowLaunchOptions> = caller.registerForActivityResult(StartSubscription) {
+        onUpgradeResultListener?.invoke(it)
+    }
 
     private fun <T> checkRegistered(launcher: ActivityResultLauncher<T>?) =
         checkNotNull(launcher) { "You must call register(context) before starting workflow!" }
@@ -61,8 +63,10 @@ class PaymentOrchestrator @Inject constructor() {
     /**
      * Start the Subscription Workflow.
      */
-    fun startSubscriptionWorkflow() {
-        checkRegistered(subscriptionWorkflowLauncher).launch(Unit)
+    fun startSubscriptionWorkflow(isAllowedToUpgrade: Boolean) {
+        checkRegistered(subscriptionWorkflowLauncher).launch(
+            SubscriptionFlowLaunchOptions(isAllowedToUpgrade)
+        )
     }
 }
 

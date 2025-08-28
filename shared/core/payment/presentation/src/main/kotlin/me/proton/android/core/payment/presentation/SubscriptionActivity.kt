@@ -17,14 +17,16 @@
 
 package me.proton.android.core.payment.presentation
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.CompositionLocalProvider
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import coil.Coil
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import me.proton.android.core.payment.domain.IconResourceManager
+import me.proton.android.core.payment.presentation.StartSubscription.UPSELLING_ENABLED_EXTRA_KEY
+import me.proton.android.core.payment.presentation.model.LocalUpsellEnabled
 import me.proton.android.core.payment.presentation.screen.SubscriptionScreen
 import me.proton.core.presentation.ui.ProtonActivity
 import me.proton.core.presentation.utils.addOnBackPressedCallback
@@ -33,6 +35,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SubscriptionActivity : ProtonActivity() {
+
+    private val isUpsellingAllowed by lazy {
+        intent.getBooleanExtra(UPSELLING_ENABLED_EXTRA_KEY, false)
+    }
 
     @Inject
     lateinit var iconResourceManager: IconResourceManager
@@ -56,11 +62,13 @@ class SubscriptionActivity : ProtonActivity() {
 
         setContent {
             ProtonTheme {
-                SubscriptionScreen(
-                    onClose = { onClose() },
-                    onSuccess = { success = true },
-                    onErrorMessage = { onError(it) }
-                )
+                CompositionLocalProvider(LocalUpsellEnabled provides isUpsellingAllowed) {
+                    SubscriptionScreen(
+                        onClose = { onClose() },
+                        onSuccess = { success = true },
+                        onErrorMessage = { onError(it) }
+                    )
+                }
             }
         }
     }
@@ -70,13 +78,13 @@ class SubscriptionActivity : ProtonActivity() {
     }
 
     private fun onSuccess() {
-        setResult(Activity.RESULT_OK)
+        setResult(RESULT_OK)
         finish()
     }
 
     private fun onClose() {
         if (success) onSuccess() else {
-            setResult(Activity.RESULT_CANCELED)
+            setResult(RESULT_CANCELED)
             finish()
         }
     }
