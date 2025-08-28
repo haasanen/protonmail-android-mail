@@ -26,10 +26,10 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.CustomizeToolbarViewModel
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ToolbarActionsUiModel
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.CustomizeToolbarState
-import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.ToolbarActionsSet
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.usecase.GetToolbarActions
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule

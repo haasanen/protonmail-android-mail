@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.toolbar.model
+package ch.protonmail.android.mailsettings.domain.model
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,7 +24,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class ToolbarActionsRefreshSignal @Inject constructor() {
+class ToolbarActionsRefreshSignal @Inject constructor() {
 
     private val _refreshEvents = MutableSharedFlow<Unit>(
         replay = 0,

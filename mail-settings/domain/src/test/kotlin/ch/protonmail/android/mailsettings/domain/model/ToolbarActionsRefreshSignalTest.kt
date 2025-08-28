@@ -16,12 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.toolbar.model
+package ch.protonmail.android.mailsettings.domain.model
 
 import app.cash.turbine.test
-import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class ToolbarActionsRefreshSignalTest {
 

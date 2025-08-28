@@ -26,13 +26,13 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsPreference
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.domain.repository.InMemoryToolbarActionsRepository
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.CustomizeToolbarEditViewModel
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.CustomizeToolbarEditOperation
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.CustomizeToolbarEditState
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.SaveEvent
-import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.reducer.CustomizeToolbarEditActionsReducer
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.CustomizeToolbarEditScreen
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.usecase.UpdateToolbarPreferences

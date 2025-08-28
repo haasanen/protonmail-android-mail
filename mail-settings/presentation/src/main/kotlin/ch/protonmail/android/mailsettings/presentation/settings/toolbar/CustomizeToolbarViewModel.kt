@@ -22,8 +22,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.CustomizeToolbarState
-import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.ToolbarActionsSet
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.usecase.GetToolbarActions
 import dagger.hilt.android.lifecycle.HiltViewModel

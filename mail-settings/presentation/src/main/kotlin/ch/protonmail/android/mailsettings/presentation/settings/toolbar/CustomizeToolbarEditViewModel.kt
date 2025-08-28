@@ -22,12 +22,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.domain.repository.InMemoryToolbarActionsRepository
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.CustomizeToolbarEditOperation
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.CustomizeToolbarEditState
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.SaveEvent
-import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.reducer.CustomizeToolbarEditActionsReducer
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.CustomizeToolbarEditScreen
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.usecase.UpdateToolbarPreferences
