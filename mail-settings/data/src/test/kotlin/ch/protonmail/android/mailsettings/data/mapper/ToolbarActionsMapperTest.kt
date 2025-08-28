@@ -57,7 +57,7 @@ internal class ToolbarActionsMapperTest {
             Action.Snooze,
             Action.Spam,
             Action.ViewInLightMode,
-            Action.MarkRead,
+            Action.MarkUnread,
             Action.Star,
             Action.Trash,
             Action.ViewHeaders,

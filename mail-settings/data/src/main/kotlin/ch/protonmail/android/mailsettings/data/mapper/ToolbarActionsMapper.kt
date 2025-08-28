@@ -33,7 +33,7 @@ fun LocalMobileAction.toAction() = when (this) {
     MobileAction.SNOOZE -> Action.Snooze
     MobileAction.SPAM -> Action.Spam
     MobileAction.TOGGLE_LIGHT -> Action.ViewInLightMode
-    MobileAction.TOGGLE_READ -> Action.MarkRead
+    MobileAction.TOGGLE_READ -> Action.MarkUnread
     MobileAction.TOGGLE_STAR -> Action.Star
     MobileAction.TRASH -> Action.Trash
     MobileAction.VIEW_HEADERS -> Action.ViewHeaders
