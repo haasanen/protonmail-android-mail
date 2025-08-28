@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.ui
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,6 +56,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import ch.protonmail.android.design.compose.component.ProtonNavigationIcon
+import ch.protonmail.android.design.compose.navigation.LocalAnimationScopes.LocalAnimatedVisibilityScope
+import ch.protonmail.android.design.compose.navigation.LocalAnimationScopes.LocalSharedTransitionScope
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallHint
@@ -154,25 +158,14 @@ fun CustomSingleLineTopAppBar(
     isStarred: Boolean?,
     subjectLineAlpha: Float
 ) {
+
     Box(
         modifier = modifier
             .testTag(DetailScreenTopBarTestTags.RootItem)
             .background(ProtonTheme.colors.backgroundNorm)
             .height(MailDimens.SingleLineTopAppBarHeight)
     ) {
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.CenterStart),
-            onClick = actions.onBackClick
-        ) {
-            Icon(
-                modifier = Modifier
-                    .testTag(DetailScreenTopBarTestTags.BackButton),
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(id = string.presentation_back),
-                tint = ProtonTheme.colors.textNorm
-            )
-        }
+        ProtonNavigationIcon(actions)
         messageCount?.let { count ->
             Text(
                 modifier = Modifier
@@ -204,7 +197,6 @@ fun CustomSingleLineTopAppBar(
                 textAlign = TextAlign.Center
             )
         }
-
 
         if (isStarred != null) {
             val onStarIconClick = {
@@ -278,6 +270,31 @@ private fun getStarredIcon(isStarred: Boolean) = painterResource(
         drawable.ic_proton_star
     }
 )
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun ProtonNavigationIcon(actions: DetailScreenTopBar.Actions) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+
+    if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+        // go for a transitioning icon
+        sharedTransitionScope.ProtonNavigationIcon(
+            modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
+            animatedVisibilityScope = animatedVisibilityScope,
+            isMenuVisible = false,
+            onClick = actions.onBackClick
+        )
+    } else {
+        Icon(
+            modifier = Modifier
+                .testTag(DetailScreenTopBarTestTags.BackButton),
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(id = string.presentation_back),
+            tint = ProtonTheme.colors.textNorm
+        )
+    }
+}
 
 object DetailScreenTopBar {
 
