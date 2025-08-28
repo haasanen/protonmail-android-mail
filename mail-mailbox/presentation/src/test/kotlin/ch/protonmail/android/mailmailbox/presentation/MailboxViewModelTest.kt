@@ -111,6 +111,7 @@ import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidati
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
@@ -164,7 +165,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MailboxViewModelTest {
+internal class MailboxViewModelTest {
 
     private val initialLocationMailLabelId = MailLabelTestData.archiveSystemLabel.id
     private val actionUiModelMapper = ActionUiModelMapper()
@@ -221,7 +222,7 @@ class MailboxViewModelTest {
         every { newStateFrom(any(), any()) } returns MailboxStateSampleData.Loading
     }
 
-    private val observeMailboxActions = mockk<GetBottomBarActions> {
+    private val getBottomBarActions = mockk<GetBottomBarActions> {
         coEvery { this@mockk(any(), any(), any(), any()) } returns listOf(Action.Archive, Action.Trash).right()
     }
 
@@ -281,6 +282,10 @@ class MailboxViewModelTest {
     private val observeViewModeChanged = mockk<ObserveViewModeChanged> {
         every { this@mockk(any()) } returns flowOf(Unit)
     }
+    private val refreshToolbarSharedFlow = MutableSharedFlow<Unit>()
+    private val toolbarRefreshSignal = mockk<ToolbarActionsRefreshSignal> {
+        every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
+    }
 
     private val mailboxViewModel by lazy {
         MailboxViewModel(
@@ -295,7 +300,7 @@ class MailboxViewModelTest {
             selectMailLabelId = selectMailLabelId,
             observeUnreadCounters = observeUnreadCounters,
             observeFolderColorSettings = observeFolderColorSettings,
-            getBottomBarActions = observeMailboxActions,
+            getBottomBarActions = getBottomBarActions,
             getBottomSheetActions = getBottomSheetActions,
             actionUiModelMapper = actionUiModelMapper,
             mailboxItemMapper = mailboxItemMapper,
@@ -322,7 +327,8 @@ class MailboxViewModelTest {
             deleteAllMessagesInLocation = deleteAllMessagesInLocation,
             getAttachmentIntentValues = getAttachmentIntentValues,
             observePageInvalidationEvents = observePageInvalidationEvents,
-            observeViewModeChanged = observeViewModeChanged
+            observeViewModeChanged = observeViewModeChanged,
+            toolbarRefreshSignal = toolbarRefreshSignal
         )
     }
 
@@ -439,6 +445,45 @@ class MailboxViewModelTest {
             // Then
             assertEquals(intermediateState, awaitItem())
             assertEquals(expectedState, awaitItem())
+        }
+    }
+
+    @Test
+    fun `when toolbar refresh signal is emitted, bottom bar actions are updated and emitted`() = runTest {
+        // Given
+        val item = readMailboxItemUiModel
+        val intermediateState = createMailboxDataState()
+        val selectionState = MailboxStateSampleData.createSelectionMode(listOf(item))
+        val expectedBottomBarActions = listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
+        val expectedBottomBarState = selectionState.copy(
+            bottomAppBarState = BottomBarState.Data.Shown(expectedBottomBarActions)
+        )
+
+        expectedSelectedLabelCountStateChange(intermediateState)
+        returnExpectedStateWhenEnterSelectionMode(intermediateState, item, selectionState)
+        returnExpectedStateForBottomBarEvent(selectionState, expectedBottomBarState)
+        expectPagerMock()
+
+        // When + Then
+        mailboxViewModel.state.test {
+            awaitItem() // First emission
+
+            mailboxViewModel.submit(MailboxViewAction.OnItemLongClicked(item))
+            assertEquals(selectionState, awaitItem())
+            assertEquals(expectedBottomBarState, awaitItem())
+
+            // Emit toolbar refresh signal to trigger a new getBottomBarActions call
+            refreshToolbarSharedFlow.emit(Unit)
+            advanceUntilIdle()
+
+            coVerify(exactly = 2) {
+                getBottomBarActions(
+                    userId,
+                    any(),
+                    listOf(MailboxItemId(item.id)),
+                    any()
+                )
+            }
         }
     }
 

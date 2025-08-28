@@ -109,6 +109,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
@@ -129,6 +130,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.android.core.accountmanager.domain.usecase.ObservePrimaryAccountAvatarItem
@@ -178,7 +180,8 @@ class MailboxViewModel @Inject constructor(
     private val getAttachmentIntentValues: GetAttachmentIntentValues,
     private val deleteAllMessagesInLocation: DeleteAllMessagesInLocation,
     private val observePageInvalidationEvents: ObservePageInvalidationEvents,
-    private val observeViewModeChanged: ObserveViewModeChanged
+    private val observeViewModeChanged: ObserveViewModeChanged,
+    private val toolbarRefreshSignal: ToolbarActionsRefreshSignal
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
@@ -228,25 +231,28 @@ class MailboxViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
-        observeLoadedMailLabelId().mapToExistingLabel()
-            .combine(state.observeSelectedMailboxItems()) { selectedMailLabel, selectedMailboxItems ->
-                getBottomBarActions(
-                    primaryUserId.filterNotNull().first(),
-                    selectedMailLabel.id.labelId,
-                    selectedMailboxItems.map { MailboxItemId(it.id) },
-                    getViewModeForCurrentLocation(selectedMailLabel.id)
-                ).fold(
-                    ifLeft = { MailboxEvent.MessageBottomBarEvent(BottomBarEvent.ErrorLoadingActions) },
-                    ifRight = { actions ->
-                        MailboxEvent.MessageBottomBarEvent(
-                            BottomBarEvent.ActionsData(
-                                actions.map { action -> actionUiModelMapper.toUiModel(action) }
-                                    .toImmutableList()
-                            )
+        combine(
+            observeLoadedMailLabelId().mapToExistingLabel(),
+            state.observeSelectedMailboxItems(),
+            toolbarRefreshSignal.refreshEvents.onStart { emit(Unit) }
+        ) { selectedMailLabel, selectedMailboxItems, _ ->
+            getBottomBarActions(
+                primaryUserId.filterNotNull().first(),
+                selectedMailLabel.id.labelId,
+                selectedMailboxItems.map { MailboxItemId(it.id) },
+                getViewModeForCurrentLocation(selectedMailLabel.id)
+            ).fold(
+                ifLeft = { MailboxEvent.MessageBottomBarEvent(BottomBarEvent.ErrorLoadingActions) },
+                ifRight = { actions ->
+                    MailboxEvent.MessageBottomBarEvent(
+                        BottomBarEvent.ActionsData(
+                            actions.map { action -> actionUiModelMapper.toUiModel(action) }
+                                .toImmutableList()
                         )
-                    }
-                )
-            }
+                    )
+                }
+            )
+        }
             .distinctUntilChanged()
             .onEach { emitNewStateFrom(it) }
             .launchIn(viewModelScope)
