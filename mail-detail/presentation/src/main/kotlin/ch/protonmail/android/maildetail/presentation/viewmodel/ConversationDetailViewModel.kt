@@ -265,20 +265,20 @@ class ConversationDetailViewModel @Inject constructor(
     @Suppress("LongMethod", "ComplexMethod")
     fun submit(action: ConversationDetailViewAction) {
         when (action) {
-            is Star -> starConversation()
-            is UnStar -> unStarConversation()
+            is Star -> handleStarAction()
+            is UnStar -> handleUnStarAction()
             is ConversationDetailViewAction.MarkRead -> markAsRead()
-            is MarkUnread -> markAsUnread()
-            is MoveToTrash -> moveConversationToTrash()
-            is ConversationDetailViewAction.MoveToArchive -> moveConversationToArchive()
-            is ConversationDetailViewAction.MoveToSpam -> moveConversationToSpam()
+            is MarkUnread -> handleMarkUnReadAction()
+            is MoveToTrash -> handleTrashAction()
+            is ConversationDetailViewAction.MoveToArchive -> handleArchiveAction()
+            is ConversationDetailViewAction.MoveToSpam -> handleSpamAction()
             is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
             is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is ConversationDetailViewAction.RequestConversationMoveToBottomSheet ->
                 requestConversationMoveToBottomSheet(action)
 
             is ConversationDetailViewAction.MoveToCompleted -> handleMoveToCompleted(action)
-            is MoveToInbox -> moveConversationToInbox()
+            is MoveToInbox -> handleMoveToInboxAction()
             is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet ->
                 requestConversationLabelAsBottomSheet(action)
 
@@ -321,8 +321,8 @@ class ConversationDetailViewModel @Inject constructor(
 
             is ConversationDetailViewAction.ChangeVisibilityOfMessages -> handleChangeVisibilityOfMessages()
 
-            is ConversationDetailViewAction.DeleteRequested,
-            is ConversationDetailViewAction.DeleteDialogDismissed,
+            is ConversationDetailViewAction.DeleteRequested -> handleDeleteRequestedAction()
+            is ConversationDetailViewAction.DeleteDialogDismissed ->
             is ConversationDetailViewAction.DeleteMessageRequested,
             is ConversationDetailViewAction.DismissBottomSheet,
             is MessageBodyLinkClicked,
@@ -902,6 +902,17 @@ class ConversationDetailViewModel @Inject constructor(
         mutableDetailState.update { newState }
     }
 
+    private fun handleMarkUnReadAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                handleMarkMessageUnread(ConversationDetailViewAction.MarkMessageUnread(messageId))
+            } else {
+                markAsUnread()
+            }
+        }
+    }
+
     private fun markAsRead() {
         viewModelScope.launch {
             performSafeExitAction(
@@ -924,6 +935,17 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
+    private fun handleTrashAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Trash(messageId))
+            } else {
+                moveConversationToTrash()
+            }
+        }
+    }
+
     private fun moveConversationToTrash() {
         viewModelScope.launch {
             performSafeExitAction(
@@ -935,6 +957,17 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
+    private fun handleSpamAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Spam(messageId))
+            } else {
+                moveConversationToSpam()
+            }
+        }
+    }
+
     private fun moveConversationToSpam() {
         viewModelScope.launch {
             performSafeExitAction(
@@ -942,6 +975,17 @@ class ConversationDetailViewModel @Inject constructor(
                 onRight = ConversationDetailEvent.ExitScreenWithMessage(ConversationDetailViewAction.MoveToSpam)
             ) { userId ->
                 moveConversation(userId, conversationId, SystemLabelId.Spam)
+            }
+        }
+    }
+
+    private fun handleArchiveAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Archive(messageId))
+            } else {
+                moveConversationToArchive()
             }
         }
     }
@@ -959,6 +1003,17 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
+    private fun handleStarAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                handleStarMessage(ConversationDetailViewAction.StarMessage(messageId))
+            } else {
+                starConversation()
+            }
+        }
+    }
+
     private fun starConversation() {
         primaryUserId.mapLatest { userId ->
             starConversations(userId, listOf(conversationId)).fold(
@@ -968,6 +1023,17 @@ class ConversationDetailViewModel @Inject constructor(
         }.onEach { event ->
             emitNewStateFrom(event)
         }.launchIn(viewModelScope)
+    }
+
+    private fun handleUnStarAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                handleUnStarMessage(ConversationDetailViewAction.UnStarMessage(messageId))
+            } else {
+                unStarConversation()
+            }
+        }
     }
 
     private fun unStarConversation() {
@@ -981,6 +1047,17 @@ class ConversationDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun handleMoveToInboxAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Inbox(messageId))
+            } else {
+                moveConversationToInbox()
+            }
+        }
+    }
+
     private fun moveConversationToInbox() {
         viewModelScope.launch {
             performSafeExitAction(
@@ -988,6 +1065,17 @@ class ConversationDetailViewModel @Inject constructor(
                 onRight = ConversationDetailEvent.ExitScreenWithMessage(MoveToInbox)
             ) { userId ->
                 moveConversation(userId, conversationId, SystemLabelId.Inbox)
+            }
+        }
+    }
+
+    private fun handleDeleteRequestedAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                emitNewStateFrom(ConversationDetailViewAction.DeleteMessageRequested(messageId))
+            } else {
+                emitNewStateFrom(ConversationDetailViewAction.DeleteRequested)
             }
         }
     }
