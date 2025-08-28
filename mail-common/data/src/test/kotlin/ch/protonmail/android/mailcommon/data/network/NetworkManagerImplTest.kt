@@ -99,18 +99,6 @@ internal class NetworkManagerImplTest {
     }
 
     @Test
-    fun `networkStatus returns Disconnected when not validated`() {
-        // Given
-        setupConnectedNetwork(isValidated = false)
-
-        // When
-        val result = NetworkManagerImpl(context).networkStatus
-
-        // Then
-        assertEquals(NetworkStatus.Disconnected, result)
-    }
-
-    @Test
     fun `networkStatus returns Unmetered when connected and not metered`() {
         // Given
         setupConnectedNetwork(isMetered = false)
@@ -212,15 +200,10 @@ internal class NetworkManagerImplTest {
         }
     }
 
-    private fun setupConnectedNetwork(
-        hasInternet: Boolean = true,
-        isValidated: Boolean = true,
-        isMetered: Boolean = false
-    ) {
+    private fun setupConnectedNetwork(hasInternet: Boolean = true, isMetered: Boolean = false) {
         every { connectivityManager.activeNetwork } returns network
         every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
         every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) } returns hasInternet
-        every { networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) } returns isValidated
         every { connectivityManager.isActiveNetworkMetered } returns isMetered
     }
 

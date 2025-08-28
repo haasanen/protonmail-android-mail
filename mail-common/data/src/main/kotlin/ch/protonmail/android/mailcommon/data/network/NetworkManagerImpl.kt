@@ -107,10 +107,9 @@ class NetworkManagerImpl @Inject constructor(
         }
 
         val hasInternet = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        val isValidated = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
 
         return when {
-            !hasInternet || !isValidated -> NetworkStatus.Disconnected
+            !hasInternet -> NetworkStatus.Disconnected
             connectivityManager.isActiveNetworkMetered -> NetworkStatus.Metered
             else -> NetworkStatus.Unmetered
         }
