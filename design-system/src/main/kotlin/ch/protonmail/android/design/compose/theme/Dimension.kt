@@ -42,6 +42,7 @@ object ProtonDimens {
     val PullToRefreshOuterCircleSize = 52.dp
 
     val sideBarMaximumWidth = 320.dp
+    val sideBarHeaderHeight = 90.dp
 
     object Spacing {
 

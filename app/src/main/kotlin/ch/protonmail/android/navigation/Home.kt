@@ -44,6 +44,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -489,11 +490,7 @@ fun Home(
                         .alpha(drawerAlpha)
                         .widthIn(max = ProtonDimens.sideBarMaximumWidth),
                     drawerContentColor = ProtonTheme.colors.sidebarTextNorm,
-                    drawerContainerColor = ProtonTheme.colors.sidebarBackground,
-                    windowInsets = WindowInsets(
-                        top = ProtonDimens.Spacing.ExtraLarge,
-                        bottom = ProtonDimens.Spacing.ExtraLarge
-                    ),
+                    drawerContainerColor = Color.Transparent,
                     drawerShape = RectangleShape
                 ) {
                     Sidebar(

@@ -22,6 +22,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -47,6 +48,7 @@ import kotlinx.coroutines.launch
 fun ProtonSidebarLazy(
     modifier: Modifier = Modifier,
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
+    listState: LazyListState = rememberLazyListState(),
     content: LazyListScope.() -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -61,10 +63,9 @@ fun ProtonSidebarLazy(
             contentColor = ProtonTheme.colors.sidebarTextNorm,
             modifier = modifier.fillMaxSize()
         ) {
-            val state = rememberLazyListState()
 
             LazyColumn(
-                state = state,
+                state = listState,
                 content = content
             )
         }
@@ -85,7 +86,8 @@ fun ProtonSidebarLazy(
 fun PreviewProtonSidebarLazy() {
     ProtonTheme {
         ProtonSidebarLazy(
-            drawerState = DrawerState(DrawerValue.Open) { true }
+            drawerState = DrawerState(DrawerValue.Open) { true },
+            listState = rememberLazyListState()
         ) {
             item {
                 ProtonSidebarItem { Text(text = "Inbox") }
