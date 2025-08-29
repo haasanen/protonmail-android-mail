@@ -20,6 +20,7 @@ package ch.protonmail.android.initializer.background
 
 import androidx.lifecycle.LifecycleOwner
 import ch.protonmail.android.mailsession.data.background.BackgroundExecutionWorkScheduler
+import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
@@ -30,34 +31,41 @@ import io.mockk.runs
 import io.mockk.verify
 import kotlin.test.Test
 
-internal class BackgroundExecutionLifecycleObserverTest {
+internal class RustWorkLifecycleObserverTest {
 
     private val scheduler = mockk<BackgroundExecutionWorkScheduler>()
-    private val observer = BackgroundExecutionLifecycleObserver(scheduler)
+    private val mailSessionRepository = mockk<MailSessionRepository>()
+    private val observer = RustWorkLifecycleObserver(mailSessionRepository, scheduler)
 
     private val lifecycleOwner = mockk<LifecycleOwner>()
 
     @Test
-    fun `should cancel background work when onResume is triggered`() {
+    fun `should cancel background execution and resume work when onResume is triggered`() {
         // Given
         every { scheduler.cancelPendingWork() } just runs
+        every { mailSessionRepository.getMailSession().resumeWork() } just runs
+
         // When
         observer.onResume(lifecycleOwner)
 
         // Then
         verify(exactly = 1) { scheduler.cancelPendingWork() }
-        confirmVerified(scheduler)
+        coVerify(exactly = 1) { mailSessionRepository.getMailSession().resumeWork() }
+        confirmVerified(mailSessionRepository, scheduler)
     }
 
     @Test
-    fun `should schedule background work when onStop is triggered`() {
+    fun `should schedule background execution and pause work when onStop is triggered`() {
         // Given
         coEvery { scheduler.scheduleWork() } just runs
+        every { mailSessionRepository.getMailSession().pauseWork() } just runs
+
         // When
         observer.onStop(lifecycleOwner)
 
         // Then
         coVerify(exactly = 1) { scheduler.scheduleWork() }
-        confirmVerified(scheduler)
+        coVerify(exactly = 1) { mailSessionRepository.getMailSession().pauseWork() }
+        confirmVerified(mailSessionRepository, scheduler)
     }
 }

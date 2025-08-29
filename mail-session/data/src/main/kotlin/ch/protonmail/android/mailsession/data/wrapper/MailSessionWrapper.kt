@@ -149,6 +149,16 @@ class MailSessionWrapper(private val mailSession: MailSession) {
 
     fun startBackgroundTask(callback: BackgroundExecutionCallback) = mailSession.startBackgroundExecution(callback)
 
+    /**
+     * Used to pause work when the app is sent to the background.
+     */
+    fun pauseWork() = mailSession.pauseWork()
+
+    /**
+     * Used to resume work when the app is brought back to the foreground.
+     */
+    fun resumeWork() = mailSession.resumeWork()
+
     suspend fun newLoginFlow(): Either<DataError, LoginFlowWrapper> {
         return when (val result = mailSession.newLoginFlow()) {
             is MailSessionNewLoginFlowResult.Ok -> LoginFlowWrapper(result.v1).right()

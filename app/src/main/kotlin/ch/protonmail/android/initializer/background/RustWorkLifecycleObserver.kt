@@ -21,17 +21,29 @@ package ch.protonmail.android.initializer.background
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import ch.protonmail.android.mailsession.data.background.BackgroundExecutionWorkScheduler
+import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import javax.inject.Inject
 
-class BackgroundExecutionLifecycleObserver @Inject constructor(
+class RustWorkLifecycleObserver @Inject constructor(
+    private val mailSessionRepository: MailSessionRepository,
     private val backgroundExecutionWorkScheduler: BackgroundExecutionWorkScheduler
 ) : DefaultLifecycleObserver {
 
     override fun onResume(owner: LifecycleOwner) {
         backgroundExecutionWorkScheduler.cancelPendingWork()
+        resumeWork()
     }
 
     override fun onStop(owner: LifecycleOwner) {
+        pauseWork()
         backgroundExecutionWorkScheduler.scheduleWork()
+    }
+
+    private fun pauseWork() {
+        mailSessionRepository.getMailSession().pauseWork()
+    }
+
+    private fun resumeWork() {
+        mailSessionRepository.getMailSession().resumeWork()
     }
 }

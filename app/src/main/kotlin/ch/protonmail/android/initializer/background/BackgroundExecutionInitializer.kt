@@ -46,6 +46,6 @@ internal class BackgroundExecutionInitializer : Initializer<Unit> {
     @InstallIn(SingletonComponent::class)
     interface BackgroundExecutionEntryPoint {
 
-        fun lifecycleObserver(): BackgroundExecutionLifecycleObserver
+        fun lifecycleObserver(): RustWorkLifecycleObserver
     }
 }
