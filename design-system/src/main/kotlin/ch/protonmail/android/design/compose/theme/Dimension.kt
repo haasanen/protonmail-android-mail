@@ -41,6 +41,8 @@ object ProtonDimens {
     val PullToRefreshInnerSpinnerSize = 28.dp
     val PullToRefreshOuterCircleSize = 52.dp
 
+    val sideBarMaximumWidth = 320.dp
+
     object Spacing {
 
         val ExtraTiny = 1.dp

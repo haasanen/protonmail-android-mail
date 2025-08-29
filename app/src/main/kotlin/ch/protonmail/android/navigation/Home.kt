@@ -22,6 +22,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalDrawerSheet
@@ -485,7 +486,9 @@ fun Home(
             drawerState = drawerState,
             drawerContent = {
                 ModalDrawerSheet(
-                    modifier = Modifier.alpha(drawerAlpha),
+                    modifier = Modifier
+                        .alpha(drawerAlpha)
+                        .widthIn(max = ProtonDimens.sideBarMaximumWidth),
                     drawerContentColor = ProtonTheme.colors.sidebarTextNorm,
                     drawerContainerColor = ProtonTheme.colors.sidebarBackground,
                     windowInsets = WindowInsets(
