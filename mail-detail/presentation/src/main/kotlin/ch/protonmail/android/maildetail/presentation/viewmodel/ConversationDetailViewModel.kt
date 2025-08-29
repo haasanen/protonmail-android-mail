@@ -830,7 +830,8 @@ class ConversationDetailViewModel @Inject constructor(
     private fun handleMoveToCompleted(operation: ConversationDetailViewAction.MoveToCompleted) {
         viewModelScope.launch {
             val shouldExit = when (val entryPoint = operation.entryPoint) {
-                is MoveToBottomSheetEntryPoint.Message -> entryPoint.isLastInCurrentLocation
+                is MoveToBottomSheetEntryPoint.Message ->
+                    entryPoint.isLastInCurrentLocation || isSingleMessageModeEnabled
                 is MoveToBottomSheetEntryPoint.Conversation -> true
                 else -> false
             }
@@ -1395,7 +1396,7 @@ class ConversationDetailViewModel @Inject constructor(
             moveMessage(userId, messageId, mailLabelId.labelId).getOrNull()
         } ?: return emitNewStateFrom(ConversationDetailEvent.ErrorMovingMessage)
 
-        val event = if (isLastMessageInLocation) {
+        val event = if (isLastMessageInLocation || isSingleMessageModeEnabled) {
             ConversationDetailEvent.LastMessageMoved(mailLabelText)
         } else {
             ConversationDetailEvent.MessageMoved(mailLabelText)
