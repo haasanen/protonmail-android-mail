@@ -37,7 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
-import ch.protonmail.android.mailbugreport.domain.model.FileNames
+import ch.protonmail.android.mailbugreport.domain.helper.EventsFileNameHelper
 import ch.protonmail.android.mailbugreport.presentation.R
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsOperation.ApplicationLogsAction.Export
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsOperation.ApplicationLogsAction.View
@@ -66,7 +66,7 @@ fun ApplicationLogsScreen(
     }
 
     val screenListActions = ApplicationLogsScreenList.Actions(
-        onExport = { fileSaveLauncher.launch(FileNames.ZipFile) },
+        onExport = { fileSaveLauncher.launch(EventsFileNameHelper.generateTimestampedFilename()) },
         onShare = { viewModel.submit(Export.ShareLogs) },
         onShowLogcat = { viewModel.submit(View.ViewLogcat) },
         onShowRustEvents = { viewModel.submit(View.ViewRustEvents) },

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,9 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailbugreport.domain.model
+package ch.protonmail.android.mailbugreport.domain.helper
 
-object FileNames {
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import ch.protonmail.android.mailbugreport.domain.model.FileNames
 
-    const val EventsBaseFileName = "protonmail_events"
+object EventsFileNameHelper {
+    fun generateTimestampedFilename(): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmm")
+        val timestamp = Instant.now()
+            .atZone(ZoneId.systemDefault())
+            .format(formatter)
+        return "${FileNames.EventsBaseFileName}_$timestamp.zip"
+    }
 }

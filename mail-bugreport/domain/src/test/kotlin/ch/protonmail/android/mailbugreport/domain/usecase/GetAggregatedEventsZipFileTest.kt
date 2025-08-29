@@ -22,21 +22,24 @@ import java.io.File
 import android.content.Context
 import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.helper.EventsFileNameHelper
 import ch.protonmail.android.mailbugreport.domain.provider.LogcatProvider
 import io.mockk.called
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.unmockkAll
+import io.mockk.mockkObject
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import javax.inject.Provider
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class GetAggregatedEventsZipFileTest {
+internal class GetAggregatedEventsZipFileTest {
 
     private val context: Context = mockk(relaxed = true)
     private val logcatProvider = mockk<LogcatProvider>()
@@ -55,10 +58,17 @@ class GetAggregatedEventsZipFileTest {
 
     @Before
     fun setup() {
-        unmockkAll()
+        mockkObject(EventsFileNameHelper)
+        every { EventsFileNameHelper.generateTimestampedFilename() } returns DefaultFileName
+
         val tempCacheDir = File(System.getProperty("java.io.tmpdir"), "test-cache")
             .apply { mkdirs() }
         every { context.cacheDir } returns tempCacheDir
+    }
+
+    @AfterTest
+    fun teardown() {
+        clearAllMocks()
     }
 
     @Test
@@ -81,7 +91,7 @@ class GetAggregatedEventsZipFileTest {
         // Then
         assertTrue(result.isSuccess)
         result.getOrNull()?.let { zipFile ->
-            assertEquals("protonmail_events.zip", zipFile.name)
+            assertEquals(DefaultFileName, zipFile.name)
             assertTrue(zipFile.exists())
         }
     }
@@ -104,7 +114,7 @@ class GetAggregatedEventsZipFileTest {
         // Then
         assertTrue(result.isSuccess)
         result.getOrNull()?.let { zipFile ->
-            assertEquals("protonmail_events.zip", zipFile.name)
+            assertEquals(DefaultFileName, zipFile.name)
             assertTrue(zipFile.exists())
         }
         verify { logcatProvider wasNot called }
@@ -148,6 +158,7 @@ class GetAggregatedEventsZipFileTest {
     private companion object {
 
         val DefaultExportSettings = LogsExportFeatureSetting(enabled = true, internalEnabled = true)
+        const val DefaultFileName = "FileName.zip"
     }
 }
 

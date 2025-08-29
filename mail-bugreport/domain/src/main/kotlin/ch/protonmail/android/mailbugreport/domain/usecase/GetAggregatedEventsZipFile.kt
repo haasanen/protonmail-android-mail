@@ -29,7 +29,7 @@ import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.AppLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
 import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
-import ch.protonmail.android.mailbugreport.domain.model.FileNames
+import ch.protonmail.android.mailbugreport.domain.helper.EventsFileNameHelper
 import ch.protonmail.android.mailbugreport.domain.provider.LogcatProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +47,8 @@ class GetAggregatedEventsZipFile @Inject constructor(
     suspend operator fun invoke() = withContext(Dispatchers.IO) {
         runCatching {
             val directoriesList = buildDirectoriesList(logsExportFeatureSetting)
-            val outputFile = File(applicationContext.cacheDir, FilePath).also {
+            val fileName = EventsFileNameHelper.generateTimestampedFilename()
+            val outputFile = File(applicationContext.cacheDir, fileName).also {
                 it.mkdirs()
                 if (it.exists()) it.delete()
             }
@@ -91,10 +92,5 @@ class GetAggregatedEventsZipFile @Inject constructor(
             add(appLogsFileHandler.getParentPath())
             add(rustLogsFileHandler.getParentPath())
         }
-    }
-
-    private companion object {
-
-        const val FilePath = "export_logs/${FileNames.ZipFile}"
     }
 }
