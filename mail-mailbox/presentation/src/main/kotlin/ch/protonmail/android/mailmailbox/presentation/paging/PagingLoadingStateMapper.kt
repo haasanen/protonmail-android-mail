@@ -84,7 +84,7 @@ fun refreshErrorToUiState(pagingItems: LazyPagingItems<MailboxItemUiModel>): Mai
     }
 
     return when {
-        exception.error is PaginationError.Offline -> MailboxScreenState.Offline
+        exception.error is PaginationError.Offline -> MailboxScreenState.Loading
         else -> MailboxScreenState.Error
     }
 }

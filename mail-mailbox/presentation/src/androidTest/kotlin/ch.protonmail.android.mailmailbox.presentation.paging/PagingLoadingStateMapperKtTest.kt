@@ -94,7 +94,7 @@ class PagingLoadingStateMapperKtTest {
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
             every { loadState.append } returns LoadState.NotLoading(false)
         }
-        assertEquals(MailboxScreenState.Offline, items.mapToUiStates(false))
+        assertEquals(MailboxScreenState.Loading, items.mapToUiStates(false))
     }
 
     @Test
