@@ -60,9 +60,10 @@ fun OnboardingScreen(
     var hasCompletedOnboarding by remember { mutableStateOf(false) }
 
     when {
-        state is OnboardingState.ToUpsell && hasCompletedOnboarding ->
+        hasCompletedOnboarding && (state is OnboardingState.ToUpsell || state is OnboardingState.Loading) ->
             OnboardingUpsellScreen(exitAction, onUpsellingError)
 
+        hasCompletedOnboarding && state is OnboardingState.NoUpsell -> exitAction()
         else -> OnboardingScreen(state, { hasCompletedOnboarding = true }, exitAction)
     }
 }
