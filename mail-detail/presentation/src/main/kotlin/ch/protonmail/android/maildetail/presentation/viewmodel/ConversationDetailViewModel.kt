@@ -289,7 +289,7 @@ class ConversationDetailViewModel @Inject constructor(
                 showMessageMoreActionsBottomSheet(action)
 
             is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet ->
-                showConversationMoreActionsBottomSheet(action)
+                handleRequestMoreBottomSheetAction()
 
             is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet ->
                 requestMessageLabelAsBottomSheet(action)
@@ -886,6 +886,24 @@ class ConversationDetailViewModel @Inject constructor(
             )
                 ?: return@launch
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
+        }
+    }
+
+    private fun handleRequestMoreBottomSheetAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                showMessageMoreActionsBottomSheet(
+                    initialEvent = ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                        messageId = messageId,
+                        themeOptions = MessageThemeOptions(MessageTheme.Dark)
+                    )
+                )
+            } else {
+                showConversationMoreActionsBottomSheet(
+                    ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet
+                )
+            }
         }
     }
 
