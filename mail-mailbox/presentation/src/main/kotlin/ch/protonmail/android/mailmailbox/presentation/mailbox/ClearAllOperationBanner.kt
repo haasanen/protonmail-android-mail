@@ -18,18 +18,28 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonBanner
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
+import ch.protonmail.android.design.compose.component.ProtonButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.model.string
@@ -72,7 +82,8 @@ internal object ClearAllOperationBanner {
 private fun ClearAllOperationBannerContent(state: ClearAllStateUiModel, actions: ClearAllOperationBanner.Actions) {
     when (state) {
         is ClearAllStateUiModel.Visible.ClearAllBannerWithButton -> ClearBannerWithButton(state, actions.onClearAll)
-        is ClearAllStateUiModel.Visible.UpsellBanner -> ClearUpsellBanner(state, actions.onUpselling)
+        is ClearAllStateUiModel.Visible.UpsellBanner ->
+            ClearUpsellBanner(state, actions.onUpselling, actions.onClearAll)
         is ClearAllStateUiModel.Hidden -> Unit
     }
 }
@@ -93,7 +104,8 @@ private fun ClearBannerWithButton(
 @Composable
 private fun ClearUpsellBanner(
     upsellBannerState: ClearAllStateUiModel.Visible.UpsellBanner,
-    onButtonClicked: (type: UpsellingVisibility) -> Unit
+    onUpsellButtonClicked: (type: UpsellingVisibility) -> Unit,
+    onClearAllButtonClick: () -> Unit
 ) {
     val contentPadding = PaddingValues(ProtonDimens.Spacing.ModeratelyLarge)
 
@@ -107,10 +119,32 @@ private fun ClearUpsellBanner(
         backgroundColor = ProtonTheme.colors.backgroundNorm,
         contentPadding = contentPadding
     ) {
-        UpsellBannerButton(
-            modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
-            ctaText = upsellBannerState.upgradeButtonText.string(), onClick = onButtonClicked
-        )
+        Column {
+            UpsellBannerButton(
+                modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+                ctaText = upsellBannerState.upgradeButtonText.string(), onClick = onUpsellButtonClicked
+            )
+
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+
+            ProtonButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onClearAllButtonClick,
+                colors = ButtonDefaults.buttonColors().copy(
+                    containerColor = ProtonTheme.colors.interactionWeakNorm,
+                    contentColor = ProtonTheme.colors.textNorm
+                ),
+                elevation = ButtonDefaults.buttonElevation(0.dp),
+                shape = ProtonTheme.shapes.huge,
+                border = BorderStroke(ProtonDimens.OutlinedBorderSize, ProtonTheme.colors.interactionWeakNorm),
+                contentPadding = contentPadding
+            ) {
+                Text(
+                    text = upsellBannerState.clearAllButtonText.string(),
+                    style = ProtonTheme.typography.bodyMediumNorm
+                )
+            }
+        }
     }
 }
 

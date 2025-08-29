@@ -44,6 +44,7 @@ internal class ClearAllOperationBannerPreviewData : PreviewParameterProvider<Cle
     private val upsellBanner = ClearAllStateUiModel.Visible.UpsellBanner(
         bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_text),
         upgradeButtonText = TextUiModel(R.string.upselling_mailbox_plus_promo_cta),
+        clearAllButtonText = TextUiModel.TextRes(R.string.mailbox_action_button_clear_trash),
         icon = R.drawable.ic_upsell_mail_plus
     )
 

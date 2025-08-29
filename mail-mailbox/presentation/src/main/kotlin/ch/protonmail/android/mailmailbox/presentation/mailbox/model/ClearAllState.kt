@@ -22,7 +22,7 @@ import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 
 sealed interface ClearAllState {
     data object Hidden : ClearAllState
-    data object UpsellBanner : ClearAllState
+    data class UpsellBanner(val spamOrTrash: SpamOrTrash) : ClearAllState
     data class ClearAllActionBanner(
         val isAutoDeleteEnabled: Boolean,
         val spamOrTrash: SpamOrTrash

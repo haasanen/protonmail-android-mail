@@ -29,6 +29,7 @@ sealed interface ClearAllStateUiModel {
         data class UpsellBanner(
             val bannerText: TextUiModel,
             val upgradeButtonText: TextUiModel,
+            val clearAllButtonText: TextUiModel,
             @DrawableRes val icon: Int
         ) : Visible
 

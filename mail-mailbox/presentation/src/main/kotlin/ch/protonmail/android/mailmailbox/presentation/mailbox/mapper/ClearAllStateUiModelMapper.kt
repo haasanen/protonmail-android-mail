@@ -46,6 +46,10 @@ internal object ClearAllStateUiModelMapper {
             is ClearAllState.UpsellBanner -> ClearAllStateUiModel.Visible.UpsellBanner(
                 bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_text),
                 upgradeButtonText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_cta),
+                clearAllButtonText = when (state.spamOrTrash) {
+                    SpamOrTrash.Spam -> TextUiModel(R.string.mailbox_action_button_clear_spam)
+                    SpamOrTrash.Trash -> TextUiModel(R.string.mailbox_action_button_clear_trash)
+                },
                 icon = R.drawable.ic_upsell_mail_plus
             )
         }

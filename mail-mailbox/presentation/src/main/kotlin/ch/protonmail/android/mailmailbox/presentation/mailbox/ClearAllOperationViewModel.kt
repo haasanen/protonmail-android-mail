@@ -73,7 +73,7 @@ internal class ClearAllOperationViewModel @Inject constructor(
                 ifLeft = { ClearAllState.Hidden },
                 ifRight = {
                     when (it.state) {
-                        AutoDeleteState.AutoDeleteUpsell -> ClearAllState.UpsellBanner
+                        AutoDeleteState.AutoDeleteUpsell -> ClearAllState.UpsellBanner(spamOrTrash = it.folder)
                         AutoDeleteState.AutoDeleteDisabled -> ClearAllState.ClearAllActionBanner(
                             isAutoDeleteEnabled = false,
                             spamOrTrash = it.folder
