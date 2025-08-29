@@ -43,14 +43,14 @@ internal class RustWorkLifecycleObserverTest {
     fun `should cancel background execution and resume work when onResume is triggered`() {
         // Given
         every { scheduler.cancelPendingWork() } just runs
-        every { mailSessionRepository.getMailSession().resumeWork() } just runs
+        every { mailSessionRepository.getMailSession().onEnterForeground() } just runs
 
         // When
         observer.onResume(lifecycleOwner)
 
         // Then
         verify(exactly = 1) { scheduler.cancelPendingWork() }
-        coVerify(exactly = 1) { mailSessionRepository.getMailSession().resumeWork() }
+        coVerify(exactly = 1) { mailSessionRepository.getMailSession().onEnterForeground() }
         confirmVerified(mailSessionRepository, scheduler)
     }
 
@@ -58,14 +58,14 @@ internal class RustWorkLifecycleObserverTest {
     fun `should schedule background execution and pause work when onStop is triggered`() {
         // Given
         coEvery { scheduler.scheduleWork() } just runs
-        every { mailSessionRepository.getMailSession().pauseWork() } just runs
+        every { mailSessionRepository.getMailSession().onExitForeground() } just runs
 
         // When
         observer.onStop(lifecycleOwner)
 
         // Then
         coVerify(exactly = 1) { scheduler.scheduleWork() }
-        coVerify(exactly = 1) { mailSessionRepository.getMailSession().pauseWork() }
+        coVerify(exactly = 1) { mailSessionRepository.getMailSession().onExitForeground() }
         confirmVerified(mailSessionRepository, scheduler)
     }
 }

@@ -31,19 +31,19 @@ class RustWorkLifecycleObserver @Inject constructor(
 
     override fun onResume(owner: LifecycleOwner) {
         backgroundExecutionWorkScheduler.cancelPendingWork()
-        resumeWork()
+        onRustEnterForeground()
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        pauseWork()
+        onRustExitForeground()
         backgroundExecutionWorkScheduler.scheduleWork()
     }
 
-    private fun pauseWork() {
-        mailSessionRepository.getMailSession().pauseWork()
+    private fun onRustExitForeground() {
+        mailSessionRepository.getMailSession().onExitForeground()
     }
 
-    private fun resumeWork() {
-        mailSessionRepository.getMailSession().resumeWork()
+    private fun onRustEnterForeground() {
+        mailSessionRepository.getMailSession().onEnterForeground()
     }
 }
