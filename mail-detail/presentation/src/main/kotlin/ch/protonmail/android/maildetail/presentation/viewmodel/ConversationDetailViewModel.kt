@@ -275,12 +275,12 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
             is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is ConversationDetailViewAction.RequestConversationMoveToBottomSheet ->
-                requestConversationMoveToBottomSheet(action)
+                handleRequestMoveToBottomSheetAction()
 
             is ConversationDetailViewAction.MoveToCompleted -> handleMoveToCompleted(action)
             is MoveToInbox -> handleMoveToInboxAction()
             is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet ->
-                requestConversationLabelAsBottomSheet(action)
+                handleRequestLabelAsBottomSheetAction()
 
             is ConversationDetailViewAction.RequestContactActionsBottomSheet ->
                 showContactActionsBottomSheetAndLoadData(action)
@@ -322,7 +322,7 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.ChangeVisibilityOfMessages -> handleChangeVisibilityOfMessages()
 
             is ConversationDetailViewAction.DeleteRequested -> handleDeleteRequestedAction()
-            is ConversationDetailViewAction.DeleteDialogDismissed ->
+            is ConversationDetailViewAction.DeleteDialogDismissed,
             is ConversationDetailViewAction.DeleteMessageRequested,
             is ConversationDetailViewAction.DismissBottomSheet,
             is MessageBodyLinkClicked,
@@ -742,6 +742,21 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
+    private fun handleRequestMoveToBottomSheetAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                requestMessageMoveToBottomSheet(
+                    ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId)
+                )
+            } else {
+                requestConversationMoveToBottomSheet(
+                    ConversationDetailViewAction.RequestConversationMoveToBottomSheet
+                )
+            }
+        }
+    }
+
     private fun requestConversationMoveToBottomSheet(
         operation: ConversationDetailViewAction.RequestConversationMoveToBottomSheet
     ) {
@@ -780,6 +795,21 @@ class ConversationDetailViewModel @Inject constructor(
             )
 
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
+        }
+    }
+
+    private fun handleRequestLabelAsBottomSheetAction() {
+        viewModelScope.launch {
+            if (isSingleMessageModeEnabled) {
+                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
+                requestMessageLabelAsBottomSheet(
+                    ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(messageId)
+                )
+            } else {
+                requestConversationLabelAsBottomSheet(
+                    ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
+                )
+            }
         }
     }
 
