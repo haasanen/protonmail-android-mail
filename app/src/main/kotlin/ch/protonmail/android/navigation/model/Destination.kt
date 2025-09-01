@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactDetailsScreen.CONTACT_DETAILS_ID_KEY
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.CONTACT_GROUP_DETAILS_ID_KEY
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.IsSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -54,7 +55,7 @@ sealed class Destination(val route: String) {
     object Screen {
         object Mailbox : Destination("mailbox")
 
-        object Conversation : Destination(
+        object ConversationRouter : Destination(
             "mailbox/conversation/${ConversationIdKey.wrap()}/" +
                 "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}"
         ) {
@@ -66,6 +67,22 @@ sealed class Destination(val route: String) {
             ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
                 .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
                 .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
+        }
+
+        object Conversation : Destination(
+            "mailbox/conversation/${ConversationIdKey.wrap()}/" +
+                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/${IsSingleMessageMode.wrap()}"
+        ) {
+
+            operator fun invoke(
+                conversationId: ConversationId,
+                scrollToMessageId: MessageId? = null,
+                openedFromLocation: LabelId,
+                isSingleMessageMode: Boolean
+            ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
+                .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
+                .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
+                .replace(IsSingleMessageMode.wrap(), isSingleMessageMode.toString())
         }
 
         object Composer : Destination("composer")

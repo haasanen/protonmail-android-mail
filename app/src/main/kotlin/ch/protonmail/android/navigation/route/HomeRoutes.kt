@@ -18,6 +18,10 @@
 
 package ch.protonmail.android.navigation.route
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -42,6 +46,11 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactList
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
+import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationRouterViewModel
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
@@ -52,8 +61,36 @@ import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotBlank
+import timber.log.Timber
 
-internal fun NavGraphBuilder.addConversationDetail(actions: ConversationDetail.Actions) {
+internal fun NavGraphBuilder.addConversationDetail(
+    actions: ConversationDetail.Actions,
+    navController: NavHostController
+) {
+    composable(route = Destination.Screen.ConversationRouter.route) { backStackEntry ->
+        Timber.d("Conversation Router init (composition)")
+
+        val viewModel = hiltViewModel<ConversationRouterViewModel>()
+        val isSingleMessageMode by viewModel.singleMessageModeEnabled.collectAsStateWithLifecycle(null)
+
+        LaunchedEffect(isSingleMessageMode) {
+            val singleMessageMode = isSingleMessageMode ?: return@LaunchedEffect
+            val conversationDestination = Destination.Screen.Conversation(
+                conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
+                scrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
+                    ?.takeIf { it != "null" }
+                    ?.let(::MessageId),
+                openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
+                isSingleMessageMode = singleMessageMode
+            )
+
+            Timber.d("Conversation Router resolved 'is single message mode' to $isSingleMessageMode")
+            navController.navigate(conversationDestination) {
+                popUpTo(Destination.Screen.ConversationRouter.route) { inclusive = true }
+            }
+        }
+    }
+
     composable(route = Destination.Screen.Conversation.route) {
         ConversationDetailScreen(actions = actions)
     }
@@ -77,7 +114,7 @@ internal fun NavGraphBuilder.addMailbox(
                 navigateToMailboxItem = { request ->
                     val destination = when (request.shouldOpenInComposer) {
                         true -> Destination.Screen.EditDraftComposer(MessageId(request.itemId.value))
-                        false -> Destination.Screen.Conversation(
+                        false -> Destination.Screen.ConversationRouter(
                             ConversationId(request.itemId.value),
                             request.subItemId?.let { mailboxItemId ->
                                 MessageId(mailboxItemId.value)

@@ -86,7 +86,7 @@ internal fun NavGraphBuilder.addDeepLinkHandler(navController: NavHostController
 
                 is NotificationsDeepLinksViewModel.State.NavigateToConversation -> {
                     navController.navigate(
-                        Destination.Screen.Conversation(
+                        Destination.Screen.ConversationRouter(
                             conversationId = state.conversationId,
                             scrollToMessageId = state.scrollToMessageId,
                             openedFromLocation = state.contextLabelId
