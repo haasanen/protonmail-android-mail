@@ -92,7 +92,6 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
-import ch.protonmail.android.maildetail.presentation.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
@@ -258,6 +257,7 @@ class ConversationDetailViewModelTest {
         every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
         every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns null
         every { get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns "allmail"
+        every { get<String>(ConversationDetailScreen.IsSingleMessageMode) } returns "false"
     }
     private val starMessages = mockk<StarMessages>()
     private val unStarMessages = mockk<UnStarMessages>()
@@ -337,9 +337,6 @@ class ConversationDetailViewModelTest {
     }
 
     private val unsubscribeFromNewsletter = mockk<UnsubscribeFromNewsletter>()
-    private val isShowSingleMessageMode = mockk<IsShowSingleMessageMode> {
-        coEvery { this@mockk(userId) } returns false
-    }
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -393,8 +390,7 @@ class ConversationDetailViewModelTest {
             getRsvpEvent = getRsvpEvent,
             answerRsvpEvent = answerRsvpEvent,
             snoozeRepository = snoozeRepository,
-            unsubscribeFromNewsletter = unsubscribeFromNewsletter,
-            isShowSingleMessageMode = isShowSingleMessageMode
+            unsubscribeFromNewsletter = unsubscribeFromNewsletter
         )
     }
 

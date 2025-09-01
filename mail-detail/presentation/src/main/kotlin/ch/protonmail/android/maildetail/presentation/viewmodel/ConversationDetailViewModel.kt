@@ -90,7 +90,6 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailR
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
-import ch.protonmail.android.maildetail.presentation.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
@@ -212,8 +211,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val getRsvpEvent: GetRsvpEvent,
     private val answerRsvpEvent: AnswerRsvpEvent,
     private val snoozeRepository: SnoozeRepository,
-    private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter,
-    private val isShowSingleMessageMode: IsShowSingleMessageMode
+    private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -229,6 +227,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val initialScrollToMessageId = getInitialScrollToMessageId()
     private val openedFromLocation = getOpenedFromLocation()
     private val attachmentsState = MutableStateFlow<Map<MessageId, List<AttachmentMetadata>>>(emptyMap())
+    val isSingleMessageModeEnabled = getIsSingleMessageMode()
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
 
@@ -529,7 +528,7 @@ class ConversationDetailViewModel @Inject constructor(
             }
 
             val displayMessages = when {
-                isSingleMessageModeEnabled() -> conversationMessages.filterMessage(initialScrollToMessageId)
+                isSingleMessageModeEnabled -> conversationMessages.filterMessage(initialScrollToMessageId)
                 else -> conversationMessages.messages
             }
 
@@ -576,12 +575,6 @@ class ConversationDetailViewModel @Inject constructor(
             Timber.tag("SingleMessageMode").w("single message requested, message is not in convo $idUiModel")
             this.messages
         }
-
-    suspend fun isSingleMessageModeEnabled(): Boolean {
-        val value = isShowSingleMessageMode(primaryUserId.first())
-        Timber.tag("SingleMessageMode").d("Show single message is: $value")
-        return value
-    }
 
     private fun stateIsLoading(): Boolean = state.value.messagesState == ConversationDetailsMessagesState.Loading
 
@@ -859,6 +852,12 @@ class ConversationDetailViewModel @Inject constructor(
         val conversationId = savedStateHandle.get<String>(ConversationDetailScreen.ConversationIdKey)
             ?: throw IllegalStateException("No Conversation id given")
         return ConversationId(conversationId)
+    }
+
+    private fun getIsSingleMessageMode(): Boolean {
+        val value = savedStateHandle.get<String>(ConversationDetailScreen.IsSingleMessageMode)
+        Timber.tag("SingleMessageMode").d("Show single message is: $value")
+        return value.toBoolean()
     }
 
     private fun getInitialScrollToMessageId(): MessageIdUiModel? {

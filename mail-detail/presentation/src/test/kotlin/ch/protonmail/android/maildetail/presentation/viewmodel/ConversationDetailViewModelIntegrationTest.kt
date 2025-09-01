@@ -136,7 +136,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTim
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
-import ch.protonmail.android.maildetail.presentation.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
@@ -279,9 +278,6 @@ class ConversationDetailViewModelIntegrationTest {
     private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
         every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
     }
-    private val isShowSingleMessageMode = mockk<IsShowSingleMessageMode> {
-        coEvery { this@mockk(userId) } returns false
-    }
 
     private val snoozeRepository = mockk<SnoozeRepository> {
         coEvery { this@mockk.unSnoozeConversation(any(), any(), any()) } returns Unit.right()
@@ -319,9 +315,8 @@ class ConversationDetailViewModelIntegrationTest {
     private val savedStateHandle: SavedStateHandle = mockk {
         every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
         every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns "null"
-        every {
-            get<String>(ConversationDetailScreen.OpenedFromLocationKey)
-        } returns filterByLocationLabelId.id
+        every { get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns filterByLocationLabelId.id
+        every { get<String>(ConversationDetailScreen.IsSingleMessageMode) } returns "false"
     }
     private val starMessages = mockk<StarMessages>()
     private val unStarMessages = mockk<UnStarMessages>()
@@ -2567,8 +2562,7 @@ class ConversationDetailViewModelIntegrationTest {
         getRsvpEvent = getRsvpEvent,
         answerRsvpEvent = answerRsvpEvent,
         snoozeRepository = snoozeRepository,
-        unsubscribeFromNewsletter = unsubscribeFromNewsletter,
-        isShowSingleMessageMode = isShowSingleMessageMode
+        unsubscribeFromNewsletter = unsubscribeFromNewsletter
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(
