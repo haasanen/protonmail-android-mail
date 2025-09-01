@@ -22,8 +22,6 @@ import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingViewModel
-import ch.protonmail.android.mailsession.domain.model.UserAccountAge
-import ch.protonmail.android.mailsession.domain.usecase.GetUserAccountCreationDays
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailupselling.presentation.usecase.GetUpsellingOnboardingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -46,12 +44,10 @@ internal class OnboardingViewModelTest {
 
     private val observePrimaryUser = mockk<ObservePrimaryUser>()
     private val getUpsellingOnboardingVisibility = mockk<GetUpsellingOnboardingVisibility>()
-    private val getUserAccountCreationDays = mockk<GetUserAccountCreationDays>()
 
     private fun viewModel() = OnboardingViewModel(
         observePrimaryUser,
-        getUpsellingOnboardingVisibility,
-        getUserAccountCreationDays
+        getUpsellingOnboardingVisibility
     )
 
     @AfterTest
@@ -71,38 +67,10 @@ internal class OnboardingViewModelTest {
     }
 
     @Test
-    fun `should return no upsell when user has no subscription but newly created`() = runTest {
+    fun `should return upsell when user has no subscription and visibility is on`() = runTest {
         // Given
         val user = UserTestData.Primary.copy(subscribed = 0)
         every { observePrimaryUser() } returns flowOf(user.right())
-        every { getUserAccountCreationDays(user) } returns UserAccountAge(0)
-
-        // When + Then
-        viewModel().state.test {
-            assertEquals(OnboardingState.NoUpsell, awaitItem())
-        }
-    }
-
-    @Test
-    fun `should return no upsell when user has no subscription, not newly created but visibility is off`() = runTest {
-        // Given
-        val user = UserTestData.Primary.copy(subscribed = 0)
-        every { observePrimaryUser() } returns flowOf(user.right())
-        every { getUserAccountCreationDays(user) } returns UserAccountAge(2)
-        coEvery { getUpsellingOnboardingVisibility(user.userId) } returns false
-
-        // When + Then
-        viewModel().state.test {
-            assertEquals(OnboardingState.NoUpsell, awaitItem())
-        }
-    }
-
-    @Test
-    fun `should return upsell when user has no subscription, not newly created and visibility is on`() = runTest {
-        // Given
-        val user = UserTestData.Primary.copy(subscribed = 0)
-        every { observePrimaryUser() } returns flowOf(user.right())
-        every { getUserAccountCreationDays(user) } returns UserAccountAge(2)
         coEvery { getUpsellingOnboardingVisibility(user.userId) } returns true
 
         // When + Then

@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailsession.domain.model.hasSubscription
-import ch.protonmail.android.mailsession.domain.usecase.GetUserAccountCreationDays
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailupselling.presentation.usecase.GetUpsellingOnboardingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,8 +37,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     observePrimaryUser: ObservePrimaryUser,
-    getUpsellingOnboardingVisibility: GetUpsellingOnboardingVisibility,
-    getUserAccountCreationDays: GetUserAccountCreationDays
+    getUpsellingOnboardingVisibility: GetUpsellingOnboardingVisibility
 ) : ViewModel() {
 
     val state: StateFlow<OnboardingState> = observePrimaryUser().filterNotNull()
@@ -47,8 +45,7 @@ class OnboardingViewModel @Inject constructor(
         .filterNotNull()
         .flatMapLatest { user ->
             when {
-                user.hasSubscription() ||
-                    getUserAccountCreationDays(user).days == 0 -> flowOf(OnboardingState.NoUpsell)
+                user.hasSubscription() -> flowOf(OnboardingState.NoUpsell)
 
                 else -> {
                     val showUpselling = getUpsellingOnboardingVisibility(user.userId)
