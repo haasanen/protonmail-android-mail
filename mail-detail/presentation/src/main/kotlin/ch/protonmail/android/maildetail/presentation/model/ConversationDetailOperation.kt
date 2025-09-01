@@ -73,6 +73,7 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
 
     object ErrorLoadingConversation : ConversationDetailEvent, AffectingConversation, AffectingMessages
     object ErrorLoadingMessages : ConversationDetailEvent, AffectingMessages
+    object ErrorLoadingSingleMessage : ConversationDetailEvent, AffectingMessages
     object NoNetworkError : ConversationDetailEvent, AffectingMessages
 
     data class MessagesData(

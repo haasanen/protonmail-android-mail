@@ -96,6 +96,10 @@ class ConversationDetailMessagesReducer @Inject constructor() {
 
         is ConversationDetailEvent.OfflineErrorCancellingScheduleSend ->
             currentState.toNewStateForEditScheduleSend(operation.messageId, isScheduleBeingCancelled = false)
+
+        ConversationDetailEvent.ErrorLoadingSingleMessage -> ConversationDetailsMessagesState.Error(
+            message = TextUiModel(string.detail_error_loading_single_message)
+        )
     }
 
     private fun ConversationDetailsMessagesState.toNewStateForEditScheduleSend(

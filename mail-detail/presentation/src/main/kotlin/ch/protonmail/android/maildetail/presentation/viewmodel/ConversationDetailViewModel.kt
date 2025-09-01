@@ -512,6 +512,7 @@ class ConversationDetailViewModel @Inject constructor(
         }
         .launchIn(viewModelScope)
 
+    @Suppress("LongMethod")
     private fun observeConversationMessages(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
         combine(
             observeConversationMessages(userId, conversationId, openedFromLocation).ignoreLocalErrors(),
@@ -528,7 +529,15 @@ class ConversationDetailViewModel @Inject constructor(
             }
 
             val displayMessages = when {
-                isSingleMessageModeEnabled -> conversationMessages.filterMessage(initialScrollToMessageId)
+                isSingleMessageModeEnabled -> {
+                    val message = conversationMessages.filterMessage(initialScrollToMessageId)
+                    if (message == null) {
+                        Timber.tag("SingleMessageMode")
+                            .w("single message requested, message is not in convo $initialScrollToMessageId")
+                        return@combine ConversationDetailEvent.ErrorLoadingSingleMessage
+                    }
+                    message
+                }
                 else -> conversationMessages.messages
             }
 
@@ -571,10 +580,6 @@ class ConversationDetailViewModel @Inject constructor(
     private fun ConversationMessages.filterMessage(idUiModel: MessageIdUiModel?) = this.messages
         .filter { it.messageId.id == idUiModel?.id }
         .toNonEmptyListOrNull()
-        ?: run {
-            Timber.tag("SingleMessageMode").w("single message requested, message is not in convo $idUiModel")
-            this.messages
-        }
 
     private fun stateIsLoading(): Boolean = state.value.messagesState == ConversationDetailsMessagesState.Loading
 
@@ -677,7 +682,7 @@ class ConversationDetailViewModel @Inject constructor(
         val errorEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions)
         val labelId = openedFromLocation
 
-        return@flatMapLatest observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
+        observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
             either.fold(
                 ifLeft = { errorEvent },
                 ifRight = { actions ->
