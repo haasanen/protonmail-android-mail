@@ -27,7 +27,7 @@
   <string name="send_button_title">Надіслати</string>
   <string name="send_message_content_description">Надіслати повідомлення</string>
   <string name="composer_expand_recipients_button">Показати інших отримувачів</string>
-  <string name="composer_error_invalid_email">Недійсна адреса е-пошти</string>
+  <string name="composer_error_invalid_email">Email address is invalid or does not exist</string>
   <string name="composer_error_invalid_sender">Адреса відправника недійсна</string>
   <string name="change_sender_button_content_description">Змінити відправника</string>
   <string name="composer_change_sender_paid_feature">Перейдіть на платний тариф, щоби змінити адресу відправника</string>
@@ -140,4 +140,5 @@
   <string name="composer_loading_attachments_error">Не вдалося завантажити вкладення</string>
   <string name="composer_attachment_upload_error_retry">Деякі вкладення не вдалося завантажити. Повторіть спробу.</string>
   <string name="composer_external_encryption_unexpected_error">Неочікувана помилка: %s. Спробуйте ще раз.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">The selected address cannot be used to send. Your message will be sent from your default address.</string>
 </resources>

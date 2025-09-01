@@ -32,7 +32,7 @@
   <string name="report_a_problem_repro_steps_description">Exemplu:\n1. Căutați un mesaj cu un atașament mare (ex: videoclip)\n2. Deschideți mesajul\n3. Așteptați să se încarce mesajul</string>
   <string name="report_a_problem_actual_results_title">Rezultate actuale</string>
   <string name="report_a_problem_actual_results_description">Exemplu: Aplicația Mail se blochează când deschide mesaje cu atașamente mari.</string>
-  <string name="report_a_problem_leave_dialog_description_1">Sigur doriți să închideți acest ecran?</string>
+  <string name="report_a_problem_leave_dialog_description_1">Părăsiți acest ecran?</string>
   <string name="report_a_problem_leave_dialog_description_2">Orice informații pe care le-ați introdus se vor pierde.</string>
   <string name="report_a_problem_leave_dialog_cancel_btn">Anulare</string>
   <string name="report_a_problem_leave_dialog_close_btn">Închidere</string>

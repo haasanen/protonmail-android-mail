@@ -95,4 +95,9 @@
     <item quantity="one">%1$d kontakt</item>
     <item quantity="other">%1$d kontakter</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Tilgjengelig i nettappen</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Avvis</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Oppretting av kontakter eller grupper i appen er ikke klart ennå. Foreløpig kan du opprette dem i nettappen, og de vil synkroniseres til din enhet.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Redigering av kontakter eller grupper i appen er ikke klart ennå. Foreløpig kan du redigere dem i nettappen, og endringer vil synkroniseres til din enhet.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Fortsett på nettet</string>
 </resources>

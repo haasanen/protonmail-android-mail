@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">升级以获取更多选项</string>
   <string name="upselling_upgrade_plan_generic">您需要付费订阅 Proton Mail 才能使用此功能</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB 存储空间</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB 存储空间，10 个邮箱地址</string>
-  <string name="upselling_plus_feature_email_addresses">10 个邮箱地址</string>
-  <string name="upselling_plus_feature_custom_domain">自有域名支持</string>
-  <string name="upselling_plus_feature_desktop_app">新 Proton Mail 桌面应用</string>
-  <string name="upselling_plus_feature_calendar">高级日历功能</string>
-  <string name="upselling_plus_feature_folders_labels">不限量文件夹、标签和筛选规则</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 高级功能</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">您的多合一高级订阅</string>
-  <string name="upselling_unlimited_feature_storage">500 GB 存储，附带照片备份</string>
-  <string name="upselling_unlimited_feature_mail_calendar">享受 Mail 与 Calendar 的所有付费功能</string>
-  <string name="upselling_unlimited_feature_vpn">VPN （超过 90 个国家/地区）</string>
-  <string name="upselling_unlimited_feature_drive">安全的云存储</string>
-  <string name="upselling_unlimited_feature_pass">加密的密码管理器</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">包括高级功能</string>
   <string name="upselling_onboarding_feature_e2e">端到端加密</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">选择您的套餐</string>
   <string name="upselling_select_plan_year">12 个月</string>
   <string name="upselling_select_plan_month">1 个月</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_best_value">超值</string>
+  <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
+  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
+  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
+  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_month">month</string>
+  <string name="upselling_onboarding_autorenew_year">12 months</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">您的多合一高级订阅</string>
   <string name="upselling_auto_renew_text">除非取消，否则将以相同的价格和条款自动续订</string>
   <string name="upselling_auto_renew_text_promo">迎新优惠。除非手动取消，否则将在 %s%s 时自动续订。</string>
   <string name="upselling_auto_renew_text_promo_short">欢迎优惠。订阅将以 %s %s 自动续订。</string>

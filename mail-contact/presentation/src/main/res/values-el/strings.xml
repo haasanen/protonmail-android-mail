@@ -95,4 +95,9 @@
     <item quantity="one">%1$d επαφή</item>
     <item quantity="other">%1$d επαφές</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Διατίθεται στον ιστό</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Παράβλεψη</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Η δημιουργία επαφών ή ομάδων στην εφαρμογή δεν είναι ακόμα δυνατή. Προς το παρόν, μπορείτε να τις δημιουργήσετε στην εφαρμογή ιστού και θα συγχρονιστούν στη συσκευή σας.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Η επεξεργασία επαφών ή ομάδων στην εφαρμογή δεν είναι ακόμα δυνατή. Προς το παρόν, μπορείτε να τις επεξεργαστείτε στην εφαρμογή ιστού και οι αλλαγές θα συγχρονιστούν στη συσκευή σας.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Συνέχεια στο διαδίκτυο</string>
 </resources>

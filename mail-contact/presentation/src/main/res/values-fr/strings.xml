@@ -95,4 +95,9 @@
     <item quantity="one">%1$d contact</item>
     <item quantity="other">%1$d contacts</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Disponible sur le web</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Fermer</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">La création de contacts ou de groupes n’est pas encore disponible dans l’appli. Créez-les depuis l’application web et ils se synchroniseront automatiquement.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">La modification des contacts ou des groupes dans l\'application n\'est pas encore prête. Pour l\'instant, vous pouvez les modifier dans l\'application web et les modifications se synchroniseront sur votre appareil.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Continuer sur le web</string>
 </resources>

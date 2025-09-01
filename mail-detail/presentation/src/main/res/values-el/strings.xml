@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Είστε εκτός σύνδεσης. Οι εμφανιζόμενες πληροφορίες ενδέχεται να μην είναι ενημερωμένες.</string>
   <string name="rsvp_widget_address_is_incorrect">Η διεύθυνσή σας δεν μπορεί να χρησιμοποιηθεί για απάντηση. Παρακαλούμε ενημερώστε τα στοιχεία του λογαριασμού σας.</string>
   <string name="rsvp_widget_user_is_organizer">Είστε ο/η διοργανωτής.</string>
+  <string name="rsvp_widget_user_is_not_invited">Δεν μπορείτε να απαντήσετε σε προσκλήσεις εκδήλωσης εάν δε βρίσκεστε στη λίστα συμμετεχόντων αυτήν τη στιγμή.</string>
   <string name="rsvp_widget_event_does_not_exist">Αυτή η εκδήλωση δεν βρίσκεται στο ημερολόγιό σας, οπότε δεν μπορείτε να απαντήσετε σε αυτήν.</string>
   <string name="rsvp_widget_today">Σήμερα</string>
   <string name="rsvp_widget_tomorrow">Αύριο</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">Μήνυμα</string>
   <string name="snooze_message_snoozed_until_banner_title">Αναβλήθηκε μέχρι</string>
   <string name="snooze_message_unsnooze_banner_button">Αφαίρεση αναβολής</string>
+  <string name="unsubscribe_newsletter_banner_message">Αυτό το μήνυμα είναι από μια λίστα αλληλογραφίας.</string>
+  <string name="unsubscribe_newsletter_banner_button">Απεγγραφή</string>
+  <string name="already_unsubscribed_banner_message">Έχετε απεγγραφεί από αυτήν τη λίστα αλληλογραφίας.</string>
+  <string name="error_unsubscribe_newsletter">Αποτυχία απεγγραφής από αυτήν τη λίστα αλληλογραφίας.</string>
 </resources>

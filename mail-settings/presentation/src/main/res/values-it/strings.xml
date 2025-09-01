@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Lingua</string>
   <string name="mail_settings_app_customization_appearance">Aspetto</string>
   <string name="mail_settings_app_customization_protection">Blocco automatico</string>
+  <string name="mail_settings_app_customization_mobile_signature">Firma mobile</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Blocco automatico abilitato</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Blocco automatico disabilitato</string>
   <string name="mail_settings_app_customization_use_device_contacts">Caricamento dei contatti dal dispositivo</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Vai velocemente al messaggio successivo o precedente nella casella di posta</string>
   <string name="mail_settings_app_customization_swipe_action">Azioni di scorrimento</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Imposta azioni rapide, come eliminare o archiviare, quando scorri verso sinistra o destra</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Barra degli strumenti</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Personalizza le barre degli strumenti</string>
   <string name="mail_settings_app_customization_alternative_routing">Percorso alternativo</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Evita firewall o problemi di rete che impediscono la connessione al server</string>
   <string name="mail_settings_app_customization_view_application_logs">Registro degli eventi</string>
   <string name="mail_settings_app_customization_mail_experience_header">Esperienza Mail</string>
   <string name="mail_settings_app_customization_advanced_header">Impostazioni avanzate</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Firma mobile</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Abilitato</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Disabilitato</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Abilita</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistema</string>
   <string name="mail_settings_theme_light">Chiaro</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Caricamento delle impostazioni non riuscito</string>
   <string name="notifications_on">Abilitato</string>
   <string name="notifications_off">Disabilitato</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Personalizza le barre degli strumenti</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Barra degli strumenti dell\'elenco</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Questa barra degli strumenti appare quando selezioni più messaggi in un elenco (ad es. Posta in arrivo, Cestino, ecc.)</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Barra degli strumenti del messaggio</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Questa barra degli strumenti rimane visibile mentre leggi i messaggi</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Barra degli strumenti della conversazione</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Questa barra degli strumenti rimane visibile mentre leggi i messaggi</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Modifica azioni</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Azioni della barra degli strumenti</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Azioni disponibili</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Modifica la barra degli strumenti dell\'elenco</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Barra degli strumenti della conversazione</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Barra degli strumenti del messaggio</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Salva</string>
+  <string name="mail_settings_custom_toolbar_header">La barra degli strumenti può contenere da 1 a 5 azioni. Non puoi rimuovere l\'ultima azione rimasta.</string>
+  <string name="mail_settings_custom_toolbar_reset">Reimposta al valore predefinito</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Desideri reimpostare le impostazioni della barra degli strumenti?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Conferma</string>
+  <string name="mail_settings_custom_toolbar_save_error">Impossibile salvare le azioni della barra degli strumenti. Riprova.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Impossibile leggere le azioni della barra degli strumenti. Riprova.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Si è verificato un errore. Riprova.</string>
 </resources>

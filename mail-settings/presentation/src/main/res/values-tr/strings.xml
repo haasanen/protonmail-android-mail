@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Dil</string>
   <string name="mail_settings_app_customization_appearance">Görünüm</string>
   <string name="mail_settings_app_customization_protection">Uygulama kilidi</string>
+  <string name="mail_settings_app_customization_mobile_signature">Mobil imza</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Otomatik kilitleme açık</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Otomatik kilitleme kapalı</string>
   <string name="mail_settings_app_customization_use_device_contacts">Aygıt kişileri kullanılsın</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Gelen kutunuzdaki bir sonraki ya da bir önceki iletiye hızlıca geçin.</string>
   <string name="mail_settings_app_customization_swipe_action">Kaydırma işlemi</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Sola veya sağa kaydırdığınızda silme veya arşivleme gibi hızlı işlemleri ayarlayın.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Araç çubuğunu özelleştir</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Araç çubuklarını özelleştir</string>
   <string name="mail_settings_app_customization_alternative_routing">Alternatif yöneltme</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Proton siteleri engelleniyorsa güvenlik duvarlarını ve ağ sorunlarını aşın.</string>
   <string name="mail_settings_app_customization_view_application_logs">Uygulama günlüklerini görüntüleyin</string>
   <string name="mail_settings_app_customization_mail_experience_header">E-posta deneyimi</string>
   <string name="mail_settings_app_customization_advanced_header">Gelişmiş</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Mobil imza</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Açık</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Kapalı</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">İmza kullanılsın</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistem</string>
   <string name="mail_settings_theme_light">Açık</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Ayarlar yüklenirken sorun çıktı</string>
   <string name="notifications_on">Açık</string>
   <string name="notifications_off">Kapalı</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Araç çubuklarını özelleştir</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Liste araç çubuğu</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Bu araç çubuğu, bir listede (Gelen kutusu, Çöp kutusu gibi) birden fazla ileti seçtiğinizde görüntülenir</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">İleti araç çubuğu</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Bu araç çubuğu, iletileri okurken görünür kalır</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Yazışma araç çubuğu</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Bu araç çubuğu, iletileri okurken görünür kalır</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">İşlemleri düzenle</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Araç çubuğu işlemleri</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Kullanılabilecek işlemler</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Liste araç çubuğunu düzenle</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Yazışma araç çubuğu</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">İleti araç çubuğu</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Kaydet</string>
+  <string name="mail_settings_custom_toolbar_header">Araç çubuğunda 1-5 işlem bulunabilir. Son kalan işlemi kaldıramazsınız.</string>
+  <string name="mail_settings_custom_toolbar_reset">Varsayılana sıfırla</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Araç çubuğu ayarlarını sıfırlamak istiyor musunuz?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Onayla</string>
+  <string name="mail_settings_custom_toolbar_save_error">Araç çubuğu işlemleri kaydedilemedi. Lütfen yeniden deneyin.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Araç çubuğu işlemleri okunamadı. Lütfen yeniden deneyin.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Bir sorun çıktı. Yeniden deneyin.</string>
 </resources>

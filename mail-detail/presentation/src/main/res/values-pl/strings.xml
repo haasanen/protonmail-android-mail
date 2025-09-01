@@ -164,6 +164,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Jesteś w trybie offline. Informacje mogą być nieaktualne.</string>
   <string name="rsvp_widget_address_is_incorrect">Twój adres nie może zostać użyty do odpowiedzi. Zaktualizuj informacje konta.</string>
   <string name="rsvp_widget_user_is_organizer">Jesteś organizatorem.</string>
+  <string name="rsvp_widget_user_is_not_invited">Nie możesz odpowiedzieć na zaproszenia, jeśli nie jesteś na liście uczestników.</string>
   <string name="rsvp_widget_event_does_not_exist">Tego wydarzenia nie ma w Twoim kalendarzu, więc nie możesz na nie odpowiedzieć.</string>
   <string name="rsvp_widget_today">Dzisiaj</string>
   <string name="rsvp_widget_tomorrow">Jutro</string>
@@ -176,4 +177,8 @@
   <string name="rsvp_widget_message">Napisz</string>
   <string name="snooze_message_snoozed_until_banner_title">Odłożono do</string>
   <string name="snooze_message_unsnooze_banner_button">Anuluj odłożenie</string>
+  <string name="unsubscribe_newsletter_banner_message">Wiadomość pochodzi z listy mailingowej.</string>
+  <string name="unsubscribe_newsletter_banner_button">Anuluj subskrypcję</string>
+  <string name="already_unsubscribed_banner_message">Anulowano subskrypcję listy mailingowej.</string>
+  <string name="error_unsubscribe_newsletter">Nie udało się anulować subskrypcji</string>
 </resources>

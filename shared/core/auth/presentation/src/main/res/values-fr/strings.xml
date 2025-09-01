@@ -167,5 +167,5 @@
   <string name="settings_password_error_invalid_recovery">Le code A2F n\'est pas correct. Nous vous invitons à réessayer.</string>
   <string name="settings_password_error_2fa_reused">Le code a déjà été utilisé. Veuillez essayer un code différent.</string>
   <string name="settings_password_general_error">Une erreur s’est produite.</string>
-  <string name="proton_error_non_processable_actions">Une ou plusieurs actions ne peuvent pas être traitées. Veuillez vous déconnecter et vous reconnecter à votre compte.</string>
+  <string name="proton_error_non_processable_actions">Une ou plusieurs actions ne peuvent pas être traitées. Merci de vous déconnecter et de vous reconnecter à votre compte.</string>
 </resources>

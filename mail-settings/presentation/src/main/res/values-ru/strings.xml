@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Язык</string>
   <string name="mail_settings_app_customization_appearance">Внешний вид</string>
   <string name="mail_settings_app_customization_protection">Блокировка приложения</string>
+  <string name="mail_settings_app_customization_mobile_signature">Mobile signature</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Автоблокировка включена</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Автоблокировка отключена</string>
   <string name="mail_settings_app_customization_use_device_contacts">Использовать контакты устройства</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Быстрый переход к следующему или предыдущему сообщению в почтовом ящике.</string>
   <string name="mail_settings_app_customization_swipe_action">Листание</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Установите быстрые действия, такие как удаление или архивирование, при проведении пальцем влево или вправо.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Настройка панели инструментов</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Customize toolbars</string>
   <string name="mail_settings_app_customization_alternative_routing">Альтернативная маршрутизация</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Обход брандмауэра или сетевых проблем в случае блокировки сайтов Proton.</string>
   <string name="mail_settings_app_customization_view_application_logs">Просмотреть журналы приложения</string>
   <string name="mail_settings_app_customization_mail_experience_header">Использование почты</string>
   <string name="mail_settings_app_customization_advanced_header">Дополнительные</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Mobile signature</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">On</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Off</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Enable signature</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Система</string>
   <string name="mail_settings_theme_light">Светлая</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Ошибка загрузки настроек</string>
   <string name="notifications_on">Вкл.</string>
   <string name="notifications_off">Выкл.</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Customize toolbars</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">List toolbar</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">This toolbar appears when you select multiple messages in a list (e.g., Inbox, Trash, etc.)</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Message toolbar</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">This toolbar remains visible while reading messages</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Conversation toolbar</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">This toolbar remains visible while reading messages</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Edit actions</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Toolbar actions</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Available actions</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Edit list toolbar</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Conversation toolbar</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Message toolbar</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Save</string>
+  <string name="mail_settings_custom_toolbar_header">The toolbar can have 1–5 actions. You can\'t remove the last remaining action.</string>
+  <string name="mail_settings_custom_toolbar_reset">Reset to default</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Do you want to reset the toolbar settings?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Confirm</string>
+  <string name="mail_settings_custom_toolbar_save_error">Unable to save toolbar actions. Please try again.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Unable to read toolbar actions. Please try again.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Произошла ошибка. Попробуйте ещё раз.</string>
 </resources>

@@ -59,7 +59,7 @@
   <string name="mail_settings_pin_verification_error_too_many_frequent">Prea multe încercări frecvente. Reîncercați mai târziu.</string>
   <string name="mail_settings_pin_insertion_signout_text">Deconectare</string>
   <string name="mail_settings_pin_insertion_signout_dialog_title">Deconectare</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Sigur doriți să vă deconectați?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Vă deconectați?</string>
   <string name="mail_settings_pin_insertion_signout_dialog_confirm">Da</string>
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nu</string>
   <string name="mail_settings_pin_insertion_created_success">Codul PIN a fost creat.</string>

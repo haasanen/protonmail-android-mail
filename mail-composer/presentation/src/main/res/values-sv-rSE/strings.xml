@@ -27,7 +27,7 @@
   <string name="send_button_title">Skicka</string>
   <string name="send_message_content_description">Skicka meddelande</string>
   <string name="composer_expand_recipients_button">Visa andra mottagare</string>
-  <string name="composer_error_invalid_email">E-postadressen är ogiltig</string>
+  <string name="composer_error_invalid_email">E-postadress är ogiltig eller finns inte</string>
   <string name="composer_error_invalid_sender">Avsändaradress är ogiltig</string>
   <string name="change_sender_button_content_description">Ändra avsändare</string>
   <string name="composer_change_sender_paid_feature">Uppgradera till ett betalt paket för att ändra avsändaradressen</string>
@@ -138,4 +138,5 @@
   <string name="composer_loading_attachments_error">Misslyckades ladda bilagor</string>
   <string name="composer_attachment_upload_error_retry">Några bilagor misslyckades att laddas upp. Försök igen.</string>
   <string name="composer_external_encryption_unexpected_error">Oväntat fel %s. Försök igen.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">Den valda adressen kan inte användas för att skicka. Ditt meddelande kommer att skickas från din standardadress.</string>
 </resources>

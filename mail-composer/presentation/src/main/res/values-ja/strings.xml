@@ -27,7 +27,7 @@
   <string name="send_button_title">送信</string>
   <string name="send_message_content_description">メッセージを送信</string>
   <string name="composer_expand_recipients_button">他の受信者を表示する</string>
-  <string name="composer_error_invalid_email">メールアドレスが無効です</string>
+  <string name="composer_error_invalid_email">メールアドレスが無効または存在しません</string>
   <string name="composer_error_invalid_sender">送信者アドレスが無効</string>
   <string name="change_sender_button_content_description">送信者を変更</string>
   <string name="composer_change_sender_paid_feature">送信者アドレスを変更するには有料プランへのアップグレードが必要です</string>
@@ -137,4 +137,5 @@
   <string name="composer_loading_attachments_error">添付ファイルの読み込みに失敗しました</string>
   <string name="composer_attachment_upload_error_retry">いくつかの添付ファイルのアップロードに失敗しました。再度お試しください。</string>
   <string name="composer_external_encryption_unexpected_error">予期しないエラーが発生しました%s。再度お試しください。</string>
+  <string name="composer_sender_changed_original_address_cannot_send">選択されたアドレスは送信に使用できません。お客様のメッセージはデフォルトのアドレスから送信されます。</string>
 </resources>

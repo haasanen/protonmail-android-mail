@@ -63,14 +63,14 @@
     <item quantity="other">Ștergere %d mesaje</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_message">
-    <item quantity="one">Sigur doriți să ștergeți definitiv această conversație?</item>
-    <item quantity="few">Sigur doriți să ștergeți definitiv aceste conversații?</item>
-    <item quantity="other">Sigur doriți să ștergeți definitiv aceste conversații?</item>
+    <item quantity="one">Ștergeți definitiv această conversație?</item>
+    <item quantity="few">Ștergeți definitiv aceste conversații?</item>
+    <item quantity="other">Ștergeți definitiv aceste conversații?</item>
   </plurals>
   <plurals name="mailbox_action_delete_message_dialog_message">
-    <item quantity="one">Sigur doriți să ștergeți definitiv acest mesaj?</item>
-    <item quantity="few">Sigur doriți să ștergeți definitiv aceste mesaje?</item>
-    <item quantity="other">Sigur doriți să ștergeți definitiv aceste mesaje?</item>
+    <item quantity="one">Ștergeți definitiv acest mesaj?</item>
+    <item quantity="few">Ștergeți definitiv aceste mesaje?</item>
+    <item quantity="other">Ștergeți definitiv aceste mesaje?</item>
   </plurals>
   <plurals name="mailbox_action_delete_message">
     <item quantity="one">Mesajul a fost șters definitiv.</item>
@@ -111,9 +111,9 @@
   <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Ștergerea automată este dezactivată. Mesajele din «Gunoi» și «Nedorite» vor rămâne până când le ștergeți manual.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Golire folder «Gunoi»</string>
   <string name="mailbox_action_clear_spam_dialog_title">Golire folder «Nedorite»</string>
-  <string name="mailbox_action_clear_trash_dialog_body_message">Sigur doriți să ștergeți definitiv toate mesajele din folderul «Gunoi»?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_message">Sigur doriți să ștergeți definitiv toate mesajele din folderul «Nedorite»?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_conversation">Sigur doriți să ștergeți definitiv toate mesajele din folderul «Nedorite»?</string>
+  <string name="mailbox_action_clear_trash_dialog_body_message">Ștergeți definitiv toate mesajele din folderul «Gunoi»?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_message">Ștergeți definitiv toate mesajele din folderul «Nedorite»?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_conversation">Ștergeți definitiv toate mesajele din folderul «Nedorite»?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Operația de golire este programată."</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">Se deschide atașamentul…</string>

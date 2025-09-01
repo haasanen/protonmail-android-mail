@@ -27,7 +27,7 @@
   <string name="send_button_title">Envoyer</string>
   <string name="send_message_content_description">Envoyer le message</string>
   <string name="composer_expand_recipients_button">Afficher les autres destinataires</string>
-  <string name="composer_error_invalid_email">L\'adresse e-mail n\'est pas valide.</string>
+  <string name="composer_error_invalid_email">L\'adresse e-mail n\'est pas correcte ou n\'existe pas</string>
   <string name="composer_error_invalid_sender">L\'adresse de l\'expéditeur n\'est pas valide.</string>
   <string name="change_sender_button_content_description">Modifier l\'expéditeur</string>
   <string name="composer_change_sender_paid_feature">Passez à un abonnement payant pour modifier l\'adresse de l\'expéditeur.</string>
@@ -138,4 +138,5 @@
   <string name="composer_loading_attachments_error">Les pièces jointes n\'ont pas pu être chargées.</string>
   <string name="composer_attachment_upload_error_retry">Certaines pièces jointes n\'ont pas pu être chargées. Veuillez réessayer.</string>
   <string name="composer_external_encryption_unexpected_error">Une erreur inattendue s\'est produite %s. Veuillez réessayer.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">L’adresse que vous avez sélectionnée ne peut pas être utilisée pour l’envoi. Votre message sera envoyé depuis votre adresse par défaut.</string>
 </resources>

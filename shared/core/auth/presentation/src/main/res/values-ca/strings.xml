@@ -24,7 +24,7 @@
   <string name="login_help_other_issues">Altres problemes d\'inici de sessió</string>
   <string name="login_help_contact_needed">Encara necessiteu ajuda? Contacteu amb nosaltres directament.</string>
   <string name="login_help_customer_support">Servei d\'atenció al client</string>
-  <string name="login_help_sign_in_with_qr_code">Inicieu la sessió amb un codi QR</string>
+  <string name="login_help_sign_in_with_qr_code">Inicia sessió amb un codi QR</string>
   <string name="welcome_subtitle_mail">Privacitat. Seguretat. Comoditat. Correu electrònic xifrat que us dona control total sobre les vostres dades personals.</string>
   <string name="welcome_sign_in">Inicia la sessió</string>
   <string name="welcome_sign_up">Crea un compte</string>
@@ -58,7 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Utilitza un codi de doble factor</string>
   <string name="auth_second_factor_insert_security_key">Presenteu una clau de seguretat vinculada al compte del Proton. </string>
   <string name="auth_second_factor_insert_security_key_link">Més informació</string>
-  <string name="auth_second_factor_incorrect_code">Aquest codi no és correcte. Torneu-ho a provar.</string>
+  <string name="auth_second_factor_incorrect_code">Codi incorrecte. Torneu-ho a provar.</string>
   <string name="auth_two_pass_title">Desbloquegeu la bústia de correu</string>
   <string name="auth_two_pass_input_label">Contrasenya de la bústia de correu</string>
   <string name="auth_two_pass_unlock">Desbloqueja</string>

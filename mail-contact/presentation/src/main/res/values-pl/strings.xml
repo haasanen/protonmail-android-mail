@@ -101,4 +101,9 @@
     <item quantity="many">%1$d kontaktów</item>
     <item quantity="other">%1$d kontaktów</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Dostępne w aplikacji internetowej</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Odrzuć</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Tworzenie kontaktów lub grup w aplikacji nie jest jeszcze dostępne. Możesz je tworzyć w aplikacji internetowej, a następnie zsynchronizować z urządzeniem.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Edytowanie kontaktów lub grup w aplikacji nie jest jeszcze dostępne. Możesz je edytować w aplikacji internetowej, a następnie zsynchronizować z urządzeniem.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Przejdź do strony internetowej</string>
 </resources>

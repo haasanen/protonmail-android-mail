@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Språk</string>
   <string name="mail_settings_app_customization_appearance">Utseende</string>
   <string name="mail_settings_app_customization_protection">Applås</string>
+  <string name="mail_settings_app_customization_mobile_signature">Mobilsignatur</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatiskt lås aktiverat</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatiskt lås inaktiverat</string>
   <string name="mail_settings_app_customization_use_device_contacts">Använd enhetens kontakter</string>
@@ -67,6 +68,10 @@
   <string name="mail_settings_app_customization_view_application_logs">Visa applikationsloggar</string>
   <string name="mail_settings_app_customization_mail_experience_header">Mail-upplevelse</string>
   <string name="mail_settings_app_customization_advanced_header">Avancerat</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Mobilsignatur</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">På</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Av</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Aktivera signatur</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">System</string>
   <string name="mail_settings_theme_light">Ljus</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Fel vid laddning av inställningar</string>
   <string name="notifications_on">På</string>
   <string name="notifications_off">Av</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Anpassa verktygsfält</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Listvyverktygsfält</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Detta verktygsfält visas när du väljer flera meddelanden i en lista (t.ex. inkorg, papperskorg etc.)</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Meddelandeverktygsfält</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Detta verktygsfält förblir synligt när du läser meddelanden</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Konversationsverktygsfält</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Detta verktygsfält förblir synligt när du läser meddelanden</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Redigera åtgärder</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Verktygsfältsåtgärder</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Tillgängliga åtgärder</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Redigera listverktygsfält</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Konversationsverktygsfält</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Meddelandeverktygsfält</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Spara</string>
+  <string name="mail_settings_custom_toolbar_header">Verktygsfältet kan ha 1–5 åtgärder. Du kan inte ta bort den sista återstående åtgärden.</string>
+  <string name="mail_settings_custom_toolbar_reset">Återställ till standard</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Vill du återställa verktygsfältets inställningar?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Bekräfta</string>
+  <string name="mail_settings_custom_toolbar_save_error">Kan inte spara verktygsfältsåtgärder. Försök igen.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Kan inte läsa verktygsfältsåtgärder. Försök igen.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Ett fel uppstod. Försök igen.</string>
 </resources>

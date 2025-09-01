@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Sei offline. Le informazioni visualizzate potrebbero non essere aggiornate.</string>
   <string name="rsvp_widget_address_is_incorrect">Risposta con l\'indirizzo email attuale non valida. Aggiorna le informazioni dell\'account.</string>
   <string name="rsvp_widget_user_is_organizer">Tu sei l\'organizzatore</string>
+  <string name="rsvp_widget_user_is_not_invited">Utente attuale non presente nella lista dei partecipanti. Risposta all\'invito non consentita.</string>
   <string name="rsvp_widget_event_does_not_exist">Aggiungi l\'evento al calendario per rispondere</string>
   <string name="rsvp_widget_today">Oggi</string>
   <string name="rsvp_widget_tomorrow">Domani</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">Scrivi</string>
   <string name="snooze_message_snoozed_until_banner_title">Posticipato a</string>
   <string name="snooze_message_unsnooze_banner_button">Non posticipare</string>
+  <string name="unsubscribe_newsletter_banner_message">Questo messaggio proviene da una mailing list.</string>
+  <string name="unsubscribe_newsletter_banner_button">Annulla l\'iscrizione</string>
+  <string name="already_unsubscribed_banner_message">Sei stato rimosso da questa mailing list.</string>
+  <string name="error_unsubscribe_newsletter">Impossibile annullare l\'iscrizione alla newsletter</string>
 </resources>

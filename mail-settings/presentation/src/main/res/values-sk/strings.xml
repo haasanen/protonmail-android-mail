@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Jazyk</string>
   <string name="mail_settings_app_customization_appearance">Vzhľad</string>
   <string name="mail_settings_app_customization_protection">Zámok aplikácie</string>
+  <string name="mail_settings_app_customization_mobile_signature">Podpis v mobile</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatické uzamknutie povolené</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatické uzamknutie vypnuté</string>
   <string name="mail_settings_app_customization_use_device_contacts">Použiť kontakty zo zariadenia</string>
@@ -67,6 +68,10 @@
   <string name="mail_settings_app_customization_view_application_logs">Zobraziť záznamy aplikácie</string>
   <string name="mail_settings_app_customization_mail_experience_header">Skúsenosti s emailom</string>
   <string name="mail_settings_app_customization_advanced_header">Pokročilé</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Podpis v mobile</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Zap.</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Vyp.</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Povoliť podpis</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Systém</string>
   <string name="mail_settings_theme_light">Svetlý</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Chyba pri načítaní nastavení</string>
   <string name="notifications_on">Zap.</string>
   <string name="notifications_off">Vyp.</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Prispôsobiť panel nástrojov</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Panel nástrojov zoznamu</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Tento panel nástrojov sa zobrazí, keď vyberiete viacero správ v zozname (napr. Doručená pošta, kôš atď.).</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Panel nástrojov správy</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Tento panel nástrojov zostáva viditeľný počas čítania správ</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Panel nástrojov konverzácie</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Tento panel nástrojov zostáva viditeľný pri čítaní správ</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Upraviť akcie</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Akcie panela nástrojov</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Dostupné akcie</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Upraviť panel nástrojov zoznamu</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Panel nástrojov konverzácie</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Panel nástrojov správy</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Uložiť</string>
+  <string name="mail_settings_custom_toolbar_header">Panel nástrojov môže mať 1–5 akcií. Nemôžete odstrániť poslednú zostávajúcu akciu.</string>
+  <string name="mail_settings_custom_toolbar_reset">Obnoviť východzie nastavenie</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Chcete resetovať nastavenia panela nástrojov?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Potvrdiť</string>
+  <string name="mail_settings_custom_toolbar_save_error">Nie je možné uložiť akcie panela nástrojov. Skúste to znova, prosím.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Nie je možné čítať akcie panela nástrojov. Skúste to znova, prosím.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Vyskytla sa chyba. Skúste znova.</string>
 </resources>

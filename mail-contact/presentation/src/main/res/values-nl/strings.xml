@@ -95,4 +95,9 @@
     <item quantity="one">%1$d contact</item>
     <item quantity="other">%1$d contacten</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Beschikbaar op het web</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Negeren</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Het aanmaken van contacten of groepen in de app is nog niet beschikbaar. Voorlopig kunt u ze aanmaken in de web-app. Ze worden dan gesynchroniseerd met uw apparaat.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Het bewerken van contacten of groepen in de app is nog niet beschikbaar. Voorlopig kunt u ze bewerken in de web app en worden de wijzigingen gesynchroniseerd met uw apparaat.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Ga verder op de website</string>
 </resources>

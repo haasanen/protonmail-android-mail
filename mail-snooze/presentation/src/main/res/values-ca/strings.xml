@@ -36,7 +36,7 @@
   <string name="snooze_picker_button_title">Desa</string>
   <string name="snooze_custom_upsell_title">Data i hora personalitzades</string>
   <string name="snooze_custom_upsell_title_short">Personalitzeu-ho</string>
-  <string name="snooze_custom_upsell_hint_short">Millorar de pla per accedir-hi</string>
+  <string name="snooze_custom_upsell_hint_short">Milloreu el pla per a accedir-hi</string>
   <plurals name="snoozed_in_days">
     <item quantity="one">S\'ha ajornat fins demà</item>
     <item quantity="other">S\'ha ajornat %d dies</item>

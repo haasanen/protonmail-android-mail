@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Es besteht keine Internetverbindung. Die angezeigten Informationen sind möglicherweise veraltet.</string>
   <string name="rsvp_widget_address_is_incorrect">Deine Adresse kann nicht zum Antworten verwendet werden. Bitte aktualisiere deine Kontoinformationen.</string>
   <string name="rsvp_widget_user_is_organizer">Du bist der Organisator.</string>
+  <string name="rsvp_widget_user_is_not_invited">Du kannst nicht auf Einladungen zu Terminen antworten, solange du nicht auf der Teilnehmerliste stehst.</string>
   <string name="rsvp_widget_event_does_not_exist">Dieses Ereignis steht nicht in deinem Kalender, daher kannst du nicht darauf antworten.</string>
   <string name="rsvp_widget_today">Heute</string>
   <string name="rsvp_widget_tomorrow">Morgen</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">Nachricht</string>
   <string name="snooze_message_snoozed_until_banner_title">Zurückgestellt bis</string>
   <string name="snooze_message_unsnooze_banner_button">„Zurückstellen“ aufheben</string>
+  <string name="unsubscribe_newsletter_banner_message">Diese Nachricht wurde von einer Verteilerliste gesendet.</string>
+  <string name="unsubscribe_newsletter_banner_button">Abbestellen</string>
+  <string name="already_unsubscribed_banner_message">Du wurdest aus dieser Verteilerliste ausgetragen.</string>
+  <string name="error_unsubscribe_newsletter">Fehler beim Abbestellen des Newsletters</string>
 </resources>

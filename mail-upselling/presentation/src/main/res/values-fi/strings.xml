@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Päivitä saadaksesi täyden joustavuuden</string>
   <string name="upselling_upgrade_plan_generic">Tarvitset maksullisen Proton Mail -tilauksen käyttääksesi tätä ominaisuutta</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 Gt tallennustilaa</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 Gt tallennustilaa, 10 sähköpostiosoitetta</string>
-  <string name="upselling_plus_feature_email_addresses">10 sähköpostiosoitetta</string>
-  <string name="upselling_plus_feature_custom_domain">Tuki omille sähköpostiverkkotunnuksille</string>
-  <string name="upselling_plus_feature_desktop_app">Uusi Proton Mail -työpöytäsovellus</string>
-  <string name="upselling_plus_feature_calendar">Premium-kalenteriominaisuudet</string>
-  <string name="upselling_plus_feature_folders_labels">Rajattomasti kansioita, tunnisteita ja suodattimia</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 premium-ominaisuutta</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">Kaiken kattava premium-tilauksesi</string>
-  <string name="upselling_unlimited_feature_storage">500 Gt tallennustilaa kuvien varmuuskopioinnilla</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Kaikki maksulliset Mail- ja Calendar-ominaisuudet</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90+ maata)</string>
-  <string name="upselling_unlimited_feature_drive">Suojattu pilvitallennustila</string>
-  <string name="upselling_unlimited_feature_pass">Salattu salasanahallinta</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Premium-arvo sisältyy</string>
   <string name="upselling_onboarding_feature_e2e">Päästä päähän -salaus</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Valitse tilauksesi</string>
   <string name="upselling_select_plan_year">12 kuukautta</string>
   <string name="upselling_select_plan_month">1 kuukausi</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_best_value">Paras arvo</string>
+  <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
+  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
+  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
+  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_month">month</string>
+  <string name="upselling_onboarding_autorenew_year">12 months</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">Kaiken kattava premium-tilauksesi</string>
   <string name="upselling_auto_renew_text">Uusiutuu automaattisesti samaan hintaan ja samoilla ehdoilla, ellei tilausta peruta</string>
   <string name="upselling_auto_renew_text_promo">Tervetuliaistarjous. Jatkuu automaattisesti hintaan %s%s, ellei peruuteta.</string>
   <string name="upselling_auto_renew_text_promo_short">Tervetuliaistarjous. Jatkuu automaattisesti hintaan %s%s.</string>

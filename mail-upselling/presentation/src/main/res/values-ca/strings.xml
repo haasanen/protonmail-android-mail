@@ -29,7 +29,7 @@
   <string name="upselling_mailbox_plus_promo_description_override">Aprofiteu el millor de Mail amb aquesta oferta per temps limitat</string>
   <string name="upselling_mailbox_plus_promo_title">Proveu el Mail Plus per %s</string>
   <string name="upselling_mailbox_plus_promo_cta">Obtingueu 1 mes per %s</string>
-  <string name="upselling_mailbox_plus_promo_skip">Ometeu l\'oferta</string>
+  <string name="upselling_mailbox_plus_promo_skip">Omet l\'oferta</string>
   <string name="upselling_mailbox_plus_promo_renewal">%s pel 1r mes, després %s al mes</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Envieu correus de grup fàcilment. Trobareu això i més a Mail Plus.</string>
@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Milloreu de pla per a una flexibilitat total</string>
   <string name="upselling_upgrade_plan_generic">Us cal una subscripció de pagament a Proton Mail per accedir a aquesta característica.</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB d\'emmagatzematge</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB d\'emmagatzematge, 10 adreces de correu electrònic</string>
-  <string name="upselling_plus_feature_email_addresses">10 adreces de correu electrònic</string>
-  <string name="upselling_plus_feature_custom_domain">Suport de domini de correu electrònic personalitzat</string>
-  <string name="upselling_plus_feature_desktop_app">Nova aplicació d\'escriptori de Proton Mail</string>
-  <string name="upselling_plus_feature_calendar">Característiques prèmium del calendari</string>
-  <string name="upselling_plus_feature_folders_labels">Carpetes, etiquetes, filtres il·limitats</string>
-  <string name="upselling_plus_feature_plus_7_features">+ 7 característiques prèmium</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">La subscripció prèmium tot en un</string>
-  <string name="upselling_unlimited_feature_storage">500 GB d\'emmagatzematge amb còpia de seguretat de fotos</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Totes les característiques de pagament de Correu i Calendari</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (més de 90 països)</string>
-  <string name="upselling_unlimited_feature_drive">Emmagatzematge al núvol segur</string>
-  <string name="upselling_unlimited_feature_pass">Gestor de contrasenyes xifrades</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Característiques prèmium incloses</string>
   <string name="upselling_onboarding_feature_e2e">Xifratge d\'extrem a extrem</string>
@@ -98,10 +82,26 @@
   <string name="upselling_comparison_table_unlimited_folders_labels">Nombre il·limitat de carpetes i etiquetes</string>
   <string name="upselling_comparison_table_priority_support">Atenció al client prioritària</string>
   <!-- Rectangular plan buttons -->
-  <string name="upselling_select_plan">Trieu el vostre pla</string>
+  <string name="upselling_select_plan">Trieu el pla</string>
   <string name="upselling_select_plan_year">12 mesos</string>
   <string name="upselling_select_plan_month">1 mes</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Trieu el pla</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Mensualment</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Anualment</string>
+  <string name="upselling_onboarding_best_value">Millor oferta</string>
+  <string name="upselling_onboarding_yearly_savings">Pagueu anualment i estalvieu %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Mostra\'n més</string>
+  <string name="upselling_onboarding_entitlements_show_less">Mostra\'n menys</string>
+  <string name="upselling_onboarding_button_continue_free">Continua amb el Free Plan</string>
+  <string name="upselling_onboarding_autorenew">Facturat a %s cada %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Oferta de benvinguda. Es renova automàticament a %s cada %s</string>
+  <string name="upselling_onboarding_autorenew_month">mes</string>
+  <string name="upselling_onboarding_autorenew_year">12 mesos</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB d\'emmagatzematge</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 adreça de correu electrònic</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">La subscripció prèmium tot en un</string>
   <string name="upselling_auto_renew_text">Es renovarà automàticament al mateix preu i condicions tret que es cancel·li</string>
   <string name="upselling_auto_renew_text_promo">Oferta de benvinguda. Es renovarà automàticament per %s%s tret que es cancel·li</string>
   <string name="upselling_auto_renew_text_promo_short">Oferta de benvinguda. Es renovarà automàticament per %s%s.</string>

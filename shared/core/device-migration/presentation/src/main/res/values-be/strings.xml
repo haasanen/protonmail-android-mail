@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="edm_code_not_recognized">Код не распазнаны. Паспрабуйце яшчэ раз.</string>
-  <string name="edm_code_verifying">Адбываецца праверка…</string>
+  <string name="edm_code_verifying">Адбываецца спраўджанне…</string>
   <string name="edm_missing_camera_permission_headline">Дазволіць доступ да камеры</string>
   <string name="edm_missing_camera_permission_body">Дазвольце %1$s доступ да вашай камеры, каб увайсці з дапамогай QR-кода. Вы можаце зрабіць гэта ў наладах прылады.</string>
   <string name="edm_missing_camera_permission_footer">У вас заўсёды ўсё пад кантролем: змяніць гэта можна ў любы час у наладах прылады.</string>
@@ -55,5 +55,5 @@
   <string name="target_sign_in_error_new_qr">Згенерыраваць QR-код</string>
   <string name="target_sign_in_error_back_to_signin">Вярнуцца да ўваходу</string>
   <string name="target_sign_in_learn_more">Даведацца больш</string>
-  <string name="proton_error_non_processable_actions">Адно ці некалькі дзеянняў не могуць быць апрацаваны. Калі ласка, выйдзіце з сістэмы і ўвайдзіце зноў у свой уліковы запіс.</string>
+  <string name="proton_error_non_processable_actions">Адно або некалькі дзеянняў не могуць быць апрацаваны. Выйдзіце з сістэмы і яшчэ раз увайдзіце ў свой уліковы запіс.</string>
 </resources>

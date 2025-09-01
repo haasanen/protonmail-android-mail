@@ -164,6 +164,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Jste offline. Zobrazené informace mohou být zastaralé.</string>
   <string name="rsvp_widget_address_is_incorrect">Vaše adresa nemůže být použita k odpovědi. Aktualizujte prosím informace o svém účtu.</string>
   <string name="rsvp_widget_user_is_organizer">Jste organizátor.</string>
+  <string name="rsvp_widget_user_is_not_invited">Nemůžete reagovat na pozvánky událostí, pokud právě nejste na seznamu účastníků.</string>
   <string name="rsvp_widget_event_does_not_exist">Tato událost není ve vašem kalendáři, takže na ni nemůžete odpovědět.</string>
   <string name="rsvp_widget_today">Dnes</string>
   <string name="rsvp_widget_tomorrow">Zítra</string>
@@ -176,4 +177,8 @@
   <string name="rsvp_widget_message">Zpráva</string>
   <string name="snooze_message_snoozed_until_banner_title">Odloženo až do</string>
   <string name="snooze_message_unsnooze_banner_button">Zrušit odložení</string>
+  <string name="unsubscribe_newsletter_banner_message">Tato zpráva pochází z e-mailového seznamu.</string>
+  <string name="unsubscribe_newsletter_banner_button">Odhlásit odběr</string>
+  <string name="already_unsubscribed_banner_message">Jste odhlášeni z tohoto e-mailového seznamu.</string>
+  <string name="error_unsubscribe_newsletter">Nepodařilo se odhlásit z odběru novinek</string>
 </resources>

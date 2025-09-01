@@ -102,12 +102,12 @@
   <string name="mark_as_legitimate_spam_dialog_message">Ne cerem scuze. Este posibil să fi fost o eroare din partea noastră. Confirmați că acest e-mail este legitim.</string>
   <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Ștergere mesaj</string>
-  <string name="message_delete_dialog_message">Sigur doriți să ștergeți definitiv acest mesaj?</string>
+  <string name="message_delete_dialog_message">Ștergeți definitiv acest mesaj?</string>
   <string name="message_deleted">Mesaj șters</string>
   <string name="error_delete_message_failed">Mesajul nu a putut fi șters.</string>
   <string name="error_delete_conversation_failed">Conversația nu s-a putut șterge.</string>
   <string name="conversation_delete_dialog_title">Ștergere conversație</string>
-  <string name="conversation_delete_dialog_message">Sigur doriți să ștergeți definitiv această conversație?</string>
+  <string name="conversation_delete_dialog_message">Ștergeți definitiv această conversație?</string>
   <string name="conversation_deleted">Conversația a fost ștearsă.</string>
   <string name="message_body_load_remote_content_button_text">Încărcare conținut extern</string>
   <string name="message_body_load_embedded_images_button_text">Încărcare imagini incluse</string>
@@ -161,6 +161,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Nu există conexiune. Informațiile afișate pot fi învechite.</string>
   <string name="rsvp_widget_address_is_incorrect">Adresa nu poate fi utilizată pentru a răspunde. Actualizați-vă informațiile din cont.</string>
   <string name="rsvp_widget_user_is_organizer">Sunteți organizator.</string>
+  <string name="rsvp_widget_user_is_not_invited">Nu puteți răspunde la invitațiile la eveniment dacă nu sunteți pe lista de participanți în acest moment.</string>
   <string name="rsvp_widget_event_does_not_exist">Acest eveniment nu este în calendar, așa că nu îi puteți răspunde.</string>
   <string name="rsvp_widget_today">Astăzi</string>
   <string name="rsvp_widget_tomorrow">Mâine</string>
@@ -173,4 +174,8 @@
   <string name="rsvp_widget_message">Mesaj</string>
   <string name="snooze_message_snoozed_until_banner_title">Amânat până</string>
   <string name="snooze_message_unsnooze_banner_button">Anulare amânare</string>
+  <string name="unsubscribe_newsletter_banner_message">Acest mesaj este de la o listă de corespondență.</string>
+  <string name="unsubscribe_newsletter_banner_button">Dezabonare</string>
+  <string name="already_unsubscribed_banner_message">V-ați dezabonat de la această listă de corespondență.</string>
+  <string name="error_unsubscribe_newsletter">Nu s-a putut dezabona de la buletinul informativ.</string>
 </resources>

@@ -98,4 +98,9 @@
     <item quantity="few">%1$d contacte</item>
     <item quantity="other">%1$d de contacte</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Disponibil pe web</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Renunțare</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Crearea de contacte sau grupuri în aplicație nu este încă gata. Momentan, le puteți crea în aplicația web și se vor sincroniza cu dispozitivul personal.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Editarea contactelor sau a grupurilor în aplicație nu este încă gata. Momentan, le puteți edita în aplicația web iar modificările se vor sincroniza cu dispozitivul.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Continuare pe web</string>
 </resources>

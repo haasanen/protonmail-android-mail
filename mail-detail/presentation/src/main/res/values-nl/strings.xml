@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">U bent offline. De weergegeven informatie kan verouderd zijn.</string>
   <string name="rsvp_widget_address_is_incorrect">Uw adres kan niet worden gebruikt om te beantwoorden. Update uw accountinformatie.</string>
   <string name="rsvp_widget_user_is_organizer">U bent de organisator.</string>
+  <string name="rsvp_widget_user_is_not_invited">Op dit moment kunt u niet reageren op afspraakuitnodigingen als u geen deelnemer bent.</string>
   <string name="rsvp_widget_event_does_not_exist">Deze afspraak staat niet in uw agenda, dus u kunt er niet op antwoorden.</string>
   <string name="rsvp_widget_today">Vandaag</string>
   <string name="rsvp_widget_tomorrow">Morgen</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">Bericht</string>
   <string name="snooze_message_snoozed_until_banner_title">Gesnoozed tot</string>
   <string name="snooze_message_unsnooze_banner_button">Ontsnoozen</string>
+  <string name="unsubscribe_newsletter_banner_message">Dit bericht komt van een mailinglijst.</string>
+  <string name="unsubscribe_newsletter_banner_button">Afmelden</string>
+  <string name="already_unsubscribed_banner_message">U bent afgemeld van deze mailinglijst.</string>
+  <string name="error_unsubscribe_newsletter">Niet gelukt om u af te melden voor de nieuwsbrief</string>
 </resources>

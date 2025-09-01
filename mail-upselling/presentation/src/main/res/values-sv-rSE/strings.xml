@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Uppgradera för full flexibilitet</string>
   <string name="upselling_upgrade_plan_generic">Du behöver en betald Proton Mail-prenumeration för att komma åt denna funktion</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB lagringsutrymme</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB lagringsutrymme, 10 e-postadresser</string>
-  <string name="upselling_plus_feature_email_addresses">10 e-postadresser</string>
-  <string name="upselling_plus_feature_custom_domain">Stöd för anpassad e-postdomän</string>
-  <string name="upselling_plus_feature_desktop_app">Ny Proton Mail-app för stationär dator</string>
-  <string name="upselling_plus_feature_calendar">Premium Kalenderfunktioner</string>
-  <string name="upselling_plus_feature_folders_labels">Obegränsat antal mappar, etiketter och filter</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 premiumfunktioner</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">Din allt-i-ett premiumprenumeration</string>
-  <string name="upselling_unlimited_feature_storage">500 GB lagringsutrymme för säkerhetskopiering av foton</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Alla betalda Mail och Calendar-funktioner</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90+ länder)</string>
-  <string name="upselling_unlimited_feature_drive">Säker molnlagring</string>
-  <string name="upselling_unlimited_feature_pass">Krypterad lösenordshanterare</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Premiumvärde inkluderat</string>
   <string name="upselling_onboarding_feature_e2e">End-to-end-kryptering</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Välj ditt paket</string>
   <string name="upselling_select_plan_year">12 månader</string>
   <string name="upselling_select_plan_month">1 månad</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Välj ditt paket</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Månadsvis</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Årsvis</string>
+  <string name="upselling_onboarding_best_value">Bästa värde</string>
+  <string name="upselling_onboarding_yearly_savings">Betala årligen och spara %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Visa mer</string>
+  <string name="upselling_onboarding_entitlements_show_less">Visa mindre</string>
+  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
+  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_month">månad</string>
+  <string name="upselling_onboarding_autorenew_year">12 månader</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB lagringsutrymme</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 e-postadress</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">Din allt-i-ett premiumprenumeration</string>
   <string name="upselling_auto_renew_text">Autoförnyas med samma pris och villkor tills uppsägning</string>
   <string name="upselling_auto_renew_text_promo">Välkomsterbjudande. Förnyas automatiskt till %s%s om det inte avbryts.</string>
   <string name="upselling_auto_renew_text_promo_short">Välkomsterbjudande. Förnyas automatiskt med %s%s.</string>

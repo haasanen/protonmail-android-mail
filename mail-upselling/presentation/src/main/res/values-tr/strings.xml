@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Tam esneklik için tarifenizi yükseltin</string>
   <string name="upselling_upgrade_plan_generic">Bu özelliğe erişmek için ücretli bir Proton Mail aboneliğiniz olmalıdır</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB depolama alanı</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB depolama alanı, 10 e-posta adresi</string>
-  <string name="upselling_plus_feature_email_addresses">10 e-posta adresi</string>
-  <string name="upselling_plus_feature_custom_domain">Özel e-posta etki alanı desteği</string>
-  <string name="upselling_plus_feature_desktop_app">Yeni Proton Mail bilgisayar uygulaması</string>
-  <string name="upselling_plus_feature_calendar">Ücretli takvim özellikleri</string>
-  <string name="upselling_plus_feature_folders_labels">Sınırsız klasör, etiket, süzgeç</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 ücretli özellik</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">Tümünü bir arada sunan ücretli abonelik</string>
-  <string name="upselling_unlimited_feature_storage">Fotoğraf yedekleme ile 500 GB depolama alanı</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Tüm ücretli Mail ve Calendar özellikleri</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90 üzerinde ülke)</string>
-  <string name="upselling_unlimited_feature_drive">Güvenli bulut depolama alanı</string>
-  <string name="upselling_unlimited_feature_pass">Şifrelenmiş parola yöneticisi</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Ücretli özelliklerle birlikte</string>
   <string name="upselling_onboarding_feature_e2e">Uçtan uca şifreleme</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Tarifenizi seçin</string>
   <string name="upselling_select_plan_year">12 ay</string>
   <string name="upselling_select_plan_month">1 ay</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Tarifenizi seçin</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Aylık</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Yıllık</string>
+  <string name="upselling_onboarding_best_value">En iyi değer</string>
+  <string name="upselling_onboarding_yearly_savings">Yıllık ödeyin ve %s indirim alın</string>
+  <string name="upselling_onboarding_entitlements_show_more">Daha fazla görüntüle</string>
+  <string name="upselling_onboarding_entitlements_show_less">Daha az görüntüle</string>
+  <string name="upselling_onboarding_button_continue_free">Ücretsiz Free tarifesini kullanmayı sürdür</string>
+  <string name="upselling_onboarding_autorenew">%s zamanında %s bir faturalanır</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Karşılama teklifi. Otomatik olarak %s için %s bir yenilenir</string>
+  <string name="upselling_onboarding_autorenew_month">ayda</string>
+  <string name="upselling_onboarding_autorenew_year">12 ay</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB depolama alanı</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 e-posta adresi</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">Tümünü bir arada sunan ücretli abonelik</string>
   <string name="upselling_auto_renew_text">İptal edilmediği sürece aynı fiyat ve koşullarla otomatik olarak yenilenir</string>
   <string name="upselling_auto_renew_text_promo">Karşılama teklifi. İptal edilmedikçe %s%s zamanında otomatik olarak yenilenir</string>
   <string name="upselling_auto_renew_text_promo_short">Karşılama teklifi. Otomatik olarak %s%s zamanında yenilenir.</string>

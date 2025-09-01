@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">言語</string>
   <string name="mail_settings_app_customization_appearance">外観</string>
   <string name="mail_settings_app_customization_protection">アプリロック</string>
+  <string name="mail_settings_app_customization_mobile_signature">モバイル署名</string>
   <string name="mail_settings_app_customization_protection_enabled_description">自動ロック有効化</string>
   <string name="mail_settings_app_customization_protection_disabled_description">自動ロック無効</string>
   <string name="mail_settings_app_customization_use_device_contacts">デバイスの連絡先を使用する</string>
@@ -67,6 +68,10 @@
   <string name="mail_settings_app_customization_view_application_logs">アプリのログを表示</string>
   <string name="mail_settings_app_customization_mail_experience_header">メール体験</string>
   <string name="mail_settings_app_customization_advanced_header">高度</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">モバイル署名</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">オン</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">オフ</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">署名の有効化</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">システム</string>
   <string name="mail_settings_theme_light">ライト</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">設定の読み込みエラー</string>
   <string name="notifications_on">オン</string>
   <string name="notifications_off">オフ</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">ツールバーを編集</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">ツールバーリスト</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">このツールバーは、リスト（例：受信トレイ、ごみ箱など）で複数のメッセージが選択されたときに表示されます。</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">メッセージツールバー</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">このツールバーは、メッセージ閲覧時に表示されます。</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">会話ツールバー</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">このツールバーは、メッセージ閲覧中に表示されたままになります。</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">編集操作</string>
+  <string name="mail_settings_custom_toolbar_set_actions">ツールバー操作</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">利用可能なアクション</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">リストツールバーの編集</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">会話ツールバー</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">メッセージツールバー</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">保存</string>
+  <string name="mail_settings_custom_toolbar_header">ツールバーには1～5個のアクションを設定できます。最後に残ったアクションを削除することはできません。</string>
+  <string name="mail_settings_custom_toolbar_reset">初期値に戻す</string>
+  <string name="mail_settings_custom_toolbar_reset_title">ツールバーの設定をリセットしますか？</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">確認</string>
+  <string name="mail_settings_custom_toolbar_save_error">ツールバーのアクションを保存できませんでした。もう一度お試しください。</string>
+  <string name="mail_settings_custom_toolbar_read_error">ツールバーのアクションを読み込みできませんでした。もう一度お試しください。</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">エラーが発生しました。再度お試しください。</string>
 </resources>

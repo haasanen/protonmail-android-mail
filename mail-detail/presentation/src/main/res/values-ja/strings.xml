@@ -155,6 +155,7 @@
   <string name="rsvp_widget_offline_invite_outdated">お客様はオフラインです。表示されている情報は古い可能性があります。</string>
   <string name="rsvp_widget_address_is_incorrect">お客様のアドレスは返信に使用できません。お客様のアカウント情報を更新してください。</string>
   <string name="rsvp_widget_user_is_organizer">お客様は主催者です。</string>
+  <string name="rsvp_widget_user_is_not_invited">現時点で参加者リストに登録されていない場合は、予定の招待に応答することはできません。</string>
   <string name="rsvp_widget_event_does_not_exist">この予定はあなたのカレンダーにないため、返信することはできません。</string>
   <string name="rsvp_widget_today">今日</string>
   <string name="rsvp_widget_tomorrow">明日</string>
@@ -167,4 +168,8 @@
   <string name="rsvp_widget_message">メッセージ</string>
   <string name="snooze_message_snoozed_until_banner_title">までスヌーズ</string>
   <string name="snooze_message_unsnooze_banner_button">スヌーズを解除</string>
+  <string name="unsubscribe_newsletter_banner_message">これはメーリングリストからのメッセージです。</string>
+  <string name="unsubscribe_newsletter_banner_button">購読解除</string>
+  <string name="already_unsubscribed_banner_message">このメーリングリストの登録は解除されました。</string>
+  <string name="error_unsubscribe_newsletter">ニュースレターの登録解除に失敗しました</string>
 </resources>

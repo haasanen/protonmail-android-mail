@@ -33,7 +33,7 @@
   <string name="auth_login_close">Zavrieť</string>
   <string name="auth_login_help">Nápoveda</string>
   <string name="auth_sign_in">Prihlásiť sa</string>
-  <string name="auth_login_username">Username or email</string>
+  <string name="auth_login_username">Používateľské meno alebo email</string>
   <string name="auth_email">Email</string>
   <string name="auth_password">Heslo</string>
   <string name="auth_username_placeholder">Používateľské meno alebo email</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Používateľské meno nesmie byť prázdne.</string>
   <string name="auth_signup_email_assistive_text">Email nesmie byť prázdny.</string>
   <string name="auth_signup_next">Ďalej</string>
-  <string name="auth_signup_username">Username</string>
+  <string name="auth_signup_username">Používateľské meno</string>
   <string name="auth_signup_create_password">Vytvorte si heslo</string>
   <string name="auth_signup_password">Heslo</string>
   <string name="auth_signup_repeat_password">Zopakovať heslo</string>
@@ -173,5 +173,5 @@
   <string name="settings_password_error_invalid_recovery">Nesprávny 2FA kód. Skúste to znova, prosím.</string>
   <string name="settings_password_error_2fa_reused">Kód už bol použitý. Skúste použiť iný kód.</string>
   <string name="settings_password_general_error">Vyskytla sa chyba.</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Jedna alebo viaceré akcie nemôžu byť spracované. Odhláste sa a znovu sa prihláste do svojho účtu.</string>
 </resources>

@@ -27,7 +27,7 @@
   <string name="send_button_title">傳送</string>
   <string name="send_message_content_description">傳送郵件訊息</string>
   <string name="composer_expand_recipients_button">顯示其他收件者</string>
-  <string name="composer_error_invalid_email">電子郵件位址無效</string>
+  <string name="composer_error_invalid_email">Email address is invalid or does not exist</string>
   <string name="composer_error_invalid_sender">寄件者電子郵件位址無效</string>
   <string name="change_sender_button_content_description">變更寄件人</string>
   <string name="composer_change_sender_paid_feature">升級至付費方案以變更寄件者地址</string>
@@ -137,4 +137,5 @@
   <string name="composer_loading_attachments_error">載入附件失敗</string>
   <string name="composer_attachment_upload_error_retry">部分附件上傳失敗。請重試。</string>
   <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">The selected address cannot be used to send. Your message will be sent from your default address.</string>
 </resources>

@@ -27,7 +27,7 @@
   <string name="send_button_title">Enviar</string>
   <string name="send_message_content_description">Enviar mensaje</string>
   <string name="composer_expand_recipients_button">Mostrar los otros destinatarios</string>
-  <string name="composer_error_invalid_email">Dirección de correo inválida</string>
+  <string name="composer_error_invalid_email">La dirección de correo es inválida o no existe</string>
   <string name="composer_error_invalid_sender">La dirección del remitente no es válida</string>
   <string name="change_sender_button_content_description">Cambiar el remitente</string>
   <string name="composer_change_sender_paid_feature">Mejore a un plan de pago para cambiar la dirección del remitente.</string>
@@ -138,4 +138,5 @@
   <string name="composer_loading_attachments_error">Error al cargar archivos adjuntos</string>
   <string name="composer_attachment_upload_error_retry">No se pudieron cargar algunos archivos adjuntos. Inténtelo de nuevo.</string>
   <string name="composer_external_encryption_unexpected_error">Error inesperado %s. Intente de nuevo.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">La selección de dirección de envío está desactivada. El mensaje se enviará desde la dirección de correo por defecto.</string>
 </resources>

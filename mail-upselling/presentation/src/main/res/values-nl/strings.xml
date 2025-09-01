@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Upgraden voor volledige flexibiliteit</string>
   <string name="upselling_upgrade_plan_generic">U hebt een betaald Proton Mail-abonnement nodig om toegang te krijgen tot deze functie.</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB opslagruimte</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB opslagruimte, 10 e-mailadressen</string>
-  <string name="upselling_plus_feature_email_addresses">10 e-mailadressen</string>
-  <string name="upselling_plus_feature_custom_domain">Gepersonaliseerde e-maildomein ondersteuning</string>
-  <string name="upselling_plus_feature_desktop_app">Nieuwe Proton Mail desktop-app</string>
-  <string name="upselling_plus_feature_calendar">Premium Agendafuncties</string>
-  <string name="upselling_plus_feature_folders_labels">Onbeperkt aantal mappen, labels en filters</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 premium functies</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">Uw all-in-één Premium-abonnement</string>
-  <string name="upselling_unlimited_feature_storage">500 GB opslag met foto back-up</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Alle betaalde Mail- en Calendar-functies</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90+ landen)</string>
-  <string name="upselling_unlimited_feature_drive">Veilige cloudopslag</string>
-  <string name="upselling_unlimited_feature_pass">Versleutelde wachtwoordmanager</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Producten inbegrepen</string>
   <string name="upselling_onboarding_feature_e2e">End-to-end versleuteling</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Kies uw abonnement</string>
   <string name="upselling_select_plan_year">12 maanden</string>
   <string name="upselling_select_plan_month">1 maand</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Kies uw abonnement</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Maandelijks</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Jaarlijks</string>
+  <string name="upselling_onboarding_best_value">Beste Koop</string>
+  <string name="upselling_onboarding_yearly_savings">Betaal jaarlijks en bespaar %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Meer tonen</string>
+  <string name="upselling_onboarding_entitlements_show_less">Minder tonen</string>
+  <string name="upselling_onboarding_button_continue_free">Doorgaan met gratis abonnement</string>
+  <string name="upselling_onboarding_autorenew">Gefactureerd op %s elke %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Welkomstaanbieding. Verlengt automatisch op %s elke %s</string>
+  <string name="upselling_onboarding_autorenew_month">maand</string>
+  <string name="upselling_onboarding_autorenew_year">12 maanden</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB opslagruimte</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 e-mailadres</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">Uw all-in-één Premium-abonnement</string>
   <string name="upselling_auto_renew_text">Auto-vernieuwing tegen dezelfde prijs en voorwaarden, tenzij geannuleerd</string>
   <string name="upselling_auto_renew_text_promo">Welkomstaanbieding. Automatisch verlengen op %s%s tenzij u annuleert</string>
   <string name="upselling_auto_renew_text_promo_short">Welkomstaanbieding, verlengt automatisch op %s%s.</string>

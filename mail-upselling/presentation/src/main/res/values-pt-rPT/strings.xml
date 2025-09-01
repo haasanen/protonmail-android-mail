@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Melhore o seu plano para ter total flexibilidade</string>
   <string name="upselling_upgrade_plan_generic">Precisa de uma subscrição paga do Proton Mail para aceder a esta funcionalidade</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB de armazenamento</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB de armazenamento, 10 endereços de e-mail</string>
-  <string name="upselling_plus_feature_email_addresses">10 endereços de e-mail</string>
-  <string name="upselling_plus_feature_custom_domain">Suporte para domínio de e-mail personalizado</string>
-  <string name="upselling_plus_feature_desktop_app">Nova aplicação Proton Mail para desktop</string>
-  <string name="upselling_plus_feature_calendar">Funcionalidades do calendário premium</string>
-  <string name="upselling_plus_feature_folders_labels">Pastas, etiquetas, e filtros ilimitados</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 funcionalidades premium</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">A sua subscrição premium tudo-em-um</string>
-  <string name="upselling_unlimited_feature_storage">500 GB de armazenamento com cópias de segurança de fotos</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Todas as funcionalidades pagas do Mail e do Calendar</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (mais de 90 países)</string>
-  <string name="upselling_unlimited_feature_drive">Armazenamento seguro na nuvem</string>
-  <string name="upselling_unlimited_feature_pass">Gestor de palavras-passe encriptado</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Funcionalidades premium incluídas</string>
   <string name="upselling_onboarding_feature_e2e">Encriptação de ponta a ponta</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Escolha o seu plano</string>
   <string name="upselling_select_plan_year">12 meses</string>
   <string name="upselling_select_plan_month">1 mês</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_best_value">Melhor oferta</string>
+  <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
+  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
+  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
+  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_month">month</string>
+  <string name="upselling_onboarding_autorenew_year">12 months</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">A sua subscrição premium tudo-em-um</string>
   <string name="upselling_auto_renew_text">Renovação automática pelo mesmo preço e condições, exceto se for cancelada</string>
   <string name="upselling_auto_renew_text_promo">Oferta de boas-vindas. Renovação automática por %s%s, salvo cancelamento</string>
   <string name="upselling_auto_renew_text_promo_short">Oferta de boas-vindas. Renovação automática por %s%s.</string>

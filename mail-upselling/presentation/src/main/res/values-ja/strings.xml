@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">最大限の柔軟性を得るためのアップグレード</string>
   <string name="upselling_upgrade_plan_generic">この機能にアクセスするには、有料のProton Mailサブスクリプションが必要です</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB のストレージ</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GBのストレージ、10 個のメールアドレス</string>
-  <string name="upselling_plus_feature_email_addresses">10個のメールアドレス</string>
-  <string name="upselling_plus_feature_custom_domain">カスタムメールドメインのサポート</string>
-  <string name="upselling_plus_feature_desktop_app">新しい Proton Mail デスクトップアプリ</string>
-  <string name="upselling_plus_feature_calendar">プレミアムカレンダー機能</string>
-  <string name="upselling_plus_feature_folders_labels">無制限のフォルダー、ラベル、フィルター</string>
-  <string name="upselling_plus_feature_plus_7_features">+7個のプレミアム機能</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">オールインワンプレミアムサブスクリプション</string>
-  <string name="upselling_unlimited_feature_storage">500 GB のストレージと写真バックアップ</string>
-  <string name="upselling_unlimited_feature_mail_calendar">有料の Mail と Calendar の全機能</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90ヶ国以上)</string>
-  <string name="upselling_unlimited_feature_drive">安全なクラウドストレージ</string>
-  <string name="upselling_unlimited_feature_pass">暗号化されたパスワードマネージャー</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">プレミアムな価値が含まれています</string>
   <string name="upselling_onboarding_feature_e2e">エンドツーエンド暗号化</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">プランを選択</string>
   <string name="upselling_select_plan_year">12ヶ月</string>
   <string name="upselling_select_plan_month">1 ヶ月</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">プランを選択</string>
+  <string name="upselling_onboarding_choose_plan_monthly">毎月</string>
+  <string name="upselling_onboarding_choose_plan_yearly">毎年</string>
+  <string name="upselling_onboarding_best_value">最高の価値</string>
+  <string name="upselling_onboarding_yearly_savings">年払いで%sお得</string>
+  <string name="upselling_onboarding_entitlements_show_more">さらに表示</string>
+  <string name="upselling_onboarding_entitlements_show_less">詳細を非表示</string>
+  <string name="upselling_onboarding_button_continue_free">無料プランで続行</string>
+  <string name="upselling_onboarding_autorenew">毎%sに%sの支払い</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">歓迎オファー。毎%s、%sで自動更新されます</string>
+  <string name="upselling_onboarding_autorenew_month">ヶ月</string>
+  <string name="upselling_onboarding_autorenew_year">12ヶ月</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB ストレージ</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1個のメールアドレス</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">オールインワンプレミアムサブスクリプション</string>
   <string name="upselling_auto_renew_text">キャンセルするまで同じ金額、同じ期間で自動更新</string>
   <string name="upselling_auto_renew_text_promo">ウェルカムオファー。キャンセルしない限り、%s%s で自動更新します。</string>
   <string name="upselling_auto_renew_text_promo_short">歓迎オファー。%s%sで自動更新。</string>

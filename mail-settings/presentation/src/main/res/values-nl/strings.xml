@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Taal</string>
   <string name="mail_settings_app_customization_appearance">Uiterlijk</string>
   <string name="mail_settings_app_customization_protection">Appvergrendeling</string>
+  <string name="mail_settings_app_customization_mobile_signature">Mobiele handtekening</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatisch vergrendelen ingeschakeld</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatisch vergrendelen uitgeschakeld</string>
   <string name="mail_settings_app_customization_use_device_contacts">Apparaat contacten gebruiken</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Ga snel naar het volgende of vorige bericht in uw inbox.</string>
   <string name="mail_settings_app_customization_swipe_action">Veegactie</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Stel snelle acties in, zoals verwijderen of archiveren, wanneer u naar links of rechts veegt.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Werkbalk aanpassen</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Werkbalken aanpassen</string>
   <string name="mail_settings_app_customization_alternative_routing">Alternatieve routing</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Omzeil firewall of netwerkproblemen in het geval dat sites van Proton worden geblokkeerd.</string>
   <string name="mail_settings_app_customization_view_application_logs">Bekijk toepassingslogboeken</string>
   <string name="mail_settings_app_customization_mail_experience_header">Mailervaring</string>
   <string name="mail_settings_app_customization_advanced_header">Geavanceerd</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Mobiele handtekening</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Aan</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Uit</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Handtekening inschakelen</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Systeem</string>
   <string name="mail_settings_theme_light">Licht</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Fout bij het laden van instellingen</string>
   <string name="notifications_on">Aan</string>
   <string name="notifications_off">Uit</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Werkbalken aanpassen</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Lijstwerkbalk</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Deze werkbalk verschijnt wanneer u meerdere berichten selecteert in een lijst (bijv. Inbox, Prullenbak, enz.)</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Berichtwerkbalk</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Deze werkbalk blijft zichtbaar wanneer u berichten leest.</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Gesprekswerkbalk</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Deze werkbalk blijft zichtbaar wanneer u berichten leest</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Acties bewerken</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Werkbalkacties</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Beschikbare acties</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Edit list toolbar</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Gesprekswerkbalk</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Berichtwerkbalk</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Opslaan</string>
+  <string name="mail_settings_custom_toolbar_header">De werkbalk kan 1-5 acties hebben. U kunt de laatst overgebleven actie niet verwijderen.</string>
+  <string name="mail_settings_custom_toolbar_reset">Terugzetten naar standaard</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Wilt u de werkbalkinstellingen resetten?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Bevestigen</string>
+  <string name="mail_settings_custom_toolbar_save_error">Kan de werkbalkacties niet opslaan. Probeer het opnieuw.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Kan werkbalkacties niet lezen. Probeer het opnieuw.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Er ging iets fout. Probeer opnieuw.</string>
 </resources>

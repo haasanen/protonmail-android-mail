@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Navýšte úroveň pre úplnú flexibilitu</string>
   <string name="upselling_upgrade_plan_generic">Pre prístup k tejto funkcii potrebujete platené predplatné Proton Mail.</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB úložného priestoru</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB úložisko, 10 emailových adries</string>
-  <string name="upselling_plus_feature_email_addresses">10 emailových adries</string>
-  <string name="upselling_plus_feature_custom_domain">Podpora vlastnej emailovej domény</string>
-  <string name="upselling_plus_feature_desktop_app">Nová desktopová aplikácia Proton Mail</string>
-  <string name="upselling_plus_feature_calendar">Prémiové funkcie kalendára</string>
-  <string name="upselling_plus_feature_folders_labels">Neobmedzený počet priečinkov, štítkov, filtrov</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 prémiových funkcií</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">Vaše komplexné prémiové predplatné</string>
-  <string name="upselling_unlimited_feature_storage">500 GB úložného priestoru so zálohovaním fotografií</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Všetky platené funkcie pošty a kalendára</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90+ krajín)</string>
-  <string name="upselling_unlimited_feature_drive">Bezpečné cloudové úložisko</string>
-  <string name="upselling_unlimited_feature_pass">Šifrovaný správca hesiel</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Vrátane prémiovej hodnoty</string>
   <string name="upselling_onboarding_feature_e2e">Šifrovanie end-to-end</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Vyberte svoj plán</string>
   <string name="upselling_select_plan_year">12 mesiacov</string>
   <string name="upselling_select_plan_month">1 mesiac</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Vyberte svoj plán</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Mesačne</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Ročne</string>
+  <string name="upselling_onboarding_best_value">Najlepšia ponuka</string>
+  <string name="upselling_onboarding_yearly_savings">Plaťte ročne a ušetrite %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Zobraziť viac</string>
+  <string name="upselling_onboarding_entitlements_show_less">Zobraziť menej</string>
+  <string name="upselling_onboarding_button_continue_free">Pokračovať s Free tarifom</string>
+  <string name="upselling_onboarding_autorenew">Fakturované %s každé %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Uvítacia ponuka. Automaticky sa obnovuje za %s každých %s</string>
+  <string name="upselling_onboarding_autorenew_month">mesiac</string>
+  <string name="upselling_onboarding_autorenew_year">12 mesiacov</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB úložisko</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 emailová adresa</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">Vaše komplexné prémiové predplatné</string>
   <string name="upselling_auto_renew_text">Automatické obnovenie za rovnakú cenu a za rovnakých podmienok až pokým nedôjde k zrušeniu</string>
   <string name="upselling_auto_renew_text_promo">Uvítacia ponuka. Automaticky sa obnoví za %s%s, pokiaľ ju nezrušíte.</string>
   <string name="upselling_auto_renew_text_promo_short">Uvítacia ponuka. Automaticky sa obnoví za %s%s.</string>

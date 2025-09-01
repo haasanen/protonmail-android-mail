@@ -27,7 +27,7 @@
   <string name="send_button_title">Kirim</string>
   <string name="send_message_content_description">Kirim pesan</string>
   <string name="composer_expand_recipients_button">Tampilkan penerima lainnya</string>
-  <string name="composer_error_invalid_email">Alamat email tidak valid</string>
+  <string name="composer_error_invalid_email">Email address is invalid or does not exist</string>
   <string name="composer_error_invalid_sender">Alamat pengirim tidak valid</string>
   <string name="change_sender_button_content_description">Ubah pengirim</string>
   <string name="composer_change_sender_paid_feature">Tingkatkan ke paket berbayar untuk mengubah alamat pengirim</string>
@@ -137,4 +137,5 @@
   <string name="composer_loading_attachments_error">Lampiran gagal dimuat</string>
   <string name="composer_attachment_upload_error_retry">Sebagian lampiran gagal diunggah. Silakan coba lagi.</string>
   <string name="composer_external_encryption_unexpected_error">Terjadi kesalahan yang tidak terduga %s. Silakan coba lagi.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">The selected address cannot be used to send. Your message will be sent from your default address.</string>
 </resources>

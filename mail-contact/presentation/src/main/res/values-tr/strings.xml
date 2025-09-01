@@ -95,4 +95,9 @@
     <item quantity="one">%1$d kişi</item>
     <item quantity="other">%1$d kişi</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">İnternet üzerinden kullanılabilir</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Yok say</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Uygulamada kişi veya grup oluşturma özellikleri henüz hazır değil. Bunları şimdilik internet uygulamasından oluşturabilirsiniz. Ardından aygıtınızla eşitlenirler.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Uygulamada kişileri ve grupları düzenleme özellikleri henüz hazır değil. Bunları şimdilik internet uygulamasından düzenleyebilirsiniz. Değişiklikler aygıtınızla eşitlenir.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">İnternet uygulamasına geç</string>
 </resources>

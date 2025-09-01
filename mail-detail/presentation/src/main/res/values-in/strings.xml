@@ -155,6 +155,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Anda sedang offline. Informasi yang ditampilkan mungkin sudah tidak terkini.</string>
   <string name="rsvp_widget_address_is_incorrect">Alamat Anda tidak dapat digunakan untuk membalas. Harap perbarui informasi akun Anda.</string>
   <string name="rsvp_widget_user_is_organizer">Anda adalah penyelenggara acara.</string>
+  <string name="rsvp_widget_user_is_not_invited">You cannot respond to event invites if you\'re not on the participants list at the moment.</string>
   <string name="rsvp_widget_event_does_not_exist">Acara ini tidak ada di kalender Anda, jadi Anda tidak dapat membalasnya.</string>
   <string name="rsvp_widget_today">Hari ini</string>
   <string name="rsvp_widget_tomorrow">Besok</string>
@@ -167,4 +168,8 @@
   <string name="rsvp_widget_message">Kirim pesan</string>
   <string name="snooze_message_snoozed_until_banner_title">Ditunda hingga</string>
   <string name="snooze_message_unsnooze_banner_button">Batalkan penundaan</string>
+  <string name="unsubscribe_newsletter_banner_message">This message is from a mailing list.</string>
+  <string name="unsubscribe_newsletter_banner_button">Unsubscribe</string>
+  <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
+  <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
 </resources>

@@ -34,6 +34,7 @@
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">移動…</string>
   <string name="bottom_sheet_done_action">完了</string>
+  <string name="bottom_sheet_save_action">保存</string>
   <string name="bottom_sheet_archive_action">同時にアーカイブしますか？</string>
   <string name="bottom_sheet_label_as_title">ラベル付け</string>
   <string name="bottom_sheet_label_as_error_fetch">ラベルの取得に失敗しました。</string>

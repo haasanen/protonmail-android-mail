@@ -27,7 +27,7 @@
   <string name="quick_reply_all_button_content_description">Responder a todos</string>
   <string name="more_button_content_description">Más</string>
   <string name="subject">Asunto:</string>
-  <string name="from">Desde:</string>
+  <string name="from">De:</string>
   <string name="to">Para:</string>
   <string name="cc">Cc:</string>
   <string name="bcc">Cco:</string>
@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">No hay conexión. La información mostrada puede estar desactualizada.</string>
   <string name="rsvp_widget_address_is_incorrect">Su dirección no puede ser utilizada para responder. Actualice la información de su cuenta.</string>
   <string name="rsvp_widget_user_is_organizer">Usted es quien organiza.</string>
+  <string name="rsvp_widget_user_is_not_invited">No puede responder a las invitaciones del evento si no está en la lista de participantes en este momento.</string>
   <string name="rsvp_widget_event_does_not_exist">Este evento no está en su calendario, por lo que no puede responder a él.</string>
   <string name="rsvp_widget_today">Hoy</string>
   <string name="rsvp_widget_tomorrow">Mañana</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">Mensaje</string>
   <string name="snooze_message_snoozed_until_banner_title">Pausado hasta</string>
   <string name="snooze_message_unsnooze_banner_button">Dejar de pausar</string>
+  <string name="unsubscribe_newsletter_banner_message">Este mensaje proviene de una lista de correo.</string>
+  <string name="unsubscribe_newsletter_banner_button">Cancelar la suscripción</string>
+  <string name="already_unsubscribed_banner_message">Ha cancelado esta lista de correo.</string>
+  <string name="error_unsubscribe_newsletter">Error al cancelar la suscripción al boletín</string>
 </resources>

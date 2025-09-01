@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Покращте для повної гнучкості</string>
   <string name="upselling_upgrade_plan_generic">Потрібна платна підписка Proton Mail, щоб отримати доступ до цієї функції</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 ГБ сховища</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 ГБ сховища, 10 поштових адрес</string>
-  <string name="upselling_plus_feature_email_addresses">10 адрес електронної пошти</string>
-  <string name="upselling_plus_feature_custom_domain">Підтримка власних доменів електронної пошти</string>
-  <string name="upselling_plus_feature_desktop_app">Нова програма Proton Mail для комп\'ютера</string>
-  <string name="upselling_plus_feature_calendar">Преміум функції календаря</string>
-  <string name="upselling_plus_feature_folders_labels">Необмежена кількість тек, міток і фільтрів</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 преміальних функцій</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">Преміальна передплата з усіма можливостями</string>
-  <string name="upselling_unlimited_feature_storage">500 ГБ сховища з резервним копіюванням фотографій</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Усі платні функції Proton Mail і Calendar</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90+ країн)</string>
-  <string name="upselling_unlimited_feature_drive">Безпечне хмарне сховище</string>
-  <string name="upselling_unlimited_feature_pass">Зашифрований менеджер паролів</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Усі переваги преміум</string>
   <string name="upselling_onboarding_feature_e2e">Наскрізне шифрування</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Виберіть тарифний план</string>
   <string name="upselling_select_plan_year">12 місяців</string>
   <string name="upselling_select_plan_month">1 місяць</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_best_value">Найвигідніший</string>
+  <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
+  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
+  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
+  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_month">month</string>
+  <string name="upselling_onboarding_autorenew_year">12 months</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">Преміальна передплата з усіма можливостями</string>
   <string name="upselling_auto_renew_text">Автопоновлення за тією ж ціною та умовами доки не буде скасовано</string>
   <string name="upselling_auto_renew_text_promo">Вітальна пропозиція. Автопоновлення через %s%s, якщо не скасовано</string>
   <string name="upselling_auto_renew_text_promo_short">Вітальна пропозиція. Автопоновлення за %s%s.</string>

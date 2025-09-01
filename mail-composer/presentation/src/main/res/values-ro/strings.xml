@@ -27,7 +27,7 @@
   <string name="send_button_title">Trimitere</string>
   <string name="send_message_content_description">Trimitere mesaj</string>
   <string name="composer_expand_recipients_button">Afișare alți destinatari</string>
-  <string name="composer_error_invalid_email">Adresa de e-mail nu este validă.</string>
+  <string name="composer_error_invalid_email">Adresa de e-mail nu este validă sau nu există</string>
   <string name="composer_error_invalid_sender">Adresa expeditorului nu este validă.</string>
   <string name="change_sender_button_content_description">Modificare expeditor</string>
   <string name="composer_change_sender_paid_feature">Treceți la un plan cu plată pentru a schimba adresa expeditorului.</string>
@@ -139,4 +139,5 @@
   <string name="composer_loading_attachments_error">Încărcarea fișierelor a eșuat.</string>
   <string name="composer_attachment_upload_error_retry">Câteva atașamente nu au putut fi încărcate. Mai încercați.</string>
   <string name="composer_external_encryption_unexpected_error">Eroare neașteptată %s. Reîncercați.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">Adresa selectată nu poate fi folosită pentru trimitere. Mesajul va fi trimis de la adresa implicită.</string>
 </resources>

@@ -72,7 +72,7 @@
   <string name="mail_settings_pin_verify_wrong_pin">Nesprávný PIN</string>
   <string name="mail_settings_biometrics_unable_to_set">Při nastavování předvoleb biometriky došlo k chybě.</string>
   <string name="mail_settings_biometrics_unable_to_unset">Při resetování předvoleb biometriky došlo k chybě.</string>
-  <string name="mail_settings_biometrics_unknown_lock">Při stahování aktuálních zásad uzamčení došlo k chybě.</string>
+  <string name="mail_settings_biometrics_unknown_lock">Při získávání aktuálních zásad uzamčení došlo k chybě.</string>
   <!-- Auto lock dialog -->
   <string name="mail_settings_pin_lock_dialog_title">Potvrdit PIN</string>
   <string name="mail_settings_pin_lock_dialog_subtitle">Z bezpečnostních důvodů zadejte svůj aktuální PIN a pokračujte.</string>

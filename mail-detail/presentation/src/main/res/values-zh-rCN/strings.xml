@@ -155,6 +155,7 @@
   <string name="rsvp_widget_offline_invite_outdated">您处于离线状态。显示的信息可能已过时。</string>
   <string name="rsvp_widget_address_is_incorrect">您的地址无法用于回复。请更新您的账户信息。</string>
   <string name="rsvp_widget_user_is_organizer">您是组织者。</string>
+  <string name="rsvp_widget_user_is_not_invited">You cannot respond to event invites if you\'re not on the participants list at the moment.</string>
   <string name="rsvp_widget_event_does_not_exist">此事件不在您的日历中，因此您无法回复它。</string>
   <string name="rsvp_widget_today">今天</string>
   <string name="rsvp_widget_tomorrow">明天</string>
@@ -167,4 +168,8 @@
   <string name="rsvp_widget_message">消息</string>
   <string name="snooze_message_snoozed_until_banner_title">待办至</string>
   <string name="snooze_message_unsnooze_banner_button">取消延迟通知</string>
+  <string name="unsubscribe_newsletter_banner_message">This message is from a mailing list.</string>
+  <string name="unsubscribe_newsletter_banner_button">Unsubscribe</string>
+  <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
+  <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
 </resources>

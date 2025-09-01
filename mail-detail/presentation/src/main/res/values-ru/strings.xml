@@ -164,6 +164,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Вы не в сети. Отображаемая информация может быть устаревшей.</string>
   <string name="rsvp_widget_address_is_incorrect">Ваш адрес не может быть использован для ответа. Обновите информацию своего аккаунта.</string>
   <string name="rsvp_widget_user_is_organizer">Вы являетесь организатором.</string>
+  <string name="rsvp_widget_user_is_not_invited">You cannot respond to event invites if you\'re not on the participants list at the moment.</string>
   <string name="rsvp_widget_event_does_not_exist">Этого события нет в вашем календаре, поэтому вы не можете на него ответить.</string>
   <string name="rsvp_widget_today">Сегодня</string>
   <string name="rsvp_widget_tomorrow">Завтра</string>
@@ -176,4 +177,8 @@
   <string name="rsvp_widget_message">Сообщение</string>
   <string name="snooze_message_snoozed_until_banner_title">Отложено до</string>
   <string name="snooze_message_unsnooze_banner_button">Не откладывать</string>
+  <string name="unsubscribe_newsletter_banner_message">This message is from a mailing list.</string>
+  <string name="unsubscribe_newsletter_banner_button">Unsubscribe</string>
+  <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
+  <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
 </resources>

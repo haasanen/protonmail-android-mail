@@ -101,4 +101,9 @@
     <item quantity="many">%1$d kontaktov</item>
     <item quantity="other">%1$d kontaktov</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Dostupné na webe</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Zavrieť</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Vytváranie kontaktov alebo skupín v aplikácii ešte nie je dostupné. Nateraz ich môžete vytvoriť vo webovej aplikácii a synchronizujú sa do vášho zariadenia.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Úprava kontaktov alebo skupín v aplikácii ešte nie je pripravená. Zatiaľ ich môžete upraviť vo webovej aplikácii a zmeny sa synchronizujú s vaším zariadením.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Pokračovať na webe</string>
 </resources>

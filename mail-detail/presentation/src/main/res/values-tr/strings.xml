@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Çevrim dışısınız. Görüntülenen bilgiler güncel olmayabilir.</string>
   <string name="rsvp_widget_address_is_incorrect">Adresiniz yanıtlamak için kullanılamaz. Lütfen hesap bilgilerinizi güncelleyin.</string>
   <string name="rsvp_widget_user_is_organizer">Düzenleyici sizsiniz.</string>
+  <string name="rsvp_widget_user_is_not_invited">Şu anda katılımcı listesinde bulunmadığınız etkinlik davetlerine yanıt veremezsiniz.</string>
   <string name="rsvp_widget_event_does_not_exist">Bu etkinlik takviminizde olmadığından yanıtlayamazsınız.</string>
   <string name="rsvp_widget_today">Bugün</string>
   <string name="rsvp_widget_tomorrow">Yarın</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">İleti</string>
   <string name="snooze_message_snoozed_until_banner_title">Şu zamana ertelendi</string>
   <string name="snooze_message_unsnooze_banner_button">Ertelemeyi kaldır</string>
+  <string name="unsubscribe_newsletter_banner_message">Bu ileti bir e-posta listesinden gönderilmiş.</string>
+  <string name="unsubscribe_newsletter_banner_button">Aboneliği sonlandır</string>
+  <string name="already_unsubscribed_banner_message">Bu e-posta listesindeki aboneliğiniz sonlandırıldı.</string>
+  <string name="error_unsubscribe_newsletter">Duyuru aboneliği sonlandırılamadı</string>
 </resources>

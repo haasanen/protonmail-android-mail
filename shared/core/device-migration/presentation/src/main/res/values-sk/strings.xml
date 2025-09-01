@@ -55,5 +55,5 @@
   <string name="target_sign_in_error_new_qr">Generovať QR kód</string>
   <string name="target_sign_in_error_back_to_signin">Späť na prihlásenie</string>
   <string name="target_sign_in_learn_more">Zistiť viac</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Jedna alebo viaceré akcie nemôžu byť spracované. Odhláste sa a znovu sa prihláste do svojho účtu.</string>
 </resources>

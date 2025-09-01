@@ -27,7 +27,7 @@
   <string name="send_button_title">Envia</string>
   <string name="send_message_content_description">Envia missatge</string>
   <string name="composer_expand_recipients_button">Mostra els altres destinataris</string>
-  <string name="composer_error_invalid_email">L\'adreça de correu electrònic no és vàlida</string>
+  <string name="composer_error_invalid_email">L\'adreça de correu no és vàlida o no existeix</string>
   <string name="composer_error_invalid_sender">L\'adreça del remitent no és vàlida</string>
   <string name="change_sender_button_content_description">Canvia el remitent</string>
   <string name="composer_change_sender_paid_feature">Milloreu a un pla de pagament per canviar l\'adreça del remitent.</string>
@@ -137,5 +137,6 @@
   <string name="composer_change_sender_error_refreshing_body">S\'està actualitzant el cos després d\'un error en el canvi del remitent. És possible que la signatura no estigui actualitzada.</string>
   <string name="composer_loading_attachments_error">No s\'han pogut carregar els adjunts</string>
   <string name="composer_attachment_upload_error_retry">Alguns adjunts no s\'han pogut carregar. Torneu-ho a provar.</string>
-  <string name="composer_external_encryption_unexpected_error">Hi ha hagut un error inesperat %s. Torneu-ho a provar.</string>
+  <string name="composer_external_encryption_unexpected_error">Error inesperat %s. Torneu-ho a provar.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">L\'adreça seleccionada no es pot utilitzar per enviar. El vostre missatge s\'enviarà des de la vostra adreça per defecte.</string>
 </resources>

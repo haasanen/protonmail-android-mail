@@ -164,6 +164,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Ви не в мережі. Показана інформація може бути застарілою.</string>
   <string name="rsvp_widget_address_is_incorrect">Вашу адресу не можна використати для відповіді. Оновіть інформацію свого облікового запису.</string>
   <string name="rsvp_widget_user_is_organizer">Ви є організатором.</string>
+  <string name="rsvp_widget_user_is_not_invited">You cannot respond to event invites if you\'re not on the participants list at the moment.</string>
   <string name="rsvp_widget_event_does_not_exist">Цієї події немає у вашому календарі, тому ви не можете на неї відповісти.</string>
   <string name="rsvp_widget_today">Сьогодні</string>
   <string name="rsvp_widget_tomorrow">Завтра</string>
@@ -176,4 +177,8 @@
   <string name="rsvp_widget_message">Повідомлення</string>
   <string name="snooze_message_snoozed_until_banner_title">Відкладено до</string>
   <string name="snooze_message_unsnooze_banner_button">Скасувати відкладення</string>
+  <string name="unsubscribe_newsletter_banner_message">This message is from a mailing list.</string>
+  <string name="unsubscribe_newsletter_banner_button">Unsubscribe</string>
+  <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
+  <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
 </resources>

@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Oppgrader for full fleksibilitet</string>
   <string name="upselling_upgrade_plan_generic">Du trenger et betalt Proton Mail-abonnement for å bruke denne funksjonen</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB lagringsplass</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB lagringsplass, 10 e-postadresser</string>
-  <string name="upselling_plus_feature_email_addresses">10 e-postadresser</string>
-  <string name="upselling_plus_feature_custom_domain">Støtte for tilpasset e-postdomene</string>
-  <string name="upselling_plus_feature_desktop_app">Ny Proton Mail-skrivebordsapp</string>
-  <string name="upselling_plus_feature_calendar">Premium kalenderfunksjoner</string>
-  <string name="upselling_plus_feature_folders_labels">Ubegrenset antall mapper, etiketter og filtre</string>
-  <string name="upselling_plus_feature_plus_7_features">+ 7 premiumfunksjoner</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">Ditt alt-i-ett Premium-abonnement</string>
-  <string name="upselling_unlimited_feature_storage">500 GB lagringsplass med sikkerhetskopiering av bilder</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Alle betalte Mail- og Calendar-funksjoner</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90+ land)</string>
-  <string name="upselling_unlimited_feature_drive">Sikker skylagring</string>
-  <string name="upselling_unlimited_feature_pass">Kryptert passordbehandler</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Premiumverdi inkludert</string>
   <string name="upselling_onboarding_feature_e2e">Ende-til-ende-kryptering</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Velg planen din</string>
   <string name="upselling_select_plan_year">12 måneder</string>
   <string name="upselling_select_plan_month">1 måned</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Velg planen din</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Månedlig</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Årlig</string>
+  <string name="upselling_onboarding_best_value">Beste verdi</string>
+  <string name="upselling_onboarding_yearly_savings">Betal årlig og spar %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Vis mer</string>
+  <string name="upselling_onboarding_entitlements_show_less">Vis mindre</string>
+  <string name="upselling_onboarding_button_continue_free">Fortsett med Free-planen</string>
+  <string name="upselling_onboarding_autorenew">Faktureres til %s hver %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Velkomsttilbud. Fornyes automatisk til %s hver %s</string>
+  <string name="upselling_onboarding_autorenew_month">måned</string>
+  <string name="upselling_onboarding_autorenew_year">12 måneder</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB lagring</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 e-postadresse</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">Ditt alt-i-ett Premium-abonnement</string>
   <string name="upselling_auto_renew_text">Automatisk fornyelse til samme pris og vilkår med mindre oppsigelse</string>
   <string name="upselling_auto_renew_text_promo">Velkomsttilbud. Fornyes automatisk til %s%s med mindre oppsigelse</string>
   <string name="upselling_auto_renew_text_promo_short">Velkomsttilbud. Fornyes automatisk til %s%s.</string>

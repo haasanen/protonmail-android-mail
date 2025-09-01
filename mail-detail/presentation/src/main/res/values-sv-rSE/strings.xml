@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Du är offline. Den visade informationen kan vara föråldrad.</string>
   <string name="rsvp_widget_address_is_incorrect">Din adress kan inte användas för att svara. Uppdatera din kontoinformation.</string>
   <string name="rsvp_widget_user_is_organizer">Du är organisatören.</string>
+  <string name="rsvp_widget_user_is_not_invited">Du kan inte svara på händelseinbjudningar om du inte finns med på deltagarlistan just nu.</string>
   <string name="rsvp_widget_event_does_not_exist">Denna händelse finns inte i din kalender så du kan inte svara på den.</string>
   <string name="rsvp_widget_today">Idag</string>
   <string name="rsvp_widget_tomorrow">Imorgon</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">Meddelande</string>
   <string name="snooze_message_snoozed_until_banner_title">Snoozad till</string>
   <string name="snooze_message_unsnooze_banner_button">Stäng av snooze</string>
+  <string name="unsubscribe_newsletter_banner_message">Detta meddelande är från en e-postlista.</string>
+  <string name="unsubscribe_newsletter_banner_button">Avsluta prenumeration</string>
+  <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
+  <string name="error_unsubscribe_newsletter">Misslyckades att avsluta prenumeration på nyhetsbrev</string>
 </resources>

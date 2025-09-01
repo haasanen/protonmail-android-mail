@@ -27,7 +27,7 @@
   <string name="send_button_title">Send</string>
   <string name="send_message_content_description">Send melding</string>
   <string name="composer_expand_recipients_button">Vis andre mottakere</string>
-  <string name="composer_error_invalid_email">E-postadressen er ugyldig</string>
+  <string name="composer_error_invalid_email">E-postadressen er ugyldig eller eksisterer ikke</string>
   <string name="composer_error_invalid_sender">Avsenderadressen er ugyldig</string>
   <string name="change_sender_button_content_description">Endre avsender</string>
   <string name="composer_change_sender_paid_feature">Oppgrader til en betalt plan for å endre avsenderadressen</string>
@@ -138,4 +138,5 @@
   <string name="composer_loading_attachments_error">Feil ved henting av vedlegg</string>
   <string name="composer_attachment_upload_error_retry">Enkelte vedlegg kunne ikke lastes opp. Prøv igjen.</string>
   <string name="composer_external_encryption_unexpected_error">Uventet feil %s. Forsøk igjen.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">Den valgte adressen kan ikke brukes til å sende. Meldingen vil bli sendt fra standardadressen din.</string>
 </resources>

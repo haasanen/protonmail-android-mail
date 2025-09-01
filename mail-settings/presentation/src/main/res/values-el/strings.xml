@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Γλώσσα</string>
   <string name="mail_settings_app_customization_appearance">Εμφάνιση</string>
   <string name="mail_settings_app_customization_protection">Κλείδωμα εφαρμογής</string>
+  <string name="mail_settings_app_customization_mobile_signature">Υπογραφή κινητού</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Αυτόματο κλείδωμα ενεργοποιημένο</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Αυτόματο κλείδωμα απενεργοποιημένο</string>
   <string name="mail_settings_app_customization_use_device_contacts">Χρήση επαφών συσκευής</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Μεταβείτε γρήγορα στο επόμενο ή στο προηγούμενο μήνυμα στα εισερχόμενά σας.</string>
   <string name="mail_settings_app_customization_swipe_action">Ενέργεια ολίσθησης</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Ορίστε γρήγορες ενέργειες, όπως διαγραφή ή αρχειοθέτηση, όταν σύρετε αριστερά ή δεξιά.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Προσαρμογή γραμμής εργαλείων</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Προσαρμογή γραμμών εργαλείων</string>
   <string name="mail_settings_app_customization_alternative_routing">Εναλλακτική δρομολόγηση</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Παρακάμψτε προβλήματα τείχους προστασίας ή δικτύου σε περίπτωση οι ιστότοποι του Proton είναι αποκλεισμένοι.</string>
   <string name="mail_settings_app_customization_view_application_logs">Προβολή καταγραφών εφαρμογών</string>
   <string name="mail_settings_app_customization_mail_experience_header">Εμπειρία Mail</string>
   <string name="mail_settings_app_customization_advanced_header">Προχωρημένα</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Υπογραφή κινητού</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Ενεργό</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Ανενεργό</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Ενεργοποίηση υπογραφής</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Σύστημα</string>
   <string name="mail_settings_theme_light">Φωτεινό</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Σφάλμα κατά τη φόρτωση ρυθμίσεων</string>
   <string name="notifications_on">Ενεργό</string>
   <string name="notifications_off">Ανενεργό</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Προσαρμογή γραμμών εργαλείων</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Γραμμή εργαλείων λίστας</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Αυτή η γραμμή εργαλείων εμφανίζεται όταν επιλέγετε πολλαπλά μηνύματα σε μια λίστα (π.χ., Εισερχόμενα, Κάδος Απορριμάτων, κ.λπ.)</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Γραμμή εργαλείων μηνύματος</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Αυτή η γραμμή εργαλείων παραμένει ορατή κατά την ανάγνωση μηνυμάτων</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Γραμμή εργαλείων συνομιλίας</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Αυτή η γραμμή εργαλείων παραμένει ορατή κατά την ανάγνωση μηνυμάτων</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Ενέργειες επεξεργασίας</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Ενέργειες γραμμής εργαλείων</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Διαθέσιμες ενέργειες</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Γραμμή εργαλείων επεξεργασίας λίστας</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Γραμμή εργαλείων συνομιλίας</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Γραμμή εργαλείων μηνύματος</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Αποθήκευση</string>
+  <string name="mail_settings_custom_toolbar_header">Η γραμμή εργαλείων μπορεί να έχει 1–5 ενέργειες. Δεν μπορείτε να αφαιρέσετε την τελευταία εναπομείνασα ενέργεια.</string>
+  <string name="mail_settings_custom_toolbar_reset">Επαναφορά των προεπιλογών</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Θέλετε να επαναφέρετε τις ρυθμίσεις της γραμμής εργαλείων;</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Επιβεβαίωση</string>
+  <string name="mail_settings_custom_toolbar_save_error">Αδυναμία αποθήκευσης ενεργειών γραμμής εργαλείων. Παρακαλούμε δοκιμάστε ξανά.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Αδυναμία ανάγνωσης ενεργειών γραμμής εργαλείων. Παρακαλούμε δοκιμάστε ξανά.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Παρουσιάστηκε σφάλμα. Δοκίμασε ξανά.</string>
 </resources>

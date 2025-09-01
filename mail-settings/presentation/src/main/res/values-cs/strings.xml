@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Jazyk</string>
   <string name="mail_settings_app_customization_appearance">Vzhled</string>
   <string name="mail_settings_app_customization_protection">Zámek aplikace</string>
+  <string name="mail_settings_app_customization_mobile_signature">Podpis v mobilní aplikaci</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatické uzamčení povoleno</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatické uzamčení deaktivováno</string>
   <string name="mail_settings_app_customization_use_device_contacts">Použít kontakty ze zařízení</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Rychlý přechod na další nebo předchozí zprávu v doručené poště.</string>
   <string name="mail_settings_app_customization_swipe_action">Akce přejetím</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Nastavení rychlých akcí, například odstranění nebo archivace, při přejetí doleva nebo doprava.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Přizpůsobení panelu nástrojů</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Přizpůsobit panely nástrojů</string>
   <string name="mail_settings_app_customization_alternative_routing">Alternativní směrování</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Obcházení firewallu nebo síťových problémů v případě, že jsou stránky Proton blokovány.</string>
   <string name="mail_settings_app_customization_view_application_logs">Zobrazit logy aplikace</string>
   <string name="mail_settings_app_customization_mail_experience_header">Zkušenosti s Mailem</string>
   <string name="mail_settings_app_customization_advanced_header">Pokročilé</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Podpis v mobilní aplikaci</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Zap.</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Vyp.</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Povolit podpis</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Systémový</string>
   <string name="mail_settings_theme_light">Světlý</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Chyba při načítání nastavení</string>
   <string name="notifications_on">Zapnuto</string>
   <string name="notifications_off">Vypnuto</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Přizpůsobit panely nástrojů</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Panel nástrojů seznamu</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Tento panel nástrojů se zobrazí když vyberete více zpráv ze seznamu (např. Doručená pošta, Koš, atd.)</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Panel nástrojů zpráv</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Tento panel nástrojů zůstává viditelný i při čtení zpráv</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Panel nástrojů konverzace</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Tento panel nástrojů zůstává viditelný i při čtení zpráv</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Upravit akce</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Akce panelu nástrojů</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Dostupné akce</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Upravit seznam panelu nástrojů</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Panel nástrojů konverzace</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Panel nástrojů zpráv</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Uložit</string>
+  <string name="mail_settings_custom_toolbar_header">Panel nástrojů může mít 1–5 akcí. Poslední zbývající akci nemůžete odebrat.</string>
+  <string name="mail_settings_custom_toolbar_reset">Obnovit výchozí</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Chcete resetovat nastavení panelu nástrojů?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Potvrdit</string>
+  <string name="mail_settings_custom_toolbar_save_error">Nelze uložit akce panelu nástrojů. Zkuste to prosím znovu.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Nelze načíst akce panelu nástrojů. Zkuste to prosím znovu.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Došlo k chybě. Zkuste to znovu.</string>
 </resources>

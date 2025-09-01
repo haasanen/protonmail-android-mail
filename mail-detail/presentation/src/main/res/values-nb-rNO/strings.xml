@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Du er frakoblet. Informasjonen som vises kan være utdatert.</string>
   <string name="rsvp_widget_address_is_incorrect">Din adresse kan ikke brukes til å svare. Oppdater kontoinformasjonen din.</string>
   <string name="rsvp_widget_user_is_organizer">Du er arrangøren.</string>
+  <string name="rsvp_widget_user_is_not_invited">Du kan ikke respondere til hendelsesinvitasjoner hvis du for øyeblikket ikke er på deltakerlisten.</string>
   <string name="rsvp_widget_event_does_not_exist">Denne hendelsen er ikke i kalenderen din, så du kan ikke svare på den.</string>
   <string name="rsvp_widget_today">I dag</string>
   <string name="rsvp_widget_tomorrow">I morgen</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">Melding</string>
   <string name="snooze_message_snoozed_until_banner_title">Slumret til</string>
   <string name="snooze_message_unsnooze_banner_button">Slumring av</string>
+  <string name="unsubscribe_newsletter_banner_message">Denne meldingen er fra en e-postliste.</string>
+  <string name="unsubscribe_newsletter_banner_button">Avslutt abonnement</string>
+  <string name="already_unsubscribed_banner_message">Du er avmeldt fra denne e-postlisten.</string>
+  <string name="error_unsubscribe_newsletter">Mislyktes å avslutte abonnement på nyhetsbrev</string>
 </resources>

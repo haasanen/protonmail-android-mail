@@ -158,6 +158,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Vous êtes hors ligne. Les informations affichées peuvent être obsolètes.</string>
   <string name="rsvp_widget_address_is_incorrect">Votre adresse ne peut pas être utilisée pour répondre. Veuillez mettre à jour les informations de votre compte.</string>
   <string name="rsvp_widget_user_is_organizer">Vous êtes l\'organisateur.</string>
+  <string name="rsvp_widget_user_is_not_invited">Vous ne pouvez pas répondre aux invitations d\'événements lorsque vous ne faites pas partie des participants.</string>
   <string name="rsvp_widget_event_does_not_exist">Cet événement n\'est pas dans votre calendrier, vous ne pouvez donc pas y répondre.</string>
   <string name="rsvp_widget_today">Aujourd\'hui</string>
   <string name="rsvp_widget_tomorrow">Demain</string>
@@ -170,4 +171,8 @@
   <string name="rsvp_widget_message">Message</string>
   <string name="snooze_message_snoozed_until_banner_title">Mis en attente jusqu\'au</string>
   <string name="snooze_message_unsnooze_banner_button">Arrêter la mise en attente</string>
+  <string name="unsubscribe_newsletter_banner_message">Ce message provient d’une liste de diffusion.</string>
+  <string name="unsubscribe_newsletter_banner_button">Se désabonner</string>
+  <string name="already_unsubscribed_banner_message">Vous êtes désinscrit de cette liste de diffusion</string>
+  <string name="error_unsubscribe_newsletter">La désinscription à la newsletter n\'a pas abouti.</string>
 </resources>

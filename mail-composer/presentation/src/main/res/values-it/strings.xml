@@ -27,7 +27,7 @@
   <string name="send_button_title">Invia</string>
   <string name="send_message_content_description">Invia il messaggio</string>
   <string name="composer_expand_recipients_button">Mostra gli altri destinatari</string>
-  <string name="composer_error_invalid_email">Indirizzo email non valido</string>
+  <string name="composer_error_invalid_email">Indirizzo email non valido</string>
   <string name="composer_error_invalid_sender">Indirizzo mittente non valido</string>
   <string name="change_sender_button_content_description">Cambia il mittente</string>
   <string name="composer_change_sender_paid_feature">Passa a un piano a pagamento per cambiare l\'indirizzo mittente</string>
@@ -138,4 +138,5 @@
   <string name="composer_loading_attachments_error">Caricamento degli allegati non riuscito</string>
   <string name="composer_attachment_upload_error_retry">Caricamento di alcuni allegati non riuscito</string>
   <string name="composer_external_encryption_unexpected_error">Errore imprevisto %s</string>
+  <string name="composer_sender_changed_original_address_cannot_send">L’indirizzo selezionato non può essere utilizzato per l’invio. Il messaggio verrà inviato dal tuo indirizzo predefinito.</string>
 </resources>

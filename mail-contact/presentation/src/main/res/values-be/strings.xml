@@ -101,4 +101,9 @@
     <item quantity="many">%1$d кантактаў</item>
     <item quantity="other">%1$d кантактаў</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Даступна ў вэб-праграме</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Адхіліць</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Стварэнне кантактаў або груп у праграме пакуль недаступна. Яны могуць быць створаны ў вэб-праграме, а потым сінхранізаваны з вашай прыладай.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Рэдагаванне кантактаў або груп у праграме пакуль недаступна. Яны могуць быць адрэдагаваны ў вэб-праграме, а потым сінхранізаваны з вашай прыладай.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Працягнуць у вэб-праграме</string>
 </resources>

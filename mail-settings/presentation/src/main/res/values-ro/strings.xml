@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Limba</string>
   <string name="mail_settings_app_customization_appearance">Aspect</string>
   <string name="mail_settings_app_customization_protection">Blocare aplicație</string>
+  <string name="mail_settings_app_customization_mobile_signature">Semnătură mobil</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Autoblocare activată</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Autoblocare dezactivată</string>
   <string name="mail_settings_app_customization_use_device_contacts">Folosire contacte din dispozitiv</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Vă mutați rapid la mesajul următor sau anterior primit.</string>
   <string name="mail_settings_app_customization_swipe_action">Acțiune glisare</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Configurați acțiuni rapide, precum ștergere sau arhivare, atunci când glisați spre stânga sau spre dreapta.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Personalizare bară de unelte</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Personalizare bare de unelte</string>
   <string name="mail_settings_app_customization_alternative_routing">Direcționare alternativă</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Ocoliți paravanele de protecție sau problemele de rețea în cazul în care site-urile Proton sunt blocate.</string>
   <string name="mail_settings_app_customization_view_application_logs">Afișare jurnale aplicație</string>
   <string name="mail_settings_app_customization_mail_experience_header">Experiență Mail</string>
   <string name="mail_settings_app_customization_advanced_header">Avansat</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Semnătură mobil</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Activată</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Dezactivată</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Activare semnătură</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistem</string>
   <string name="mail_settings_theme_light">Albă</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Eroare la încărcarea setărilor.</string>
   <string name="notifications_on">Activate</string>
   <string name="notifications_off">Dezactivate</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Personalizare bare de unelte</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Bară de unelte liste</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Această bară de unelte apare când sunt selectate mai multe mesaje din lista de mesaje (de ex. Primite, Gunoi etc.)</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Bară de unelte pentru mesaj</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Această bară de unelte rămâne vizibilă în timp ce se citesc mesaje</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Bara de unelte pentru conversație</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Această bară de unelte rămâne vizibilă atunci când citiți mesaje</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Editare acțiuni</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Acțiuni bară de unelte</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Acțiuni disponibile</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Editare bară de unelte pentru listă</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Bara de unelte pentru conversație</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Bară de unelte pentru mesaj</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Salvare</string>
+  <string name="mail_settings_custom_toolbar_header">Bara de unelte poate avea 1-5 acțiuni. Nu puteți elimina ultima acțiune rămasă.</string>
+  <string name="mail_settings_custom_toolbar_reset">Resetare la implicite</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Doriți să resetați setările barei de unelte?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Confirmare</string>
+  <string name="mail_settings_custom_toolbar_save_error">Nu se pot salva acțiunile barei de unelte. Reîncercați.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Nu se pot citi acțiunile barei de unelte. Reîncercați.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">A apărut o eroare. Mai încercați.</string>
 </resources>

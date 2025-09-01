@@ -27,7 +27,7 @@
   <string name="send_button_title">Senden</string>
   <string name="send_message_content_description">Nachricht senden</string>
   <string name="composer_expand_recipients_button">Andere Empfänger anzeigen</string>
-  <string name="composer_error_invalid_email">E-Mail-Adresse ist ungültig</string>
+  <string name="composer_error_invalid_email">E-Mail-Adresse ist ungültig oder existiert nicht</string>
   <string name="composer_error_invalid_sender">Absenderadresse ist ungültig</string>
   <string name="change_sender_button_content_description">Absender ändern</string>
   <string name="composer_change_sender_paid_feature">Auf ein kostenpflichtiges Abo umsteigen, um die Absenderadresse ändern zu können</string>
@@ -138,4 +138,5 @@
   <string name="composer_loading_attachments_error">Anhänge konnten nicht geladen werden</string>
   <string name="composer_attachment_upload_error_retry">Einige Anhänge konnten nicht hochgeladen werden. Bitte versuche es erneut.</string>
   <string name="composer_external_encryption_unexpected_error">Unerwarteter Fehler %s. Bitte erneut versuchen.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">Die ausgewählte E-Mail-Adresse kann nicht zum Senden verwendet werden. Deine Nachricht wird von deiner Standard-E-Mail-Adresse aus gesendet.</string>
 </resources>

@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Sprache</string>
   <string name="mail_settings_app_customization_appearance">Erscheinungsbild</string>
   <string name="mail_settings_app_customization_protection">App-Sperre</string>
+  <string name="mail_settings_app_customization_mobile_signature">Mobile Signatur</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatische Sperre aktiviert</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatische Sperre deaktiviert</string>
   <string name="mail_settings_app_customization_use_device_contacts">Kontakte des Geräts verwenden</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Schneller Wechsel zur nächsten oder vorherigen Nachricht im Posteingang.</string>
   <string name="mail_settings_app_customization_swipe_action">Wischgeste</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Lege Schnellaktionen fest, wie zum Beispiel Löschen oder Archivieren, wenn du nach links oder rechts wischst.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Symbolleiste anpassen</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Symbolleisten anpassen</string>
   <string name="mail_settings_app_customization_alternative_routing">Alternatives Routing</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Umgehung von Firewalls oder Netzwerkproblemen, falls Proton-Websites geblockt werden.</string>
   <string name="mail_settings_app_customization_view_application_logs">Anwendungsprotokolle anzeigen</string>
   <string name="mail_settings_app_customization_mail_experience_header">E-Mail-Erfahrung</string>
   <string name="mail_settings_app_customization_advanced_header">Erweitert</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Mobile Signatur</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Ein</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Aus</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Signatur aktivieren</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">System</string>
   <string name="mail_settings_theme_light">Hell</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Fehler beim Laden der Einstellungen.</string>
   <string name="notifications_on">Ein</string>
   <string name="notifications_off">Aus</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Symbolleisten anpassen</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Symbolleiste der Nachrichtenliste</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Diese Symbolleiste wird angezeigt, wenn du mehrere Nachrichten in einer Nachrichtenliste (z. B. Posteingang, Papierkorb usw.) auswählst.</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Nachrichten-Symbolleiste</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Diese Symbolleiste bleibt beim Lesen von Nachrichten sichtbar.</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Unterhaltungs-Symbolleiste</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Diese Symbolleiste bleibt beim Lesen von Nachrichten sichtbar.</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Aktionen bearbeiten</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Symbolleisten-Aktionen</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Verfügbare Aktionen</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Listen-Symbolleiste bearbeiten</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Unterhaltungs-Symbolleiste</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Nachrichten-Symbolleiste</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Speichern</string>
+  <string name="mail_settings_custom_toolbar_header">Die Symbolleiste kann 1–5 Aktionen enthalten. Die letzte verbleibende Aktion kann nicht entfernt werden.</string>
+  <string name="mail_settings_custom_toolbar_reset">Auf Standardwert zurücksetzen</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Möchtest du die Symbolleisten-Einstellungen wirklich zurücksetzen?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Bestätigen</string>
+  <string name="mail_settings_custom_toolbar_save_error">Der Aktionen der Symbolleiste konnten nicht gespeichert werden. Bitte erneut versuchen.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Die Aktionen der Symbolleiste konnten nicht ausgelesen werden. Bitte erneut versuchen.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Es ist ein Fehler aufgetreten. Versuche es erneut.</string>
 </resources>

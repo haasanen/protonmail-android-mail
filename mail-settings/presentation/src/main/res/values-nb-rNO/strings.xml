@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Språk</string>
   <string name="mail_settings_app_customization_appearance">Utseende</string>
   <string name="mail_settings_app_customization_protection">App-lås</string>
+  <string name="mail_settings_app_customization_mobile_signature">Mobilsignatur</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Autolås aktivert</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Autolås deaktivert</string>
   <string name="mail_settings_app_customization_use_device_contacts">Bruk enhetskontakter</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Gå raskt til neste eller forrige melding i innboksen din.</string>
   <string name="mail_settings_app_customization_swipe_action">Sveipehandling</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Angi raske handlinger, som slette eller arkivere, når du sveiper til venstre eller høyre.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Tilpass verktøylinjen</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Tilpass verktøylinjer</string>
   <string name="mail_settings_app_customization_alternative_routing">Alternativ ruting</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Omgå brannmur eller nettverksproblemer i tilfelle Proton-nettsteder er blokkert.</string>
   <string name="mail_settings_app_customization_view_application_logs">Vis applikasjonslogger</string>
   <string name="mail_settings_app_customization_mail_experience_header">Mail-opplevelse</string>
   <string name="mail_settings_app_customization_advanced_header">Avansert</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Mobilsignatur</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">På</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Av</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Aktiver signatur</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">System</string>
   <string name="mail_settings_theme_light">Lys</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Feil ved lasting av innstillinger</string>
   <string name="notifications_on">På</string>
   <string name="notifications_off">Av</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Tilpass verktøylinjer</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Listeverktøylinje</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Denne verktøylinjen vises når du velger flere meldinger i en liste (f.eks. Innboks, Papirkurv osv.).</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Meldingsverktøylinje</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Denne verktøylinjen forblir synlig mens du leser meldinger</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Samtaleverktøylinje</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Denne verktøylinjen forblir synlig mens du leser meldinger</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Rediger handlinger</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Verktøylinjehandlinger</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Tilgjengelige handlinger</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Rediger listeverktøylinje</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Samtaleverktøylinje</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Meldingsverktøylinje</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Lagre</string>
+  <string name="mail_settings_custom_toolbar_header">Verktøylinjen kan ha 1–5 handlinger. Du kan ikke fjerne den siste gjenværende handlingen.</string>
+  <string name="mail_settings_custom_toolbar_reset">Tilbakestill til standard</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Vil du tilbakestille verktøylinjeinnstillingene?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Bekreft</string>
+  <string name="mail_settings_custom_toolbar_save_error">Kan ikke lagre verktøylinjehandlinger. Prøv igjen.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Kan ikke lese verktøylinjehandlinger. Prøv igjen.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">En feil oppstod. Prøv igjen.</string>
 </resources>

@@ -152,22 +152,27 @@
   </plurals>
   <string name="rsvp_widget_happening_now">Està passant <b>ara</b></string>
   <string name="rsvp_widget_event_ended">L\'esdeveniment ha <b>finalitzat</b></string>
-  <string name="rsvp_widget_event_cancelled">L\'esdeveniment s\'ha <b>cancel·lat</b></string>
+  <string name="rsvp_widget_event_cancelled">Esdeveniment <b>cancel·lat</b></string>
   <string name="rsvp_widget_invite_outdated">Aquesta invitació ha caducat</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">Aquest esdeveniment s\'ha cancelat. La invitatció ha caducat.</string>
   <string name="rsvp_widget_offline_invite_outdated">Esteu desconnectats. La informació que es mostra podria no estar actualitzada.</string>
   <string name="rsvp_widget_address_is_incorrect">No es pot fer servir aquesta adreça per respondre. Si us plau, actualitzeu la informació del vostre compte.</string>
   <string name="rsvp_widget_user_is_organizer">Sou l\'organitzador.</string>
+  <string name="rsvp_widget_user_is_not_invited">No podeu respondre a les invitacions d\'esdeveniments si no formeu part de la llista d\'assistents en aquell moment.</string>
   <string name="rsvp_widget_event_does_not_exist">Aquest esdeveniment no és al vostre calendari, per tant, no hi podeu respondre.</string>
   <string name="rsvp_widget_today">Avui</string>
   <string name="rsvp_widget_tomorrow">Demà</string>
   <string name="rsvp_widget_invite_details_unavailable">Els detalls de la invitació no estan disponibles</string>
   <string name="rsvp_widget_could_not_load">No s\'ha pogut carregar la informació.\nTorneu-ho a provar.</string>
-  <string name="rsvp_widget_button_retry">Reintenteu</string>
+  <string name="rsvp_widget_button_retry">Torna-ho a provar</string>
   <string name="rsvp_widget_error_answering">S\'ha produït un error en respondre a aquest esdeveniment</string>
-  <string name="rsvp_widget_open_in_proton_calendar">Obriu-lo a Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copieu l\'adreça</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Obre al Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Copia l\'adreça</string>
   <string name="rsvp_widget_message">Missatge</string>
   <string name="snooze_message_snoozed_until_banner_title">Ajornat fins a</string>
   <string name="snooze_message_unsnooze_banner_button">Deixa d\'ajornar</string>
+  <string name="unsubscribe_newsletter_banner_message">Aquest missatge és d\'una llista de correu.</string>
+  <string name="unsubscribe_newsletter_banner_button">Cancel·la la subscripció</string>
+  <string name="already_unsubscribed_banner_message">Us heu donat de baixa d\'aquesta llista de correu.</string>
+  <string name="error_unsubscribe_newsletter">No s\'ha pogut cancel·lar la subscripció al butlletí</string>
 </resources>

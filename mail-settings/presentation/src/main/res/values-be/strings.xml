@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Мова</string>
   <string name="mail_settings_app_customization_appearance">Вонкавы выгляд</string>
   <string name="mail_settings_app_customization_protection">Блакіроўка праграмы</string>
+  <string name="mail_settings_app_customization_mobile_signature">Мабільны подпіс</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Аўтаблакіроўка ўключана</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Аўтаблакіроўка адключана</string>
   <string name="mail_settings_app_customization_use_device_contacts">Выкарыстоўваць кантакты прылады</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Хуткі пераход да наступнага або папярэдняга паведамлення ў вашай паштовай скрыні.</string>
   <string name="mail_settings_app_customization_swipe_action">Дзеянне правядзення</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Задайце хуткія дзеянні, такія як выдаленне або архіваванне, калі праводзіце пальцам налева або направа.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Наладзіць панэль інструментаў</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Наладзіць панэлі інструментаў</string>
   <string name="mail_settings_app_customization_alternative_routing">Альтэрнатыўная маршрутызацыя</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Абыход міжсеткавага экрана або сеткавых праблем у выпадку, калі сайты Proton заблакіраваны.</string>
   <string name="mail_settings_app_customization_view_application_logs">Паглядзець журналы праграмы</string>
   <string name="mail_settings_app_customization_mail_experience_header">Досвед працы з электроннай поштай</string>
   <string name="mail_settings_app_customization_advanced_header">Дадатковыя</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Мабільны подпіс</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Уключана</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Выключана</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Уключыць подпіс</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Сістэмная</string>
   <string name="mail_settings_theme_light">Светлая</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Памылка загрузкі налад</string>
   <string name="notifications_on">Уключана</string>
   <string name="notifications_off">Выключана</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Наладзіць панэлі інструментаў</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">Спіс панэлі інструментаў</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Гэта панэль інструментаў з\'явіцца, калі выбрана некалькі паведамленняў у спісе (напрыклад, уваходныя, сметніца і г.д.).</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Панэль інструментаў паведамлення</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Гэта панэль інструментаў застаецца бачнай пры чытанні паведамленняў</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Панэль інструментаў размовы</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Гэта панэль інструментаў застаецца бачнай пры чытанні паведамленняў</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Рэдагаваць дзеянні</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Дзеянні панэлі інструментаў</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Даступныя дзеянні</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Рэдагаваць спіс панэлі інструментаў</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Панэль інструментаў размовы</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Панэль інструментаў паведамлення</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Захаваць</string>
+  <string name="mail_settings_custom_toolbar_header">Панэль інструментаў можа мець ад 1 да 5 дзеянняў. Вы не можаце выдаліць апошняе дзеянне, якое засталося.</string>
+  <string name="mail_settings_custom_toolbar_reset">Скінуць да прадвызначаных</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Вы сапраўды хочаце скінуць налады панэлі інструментаў?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Пацвердзіць</string>
+  <string name="mail_settings_custom_toolbar_save_error">Немагчыма захаваць дзеянні панэлі інструментаў. Паспрабуйце яшчэ раз.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Немагчыма прачытаць дзеянні панэлі інструментаў. Паспрабуйце яшчэ раз.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Адбылася памылка. Паспрабуйце яшчэ раз.</string>
 </resources>

@@ -27,7 +27,7 @@
   <string name="send_button_title">Αποστολή</string>
   <string name="send_message_content_description">Αποστολή μηνύματος</string>
   <string name="composer_expand_recipients_button">Εμφάνιση άλλων παραληπτών</string>
-  <string name="composer_error_invalid_email">Η διεύθυνση email δεν είναι έγκυρη</string>
+  <string name="composer_error_invalid_email">Η ηλεκτρονική διεύθυνση δεν είναι έγκυρη ή δεν υπάρχει</string>
   <string name="composer_error_invalid_sender">Μη έγκυρη διεύθυνση αποστολέα</string>
   <string name="change_sender_button_content_description">Αλλαγή αποστολέα</string>
   <string name="composer_change_sender_paid_feature">Αναβαθμίστε σε πλάνο επί πληρωμή για αλλαγή της διεύθυνσης αποστολέα</string>
@@ -138,4 +138,5 @@
   <string name="composer_loading_attachments_error">Αποτυχία φόρτωσης συνημμένων</string>
   <string name="composer_attachment_upload_error_retry">Μερικά συνημμένα απέτυχαν να ανεβούν. Παρακαλούμε, δοκιμάστε ξανά.</string>
   <string name="composer_external_encryption_unexpected_error">Απροσδόκητο σφάλμα %s. Δοκιμάστε ξανά.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">Η επιλεγμένη διεύθυνση δεν μπορεί να χρησιμοποιηθεί για αποστολή. Το μήνυμά σας θα σταλεί από την προεπιλεγμένη διεύθυνση σας.</string>
 </resources>

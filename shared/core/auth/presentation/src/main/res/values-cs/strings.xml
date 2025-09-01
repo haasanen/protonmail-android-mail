@@ -112,7 +112,7 @@
   <string name="auth_signup_countries_search">Vyhledat zemi</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nepodařilo se nastavit uživatele.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nepodařilo se nastavit adresu.</string>
-  <string name="auth_fido_security_keys_error">Chyba při stahování bezpečnostních klíčů, zkuste to prosím znovu.</string>
+  <string name="auth_fido_security_keys_error">Chyba při získávání bezpečnostních klíčů, zkuste to prosím znovu.</string>
   <string name="auth_fido_security_keys_title">Bezpečnostní klíče</string>
   <string name="auth_fido_manage_security_keys_info">Chcete-li spravovat, přidávat nebo odebírat bezpečnostní klíče, použijte webovou aplikaci Proton. %s</string>
   <string name="auth_fido_security_keys_empty_list">K vašemu účtu nejsou zaregistrovány žádné bezpečnostní klíče. Chcete-li přidat bezpečnostní klíč, použijte webovou aplikaci Proton. %s</string>

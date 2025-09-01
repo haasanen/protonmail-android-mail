@@ -34,10 +34,11 @@
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Přesunout do…</string>
   <string name="bottom_sheet_done_action">Hotovo</string>
+  <string name="bottom_sheet_save_action">Uložit</string>
   <string name="bottom_sheet_archive_action">Také archivovat?</string>
   <string name="bottom_sheet_label_as_title">Označit jako</string>
   <string name="bottom_sheet_label_as_error_fetch">Nepodařilo se získat štítky.</string>
-  <string name="bottom_sheet_move_to_error_fetch">Nepodařilo se stáhnout složky.</string>
+  <string name="bottom_sheet_move_to_error_fetch">Nepodařilo se získat složky.</string>
   <string name="bottom_sheet_label_as_error_apply">Nepodařilo se použít štítky.</string>
   <string name="bottom_sheet_move_to_action_error">Operace přesunu selhala.</string>
 </resources>

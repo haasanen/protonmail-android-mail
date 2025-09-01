@@ -55,22 +55,6 @@
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Frissítés a teljes rugalmasságért</string>
   <string name="upselling_upgrade_plan_generic">A funkció eléréséhez fizetős Proton Mail-előfizetésre van szüksége</string>
-  <!-- Mail Plus -->
-  <string name="upselling_plus_feature_storage">15 GB tárhely</string>
-  <string name="upselling_plus_feature_storage_plus_mails">15 GB tárhely, 10 e-mail cím</string>
-  <string name="upselling_plus_feature_email_addresses">10 e-mail cím</string>
-  <string name="upselling_plus_feature_custom_domain">Egyéni e-mail domain név támogatás</string>
-  <string name="upselling_plus_feature_desktop_app">Új Proton Mail asztali alkalmazás</string>
-  <string name="upselling_plus_feature_calendar">Prémium naptár funkciók</string>
-  <string name="upselling_plus_feature_folders_labels">Korlátlan számú mappa, címke és szűrő</string>
-  <string name="upselling_plus_feature_plus_7_features">+7 prémium funkció</string>
-  <!-- Unlimited -->
-  <string name="upselling_unlimited_description_override">Az Ön mindent egyben tartalmazó prémium előfizetése</string>
-  <string name="upselling_unlimited_feature_storage">500 GB tárhely, fotók mentésével</string>
-  <string name="upselling_unlimited_feature_mail_calendar">Minden fizetős Mail és Calendar funkció</string>
-  <string name="upselling_unlimited_feature_vpn">VPN (90+ ország)</string>
-  <string name="upselling_unlimited_feature_drive">Biztonságos felhőtárhely</string>
-  <string name="upselling_unlimited_feature_pass">Titkosított jelszókezelő</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Prémium érték tartalom</string>
   <string name="upselling_onboarding_feature_e2e">Végpontok közti titkosítás</string>
@@ -101,7 +85,23 @@
   <string name="upselling_select_plan">Válassza ki a csomagját</string>
   <string name="upselling_select_plan_year">12 hónap</string>
   <string name="upselling_select_plan_month">1 hónap</string>
+  <!-- Onboarding upsell -->
+  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_best_value">Legjobb ár-érték arány</string>
+  <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
+  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
+  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
+  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
+  <string name="upselling_onboarding_autorenew_month">month</string>
+  <string name="upselling_onboarding_autorenew_year">12 months</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
   <!-- Other UI Items -->
+  <string name="upselling_unlimited_description_override">Az Ön mindent egyben tartalmazó prémium előfizetése</string>
   <string name="upselling_auto_renew_text">Lemondás nélkül automatikusan megújul ugyanazon az áron és feltételek mellett</string>
   <string name="upselling_auto_renew_text_promo">Üdvözlő ajánlat. Automatikusan megújul %s%s áron, hacsak nem mondja le</string>
   <string name="upselling_auto_renew_text_promo_short">Üdvözlő ajánlat. Automatikusan megújul %s%s áron.</string>

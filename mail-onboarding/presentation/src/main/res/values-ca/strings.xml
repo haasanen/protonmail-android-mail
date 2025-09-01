@@ -19,13 +19,13 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Us donem la benvinguda a Proton Mail, on la privacitat és una prioritat</string>
-  <string name="onboarding_welcome_description">Gaudiu de missatges encriptats, menys correu brossa, protecció contra suplantacions d\'identitat i rastrejadors bloquejats. Us donem la benvinguda a la privacitat.</string>
+  <string name="onboarding_welcome_description">Gaudiu de missatges xifrats, menys correu brossa, protecció contra suplantacions d\'identitat i rastrejadors bloquejats. Us donem la benvinguda a la privacitat.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Tot el que és important a l\'abast de la mà</string>
-  <string name="onboarding_rebuilt_description">Dediqueu menys temps a ordenar i més a fer coses. La vostra safata d\'entrada està dissenyada perquè sigui més fàcil de navegar, de manera que pugueu arribar al que és important més ràpidament.</string>
+  <string name="onboarding_rebuilt_description">Dediqueu menys temps ordenant i més temps fent coses. La vostra safata d\'entrada està dissenyada per a ser més fàcil de navegar, de manera que pugueu arribar al que és important més ràpidament.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Manteniu-vos connectat, fins i tot fora de línia</string>
-  <string name="onboarding_feedback_description">Llegiu, escriviu i gestioneu correus allà on us trobeu. Tot se sincronitzarà automàticament un cop torneu a estar en línia.</string>
+  <string name="onboarding_feedback_description">Llegiu, escriviu i gestioneu correus allà on sigueu. Tot se sincronitza automàticament un cop torneu a estar en línia.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Següent</string>
   <string name="onboarding_get_started">Comença</string>

@@ -44,7 +44,7 @@
   <string name="new_contact">Crea un contatto</string>
   <string name="new_group">Crea un gruppo</string>
   <string name="import_contact">Carica i contatti dal dispositivo</string>
-  <string name="contact_delete_dialog_title">Elimina il contatto \"%1$s\"</string>
+  <string name="contact_delete_dialog_title">Elimina il contatto \"%1$s\"</string>
   <string name="contact_delete_dialog_text">Sei sicuro di voler eliminare questo contatto?</string>
   <string name="contact_delete_dialog_cancel_button">Annulla</string>
   <string name="contact_delete_dialog_confirm_button">Elimina</string>
@@ -95,4 +95,9 @@
     <item quantity="one">%1$d contatto</item>
     <item quantity="other">%1$d contatti</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Disponibile nell\'app web</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Ignora</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">La creazione di contatti e gruppi non è ancora stata implementata. Per ora, puoi crearli nell\'app web e appariranno nell\'app mobile.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">La modifica di contatti e gruppi non è ancora stata implementata. Per ora, puoi modificarli nell\'app web e appariranno nell\'app mobile.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Prosegui nell\'app web</string>
 </resources>

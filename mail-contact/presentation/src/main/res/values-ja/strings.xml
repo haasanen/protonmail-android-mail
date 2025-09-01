@@ -92,4 +92,9 @@
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="other">連絡先 %1$d 件</item>
   </plurals>
+  <string name="contact_bottom_sheet_redirect_to_web_title">ウェブで利用可能</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">却下</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">アプリでの連絡先またはグループの作成は、まだ準備ができていません。現在は、ウェブアプリで作成すると、お客様のデバイスに同期されます。</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">アプリでの連絡先またはグループの編集は、現在準備中です。現在は、ウェブアプリで編集することで、変更をお客様のデバイスに同期できます。</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">ウェブで続行</string>
 </resources>

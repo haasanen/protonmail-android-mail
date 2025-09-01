@@ -53,6 +53,7 @@
   <string name="mail_settings_app_customization_language">Kieli</string>
   <string name="mail_settings_app_customization_appearance">Ulkoasu</string>
   <string name="mail_settings_app_customization_protection">Sovelluksen lukitus</string>
+  <string name="mail_settings_app_customization_mobile_signature">Mobile signature</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automaattilukitus käytössä</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automaattilukitus poissa käytöstä</string>
   <string name="mail_settings_app_customization_use_device_contacts">Käytä laitteen yhteystietoja</string>
@@ -61,12 +62,16 @@
   <string name="mail_settings_app_customization_swipe_to_next_email_hint">Siirry nopeasti seuraavaan tai edelliseen viestiin saapuneet-kansiossasi.</string>
   <string name="mail_settings_app_customization_swipe_action">Pyyhkäisytoiminto</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Aseta pikatoiminnot, kuten poista tai arkistoi, kun pyyhkäiset oikealle tai vasemmalle.</string>
-  <string name="mail_settings_app_customization_customize_toolbar">Mukauta työkalupalkkia</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Customize toolbars</string>
   <string name="mail_settings_app_customization_alternative_routing">Vaihtoehtoinen reititys</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Ohita palomuuri- tai verkko-ongelmat sen varalta, että Protonin sivustot on estetty.</string>
   <string name="mail_settings_app_customization_view_application_logs">Näytä sovelluslokit</string>
   <string name="mail_settings_app_customization_mail_experience_header">Mail-elämys</string>
   <string name="mail_settings_app_customization_advanced_header">Edistyneet</string>
+  <string name="mail_settings_app_customization_mobile_signature_header">Mobile signature</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">On</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Off</string>
+  <string name="mail_settings_app_customization_mobile_signature_enable">Enable signature</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Järjestelmä</string>
   <string name="mail_settings_theme_light">Vaalea</string>
@@ -117,6 +122,27 @@
   <string name="mail_settings_notifications_loading_error">Virhe ladattaessa asetuksia</string>
   <string name="notifications_on">On</string>
   <string name="notifications_off">Off</string>
+  <!-- Customize Toolbar -->
+  <string name="mail_settings_custom_toolbar_title">Customize toolbars</string>
+  <string name="mail_settings_custom_toolbar_list_view_title">List toolbar</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">This toolbar appears when you select multiple messages in a list (e.g., Inbox, Trash, etc.)</string>
+  <string name="mail_settings_custom_toolbar_message_view_title">Message toolbar</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">This toolbar remains visible while reading messages</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_title">Conversation toolbar</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">This toolbar remains visible while reading messages</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Edit actions</string>
+  <string name="mail_settings_custom_toolbar_set_actions">Toolbar actions</string>
+  <string name="mail_settings_custom_toolbar_remaining_actions">Available actions</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Edit list toolbar</string>
+  <string name="mail_settings_custom_toolbar_nav_title_convo">Conversation toolbar</string>
+  <string name="mail_settings_custom_toolbar_nav_title_message">Message toolbar</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Save</string>
+  <string name="mail_settings_custom_toolbar_header">The toolbar can have 1–5 actions. You can\'t remove the last remaining action.</string>
+  <string name="mail_settings_custom_toolbar_reset">Reset to default</string>
+  <string name="mail_settings_custom_toolbar_reset_title">Do you want to reset the toolbar settings?</string>
+  <string name="mail_settings_custom_toolbar_reset_confirm">Confirm</string>
+  <string name="mail_settings_custom_toolbar_save_error">Unable to save toolbar actions. Please try again.</string>
+  <string name="mail_settings_custom_toolbar_read_error">Unable to read toolbar actions. Please try again.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Tapahtui virhe. Yritä uudelleen.</string>
 </resources>

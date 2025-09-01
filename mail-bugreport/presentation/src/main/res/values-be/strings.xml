@@ -20,7 +20,7 @@
   <!-- Report a problem flow -->
   <string name="report_a_problem_title">Паведаміць аб праблеме</string>
   <string name="report_a_problem_submit_button">Адправіць</string>
-  <string name="report_a_problem_disclaimer_e2ee">Справаздачы не зашыфраваны скразным метадам.\nНе перасылайце ў іх канфідэнцыяльныя звесткі.</string>
+  <string name="report_a_problem_disclaimer_e2ee">Справаздачы не зашыфраваны скразным метадам.\nНе перасылайце ў іх канфідэнцыяльную інфармацыю.</string>
   <string name="report_a_problem_include_errors_title">Уключыць журналы</string>
   <string name="report_a_problem_include_errors_description">Журнал паказвае ўсе дзеянні, якія прывялі да памылкі.\nМы выкарыстоўваем яго толькі для дапамогі ў выпраўленні памылак.</string>
   <string name="report_a_problem_summary_title">Зводка (абавязкова)</string>
@@ -33,7 +33,7 @@
   <string name="report_a_problem_actual_results_title">Актуальныя вынікі</string>
   <string name="report_a_problem_actual_results_description">Прыклад: у праграме Mail адбываецца збой пры адкрыцці электронных лістоў з вялікімі далучэннямі.</string>
   <string name="report_a_problem_leave_dialog_description_1">Вы сапраўды хочаце пакінуць гэты экран?</string>
-  <string name="report_a_problem_leave_dialog_description_2">Любыя ўведзеныя вамі звесткі будуць страчаны.</string>
+  <string name="report_a_problem_leave_dialog_description_2">Любая ўведзеная вамі інфармацыя будзе страчана.</string>
   <string name="report_a_problem_leave_dialog_cancel_btn">Скасаваць</string>
   <string name="report_a_problem_leave_dialog_close_btn">Закрыць</string>
   <string name="report_a_problem_success">Дзякуй, што паведамілі. Наша каманда падтрымкі кліентаў звяжацца з вамі.</string>
