@@ -50,7 +50,7 @@ fun WebAccountSettingScreen(
     WebAccountSettingScreen(
         modifier = modifier,
         state = settingsState,
-        actions = WebSettingsScreenActions(
+        actions = WebSettingsScreenActions.Empty.copy(
             onBackClick = {
                 accountSettingsViewModel.submit(WebSettingsAction.OnCloseWebSettings)
                 actions.onBackClick()

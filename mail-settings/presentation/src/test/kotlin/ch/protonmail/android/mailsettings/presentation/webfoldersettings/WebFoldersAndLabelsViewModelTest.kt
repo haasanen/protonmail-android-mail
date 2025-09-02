@@ -21,10 +21,10 @@ package ch.protonmail.android.mailsettings.presentation.webfoldersettings
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
 import ch.protonmail.android.mailsession.domain.usecase.ForkSession
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
@@ -33,6 +33,8 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfi
 import ch.protonmail.android.mailsettings.presentation.ObserveWebSettingsStateFlow
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
@@ -78,13 +80,17 @@ class WebFoldersAndLabelsViewModelTest {
     private val handleCloseWebSettings = mockk<HandleCloseWebSettings> {
         coEvery { this@mockk() } just Runs
     }
+    private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
+        coEvery { this@mockk.invoke() } returns flowOf(UpsellingVisibility.HIDDEN)
+    }
 
     private fun buildViewModel() = WebFoldersAndLabelsViewModel(
         ObserveWebSettingsStateFlow(
             observePrimaryUserId = observePrimaryUserId,
             forkSession = forkSession,
             appSettingsRepository = appSettingsRepository,
-            observeWebSettingsConfig = observeWebSettingsConfig
+            observeWebSettingsConfig = observeWebSettingsConfig,
+            observeUpsellingVisibility = observeUpsellingVisibility
         ),
         handleCloseWebSettings = handleCloseWebSettings
     )
@@ -115,6 +121,25 @@ class WebFoldersAndLabelsViewModelTest {
             // Then
             val actualState = awaitItem() as WebSettingsState.Data
             assertEquals(testTheme, actualState.theme)
+            assertEquals(UpsellingVisibility.HIDDEN, actualState.upsellingVisibility)
+        }
+    }
+
+    @Test
+    fun `emits Data state when upselling eligible with valid data`() = runTest {
+        // Given
+        every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
+        every { appSettingsRepository.observeTheme() } returns flowOf(testTheme)
+        every { observeUpsellingVisibility() } returns flowOf(UpsellingVisibility.NORMAL)
+        val viewModel = buildViewModel()
+
+        // When
+        viewModel.state.test {
+
+            // Then
+            val actualState = awaitItem() as WebSettingsState.Data
+            assertEquals(testTheme, actualState.theme)
+            assertEquals(UpsellingVisibility.NORMAL, actualState.upsellingVisibility)
         }
     }
 

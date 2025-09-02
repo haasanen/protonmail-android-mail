@@ -19,12 +19,14 @@
 package ch.protonmail.android.mailsettings.presentation.websettings
 
 import ch.protonmail.android.mailsettings.domain.model.Theme
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 
 sealed interface WebSettingsState {
 
     data class Data(
         val webSettingsUrl: String,
-        val theme: Theme
+        val theme: Theme,
+        val upsellingVisibility: UpsellingVisibility
     ) : WebSettingsState
 
     data object Loading : WebSettingsState

@@ -18,6 +18,19 @@
 
 package ch.protonmail.android.mailsettings.presentation.websettings
 
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+
 data class WebSettingsScreenActions(
-    val onBackClick: () -> Unit
-)
+    val onBackClick: () -> Unit,
+    val onUpsellNavigation: (UpsellingEntryPoint.Feature, UpsellingVisibility) -> Unit
+) {
+
+    companion object {
+
+        val Empty = WebSettingsScreenActions(
+            onBackClick = {},
+            onUpsellNavigation = { _, _ -> }
+        )
+    }
+}

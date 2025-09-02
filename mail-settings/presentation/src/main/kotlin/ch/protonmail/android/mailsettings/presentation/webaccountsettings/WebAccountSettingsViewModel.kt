@@ -20,15 +20,16 @@ package ch.protonmail.android.mailsettings.presentation.webaccountsettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.usecase.ForkSession
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsOperation
-import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.toAccountSettingsUrl
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,10 +44,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WebAccountSettingsViewModel @Inject constructor(
-    private val observePrimaryUserId: ObservePrimaryUserId,
+    observePrimaryUserId: ObservePrimaryUserId,
+    appSettingsRepository: AppSettingsRepository,
+    observeWebSettingsConfig: ObserveWebSettingsConfig,
     private val forkSession: ForkSession,
-    private val appSettingsRepository: AppSettingsRepository,
-    private val observeWebSettingsConfig: ObserveWebSettingsConfig,
     private val handleCloseWebSettings: HandleCloseWebSettings
 
 ) : ViewModel() {
@@ -63,7 +64,11 @@ class WebAccountSettingsViewModel @Inject constructor(
 
             forkSession(userId).fold(
                 ifRight = { forkedSessionId ->
-                    WebSettingsState.Data(webSettingsConfig.toAccountSettingsUrl(forkedSessionId, theme), theme)
+                    WebSettingsState.Data(
+                        webSettingsUrl = webSettingsConfig.toAccountSettingsUrl(forkedSessionId, theme),
+                        theme = theme,
+                        upsellingVisibility = UpsellingVisibility.HIDDEN // Upselling flow not available here.
+                    )
                 },
                 ifLeft = { sessionError ->
                     Timber.e("web-settings: Forking session failed")

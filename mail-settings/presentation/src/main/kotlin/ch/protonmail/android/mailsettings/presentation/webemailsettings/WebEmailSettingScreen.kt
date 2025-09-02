@@ -49,7 +49,7 @@ fun WebEmailSettingScreen(
     WebEmailSettingScreen(
         modifier = modifier,
         state = settingsState,
-        actions = WebSettingsScreenActions(
+        actions = WebSettingsScreenActions.Empty.copy(
             onBackClick = {
                 viewModel.submit(WebSettingsAction.OnCloseWebSettings)
                 actions.onBackClick()

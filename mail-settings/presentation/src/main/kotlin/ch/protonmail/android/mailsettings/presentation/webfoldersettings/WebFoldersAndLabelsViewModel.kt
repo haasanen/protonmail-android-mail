@@ -45,7 +45,6 @@ class WebFoldersAndLabelsViewModel @Inject constructor(
         viewModelScope.launch {
             when (action) {
                 is WebSettingsAction.OnCloseWebSettings -> handleCloseWebSettings()
-
             }
         }
     }

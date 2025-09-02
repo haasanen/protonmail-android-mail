@@ -18,29 +18,47 @@
 
 package ch.protonmail.android.mailsettings.presentation.websettings
 
+import android.annotation.SuppressLint
 import android.net.http.SslError
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.webkit.JavascriptInterface
 import android.webkit.SslErrorHandler
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import ch.protonmail.android.mailsettings.presentation.websettings.UpsellJsHelper.UpsellFoldersActionName
+import ch.protonmail.android.mailsettings.presentation.websettings.UpsellJsHelper.UpsellInterfaceName
+import ch.protonmail.android.mailsettings.presentation.websettings.UpsellJsHelper.UpsellLabelsActionName
+import ch.protonmail.android.mailsettings.presentation.websettings.UpsellJsHelper.upsellJavascriptCode
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import com.google.accompanist.web.AccompanistWebChromeClient
 import com.google.accompanist.web.AccompanistWebViewClient
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 import timber.log.Timber
-import androidx.compose.foundation.isSystemInDarkTheme
 
+@SuppressLint("JavascriptInterface")
 @Composable
-fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) {
+fun SettingWebView(
+    modifier: Modifier = Modifier,
+    onUpsell: (UpsellingEntryPoint.Feature, UpsellingVisibility) -> Unit = { entryPoint, _ ->
+        Timber.d("Unhandled Upsell entry point $entryPoint")
+    },
+    state: WebSettingsState.Data
+) {
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
+    val isUpsellEligible = state.upsellingVisibility != UpsellingVisibility.HIDDEN
 
     // Resolve system theme only if the URL contains the placeholder
     val resolvedUrl = remember(state) {
@@ -52,8 +70,43 @@ fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) 
         }
     }
 
+    val jsInterface = remember {
+        object {
+            @JavascriptInterface
+            fun postMessage(message: String) {
+                Timber.d("web-settings: JavaScript interface called with message: $message")
+
+                // Enforce the navigation to run on the Main thread
+                Handler(Looper.getMainLooper()).post {
+                    Timber.d("web-settings: Triggering '$message' callback")
+
+                    when (message) {
+                        UpsellLabelsActionName ->
+                            onUpsell(UpsellingEntryPoint.Feature.Labels, state.upsellingVisibility)
+
+                        UpsellFoldersActionName ->
+                            onUpsell(UpsellingEntryPoint.Feature.Folders, state.upsellingVisibility)
+
+                        else -> {
+                            Timber.d("web-settings: Unsupported flow for: $message")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     val client = remember(state) {
         object : AccompanistWebViewClient() {
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+
+                if (isUpsellEligible) {
+                    // Evaluate custom JS to make the Upsell compatible with the existing iOS support from the webview.
+                    view?.evaluateJavascript(upsellJavascriptCode, null)
+                }
+            }
 
             override fun onReceivedSslError(
                 view: WebView?,
@@ -110,6 +163,9 @@ fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     it.settings.isAlgorithmicDarkeningAllowed = true
                 }
+                if (isUpsellEligible) {
+                    it.addJavascriptInterface(jsInterface, UpsellInterfaceName)
+                }
             },
             captureBackPresses = true,
             state = webViewState,
@@ -119,4 +175,31 @@ fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) 
             chromeClient = chromeClient
         )
     }
+}
+
+private object UpsellJsHelper {
+
+    const val UpsellInterfaceName = "UpsellInterface"
+
+    const val UpsellLabelsActionName = "labels-action"
+    const val UpsellFoldersActionName = "folders-action"
+
+    val upsellJavascriptCode = """
+        (function() {
+            // Create webkit messageHandlers compatibility for Android
+            if (!window.webkit) {
+                window.webkit = {
+                    messageHandlers: {
+                        upsell: {
+                            postMessage: function(message) {
+                                if (window.$UpsellInterfaceName) {
+                                    window.$UpsellInterfaceName.postMessage(message);
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+        })();
+    """.trimIndent()
 }

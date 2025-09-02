@@ -50,14 +50,13 @@ fun WebPrivacyAndSecuritySettingsScreen(
     WebPrivacyAndSecuritySettingsScreen(
         modifier = modifier,
         state = settingsState,
-        actions = WebSettingsScreenActions(
+        actions = WebSettingsScreenActions.Empty.copy(
             onBackClick = {
                 viewModel.submit(WebSettingsAction.OnCloseWebSettings)
                 actions.onBackClick()
             }
         )
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

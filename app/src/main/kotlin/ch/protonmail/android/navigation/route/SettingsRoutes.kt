@@ -66,7 +66,7 @@ fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController) {
     composable(route = Screen.AccountSettings.route) {
         ProtonInvertedTheme {
             WebAccountSettingScreen(
-                actions = WebSettingsScreenActions(
+                actions = WebSettingsScreenActions.Empty.copy(
                     onBackClick = { navController.popBackStack() }
                 )
             )
@@ -78,7 +78,7 @@ fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController) {
     composable(route = Screen.EmailSettings.route) {
         ProtonInvertedTheme {
             WebEmailSettingScreen(
-                actions = WebSettingsScreenActions(
+                actions = WebSettingsScreenActions.Empty.copy(
                     onBackClick = { navController.popBackStack() }
                 )
             )
@@ -90,8 +90,11 @@ fun NavGraphBuilder.addWebFolderAndLabelSettings(navController: NavHostControlle
     composable(route = Screen.FolderAndLabelSettings.route) {
         ProtonInvertedTheme {
             WebFoldersAndLabelsSettingScreen(
-                actions = WebSettingsScreenActions(
-                    onBackClick = { navController.popBackStack() }
+                actions = WebSettingsScreenActions.Empty.copy(
+                    onBackClick = { navController.popBackStack() },
+                    onUpsellNavigation = { entryPoint, visibility ->
+                        navController.navigate(Screen.FeatureUpselling(entryPoint, visibility))
+                    }
                 )
             )
         }
@@ -102,7 +105,7 @@ fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(navController: NavHostContr
     composable(route = Screen.PrivacyAndSecuritySettings.route) {
         ProtonInvertedTheme {
             WebPrivacyAndSecuritySettingsScreen(
-                actions = WebSettingsScreenActions(
+                actions = WebSettingsScreenActions.Empty.copy(
                     onBackClick = { navController.popBackStack() }
                 )
             )
@@ -114,7 +117,7 @@ fun NavGraphBuilder.addWebSpamFilterSettings(navController: NavHostController) {
     composable(route = Screen.SpamFilterSettings.route) {
         ProtonInvertedTheme {
             WebSpamFilterSettingsScreen(
-                actions = WebSettingsScreenActions(
+                actions = WebSettingsScreenActions.Empty.copy(
                     onBackClick = { navController.popBackStack() }
                 )
             )

@@ -33,6 +33,8 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfi
 import ch.protonmail.android.mailsettings.presentation.ObserveWebSettingsStateFlow
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
@@ -78,13 +80,17 @@ class WebSpamFilterSettingsViewModelTest {
     private val handleCloseWebSettings = mockk<HandleCloseWebSettings> {
         coEvery { this@mockk() } just Runs
     }
+    private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
+        coEvery { this@mockk.invoke() } returns flowOf(UpsellingVisibility.HIDDEN)
+    }
 
     private fun buildViewModel() = WebSpamFilterSettingsViewModel(
         ObserveWebSettingsStateFlow(
             observePrimaryUserId = observePrimaryUserId,
             forkSession = forkSession,
             appSettingsRepository = appSettingsRepository,
-            observeWebSettingsConfig = observeWebSettingsConfig
+            observeWebSettingsConfig = observeWebSettingsConfig,
+            observeUpsellingVisibility = observeUpsellingVisibility
         ),
         handleCloseWebSettings = handleCloseWebSettings
     )

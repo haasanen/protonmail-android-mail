@@ -50,11 +50,12 @@ fun WebFoldersAndLabelsSettingScreen(
     WebFoldersAndLabelsSettingScreen(
         modifier = modifier,
         state = settingsState,
-        actions = WebSettingsScreenActions(
+        actions = WebSettingsScreenActions.Empty.copy(
             onBackClick = {
                 viewModel.submit(WebSettingsAction.OnCloseWebSettings)
                 actions.onBackClick()
-            }
+            },
+            onUpsellNavigation = actions.onUpsellNavigation
         )
     )
 
@@ -80,7 +81,8 @@ fun WebFoldersAndLabelsSettingScreen(
             when (state) {
                 is WebSettingsState.Data -> SettingWebView(
                     modifier.padding(paddingValues),
-                    state = state
+                    state = state,
+                    onUpsell = actions.onUpsellNavigation
                 )
 
                 is WebSettingsState.Error -> ProtonErrorMessage(

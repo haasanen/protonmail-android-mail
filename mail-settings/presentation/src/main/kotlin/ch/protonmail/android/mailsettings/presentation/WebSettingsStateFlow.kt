@@ -26,6 +26,7 @@ import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,7 +40,8 @@ class ObserveWebSettingsStateFlow @Inject constructor(
     val observePrimaryUserId: ObservePrimaryUserId,
     val forkSession: ForkSession,
     val appSettingsRepository: AppSettingsRepository,
-    val observeWebSettingsConfig: ObserveWebSettingsConfig
+    val observeWebSettingsConfig: ObserveWebSettingsConfig,
+    val observeUpsellingVisibility: ObserveUpsellingVisibility
 ) {
 
     operator fun invoke(
@@ -48,13 +50,18 @@ class ObserveWebSettingsStateFlow @Inject constructor(
     ): Flow<WebSettingsState> = combine(
         observePrimaryUserId().filterNotNull(),
         appSettingsRepository.observeTheme(),
-        observeWebSettingsConfig()
-    ) { userId, theme, webSettingsConfig ->
+        observeWebSettingsConfig(),
+        observeUpsellingVisibility()
+    ) { userId, theme, webSettingsConfig, upsellingVisibility ->
 
         forkSession(userId).fold(
             ifRight = { forkedSessionId ->
                 Timber.e("web-email-settings: Forking session success $forkedSessionId")
-                WebSettingsState.Data(getSettingsUrl(forkedSessionId, theme, webSettingsConfig), theme)
+                WebSettingsState.Data(
+                    webSettingsUrl = getSettingsUrl(forkedSessionId, theme, webSettingsConfig),
+                    theme = theme,
+                    upsellingVisibility = upsellingVisibility
+                )
             },
             ifLeft = { sessionError ->
                 Timber.e("web-email-settings: Forking session failed")
