@@ -1140,6 +1140,12 @@ class ConversationDetailViewModel @Inject constructor(
             val currentLabelId = openedFromLocation
 
             deleteMessages(primaryUserId.first(), listOf(action.messageId), currentLabelId)
+                .onLeft { ConversationDetailEvent.ErrorDeletingMessage }
+                .onRight {
+                    if (isSingleMessageModeEnabled) {
+                        emitNewStateFrom(ConversationDetailEvent.ExitScreen)
+                    }
+                }
         }
     }
 
