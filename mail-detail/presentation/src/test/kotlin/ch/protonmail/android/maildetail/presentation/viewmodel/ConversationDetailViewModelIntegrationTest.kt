@@ -121,6 +121,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
+import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDeleteDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailMessagesReducer
@@ -1399,7 +1400,11 @@ class ConversationDetailViewModelIntegrationTest {
             val viewModel = buildConversationDetailViewModel()
             viewModel.state.test {
                 viewModel.submit(
-                    ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions)
+                    ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                        messageId,
+                        themeOptions,
+                        MoreActionsBottomSheetEntryPoint.BottomBar
+                    )
                 )
                 advanceUntilIdle()
 
@@ -1430,7 +1435,11 @@ class ConversationDetailViewModelIntegrationTest {
             val viewModel = buildConversationDetailViewModel()
             viewModel.state.test {
                 viewModel.submit(
-                    ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions)
+                    ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                        messageId,
+                        themeOptions,
+                        MoreActionsBottomSheetEntryPoint.BottomBar
+                    )
                 )
                 advanceUntilIdle()
 
@@ -1659,7 +1668,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                    messageId, themeOptions
+                    messageId, themeOptions, MoreActionsBottomSheetEntryPoint.BottomBar
                 )
             )
             skipItems(2)
@@ -1722,7 +1731,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                    messageId, themeOptions
+                    messageId, themeOptions, MoreActionsBottomSheetEntryPoint.BottomBar
                 )
             )
             skipItems(2)
@@ -1772,7 +1781,11 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions))
+            viewModel.submit(
+                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                    messageId, themeOptions, MoreActionsBottomSheetEntryPoint.BottomBar
+                )
+            )
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Trash(messageId))
 
@@ -1819,7 +1832,11 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions))
+            viewModel.submit(
+                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                    messageId, themeOptions, MoreActionsBottomSheetEntryPoint.BottomBar
+                )
+            )
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Archive(messageId))
 
@@ -1866,7 +1883,11 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions))
+            viewModel.submit(
+                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                    messageId, themeOptions, MoreActionsBottomSheetEntryPoint.BottomBar
+                )
+            )
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Spam(messageId))
 
@@ -1922,7 +1943,11 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions))
+            viewModel.submit(
+                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                    messageId, themeOptions, MoreActionsBottomSheetEntryPoint.BottomBar
+                )
+            )
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId))
             advanceUntilIdle()

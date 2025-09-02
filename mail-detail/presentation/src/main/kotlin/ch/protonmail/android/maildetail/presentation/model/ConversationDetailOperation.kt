@@ -196,10 +196,16 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object DismissBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
 
     object RequestConversationLabelAsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
-    data class RequestMessageMoreActionsBottomSheet(val messageId: MessageId, val themeOptions: MessageThemeOptions) :
+    data class RequestMessageMoreActionsBottomSheet(
+        val messageId: MessageId,
+        val themeOptions: MessageThemeOptions,
+        val entryPoint: MoreActionsBottomSheetEntryPoint
+    ) :
         ConversationDetailViewAction, AffectingBottomSheet
 
-    data object RequestConversationMoreActionsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
+    data class RequestConversationMoreActionsBottomSheet(
+        val entryPoint: MoreActionsBottomSheetEntryPoint
+    ) : ConversationDetailViewAction, AffectingBottomSheet
 
     data class ExpandMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     data class CollapseMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction

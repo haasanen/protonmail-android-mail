@@ -289,7 +289,7 @@ class ConversationDetailViewModel @Inject constructor(
                 showMessageMoreActionsBottomSheet(action)
 
             is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet ->
-                handleRequestMoreBottomSheetAction()
+                handleRequestMoreBottomSheetAction(action)
 
             is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet ->
                 requestMessageLabelAsBottomSheet(action)
@@ -882,27 +882,32 @@ class ConversationDetailViewModel @Inject constructor(
             val labelId = openedFromLocation
 
             val moreActions = getMoreActionsBottomSheetData.forMessage(
-                userId, labelId, initialEvent.messageId, initialEvent.themeOptions
+                userId,
+                labelId,
+                initialEvent.messageId,
+                initialEvent.themeOptions,
+                initialEvent.entryPoint
             )
                 ?: return@launch
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
         }
     }
 
-    private fun handleRequestMoreBottomSheetAction() {
+    private fun handleRequestMoreBottomSheetAction(
+        action: ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet
+    ) {
         viewModelScope.launch {
             if (isSingleMessageModeEnabled) {
                 val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
                 showMessageMoreActionsBottomSheet(
                     initialEvent = ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
                         messageId = messageId,
-                        themeOptions = MessageThemeOptions(MessageTheme.Dark)
+                        themeOptions = MessageThemeOptions(MessageTheme.Dark),
+                        entryPoint = action.entryPoint
                     )
                 )
             } else {
-                showConversationMoreActionsBottomSheet(
-                    ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet
-                )
+                showConversationMoreActionsBottomSheet(action)
             }
         }
     }

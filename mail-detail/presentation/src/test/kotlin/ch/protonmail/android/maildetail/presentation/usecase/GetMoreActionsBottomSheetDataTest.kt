@@ -9,6 +9,7 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
+import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
@@ -48,6 +49,7 @@ class GetMoreActionsBottomSheetDataTest {
         val labelId = SystemLabelId.Archive.labelId
         val messageId = MessageIdSample.PlainTextMessage
         val message = MessageSample.Invoice
+        val entryPoint = MoreActionsBottomSheetEntryPoint.MessageHeader
         val availableActions = AvailableActionsTestData.replyActionsOnly
         coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
@@ -55,7 +57,13 @@ class GetMoreActionsBottomSheetDataTest {
         coEvery { observeMessage(userId, messageId) } returns flowOf(message.right())
 
         // When
-        val actual = getMoreBottomSheetData.forMessage(userId, labelId, messageId, themeOptions)
+        val actual = getMoreBottomSheetData.forMessage(
+            userId,
+            labelId,
+            messageId,
+            themeOptions,
+            entryPoint
+        )
 
         // Then
         val expected = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
@@ -69,6 +77,42 @@ class GetMoreActionsBottomSheetDataTest {
     }
 
     @Test
+    fun `should return bottom sheet more actions data with customize toolbar when entry point is bottombar`() =
+        runTest {
+            // Given
+            val themeOptions = MessageThemeOptionsTestData.darkOverrideLight
+            val userId = UserIdSample.Primary
+            val labelId = SystemLabelId.Archive.labelId
+            val messageId = MessageIdSample.PlainTextMessage
+            val message = MessageSample.Invoice
+            val entryPoint = MoreActionsBottomSheetEntryPoint.BottomBar
+            val availableActions = AvailableActionsTestData.replyActionsOnly
+            coEvery {
+                getMessageAvailableActions(userId, labelId, messageId, themeOptions)
+            } returns availableActions.right()
+            coEvery { observeMessage(userId, messageId) } returns flowOf(message.right())
+
+            // When
+            val actual = getMoreBottomSheetData.forMessage(
+                userId,
+                labelId,
+                messageId,
+                themeOptions,
+                entryPoint
+            )
+
+            // Then
+            val expected = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
+                messageSender = message.sender.name,
+                messageSubject = message.subject,
+                messageIdInConversation = message.messageId.id,
+                availableActions = availableActions,
+                customizeToolbarAction = Action.CustomizeToolbar
+            )
+            assertEquals(expected, actual)
+        }
+
+    @Test
     fun `should return empty bottom sheet action data when observing labels failed for message`() = runTest {
         // Given
         val themeOptions = MessageThemeOptionsTestData.darkOverrideLight
@@ -76,13 +120,14 @@ class GetMoreActionsBottomSheetDataTest {
         val labelId = SystemLabelId.Archive.labelId
         val messageId = MessageIdSample.PlainTextMessage
         val message = MessageSample.Invoice
+        val entryPoint = MoreActionsBottomSheetEntryPoint.MessageHeader
         coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns DataError.Local.NoDataCached.left()
         coEvery { observeMessage(userId, messageId) } returns flowOf(message.right())
 
         // When
-        val actual = getMoreBottomSheetData.forMessage(userId, labelId, messageId, themeOptions)
+        val actual = getMoreBottomSheetData.forMessage(userId, labelId, messageId, themeOptions, entryPoint)
 
         // Then
         assertNull(actual)

@@ -107,6 +107,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailSta
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
+import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
@@ -453,7 +454,11 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
                 },
                 onMoreActionsClick = {
-                    viewModel.submit(ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet)
+                    viewModel.submit(
+                        ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet(
+                            MoreActionsBottomSheetEntryPoint.BottomBar
+                        )
+                    )
                 },
                 onExpandMessage = { viewModel.submit(ConversationDetailViewAction.ExpandMessage(it)) },
                 onCollapseMessage = { viewModel.submit(ConversationDetailViewAction.CollapseMessage(it)) },
@@ -495,9 +500,10 @@ fun ConversationDetailScreen(
                 },
                 onMoreMessageActionsClick = { messageId, themeOptions ->
                     viewModel.submit(
-                        ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                            messageId,
-                            themeOptions
+                        action = ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                            messageId = messageId,
+                            themeOptions = themeOptions,
+                            entryPoint = MoreActionsBottomSheetEntryPoint.MessageHeader
                         )
                     )
                 },

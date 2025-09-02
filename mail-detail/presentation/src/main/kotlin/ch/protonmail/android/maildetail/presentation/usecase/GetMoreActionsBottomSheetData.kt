@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
+import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
@@ -43,19 +44,22 @@ class GetMoreActionsBottomSheetData @Inject constructor(
         userId: UserId,
         labelId: LabelId,
         messageId: MessageId,
-        messageThemeOptions: MessageThemeOptions
+        messageThemeOptions: MessageThemeOptions,
+        entryPoint: MoreActionsBottomSheetEntryPoint
     ): DetailMoreActionsBottomSheetEvent.DataLoaded? = getMessageAvailableActions(
         userId, labelId, messageId, messageThemeOptions
     ).map { availableActions ->
         val message = observeMessage(userId, messageId).firstOrNull()?.getOrNull()
             ?: return null
 
+        val requestIsFromBottomBar = entryPoint is MoreActionsBottomSheetEntryPoint.BottomBar
+
         return DetailMoreActionsBottomSheetEvent.DataLoaded(
             messageSender = message.sender.name,
             messageSubject = message.subject,
             messageIdInConversation = message.messageId.id,
             availableActions = availableActions,
-            customizeToolbarAction = null
+            customizeToolbarAction = if (requestIsFromBottomBar) Action.CustomizeToolbar else null
         )
     }.getOrNull()
 
