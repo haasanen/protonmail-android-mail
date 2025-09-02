@@ -111,7 +111,7 @@ private fun MailPurchaseButton(
         modifier = modifier
     ) {
         val textColor = when (variant) {
-            MailPurchaseButtonVariant.Default -> ProtonTheme.colors.textNorm
+            MailPurchaseButtonVariant.Default -> Color.Black
             MailPurchaseButtonVariant.Inverted -> ProtonTheme.colors.textInverted
         }
 
