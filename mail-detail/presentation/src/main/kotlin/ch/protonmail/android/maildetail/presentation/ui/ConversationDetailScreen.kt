@@ -567,7 +567,8 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.UnsubscribeFromNewsletter(MessageId(it.id)))
                 }
             ),
-            scrollToMessageId = state.scrollToMessage?.id
+            scrollToMessageId = state.scrollToMessage?.id,
+            isSingleMessageMode = isSingleMessageMode
         )
     }
 }
@@ -579,7 +580,8 @@ fun ConversationDetailScreen(
     state: ConversationDetailState,
     actions: ConversationDetailScreen.Actions,
     modifier: Modifier = Modifier,
-    scrollToMessageId: String?
+    scrollToMessageId: String?,
+    isSingleMessageMode: Boolean
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)
     val snackbarHostState = remember { ProtonSnackbarHostState() }
@@ -683,6 +685,7 @@ fun ConversationDetailScreen(
         },
         topBar = {
             val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
+            val messageCount = if (isSingleMessageMode) null else uiModel?.messageCount
             DetailScreenTopBar(
                 modifier = Modifier
                     .graphicsLayer {
@@ -690,7 +693,7 @@ fun ConversationDetailScreen(
                     },
                 title = uiModel?.subject ?: DetailScreenTopBar.NoTitle,
                 isStarred = uiModel?.isStarred,
-                messageCount = uiModel?.messageCount,
+                messageCount = messageCount,
                 actions = DetailScreenTopBar.Actions(
                     onBackClick = { actions.onExit(null) },
                     onStarClick = actions.onStarClick,
@@ -1217,7 +1220,8 @@ private fun ConversationDetailScreenPreview(
             ConversationDetailScreen(
                 state = state,
                 actions = ConversationDetailScreen.Actions.Empty,
-                scrollToMessageId = null
+                scrollToMessageId = null,
+                isSingleMessageMode = false
             )
         }
     }
