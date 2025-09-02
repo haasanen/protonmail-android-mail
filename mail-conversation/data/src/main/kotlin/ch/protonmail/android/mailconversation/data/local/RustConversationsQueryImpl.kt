@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
-import arrow.atomic.AtomicBoolean
 import arrow.core.Either
 import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
@@ -28,12 +28,7 @@ import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversatio
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailpagination.data.extension.appendEventToEither
-import ch.protonmail.android.mailpagination.data.extension.filterAppendEvents
-import ch.protonmail.android.mailpagination.data.extension.filterRefreshEvents
-import ch.protonmail.android.mailpagination.data.extension.refreshEventToEither
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
-import ch.protonmail.android.mailpagination.data.model.PagingEvent
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
@@ -42,8 +37,8 @@ import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -61,10 +56,84 @@ class RustConversationsQueryImpl @Inject constructor(
     private val invalidationRepository: PageInvalidationRepository
 ) : RustConversationsQuery {
 
+    // Request–response wiring
+    private enum class ReqType {
+
+        Append, Refresh
+    }
+
+    private data class PendingRequest(
+        val type: ReqType,
+        val firstResponse: CompletableDeferred<Either<PaginationError, List<LocalConversation>>>
+    )
+
     private var paginatorState: PaginatorState? = null
     private val paginatorMutex = Mutex()
-    private val pagingEvents = MutableSharedFlow<PagingEvent<Conversation>>()
-    private val refreshRequested = AtomicBoolean(false)
+
+    // Append request got a matching immediate response (Append/None/Error)
+    private fun processImmediateAppendResponse(pending: PendingRequest, update: ConversationScrollerUpdate) {
+        Timber.d("rust-conversation-query: Received direct response ${update.javaClass.simpleName} for Append request")
+        when (update) {
+            is ConversationScrollerUpdate.Append -> {
+                pending.firstResponse.complete(update.v1.right())
+            }
+
+            is ConversationScrollerUpdate.None -> {
+                pending.firstResponse.complete(emptyList<LocalConversation>().right())
+            }
+
+            is ConversationScrollerUpdate.Error -> {
+                pending.firstResponse.complete(update.error.toPaginationError().left())
+            }
+
+            else -> {
+                // Should not happen due to predicate
+                pending.firstResponse.complete(emptyList<LocalConversation>().right())
+            }
+        }
+    }
+
+    // Refresh request got a matching immediate response: ReplaceFrom(0)
+    private fun processImmediateRefreshResponse(
+        pending: PendingRequest,
+        update: ConversationScrollerUpdate,
+        snapshot: List<Conversation>
+    ) {
+        Timber.d("rust-conversation-query: Received direct response ${update.javaClass.simpleName} for Refresh request")
+        when (update) {
+            is ConversationScrollerUpdate.ReplaceFrom -> {
+                pending.firstResponse.complete(update.items.right())
+            }
+
+            else -> {
+                pending.firstResponse.complete(snapshot.right())
+            }
+        }
+    }
+
+    // A first response arrived but did NOT match the request's "immediate" expectation.
+    //  - If request was Append -> return emptyList()
+    //  - If request was Refresh -> return current cache snapshot
+    private fun processIndirectResponse(
+        pending: PendingRequest,
+        update: ConversationScrollerUpdate,
+        snapshot: List<Conversation>
+    ) {
+        Timber.d(
+            "rust-conversation-query: Received indirect response ${update.javaClass.simpleName} " +
+                "for ${pending.type} request"
+        )
+
+        when (pending.type) {
+            ReqType.Append -> {
+                pending.firstResponse.complete(emptyList<LocalConversation>().right())
+            }
+
+            ReqType.Refresh -> {
+                pending.firstResponse.complete(snapshot.right())
+            }
+        }
+    }
 
     override suspend fun getConversations(
         userId: UserId,
@@ -93,18 +162,19 @@ class RustConversationsQueryImpl @Inject constructor(
         return when (pageKey.pageToLoad) {
             PageToLoad.First,
             PageToLoad.Next -> {
+                val deferred = setPendingRequest(ReqType.Append)
                 paginatorState?.paginatorWrapper?.nextPage()
-                pagingEvents
-                    .filterAppendEvents()
-                    .appendEventToEither()
+
+                // Wait for immediate Append response
+                deferred.await()
             }
 
             PageToLoad.All -> {
-                refreshRequested.set(true)
+                val deferred = setPendingRequest(ReqType.Refresh)
                 paginatorState?.paginatorWrapper?.reload()
-                pagingEvents
-                    .filterRefreshEvents()
-                    .refreshEventToEither()
+
+                // Wait for immediate Refresh response
+                deferred.await()
             }
         }
     }
@@ -123,44 +193,56 @@ class RustConversationsQueryImpl @Inject constructor(
             .onRight {
                 paginatorState = PaginatorState(
                     paginatorWrapper = it,
-                    pageDescriptor = pageDescriptor
+                    pageDescriptor = pageDescriptor,
+                    collectedItems = mutableListOf()
                 )
             }
     }
 
     private fun conversationsUpdatedCallback() = object : ConversationScrollerLiveQueryCallback {
         override fun onUpdate(update: ConversationScrollerUpdate) {
-            val event = when (update) {
-                is ConversationScrollerUpdate.Append -> PagingEvent.Append(update.v1)
-                is ConversationScrollerUpdate.Error -> PagingEvent.Error(update.error.toPaginationError())
-                is ConversationScrollerUpdate.None -> PagingEvent.Append(emptyList())
-                is ConversationScrollerUpdate.ReplaceBefore -> {
-                    // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
-                    invalidateLoadedItems()
-                    PagingEvent.Invalidate
-                }
-
-                is ConversationScrollerUpdate.ReplaceFrom -> {
-                    when {
-                        // Only refresh when we get a "replace all items" (ie. `ReplaceFrom(0)`) from rust
-                        // *and* the UI did request a refresh (with no request, items wouldn't be updated on UI).
-                        // invalidate otherwise to let UI request the refresh.
-                        update.isReplaceAllItemsEvent() && refreshRequested.getAndSet(false) -> {
-                            PagingEvent.Refresh(update.items)
-                        }
-                        else -> {
-                            // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
-                            invalidateLoadedItems()
-                            PagingEvent.Invalidate
-                        }
-                    }
-
-                }
-            }
+            Timber.d("rust-conversation-query: Received paginator update: ${update.javaClass.simpleName}")
             coroutineScope.launch {
-                pagingEvents.emit(event)
-            }
+                paginatorMutex.withLock {
 
+                    // Update internal cache
+                    val snapshot = applyCacheUpdate(update)
+                    val pending = paginatorState?.pendingRequest
+
+                    if (pending != null) {
+                        when (pending.type) {
+                            ReqType.Append -> {
+                                when {
+                                    update.isImmediateAppendResponse() ->
+                                        processImmediateAppendResponse(pending, update)
+
+                                    else ->
+                                        processIndirectResponse(pending, update, snapshot)
+                                }
+                            }
+
+                            ReqType.Refresh -> {
+                                when {
+                                    update.isImmediateRefreshResponse() ->
+                                        processImmediateRefreshResponse(pending, update, snapshot)
+
+                                    else ->
+                                        processIndirectResponse(pending, update, snapshot)
+                                }
+                            }
+                        }
+                        paginatorState = paginatorState?.copy(
+                            pendingRequest = null
+                        )
+                    } else {
+                        Timber.d(
+                            "rust-conversation-query: No pending request, processing indirect update " +
+                                "${update.javaClass.simpleName} as an invalidation"
+                        )
+                        invalidateLoadedItems()
+                    }
+                }
+            }
         }
     }
 
@@ -181,9 +263,74 @@ class RustConversationsQueryImpl @Inject constructor(
         }
     }
 
+    private suspend fun setPendingRequest(
+        type: ReqType
+    ): CompletableDeferred<Either<PaginationError, List<LocalConversation>>> {
+        paginatorMutex.withLock {
+            val deferred = CompletableDeferred<Either<PaginationError, List<LocalConversation>>>()
+            paginatorState = paginatorState?.copy(
+                pendingRequest = PendingRequest(
+                    type = type,
+                    firstResponse = deferred
+                )
+            )
+
+            return deferred
+        }
+    }
+
+    private fun applyCacheUpdate(update: ConversationScrollerUpdate): List<Conversation> {
+        val state = paginatorState ?: return emptyList()
+        val list = state.collectedItems
+
+        when (update) {
+            is ConversationScrollerUpdate.Append -> {
+                list.addAll(update.v1)
+            }
+
+            is ConversationScrollerUpdate.ReplaceFrom -> {
+                val idx = update.idx.toInt()
+                if (idx >= 0 && idx < list.size) {
+                    list.subList(idx, list.size).clear()
+                    list.addAll(update.items)
+                } else if (idx == list.size) {
+                    list.addAll(update.items)
+                } else {
+                    Timber.w(
+                        "rust-conversation-query: applyCacheUpdate ReplaceFrom ignored: " +
+                            "idx=$idx out of bounds (size=${list.size})"
+                    )
+                }
+            }
+
+            is ConversationScrollerUpdate.ReplaceBefore -> {
+                val idx = update.idx.toInt()
+                if (idx >= 0 && idx < list.size) {
+                    list.subList(0, idx).clear()
+                    list.addAll(0, update.items)
+                } else if (idx == list.size) {
+                    list.clear()
+                    list.addAll(update.items)
+                } else {
+                    Timber.w(
+                        "rust-conversation-query: applyCacheUpdate ReplaceBefore ignored: " +
+                            "idx=$idx out of bounds (size=${list.size})"
+                    )
+                }
+            }
+
+            is ConversationScrollerUpdate.None,
+            is ConversationScrollerUpdate.Error -> Unit
+        }
+
+        return list.toList()
+    }
+
     private data class PaginatorState(
         val paginatorWrapper: ConversationPaginatorWrapper,
-        val pageDescriptor: PageDescriptor
+        val pageDescriptor: PageDescriptor,
+        val collectedItems: MutableList<Conversation>,
+        val pendingRequest: PendingRequest? = null
     )
 
     private data class PageDescriptor(
@@ -200,6 +347,32 @@ class RustConversationsQueryImpl @Inject constructor(
         )
     }
 
-    private fun ConversationScrollerUpdate.ReplaceFrom.isReplaceAllItemsEvent() = this.idx.toInt() == 0
-
 }
+
+/**
+ * Expected Rust callback responses to paginator calls
+ *
+ * * Direct
+ * [ get_items ] => RefreshFrom (0)
+ * [ force_refresh ] => ReplaceFrom (0)
+ * [ fetch_more ] => Append / None / Error
+ * [ *refresh ] => ReplaceBefore / ReplaceFrom / Error
+ *
+ * * Indirect
+ * It is triggered when location was empty (means append to the top)
+ * [ fetch_more ] => None => [ refresh ] => ReplaceBefore(0)
+ *
+ * When loaded and displayed data is not synced (offline mode) and we were able to sync the real data
+ * [ fetch_more ] => None => [ refresh ] => ReplaceFrom(0)
+ *
+ * When you loose your network on empty location and sync failed (offline) new fetch_more will
+ * be scheduled internally (when back online)
+ * [ fetch_more ] => None => [ fetch_more ] => Append
+ */
+
+fun ConversationScrollerUpdate.isImmediateAppendResponse() = this is ConversationScrollerUpdate.Append ||
+    this is ConversationScrollerUpdate.None ||
+    this is ConversationScrollerUpdate.Error
+
+fun ConversationScrollerUpdate.isImmediateRefreshResponse() =
+    this is ConversationScrollerUpdate.ReplaceFrom && this.idx.toInt() == 0
