@@ -47,7 +47,7 @@ class BuildDraftDisplayBodyTest {
                     <meta id="myViewport" name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
                     <meta id="myCSP" http-equiv="Content-Security-Policy" content="script-src 'nonce-$cspNonce'">
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <style nonce="$cspNonce">
+                    <style>
                         $customCss
                     </style>
 
