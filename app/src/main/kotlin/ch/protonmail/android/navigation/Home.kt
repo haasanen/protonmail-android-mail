@@ -618,6 +618,9 @@ fun Home(
                                 onActionBarVisibilityChanged = onActionBarVisibilityChangedCallback,
                                 onCustomizeToolbar = {
                                     navController.navigate(Screen.EditToolbarScreen(ToolbarType.Conversation))
+                                },
+                                onCustomizeMessageToolbar = {
+                                    navController.navigate(Screen.EditToolbarScreen(ToolbarType.Message))
                                 }
                             )
                         )

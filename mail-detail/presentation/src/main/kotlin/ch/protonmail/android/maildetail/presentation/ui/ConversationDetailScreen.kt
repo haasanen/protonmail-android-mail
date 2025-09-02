@@ -389,6 +389,10 @@ fun ConversationDetailScreen(
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.onCustomizeToolbar()
                         },
+                        onCustomizeMessageToolbar = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                            actions.onCustomizeMessageToolbar()
+                        },
                         onSaveConversationAsPdf = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
@@ -1076,6 +1080,7 @@ object ConversationDetail {
         val onAddFolder: () -> Unit,
         val showFeatureMissingSnackbar: () -> Unit,
         val onCustomizeToolbar: () -> Unit,
+        val onCustomizeMessageToolbar: () -> Unit,
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,

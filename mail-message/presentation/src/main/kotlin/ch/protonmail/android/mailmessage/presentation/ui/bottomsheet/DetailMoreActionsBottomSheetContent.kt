@@ -45,7 +45,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
@@ -53,12 +59,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import kotlinx.collections.immutable.toImmutableList
 import timber.log.Timber
 
@@ -172,7 +172,7 @@ fun DetailMoreActionsBottomSheetContent(
                     modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
                     items = persistentListOf(customizeToolbarActionUiModel),
                     onItemClicked = { actionUiModel ->
-                        callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
+                        resolveCallbackForAction(uiModel.messageIdInConversation, actionUiModel.action, actionCallbacks)
                     }
                 ) { action, onClick ->
                     ActionGroupItem(
@@ -277,13 +277,13 @@ private fun QuickActionButton(
 }
 
 private fun resolveCallbackForAction(
-    messageIdInconversation: String?,
+    messageIdInConversation: String?,
     action: Action,
     actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
 ) {
-    if (messageIdInconversation != null) {
+    if (messageIdInConversation != null) {
         callbackForAction(action, actionCallbacks).invoke(
-            MessageId(messageIdInconversation)
+            MessageId(messageIdInConversation)
         )
     } else {
         callbackForConversation(action, actionCallbacks).invoke()
@@ -336,6 +336,7 @@ private fun callbackForAction(
     Action.Print -> actionCallbacks.onPrint
     Action.ReportPhishing -> actionCallbacks.onReportPhishing
     Action.SavePdf -> actionCallbacks.onSaveMessageAsPdf
+    Action.CustomizeToolbar -> actionCallbacks.onCustomizeMessageToolbar
 
     else -> {
         { Timber.d("Action not handled $action.") }
@@ -377,6 +378,7 @@ object DetailMoreActionsBottomSheetContent {
         val onPrintConversation: () -> Unit,
         val onCloseSheet: () -> Unit,
         val onCustomizeToolbar: () -> Unit,
+        val onCustomizeMessageToolbar: (MessageId) -> Unit,
         val onSaveConversationAsPdf: () -> Unit,
         val onSnooze: () -> Unit
     )
@@ -446,6 +448,7 @@ private fun BottomSheetContentPreview() {
                 onPrintConversation = {},
                 onCloseSheet = {},
                 onCustomizeToolbar = {},
+                onCustomizeMessageToolbar = {},
                 onSaveConversationAsPdf = {},
                 onSnooze = {}
             )
