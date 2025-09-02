@@ -340,10 +340,10 @@ class RustDraftDataSourceImpl @Inject constructor(
 
         val recipientsToAdd = updatedSingleRecipients.filterNot { updatedRecipient ->
             updatedRecipient.address in currentRecipients.map { it.address }
-        }
+        }.toSet()
         val recipientsToRemove = currentRecipients.filterNot { currentRecipient ->
             currentRecipient.address in updatedSingleRecipients.map { it.address }
-        }
+        }.toSet()
 
         recipientsToAdd.forEach {
             recipientsWrapper.addSingleRecipient(it.toSingleRecipientEntry())
