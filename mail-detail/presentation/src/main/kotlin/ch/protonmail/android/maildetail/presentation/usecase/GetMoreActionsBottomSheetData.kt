@@ -19,7 +19,6 @@
 package ch.protonmail.android.maildetail.presentation.usecase
 
 import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
@@ -47,10 +46,17 @@ class GetMoreActionsBottomSheetData @Inject constructor(
         messageThemeOptions: MessageThemeOptions
     ): DetailMoreActionsBottomSheetEvent.DataLoaded? = getMessageAvailableActions(
         userId, labelId, messageId, messageThemeOptions
-    ).map {
+    ).map { availableActions ->
+        val message = observeMessage(userId, messageId).firstOrNull()?.getOrNull()
+            ?: return null
 
-        buildBottomSheetActionData(userId, messageId, it)
-
+        return DetailMoreActionsBottomSheetEvent.DataLoaded(
+            messageSender = message.sender.name,
+            messageSubject = message.subject,
+            messageIdInConversation = message.messageId.id,
+            availableActions = availableActions,
+            customizeToolbarAction = null
+        )
     }.getOrNull()
 
     suspend fun forConversation(
@@ -71,20 +77,5 @@ class GetMoreActionsBottomSheetData @Inject constructor(
             )
         }.getOrNull()
 
-    private suspend fun buildBottomSheetActionData(
-        userId: UserId,
-        messageId: MessageId,
-        availableActions: AvailableActions
-    ): DetailMoreActionsBottomSheetEvent.DataLoaded? {
-        val message = observeMessage(userId, messageId).firstOrNull()?.getOrNull() ?: return null
-
-        return DetailMoreActionsBottomSheetEvent.DataLoaded(
-            messageSender = message.sender.name,
-            messageSubject = message.subject,
-            messageIdInConversation = message.messageId.id,
-            availableActions = availableActions,
-            customizeToolbarAction = null
-        )
-    }
 }
 
