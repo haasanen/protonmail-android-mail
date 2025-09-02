@@ -81,9 +81,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun getConversations(
         userId: UserId,
         pageKey: PageKey.DefaultPageKey
-    ): Either<PaginationError, List<LocalConversation>> = withContext(ioDispatcher) {
-        return@withContext rustConversationsQuery.getConversations(userId, pageKey)
-    }
+    ): Either<PaginationError, List<LocalConversation>> = rustConversationsQuery.getConversations(userId, pageKey)
 
     override fun observeConversation(
         userId: UserId,
