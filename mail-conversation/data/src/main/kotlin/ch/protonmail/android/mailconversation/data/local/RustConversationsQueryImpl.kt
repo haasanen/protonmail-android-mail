@@ -66,42 +66,6 @@ class RustConversationsQueryImpl @Inject constructor(
     private val pagingEvents = MutableSharedFlow<PagingEvent<Conversation>>()
     private val refreshRequested = AtomicBoolean(false)
 
-    private val conversationsUpdatedCallback = object : ConversationScrollerLiveQueryCallback {
-        override fun onUpdate(update: ConversationScrollerUpdate) {
-            val event = when (update) {
-                is ConversationScrollerUpdate.Append -> PagingEvent.Append(update.v1)
-                is ConversationScrollerUpdate.Error -> PagingEvent.Error(update.error.toPaginationError())
-                is ConversationScrollerUpdate.None -> PagingEvent.Append(emptyList())
-                is ConversationScrollerUpdate.ReplaceBefore -> {
-                    // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
-                    invalidateLoadedItems()
-                    PagingEvent.Invalidate
-                }
-
-                is ConversationScrollerUpdate.ReplaceFrom -> {
-                    when {
-                        // Only refresh when we get a "replace all items" (ie. `ReplaceFrom(0)`) from rust
-                        // *and* the UI did request a refresh (with no request, items wouldn't be updated on UI).
-                        // invalidate otherwise to let UI request the refresh.
-                        update.isReplaceAllItemsEvent() && refreshRequested.getAndSet(false) -> {
-                            PagingEvent.Refresh(update.items)
-                        }
-                        else -> {
-                            // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
-                            invalidateLoadedItems()
-                            PagingEvent.Invalidate
-                        }
-                    }
-
-                }
-            }
-            coroutineScope.launch {
-                pagingEvents.emit(event)
-            }
-
-        }
-    }
-
     override suspend fun getConversations(
         userId: UserId,
         pageKey: PageKey.DefaultPageKey
@@ -154,7 +118,7 @@ class RustConversationsQueryImpl @Inject constructor(
             session,
             pageDescriptor.labelId.toLocalLabelId(),
             pageDescriptor.unread,
-            conversationsUpdatedCallback
+            conversationsUpdatedCallback()
         )
             .onRight {
                 paginatorState = PaginatorState(
@@ -162,6 +126,42 @@ class RustConversationsQueryImpl @Inject constructor(
                     pageDescriptor = pageDescriptor
                 )
             }
+    }
+
+    private fun conversationsUpdatedCallback() = object : ConversationScrollerLiveQueryCallback {
+        override fun onUpdate(update: ConversationScrollerUpdate) {
+            val event = when (update) {
+                is ConversationScrollerUpdate.Append -> PagingEvent.Append(update.v1)
+                is ConversationScrollerUpdate.Error -> PagingEvent.Error(update.error.toPaginationError())
+                is ConversationScrollerUpdate.None -> PagingEvent.Append(emptyList())
+                is ConversationScrollerUpdate.ReplaceBefore -> {
+                    // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
+                    invalidateLoadedItems()
+                    PagingEvent.Invalidate
+                }
+
+                is ConversationScrollerUpdate.ReplaceFrom -> {
+                    when {
+                        // Only refresh when we get a "replace all items" (ie. `ReplaceFrom(0)`) from rust
+                        // *and* the UI did request a refresh (with no request, items wouldn't be updated on UI).
+                        // invalidate otherwise to let UI request the refresh.
+                        update.isReplaceAllItemsEvent() && refreshRequested.getAndSet(false) -> {
+                            PagingEvent.Refresh(update.items)
+                        }
+                        else -> {
+                            // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
+                            invalidateLoadedItems()
+                            PagingEvent.Invalidate
+                        }
+                    }
+
+                }
+            }
+            coroutineScope.launch {
+                pagingEvents.emit(event)
+            }
+
+        }
     }
 
     private fun shouldInitPaginator(pageDescriptor: PageDescriptor, pageKey: PageKey.DefaultPageKey) =
