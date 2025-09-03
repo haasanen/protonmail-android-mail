@@ -435,7 +435,7 @@ private fun ExpiryInformation(
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
         fontWeight = fontWeight,
-        style = ProtonTheme.typography.bodyLargeNorm.copy(color = color)
+        style = ProtonTheme.typography.bodyMedium.copy(color = color)
     )
 }
 
