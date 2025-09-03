@@ -46,7 +46,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
-import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -91,7 +90,9 @@ private fun UpsellingMailButton(onButtonClick: () -> Unit, modifier: Modifier = 
         shape = ProtonTheme.shapes.large
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Small),
+            modifier = Modifier
+                .padding(vertical = ProtonDimens.Spacing.Small)
+                .padding(horizontal = ProtonDimens.Spacing.Small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -99,7 +100,7 @@ private fun UpsellingMailButton(onButtonClick: () -> Unit, modifier: Modifier = 
                 contentDescription = NO_CONTENT_DESCRIPTION,
                 tint = ProtonTheme.colors.iconNorm
             )
-            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Tiny))
             Icon(
                 painter = painterResource(id = R.drawable.ic_plus),
                 contentDescription = NO_CONTENT_DESCRIPTION,
@@ -114,51 +115,50 @@ private fun UpsellingMailButton(onButtonClick: () -> Unit, modifier: Modifier = 
 private fun UpsellingPromotionalMailButton(onButtonClick: () -> Unit, modifier: Modifier = Modifier) {
     val accessibilityDescription = stringResource(id = R.string.upselling_button_item_content_description)
     Box {
-        val iconColor = if (LocalColors.current.isDark) {
-            UpsellingLayoutValues.UpsellingPromoButton.iconColorDark
-        } else {
-            UpsellingLayoutValues.UpsellingPromoButton.iconColorLight
-        }
-        val bgColor = UpsellingLayoutValues.UpsellingPromoButton.bgColor
+
         Surface(
             modifier = modifier.semantics { contentDescription = accessibilityDescription },
-            color = bgColor,
+            color = ProtonTheme.colors.brandMinus40,
             onClick = dropUnlessResumed { onButtonClick() },
             border = null,
             shape = ProtonTheme.shapes.large
         ) {
             Row(
                 modifier = Modifier
-                    .padding(ProtonDimens.Spacing.Small),
+                    .padding(vertical = ProtonDimens.Spacing.Small)
+                    .padding(horizontal = ProtonDimens.Spacing.Compact),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_logo_mail_mono),
+                    painter = painterResource(id = R.drawable.ic_upselling_mail),
                     contentDescription = NO_CONTENT_DESCRIPTION,
-                    tint = iconColor
+                    tint = ProtonTheme.colors.brandPlus30
                 )
+                Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Tiny))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_plus),
                     contentDescription = NO_CONTENT_DESCRIPTION,
-                    tint = iconColor
+                    tint = ProtonTheme.colors.brandPlus30
                 )
             }
         }
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .offset(x = -ProtonDimens.Spacing.Tiny, y = ProtonDimens.Spacing.Small)
+                .offset(x = ProtonDimens.Spacing.Tiny + ProtonDimens.Spacing.ExtraTiny, y = ProtonDimens.Spacing.Small)
         ) {
             Box(
                 modifier = Modifier
                     .size(ProtonDimens.Spacing.ModeratelyLarge)
-                    .background(color = ProtonTheme.colors.backgroundInvertedNorm, shape = CircleShape)
+                    .background(color = ProtonTheme.colors.backgroundNorm, shape = CircleShape)
             )
+
+
             Box(
                 modifier = Modifier
                     .size(ProtonDimens.Spacing.Compact)
                     .align(Alignment.Center)
-                    .background(color = iconColor, shape = CircleShape)
+                    .background(brush = UpsellingLayoutValues.UpsellingPromoButton.backgroundGradient, CircleShape)
             )
         }
     }

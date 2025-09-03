@@ -86,9 +86,12 @@ internal object UpsellingLayoutValues {
 
     object UpsellingPromoButton {
 
-        val iconColorDark = Color(0xFF8A6EFF)
-        val iconColorLight = BlueInteractionNorm
-        val bgColor = Color(0x4d8a6eff)
+        val backgroundGradient = Brush.radialGradient(
+            listOf(
+                Color(0xFFC084FC),
+                Color(0xFF7C3AED)
+            )
+        )
     }
 
     object PaymentButtons {
