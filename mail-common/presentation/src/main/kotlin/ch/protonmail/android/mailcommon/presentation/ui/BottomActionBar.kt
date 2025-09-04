@@ -24,9 +24,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,7 +38,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.ProtonTypography
@@ -90,11 +89,7 @@ fun BottomActionBar(
         ) {
             when (state) {
                 is BottomBarState.Loading -> {
-                    ProtonCenteredProgress(
-                        modifier = Modifier
-                            .padding(vertical = ProtonDimens.Spacing.Standard)
-                            .size(MailDimens.ProgressDefaultSize)
-                    )
+                    Spacer(modifier = Modifier.fillMaxWidth())
                 }
 
                 is BottomBarState.Error -> Text(
