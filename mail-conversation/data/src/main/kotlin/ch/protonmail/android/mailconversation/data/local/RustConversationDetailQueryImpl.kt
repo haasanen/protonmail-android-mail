@@ -27,7 +27,7 @@ import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScop
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import ch.protonmail.android.mailmessage.data.usecase.GetRustConversationMessages
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +46,7 @@ import javax.inject.Inject
 class RustConversationDetailQueryImpl @Inject constructor(
     private val rustMailboxFactory: RustMailboxFactory,
     private val createRustConversationWatcher: CreateRustConversationWatcher,
-    private val getRustConversationMessages: GetRustConversationMessages,
+    private val getRustConversation: GetRustConversation,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDetailQuery {
 
@@ -86,7 +86,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                         return@withLock
                     }
 
-                    val conversationEither = getRustConversationMessages(mailbox, currentConversationId!!)
+                    val conversationEither = getRustConversation(mailbox, currentConversationId!!)
                         .onLeft {
                             Timber.w("Failed to update conversation messages!")
                         }

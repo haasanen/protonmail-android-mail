@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import ch.protonmail.android.mailmessage.data.usecase.GetRustConversationMessages
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversation
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
@@ -61,12 +61,12 @@ class RustConversationDetailQueryImplTest {
 
     private val createRustConversationWatcher: CreateRustConversationWatcher = mockk()
     private val rustMailboxFactory: RustMailboxFactory = mockk()
-    private val getRustConversationMessages: GetRustConversationMessages = mockk()
+    private val getRustConversation: GetRustConversation = mockk()
 
     private val rustConversationQuery = RustConversationDetailQueryImpl(
         rustMailboxFactory,
         createRustConversationWatcher,
-        getRustConversationMessages,
+        getRustConversation,
         testCoroutineScope
     )
 
@@ -127,7 +127,7 @@ class RustConversationDetailQueryImplTest {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
         } returns watcherMock.right()
         coEvery {
-            getRustConversationMessages(mailbox, conversationId)
+            getRustConversation(mailbox, conversationId)
         } returns ConversationAndMessages(expectedConversation, messageToOpen, messages).right()
         rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
             skipItems(1)
@@ -139,7 +139,7 @@ class RustConversationDetailQueryImplTest {
             every { watcherMock.messages } returns updatedMessages.messages
             every { watcherMock.messageIdToOpen } returns messageToOpen
             coEvery {
-                getRustConversationMessages(mailbox, conversationId)
+                getRustConversation(mailbox, conversationId)
             } returns ConversationAndMessages(
                 updatedConversation,
                 updatedMessageToOpen,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.usecase
+package ch.protonmail.android.mailconversation.data.usecase
 
 import arrow.core.Either
 import arrow.core.left
@@ -30,7 +30,7 @@ import uniffi.proton_mail_uniffi.ConversationResult
 import uniffi.proton_mail_uniffi.conversation
 import javax.inject.Inject
 
-class GetRustConversationMessages @Inject constructor() {
+class GetRustConversation @Inject constructor() {
 
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
