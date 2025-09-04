@@ -40,16 +40,11 @@ class ConversationDetailMessagesReducer @Inject constructor() {
         operation: ConversationDetailOperation.AffectingMessages
     ): ConversationDetailsMessagesState = when (operation) {
 
-        is ConversationDetailEvent.ErrorLoadingMessages -> ConversationDetailsMessagesState.Error(
-            message = TextUiModel(string.detail_error_loading_messages)
-        )
-
         is ConversationDetailEvent.MessagesData -> ConversationDetailsMessagesState.Data(
             messages = operation.messagesUiModels
         )
 
         is ConversationDetailEvent.NoNetworkError -> currentState.toNewStateForNoNetworkError()
-        is ConversationDetailEvent.ErrorLoadingConversation -> currentState.toNewStateForErrorLoadingConversation()
         is ConversationDetailEvent.CollapseDecryptedMessage ->
             currentState.toNewExpandCollapseState(
                 operation.messageId,
@@ -150,15 +145,6 @@ class ConversationDetailMessagesReducer @Inject constructor() {
         is ConversationDetailsMessagesState.Offline,
         is ConversationDetailsMessagesState.Loading,
         is ConversationDetailsMessagesState.Error -> ConversationDetailsMessagesState.Offline
-    }
-
-    private fun ConversationDetailsMessagesState.toNewStateForErrorLoadingConversation() = when (this) {
-        is ConversationDetailsMessagesState.Data -> this
-        is ConversationDetailsMessagesState.Offline,
-        is ConversationDetailsMessagesState.Loading,
-        is ConversationDetailsMessagesState.Error -> ConversationDetailsMessagesState.Error(
-            message = TextUiModel(string.detail_error_loading_messages)
-        )
     }
 
     private fun ConversationDetailsMessagesState.toNewExpandCollapseState(

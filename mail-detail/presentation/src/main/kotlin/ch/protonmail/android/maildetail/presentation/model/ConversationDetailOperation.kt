@@ -71,8 +71,8 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         val conversationUiModel: ConversationDetailMetadataUiModel
     ) : ConversationDetailEvent, AffectingConversation
 
-    object ErrorLoadingConversation : ConversationDetailEvent, AffectingConversation, AffectingMessages
-    object ErrorLoadingMessages : ConversationDetailEvent, AffectingMessages
+    object ErrorLoadingConversation : ConversationDetailEvent
+    object ErrorLoadingMessages : ConversationDetailEvent
     object ErrorLoadingSingleMessage : ConversationDetailEvent, AffectingMessages
     object NoNetworkError : ConversationDetailEvent, AffectingMessages
 

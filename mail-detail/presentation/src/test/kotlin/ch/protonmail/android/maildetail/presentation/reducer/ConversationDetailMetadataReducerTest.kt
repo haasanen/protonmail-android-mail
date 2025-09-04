@@ -19,7 +19,6 @@
 package ch.protonmail.android.maildetail.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
@@ -65,16 +64,6 @@ class ConversationDetailMetadataReducerTest(
                     event = ConversationDetailEvent.ConversationData(conversationUiModel),
                     expectedState = ConversationDetailMetadataState.Data(conversationUiModel)
                 )
-            ),
-            TestParams(
-                "from loading to error loading conversation",
-                TestParams.TestInput(
-                    currentState = ConversationDetailMetadataState.Loading,
-                    event = ConversationDetailEvent.ErrorLoadingConversation,
-                    expectedState = ConversationDetailMetadataState.Error(
-                        message = TextUiModel(string.detail_error_loading_conversation)
-                    )
-                )
             )
         )
 
@@ -98,14 +87,6 @@ class ConversationDetailMetadataReducerTest(
                 )
             ),
             TestParams(
-                testName = "from data does not change state on error loading conversation",
-                TestParams.TestInput(
-                    currentState = ConversationDetailMetadataState.Data(conversationUiModel),
-                    event = ConversationDetailEvent.ErrorLoadingConversation,
-                    expectedState = ConversationDetailMetadataState.Data(conversationUiModel)
-                )
-            ),
-            TestParams(
                 testName = "from data to updated data state on new data",
                 TestParams.TestInput(
                     currentState = ConversationDetailMetadataState.Data(conversationUiModel),
@@ -122,18 +103,6 @@ class ConversationDetailMetadataReducerTest(
                     currentState = ConversationDetailMetadataState.Error(TextUiModel("any error")),
                     event = ConversationDetailEvent.ConversationData(conversationUiModel),
                     expectedState = ConversationDetailMetadataState.Data(conversationUiModel)
-                )
-            ),
-            TestParams(
-                "from error to updated error on error",
-                TestParams.TestInput(
-                    currentState = ConversationDetailMetadataState.Error(
-                        message = TextUiModel(string.x_error_not_logged_in)
-                    ),
-                    event = ConversationDetailEvent.ErrorLoadingConversation,
-                    expectedState = ConversationDetailMetadataState.Error(
-                        message = TextUiModel(string.detail_error_loading_conversation)
-                    )
                 )
             )
         )

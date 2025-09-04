@@ -26,8 +26,10 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.HandleOpenProtonCalendarRequest
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.OfflineErrorCancellingScheduleSend
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ExitScreenWithMessage
@@ -98,6 +100,7 @@ class ConversationDetailReducer @Inject constructor(
             bottomSheetState = currentState.toNewBottomSheetStateFrom(operation),
             error = currentState.toErrorState(operation),
             actionResult = currentState.toActionResult(operation),
+            loadingErrorEffect = currentState.toLoadingErrorState(operation),
             exitScreenEffect = currentState.toExitState(operation),
             exitScreenActionResult = currentState.toExitWithMessageState(operation),
             openMessageBodyLinkEffect = currentState.toOpenMessageBodyLinkState(operation),
@@ -208,6 +211,16 @@ class ConversationDetailReducer @Inject constructor(
         } else {
             bottomSheetState
         }
+
+    private fun ConversationDetailState.toLoadingErrorState(
+        operation: ConversationDetailOperation
+    ): Effect<TextUiModel> = when (operation) {
+        is ConversationDetailEvent.ErrorLoadingConversation,
+        is ConversationDetailEvent.ErrorLoadingMessages ->
+            Effect.of(TextUiModel(R.string.detail_error_loading_conversation))
+
+        else -> loadingErrorEffect
+    }
 
     @Suppress("ComplexMethod")
     private fun ConversationDetailState.toErrorState(operation: ConversationDetailOperation): Effect<TextUiModel> {

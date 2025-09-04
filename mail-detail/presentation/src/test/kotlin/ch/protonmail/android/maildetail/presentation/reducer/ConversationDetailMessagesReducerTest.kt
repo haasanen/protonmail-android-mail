@@ -19,7 +19,6 @@
 package ch.protonmail.android.maildetail.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
@@ -74,14 +73,6 @@ class ConversationDetailMessagesReducerTest(
 
             Input(
                 currentState = ConversationDetailsMessagesState.Loading,
-                operation = ConversationDetailEvent.ErrorLoadingMessages,
-                expectedState = ConversationDetailsMessagesState.Error(
-                    message = TextUiModel(string.detail_error_loading_messages)
-                )
-            ),
-
-            Input(
-                currentState = ConversationDetailsMessagesState.Loading,
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessages,
                     requestScrollToMessageId = null,
@@ -99,14 +90,6 @@ class ConversationDetailMessagesReducerTest(
 
             Input(
                 currentState = ConversationDetailsMessagesState.Loading,
-                operation = ConversationDetailEvent.ErrorLoadingConversation,
-                expectedState = ConversationDetailsMessagesState.Error(
-                    message = TextUiModel(string.detail_error_loading_messages)
-                )
-            ),
-
-            Input(
-                currentState = ConversationDetailsMessagesState.Loading,
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessagesFirstExpanded,
                     requestScrollToMessageId = allMessagesFirstExpanded.first().messageId,
@@ -118,16 +101,6 @@ class ConversationDetailMessagesReducerTest(
         ).toImmutableList()
 
         private val fromErrorState = listOf(
-
-            Input(
-                currentState = ConversationDetailsMessagesState.Error(
-                    message = TextUiModel(commonString.x_error_not_logged_in)
-                ),
-                operation = ConversationDetailEvent.ErrorLoadingMessages,
-                expectedState = ConversationDetailsMessagesState.Error(
-                    message = TextUiModel(string.detail_error_loading_messages)
-                )
-            ),
 
             Input(
                 currentState = ConversationDetailsMessagesState.Error(
@@ -149,16 +122,6 @@ class ConversationDetailMessagesReducerTest(
                 currentState = ConversationDetailsMessagesState.Data(
                     messages = emptyList<ConversationDetailMessageUiModel>().toImmutableList()
                 ),
-                operation = ConversationDetailEvent.ErrorLoadingMessages,
-                expectedState = ConversationDetailsMessagesState.Error(
-                    message = TextUiModel(string.detail_error_loading_messages)
-                )
-            ),
-
-            Input(
-                currentState = ConversationDetailsMessagesState.Data(
-                    messages = emptyList<ConversationDetailMessageUiModel>().toImmutableList()
-                ),
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessages,
                     requestScrollToMessageId = null,
@@ -171,12 +134,6 @@ class ConversationDetailMessagesReducerTest(
             Input(
                 currentState = ConversationDetailsMessagesState.Data(messages = allMessages),
                 operation = ConversationDetailEvent.NoNetworkError,
-                expectedState = ConversationDetailsMessagesState.Data(messages = allMessages)
-            ),
-
-            Input(
-                currentState = ConversationDetailsMessagesState.Data(messages = allMessages),
-                operation = ConversationDetailEvent.ErrorLoadingConversation,
                 expectedState = ConversationDetailsMessagesState.Data(messages = allMessages)
             ),
 

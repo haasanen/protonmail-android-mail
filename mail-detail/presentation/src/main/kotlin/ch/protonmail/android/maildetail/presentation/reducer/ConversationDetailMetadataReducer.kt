@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.reducer
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
@@ -35,7 +33,6 @@ class ConversationDetailMetadataReducer @Inject constructor() {
         is ConversationDetailEvent.ConversationData -> ConversationDetailMetadataState.Data(
             conversationUiModel = event.conversationUiModel
         )
-        is ConversationDetailEvent.ErrorLoadingConversation -> currentState.toNewStateForErrorLoading()
         is ConversationDetailViewAction.Star -> currentState.toNewStateForStarredConversation()
         is ConversationDetailViewAction.UnStar -> currentState.toNewStateForUnStarredConversation()
     }
@@ -50,14 +47,6 @@ class ConversationDetailMetadataReducer @Inject constructor() {
         is ConversationDetailMetadataState.Data -> copy(conversationUiModel.copy(isStarred = false))
         is ConversationDetailMetadataState.Error -> this
         is ConversationDetailMetadataState.Loading -> this
-    }
-
-    private fun ConversationDetailMetadataState.toNewStateForErrorLoading() = when (this) {
-        is ConversationDetailMetadataState.Data -> this
-        is ConversationDetailMetadataState.Loading,
-        is ConversationDetailMetadataState.Error -> ConversationDetailMetadataState.Error(
-            message = TextUiModel(string.detail_error_loading_conversation)
-        )
     }
 
 }

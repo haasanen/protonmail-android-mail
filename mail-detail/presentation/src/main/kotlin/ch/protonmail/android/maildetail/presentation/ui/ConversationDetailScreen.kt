@@ -444,6 +444,10 @@ fun ConversationDetailScreen(
             state = state,
             actions = ConversationDetailScreen.Actions(
                 onExit = actions.onExit,
+                onExitWithError = {
+                    actions.showSnackbar(it, ProtonSnackbarType.ERROR)
+                    actions.onExit(null)
+                },
                 onStarClick = { viewModel.submit(ConversationDetailViewAction.Star) },
                 onTrashClick = { viewModel.submit(ConversationDetailViewAction.MoveToTrash) },
                 onDeleteClick = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
@@ -597,6 +601,11 @@ fun ConversationDetailScreen(
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
+
+    state.loadingErrorEffect.consume()?.let { errorMessage ->
+        actions.onExitWithError(errorMessage.string())
+        return
+    }
 
     ConsumableLaunchedEffect(state.exitScreenEffect) { actions.onExit(null) }
     state.exitScreenActionResult.consume()?.let { actionResult ->
@@ -1106,6 +1115,7 @@ object ConversationDetailScreen {
 
     data class Actions(
         val onExit: (notifyUserMessage: ActionResult?) -> Unit,
+        val onExitWithError: (errorMessage: String) -> Unit,
         val onStarClick: () -> Unit,
         val onTrashClick: () -> Unit,
         val onDeleteClick: () -> Unit,
@@ -1164,6 +1174,7 @@ object ConversationDetailScreen {
 
             val Empty = Actions(
                 onExit = {},
+                onExitWithError = {},
                 onStarClick = {},
                 onTrashClick = {},
                 onDeleteClick = {},

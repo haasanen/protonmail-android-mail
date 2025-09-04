@@ -140,6 +140,12 @@ class ConversationDetailReducerTest(
                 assertNull(result.exitScreenEffect.consume())
             }
 
+            if (reducesLoadingError) {
+                assertNotNull(result.loadingErrorEffect.consume())
+            } else {
+                assertNull(result.loadingErrorEffect.consume())
+            }
+
             if (expectedExitMessage != null) {
                 assertEquals(expectedExitMessage, result.exitScreenActionResult.consume())
             }
@@ -195,6 +201,7 @@ class ConversationDetailReducerTest(
         val reducesErrorBar: Boolean,
         val reducesMessageBar: Boolean,
         val reducesExit: Boolean,
+        val reducesLoadingError: Boolean,
         val expectedExitMessage: ActionResult?,
         val reducesBottomSheet: Boolean,
         val reducesLinkClick: Boolean,
@@ -290,8 +297,8 @@ class ConversationDetailReducerTest(
                 affects Conversation,
             ConversationDetailEvent.ErrorAddStar affects listOf(ErrorBar, BottomSheet),
             ConversationDetailEvent.ErrorRemoveStar affects listOf(ErrorBar, BottomSheet),
-            ConversationDetailEvent.ErrorLoadingConversation affects listOf(Conversation, Messages),
-            ConversationDetailEvent.ErrorLoadingMessages affects Messages,
+            ConversationDetailEvent.ErrorLoadingConversation affects LoadingError,
+            ConversationDetailEvent.ErrorLoadingMessages affects LoadingError,
             ConversationDetailEvent.ErrorMarkingAsUnread affects listOf(ErrorBar, BottomSheet),
             ConversationDetailEvent.ErrorMarkingAsRead affects listOf(ErrorBar, BottomSheet),
             ConversationDetailEvent.ErrorMovingConversation affects listOf(BottomSheet, ErrorBar),
@@ -374,6 +381,7 @@ private infix fun ConversationDetailOperation.affects(entities: List<Entity>) = 
     reducesBottomBar = entities.contains(BottomBar),
     reducesErrorBar = entities.contains(ErrorBar),
     reducesExit = entities.contains(Exit),
+    reducesLoadingError = entities.contains(LoadingError),
     reducesMessageBar = entities.contains(MessageBar),
     expectedExitMessage = entities.firstNotNullOfOrNull { (it as? ExitWithResult)?.result },
     reducesBottomSheet = entities.contains(BottomSheet),
@@ -393,6 +401,7 @@ private data object Messages : Entity
 private data object Conversation : Entity
 private data object BottomBar : Entity
 private data object Exit : Entity
+private data object LoadingError : Entity
 private data class ExitWithResult(val result: ActionResult) : Entity
 private data object MessageBar : Entity
 private data object ErrorBar : Entity
