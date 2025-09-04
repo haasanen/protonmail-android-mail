@@ -102,7 +102,11 @@ class RustConversationsQueryImpl @Inject constructor(
         Timber.d("rust-conversation-query: Received direct response ${update.javaClass.simpleName} for Refresh request")
         when (update) {
             is ConversationScrollerUpdate.ReplaceFrom -> {
-                pending.response.complete(update.items.right())
+                if (update.idx.toInt() == 0) {
+                    pending.response.complete(update.items.right())
+                } else {
+                    Timber.w("Unexpected ReplaceFrom idx=${update.idx}, expected 0")
+                }
             }
 
             else -> {
