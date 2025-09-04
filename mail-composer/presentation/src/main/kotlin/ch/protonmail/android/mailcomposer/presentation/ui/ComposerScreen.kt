@@ -483,7 +483,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     }
 
     if (showExpirationTimeDialog.value) {
-        SetExpirationTimeDialog(
+        SetMessageExpirationDialog(
             expirationTime = accessoriesState.expirationTime,
             onDismiss = { showExpirationTimeDialog.value = false },
             onTimePicked = {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -30,12 +30,9 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.component.ProtonDialogTitle
@@ -46,19 +43,29 @@ import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOptio
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 
 @Composable
-fun SetExpirationTimeDialog(
-    expirationTime: ExpirationTimeUiModel,
+fun ExpirationTimeOptionsDialog(
     onTimePicked: (ExpirationTimeUiModel) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    selectedItem: MutableState<ExpirationTimeUiModel>
 ) {
-
-    val selectedItem = remember { mutableStateOf(expirationTime) }
-
     ProtonAlertDialog(
         onDismissRequest = { onDismiss() },
         confirmButton = {},
         title = { ExpirationTimeTitle() },
-        text = { ExpirationTimeOptions(onTimePicked, selectedItem) }
+        text = {
+            Column(modifier = Modifier.selectableGroup()) {
+                ExpirationTimeOption.entries.forEach { item ->
+                    SelectableExpirationTimeItem(
+                        item = item,
+                        isSelected = selectedItem.value.selectedOption == item,
+                        onSelected = {
+                            selectedItem.value = it
+                            onTimePicked(it)
+                        }
+                    )
+                }
+            }
+        }
     )
 }
 
@@ -70,25 +77,6 @@ private fun ExpirationTimeTitle() {
         Spacer(Modifier.size(ProtonDimens.Spacing.Large))
 
         ProtonAlertDialogText(textResId = R.string.composer_expiration_time_bottom_sheet_description)
-    }
-}
-
-@Composable
-private fun ExpirationTimeOptions(
-    onTimePicked: (ExpirationTimeUiModel) -> Unit,
-    selectedItem: MutableState<ExpirationTimeUiModel>
-) {
-    Column(modifier = Modifier.selectableGroup()) {
-        ExpirationTimeOption.entries.forEach { item ->
-            SelectableExpirationTimeItem(
-                item = item,
-                isSelected = selectedItem.value.selectedOption == item,
-                onSelected = {
-                    selectedItem.value = it
-                    onTimePicked(it)
-                }
-            )
-        }
     }
 }
 
@@ -118,14 +106,4 @@ private fun SelectableExpirationTimeItem(
             overflow = TextOverflow.Ellipsis
         )
     }
-}
-
-@Preview
-@Composable
-fun PreviewSetExpirationTimeDialog() {
-    SetExpirationTimeDialog(
-        expirationTime = ExpirationTimeUiModel(ExpirationTimeOption.OneHour),
-        onTimePicked = {},
-        onDismiss = {}
-    )
 }
