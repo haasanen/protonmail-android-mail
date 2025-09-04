@@ -29,6 +29,8 @@ import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginator
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerCache
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
@@ -198,7 +200,7 @@ class RustConversationsQueryImpl @Inject constructor(
                 paginatorState = PaginatorState(
                     paginatorWrapper = it,
                     pageDescriptor = pageDescriptor,
-                    collectedItems = mutableListOf()
+                    scrollerCache = ScrollerCache()
                 )
             }
     }
@@ -210,7 +212,7 @@ class RustConversationsQueryImpl @Inject constructor(
                 paginatorMutex.withLock {
 
                     // Update internal cache
-                    val snapshot = applyCacheUpdate(update)
+                    val snapshot = paginatorState?.scrollerCache?.applyUpdate(update.toScrollerUpdate()) ?: emptyList()
                     val pending = paginatorState?.pendingRequest
 
                     if (pending != null) {
@@ -291,57 +293,10 @@ class RustConversationsQueryImpl @Inject constructor(
         }
     }
 
-    private fun applyCacheUpdate(update: ConversationScrollerUpdate): List<Conversation> {
-        val state = paginatorState ?: return emptyList()
-        val list = state.collectedItems
-
-        when (update) {
-            is ConversationScrollerUpdate.Append -> {
-                list.addAll(update.v1)
-            }
-
-            is ConversationScrollerUpdate.ReplaceFrom -> {
-                val idx = update.idx.toInt()
-                if (idx >= 0 && idx < list.size) {
-                    list.subList(idx, list.size).clear()
-                    list.addAll(update.items)
-                } else if (idx == list.size) {
-                    list.addAll(update.items)
-                } else {
-                    Timber.w(
-                        "rust-conversation-query: applyCacheUpdate ReplaceFrom ignored: " +
-                            "idx=$idx out of bounds (size=${list.size})"
-                    )
-                }
-            }
-
-            is ConversationScrollerUpdate.ReplaceBefore -> {
-                val idx = update.idx.toInt()
-                if (idx >= 0 && idx < list.size) {
-                    list.subList(0, idx).clear()
-                    list.addAll(0, update.items)
-                } else if (idx == list.size) {
-                    list.clear()
-                    list.addAll(update.items)
-                } else {
-                    Timber.w(
-                        "rust-conversation-query: applyCacheUpdate ReplaceBefore ignored: " +
-                            "idx=$idx out of bounds (size=${list.size})"
-                    )
-                }
-            }
-
-            is ConversationScrollerUpdate.None,
-            is ConversationScrollerUpdate.Error -> Unit
-        }
-
-        return list.toList()
-    }
-
     private data class PaginatorState(
         val paginatorWrapper: ConversationPaginatorWrapper,
         val pageDescriptor: PageDescriptor,
-        val collectedItems: MutableList<Conversation>,
+        val scrollerCache: ScrollerCache<LocalConversation>,
         val pendingRequest: PendingRequest? = null
     )
 
@@ -361,6 +316,13 @@ class RustConversationsQueryImpl @Inject constructor(
 
 }
 
+fun ConversationScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<LocalConversation> = when (this) {
+    is ConversationScrollerUpdate.Append -> ScrollerUpdate.Append(v1)
+    is ConversationScrollerUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(idx.toInt(), items)
+    is ConversationScrollerUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(idx.toInt(), items)
+    is ConversationScrollerUpdate.Error -> ScrollerUpdate.Error(error)
+    ConversationScrollerUpdate.None -> ScrollerUpdate.None
+}
 /**
  * Expected Rust callback responses to paginator calls
  *
