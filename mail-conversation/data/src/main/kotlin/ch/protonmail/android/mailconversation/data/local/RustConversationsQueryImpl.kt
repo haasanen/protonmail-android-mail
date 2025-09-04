@@ -57,14 +57,14 @@ class RustConversationsQueryImpl @Inject constructor(
 ) : RustConversationsQuery {
 
     // Request–response wiring
-    private enum class ReqType {
+    private enum class RequestType {
 
         Append, Refresh
     }
 
     private data class PendingRequest(
-        val type: ReqType,
-        val firstResponse: CompletableDeferred<Either<PaginationError, List<LocalConversation>>>
+        val type: RequestType,
+        val response: CompletableDeferred<Either<PaginationError, List<LocalConversation>>>
     )
 
     private var paginatorState: PaginatorState? = null
@@ -75,20 +75,20 @@ class RustConversationsQueryImpl @Inject constructor(
         Timber.d("rust-conversation-query: Received direct response ${update.javaClass.simpleName} for Append request")
         when (update) {
             is ConversationScrollerUpdate.Append -> {
-                pending.firstResponse.complete(update.v1.right())
+                pending.response.complete(update.v1.right())
             }
 
             is ConversationScrollerUpdate.None -> {
-                pending.firstResponse.complete(emptyList<LocalConversation>().right())
+                pending.response.complete(emptyList<LocalConversation>().right())
             }
 
             is ConversationScrollerUpdate.Error -> {
-                pending.firstResponse.complete(update.error.toPaginationError().left())
+                pending.response.complete(update.error.toPaginationError().left())
             }
 
             else -> {
-                // Should not happen due to predicate
-                pending.firstResponse.complete(emptyList<LocalConversation>().right())
+                Timber.w("rust-conversation-query: Unexpected direct response – predicate failed")
+                pending.response.complete(emptyList<LocalConversation>().right())
             }
         }
     }
@@ -102,11 +102,11 @@ class RustConversationsQueryImpl @Inject constructor(
         Timber.d("rust-conversation-query: Received direct response ${update.javaClass.simpleName} for Refresh request")
         when (update) {
             is ConversationScrollerUpdate.ReplaceFrom -> {
-                pending.firstResponse.complete(update.items.right())
+                pending.response.complete(update.items.right())
             }
 
             else -> {
-                pending.firstResponse.complete(snapshot.right())
+                pending.response.complete(snapshot.right())
             }
         }
     }
@@ -114,7 +114,7 @@ class RustConversationsQueryImpl @Inject constructor(
     // A first response arrived but did NOT match the request's "immediate" expectation.
     //  - If request was Append -> return emptyList()
     //  - If request was Refresh -> return current cache snapshot
-    private fun processIndirectResponse(
+    private fun processIndirectResponseAsFallback(
         pending: PendingRequest,
         update: ConversationScrollerUpdate,
         snapshot: List<Conversation>
@@ -125,12 +125,12 @@ class RustConversationsQueryImpl @Inject constructor(
         )
 
         when (pending.type) {
-            ReqType.Append -> {
-                pending.firstResponse.complete(emptyList<LocalConversation>().right())
+            RequestType.Append -> {
+                pending.response.complete(emptyList<LocalConversation>().right())
             }
 
-            ReqType.Refresh -> {
-                pending.firstResponse.complete(snapshot.right())
+            RequestType.Refresh -> {
+                pending.response.complete(snapshot.right())
             }
         }
     }
@@ -162,7 +162,7 @@ class RustConversationsQueryImpl @Inject constructor(
         return when (pageKey.pageToLoad) {
             PageToLoad.First,
             PageToLoad.Next -> {
-                val deferred = setPendingRequest(ReqType.Append)
+                val deferred = setPendingRequest(RequestType.Append)
                 paginatorState?.paginatorWrapper?.nextPage()
 
                 // Wait for immediate Append response
@@ -170,7 +170,7 @@ class RustConversationsQueryImpl @Inject constructor(
             }
 
             PageToLoad.All -> {
-                val deferred = setPendingRequest(ReqType.Refresh)
+                val deferred = setPendingRequest(RequestType.Refresh)
                 paginatorState?.paginatorWrapper?.reload()
 
                 // Wait for immediate Refresh response
@@ -211,23 +211,31 @@ class RustConversationsQueryImpl @Inject constructor(
 
                     if (pending != null) {
                         when (pending.type) {
-                            ReqType.Append -> {
+                            RequestType.Append -> {
                                 when {
+                                    // This is the first expected response for Append request
                                     update.isImmediateAppendResponse() ->
                                         processImmediateAppendResponse(pending, update)
 
                                     else ->
-                                        processIndirectResponse(pending, update, snapshot)
+                                        // This is fallback branch: We have an Append request but the response is not
+                                        // one of expected Append responses. Not to get stuck on the request,
+                                        // we complete the request with an Append empty list.
+                                        processIndirectResponseAsFallback(pending, update, snapshot)
                                 }
                             }
 
-                            ReqType.Refresh -> {
+                            RequestType.Refresh -> {
                                 when {
+                                    // This is the first expected response for Refresh request
                                     update.isImmediateRefreshResponse() ->
                                         processImmediateRefreshResponse(pending, update, snapshot)
 
                                     else ->
-                                        processIndirectResponse(pending, update, snapshot)
+                                        // This is fallback branch: We have a Refresh request but the response is not
+                                        // the expected Refresh response. Not to get stuck on the request,
+                                        // we complete the request with cache snapshot data.
+                                        processIndirectResponseAsFallback(pending, update, snapshot)
                                 }
                             }
                         }
@@ -264,14 +272,14 @@ class RustConversationsQueryImpl @Inject constructor(
     }
 
     private suspend fun setPendingRequest(
-        type: ReqType
+        type: RequestType
     ): CompletableDeferred<Either<PaginationError, List<LocalConversation>>> {
         paginatorMutex.withLock {
             val deferred = CompletableDeferred<Either<PaginationError, List<LocalConversation>>>()
             paginatorState = paginatorState?.copy(
                 pendingRequest = PendingRequest(
                     type = type,
-                    firstResponse = deferred
+                    response = deferred
                 )
             )
 
