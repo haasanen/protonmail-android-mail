@@ -18,23 +18,33 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import java.util.concurrent.atomic.AtomicBoolean
 import arrow.core.Either
+import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
-import ch.protonmail.android.mailpagination.data.extension.appendEventToEither
-import ch.protonmail.android.mailpagination.data.extension.filterAppendEvents
-import ch.protonmail.android.mailpagination.data.extension.filterRefreshEvents
-import ch.protonmail.android.mailpagination.data.extension.refreshEventToEither
-import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
-import ch.protonmail.android.mailpagination.data.model.PagingEvent
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
+import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailpagination.data.model.scroller.PendingRequest
+import ch.protonmail.android.mailpagination.data.model.scroller.RequestType
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerCache
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerOnUpdateHandler
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
+import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.Message
@@ -43,72 +53,116 @@ import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import javax.inject.Inject
 
 class RustMessageListQueryImpl @Inject constructor(
-    private val messagePaginatorManager: MessagePaginatorManager,
+    private val userSessionRepository: UserSessionRepository,
+    private val createRustMessagesPaginator: CreateRustMessagesPaginator,
+    private val createRustSearchPaginator: CreateRustSearchPaginator,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope,
     private val invalidationRepository: PageInvalidationRepository
 ) : RustMessageListQuery {
 
-    private val pagingEvents = MutableSharedFlow<PagingEvent<Message>>()
-    private val refreshRequested = AtomicBoolean(false)
-
-    private val messagesUpdatedCallback = object : MessageScrollerLiveQueryCallback {
-
-        override fun onUpdate(update: MessageScrollerUpdate) {
-            val event = when (update) {
-                is MessageScrollerUpdate.Append -> PagingEvent.Append(update.v1)
-                is MessageScrollerUpdate.Error -> PagingEvent.Error(update.error.toPaginationError())
-                is MessageScrollerUpdate.None -> PagingEvent.Append(emptyList())
-                is MessageScrollerUpdate.ReplaceBefore -> {
-                    // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
-                    invalidateLoadedItems()
-                    PagingEvent.Invalidate
-                }
-                is MessageScrollerUpdate.ReplaceFrom -> {
-                    when {
-                        update.isReplaceAllItemsEvent() && refreshRequested.getAndSet(false) -> {
-                            // Only refresh when we get a "replace all items" (ie. `ReplaceFrom(0)`) from rust
-                            // *and* the UI did request a refresh (with no request, items wouldn't be updated on UI).
-                            // invalidate otherwise to let UI request the refresh.
-                            PagingEvent.Refresh(update.items)
-                        }
-                        else -> {
-                            // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
-                            invalidateLoadedItems()
-                            PagingEvent.Invalidate
-                        }
-                    }
-
-                }
-            }
-            coroutineScope.launch {
-                pagingEvents.emit(event)
-            }
-        }
-    }
+    private var paginatorState: PaginatorState? = null
+    private val paginatorMutex = Mutex()
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> {
-        val paginator = messagePaginatorManager.getOrCreatePaginator(userId, pageKey, messagesUpdatedCallback) {
-        }.getOrNull()
 
-        Timber.d("rust-message: Paging: querying ${pageKey.pageToLoad.name} page for messages")
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-message-query: trying to load messages with a null session")
+            return PaginationError.Other(DataError.Local.NoUserSession).left()
+        }
+
+        val pageDescriptor = pageKey.toPageDescriptor(userId)
+
+        paginatorMutex.withLock {
+            if (shouldInitPaginator(pageDescriptor, pageKey)) {
+                initPaginator(pageDescriptor, session)
+            }
+        }
+
+        Timber.d("rust-message-query: Paging: querying ${pageKey.pageToLoad.name} page for messages")
 
         return when (pageKey.pageToLoad) {
             PageToLoad.First,
             PageToLoad.Next -> {
-                paginator?.nextPage()
-                pagingEvents
-                    .filterAppendEvents()
-                    .appendEventToEither()
+                val deferred = setPendingRequest(RequestType.Append)
+                paginatorState?.paginatorWrapper?.nextPage()
+
+                // Wait for immediate Append response
+                deferred.await()
             }
 
             PageToLoad.All -> {
-                refreshRequested.set(true)
-                paginator?.reload()
-                pagingEvents
-                    .filterRefreshEvents()
-                    .refreshEventToEither()
+                val deferred = setPendingRequest(RequestType.Refresh)
+                paginatorState?.paginatorWrapper?.reload()
+
+                // Wait for immediate Refresh response
+                deferred.await()
             }
         }
+    }
+
+    private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {
+        Timber.d("rust-message-query: [destroy and] initialize paginator instance...")
+        destroy()
+
+        val scrollerOnUpdateHandler = ScrollerOnUpdateHandler<Message>(
+            tag = "rust-message-query",
+            invalidate = { invalidateLoadedItems() }
+        )
+
+
+        when (pageDescriptor) {
+            is PageDescriptor.Default -> createRustMessagesPaginator(
+                session = session,
+                labelId = pageDescriptor.labelId.toLocalLabelId(),
+                unread = pageDescriptor.unread,
+                callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
+            )
+
+            is PageDescriptor.Search -> createRustSearchPaginator(
+                session = session,
+                keyword = pageDescriptor.keyword,
+                callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
+            )
+        }.onRight { wrapper ->
+            paginatorState = PaginatorState(
+                paginatorWrapper = wrapper,
+                pageDescriptor = pageDescriptor,
+                scrollerCache = ScrollerCache()
+            )
+        }
+    }
+
+    private fun messagesUpdatedCallback(onUpdateHandler: ScrollerOnUpdateHandler<Message>) =
+        object : MessageScrollerLiveQueryCallback {
+            override fun onUpdate(update: MessageScrollerUpdate) {
+                Timber.d("rust-message-query: Received paginator update: ${update.javaClass.simpleName}")
+                coroutineScope.launch {
+                    paginatorMutex.withLock {
+                        val update = update.toScrollerUpdate()
+
+                        val snapshot = paginatorState?.scrollerCache?.applyUpdate(update) ?: emptyList()
+                        val pending = paginatorState?.pendingRequest
+
+                        onUpdateHandler.handleUpdate(pending, update, snapshot)
+
+                        if (pending != null) {
+                            // Clear pending request after handling
+                            paginatorState = paginatorState?.copy(pendingRequest = null)
+                        }
+                    }
+                }
+            }
+        }
+
+    private fun shouldInitPaginator(pageDescriptor: PageDescriptor, pageKey: PageKey) = paginatorState == null ||
+        paginatorState?.pageDescriptor != pageDescriptor ||
+        pageKey.pageToLoad == PageToLoad.First
+
+    private fun destroy() {
+        Timber.d("rust-message-query: disconnecting and destroying watcher")
+        paginatorState?.paginatorWrapper?.destroy()
+        paginatorState = null
     }
 
     private fun invalidateLoadedItems() {
@@ -117,6 +171,50 @@ class RustMessageListQueryImpl @Inject constructor(
         }
     }
 
-    private fun MessageScrollerUpdate.ReplaceFrom.isReplaceAllItemsEvent() = this.idx.toInt() == 0
+    private suspend fun setPendingRequest(
+        type: RequestType
+    ): CompletableDeferred<Either<PaginationError, List<Message>>> {
+        paginatorMutex.withLock {
+            val deferred = CompletableDeferred<Either<PaginationError, List<Message>>>()
+            paginatorState = paginatorState?.copy(
+                pendingRequest = PendingRequest(
+                    type = type,
+                    response = deferred
+                )
+            )
+            return deferred
+        }
+    }
+
+    private data class PaginatorState(
+        val paginatorWrapper: MessagePaginatorWrapper,
+        val pageDescriptor: PageDescriptor,
+        val scrollerCache: ScrollerCache<Message>,
+        val pendingRequest: PendingRequest<Message>? = null
+    )
+
+    private sealed interface PageDescriptor {
+        data class Default(val userId: UserId, val labelId: LabelId, val unread: Boolean) : PageDescriptor
+        data class Search(val userId: UserId, val keyword: String) : PageDescriptor
+    }
+
+    private fun PageKey.toPageDescriptor(userId: UserId): PageDescriptor = when (this) {
+        is PageKey.DefaultPageKey -> PageDescriptor.Default(
+            userId = userId,
+            labelId = this.labelId,
+            unread = this.readStatus == ReadStatus.Unread
+        )
+        is PageKey.PageKeyForSearch -> PageDescriptor.Search(
+            userId = userId,
+            keyword = keyword
+        )
+    }
 }
 
+fun MessageScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<Message> = when (this) {
+    is MessageScrollerUpdate.Append -> ScrollerUpdate.Append(v1)
+    is MessageScrollerUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(idx.toInt(), items)
+    is MessageScrollerUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(idx.toInt(), items)
+    is MessageScrollerUpdate.Error -> ScrollerUpdate.Error(error)
+    MessageScrollerUpdate.None -> ScrollerUpdate.None
+}
