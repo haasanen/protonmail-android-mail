@@ -18,10 +18,6 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailattachments.data.mapper.getCalendarAttachmentCount
 import ch.protonmail.android.mailattachments.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
@@ -46,11 +42,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
@@ -169,16 +162,6 @@ fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType) = Me
     mimeType = mimeType.toAndroidMimeType(),
     transformations = this.transformOpts.toMessageBodyTransformations()
 )
-
-fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<DataError, ConversationMessages> {
-    val messages = messages.toNonEmptyListOrNull()?.map { it.toMessage() }
-        ?: return DataError.Local.NoDataCached.left()
-
-    return ConversationMessages(
-        messages = messages,
-        messageIdToOpen = messageIdToOpen.toMessageId()
-    ).right()
-}
 
 fun RemoteMessageId.toRemoteMessageId(): RustRemoteMessageId = RustRemoteMessageId(this.id)
 fun RustRemoteMessageId.toRemoteMessageId(): RemoteMessageId = RemoteMessageId(this.value)

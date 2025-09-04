@@ -39,6 +39,7 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
+import ch.protonmail.android.mailconversation.domain.entity.isOfflineError
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
@@ -140,14 +141,12 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -520,7 +519,7 @@ class ConversationDetailViewModel @Inject constructor(
     @Suppress("LongMethod")
     private fun observeConversationMessages(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
         combine(
-            observeConversationMessages(userId, conversationId, openedFromLocation).ignoreLocalErrors(),
+            observeConversationMessages(userId, conversationId, openedFromLocation),
             observeConversationViewState(),
             observePrimaryUserAddress(),
             observeAvatarImageStates()
@@ -1622,16 +1621,3 @@ class ConversationDetailViewModel @Inject constructor(
         val initialState = ConversationDetailState.Loading
     }
 }
-
-/**
- * Filters [DataError.Local] from messages flow, as we don't want to show them to the user, because the fetch is being
- *  done on the conversation flow.
- */
-private fun Flow<Either<DataError, ConversationMessages>>.ignoreLocalErrors():
-    Flow<Either<DataError, ConversationMessages>> =
-    filter { either ->
-        either.fold(
-            ifLeft = { error -> error !is DataError.Local },
-            ifRight = { true }
-        )
-    }

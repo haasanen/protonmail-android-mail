@@ -32,6 +32,7 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBo
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationListBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -88,7 +89,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<Either<DataError, LocalConversation>> =
+    ): Flow<Either<ConversationError, LocalConversation>> =
         rustConversationDetailQuery.observeConversation(userId, conversationId, labelId)
             .flowOn(ioDispatcher)
 
@@ -96,9 +97,9 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<Either<DataError, LocalConversationMessages>> = rustConversationDetailQuery.observeConversationMessages(
-        userId, conversationId, labelId
-    ).flowOn(ioDispatcher)
+    ): Flow<Either<ConversationError, LocalConversationMessages>> = rustConversationDetailQuery
+        .observeConversationMessages(userId, conversationId, labelId)
+        .flowOn(ioDispatcher)
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) =
         withContext(ioDispatcher) {

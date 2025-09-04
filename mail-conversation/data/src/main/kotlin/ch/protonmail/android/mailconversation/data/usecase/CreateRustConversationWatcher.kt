@@ -22,8 +22,8 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.data.mapper.toConversationError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.OpenConversationOrigin
@@ -38,7 +38,7 @@ class CreateRustConversationWatcher @Inject constructor() {
         mailbox: MailboxWrapper,
         conversationId: LocalConversationId,
         callback: LiveQueryCallback
-    ): Either<DataError, WatchedConversation> = when (
+    ): Either<ConversationError, WatchedConversation> = when (
         val result = watchConversation(
             mailbox = mailbox.getRustMailbox(),
             id = conversationId,
@@ -46,10 +46,10 @@ class CreateRustConversationWatcher @Inject constructor() {
             callback = callback
         )
     ) {
-        is WatchConversationResult.Error -> result.v1.toDataError().left()
+        is WatchConversationResult.Error -> result.v1.toConversationError().left()
         is WatchConversationResult.Ok -> {
             when (val watcher = result.v1) {
-                null -> DataError.Local.NoDataCached.left()
+                null -> ConversationError.NullValueReturned.left()
                 else -> watcher.right()
             }
         }

@@ -22,7 +22,7 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.testdata.conversation.ConversationTestData
@@ -43,7 +43,7 @@ class ObserveConversationTest {
                 any(),
                 any()
             )
-        } returns flowOf(DataError.Local.NoDataCached.left())
+        } returns flowOf(ConversationError.UnknownLabel.left())
     }
 
     private val observeConversation = ObserveConversation(repository)
@@ -52,9 +52,10 @@ class ObserveConversationTest {
     fun `returns local data error when conversation does not exist in repository`() = runTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
-        val error = DataError.Local.NoDataCached
+        val error = ConversationError.NullValueReturned
         val labelId = LabelId("3")
-        every { repository.observeConversation(userId, conversationId, labelId) } returns flowOf(error.left())
+        every { repository.observeConversation(userId, conversationId, labelId) } returns
+            flowOf(error.left())
 
         // When
         observeConversation(userId, conversationId, labelId).test {

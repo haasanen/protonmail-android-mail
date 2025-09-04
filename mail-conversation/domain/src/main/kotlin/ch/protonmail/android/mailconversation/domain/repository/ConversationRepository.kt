@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -50,7 +51,7 @@ interface ConversationRepository {
         userId: UserId,
         id: ConversationId,
         labelId: LabelId
-    ): Flow<Either<DataError, Conversation>>
+    ): Flow<Either<ConversationError, Conversation>>
 
     /**
      * Get all the [Message]s metadata for a given [ConversationId], for [userId] from the local storage
@@ -59,7 +60,7 @@ interface ConversationRepository {
         userId: UserId,
         conversationId: ConversationId,
         labelId: LabelId
-    ): Flow<Either<DataError, ConversationMessages>>
+    ): Flow<Either<ConversationError, ConversationMessages>>
 
     suspend fun move(
         userId: UserId,

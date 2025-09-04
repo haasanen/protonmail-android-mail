@@ -18,6 +18,10 @@
 
 package ch.protonmail.android.mailconversation.data.mapper
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailattachments.data.mapper.getCalendarAttachmentCount
 import ch.protonmail.android.mailattachments.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
@@ -26,10 +30,15 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAvatarInformation
+import ch.protonmail.android.mailmessage.data.mapper.toMessage
+import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeInformation
 
 fun LocalConversation.toConversation() = Conversation(
@@ -58,4 +67,15 @@ fun LocalConversation.toConversation() = Conversation(
 )
 
 private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())
+
+fun LocalConversationMessages.toConversationMessagesWithMessageToOpen():
+    Either<ConversationError, ConversationMessages> {
+    val messages = messages.toNonEmptyListOrNull()?.map { it.toMessage() }
+        ?: return ConversationError.ConvoWithNoMessages.left()
+
+    return ConversationMessages(
+        messages = messages,
+        messageIdToOpen = messageIdToOpen.toMessageId()
+    ).right()
+}
 

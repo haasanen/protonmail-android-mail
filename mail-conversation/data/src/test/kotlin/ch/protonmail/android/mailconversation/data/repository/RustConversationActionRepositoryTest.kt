@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -322,10 +323,10 @@ internal class RustConversationActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val conversationId = ConversationId("1")
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.NoDataCached.left()
 
         coEvery { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) } returns
-            flowOf(expected)
+            flowOf(ConversationError.UnknownLabel.left())
 
         // When + Then
         rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId).test {

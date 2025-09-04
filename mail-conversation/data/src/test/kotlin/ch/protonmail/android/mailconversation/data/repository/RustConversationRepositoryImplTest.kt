@@ -27,14 +27,15 @@ import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
+import ch.protonmail.android.mailconversation.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
-import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -124,7 +125,7 @@ class RustConversationRepositoryImplTest {
         val labelId = LabelId("2")
 
         coEvery { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) } returns
-            flowOf(DataError.Local.NoDataCached.left())
+            flowOf(ConversationError.NullValueReturned.left())
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, labelId).test {
@@ -185,7 +186,7 @@ class RustConversationRepositoryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
-        val expectedError = DataError.Local.NoDataCached.left()
+        val expectedError = ConversationError.ConvoWithNoMessages.left()
         val labelId = LabelId("2")
 
         coEvery {

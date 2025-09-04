@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
@@ -41,13 +42,13 @@ interface RustConversationDataSource {
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<Either<DataError, LocalConversation>>
+    ): Flow<Either<ConversationError, LocalConversation>>
 
     fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<Either<DataError, LocalConversationMessages>>
+    ): Flow<Either<ConversationError, LocalConversationMessages>>
 
     suspend fun getConversations(
         userId: UserId,

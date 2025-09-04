@@ -20,8 +20,8 @@ package ch.protonmail.android.mailconversation.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import kotlinx.coroutines.flow.Flow
@@ -36,6 +36,6 @@ class ObserveConversation @Inject constructor(
         userId: UserId,
         conversationId: ConversationId,
         labelId: LabelId
-    ): Flow<Either<DataError, Conversation>> =
+    ): Flow<Either<ConversationError, Conversation>> =
         conversationRepository.observeConversation(userId, conversationId, labelId)
 }

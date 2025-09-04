@@ -22,9 +22,9 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.nonEmptyListOf
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -107,7 +107,7 @@ internal class ObserveConversationMessagesTest {
     @Test
     fun `when messages emits an error, the error is emitted`() = runTest {
         // given
-        val error = DataError.Local.NoDataCached.left()
+        val error = ConversationError.NullValueReturned.left()
         val labelId = LabelId("1")
         every {
             conversationRepository.observeConversationMessages(

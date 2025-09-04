@@ -24,6 +24,7 @@ import arrow.core.nonEmptyListOf
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.presentation.usecase.TestData.conversationId
 import ch.protonmail.android.maildetail.presentation.usecase.TestData.localLabelId
@@ -66,7 +67,7 @@ internal class GetMessagesInSameExclusiveLocationTest {
             // Given
             every {
                 observeConversationMessages.invoke(userId, conversationId, localLabelId)
-            } returns flowOf(DataError.Local.NoDataCached.left())
+            } returns flowOf(ConversationError.UnknownLabel.left())
 
             // When
             val result = getMessagesInSameExclusiveLocation(userId, conversationId, messageId, localLabelId)

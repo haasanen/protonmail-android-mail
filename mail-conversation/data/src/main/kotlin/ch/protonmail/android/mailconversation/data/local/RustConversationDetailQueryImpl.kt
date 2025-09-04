@@ -22,12 +22,12 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import ch.protonmail.android.mailconversation.data.usecase.GetRustConversation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,13 +56,13 @@ class RustConversationDetailQueryImpl @Inject constructor(
     private var currentLabelId: LocalLabelId? = null
 
     private val mutex = Mutex()
-    private val conversationMutableStatusFlow = MutableStateFlow<Either<DataError, LocalConversation>?>(null)
+    private val conversationMutableStatusFlow = MutableStateFlow<Either<ConversationError, LocalConversation>?>(null)
     private val conversationStatusFlow = conversationMutableStatusFlow
         .asStateFlow()
         .filterNotNull()
 
     private var conversationMessagesMutableStatusFlow =
-        MutableStateFlow<Either<DataError, LocalConversationMessages>?>(null)
+        MutableStateFlow<Either<ConversationError, LocalConversationMessages>?>(null)
     private val conversationMessagesStatusFlow = conversationMessagesMutableStatusFlow
         .asStateFlow()
         .filterNotNull()
@@ -81,14 +81,18 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     }
                     val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
 
-                    if (mailbox == null || currentConversationId == null) {
-                        Timber.w("Failed to update conversation messages!")
+                    if (mailbox == null) {
+                        Timber.w("Failed to update conversation messages, null mailbox")
+                        return@withLock
+                    }
+                    if (currentConversationId == null) {
+                        Timber.w("Failed to update conversation messages, null conversationId")
                         return@withLock
                     }
 
                     val conversationEither = getRustConversation(mailbox, currentConversationId!!)
                         .onLeft {
-                            Timber.w("Failed to update conversation messages!")
+                            Timber.w("Failed to update conversation messages, $it")
                         }
 
                     conversationMutableStatusFlow.value = conversationEither.map { it.conversation }
@@ -104,7 +108,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<Either<DataError, LocalConversation>> {
+    ): Flow<Either<ConversationError, LocalConversation>> {
 
         initialiseOrUpdateWatcher(userId, conversationId, labelId)
 
@@ -115,7 +119,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<Either<DataError, LocalConversationMessages>> {
+    ): Flow<Either<ConversationError, LocalConversationMessages>> {
 
         initialiseOrUpdateWatcher(userId, conversationId, labelId)
 
@@ -144,7 +148,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     val convoWatcherEither = createRustConversationWatcher(
                         mailbox, conversationId, conversationUpdatedCallback
                     ).onLeft {
-                        Timber.w("Failed to observe conversation messages: $it")
+                        Timber.w("Failed to create watcher for conversation: $it")
                     }.onRight {
                         conversationWatcher = it
                     }

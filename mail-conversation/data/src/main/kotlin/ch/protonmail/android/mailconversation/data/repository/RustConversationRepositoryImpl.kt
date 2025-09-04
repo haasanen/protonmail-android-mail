@@ -26,11 +26,12 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
+import ch.protonmail.android.mailconversation.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -63,7 +64,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId: UserId,
         id: ConversationId,
         labelId: LabelId
-    ): Flow<Either<DataError, Conversation>> = rustConversationDataSource
+    ): Flow<Either<ConversationError, Conversation>> = rustConversationDataSource
         .observeConversation(userId, id.toLocalConversationId(), labelId.toLocalLabelId())
         .map { eitherFlow -> eitherFlow.map { it.toConversation() } }
 
@@ -72,7 +73,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId: UserId,
         conversationId: ConversationId,
         labelId: LabelId
-    ): Flow<Either<DataError, ConversationMessages>> = rustConversationDataSource.observeConversationMessages(
+    ): Flow<Either<ConversationError, ConversationMessages>> = rustConversationDataSource.observeConversationMessages(
         userId, conversationId.toLocalConversationId(), labelId.toLocalLabelId()
     ).map { eitherConversationMessages ->
         eitherConversationMessages.flatMap { it.toConversationMessagesWithMessageToOpen() }

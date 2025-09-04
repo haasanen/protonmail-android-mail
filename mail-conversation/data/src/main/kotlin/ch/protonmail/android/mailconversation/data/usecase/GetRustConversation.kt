@@ -22,8 +22,8 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.data.mapper.toConversationError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.ConversationAndMessages
 import uniffi.proton_mail_uniffi.ConversationResult
@@ -35,12 +35,12 @@ class GetRustConversation @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         conversationId: LocalConversationId
-    ): Either<DataError, ConversationAndMessages> =
+    ): Either<ConversationError, ConversationAndMessages> =
         when (val result = conversation(mailbox.getRustMailbox(), conversationId)) {
-            is ConversationResult.Error -> result.v1.toDataError().left()
+            is ConversationResult.Error -> result.v1.toConversationError().left()
             is ConversationResult.Ok -> {
                 when (val data = result.v1) {
-                    null -> DataError.Local.NoDataCached.left()
+                    null -> ConversationError.NullValueReturned.left()
                     else -> data.right()
                 }
             }

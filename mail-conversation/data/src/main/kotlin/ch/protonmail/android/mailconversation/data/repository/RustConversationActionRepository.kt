@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailconversation.data.repository
 
 import arrow.core.Either
+import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 class RustConversationActionRepository @Inject constructor(
@@ -111,7 +113,10 @@ class RustConversationActionRepository @Inject constructor(
             labelId = labelId.toLocalLabelId()
         ).mapLatest { conversationResult ->
             conversationResult.fold(
-                ifLeft = { error -> Either.Left(error) },
+                ifLeft = { error ->
+                    Timber.w("Failed to observe bottomBar actions due to conversation error $error")
+                    DataError.Local.NoDataCached.left()
+                },
                 ifRight = { conversation ->
                     val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(
                         userId,

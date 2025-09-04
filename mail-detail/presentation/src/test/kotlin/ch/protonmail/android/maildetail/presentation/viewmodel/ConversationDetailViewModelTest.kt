@@ -47,6 +47,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
@@ -469,8 +470,7 @@ class ConversationDetailViewModelTest {
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         every {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
-        } returns
-            flowOf(DataError.Local.NoDataCached.left())
+        } returns flowOf(ConversationError.UnknownMessage.left())
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
@@ -503,7 +503,7 @@ class ConversationDetailViewModelTest {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
         } returns flow {
             emit(ConversationSample.WeatherForecast.right())
-            emit(DataError.Remote.Http(NetworkError.NoNetwork).left())
+            emit(ConversationError.Other(DataError.Remote.Http(NetworkError.NoNetwork)).left())
         }
         coEvery {
             reducer.newStateFrom(
@@ -598,7 +598,7 @@ class ConversationDetailViewModelTest {
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         every {
             observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
-        } returns flowOf(DataError.Remote.Http(NetworkError.ServerError).left())
+        } returns flowOf(ConversationError.Other(DataError.Remote.Http(NetworkError.ServerError)).left())
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
@@ -624,7 +624,7 @@ class ConversationDetailViewModelTest {
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         every {
             observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
-        } returns flowOf(DataError.Remote.Http(NetworkError.NoNetwork).left())
+        } returns flowOf(ConversationError.Other(DataError.Remote.Http(NetworkError.NoNetwork)).left())
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
@@ -639,30 +639,6 @@ class ConversationDetailViewModelTest {
             // then
             assertEquals(expectedState, awaitItem())
             cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `conversation messages state does not change when use case fails with local error`() = runTest {
-        // given
-        val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
-        every {
-            observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
-        } returns flowOf(DataError.Local.NoDataCached.left())
-        coEvery {
-            reducer.newStateFrom(
-                currentState = initialState,
-                operation = ConversationDetailEvent.ErrorLoadingMessages
-            )
-        } returns mockk()
-
-        // when
-        viewModel.state.test {
-            initialStateEmitted()
-
-            // then
-            assertEquals(emptyList(), cancelAndConsumeRemainingEvents())
         }
     }
 
