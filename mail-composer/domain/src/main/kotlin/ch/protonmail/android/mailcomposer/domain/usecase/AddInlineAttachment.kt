@@ -36,6 +36,7 @@ class AddInlineAttachment @Inject constructor(
                 AddAttachmentError.EncryptionError -> AttachmentAddError.EncryptionError
                 AddAttachmentError.InvalidDraftMessage -> AttachmentAddError.InvalidDraftMessage
                 AddAttachmentError.TooManyAttachments -> AttachmentAddError.TooManyAttachments
+                AddAttachmentError.UploadTimeout,
                 AddAttachmentError.InvalidState -> AttachmentAddError.RetryUpload
                 is AddAttachmentError.Other -> AttachmentAddError.Unknown
             }

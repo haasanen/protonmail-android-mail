@@ -20,8 +20,8 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import android.net.Uri
 import arrow.core.Either
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import javax.inject.Inject
 
@@ -36,6 +36,7 @@ class AddStandardAttachment @Inject constructor(
                 AddAttachmentError.EncryptionError -> AttachmentAddError.EncryptionError
                 AddAttachmentError.InvalidDraftMessage -> AttachmentAddError.InvalidDraftMessage
                 AddAttachmentError.TooManyAttachments -> AttachmentAddError.TooManyAttachments
+                AddAttachmentError.UploadTimeout,
                 AddAttachmentError.InvalidState -> AttachmentAddError.RetryUpload
                 is AddAttachmentError.Other -> AttachmentAddError.Unknown
             }

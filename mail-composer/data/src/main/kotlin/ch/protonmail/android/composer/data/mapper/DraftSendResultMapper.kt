@@ -123,6 +123,8 @@ fun DraftAttachmentUploadErrorReason.toSendErrorReason(): SendErrorReason = when
     DraftAttachmentUploadErrorReason.CRYPTO -> SendErrorReason.ErrorNoMessage.AttachmentCryptoFailure
     DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> SendErrorReason.ErrorNoMessage.AttachmentTooLarge
     DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> SendErrorReason.ErrorNoMessage.TooManyAttachments
+
+    DraftAttachmentUploadErrorReason.TIMEOUT,
     DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE ->
         SendErrorReason.ErrorNoMessage.AttachmentUploadFailureRetriable
 

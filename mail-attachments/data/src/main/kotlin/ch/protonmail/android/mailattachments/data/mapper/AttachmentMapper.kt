@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailattachments.data.mapper
 
-import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMimeType
@@ -106,6 +106,7 @@ fun DraftAttachmentUploadError.toAttachmentError(): AddAttachmentError = when (t
         DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> AddAttachmentError.TooManyAttachments
         DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> AddAttachmentError.InvalidState
         DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE -> AddAttachmentError.AttachmentTooLarge
+        DraftAttachmentUploadErrorReason.TIMEOUT -> AddAttachmentError.UploadTimeout
     }
 }
 

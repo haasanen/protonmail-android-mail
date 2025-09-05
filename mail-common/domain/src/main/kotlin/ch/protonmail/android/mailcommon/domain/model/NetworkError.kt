@@ -73,6 +73,11 @@ sealed interface NetworkError {
     object UnprocessableEntity : NetworkError
 
     /**
+     * Timeout reached awaiting for request to complete
+     */
+    object Timeout : NetworkError
+
+    /**
      * This object is not meant to be actively used.
      * Its purpose is to notify the logging tool that a case that should be handled
      * is not and to allow dedicated handling to be put in place.
