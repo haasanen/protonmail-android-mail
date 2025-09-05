@@ -26,7 +26,7 @@ data class LegacyMobileSignaturePreference(
     val enabled: Boolean
 ) {
     companion object {
-        val Default = LegacyMobileSignaturePreference(value = null, enabled = false)
+        val Default = LegacyMobileSignaturePreference(value = null, enabled = true)
     }
 }
 
