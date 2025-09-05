@@ -126,6 +126,7 @@ class FlowManager @Inject constructor(
             is CurrentFlow.LoggingIn -> when (account?.state) {
                 CoreAccountState.TwoPasswordNeeded,
                 CoreAccountState.TwoFactorNeeded,
+                CoreAccountState.NotReady,
                 CoreAccountState.Ready -> flowCache.clear()
 
                 else -> false

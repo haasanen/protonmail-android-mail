@@ -120,6 +120,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
         if (loginFlow.isAwaiting2fa()) {
             emitAll(onError(err.v1))
         } else {
+            flowManager.clearCache(userId)
             emitAll(onClose(message = context.getString(R.string.auth_second_factor_incorrect_code)))
         }
     }
