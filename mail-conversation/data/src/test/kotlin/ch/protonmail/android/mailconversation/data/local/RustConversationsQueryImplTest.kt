@@ -2,8 +2,10 @@ package ch.protonmail.android.mailconversation.data.local
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.data.local.RustConversationsQueryImpl.Companion.NONE_FOLLOWUP_GRACE_MS
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -405,4 +407,83 @@ class RustConversationsQueryImplTest {
         coVerify { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) }
     }
 
+    @Test
+    fun `Append None followed by ReplaceBefore(0) within grace returns follow-up items`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = SystemLabelId.Inbox.labelId
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.First)
+
+        val expectedFollowUp = listOf(LocalConversationTestData.OctConversation)
+
+        val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
+
+        // Emit immediate None, then within the grace window emit ReplaceBefore(0, items)
+        val paginator = mockk<ConversationPaginatorWrapper> {
+            coEvery { nextPage() } answers {
+                CoroutineScope(mainDispatcherRule.testDispatcher).launch {
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.None)
+                    delay(NONE_FOLLOWUP_GRACE_MS - 100)
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.ReplaceBefore(0uL, expectedFollowUp)
+                    )
+                }
+                Unit.right()
+            }
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustConversationPaginator(
+                session, labelId.toLocalLabelId(), false, capture(callbackSlot)
+            )
+        } returns paginator.right()
+
+        // When
+        val actual = rustConversationsQuery.getConversations(userId, pageKey)
+
+        // Then
+        assertEquals(expectedFollowUp.right(), actual)
+    }
+
+    @Test
+    fun `Append None then follow-up arrives after grace returns empty`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = SystemLabelId.Inbox.labelId
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.First)
+
+        val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
+
+        val paginator = mockk<ConversationPaginatorWrapper> {
+            coEvery { nextPage() } answers {
+                CoroutineScope(mainDispatcherRule.testDispatcher).launch {
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.None)
+                    delay(NONE_FOLLOWUP_GRACE_MS + 100)
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.ReplaceBefore(
+                            0uL,
+                            listOf(LocalConversationTestData.OctConversation)
+                        )
+                    )
+                }
+                Unit.right()
+            }
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustConversationPaginator(
+                session, labelId.toLocalLabelId(), false, capture(callbackSlot)
+            )
+        } returns paginator.right()
+
+        // When
+        val actual = rustConversationsQuery.getConversations(userId, pageKey)
+
+        // Then
+        assertEquals(emptyList<LocalConversation>().right(), actual)
+    }
 }

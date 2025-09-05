@@ -43,6 +43,7 @@ import kotlin.test.Test
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.mailmessage.data.local.RustMessageListQueryImpl.Companion.NONE_FOLLOWUP_GRACE_MS
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
@@ -53,6 +54,8 @@ import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import io.mockk.Called
 import io.mockk.CapturingSlot
 import io.mockk.verify
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import uniffi.proton_mail_uniffi.Message
 
@@ -365,5 +368,80 @@ class RustMessageListQueryImplTest {
         advanceUntilIdle()
 
         coVerify { invalidationRepository.submit(PageInvalidationEvent.MessagesInvalidated) }
+    }
+
+    @Test
+    fun `Append None followed by ReplaceBefore(0) within grace returns follow-up items`() = runTest {
+        // Given
+        val pageKey = PageKey.DefaultPageKey(labelId = inboxLabelId, pageToLoad = PageToLoad.First)
+        val expectedFollowUp = listOf(LocalMessageTestData.OctWeatherForecast)
+
+        val callback = slot<MessageScrollerLiveQueryCallback>()
+        val paginator = mockk<MessagePaginatorWrapper> {
+            coEvery { nextPage() } answers {
+                CoroutineScope(mainDispatcherRule.testDispatcher).launch {
+                    callback.captured.onUpdate(MessageScrollerUpdate.None)
+                    delay(NONE_FOLLOWUP_GRACE_MS - 100)
+                    callback.captured.onUpdate(
+                        MessageScrollerUpdate.ReplaceBefore(0u, expectedFollowUp)
+                    )
+                }
+                Unit.right()
+            }
+            coEvery { destroy() } just Runs
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                callback = capture(callback)
+            )
+        } returns paginator.right()
+
+        // When
+        val actual = rustMessageListQuery.getMessages(userId, pageKey)
+
+        // Then: we should get the follow-up items rather than an empty list
+        assertEquals(expectedFollowUp.right(), actual)
+    }
+
+    @Test
+    fun `Append None then follow-up arrives after grace returns empty list`() = runTest {
+        // Given
+        val pageKey = PageKey.DefaultPageKey(labelId = inboxLabelId, pageToLoad = PageToLoad.First)
+
+        val callback = slot<MessageScrollerLiveQueryCallback>()
+        val paginator = mockk<MessagePaginatorWrapper> {
+            coEvery { nextPage() } answers {
+                CoroutineScope(mainDispatcherRule.testDispatcher).launch {
+                    callback.captured.onUpdate(MessageScrollerUpdate.None)
+                    delay(NONE_FOLLOWUP_GRACE_MS + 100)
+                    callback.captured.onUpdate(
+                        MessageScrollerUpdate.ReplaceBefore(0u, listOf(LocalMessageTestData.OctWeatherForecast))
+                    )
+                }
+                Unit.right()
+            }
+            coEvery { destroy() } just Runs
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                callback = capture(callback)
+            )
+        } returns paginator.right()
+
+        // When
+        val actual = rustMessageListQuery.getMessages(userId, pageKey)
+
+        // Then
+        assertEquals(emptyList<Message>().right(), actual)
     }
 }

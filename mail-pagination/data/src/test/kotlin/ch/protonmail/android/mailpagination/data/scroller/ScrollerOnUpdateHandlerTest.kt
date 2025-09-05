@@ -42,6 +42,11 @@ class ScrollerOnUpdateHandlerTest {
     private fun pendingRefreshRequest(): PendingRequest<ScrollerItem> =
         PendingRequest(RequestType.Refresh, CompletableDeferred())
 
+    private fun pendingAppendWithFollowUp(): PendingRequest<ScrollerItem> = PendingRequest(
+        type = RequestType.Append,
+        response = CompletableDeferred(),
+        followUpResponse = CompletableDeferred()
+    )
 
     @Test
     fun `when there is no pending request triggers invalidate`() = runTest {
@@ -50,7 +55,7 @@ class ScrollerOnUpdateHandlerTest {
         val snapshot = emptyList<ScrollerItem>()
 
         // When
-        handler().handleUpdate(pending = null, update = update, cacheSnapshot = snapshot)
+        handler().handleUpdate(pending = null, update = update, cacheSnapshot = snapshot, onPossibleAppendFollowUp = {})
 
         // Then
         verify(exactly = 1) { invalidate.invoke() }
@@ -65,7 +70,7 @@ class ScrollerOnUpdateHandlerTest {
         val snapshot = listOf(ScrollerItem("99")) // ignored in this path
 
         // When
-        handler().handleUpdate(pending, update, snapshot)
+        handler().handleUpdate(pending, update, snapshot, {})
         val completed = pending.response.await()
 
         // Then
@@ -81,7 +86,7 @@ class ScrollerOnUpdateHandlerTest {
         val snapshot = listOf(ScrollerItem("1")) // ignored
 
         // When
-        handler().handleUpdate(pending, update, snapshot)
+        handler().handleUpdate(pending, update, snapshot, {})
         val completed = pending.response.await()
 
         // Then
@@ -97,7 +102,7 @@ class ScrollerOnUpdateHandlerTest {
         val snapshot = emptyList<ScrollerItem>() // ignored
 
         // When
-        handler().handleUpdate(pending, update, snapshot)
+        handler().handleUpdate(pending, update, snapshot, {})
         val completed = pending.response.await()
 
         // Then
@@ -114,7 +119,7 @@ class ScrollerOnUpdateHandlerTest {
             val snapshot = listOf(ScrollerItem("7"))
 
             // When
-            handler().handleUpdate(pending, update, snapshot)
+            handler().handleUpdate(pending, update, snapshot, {})
             val completed = pending.response.await()
 
             // Then
@@ -129,10 +134,10 @@ class ScrollerOnUpdateHandlerTest {
             val pending = pendingRefreshRequest()
             val items = listOf(ScrollerItem("10"), ScrollerItem("11"))
             val update = ScrollerUpdate.ReplaceFrom(idx = 0, items = items)
-            val snapshot = listOf(ScrollerItem("99")) // ignored in this path
+            val snapshot = listOf(ScrollerItem("99"))
 
             // When
-            handler().handleUpdate(pending, update, snapshot)
+            handler().handleUpdate(pending, update, snapshot, {})
             val completed = pending.response.await()
 
             // Then
@@ -148,7 +153,7 @@ class ScrollerOnUpdateHandlerTest {
         val snapshot = listOf(ScrollerItem("100"), ScrollerItem("101"))
 
         // When
-        handler().handleUpdate(pending, update, snapshot)
+        handler().handleUpdate(pending, update, snapshot, {})
         val completed = pending.response.await()
 
         // Then
@@ -164,7 +169,7 @@ class ScrollerOnUpdateHandlerTest {
         val snapshot = listOf(ScrollerItem("200"))
 
         // When
-        val result = handler().handleUpdate(pending, update, snapshot)
+        handler().handleUpdate(pending, update, snapshot, {})
         val completed = pending.response.await()
 
         // Then
@@ -174,18 +179,67 @@ class ScrollerOnUpdateHandlerTest {
 
     @Test
     fun `when Error is received for Refresh request, completes with snapshot`() = runTest {
-        // Note: For refresh we use getItems, and getItems should neve fail with error
+        // Note: For refresh we use getItems, and getItems should never fail with error
         // Given
         val pending = pendingRefreshRequest()
         val update = ScrollerUpdate.Error(MailScrollerError.Other(ProtonError.Network))
         val snapshot = listOf(ScrollerItem("300"), ScrollerItem("301"))
 
         // When
-        handler().handleUpdate(pending, update, snapshot)
+        handler().handleUpdate(pending, update, snapshot, {})
         val completed = pending.response.await()
 
         // Then
         assertEquals(snapshot, completed.getOrNull())
+        verify(exactly = 0) { invalidate.invoke() }
+    }
+
+    @Test
+    fun `Append None with empty snapshot invokes onPossibleAppendFollowUp`() = runTest {
+        // Given
+        val pending = pendingAppendRequest()
+        val update = ScrollerUpdate.None
+        val snapshot = emptyList<ScrollerItem>()
+        val onFollowUp = mockk<() -> Unit>(relaxed = true)
+
+        // When
+        handler().handleUpdate(pending, update, snapshot, onPossibleAppendFollowUp = onFollowUp)
+        pending.response.await() // ensure completion
+
+        // Then
+        verify(exactly = 1) { onFollowUp.invoke() }
+    }
+
+    @Test
+    fun `Append None with non-empty snapshot does NOT invoke onPossibleAppendFollowUp`() = runTest {
+        // Given
+        val pending = pendingAppendRequest()
+        val update = ScrollerUpdate.None
+        val snapshot = listOf(ScrollerItem("preloaded"))
+        val onFollowUp = mockk<() -> Unit>(relaxed = true)
+
+        // When
+        handler().handleUpdate(pending, update, snapshot, onPossibleAppendFollowUp = onFollowUp)
+        pending.response.await()
+
+        // Then
+        verify(exactly = 0) { onFollowUp.invoke() }
+    }
+
+    @Test
+    fun `Append None follow-up ReplaceBefore(0) completes followUpResponse with items`() = runTest {
+        // Given
+        val items = listOf(ScrollerItem("A"), ScrollerItem("B"))
+        val pending = pendingAppendWithFollowUp()
+        val update = ScrollerUpdate.ReplaceBefore(idx = 0, items = items)
+        val snapshot = emptyList<ScrollerItem>()
+
+        // When
+        handler().handleUpdate(pending, update, snapshot, onPossibleAppendFollowUp = {})
+        val completed = pending.followUpResponse!!.await()
+
+        // Then
+        assertEquals(items, completed.getOrNull())
         verify(exactly = 0) { invalidate.invoke() }
     }
 }

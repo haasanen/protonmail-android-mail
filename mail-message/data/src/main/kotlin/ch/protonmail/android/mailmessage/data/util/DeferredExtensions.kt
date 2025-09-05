@@ -16,16 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailpagination.data.model.scroller
+package ch.protonmail.android.mailmessage.data.util
 
-import arrow.core.Either
-import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.withTimeoutOrNull
 
-data class PendingRequest<T>(
-    val type: RequestType,
-    val response: CompletableDeferred<Either<PaginationError, List<T>>>,
-    val followUpResponse: CompletableDeferred<Either<PaginationError, List<T>>>? = null
-)
-
-fun <T> PendingRequest<T>.isCompleted(): Boolean = response.isCompleted && followUpResponse?.isCompleted ?: true
+suspend fun <T> CompletableDeferred<T>.awaitWithTimeout(
+    timeMillis: Long,
+    defaultValue: T,
+    onTimeout: (() -> Unit)? = null
+): T = withTimeoutOrNull(timeMillis) {
+    this@awaitWithTimeout.await()
+} ?: run {
+    onTimeout?.invoke()
+    defaultValue
+}

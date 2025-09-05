@@ -26,9 +26,11 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
+import ch.protonmail.android.mailmessage.data.util.awaitWithTimeout
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailpagination.data.model.scroller.PendingRequest
 import ch.protonmail.android.mailpagination.data.model.scroller.RequestType
+import ch.protonmail.android.mailpagination.data.model.scroller.isCompleted
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerCache
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerOnUpdateHandler
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate
@@ -88,7 +90,14 @@ class RustMessageListQueryImpl @Inject constructor(
                 paginatorState?.paginatorWrapper?.nextPage()
 
                 // Wait for immediate Append response
-                deferred.await()
+                deferred.await().let { firstResponse ->
+
+                    // If available wait for follow-up response
+                    val followUp = paginatorState?.pendingRequest?.followUpResponse
+                    followUp?.awaitWithTimeout(NONE_FOLLOWUP_GRACE_MS, firstResponse) {
+                        Timber.d("rust-message-query: Follow-up response timed out.")
+                    } ?: firstResponse
+                }
             }
 
             PageToLoad.All -> {
@@ -144,11 +153,21 @@ class RustMessageListQueryImpl @Inject constructor(
                         val snapshot = paginatorState?.scrollerCache?.applyUpdate(update) ?: emptyList()
                         val pending = paginatorState?.pendingRequest
 
-                        onUpdateHandler.handleUpdate(pending, update, snapshot)
+                        onUpdateHandler.handleUpdate(pending, update, snapshot) {
+                            // We need to wait for the follow-up response
+                            if (pending?.type == RequestType.Append) {
+                                Timber.d("rust-message-query: Triggering follow-up after immediate Append None")
+                                paginatorState = paginatorState?.withFollowUpResponse()
+                            }
+                        }
 
-                        if (pending != null) {
-                            // Clear pending request after handling
+                        if (paginatorState?.pendingRequest != null &&
+                            paginatorState?.pendingRequest?.isCompleted() == true
+                        ) {
+                            Timber.d("rust-message-query: Clearing completed pending request")
                             paginatorState = paginatorState?.copy(pendingRequest = null)
+                        } else {
+                            Timber.d("rust-message-query: Keeping pending request, waiting for more data")
                         }
                     }
                 }
@@ -193,6 +212,15 @@ class RustMessageListQueryImpl @Inject constructor(
         val pendingRequest: PendingRequest<Message>? = null
     )
 
+    private fun PaginatorState.withFollowUpResponse(): PaginatorState {
+        val currentPending = this.pendingRequest
+            ?: return this
+
+        val newPending = currentPending.copy(followUpResponse = CompletableDeferred())
+
+        return this.copy(pendingRequest = newPending)
+    }
+
     private sealed interface PageDescriptor {
         data class Default(val userId: UserId, val labelId: LabelId, val unread: Boolean) : PageDescriptor
         data class Search(val userId: UserId, val keyword: String) : PageDescriptor
@@ -208,6 +236,10 @@ class RustMessageListQueryImpl @Inject constructor(
             userId = userId,
             keyword = keyword
         )
+    }
+
+    companion object {
+        const val NONE_FOLLOWUP_GRACE_MS = 250L
     }
 }
 

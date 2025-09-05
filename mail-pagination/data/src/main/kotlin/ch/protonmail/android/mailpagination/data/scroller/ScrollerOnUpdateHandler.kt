@@ -33,7 +33,8 @@ class ScrollerOnUpdateHandler<T>(
     fun handleUpdate(
         pending: PendingRequest<T>?,
         update: ScrollerUpdate<T>,
-        cacheSnapshot: List<T>
+        cacheSnapshot: List<T>,
+        onPossibleAppendFollowUp: () -> Unit
     ) {
         if (pending == null) {
             Timber.d(
@@ -48,7 +49,10 @@ class ScrollerOnUpdateHandler<T>(
             RequestType.Append -> {
                 when {
                     update.isImmediateAppendResponseEquivalent() ->
-                        processImmediateAppendResponse(pending, update)
+                        processImmediateAppendResponse(pending, update, cacheSnapshot, onPossibleAppendFollowUp)
+
+                    pending.followUpResponse != null && update.isAppendNoneFollowUpResponseEquivalent() ->
+                        processAppendNoneFollowUpResponse(pending, update)
 
                     else ->
                         processIndirectResponseAsFallback(pending, update, cacheSnapshot)
@@ -68,7 +72,13 @@ class ScrollerOnUpdateHandler<T>(
     }
 
     // Append request got a matching immediate response (Append/None/Error)
-    private fun processImmediateAppendResponse(pending: PendingRequest<T>, update: ScrollerUpdate<T>) {
+    // Rust may return None, which can be followed by another response containing data
+    private fun processImmediateAppendResponse(
+        pending: PendingRequest<T>,
+        update: ScrollerUpdate<T>,
+        snapshot: List<T>,
+        onPossibleAppendFollowUp: () -> Unit
+    ) {
         Timber.d("$tag: Received direct response ${update.javaClass.simpleName} for Append request")
         when (update) {
             is ScrollerUpdate.Append -> {
@@ -76,6 +86,11 @@ class ScrollerOnUpdateHandler<T>(
             }
 
             is ScrollerUpdate.None -> {
+                // When we switch to empty location, Rust may return None first and then
+                // ReplaceBefore(0), which we want to catch and return to the user
+                if (snapshot.isEmpty()) {
+                    onPossibleAppendFollowUp()
+                }
                 pending.response.complete(emptyList<T>().right())
             }
 
@@ -132,6 +147,32 @@ class ScrollerOnUpdateHandler<T>(
             }
         }
     }
+
+    // Append request got a follow-up response after initial None
+    // The only expected follow-up is ReplaceBefore(0)
+    // Any other response is treated as indirect and we return current snapshot
+    private fun processAppendNoneFollowUpResponse(pending: PendingRequest<T>, update: ScrollerUpdate<T>) {
+        Timber.d(
+            "$tag: Received Append None follow up response ${update.javaClass.simpleName} " +
+                "for ${pending.type} request"
+        )
+
+        when (update) {
+            is ScrollerUpdate.ReplaceBefore -> {
+                if (update.idx == 0) {
+                    pending.followUpResponse?.complete(update.items.right())
+                } else {
+                    Timber.w("$tag: Unexpected ReplaceBefore idx=${update.idx}, predicate failed")
+                    pending.followUpResponse?.complete(emptyList<T>().right())
+                }
+            }
+
+            else -> {
+                Timber.w("$tag: Unexpected response ${update.javaClass.simpleName}, predicate failed")
+                pending.followUpResponse?.complete(emptyList<T>().right())
+            }
+        }
+    }
 }
 
 /**
@@ -157,6 +198,9 @@ class ScrollerOnUpdateHandler<T>(
 fun <T> ScrollerUpdate<T>.isImmediateAppendResponseEquivalent(): Boolean = this is ScrollerUpdate.Append ||
     this is ScrollerUpdate.None ||
     this is ScrollerUpdate.Error
+
+fun <T> ScrollerUpdate<T>.isAppendNoneFollowUpResponseEquivalent(): Boolean =
+    this is ScrollerUpdate.ReplaceBefore && this.idx == 0
 
 fun <T> ScrollerUpdate<T>.isImmediateRefreshResponseEquivalent(): Boolean =
     this is ScrollerUpdate.ReplaceFrom && this.idx == 0
