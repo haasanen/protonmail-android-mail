@@ -26,14 +26,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,11 +39,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.VerticalSpacer
-import ch.protonmail.android.design.compose.modifiers.ListBlurEffect
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
@@ -63,6 +59,10 @@ import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelIt
 import ch.protonmail.android.mailsidebar.presentation.upselling.SidebarUpsellRow
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -128,63 +128,59 @@ fun Sidebar(
     viewState: SidebarState,
     actions: Sidebar.Actions
 ) {
-    val listState = rememberLazyListState()
-    val headerBlurSize =
-        Size(
-            ProtonDimens.sideBarMaximumWidth.dpToPx().toFloat(),
-            ProtonDimens.sideBarHeaderHeight.dpToPx().toFloat()
-        )
+    val hazeState = rememberHazeState()
     Box {
-        ListBlurEffect(areaToApplyBlur = headerBlurSize, listState = listState, modifier = modifier) { modifier ->
-            ProtonSidebarLazy(
-                modifier = modifier
-                    .testTag(SidebarMenuTestTags.Root),
-                drawerState = viewState.drawerState,
-                listState = listState
-            ) {
-                item {
-                    Spacer(Modifier.padding(top = ProtonDimens.sideBarHeaderHeight))
-                }
-                item {
-                    SidebarUpsellRow(onClick = { type ->
-                        actions.onUpselling(UpsellingEntryPoint.Feature.Sidebar, type)
-                    })
-                }
-
-                sidebarSystemLabelItems(viewState.mailLabels.systemLabels, actions.onLabelAction)
-                item { SidebarDivider() }
-
-                sidebarFolderItems(viewState.mailLabels.folders, actions.onLabelAction)
-                item { SidebarDivider() }
-
-                sidebarLabelItems(viewState.mailLabels.labels, actions.onLabelAction)
-                item { SidebarDivider() }
-                item { VerticalSpacer(height = ProtonDimens.Spacing.Standard) }
-
-                item { ProtonSidebarSubscriptionItem { actions.onSubscription() } }
-
-                item { ProtonSidebarSettingsItem(onClick = actions.onSettings) }
-                item { SidebarContactsItem(onClick = actions.onContacts) }
-
-                item { ProtonSidebarReportBugItem(onClick = actions.onReportBug) }
-
-                item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
-
-                item { SidebarDivider() }
-                item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
-                item { SidebarAppVersionItem(viewState.appInformation) }
-                item { Spacer(Modifier.padding(bottom = ProtonDimens.Spacing.ExtraLarge)) }
+        ProtonSidebarLazy(
+            modifier = modifier
+                .testTag(SidebarMenuTestTags.Root)
+                .hazeSource(state = hazeState),
+            drawerState = viewState.drawerState
+        ) {
+            item {
+                Spacer(Modifier.padding(top = ProtonDimens.sideBarHeaderHeight))
             }
-            SidebarHeader()
+            item {
+                SidebarUpsellRow(onClick = { type ->
+                    actions.onUpselling(UpsellingEntryPoint.Feature.Sidebar, type)
+                })
+            }
+
+            sidebarSystemLabelItems(viewState.mailLabels.systemLabels, actions.onLabelAction)
+            item { SidebarDivider() }
+
+            sidebarFolderItems(viewState.mailLabels.folders, actions.onLabelAction)
+            item { SidebarDivider() }
+
+            sidebarLabelItems(viewState.mailLabels.labels, actions.onLabelAction)
+            item { SidebarDivider() }
+            item { VerticalSpacer(height = ProtonDimens.Spacing.Standard) }
+
+            item { ProtonSidebarSubscriptionItem { actions.onSubscription() } }
+
+            item { ProtonSidebarSettingsItem(onClick = actions.onSettings) }
+            item { SidebarContactsItem(onClick = actions.onContacts) }
+
+            item { ProtonSidebarReportBugItem(onClick = actions.onReportBug) }
+
+            item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
+
+            item { SidebarDivider() }
+            item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
+            item { SidebarAppVersionItem(viewState.appInformation) }
+            item { Spacer(Modifier.padding(bottom = ProtonDimens.Spacing.ExtraLarge)) }
         }
+        SidebarHeader(hazeState)
     }
 }
 
 @Composable
-private fun SidebarHeader() {
+private fun SidebarHeader(hazeState: HazeState) {
     Box(
         modifier = Modifier
             .height(ProtonDimens.sideBarHeaderHeight)
+            .hazeEffect(state = hazeState) {
+                blurEnabled = true
+            }
             .fillMaxWidth()
     ) {
         Image(

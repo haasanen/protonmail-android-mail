@@ -74,6 +74,7 @@ dependencies {
     implementation(project(":mail-upselling:presentation"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
+    implementation(libs.haze)
 
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.rust.core)
