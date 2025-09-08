@@ -23,7 +23,7 @@
         <activity
             android:name=".addaccount.AddAccountActivity"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/ProtonTheme.Translucent"/>
+            android:theme="@style/ProtonTheme"/>
 
         <activity
             android:name=".login.LoginActivity"

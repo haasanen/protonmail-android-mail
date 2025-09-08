@@ -20,6 +20,7 @@ package me.proton.android.core.auth.presentation.addaccount
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.onLoginResult
@@ -41,6 +42,7 @@ class AddAccountActivity : ProtonActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         addOnBackPressedCallback { onClose() }

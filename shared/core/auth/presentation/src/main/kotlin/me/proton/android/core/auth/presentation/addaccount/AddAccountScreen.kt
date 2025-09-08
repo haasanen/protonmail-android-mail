@@ -25,9 +25,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Text
@@ -86,7 +91,17 @@ public fun AddAccountScreen(
     BoxWithConstraints(modifier = modifier.background(LocalColors.current.backgroundNorm)) {
         val isSmallHeight = maxHeight <= SMALL_SCREEN_HEIGHT.dp
 
-        ConstraintLayout(Modifier.fillMaxSize()) {
+        ConstraintLayout(
+            Modifier
+                .fillMaxSize()
+                .padding(
+                    bottom = WindowInsets
+                        .navigationBars
+                        .only(WindowInsetsSides.Bottom)
+                        .asPaddingValues()
+                        .calculateBottomPadding()
+                )
+        ) {
             val (header, content, footer) = createRefs()
             val (bottomImageSpacer, middleSpacer) = createRefs()
             val contentTopBarrier = createTopBarrier(bottomImageSpacer, middleSpacer)
