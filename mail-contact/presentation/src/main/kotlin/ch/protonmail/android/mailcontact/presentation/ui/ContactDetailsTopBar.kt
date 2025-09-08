@@ -19,7 +19,9 @@
 package ch.protonmail.android.mailcontact.presentation.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -27,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcontact.presentation.R
 
@@ -35,14 +36,14 @@ import ch.protonmail.android.mailcontact.presentation.R
 fun ContactDetailsTopBar(shouldShowActions: Boolean, actions: ContactDetailsTopBar.Actions) {
     ProtonTopAppBar(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(ProtonDimens.MailTopBarMinHeight),
+            .statusBarsPadding()
+            .fillMaxWidth(),
         backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
         title = {},
         navigationIcon = {
             IconButton(onClick = actions.onBack) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_back),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     tint = ProtonTheme.colors.iconNorm,
                     contentDescription = stringResource(id = R.string.presentation_back)
                 )

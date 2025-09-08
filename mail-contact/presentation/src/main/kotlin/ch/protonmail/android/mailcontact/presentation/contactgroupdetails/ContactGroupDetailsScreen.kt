@@ -23,6 +23,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -60,6 +61,7 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.Initials
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactGroupDetailsPreviewData
 import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsError
 import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsTopBar
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 fun ContactGroupDetailsScreen(
@@ -82,6 +84,7 @@ private fun ContactGroupDetailsScreen(
 ) {
     Scaffold(
         modifier = modifier,
+        contentWindowInsets = WindowInsets(0),
         containerColor = ProtonTheme.colors.backgroundInvertedNorm,
         topBar = {
             ContactDetailsTopBar(
@@ -159,6 +162,8 @@ private fun ContactGroupDetails(
                 }
             }
         }
+
+        BottomNavigationBarSpacer()
     }
 }
 

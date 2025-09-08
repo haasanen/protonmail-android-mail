@@ -40,12 +40,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactSwipeToDeleteUiModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
 fun SwipeableContactListItem(contact: ContactListItemUiModel.Contact, actions: ContactListScreen.Actions) {
@@ -58,6 +55,7 @@ fun SwipeableContactListItem(contact: ContactListItemUiModel.Contact, actions: C
     SwipeableItem(
         swipeActionUiModel = deleteSwipeAction,
         onSwipeToDeleteContact = { actions.onDeleteContactRequest(contact) },
+        itemKey = contact.id.id,
         content = {
             ContactListItem(contact = contact, actions = actions)
         }
@@ -67,39 +65,34 @@ fun SwipeableContactListItem(contact: ContactListItemUiModel.Contact, actions: C
 @Composable
 fun SwipeableItem(
     modifier: Modifier = Modifier,
+    itemKey: Any,
     swipeActionUiModel: ContactSwipeToDeleteUiModel,
     onSwipeToDeleteContact: () -> Unit,
     content: @Composable () -> Unit
 ) {
-
     val swipeState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { dismissValue ->
-            when (dismissValue) {
-                SwipeToDismissBoxValue.EndToStart -> {
-                    onSwipeToDeleteContact()
-                }
-                else -> {
-                }
-            }
-            return@rememberSwipeToDismissBoxState true
-        },
-        positionalThreshold = SwipeThreshold.defaultPositionalThreshold()
+        initialValue = SwipeToDismissBoxValue.Settled
     )
+
+    // Reset to settled when item changes
+    LaunchedEffect(itemKey) {
+        swipeState.snapTo(SwipeToDismissBoxValue.Settled)
+    }
 
     // Haptic Feedback
     val haptic = LocalHapticFeedback.current
-    LaunchedEffect(key1 = swipeState.targetValue) {
+    LaunchedEffect(swipeState.targetValue) {
         if (swipeState.targetValue != SwipeToDismissBoxValue.Settled) {
-            withContext(Dispatchers.IO) {
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-            }
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
 
-    // Reset the swipe state whenever it's been swiped to delete
-    if (swipeState.currentValue == SwipeToDismissBoxValue.EndToStart) {
-        LaunchedEffect(swipeState) {
-            swipeState.reset()
+    // Handle swipe action when state changes
+    LaunchedEffect(swipeState.currentValue) {
+        if (swipeState.currentValue == SwipeToDismissBoxValue.EndToStart) {
+            onSwipeToDeleteContact()
+            // Reset after delete action
+            swipeState.snapTo(SwipeToDismissBoxValue.Settled)
         }
     }
 

@@ -1,24 +1,21 @@
 package ch.protonmail.android.mailcontact.presentation.contactlist.ui
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
@@ -55,33 +52,17 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     val state = viewModel.state.collectAsStateWithLifecycle().value
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    val defaultColor = ProtonTheme.colors.backgroundNorm
     val backgroundColor = ProtonTheme.colors.backgroundSecondary
-    val view = LocalView.current
     val context = LocalContext.current
 
     val deleteDialogState = remember { mutableStateOf<ContactListItemUiModel.Contact?>(null) }
 
     val actions = listActions.copy(
-        onBackClick = {
-            // Restore default color when this Composable is removed from composition
-            val activity = view.context as? Activity
-            activity?.window?.statusBarColor = defaultColor.toArgb()
-
-            listActions.onBackClick()
-        },
+        onBackClick = listActions.onBackClick,
         onDeleteContactRequest = { contact ->
             viewModel.submit(ContactListViewAction.OnDeleteContactRequested(contact))
         }
     )
-
-    // In this screen, "Background inverted" theme is used for colouring, which is different
-    // from the default theme. Therefore, we need to set/reset the status bar colour manually.
-    LaunchedEffect(Unit) {
-
-        val activity = view.context as? Activity
-        activity?.window?.statusBarColor = backgroundColor.toArgb()
-    }
 
     BackHandler(bottomSheetState.isVisible) {
         viewModel.submit(ContactListViewAction.OnDismissBottomSheet)
@@ -120,6 +101,8 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
         }
     ) {
         Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            contentWindowInsets = WindowInsets(0),
             containerColor = backgroundColor,
             topBar = {
                 ContactListTopBar(

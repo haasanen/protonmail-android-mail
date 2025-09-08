@@ -32,6 +32,7 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListSta
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData.contactGroupSampleData
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData.contactSampleData
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 internal fun ContactListScreenContent(
@@ -67,6 +68,10 @@ internal fun ContactListScreenContent(
                     }
                 }
             }
+        }
+
+        item {
+            BottomNavigationBarSpacer()
         }
     }
 }

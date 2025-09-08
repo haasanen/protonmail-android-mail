@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -65,7 +66,6 @@ import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
-import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsError
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ContactDetailsViewModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
@@ -76,8 +76,10 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.model.Conta
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionType
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactDetailsPreviewData
+import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsError
 import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsTopBar
 import ch.protonmail.android.mailcontact.presentation.ui.RedirectToWebBottomSheetContent
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 fun ContactDetailsScreen(
@@ -115,6 +117,7 @@ private fun ContactDetailsScreen(
                     BottomSheetType.PhoneNumbers -> {
                         PhoneNumbersBottomSheetContent(state)
                     }
+
                     BottomSheetType.RedirectToWeb -> {
                         RedirectToWebBottomSheetContent(
                             description = R.string.edit_contact_bottom_sheet_redirect_to_web_description,
@@ -130,6 +133,7 @@ private fun ContactDetailsScreen(
         Scaffold(
             modifier = modifier,
             containerColor = ProtonTheme.colors.backgroundInvertedNorm,
+            contentWindowInsets = WindowInsets(0),
             topBar = {
                 ContactDetailsTopBar(
                     shouldShowActions = state is ContactDetailsState.Data,
@@ -188,6 +192,7 @@ private fun ContactDetails(
                 initials = avatarUiModel.value,
                 color = avatarUiModel.color
             )
+
             is AvatarUiModel.Photo -> ImageContactAvatar(
                 imageBitmap = avatarUiModel.bitmap
             )
@@ -222,6 +227,8 @@ private fun ContactDetails(
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             }
         }
+
+        BottomNavigationBarSpacer()
     }
 }
 
@@ -439,6 +446,7 @@ private fun ContactDetailsScreenPreview() {
 }
 
 object ContactDetailsScreen {
+
     const val CONTACT_DETAILS_ID_KEY = "ContactDetailsIdKey"
 
     data class Actions(
