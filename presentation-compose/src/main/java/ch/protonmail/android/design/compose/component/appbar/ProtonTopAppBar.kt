@@ -20,9 +20,11 @@ package ch.protonmail.android.design.compose.component.appbar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -53,7 +55,8 @@ fun ProtonTopAppBar(
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
     contentColor: Color = ProtonTheme.colors.textNorm,
     minHeight: Dp = ProtonDimens.DefaultTopBarMinHeight,
-    preferredHeight: Dp = ProtonDimens.DefaultTopBarMinHeight
+    preferredHeight: Dp = ProtonDimens.DefaultTopBarMinHeight,
+    windowInsets: WindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Top)
 ) {
     TopAppBar(
         title = {
@@ -64,9 +67,7 @@ fun ProtonTopAppBar(
                 title()
             }
         },
-        modifier = modifier
-            .height(preferredHeight)
-            .heightIn(minHeight),
+        modifier = modifier,
         navigationIcon = {
             Box(
                 modifier = Modifier
@@ -83,7 +84,8 @@ fun ProtonTopAppBar(
             navigationIconContentColor = contentColor,
             titleContentColor = contentColor,
             actionIconContentColor = contentColor
-        )
+        ),
+        windowInsets = windowInsets
     )
 }
 
@@ -96,7 +98,8 @@ fun ProtonMediumTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
     contentColor: Color = ProtonTheme.colors.textNorm,
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    windowInsets: WindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Top)
 ) {
     MediumTopAppBar(
         title = title,
@@ -110,7 +113,8 @@ fun ProtonMediumTopAppBar(
             titleContentColor = contentColor,
             actionIconContentColor = contentColor
         ),
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
+        windowInsets = windowInsets
     )
 }
 

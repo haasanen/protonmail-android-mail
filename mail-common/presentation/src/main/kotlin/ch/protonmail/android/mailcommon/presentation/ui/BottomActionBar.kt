@@ -19,19 +19,27 @@
 package ch.protonmail.android.mailcommon.presentation.ui
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
@@ -58,62 +66,66 @@ fun BottomActionBar(
     viewActionCallbacks: BottomActionBar.Actions,
     modifier: Modifier = Modifier
 ) {
-    if (state is BottomBarState.Data.Hidden) {
-        viewActionCallbacks.onActionBarVisibilityChanged(false)
-        return
+    val isVisible = state !is BottomBarState.Data.Hidden
+
+    LaunchedEffect(state !is BottomBarState.Data.Hidden) {
+        viewActionCallbacks.onActionBarVisibilityChanged(isVisible)
     }
-    viewActionCallbacks.onActionBarVisibilityChanged(true)
-    Column(
-        modifier = modifier
-            .shadow(
-                elevation = ProtonDimens.ShadowElevation.Lifted,
-                ambientColor = ProtonTheme.colors.shadowSoft,
-                spotColor = ProtonTheme.colors.shadowSoft
-            )
-            .background(ProtonTheme.colors.backgroundNorm)
+
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+        exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
     ) {
-        HorizontalDivider(thickness = MailDimens.SeparatorHeight, color = ProtonTheme.colors.separatorNorm)
-
-        Row(
-            modifier = Modifier
-                .testTag(BottomActionBarTestTags.RootItem)
-                .clickable(
-                    enabled = false,
-                    onClick = {
-                        // this is needed otherwise the click event is passed down the view hierarchy
-                    }
+        Column(
+            modifier = modifier
+                .shadow(
+                    elevation = ProtonDimens.ShadowElevation.Lifted,
+                    ambientColor = ProtonTheme.colors.shadowSoft,
+                    spotColor = ProtonTheme.colors.shadowSoft
                 )
-                .fillMaxWidth()
-                .padding(vertical = ProtonDimens.Spacing.Standard),
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .background(ProtonTheme.colors.backgroundNorm)
+                .windowInsetsPadding(WindowInsets.navigationBars)
         ) {
-            when (state) {
-                is BottomBarState.Loading -> {
-                    Spacer(modifier = Modifier.fillMaxWidth())
-                }
+            HorizontalDivider(thickness = MailDimens.SeparatorHeight, color = ProtonTheme.colors.separatorNorm)
 
-                is BottomBarState.Error -> Text(
-                    modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Standard),
-                    text = stringResource(id = R.string.common_error_loading_actions),
-                    style = ProtonTypography.Default.bodyLargeNorm
-                )
-
-                is BottomBarState.Data.Shown -> {
-                    state.actions.forEachIndexed { index, uiModel ->
-                        if (index.exceedsMaxActionsShowed()) {
-                            return@forEachIndexed
+            Row(
+                modifier = Modifier
+                    .testTag(BottomActionBarTestTags.RootItem)
+                    .clickable(
+                        enabled = false,
+                        onClick = {
+                            // this is needed otherwise the click event is passed down the view hierarchy
                         }
-                        BottomBarIcon(
-                            modifier = Modifier.testTag("${BottomActionBarTestTags.Button}$index"),
-                            iconId = uiModel.icon,
-                            description = uiModel.contentDescription,
-                            onClick = callbackForAction(uiModel.action, viewActionCallbacks)
-                        )
-                    }
-                }
+                    )
+                    .fillMaxWidth()
+                    .padding(vertical = ProtonDimens.Spacing.Standard),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                when (state) {
+                    is BottomBarState.Error -> Text(
+                        modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Standard),
+                        text = stringResource(id = R.string.common_error_loading_actions),
+                        style = ProtonTypography.Default.bodyLargeNorm
+                    )
 
-                else -> {
-                    // no-op, Hidden state is handled at the beginning
+                    is BottomBarState.Data.Shown -> {
+                        state.actions.forEachIndexed { index, uiModel ->
+                            if (index.exceedsMaxActionsShowed()) {
+                                return@forEachIndexed
+                            }
+                            BottomBarIcon(
+                                modifier = Modifier.testTag("${BottomActionBarTestTags.Button}$index"),
+                                iconId = uiModel.icon,
+                                description = uiModel.contentDescription,
+                                onClick = callbackForAction(uiModel.action, viewActionCallbacks)
+                            )
+                        }
+                    }
+
+                    else -> {
+                        // no-op, Hidden state is handled at the beginning
+                    }
                 }
             }
         }
@@ -207,7 +219,7 @@ object BottomActionBar {
         val onMore: () -> Unit,
         val onCustomizeToolbar: () -> Unit,
         val onSnooze: () -> Unit,
-        val onActionBarVisibilityChanged: (visible: Boolean) -> Unit
+        val onActionBarVisibilityChanged: (Boolean) -> Unit
     ) {
 
         companion object {
