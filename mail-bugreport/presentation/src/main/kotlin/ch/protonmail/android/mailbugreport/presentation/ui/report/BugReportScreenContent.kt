@@ -66,7 +66,8 @@ internal fun BugReportScreenContent(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(ProtonDimens.Spacing.Large)
+                .padding(horizontal = ProtonDimens.Spacing.Large)
+                .padding(top = ProtonDimens.Spacing.Large)
                 .verticalScroll(rememberScrollState())
         ) {
             HeaderText()

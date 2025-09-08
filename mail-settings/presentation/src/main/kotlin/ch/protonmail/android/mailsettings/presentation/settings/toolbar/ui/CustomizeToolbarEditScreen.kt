@@ -22,8 +22,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +43,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.toolbar.model.Cu
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.preview.CustomizeToolbarPreview
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.preview.CustomizeToolbarPreviewProvider
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.topbar.EditToolbarTopBar
+import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonSnackbarHost
 import me.proton.core.compose.component.ProtonSnackbarHostState
 import me.proton.core.compose.component.ProtonSnackbarType
@@ -63,7 +62,7 @@ fun CustomizeToolbarEditScreen(modifier: Modifier = Modifier, onBackClick: () ->
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomizeToolbarEditScreen(
     state: CustomizeToolbarEditState,
@@ -96,7 +95,7 @@ private fun CustomizeToolbarEditScreen(
                     modifier = Modifier.padding(paddingValues)
                 )
 
-                CustomizeToolbarEditState.Loading -> LoadingIndicator()
+                CustomizeToolbarEditState.Loading -> ProtonCenteredProgress()
                 CustomizeToolbarEditState.Error -> CustomizeToolbarEditScreenError(onBackClick)
             }
         }

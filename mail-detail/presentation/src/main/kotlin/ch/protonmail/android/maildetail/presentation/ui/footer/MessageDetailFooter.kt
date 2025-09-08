@@ -23,7 +23,10 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
@@ -65,6 +68,11 @@ fun MessageDetailFooter(
         modifier = modifier
             .testTag(MessageBodyTestTags.MessageActionsRootItem)
             .fillMaxWidth()
+            // Insets padding
+            .padding(
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            )
+            // Additional padding
             .padding(
                 bottom = ProtonDimens.Spacing.Huge - ProtonDimens.Spacing.Small,
                 start = ProtonDimens.Spacing.Large,

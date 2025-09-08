@@ -20,7 +20,12 @@ package ch.protonmail.android.mailsidebar.presentation
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +34,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.VerticalSpacer
@@ -61,6 +68,7 @@ import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelIt
 import ch.protonmail.android.mailsidebar.presentation.upselling.SidebarUpsellRow
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -133,7 +141,9 @@ fun Sidebar(
     actions: Sidebar.Actions
 ) {
     val hazeState = rememberHazeState()
-    Box {
+    Box(modifier.background(ProtonTheme.colors.sidebarBackground)) {
+        SidebarHeader(modifier = Modifier.zIndex(1f), hazeState)
+
         ProtonSidebarLazy(
             modifier = modifier
                 .testTag(SidebarMenuTestTags.Root)
@@ -171,16 +181,30 @@ fun Sidebar(
             item { SidebarDivider() }
             item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
             item { SidebarAppVersionItem(viewState.appInformation) }
-            item { Spacer(Modifier.padding(bottom = ProtonDimens.Spacing.ExtraLarge)) }
+
+            item { BottomNavigationBarSpacer() }
         }
-        SidebarHeader(hazeState)
+    }
+
+    val activity = LocalActivity.current as? ComponentActivity
+    LaunchedEffect(viewState.drawerState.isOpen) {
+        activity?.let {
+            if (viewState.drawerState.isOpen) {
+                it.enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.dark(scrim = android.graphics.Color.TRANSPARENT),
+                    navigationBarStyle = SystemBarStyle.dark(scrim = android.graphics.Color.TRANSPARENT)
+                )
+            } else {
+                it.enableEdgeToEdge()
+            }
+        }
     }
 }
 
 @Composable
-private fun SidebarHeader(hazeState: HazeState) {
+private fun SidebarHeader(modifier: Modifier = Modifier, hazeState: HazeState) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .height(ProtonDimens.sideBarHeaderHeight)
             .hazeEffect(
                 state = hazeState,

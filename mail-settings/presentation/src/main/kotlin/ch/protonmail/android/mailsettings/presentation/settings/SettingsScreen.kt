@@ -25,7 +25,6 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,7 +38,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
@@ -96,14 +94,6 @@ fun MainSettingsScreen(
         is Loading -> ProtonCenteredProgress(modifier = Modifier.fillMaxSize())
     }
 
-    // In this screen, "Background inverted" theme is used for colouring, which is different
-    // from the default theme. Therefore, we need to set/reset the status bar colour manually.
-    LaunchedEffect(Unit) {
-
-        val activity = view.context as? Activity
-        activity?.window?.statusBarColor = backgroundColor.toArgb()
-    }
-
     BackHandler { mainActions.onBackClick() }
 }
 
@@ -115,11 +105,8 @@ fun MainSettingsScreen(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
-        modifier = modifier.testTag(SettingsScreenTestTags.RootItem),
-        contentWindowInsets = WindowInsets(
-            left = ProtonDimens.Spacing.Large,
-            right = ProtonDimens.Spacing.Large
-        ),
+        modifier = modifier
+            .testTag(SettingsScreenTestTags.RootItem),
         topBar = {
             ProtonSettingsTopBar(
                 title = stringResource(id = string.mail_settings_settings),
@@ -128,9 +115,10 @@ fun MainSettingsScreen(
         }
     ) { contentPadding ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .testTag(SettingsScreenTestTags.SettingsList)
                 .padding(contentPadding)
+                .padding(horizontal = ProtonDimens.Spacing.Large)
                 .verticalScroll(rememberScrollState())
         ) {
             AccountSettingsItem(

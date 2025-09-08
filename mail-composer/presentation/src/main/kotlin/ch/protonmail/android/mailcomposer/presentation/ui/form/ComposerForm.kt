@@ -181,11 +181,12 @@ internal fun ComposerForm(
                 when (draftType) {
                     DraftMimeType.PlainText -> {
                         EditableMessageBodyPlainText(
-                            modifier.padding(horizontal = ProtonDimens.Spacing.Large),
-                            bodyTextFieldState,
-                            focusTextBody
+                            modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large),
+                            bodyTextFieldState = bodyTextFieldState,
+                            shouldRequestFocus = focusTextBody
                         )
                     }
+
                     DraftMimeType.Html -> {
                         EditableMessageBodyWebView(
                             messageBodyUiModel = bodyInitialValue,

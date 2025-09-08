@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
@@ -80,54 +81,53 @@ fun DetailScreenTopBar(
     subjectHeaderSizeCallback: (Int) -> Unit,
     topAppBarState: TopAppBarState
 ) {
-    ProtonTheme {
-        Column(
+    Column(
+        modifier = modifier
+            .background(ProtonTheme.colors.backgroundNorm)
+            .fillMaxWidth()
+            .statusBarsPadding()
+    ) {
+
+        // We will start changing alpha values of subject text when the top app bar is near to collapsed state.
+        val alphaChangeThresholdFraction = 1f - MailDimens.MinOffsetForSubjectAlphaChange.dpToPx() /
+            topAppBarState.heightOffsetLimit.absoluteValue
+        val subjectAlpha = remember(topAppBarState.collapsedFraction) {
+            calculateSubjectAlpha(topAppBarState.collapsedFraction, alphaChangeThresholdFraction)
+        }
+
+        CustomSingleLineTopAppBar(
+            actions = actions,
+            messageCount = messageCount,
+            title = title,
+            isStarred = isStarred,
+            subjectLineAlpha = 1f - subjectAlpha,
             modifier = modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
+                .zIndex(1f)
+                .graphicsLayer {
+                    translationY = -topAppBarState.heightOffset
+                }
+        )
 
-            // We will start changing alpha values of subject text when the top app bar is near to collapsed state.
-            val alphaChangeThresholdFraction = 1f - MailDimens.MinOffsetForSubjectAlphaChange.dpToPx() /
-                topAppBarState.heightOffsetLimit.absoluteValue
-            val subjectAlpha = remember(topAppBarState.collapsedFraction) {
-                calculateSubjectAlpha(topAppBarState.collapsedFraction, alphaChangeThresholdFraction)
-            }
-
-            CustomSingleLineTopAppBar(
-                actions = actions,
-                messageCount = messageCount,
-                title = title,
-                isStarred = isStarred,
-                subjectLineAlpha = 1f - subjectAlpha,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .zIndex(1f)
-                    .graphicsLayer {
-                        translationY = -topAppBarState.heightOffset
-                    }
-            )
-
-            // Subject text should not exceed the screen height otherwise it will not be possible
-            // to scroll message(s). So the subject text will cover at most 60% of the screen height
-            val maxSubjectHeightDp = with(LocalDensity.current) {
-                LocalContext.current.resources.displayMetrics.heightPixels / density * 0.6f
-            }
-
-            SubjectHeader(
-                modifier = modifier
-                    .background(ProtonTheme.colors.backgroundNorm)
-                    .onGloballyPositioned { layoutCoordinates ->
-                        subjectHeaderSizeCallback(layoutCoordinates.size.height)
-                    }
-                    .heightIn(
-                        min = MailDimens.SubjectHeaderMinHeight,
-                        max = maxSubjectHeightDp.dp
-                    ),
-                subject = title,
-                subjectTextAlpha = subjectAlpha
-            )
+        // Subject text should not exceed the screen height otherwise it will not be possible
+        // to scroll message(s). So the subject text will cover at most 60% of the screen height
+        val maxSubjectHeightDp = with(LocalDensity.current) {
+            LocalContext.current.resources.displayMetrics.heightPixels / density * 0.6f
         }
+
+        SubjectHeader(
+            modifier = modifier
+                .background(ProtonTheme.colors.backgroundNorm)
+                .onGloballyPositioned { layoutCoordinates ->
+                    subjectHeaderSizeCallback(layoutCoordinates.size.height)
+                }
+                .heightIn(
+                    min = MailDimens.SubjectHeaderMinHeight,
+                    max = maxSubjectHeightDp.dp
+                ),
+            subject = title,
+            subjectTextAlpha = subjectAlpha
+        )
     }
 }
 
@@ -208,16 +208,9 @@ fun CustomSingleLineTopAppBar(
 
 
         if (isStarred != null) {
-            val onStarIconClick = {
-                when (isStarred) {
-                    true -> actions.onUnStarClick()
-                    false -> actions.onStarClick()
-                }
-            }
             IconButton(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd),
-                onClick = onStarIconClick
+                modifier = Modifier.align(Alignment.CenterEnd),
+                onClick = if (isStarred) actions.onUnStarClick else actions.onStarClick
             ) {
                 Icon(
                     modifier = Modifier.size(ProtonDimens.IconSize.Default),
