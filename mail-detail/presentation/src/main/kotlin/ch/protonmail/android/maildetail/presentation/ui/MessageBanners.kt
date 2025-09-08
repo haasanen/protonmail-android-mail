@@ -18,6 +18,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBanner
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
+import ch.protonmail.android.design.compose.component.ProtonCompactBannerWithButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumInverted
@@ -230,7 +231,7 @@ private fun ExpirationBanner(uiModel: ExpirationBannerUiModel.Expiration) {
 
 @Composable
 private fun UnsubscribeFromNewsletterBanner(onButtonClick: () -> Unit) {
-    ProtonBannerWithButton(
+    ProtonCompactBannerWithButton(
         bannerText = stringResource(id = R.string.unsubscribe_newsletter_banner_message),
         buttonText = stringResource(R.string.unsubscribe_newsletter_banner_button),
         icon = R.drawable.ic_proton_envelopes,
@@ -241,12 +242,14 @@ private fun UnsubscribeFromNewsletterBanner(onButtonClick: () -> Unit) {
 @Composable
 private fun AlreadyUnsubscribedFromNewsletterBanner() {
     ProtonBanner(
+        modifier = Modifier.fillMaxWidth(),
         icon = R.drawable.ic_proton_envelope_cross,
         iconTint = ProtonTheme.colors.iconWeak,
         iconSize = ProtonDimens.IconSize.Medium,
         text = stringResource(id = R.string.already_unsubscribed_banner_message),
         textStyle = ProtonTheme.typography.bodyMediumWeak,
-        backgroundColor = ProtonTheme.colors.backgroundNorm
+        backgroundColor = ProtonTheme.colors.backgroundNorm,
+        contentAlignedWithText = false
     )
 }
 
