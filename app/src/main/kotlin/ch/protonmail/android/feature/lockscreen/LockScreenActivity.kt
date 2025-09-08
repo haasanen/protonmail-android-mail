@@ -21,6 +21,7 @@ package ch.protonmail.android.feature.lockscreen
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -43,6 +44,14 @@ internal class LockScreenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Block back navigation
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() = Unit
+            }
+        )
 
         // Blur is only added on API 31+ devices and when advertised by the window flag.
         val supportsBackgroundBlur = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&

@@ -34,11 +34,13 @@ class ShouldPresentPinInsertionScreen @Inject constructor(
 
     operator fun invoke(): Flow<Boolean> = autoLockCheckPendingState.autoLockCheckEvents
         .map {
+            Timber.tag("ShouldPresentPin").d("checking shouldAutoLock...")
             val shouldLock = autoLockRepository.shouldAutoLock()
                 .getOrElse {
                     Timber.tag("ShouldPresentPin").e("Unable to get a value for shouldAutolock")
                     false
                 }
+            Timber.tag("ShouldPresentPin").d("got '$shouldLock', continuing...")
             shouldLock
         }
         .onStart {
