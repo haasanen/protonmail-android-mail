@@ -60,7 +60,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.labelLargeInverted
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -166,7 +166,6 @@ private fun LabelGroupWithActionButton(
                     labelUiModelWithSelectedState = labelUiModelWithSelectedState,
                     onClick = { actions.onLabelToggled(labelUiModelWithSelectedState.labelUiModel.id.labelId) }
                 )
-
             }
         }
     }
@@ -255,7 +254,7 @@ private fun TopBar(
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.titleMediumNorm,
+            style = ProtonTheme.typography.titleLargeNorm,
             fontWeight = FontWeight.SemiBold
         )
 
