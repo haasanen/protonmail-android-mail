@@ -41,8 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,8 +52,6 @@ fun ProtonTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
     contentColor: Color = ProtonTheme.colors.textNorm,
-    minHeight: Dp = ProtonDimens.DefaultTopBarMinHeight,
-    preferredHeight: Dp = ProtonDimens.DefaultTopBarMinHeight,
     windowInsets: WindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Top)
 ) {
     TopAppBar(

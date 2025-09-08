@@ -113,7 +113,6 @@ fun MailboxTopAppBar(
         } else {
             ProtonTopAppBar(
                 modifier = modifier.testTag(MailboxTopAppBarTestTags.RootItem),
-                minHeight = ProtonDimens.MailTopBarMinHeight,
                 title = {
                     Text(
                         modifier = Modifier

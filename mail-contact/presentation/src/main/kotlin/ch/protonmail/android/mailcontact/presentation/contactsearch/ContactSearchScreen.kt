@@ -50,7 +50,6 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
@@ -202,8 +201,7 @@ fun ContactSearchTopBar(
                     contentDescription = stringResource(id = R.string.contact_search_arrow_back_content_description)
                 )
             }
-        },
-        minHeight = MailDimens.Contacts.SearchTopBarHeight
+        }
     )
 }
 

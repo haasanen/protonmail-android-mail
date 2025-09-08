@@ -69,6 +69,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -130,6 +131,8 @@ internal fun LabelAsBottomSheetContent(
                 labelUiModelsWithSelectedState = labelAsDataState.labelUiModels,
                 actions = actions
             )
+
+            BottomNavigationBarSpacer()
         }
     }
 }
@@ -229,7 +232,8 @@ private fun TopBar(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(ProtonTheme.colors.backgroundInvertedNorm),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -239,7 +243,7 @@ private fun TopBar(
             Icon(
                 painter = painterResource(
                     id =
-                    ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_cross
+                        ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_cross
                 ),
                 contentDescription = null,
                 tint = ProtonTheme.colors.iconNorm
@@ -248,8 +252,6 @@ private fun TopBar(
         }
 
         Text(
-            modifier = Modifier
-                .background(ProtonTheme.colors.backgroundInvertedNorm),
             text = stringResource(R.string.bottom_sheet_label_as_title),
             textAlign = TextAlign.Center,
             maxLines = 1,

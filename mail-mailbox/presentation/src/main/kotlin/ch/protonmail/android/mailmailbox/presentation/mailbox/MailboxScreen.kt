@@ -40,9 +40,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -455,6 +460,13 @@ fun MailboxScreen(
 
         if (mailboxListState is MailboxListState.Data && mailboxListState.shouldShowFab) {
             AnimatedComposeMailFab(
+                modifier = modifier.padding(
+                    bottom = WindowInsets
+                        .navigationBars
+                        .only(WindowInsetsSides.Bottom)
+                        .asPaddingValues()
+                        .calculateBottomPadding()
+                ),
                 showMinimized = showMinimizedFab,
                 onComposeClick = actions.navigateToComposer
             )
@@ -463,12 +475,15 @@ fun MailboxScreen(
 
     Scaffold(
         modifier = modifier.testTag(MailboxScreenTestTags.Root),
+        containerColor = ProtonTheme.colors.backgroundNorm,
+        contentWindowInsets = WindowInsets(0),
         topBar = {
             val localDensity = LocalDensity.current
             Column(
-                modifier = Modifier.onGloballyPositioned { coordinates ->
-                    rememberTopBarHeight.value = with(localDensity) { coordinates.size.height.toDp() }
-                }
+                modifier = Modifier
+                    .onGloballyPositioned { coordinates ->
+                        rememberTopBarHeight.value = with(localDensity) { coordinates.size.height.toDp() }
+                    }
             ) {
                 MailboxTopAppBar(
                     state = mailboxState.topAppBarState,
@@ -571,9 +586,13 @@ fun MailboxScreen(
 }
 
 @Composable
-fun AnimatedComposeMailFab(showMinimized: Boolean, onComposeClick: () -> Unit) {
+private fun AnimatedComposeMailFab(
+    showMinimized: Boolean,
+    modifier: Modifier = Modifier,
+    onComposeClick: () -> Unit
+) {
     AnimatedContent(
-        modifier = Modifier
+        modifier = modifier
             .shadow(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
@@ -972,6 +991,10 @@ private fun MailboxItemsList(
                 }
             }
         }
+
+        item {
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Jumbo))
+        }
     }
 }
 
@@ -1215,7 +1238,7 @@ object MailboxScreen {
         val onClearAllConfirmed: () -> Unit,
         val onClearAllDismissed: () -> Unit,
         val onSnooze: () -> Unit,
-        val onActionBarVisibilityChanged: (visible: Boolean) -> Unit,
+        val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onCustomizeToolbar: () -> Unit
     ) {
 
