@@ -3,10 +3,13 @@ package ch.protonmail.android.maildetail.presentation.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -16,6 +19,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonBanner
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
 import ch.protonmail.android.design.compose.component.ProtonCompactBannerWithButton
@@ -231,11 +236,35 @@ private fun ExpirationBanner(uiModel: ExpirationBannerUiModel.Expiration) {
 
 @Composable
 private fun UnsubscribeFromNewsletterBanner(onButtonClick: () -> Unit) {
+    var shouldShowDialog by remember { mutableStateOf(false) }
+
+    if (shouldShowDialog) {
+        ProtonAlertDialog(
+            text = {
+                Text(text = stringResource(id = R.string.unsubscribe_newsletter_dialog_text))
+            },
+            dismissButton = {
+                ProtonAlertDialogButton(
+                    titleResId = R.string.unsubscribe_newsletter_dialog_cancel
+                ) { shouldShowDialog = false }
+            },
+            confirmButton = {
+                ProtonAlertDialogButton(
+                    titleResId = R.string.unsubscribe_newsletter_dialog_confirm
+                ) {
+                    onButtonClick()
+                    shouldShowDialog = false
+                }
+            },
+            onDismissRequest = { shouldShowDialog = false }
+        )
+    }
+
     ProtonCompactBannerWithButton(
         bannerText = stringResource(id = R.string.unsubscribe_newsletter_banner_message),
         buttonText = stringResource(R.string.unsubscribe_newsletter_banner_button),
         icon = R.drawable.ic_proton_envelopes,
-        onButtonClicked = onButtonClick
+        onButtonClicked = { shouldShowDialog = true }
     )
 }
 
