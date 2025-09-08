@@ -111,6 +111,7 @@ class ContactListReducer @Inject constructor() {
     private fun reduceDeleteConfirmed(currentState: ContactListState): ContactListState {
         return when (currentState) {
             is ContactListState.Loaded.Data -> currentState.copy(
+                showDeleteConfirmationSnackbar = Effect.of(TextUiModel.TextRes(R.string.contact_deleted)),
                 showDeleteConfirmDialog = Effect.empty()
             )
 

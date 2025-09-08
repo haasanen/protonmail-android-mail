@@ -48,6 +48,7 @@
     <string name="new_contact">New contact</string>
     <string name="new_group">New group</string>
     <string name="import_contact">Upload device contacts</string>
+    <string name="contact_deleted">Contact deleted</string>
 
     <string name="contact_delete_dialog_title">Delete %1$s?</string>
     <string name="contact_delete_dialog_text">This contact will be deleted from your contact list.</string>

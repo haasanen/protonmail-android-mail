@@ -41,6 +41,7 @@ sealed interface ContactListState {
             override val openContactSearch: Effect<Boolean> = Effect.empty(),
             override val bottomSheetType: BottomSheetType = BottomSheetType.Menu,
             val showDeleteConfirmDialog: Effect<ContactListItemUiModel.Contact> = Effect.empty(),
+            val showDeleteConfirmationSnackbar: Effect<TextUiModel> = Effect.empty(),
             val groupedContacts: List<GroupedContactListItemsUiModel>
         ) : Loaded
 

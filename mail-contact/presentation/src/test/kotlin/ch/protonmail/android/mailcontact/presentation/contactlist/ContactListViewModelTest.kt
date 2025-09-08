@@ -311,7 +311,8 @@ class ContactListViewModelTest {
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
-                showDeleteConfirmDialog = Effect.empty()
+                showDeleteConfirmDialog = Effect.empty(),
+                showDeleteConfirmationSnackbar = Effect.of(TextUiModel.TextRes(R.string.contact_deleted))
             )
 
             assertEquals(expected, actual)

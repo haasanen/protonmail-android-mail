@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -161,6 +162,10 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                         ConsumableLaunchedEffect(effect = state.showDeleteConfirmDialog) { contact ->
                             deleteDialogState.value = contact
                         }
+                        ConsumableTextEffect(effect = state.showDeleteConfirmationSnackbar) { message ->
+                            snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message)
+                        }
+
                         ContactListScreenContent(
                             modifier = Modifier.padding(paddingValues),
                             state = state,
