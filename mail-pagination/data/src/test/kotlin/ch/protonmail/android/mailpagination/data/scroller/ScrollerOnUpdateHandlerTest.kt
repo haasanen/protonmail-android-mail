@@ -146,6 +146,40 @@ class ScrollerOnUpdateHandlerTest {
         }
 
     @Test
+    fun `when immediate Append is received for Refresh request, completes with items from snapshot`() = runTest {
+        // Given
+        val pending = pendingRefreshRequest()
+        val items = listOf(ScrollerItem("10"), ScrollerItem("11"))
+        val update = ScrollerUpdate.Append(items = items)
+        val snapshot = listOf(ScrollerItem("9"), ScrollerItem("10"), ScrollerItem("11"))
+
+        // When
+        handler().handleUpdate(pending, update, snapshot, {})
+        val completed = pending.response.await()
+
+        // Then
+        assertEquals(snapshot, completed.getOrNull())
+        verify(exactly = 0) { invalidate.invoke() }
+    }
+
+    @Test
+    fun `when immediate ReplaceRange is received for Refresh request, completes with items from snapshot`() = runTest {
+        // Given
+        val pending = pendingRefreshRequest()
+        val items = listOf(ScrollerItem("10"), ScrollerItem("11"))
+        val update = ScrollerUpdate.ReplaceRange(fromIdx = 0, toIdx = 3, items = items)
+        val snapshot = listOf(ScrollerItem("9"), ScrollerItem("10"), ScrollerItem("11"))
+
+        // When
+        handler().handleUpdate(pending, update, snapshot, {})
+        val completed = pending.response.await()
+
+        // Then
+        assertEquals(snapshot, completed.getOrNull())
+        verify(exactly = 0) { invalidate.invoke() }
+    }
+
+    @Test
     fun `when unexpected response is received for Refresh, completes with snapshot`() = runTest {
         // Given
         val pending = pendingRefreshRequest()

@@ -25,5 +25,6 @@ sealed class ScrollerUpdate<out T> {
     data class Append<T>(val items: List<T>) : ScrollerUpdate<T>()
     data class ReplaceFrom<T>(val idx: Int, val items: List<T>) : ScrollerUpdate<T>()
     data class ReplaceBefore<T>(val idx: Int, val items: List<T>) : ScrollerUpdate<T>()
+    data class ReplaceRange<T>(val fromIdx: Int, val toIdx: Int, val items: List<T>) : ScrollerUpdate<T>()
     data class Error(val error: MailScrollerError) : ScrollerUpdate<Nothing>()
 }

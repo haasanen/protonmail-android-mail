@@ -249,4 +249,5 @@ fun MessageScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<Message> = when (th
     is MessageScrollerUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(idx.toInt(), items)
     is MessageScrollerUpdate.Error -> ScrollerUpdate.Error(error)
     MessageScrollerUpdate.None -> ScrollerUpdate.None
+    is MessageScrollerUpdate.ReplaceRange -> ScrollerUpdate.ReplaceRange(from.toInt(), to.toInt(), items)
 }

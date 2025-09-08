@@ -182,6 +182,58 @@ class ScrollerCacheTest {
     }
 
     @Test
+    fun `ReplaceRange replaces given items when they are in items bounds treating from inclusive, to exclusive`() {
+        // Given
+        val cache = ScrollerCache<ScrollerItem>()
+        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+
+        // When
+        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceRange(fromIdx = 1, toIdx = 3, items = items("B2", "C2")))
+
+        // Then
+        assertSnapshotIds(listOf("A1", "B2", "C2", "D1"), snap)
+    }
+
+    @Test
+    fun `ReplaceRange with negative from index is ignored`() {
+        // Given
+        val cache = ScrollerCache<ScrollerItem>()
+        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+
+        // When
+        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceRange(fromIdx = -1, toIdx = 2, items = items("B2", "C2")))
+
+        // Then
+        assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
+    }
+
+    @Test
+    fun `ReplaceRange with to index greater than size is ignored`() {
+        // Given
+        val cache = ScrollerCache<ScrollerItem>()
+        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+
+        // When
+        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceRange(fromIdx = 0, toIdx = 5, items = items("B2", "C2")))
+
+        // Then
+        assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
+    }
+
+    @Test
+    fun `ReplaceRange with from index greater than to index is ignored`() {
+        // Given
+        val cache = ScrollerCache<ScrollerItem>()
+        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+
+        // When
+        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceRange(fromIdx = 2, toIdx = 1, items = items("B2", "C2")))
+
+        // Then
+        assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
+    }
+
+    @Test
     fun `None is a no-op`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()

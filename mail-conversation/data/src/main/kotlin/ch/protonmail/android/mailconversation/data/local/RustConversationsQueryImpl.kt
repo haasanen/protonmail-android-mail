@@ -248,5 +248,6 @@ fun ConversationScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<LocalConversat
     is ConversationScrollerUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(idx.toInt(), items)
     is ConversationScrollerUpdate.Error -> ScrollerUpdate.Error(error)
     ConversationScrollerUpdate.None -> ScrollerUpdate.None
+    is ConversationScrollerUpdate.ReplaceRange -> ScrollerUpdate.ReplaceRange(from.toInt(), to.toInt(), items)
 }
 

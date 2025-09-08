@@ -59,6 +59,23 @@ class ScrollerCache<T> {
                 }
             }
 
+            is ScrollerUpdate.ReplaceRange -> {
+                val fromIdx = update.fromIdx
+                val toIdx = update.toIdx
+                when {
+                    fromIdx !in 0..items.size ->
+                        Timber.w("ReplaceRange invalid fromIdx=$fromIdx (size=${items.size})")
+                    toIdx !in 0..items.size ->
+                        Timber.w("ReplaceRange invalid toIdx=$toIdx (size=${items.size})")
+                    fromIdx > toIdx ->
+                        Timber.w("ReplaceRange requires fromIdx <= toIdx (from=$fromIdx, to=$toIdx)")
+                    else -> {
+                        items.subList(fromIdx, toIdx).clear()
+                        items.addAll(fromIdx, update.items)
+                    }
+                }
+            }
+
             is ScrollerUpdate.None,
             is ScrollerUpdate.Error -> Unit
         }
