@@ -159,6 +159,7 @@ import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.fab.LazyFab
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import me.proton.android.core.accountmanager.presentation.switcher.v2.AccountsSwitcherBottomSheetScreen
@@ -852,6 +853,15 @@ private fun MailboxItemsList(
         }
     }
 
+    var isOpenDrawerGesture by remember { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp.dp
+    val edgeSwipeThreshold = with(LocalDensity.current) {
+        (screenWidthDp * 0.2f).toPx() // 1/5 of screen width
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+
     LazyColumn(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Small),
@@ -859,9 +869,27 @@ private fun MailboxItemsList(
             .testTag(MailboxScreenTestTags.List)
             .fillMaxSize()
             .pointerInteropFilter { event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        isOpenDrawerGesture = event.x <= edgeSwipeThreshold
+
+                        // We need to manually reset isOpenDrawerGesture here, as MotionEvent.ACTION_UP
+                        // is not received when the corresponding MotionEvent.ACTION_DOWN returns false
+                        // to pass the gesture through to the drawer.
+                        if (isOpenDrawerGesture) {
+                            coroutineScope.launch {
+                                @Suppress("MagicNumber")
+                                delay(500)
+                                isOpenDrawerGesture = false
+                            }
+                        }
+                    }
+                }
+
                 if (!userTapped && event.action == MotionEvent.ACTION_DOWN) {
                     userTapped = true
                 }
+
                 false // Allow the event to propagate
             }
     ) {
@@ -889,7 +917,11 @@ private fun MailboxItemsList(
                 val isSelectionMode = listDataState is MailboxListState.Data.SelectionMode
                 val isInSearch = listDataState is MailboxListState.Data.ViewMode &&
                     listDataState.searchState.isInSearch()
-                val swipingEnabled = swipeActionsUiModel?.isSwipingEnabled == true && !isSelectionMode && !isInSearch
+
+                val swipingEnabled = swipeActionsUiModel?.isSwipingEnabled == true &&
+                    !isSelectionMode &&
+                    !isInSearch &&
+                    !isOpenDrawerGesture
 
                 SwipeableItem(
                     modifier = Modifier.animateItem(),
