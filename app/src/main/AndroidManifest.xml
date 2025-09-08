@@ -43,7 +43,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:taskAffinity=""
-        android:theme="@style/ProtonTheme.Mail"
+        android:theme="@style/ProtonTheme.Mail.ET"
         tools:replace="android:theme,android:supportsRtl">
         <profileable android:shell="true" />
 

@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
@@ -71,6 +72,9 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen().setKeepOnScreenCondition {
             launcherViewModel.state.value == LauncherState.Processing
         }
+        // Enable edge to edge (all API levels)
+        enableEdgeToEdge()
+
         super.onCreate(savedInstanceState)
 
         // Register activities for result.
