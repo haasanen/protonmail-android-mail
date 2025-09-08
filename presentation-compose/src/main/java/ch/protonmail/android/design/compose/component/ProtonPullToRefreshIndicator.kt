@@ -32,13 +32,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
+import ch.protonmail.android.design.compose.R
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import ch.protonmail.android.design.compose.R
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +52,7 @@ fun ProtonPullToRefreshIndicator(
         state = state,
         isRefreshing = isRefreshing,
         containerColor = ProtonTheme.colors.backgroundInvertedSecondary,
-        threshold = PositionalThreshold,
+        maxDistance = PositionalThreshold,
         elevation = ProtonDimens.ShadowElevation.Soft
     ) {
         Crossfade(

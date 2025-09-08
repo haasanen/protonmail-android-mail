@@ -17,16 +17,17 @@
  */
 package ch.protonmail.android.design.compose.component
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,27 +35,25 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 fun ProtonModalBottomSheetLayout(
     showBottomSheet: Boolean,
     sheetContent: @Composable ColumnScope.() -> Unit,
-    modifier: Modifier = Modifier,
     sheetState: SheetState,
     onDismissed: () -> Unit,
     dismissOnBack: Boolean,
+    contentWindowInsets: @Composable () -> WindowInsets = { WindowInsets.systemBars.only(WindowInsetsSides.Top) },
     content: @Composable () -> Unit
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    content()
 
-        content()
-
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = onDismissed,
-                sheetState = sheetState,
-                shape = ProtonTheme.shapes.bottomSheet,
-                containerColor = ProtonTheme.colors.backgroundInvertedNorm,
-                contentColor = ProtonTheme.colors.textNorm,
-                dragHandle = { BottomSheetDefaults.DragHandle(color = ProtonTheme.colors.backgroundDeep) },
-                content = sheetContent,
-                properties = ModalBottomSheetProperties(shouldDismissOnBackPress = dismissOnBack)
-            )
-        }
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = onDismissed,
+            sheetState = sheetState,
+            shape = ProtonTheme.shapes.bottomSheet,
+            containerColor = ProtonTheme.colors.backgroundInvertedNorm,
+            contentColor = ProtonTheme.colors.textNorm,
+            dragHandle = { BottomSheetDefaults.DragHandle(color = ProtonTheme.colors.backgroundDeep) },
+            content = sheetContent,
+            contentWindowInsets = contentWindowInsets,
+            properties = ModalBottomSheetProperties(shouldDismissOnBackPress = dismissOnBack)
+        )
     }
 }
