@@ -18,47 +18,43 @@
 
 package ch.protonmail.android.uicomponents.snackbar
 
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHost
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
-import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 
 @Composable
 fun DismissableSnackbarHost(modifier: Modifier = Modifier, protonSnackbarHostState: ProtonSnackbarHostState) {
+    val currentSnackbarData = protonSnackbarHostState.snackbarHostState.currentSnackbarData
+
+    // Reset the dismiss state when new snackbar appears
     val dismissState = rememberSwipeToDismissBoxState(
-        initialValue = SwipeToDismissBoxValue.Settled,
-        confirmValueChange = { newValue ->
-            if (newValue != SwipeToDismissBoxValue.Settled) {
-                protonSnackbarHostState.snackbarHostState.currentSnackbarData?.dismiss()
-                true
-            } else {
-                false
-            }
-        }
+        initialValue = SwipeToDismissBoxValue.Settled
     )
+
+    // Reset to settled when snackbar data changes
+    LaunchedEffect(currentSnackbarData) {
+        if (currentSnackbarData != null) {
+            dismissState.snapTo(SwipeToDismissBoxValue.Settled)
+        }
+    }
 
     LaunchedEffect(dismissState.currentValue) {
         if (dismissState.currentValue != SwipeToDismissBoxValue.Settled) {
-            dismissState.reset()
+            protonSnackbarHostState.snackbarHostState.currentSnackbarData?.dismiss()
         }
     }
 
     SwipeToDismissBox(
         state = dismissState,
         modifier = modifier,
-        backgroundContent = {
-            // Customize background content here as desired
-        },
+        backgroundContent = { },
         content = {
-            ProtonSnackbarHost(
-                modifier = modifier,
-                hostState = protonSnackbarHostState
-            )
+            ProtonSnackbarHost(hostState = protonSnackbarHostState)
         }
     )
 }
-
