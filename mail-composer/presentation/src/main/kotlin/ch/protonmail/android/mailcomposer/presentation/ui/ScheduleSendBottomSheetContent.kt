@@ -55,6 +55,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.InstantWithFormatte
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingBottomSheetButton
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlin.time.Instant
 
 @Composable
@@ -114,6 +115,8 @@ fun ScheduleSendBottomSheetContent(
                     onUpsellNavigation = { type -> actions.onNavigateToUpsell(type) }
                 )
             }
+
+            BottomNavigationBarSpacer()
         }
     }
 }

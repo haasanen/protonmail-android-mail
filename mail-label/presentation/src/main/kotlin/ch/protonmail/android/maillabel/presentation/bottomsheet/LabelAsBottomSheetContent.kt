@@ -243,7 +243,7 @@ private fun TopBar(
             Icon(
                 painter = painterResource(
                     id =
-                        ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_cross
+                    ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_cross
                 ),
                 contentDescription = null,
                 tint = ProtonTheme.colors.iconNorm

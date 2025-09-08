@@ -63,6 +63,7 @@ import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.iconRes
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.maillabel.presentation.textRes
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -92,10 +93,7 @@ internal fun MoveToBottomSheetContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    horizontal = ProtonDimens.Spacing.Large,
-                    vertical = ProtonDimens.Spacing.Large
-                )
+                .padding(horizontal = ProtonDimens.Spacing.Large)
                 .verticalScroll(rememberScrollState())
         ) {
             CustomMoveToGroupWithActionButton(
@@ -114,6 +112,8 @@ internal fun MoveToBottomSheetContent(
                     actions.onFolderSelected(folderId, MailLabelText(folderName), entryPoint)
                 }
             )
+
+            BottomNavigationBarSpacer()
         }
     }
 }

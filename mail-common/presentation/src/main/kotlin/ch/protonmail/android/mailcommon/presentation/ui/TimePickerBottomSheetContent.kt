@@ -83,6 +83,7 @@ import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.labelLargeInverted
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.R
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
@@ -170,6 +171,8 @@ fun TimePickerBottomSheetContent(
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
 
             ScheduleSendDatePicker(modifier = Modifier, datePickerState = datePickerState, pickedDate = pickedDate)
+
+            BottomNavigationBarSpacer()
         }
     }
 }

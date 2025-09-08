@@ -53,6 +53,7 @@ import ch.protonmail.android.mailupselling.presentation.model.onboarding.Onboard
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingUpsellState
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import ch.protonmail.android.mailupselling.presentation.viewmodel.OnboardingUpsellViewModel
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import ch.protonmail.android.uicomponents.bottomsheet.BottomSheetAnimatedContent
 
 @Composable
@@ -73,9 +74,12 @@ fun OnboardingUpsellScreen(onDismiss: () -> Unit, onError: (String) -> Unit) {
                 onError = onError
             )
 
-            is OnboardingUpsellState.Loading -> ProtonHorizontallyCenteredProgress(
-                modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large)
-            )
+            is OnboardingUpsellState.Loading -> Column {
+                ProtonHorizontallyCenteredProgress(
+                    modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large)
+                )
+                BottomNavigationBarSpacer()
+            }
 
             is OnboardingUpsellState.Error -> onDismiss()
         }
@@ -164,6 +168,8 @@ private fun OnboardingUpsellScreen(
                     is OnboardingPlanUpgradeUiModel.Paid -> PaidPlanCardContent(plan, onDismiss, onError)
                 }
             }
+
+            BottomNavigationBarSpacer()
         }
     }
 }

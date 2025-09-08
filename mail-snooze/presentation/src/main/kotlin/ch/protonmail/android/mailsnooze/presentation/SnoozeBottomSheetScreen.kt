@@ -29,6 +29,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -72,6 +74,7 @@ import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiMode
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.ui.Tile
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingBottomSheetButton
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import me.proton.core.domain.entity.UserId
 import kotlin.time.Instant
 
@@ -156,7 +159,8 @@ fun SnoozeOptionsSheet(
 ) {
     Column(
         modifier = modifier
-            .padding(all = ProtonDimens.Spacing.Large),
+            .padding(all = ProtonDimens.Spacing.Large)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
     ) {
@@ -171,6 +175,8 @@ fun SnoozeOptionsSheet(
             items = snoozeOptions.chunk(),
             onEvent = onEvent
         )
+
+        BottomNavigationBarSpacer()
     }
 }
 

@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":mail-upselling:domain"))
     implementation(project(":mail-upselling:presentation"))
     implementation(project(":design-system"))
+    implementation(project(":uicomponents"))
     implementation(project(":presentation-compose"))
     implementation(libs.haze)
 

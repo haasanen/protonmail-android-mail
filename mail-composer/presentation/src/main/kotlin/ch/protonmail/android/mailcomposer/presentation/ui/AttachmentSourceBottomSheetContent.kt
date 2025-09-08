@@ -45,6 +45,7 @@ import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ActionGroup
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ActionGroupItem
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
@@ -104,6 +105,8 @@ fun AttachmentSourceBottomSheetContent(
                     onClick = onClick
                 )
             }
+
+            BottomNavigationBarSpacer()
         }
     }
 }

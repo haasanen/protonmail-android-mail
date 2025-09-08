@@ -47,6 +47,7 @@ import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingContent
 import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingIndexDots
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingViewModel
 import ch.protonmail.android.mailupselling.presentation.ui.onboarding.OnboardingUpsellScreen
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
@@ -148,6 +149,8 @@ private fun OnboardingScreen(
             OnboardingIndexDots(pagerState.currentPage, viewCount)
             OnboardingButton(onExitAction, pagerState, viewCount)
         }
+
+        BottomNavigationBarSpacer()
     }
 }
 

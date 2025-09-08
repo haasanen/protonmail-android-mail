@@ -42,6 +42,7 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailnotifications.R
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionRequestUiModel
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionStateType
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 fun NotificationsPermissionBottomSheet(
@@ -91,6 +92,8 @@ fun NotificationsPermissionBottomSheet(
         )
 
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
+
+        BottomNavigationBarSpacer()
     }
 }
 

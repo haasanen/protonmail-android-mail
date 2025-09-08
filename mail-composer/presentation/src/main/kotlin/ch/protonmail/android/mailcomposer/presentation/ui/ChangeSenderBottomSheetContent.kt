@@ -47,6 +47,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 fun ChangeSenderBottomSheetContent(
@@ -125,6 +126,8 @@ fun ChangeSenderBottomSheetContent(
                 }
             }
         }
+
+        BottomNavigationBarSpacer()
     }
 
 }
