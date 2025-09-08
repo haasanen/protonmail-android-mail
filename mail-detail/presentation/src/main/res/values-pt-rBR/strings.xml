@@ -175,4 +175,5 @@
   <string name="unsubscribe_newsletter_banner_button">Cancelar assinatura</string>
   <string name="already_unsubscribed_banner_message">Você já está descadastrado desta lista de e-mails.</string>
   <string name="error_unsubscribe_newsletter">Não foi possível cancelar a assinatura da lista de e-mails.</string>
+  <string name="detail_error_loading_single_message">Erro ao carregar mensagem</string>
 </resources>

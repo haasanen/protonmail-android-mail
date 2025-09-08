@@ -28,7 +28,7 @@
   <!-- Upselling: Mailbox Promo -->
   <string name="upselling_mailbox_plus_promo_description_override">Aprofiteu el millor de Mail amb aquesta oferta per temps limitat</string>
   <string name="upselling_mailbox_plus_promo_title">Proveu el Mail Plus per %s</string>
-  <string name="upselling_mailbox_plus_promo_cta">Obtingueu 1 mes per %s</string>
+  <string name="upselling_mailbox_plus_promo_cta">Obté 1 mes per %s</string>
   <string name="upselling_mailbox_plus_promo_skip">Omet l\'oferta</string>
   <string name="upselling_mailbox_plus_promo_renewal">%s pel 1r mes, després %s al mes</string>
   <!-- Upselling: Contact Groups -->

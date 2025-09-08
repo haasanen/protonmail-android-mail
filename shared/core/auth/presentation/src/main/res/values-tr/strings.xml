@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">E-posta doğrulanamadı</string>
   <string name="auth_signup_recovery_phone_validation_error">Telefon numarası doğrulanamadı</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Parola ile onayı aynı değil. Lütfen yeniden deneyin.</string>
+  <string name="auth_signup_general_error">Bir sorun çıktı. Lütfen yeniden deneyin.</string>
   <string name="auth_signup_countries_search">Ülke ara</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kullanıcı kurulamadı.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adres kurulamadı.</string>

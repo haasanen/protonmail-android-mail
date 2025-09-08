@@ -175,4 +175,5 @@
   <string name="unsubscribe_newsletter_banner_button">Se désabonner</string>
   <string name="already_unsubscribed_banner_message">Vous êtes désinscrit de cette liste de diffusion</string>
   <string name="error_unsubscribe_newsletter">La désinscription à la newsletter n\'a pas abouti.</string>
+  <string name="detail_error_loading_single_message">Le message n\'a pas pu être chargé.</string>
 </resources>

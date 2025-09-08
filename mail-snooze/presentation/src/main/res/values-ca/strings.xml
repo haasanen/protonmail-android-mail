@@ -22,7 +22,7 @@
   <string name="snooze_sheet_option_later_this_week">Més endavant aquesta setmana</string>
   <string name="snooze_sheet_option_tomorrow">Demà</string>
   <string name="snooze_sheet_option_this_weekend">Aquest cap de setmana</string>
-  <string name="snooze_sheet_option_custom">Personalitzeu-ho</string>
+  <string name="snooze_sheet_option_custom">Personalitza</string>
   <string name="snooze_sheet_option_custom_detail">Trieu la data i l\'hora</string>
   <string name="snooze_sheet_option_upsell_detail">Característica de pagament</string>
   <string name="snooze_sheet_snooze_title">Ajorna fins a</string>
@@ -35,7 +35,7 @@
   <string name="snooze_picker_content_description">Ajorna el missatge</string>
   <string name="snooze_picker_button_title">Desa</string>
   <string name="snooze_custom_upsell_title">Data i hora personalitzades</string>
-  <string name="snooze_custom_upsell_title_short">Personalitzeu-ho</string>
+  <string name="snooze_custom_upsell_title_short">Personalitza</string>
   <string name="snooze_custom_upsell_hint_short">Milloreu el pla per a accedir-hi</string>
   <plurals name="snoozed_in_days">
     <item quantity="one">S\'ha ajornat fins demà</item>

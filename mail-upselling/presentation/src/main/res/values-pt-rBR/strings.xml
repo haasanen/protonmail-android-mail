@@ -94,7 +94,7 @@
   <string name="upselling_onboarding_entitlements_show_more">Mostrar mais</string>
   <string name="upselling_onboarding_entitlements_show_less">Mostrar menos</string>
   <string name="upselling_onboarding_button_continue_free">Continuar com o plano Free</string>
-  <string name="upselling_onboarding_autorenew">Cobrança em %s a cada %s</string>
+  <string name="upselling_onboarding_autorenew">Cobrado em %s a cada %s</string>
   <string name="upselling_onboarding_autorenew_welcome_offer">Oferta de boas-vindas. Renovação automática por %s a cada %s</string>
   <string name="upselling_onboarding_autorenew_month">mês</string>
   <string name="upselling_onboarding_autorenew_year">12 meses</string>

@@ -175,4 +175,5 @@
   <string name="unsubscribe_newsletter_banner_button">Avsluta prenumeration</string>
   <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
   <string name="error_unsubscribe_newsletter">Misslyckades att avsluta prenumeration på nyhetsbrev</string>
+  <string name="detail_error_loading_single_message">Misslyckades ladda meddelande</string>
 </resources>

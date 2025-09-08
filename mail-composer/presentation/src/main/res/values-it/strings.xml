@@ -138,5 +138,5 @@
   <string name="composer_loading_attachments_error">Caricamento degli allegati non riuscito</string>
   <string name="composer_attachment_upload_error_retry">Caricamento di alcuni allegati non riuscito</string>
   <string name="composer_external_encryption_unexpected_error">Errore imprevisto %s</string>
-  <string name="composer_sender_changed_original_address_cannot_send">L’indirizzo selezionato non può essere utilizzato per l’invio. Il messaggio verrà inviato dal tuo indirizzo predefinito.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">Invio con l\'indirizzo email attuale non valido. Questo messaggio verrà inviato dall\'indirizzo email predefinito.</string>
 </resources>

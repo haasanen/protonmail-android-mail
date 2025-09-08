@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Validarea adresei de e-mail a eșuat.</string>
   <string name="auth_signup_recovery_phone_validation_error">Validarea numărului de telefon a eșuat.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Parolele nu coincid. Reîncercați.</string>
+  <string name="auth_signup_general_error">Ceva nu a funcționat bine. Reîncercați.</string>
   <string name="auth_signup_countries_search">Căutare țară</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nu s-a putut configura utilizatorul.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nu s-a putut configura adresa.</string>

@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Overenie e-mailu zlyhalo</string>
   <string name="auth_signup_recovery_phone_validation_error">Overenie telefónneho čísla zlyhalo</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Heslá sa nezhodujú. Skúste to prosím znova.</string>
+  <string name="auth_signup_general_error">Niečo sa pokazilo. Skúste to znova, prosím.</string>
   <string name="auth_signup_countries_search">Hľadať krajinu</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Používateľa nie je možné nastaviť.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adresu nie je možné nastaviť.</string>

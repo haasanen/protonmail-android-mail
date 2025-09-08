@@ -171,8 +171,9 @@
   <string name="rsvp_widget_message">Scrivi</string>
   <string name="snooze_message_snoozed_until_banner_title">Posticipato a</string>
   <string name="snooze_message_unsnooze_banner_button">Non posticipare</string>
-  <string name="unsubscribe_newsletter_banner_message">Questo messaggio proviene da una mailing list.</string>
+  <string name="unsubscribe_newsletter_banner_message">Questo messaggio proviene da una lista di distribuzione</string>
   <string name="unsubscribe_newsletter_banner_button">Annulla l\'iscrizione</string>
-  <string name="already_unsubscribed_banner_message">Sei stato rimosso da questa mailing list.</string>
-  <string name="error_unsubscribe_newsletter">Impossibile annullare l\'iscrizione alla newsletter</string>
+  <string name="already_unsubscribed_banner_message">Iscrizione alla newsletter annullata</string>
+  <string name="error_unsubscribe_newsletter">Annullamento dell\'iscrizione non riuscito</string>
+  <string name="detail_error_loading_single_message">Caricamento del messaggio non riuscito</string>
 </resources>

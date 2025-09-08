@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">이메일 검증 실패</string>
   <string name="auth_signup_recovery_phone_validation_error">전화번호 검증 실패</string>
   <string name="auth_signup_createpassword_error_password_not_equal">비밀번호가 일치하지 않습니다. 다시 시도해주세요.</string>
+  <string name="auth_signup_general_error">문제가 발생했습니다. 다시 시도해 주세요.</string>
   <string name="auth_signup_countries_search">국가 검색</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">사용자를 설정할 수 없습니다.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">주소를 설정할 수 없습니다.</string>

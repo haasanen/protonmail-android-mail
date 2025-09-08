@@ -55,5 +55,5 @@
   <string name="target_sign_in_error_new_qr">Luo QR-koodi</string>
   <string name="target_sign_in_error_back_to_signin">Takaisin kirjautumiseen</string>
   <string name="target_sign_in_learn_more">Lue lisää</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Yhtä tai useampaa toimintoa ei voida käsitellä. Kirjaudu ulos ja uudelleen sisään tilillesi.</string>
 </resources>

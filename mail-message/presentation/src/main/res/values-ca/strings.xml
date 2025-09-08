@@ -41,7 +41,7 @@
   <string name="attachment_type_presentation">Presentació</string>
   <string name="attachment_type_calendar">Calendari</string>
   <string name="attachment_type_code">Codi</string>
-  <string name="attachment_type_font">Font</string>
+  <string name="attachment_type_font">Tipus de lletra</string>
   <string name="attachment_type_key">Clau</string>
   <string name="attachment_type_keynote">Keynote</string>
   <string name="attachment_type_numbers">Numbers</string>

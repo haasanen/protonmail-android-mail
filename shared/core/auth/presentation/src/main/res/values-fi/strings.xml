@@ -33,7 +33,7 @@
   <string name="auth_login_close">Sulje</string>
   <string name="auth_login_help">Tuki</string>
   <string name="auth_sign_in">Kirjaudu sisään</string>
-  <string name="auth_login_username">Username or email</string>
+  <string name="auth_login_username">Käyttäjätunnus tai sähköpostiosoite</string>
   <string name="auth_email">Sähköpostiosoite</string>
   <string name="auth_password">Salasana</string>
   <string name="auth_username_placeholder">Käyttäjätunnus tai sähköpostiosoite</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Käyttäjätunnus ei voi olla tyhjä.</string>
   <string name="auth_signup_email_assistive_text">Sähköpostiosoite ei voi olla tyhjä.</string>
   <string name="auth_signup_next">Seuraava</string>
-  <string name="auth_signup_username">Username</string>
+  <string name="auth_signup_username">Käyttäjätunnus</string>
   <string name="auth_signup_create_password">Luo salasanasi</string>
   <string name="auth_signup_password">Salasana</string>
   <string name="auth_signup_repeat_password">Toista salasana</string>
@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Sähköpostin vahvistus epäonnistui</string>
   <string name="auth_signup_recovery_phone_validation_error">Puhelinnumeron vahvistus epäonnistui</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Salasanat eivät täsmää. Yritä uudelleen.</string>
+  <string name="auth_signup_general_error">Jotain meni pieleen. Yritä uudelleen.</string>
   <string name="auth_signup_countries_search">Etsi maata</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Käyttäjää ei voitu määrittää.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Osoitetta ei voitu määrittää.</string>
@@ -145,7 +146,7 @@
   <string name="settings_save_main_password">Tallenna uusi pääsalasana</string>
   <string name="settings_password_management_tab_main_password">Pääsalasana</string>
   <string name="settings_password_management_tab_second_password">Toinen salasana</string>
-  <string name="settings_password_management_change_password_note">Jotta voit vaihtaa kumman tahansa salasanasi, sinun on tiedettävä pääsalasanasi. </string>
+  <string name="settings_password_management_change_password_note">Jotta voit vaihtaa kumman tahansa salasanasi, sinun on tiedettävä pääsalasanasi.</string>
   <string name="settings_password_management_forgot_main_password">Unohditko pääsalasanasi?</string>
   <string name="settings_password_management_header">Vaihda salasana</string>
   <string name="settings_password_management_cannot_change_password">Et voi vaihtaa varasalasanaasi. Ota yhteyttä ylläpitoosi.</string>
@@ -167,5 +168,5 @@
   <string name="settings_password_error_invalid_recovery">Virheellinen 2FA-koodi. Yritä uudelleen.</string>
   <string name="settings_password_error_2fa_reused">Koodi on jo käytetty. Kokeile toista koodia.</string>
   <string name="settings_password_general_error">Tapahtui virhe.</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Yhtä tai useampaa toimintoa ei voida käsitellä. Kirjaudu ulos ja uudelleen sisään tilillesi.</string>
 </resources>

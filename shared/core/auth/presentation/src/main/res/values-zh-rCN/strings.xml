@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">邮箱验证失败</string>
   <string name="auth_signup_recovery_phone_validation_error">电话号码验证失败</string>
   <string name="auth_signup_createpassword_error_password_not_equal">密码不匹配，请重新输入。</string>
+  <string name="auth_signup_general_error">出错了，请再试一次。</string>
   <string name="auth_signup_countries_search">搜索国家/地区</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">无法设置用户。</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">无法设置地址。</string>

@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Weryfikacja adresu e-mail nie powiodła się</string>
   <string name="auth_signup_recovery_phone_validation_error">Weryfikacja numeru telefonu nie powiodła się</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Hasła nie pasują do siebie. Spróbuj ponownie.</string>
+  <string name="auth_signup_general_error">Coś poszło nie tak. Spróbuj ponownie.</string>
   <string name="auth_signup_countries_search">Szukaj kraju</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nie można skonfigurować użytkownika.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nie można skonfigurować adresu.</string>

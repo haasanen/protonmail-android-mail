@@ -27,7 +27,7 @@
   <string name="send_button_title">보내기</string>
   <string name="send_message_content_description">메시지 보내기</string>
   <string name="composer_expand_recipients_button">다른 수신인 보기</string>
-  <string name="composer_error_invalid_email">Email address is invalid or does not exist</string>
+  <string name="composer_error_invalid_email">이메일 주소가 유효하지 않거나 존재하지 않습니다</string>
   <string name="composer_error_invalid_sender">보낸 이의 주소가 잘못되었습니다</string>
   <string name="change_sender_button_content_description">보낸 사람 변경</string>
   <string name="composer_change_sender_paid_feature">보낸 사람의 주소를 변경하려면 유료 플랜으로 업그레이드하세요</string>
@@ -137,5 +137,5 @@
   <string name="composer_loading_attachments_error">첨부 파일 불러오기 실패</string>
   <string name="composer_attachment_upload_error_retry">일부 첨부 파일이 업로드에 실패했습니다. 다시 시도하십시오.</string>
   <string name="composer_external_encryption_unexpected_error">예기치 않은 오류, %s. 다시 시도하십시오.</string>
-  <string name="composer_sender_changed_original_address_cannot_send">The selected address cannot be used to send. Your message will be sent from your default address.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">선택한 발신 주소는 메시지를 보내는 데 사용할 수 없습니다. 메시지가 기본 주소에서 발송됩니다.</string>
 </resources>

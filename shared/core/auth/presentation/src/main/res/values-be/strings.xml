@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Збой праверкі адраса электроннай пошты</string>
   <string name="auth_signup_recovery_phone_validation_error">Збой праверкі нумара тэлефона</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Паролі не супадаюць. Паспрабуйце яшчэ раз.</string>
+  <string name="auth_signup_general_error">Нешта пайшло не так. Паспрабуйце яшчэ раз.</string>
   <string name="auth_signup_countries_search">Пошук краіны</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Немагчыма наладзіць карыстальніка.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Не атрымалася наладзіць адрас.</string>

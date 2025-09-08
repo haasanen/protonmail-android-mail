@@ -97,7 +97,7 @@
   </plurals>
   <string name="contact_bottom_sheet_redirect_to_web_title">Disponível na web</string>
   <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Ignorar</string>
-  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Criar contatos ou grupos no aplicativo ainda não está pronto. Por enquanto, você pode criá-los no aplicativo web e eles sincronizarão com o seu dispositivo.</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Ainda não é possível criar contatos ou grupos no aplicativo. Por enquanto, você pode criá-los no aplicativo web e eles serão sincronizados com o seu dispositivo.</string>
   <string name="edit_contact_bottom_sheet_redirect_to_web_description">Editar contatos ou grupos no aplicativo ainda não está pronto. Por enquanto, você pode editá-los na aplicação web e as alterações serão sincronizadas com seu dispositivo.</string>
   <string name="contact_bottom_sheet_redirect_to_web_button">Continuar na web</string>
 </resources>

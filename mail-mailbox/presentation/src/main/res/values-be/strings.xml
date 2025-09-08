@@ -27,9 +27,9 @@
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Увесці пошукавы запыт</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">Выбраны: %d</item>
-    <item quantity="few">Выбрана: %d</item>
-    <item quantity="many">Выбрана: %d</item>
-    <item quantity="other">Выбрана: %d</item>
+    <item quantity="few">Выбраны: %d</item>
+    <item quantity="many">Выбраны: %d</item>
+    <item quantity="other">Выбраны: %d</item>
   </plurals>
   <plurals name="filter_unread_button_text">
     <item quantity="one">%s непрачытаны</item>

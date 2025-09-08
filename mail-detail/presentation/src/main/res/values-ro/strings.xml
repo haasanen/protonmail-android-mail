@@ -178,4 +178,5 @@
   <string name="unsubscribe_newsletter_banner_button">Dezabonare</string>
   <string name="already_unsubscribed_banner_message">V-ați dezabonat de la această listă de corespondență.</string>
   <string name="error_unsubscribe_newsletter">Nu s-a putut dezabona de la buletinul informativ.</string>
+  <string name="detail_error_loading_single_message">Încărcarea mesajului a eșuat.</string>
 </resources>

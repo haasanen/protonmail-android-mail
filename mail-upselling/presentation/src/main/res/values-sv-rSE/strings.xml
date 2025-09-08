@@ -93,9 +93,9 @@
   <string name="upselling_onboarding_yearly_savings">Betala årligen och spara %s</string>
   <string name="upselling_onboarding_entitlements_show_more">Visa mer</string>
   <string name="upselling_onboarding_entitlements_show_less">Visa mindre</string>
-  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
-  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
-  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
+  <string name="upselling_onboarding_button_continue_free">Fortsätt med Free-paket</string>
+  <string name="upselling_onboarding_autorenew">Faktureras med %s varje %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Välkomsterbjudande. Förnyas automatiskt med %s varje %s</string>
   <string name="upselling_onboarding_autorenew_month">månad</string>
   <string name="upselling_onboarding_autorenew_year">12 månader</string>
   <string name="upselling_onboarding_free_entitlement_storage">1 GB lagringsutrymme</string>

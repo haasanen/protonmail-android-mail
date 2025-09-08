@@ -69,8 +69,8 @@
   <string name="mail_settings_app_customization_mail_experience_header">Experiência de correio</string>
   <string name="mail_settings_app_customization_advanced_header">Avançado</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Assinatura móvel</string>
-  <string name="mail_settings_app_customization_mobile_signature_on">Ativado</string>
-  <string name="mail_settings_app_customization_mobile_signature_off">Desativado</string>
+  <string name="mail_settings_app_customization_mobile_signature_on">Ativada</string>
+  <string name="mail_settings_app_customization_mobile_signature_off">Desativada</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Ativar assinatura</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistema</string>
@@ -120,16 +120,16 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Navegue até as configurações de notificação do sistema</string>
   <string name="mail_settings_notifications_update_error">Erro ao atualizar as configurações</string>
   <string name="mail_settings_notifications_loading_error">Erro ao carregar as configurações</string>
-  <string name="notifications_on">Ativado</string>
-  <string name="notifications_off">Desativado</string>
+  <string name="notifications_on">Ativada</string>
+  <string name="notifications_off">Desativada</string>
   <!-- Customize Toolbar -->
   <string name="mail_settings_custom_toolbar_title">Personalizar barras de ferramentas</string>
   <string name="mail_settings_custom_toolbar_list_view_title">Ferramentas de lista</string>
-  <string name="mail_settings_custom_toolbar_list_view_description">Esta barra de ferramentas aparece quando você seleciona várias mensagens em uma lista (por exemplo, Caixa de entrada, Lixeira etc.).</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Esta barra de ferramentas aparece quando você seleciona várias mensagens em uma lista (por exemplo, Caixa de entrada, Lixeira etc.)</string>
   <string name="mail_settings_custom_toolbar_message_view_title">Barra de ferramentas de mensagem</string>
-  <string name="mail_settings_custom_toolbar_message_view_description">Esta barra de ferramentas é visível ao ler as mensagens.</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Esta barra de ferramentas permanece visível durante a leitura das mensagens</string>
   <string name="mail_settings_custom_toolbar_conversation_view_title">Barra de ferramentas de conversa</string>
-  <string name="mail_settings_custom_toolbar_conversation_view_description">Esta barra de ferramentas continua visível ao ler mensagens.</string>
+  <string name="mail_settings_custom_toolbar_conversation_view_description">Esta barra de ferramentas permanece visível durante a leitura das mensagens</string>
   <string name="mail_settings_custom_toolbar_edit_actions">Editar ações</string>
   <string name="mail_settings_custom_toolbar_set_actions">Ações da barra de ferramentas</string>
   <string name="mail_settings_custom_toolbar_remaining_actions">Ações disponíveis</string>

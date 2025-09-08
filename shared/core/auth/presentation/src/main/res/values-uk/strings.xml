@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Не вдалося перевірити поштову адресу</string>
   <string name="auth_signup_recovery_phone_validation_error">Не вдалося перевірити номер телефону</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Паролі відрізняються. Повторіть спробу.</string>
+  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
   <string name="auth_signup_countries_search">Пошук країни</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Не вдалося налаштувати користувача.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Не вдалося налаштувати адресу.</string>

@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Preverjanje e-pošte ni uspelo.</string>
   <string name="auth_signup_recovery_phone_validation_error">Preverjanje telefonske številke ni uspelo.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Gesli se ne ujemata. Poskusite znova.</string>
+  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
   <string name="auth_signup_countries_search">Iskanje po državah</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Ni bilo mogoče nastaviti uporabnika.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Ni bilo mogoče nastaviti naslova.</string>

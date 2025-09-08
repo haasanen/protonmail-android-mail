@@ -18,14 +18,14 @@
   -->
 <resources>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Bem-vindo(a) ao Proton Mail, onde a privacidade é padrão</string>
-  <string name="onboarding_welcome_description">Desfrute de mensagens criptografadas, menos spam, proteção contra phishing e bloqueio de rastreadores. Bem-vindo à privacidade.</string>
+  <string name="onboarding_welcome_title">Boas-vindas ao Proton Mail, onde a privacidade é o padrão</string>
+  <string name="onboarding_welcome_description">Desfrute de mensagens criptografadas, menos spam, proteção contra phishing e bloqueio de rastreadores. De boas-vindas à privacidade.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Foco ao seu alcance</string>
-  <string name="onboarding_rebuilt_description">Gaste menos tempo organizando e mais tempo fazendo. Sua caixa de entrada é projetada para ser mais fácil de navegar, para que você possa chegar ao que é importante mais rápido.</string>
+  <string name="onboarding_rebuilt_description">Passe menos tempo organizando e mais tempo fazendo. Sua caixa de entrada foi projetada para ser mais fácil de navegar, para que você possa chegar ao que é importante mais rápido.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Fique conectado, mesmo off-line</string>
-  <string name="onboarding_feedback_description">Ler, escrever e gerenciar e-mails onde quer que você esteja. Tudo sincroniza automaticamente no momento em que você volta a ficar on-line.</string>
+  <string name="onboarding_feedback_title">Fique conectado, mesmo offline</string>
+  <string name="onboarding_feedback_description">Leia, escreva e gerencie e-mails onde quer que você esteja. Tudo sincroniza automaticamente no momento em que você volta a ficar online.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Próximo</string>
   <string name="onboarding_get_started">Começar</string>

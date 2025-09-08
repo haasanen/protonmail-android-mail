@@ -181,4 +181,5 @@
   <string name="unsubscribe_newsletter_banner_button">Anuluj subskrypcję</string>
   <string name="already_unsubscribed_banner_message">Anulowano subskrypcję listy mailingowej.</string>
   <string name="error_unsubscribe_newsletter">Nie udało się anulować subskrypcji</string>
+  <string name="detail_error_loading_single_message">Failed loading message</string>
 </resources>

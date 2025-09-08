@@ -18,14 +18,14 @@
   -->
 <resources>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Welcome to Proton Mail, where privacy is default</string>
-  <string name="onboarding_welcome_description">Enjoy encrypted messages, fewer spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
+  <string name="onboarding_welcome_title">Tervetuloa Proton Mailiin, missä yksityisyys on oletusarvo</string>
+  <string name="onboarding_welcome_description">Nauti salatuista viesteistä, vähemmästä roskapostista, tietojenkalastelun torjunnasta ja seurannanestosta. Tervetuloa yksityisyyden pariin.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Focus at your fingertips</string>
-  <string name="onboarding_rebuilt_description">Spend less time sorting and more time doing. Your inbox is designed to be easier to navigate, so you can get to what’s important faster.</string>
+  <string name="onboarding_rebuilt_title">Keskittyminen käden ulottuvilla</string>
+  <string name="onboarding_rebuilt_description">Käytä vähemmän aikaa lajitteluun ja enemmän tekemiseen. Saapuneet-kansiosi on suunniteltu helpommin navigoitavaksi, jotta pääset tärkeiden asioiden kimppuun nopeammin.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Stay connected, even offline</string>
-  <string name="onboarding_feedback_description">Read, write, and manage emails wherever you are. Everything syncs automatically the moment you’re back online.</string>
+  <string name="onboarding_feedback_title">Pysy yhteyksissä jopa ilman yhteyttä</string>
+  <string name="onboarding_feedback_description">Lue, kirjoita ja hallitse sähköposteja missä vain. Kaikki sykronoituu automaattisesti heti, kun yhteys palaa.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Seuraava</string>
   <string name="onboarding_get_started">Aloita</string>

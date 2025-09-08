@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">E-mailadres validatie mislukt</string>
   <string name="auth_signup_recovery_phone_validation_error">Telefoonnummer validatie mislukt</string>
   <string name="auth_signup_createpassword_error_password_not_equal">De wachtwoorden komen niet overeen. Probeer opnieuw.</string>
+  <string name="auth_signup_general_error">Er is iets fout gegaan. Probeer het later nog eens.</string>
   <string name="auth_signup_countries_search">Zoek land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">De gebruiker kon niet worden ingesteld.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Kon het adres niet instellen.</string>

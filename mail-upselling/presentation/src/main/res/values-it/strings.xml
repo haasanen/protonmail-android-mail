@@ -90,15 +90,15 @@
   <string name="upselling_onboarding_choose_plan_monthly">Mensile</string>
   <string name="upselling_onboarding_choose_plan_yearly">Annuale</string>
   <string name="upselling_onboarding_best_value">Miglior prezzo</string>
-  <string name="upselling_onboarding_yearly_savings">Paga annualmente e risparmia %s</string>
+  <string name="upselling_onboarding_yearly_savings">Paga annualmente e risparmia il %s</string>
   <string name="upselling_onboarding_entitlements_show_more">Mostra altro</string>
   <string name="upselling_onboarding_entitlements_show_less">Mostra meno</string>
-  <string name="upselling_onboarding_button_continue_free">Continua con il piano gratuito</string>
-  <string name="upselling_onboarding_autorenew">Fatturato a %s ogni %s</string>
-  <string name="upselling_onboarding_autorenew_welcome_offer">Offerta di benvenuto. Si rinnova automaticamente ogni %s %s</string>
+  <string name="upselling_onboarding_button_continue_free">Continua con il piano gratuito</string>
+  <string name="upselling_onboarding_autorenew">Addebitato a %s ogni %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Offerta di benvenuto. Si rinnova automaticamente a %s ogni %s</string>
   <string name="upselling_onboarding_autorenew_month">mese</string>
-  <string name="upselling_onboarding_autorenew_year">12 mesi</string>
-  <string name="upselling_onboarding_free_entitlement_storage">1 GB di archiviazione</string>
+  <string name="upselling_onboarding_autorenew_year">12 mesi</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB di spazio</string>
   <string name="upselling_onboarding_free_entitlement_mail">1 indirizzo email</string>
   <!-- Other UI Items -->
   <string name="upselling_unlimited_description_override">Il tuo unico e completo abbonamento premium</string>

@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Ověření e-mailu selhalo</string>
   <string name="auth_signup_recovery_phone_validation_error">Ověření telefonního čísla selhalo</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Hesla se neshodují. Prosím, zkuste to znovu.</string>
+  <string name="auth_signup_general_error">Něco se pokazilo. Prosím, zkuste to znovu.</string>
   <string name="auth_signup_countries_search">Vyhledat zemi</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nepodařilo se nastavit uživatele.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nepodařilo se nastavit adresu.</string>

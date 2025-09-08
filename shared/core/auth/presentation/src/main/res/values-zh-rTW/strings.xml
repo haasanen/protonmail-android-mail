@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">電子郵件驗證失敗</string>
   <string name="auth_signup_recovery_phone_validation_error">電話號碼驗證失敗</string>
   <string name="auth_signup_createpassword_error_password_not_equal">密碼不一致。請再試一次。</string>
+  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
   <string name="auth_signup_countries_search">搜尋國家</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">無法設定使用者。</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">無法設定位址。</string>

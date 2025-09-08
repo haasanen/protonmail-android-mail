@@ -27,7 +27,7 @@
   <string name="send_button_title">Lähetä</string>
   <string name="send_message_content_description">Lähetä viesti</string>
   <string name="composer_expand_recipients_button">Näytä muut vastaanottajat</string>
-  <string name="composer_error_invalid_email">Email address is invalid or does not exist</string>
+  <string name="composer_error_invalid_email">Annettu sähköpostiosoite ei ole kelvollinen tai sitä ei ole olemassa</string>
   <string name="composer_error_invalid_sender">Lähettäjän osoite on virheellinen</string>
   <string name="change_sender_button_content_description">Vaihda lähettäjä</string>
   <string name="composer_change_sender_paid_feature">Päivitä maksulliseen tilaukseen muuttaaksesi lähettäjän osoitetta</string>
@@ -138,5 +138,5 @@
   <string name="composer_loading_attachments_error">Liitteiden lataus epäonnistui</string>
   <string name="composer_attachment_upload_error_retry">Joidenkin liitteiden lähetys epäonnistui. Yritä uudelleen.</string>
   <string name="composer_external_encryption_unexpected_error">Odottamaton virhe %s. Yritä uudelleen.</string>
-  <string name="composer_sender_changed_original_address_cannot_send">The selected address cannot be used to send. Your message will be sent from your default address.</string>
+  <string name="composer_sender_changed_original_address_cannot_send">Valittua osoitetta ei voi käyttää lähettämiseen. Viestisi lähetetään oletusosoitteestasi.</string>
 </resources>

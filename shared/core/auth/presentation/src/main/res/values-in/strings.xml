@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Validasi email gagal</string>
   <string name="auth_signup_recovery_phone_validation_error">Validasi nomor telepon gagal</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Kata sandi tidak cocok. Silakan coba lagi.</string>
+  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
   <string name="auth_signup_countries_search">Cari negara</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Tidak dapat menyiapkan pengguna.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Tidak dapat menyiapkan alamat.</string>

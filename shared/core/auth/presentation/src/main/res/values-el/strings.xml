@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Η επικύρωση ηλεκτρονικής διεύθυνσης απέτυχε</string>
   <string name="auth_signup_recovery_phone_validation_error">Η επικύρωση του αριθμού τηλεφώνου απέτυχε</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Οι κωδικοί πρόσβασης δεν ταιριάζουν. Παρακαλούμε προσπαθήστε ξανά.</string>
+  <string name="auth_signup_general_error">Κάτι πήγε στραβά. Παρακαλούμε δοκιμάστε ξανά.</string>
   <string name="auth_signup_countries_search">Αναζήτηση χώρας</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Δεν ήταν δυνατή η ρύθμιση του χρήστη.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Δεν ήταν δυνατή η ρύθμιση της διεύθυνσης.</string>

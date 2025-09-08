@@ -175,4 +175,5 @@
   <string name="unsubscribe_newsletter_banner_button">Cancelar la suscripción</string>
   <string name="already_unsubscribed_banner_message">Has sido dado de baja de esta lista de correo</string>
   <string name="error_unsubscribe_newsletter">Error al cancelar la suscripción al boletín</string>
+  <string name="detail_error_loading_single_message">Error al cargar los mensajes</string>
 </resources>

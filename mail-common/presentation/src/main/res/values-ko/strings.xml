@@ -25,8 +25,8 @@
   <string name="toolbar_back_content_description">이전 화면으로 돌아가기</string>
   <string name="x_error_not_logged_in">로그인하지 않음</string>
   <string name="action_customize_toolbar">도구바 사용자화</string>
-  <string name="action_customize_toolbar_description">도구바 사용자화</string>
-  <string name="action_customize_toolbar_content_description">도구바 사용자화</string>
+  <string name="action_customize_toolbar_description">도구 모음 사용자화</string>
+  <string name="action_customize_toolbar_content_description">도구 모음 사용자화</string>
   <string name="action_reply">회신</string>
   <string name="action_reply_all">전체 회신</string>
   <string name="action_forward">전달</string>

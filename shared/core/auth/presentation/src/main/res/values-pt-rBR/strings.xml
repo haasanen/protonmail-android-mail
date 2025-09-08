@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Erro na validação do e-mail</string>
   <string name="auth_signup_recovery_phone_validation_error">Erro ao validar o número de telefone</string>
   <string name="auth_signup_createpassword_error_password_not_equal">As senhas não correspondem. Tente novamente.</string>
+  <string name="auth_signup_general_error">Ocorreu um erro. Tente novamente.</string>
   <string name="auth_signup_countries_search">Procurar país</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Não foi possível configurar o usuário.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Não foi possível configurar o endereço.</string>

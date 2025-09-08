@@ -125,7 +125,7 @@
   <!-- Customize Toolbar -->
   <string name="mail_settings_custom_toolbar_title">Přizpůsobit panely nástrojů</string>
   <string name="mail_settings_custom_toolbar_list_view_title">Panel nástrojů seznamu</string>
-  <string name="mail_settings_custom_toolbar_list_view_description">Tento panel nástrojů se zobrazí když vyberete více zpráv ze seznamu (např. Doručená pošta, Koš, atd.)</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Tento panel nástrojů se zobrazí při výběru více zpráv v seznamu (např. Doručená pošta, Koš atd.).</string>
   <string name="mail_settings_custom_toolbar_message_view_title">Panel nástrojů zpráv</string>
   <string name="mail_settings_custom_toolbar_message_view_description">Tento panel nástrojů zůstává viditelný i při čtení zpráv</string>
   <string name="mail_settings_custom_toolbar_conversation_view_title">Panel nástrojů konverzace</string>

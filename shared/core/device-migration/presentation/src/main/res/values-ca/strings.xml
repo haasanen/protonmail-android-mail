@@ -33,7 +33,7 @@
   <string name="intro_origin_sign_in_tip_1">Aneu amb compte amb els missatges amb codis QR. Només escanegeu-ne si confieu en la font.</string>
   <string name="intro_origin_sign_in_tip_2">Proton mai es posarà en contacte amb vosaltres inesperadament per demanar-vos que inicieu la sessió amb un codi QR.</string>
   <string name="intro_origin_sign_in_tip_3">Proton mai us demanarà que escanegeu un codi QR que no sigui de <b>https://proton.me</b> o d\'una aplicació oficial de Proton.</string>
-  <string name="intro_origin_sign_in_begin">Escanegeu aquest codi QR</string>
+  <string name="intro_origin_sign_in_begin">Escaneja el codi QR</string>
   <string name="intro_origin_biometrics_title">Desbloquegeu el dispositiu per a continuar</string>
   <string name="manual_code_input_title">Introduïu el codi manualment</string>
   <string name="manual_code_input_description">Per accedir al codi del dispositiu amb què voleu iniciar la sessió, premeu <b>Inicieu la sessió amb el codi QR</b> al menú d’ajuda de la pantalla d’inici de sessió i, després, premeu <b>Introduïu la clau manualment</b>.</string>

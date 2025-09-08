@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Verifica dell\'indirizzo email non riuscita</string>
   <string name="auth_signup_recovery_phone_validation_error">Verifica del numero di telefono non riuscita</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Password non corrispondente</string>
+  <string name="auth_signup_general_error">Si è verificato un errore</string>
   <string name="auth_signup_countries_search">Cerca il paese</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Configurazione dell\'utente non riuscita</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Configurazione dell\'indirizzo email non riuscita</string>

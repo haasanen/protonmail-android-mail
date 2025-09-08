@@ -181,4 +181,5 @@
   <string name="unsubscribe_newsletter_banner_button">Odhlásiť sa z odberu</string>
   <string name="already_unsubscribed_banner_message">Odhlásili ste sa z tohto mailingového zoznamu.</string>
   <string name="error_unsubscribe_newsletter">Nepodarilo sa odhlásiť odber z newslettera</string>
+  <string name="detail_error_loading_single_message">Načítanie správy zlyhalo</string>
 </resources>

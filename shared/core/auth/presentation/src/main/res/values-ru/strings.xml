@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Ошибка проверки адреса электронной почты.</string>
   <string name="auth_signup_recovery_phone_validation_error">Ошибка проверки номера телефона.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Пароли не совпадают. Попробуйте ещё раз.</string>
+  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
   <string name="auth_signup_countries_search">Поиск страны</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Не удалось настроить пользователя.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Не удалось настроить адрес.</string>

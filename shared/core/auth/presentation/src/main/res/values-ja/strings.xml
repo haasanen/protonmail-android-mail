@@ -109,6 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">メールアドレスの検証に失敗しました</string>
   <string name="auth_signup_recovery_phone_validation_error">電話番号の検証に失敗しました</string>
   <string name="auth_signup_createpassword_error_password_not_equal">パスワードが一致しません。再度お試しください。</string>
+  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
   <string name="auth_signup_countries_search">国を検索</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">ユーザーのセットアップができませんでした</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">アドレスをセットアップできませんでした。</string>
