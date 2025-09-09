@@ -84,6 +84,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.ActiveComposerReg
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
+import ch.protonmail.android.mailcontact.domain.usecase.PreloadContactSuggestions
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -173,6 +174,9 @@ internal class ComposerViewModelTest {
     private val getDraftSenderValidationError = mockk<GetDraftSenderValidationError> {
         coEvery { this@mockk.invoke() } returns null
     }
+    private val preloadContactSuggestions = mockk<PreloadContactSuggestions> {
+        coEvery { this@mockk.invoke(UserIdSample.Primary) } returns Unit.right()
+    }
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<DraftBody>()
@@ -223,7 +227,8 @@ internal class ComposerViewModelTest {
         isMessagePasswordSet,
         observeRecipientsValidation,
         getDraftSenderValidationError,
-        observePrimaryUserIdMock
+        observePrimaryUserIdMock,
+        preloadContactSuggestions
     )
 
     @Test

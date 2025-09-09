@@ -95,6 +95,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.ActiveComposerReg
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
+import ch.protonmail.android.mailcontact.domain.usecase.PreloadContactSuggestions
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
@@ -176,7 +177,8 @@ class ComposerViewModel @AssistedInject constructor(
     private val isMessagePasswordSet: IsMessagePasswordSet,
     private val observeRecipientsValidation: ObserveRecipientsValidation,
     private val getDraftSenderValidationError: GetDraftSenderValidationError,
-    observePrimaryUserId: ObservePrimaryUserId
+    observePrimaryUserId: ObservePrimaryUserId,
+    private val preloadContactSuggestions: PreloadContactSuggestions
 ) : ViewModel() {
 
     internal val subjectTextField = TextFieldState()
@@ -244,7 +246,10 @@ class ComposerViewModel @AssistedInject constructor(
             observeComposerFields()
             observeValidatedRecipients()
             observeSenderValidationError()
+            preloadContactSuggestions(primaryUserId())
+
             processActions()
+
         }
     }
 
