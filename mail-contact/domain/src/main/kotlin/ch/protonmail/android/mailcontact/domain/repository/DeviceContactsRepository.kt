@@ -20,10 +20,12 @@ package ch.protonmail.android.mailcontact.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
+import ch.protonmail.android.mailcontact.domain.model.DeviceContactsWithSignature
 
 interface DeviceContactsRepository {
 
     suspend fun getDeviceContacts(query: String): Either<DeviceContactsErrors, List<DeviceContact>>
+    suspend fun getAllContacts(useCacheIfAvailable: Boolean): Either<DeviceContactsErrors, DeviceContactsWithSignature>
 
     sealed class DeviceContactsErrors {
         data object PermissionDenied : DeviceContactsErrors()

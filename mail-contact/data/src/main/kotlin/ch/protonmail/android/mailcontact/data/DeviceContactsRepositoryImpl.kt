@@ -25,9 +25,12 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
+import ch.protonmail.android.mailcontact.domain.model.DeviceContactsWithSignature
 import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -37,13 +40,20 @@ class DeviceContactsRepositoryImpl @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : DeviceContactsRepository {
 
+    private val cacheMutex = Mutex()
+    private var allContactsCache: DeviceContactsWithSignature? = null
+
     override suspend fun getDeviceContacts(
         query: String
     ): Either<DeviceContactsRepository.DeviceContactsErrors, List<DeviceContact>> {
 
         val contentResolver = context.contentResolver
 
-        val selectionArgs = arrayOf("%$query%", "%$query%", "%$query%")
+        val (selection, selectionArgs) = if (query.isNotBlank()) {
+            ANDROID_SELECTION to arrayOf("%$query%", "%$query%", "%$query%")
+        } else {
+            null to null
+        }
 
         @Suppress("SwallowedException")
         val contactEmails = try {
@@ -51,7 +61,7 @@ class DeviceContactsRepositoryImpl @Inject constructor(
                 contentResolver.query(
                     ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                     ANDROID_PROJECTION,
-                    ANDROID_SELECTION,
+                    selection,
                     selectionArgs,
                     ANDROID_ORDER_BY
                 )
@@ -88,6 +98,33 @@ class DeviceContactsRepositoryImpl @Inject constructor(
         return deviceContacts.right()
     }
 
+    /**
+     * Returns all contacts. If [useCacheIfAvailable] is true and a cache exists,
+     * the cached value is returned. Otherwise, it fetches via getDeviceContacts("")
+     * and updates the cache on success.
+     */
+    override suspend fun getAllContacts(
+        useCacheIfAvailable: Boolean
+    ): Either<DeviceContactsRepository.DeviceContactsErrors, DeviceContactsWithSignature> {
+
+        if (useCacheIfAvailable) {
+            cacheMutex.withLock {
+                allContactsCache?.let { return it.right() }
+            }
+        }
+
+        return getDeviceContacts(query = "")
+            .map { freshContacts ->
+                val value = DeviceContactsWithSignature(
+                    contacts = freshContacts,
+                    signature = freshContacts.signature()
+                )
+                cacheMutex.withLock { allContactsCache = value }
+                value
+            }
+    }
+
+
     companion object {
 
         private const val ANDROID_ORDER_BY = ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY + " ASC"
@@ -104,3 +141,7 @@ class DeviceContactsRepositoryImpl @Inject constructor(
     }
 
 }
+
+@Suppress("MagicNumber")
+fun List<DeviceContact>.signature(): Long =
+    this.fold(0L) { acc, c -> acc + c.name.hashCode() + 31L * c.email.hashCode() }

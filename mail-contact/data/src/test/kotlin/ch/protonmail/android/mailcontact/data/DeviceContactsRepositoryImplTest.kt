@@ -14,6 +14,7 @@ import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import me.proton.core.test.kotlin.TestDispatcherProvider
 import org.junit.Assert
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -52,6 +53,18 @@ class DeviceContactsRepositoryImplTest {
         } returns cursorMock
     }
 
+    private fun expectCursorQueryAll() {
+        every {
+            contentResolverMock.query(
+                any(),
+                any(),
+                isNull(),
+                isNull(),
+                any()
+            )
+        } returns cursorMock
+    }
+
     private fun expectCursorQueryThrowsSecurityException() {
         every {
             contentResolverMock.query(any(), any(), any(), any(), any())
@@ -62,7 +75,7 @@ class DeviceContactsRepositoryImplTest {
         every { cursorMock.count } returns count
     }
 
-    @org.junit.Test
+    @Test
     fun `when there are multiple matching contacts, they are emitted`() = runTest(testDispatcherProvider.Main) {
         // Given
         val query = "cont"
@@ -80,7 +93,7 @@ class DeviceContactsRepositoryImplTest {
         verify(exactly = 2) { cursorMock.getString(columnIndexEmail) }
     }
 
-    @org.junit.Test
+    @Test
     fun `when there are no matching contacts, empty list is emitted`() = runTest(testDispatcherProvider.Main) {
         // Given
         val query = "cont"
@@ -98,7 +111,7 @@ class DeviceContactsRepositoryImplTest {
         verify(exactly = 0) { cursorMock.getString(columnIndexEmail) }
     }
 
-    @org.junit.Test
+    @Test
     fun `when content resolver throws SecurityException, left is emitted`() = runTest(testDispatcherProvider.Main) {
         // Given
         val query = "cont"
@@ -115,4 +128,52 @@ class DeviceContactsRepositoryImplTest {
         verify(exactly = 0) { cursorMock.getString(columnIndexEmail) }
     }
 
+    @Test
+    fun `when query is blank, all contacts are returned`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        val blankQuery = ""
+        expectCursorQueryAll()
+        expectContactsCount(3)
+
+        // When
+        val actual = deviceContactsRepository.getDeviceContacts(blankQuery).getOrNull()
+
+        // Then
+        assertNotNull(actual)
+        assertEquals(3, actual.size)
+        verify(exactly = 3) { cursorMock.getString(columnIndexDisplayName) }
+        verify(exactly = 3) { cursorMock.getString(columnIndexEmail) }
+    }
+
+    @Test
+    fun `getAllContacts returns and caches contacts when no cache exists`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        expectCursorQueryAll()
+        expectContactsCount(2)
+
+        // When
+        val first = deviceContactsRepository.getAllContacts(useCacheIfAvailable = true).getOrNull()
+        val second = deviceContactsRepository.getAllContacts(useCacheIfAvailable = true).getOrNull()
+
+        // Then
+        assertNotNull(first)
+        assertEquals(2, first.contacts.size)
+        assertEquals(first, second) // served from cache second time
+    }
+
+    @Test
+    fun `getAllContacts bypasses cache when useCacheIfAvailable is false`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        expectCursorQueryAll()
+        expectContactsCount(1)
+
+        // When
+        val result = deviceContactsRepository.getAllContacts(useCacheIfAvailable = false).getOrNull()
+
+        // Then
+        assertNotNull(result)
+        assertEquals(1, result.contacts.size)
+        verify(exactly = 1) { cursorMock.getString(columnIndexDisplayName) }
+        verify(exactly = 1) { cursorMock.getString(columnIndexEmail) }
+    }
 }
