@@ -31,12 +31,6 @@
     <item quantity="many">Выбраны: %d</item>
     <item quantity="other">Выбраны: %d</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s непрачытаны</item>
-    <item quantity="few">%s непрачытана</item>
-    <item quantity="many">%s непрачытана</item>
-    <item quantity="other">%s непрачытана</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Без атрымальніка)</string>
   <string name="mailbox_default_sender">(Без адпраўніка)</string>
   <string name="mailbox_error_message_offline">Немагчыма атрымаць элементы, бо вы па-за сеткай</string>

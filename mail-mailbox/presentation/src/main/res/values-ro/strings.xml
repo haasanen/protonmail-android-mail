@@ -30,11 +30,6 @@
     <item quantity="few">Selectate: %d</item>
     <item quantity="other">Selectate: %d</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">Necitite: %s</item>
-    <item quantity="few">Necitite: %s</item>
-    <item quantity="other">Necitite: %s</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Fără destinatar)</string>
   <string name="mailbox_default_sender">(Fără expeditor)</string>
   <string name="mailbox_error_message_offline">Nu aveți conexiune. Nu se pot prelua datele.</string>

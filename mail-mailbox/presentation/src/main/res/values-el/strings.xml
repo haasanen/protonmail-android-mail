@@ -29,10 +29,6 @@
     <item quantity="one">%d Επιλεγμένο/α</item>
     <item quantity="other">%d Επιλεγμένο/α</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">Μη αναγνωσμένο %s</item>
-    <item quantity="other">Μη αναγνωσμένα %s</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Κανένας παραλήπτης)</string>
   <string name="mailbox_default_sender">(Κανένας αποστολέας)</string>
   <string name="mailbox_error_message_offline">Είστε αποσυνδεδεμένοι, δεν μπορείτε να ανακτήσετε στοιχεία</string>

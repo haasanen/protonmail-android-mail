@@ -29,10 +29,6 @@
     <item quantity="one">%d valgt</item>
     <item quantity="other">%d valgt</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">Ulest %s</item>
-    <item quantity="other">Uleste %s</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Ingen mottaker)</string>
   <string name="mailbox_default_sender">(Ingen avsender)</string>
   <string name="mailbox_error_message_offline">Du er i frakoblet modus, ikke i stand til å hente elementer.</string>

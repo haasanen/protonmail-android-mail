@@ -31,12 +31,6 @@
     <item quantity="many">%d</item>
     <item quantity="other">%d</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s nieprzeczytana</item>
-    <item quantity="few">%s nieprzeczytane</item>
-    <item quantity="many">%s nieprzeczytanych</item>
-    <item quantity="other">%s nieprzeczytanych</item>
-  </plurals>
   <string name="mailbox_default_recipient">(brak odbiorcy)</string>
   <string name="mailbox_default_sender">(brak nadawcy)</string>
   <string name="mailbox_error_message_offline">Jesteś w trybie offline. Nie można odzyskać elementów</string>

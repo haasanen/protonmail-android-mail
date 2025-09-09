@@ -31,12 +31,6 @@
     <item quantity="few">%d izbrani</item>
     <item quantity="other">%d izbranih</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">Neprebrano: %s</item>
-    <item quantity="two">Neprebrano: %s</item>
-    <item quantity="few">Neprebrano: %s</item>
-    <item quantity="other">Neprebrano: %s</item>
-  </plurals>
   <string name="mailbox_default_recipient">(brez prejemnika)</string>
   <string name="mailbox_default_sender">(brez pošiljatelja)</string>
   <string name="mailbox_error_message_offline">Ste brez povezave, predmetov ni mogoče naložiti</string>

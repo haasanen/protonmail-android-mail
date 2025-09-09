@@ -31,12 +31,6 @@
     <item quantity="many">Вибрано %d</item>
     <item quantity="other">Вибрано %d</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s непрочитане</item>
-    <item quantity="few">%s непрочитаних</item>
-    <item quantity="many">%s непрочитаних</item>
-    <item quantity="other">%s непрочитаних</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Немає отримувача)</string>
   <string name="mailbox_default_sender">(Немає відправника)</string>
   <string name="mailbox_error_message_offline">Не вдалося завантажити елементи, тому що ви офлайн</string>

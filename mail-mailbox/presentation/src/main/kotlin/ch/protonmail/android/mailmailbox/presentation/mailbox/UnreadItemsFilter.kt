@@ -22,22 +22,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Text
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.mapper.UnreadCountValueMapper
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.PreviewData.DummyUnreadCount
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun UnreadItemsFilter(
@@ -56,7 +59,7 @@ fun UnreadItemsFilter(
                 modifier = modifier.testTag(UnreadItemsFilterTestTags.UnreadFilterChip),
                 colors = chipColors().copy(
                     containerColor = ProtonTheme.colors.backgroundNorm,
-                    selectedContainerColor = ProtonTheme.colors.interactionWeakPressed
+                    selectedContainerColor = ProtonTheme.colors.interactionBrandWeakNorm
                 ),
                 shape = ProtonTheme.shapes.huge,
                 border = FilterChipDefaults.filterChipBorder(
@@ -78,18 +81,21 @@ fun UnreadItemsFilter(
                 leadingIcon = {},
                 label = {
                     Text(
-                        text = pluralStringResource(
-                            id = R.plurals.filter_unread_button_text,
-                            count = state.numUnread,
-                            UnreadCountValueMapper.toCappedValue(state.numUnread)
-                        ),
-                        style = ProtonTheme.typography.bodyMediumWeak
+                        text = buildAnnotatedString {
+                            append(stringResource(R.string.filter_unread_button_text))
+                            append(" ")
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(state.numUnread.toString())
+                            }
+                        },
+                        style = ProtonTheme.typography.bodyMediumNorm
                     )
                 }
             )
         }
     }
 }
+
 
 @Composable
 private fun addCloseIconForEnabledState(state: UnreadFilterState.Data): @Composable (() -> Unit)? {

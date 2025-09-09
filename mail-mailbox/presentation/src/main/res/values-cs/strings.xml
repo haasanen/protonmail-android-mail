@@ -31,12 +31,6 @@
     <item quantity="many">Vybráno: %d</item>
     <item quantity="other">Vybráno: %d</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">Nepřečteno: %s</item>
-    <item quantity="few">Nepřečteno: %s</item>
-    <item quantity="many">Nepřečteno: %s</item>
-    <item quantity="other">Nepřečteno: %s</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Žádný příjemce)</string>
   <string name="mailbox_default_sender">(Žádný odesílatel)</string>
   <string name="mailbox_error_message_offline">Jste offline, položky nelze načíst</string>

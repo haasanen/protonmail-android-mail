@@ -28,9 +28,6 @@
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="other">%d個が選択済み</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="other">%s件の未読</item>
-  </plurals>
   <string name="mailbox_default_recipient">(宛先なし)</string>
   <string name="mailbox_default_sender">(差出人なし)</string>
   <string name="mailbox_error_message_offline">オフラインのため、アイテムを取得できません。</string>

@@ -29,10 +29,6 @@
     <item quantity="one">%d seleccionat</item>
     <item quantity="other">%d seleccionats</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">No llegit %s</item>
-    <item quantity="other">No llegits %s</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Cap destinatari)</string>
   <string name="mailbox_default_sender">(Cap remitent)</string>
   <string name="mailbox_error_message_offline">Esteu fora de línia. No s\'han pogut recuperar els elements.</string>
