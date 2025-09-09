@@ -802,7 +802,7 @@ class ProtonColors(
                 borderLight = it.shade45,
                 borderNorm = it.shade50,
                 borderStrong = it.shade60,
-                starDefault = it.shade50,
+                starDefault = it.shade80,
                 backgroundInvertedNorm = it.shade20,
                 backgroundInvertedSecondary = it.shade40,
                 backgroundInvertedDeep = it.shade45,
