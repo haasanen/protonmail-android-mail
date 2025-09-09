@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Button
@@ -115,17 +116,20 @@ private fun MessageActionButton(
         shape = ProtonTheme.shapes.huge,
         colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.interactionWeakNorm),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-        contentPadding = PaddingValues(horizontal = ProtonDimens.Spacing.Standard),
+        contentPadding = PaddingValues(
+            horizontal = ProtonDimens.Spacing.Standard,
+            vertical = ProtonDimens.Spacing.Large
+        ),
         onClick = { onClick() }
     ) {
         Icon(
-            modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
+            modifier = Modifier.size(ProtonDimens.IconSize.Medium),
             painter = painterResource(id = iconResource),
             tint = ProtonTheme.colors.iconNorm,
             contentDescription = null
         )
         BasicText(
-            modifier = Modifier.padding(start = ProtonDimens.Spacing.Small),
+            modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard),
             text = stringResource(textResource),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
