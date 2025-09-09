@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,10 +38,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.design.compose.component.ProtonNavigationIcon
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.navigation.LocalAnimationScopes.LocalAnimatedVisibilityScope
-import ch.protonmail.android.design.compose.navigation.LocalAnimationScopes.LocalSharedTransitionScope
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -105,63 +102,65 @@ fun MailboxTopAppBar(
         is MailboxTopAppBarState.Data.SearchMode -> actions.onExitSearchMode
     }
 
-    if (state is MailboxTopAppBarState.Data.SearchMode) {
-        TopAppBarInSearchMode(
-            modifier = modifier,
-            uiModel = uiModel,
-            actions = actions
-        )
-    } else {
-        ProtonTopAppBar(
-            modifier = modifier.testTag(MailboxTopAppBarTestTags.RootItem),
-            minHeight = ProtonDimens.MailTopBarMinHeight,
-            title = {
-                Text(
-                    modifier = Modifier
-                        .testTag(MailboxTopAppBarTestTags.LocationLabel)
-                        .clickable(onClick = actions.onTitleClick),
-                    text = uiModel.title,
-                    style = ProtonTheme.typography.titleLargeMedium,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-            },
-            navigationIcon = {
-                if (state !is MailboxTopAppBarState.Loading) {
-                    MailBoxAppBarIcon(
-                        uiModel = uiModel,
-                        onNavigationIconClick = onNavigationIconClick,
-                        searchMode = false
-                    )
-                }
-            },
-            actions = {
-                if (uiModel.shouldShowActions) {
-                    UpsellingMailButton(onClick = { type ->
-                        actions.onNavigateToUpselling(UpsellingEntryPoint.Feature.Navbar, type)
-                    })
-                    IconButton(
+    Crossfade(targetState = state, label = "") { topBarState ->
+
+        if (topBarState is MailboxTopAppBarState.Data.SearchMode) {
+            TopAppBarInSearchMode(
+                modifier = modifier,
+                uiModel = uiModel,
+                actions = actions
+            )
+        } else {
+            ProtonTopAppBar(
+                modifier = modifier.testTag(MailboxTopAppBarTestTags.RootItem),
+                minHeight = ProtonDimens.MailTopBarMinHeight,
+                title = {
+                    Text(
                         modifier = Modifier
-                            .size(ProtonDimens.DefaultButtonMinHeight)
-                            .testTag(MailboxTopAppBarTestTags.SearchButton),
-                        onClick = actions.onEnterSearchMode
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_proton_magnifier),
-                            contentDescription = stringResource(
-                                id = R.string.mailbox_toolbar_search_button_content_description
-                            )
+                            .testTag(MailboxTopAppBarTestTags.LocationLabel)
+                            .clickable(onClick = actions.onTitleClick),
+                        text = uiModel.title,
+                        style = ProtonTheme.typography.titleLargeMedium,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                },
+                navigationIcon = {
+                    if (state !is MailboxTopAppBarState.Loading) {
+                        NavigationIcon(
+                            uiModel = uiModel,
+                            onNavigationIconClick = onNavigationIconClick
                         )
                     }
-                    Spacer(Modifier.size(ProtonDimens.Spacing.ModeratelyLarge))
-                    AccountAvatar(
-                        accountItem = uiModel.accountAvatarItem,
-                        onClick = actions.onAccountAvatarClicked
-                    )
-                    Spacer(Modifier.size(ProtonDimens.Spacing.Large))
+                },
+                actions = {
+                    if (uiModel.shouldShowActions) {
+                        UpsellingMailButton(onClick = { type ->
+                            actions.onNavigateToUpselling(UpsellingEntryPoint.Feature.Navbar, type)
+                        })
+                        IconButton(
+                            modifier = Modifier
+                                .size(ProtonDimens.DefaultButtonMinHeight)
+                                .testTag(MailboxTopAppBarTestTags.SearchButton),
+                            onClick = actions.onEnterSearchMode
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_proton_magnifier),
+                                contentDescription = stringResource(
+                                    id = R.string.mailbox_toolbar_search_button_content_description
+                                )
+                            )
+                        }
+                        Spacer(Modifier.size(ProtonDimens.Spacing.ModeratelyLarge))
+                        AccountAvatar(
+                            accountItem = uiModel.accountAvatarItem,
+                            onClick = actions.onAccountAvatarClicked
+                        )
+                        Spacer(Modifier.size(ProtonDimens.Spacing.Large))
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
@@ -195,57 +194,41 @@ private fun TopAppBarInSearchMode(
             )
         },
         navigationIcon = {
-            MailBoxAppBarIcon(
+            NavigationIcon(
                 uiModel = uiModel,
                 onNavigationIconClick = {
                     keyboardController?.hide()
                     actions.onExitSearchMode()
-                },
-                searchMode = true
+                }
             )
         },
         actions = {}
     )
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun MailBoxAppBarIcon(
-    searchMode: Boolean,
-    uiModel: UiModel,
-    onNavigationIconClick: () -> Unit
-) {
-    val sharedTransitionScope = LocalSharedTransitionScope.current
-    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
-    if (sharedTransitionScope != null && animatedVisibilityScope != null && !searchMode) {
-        sharedTransitionScope.ProtonNavigationIcon(
-            animatedVisibilityScope = animatedVisibilityScope,
-            isMenuVisible = true,
-            onClick = onNavigationIconClick
-        )
-    } else {
-        IconButton(
-            modifier = Modifier
-                .testTag(NavigationButton)
-                .size(ProtonDimens.DefaultButtonMinHeight),
-            onClick = onNavigationIconClick
-        ) {
-            BadgedBox(
-                badge = {
-                    if (uiModel.notificationDotVisible) {
-                        Badge(
-                            containerColor = ProtonTheme.colors.notificationError,
-                            modifier = Modifier.size(MailDimens.NotificationDotSize)
-                        )
-                    }
+private fun NavigationIcon(uiModel: UiModel, onNavigationIconClick: () -> Unit) {
+    IconButton(
+        modifier = Modifier
+            .testTag(NavigationButton)
+            .size(ProtonDimens.DefaultButtonMinHeight),
+        onClick = onNavigationIconClick
+    ) {
+        BadgedBox(
+            badge = {
+                if (uiModel.notificationDotVisible) {
+                    Badge(
+                        containerColor = ProtonTheme.colors.notificationError,
+                        modifier = Modifier.size(MailDimens.NotificationDotSize)
+                    )
                 }
-            ) {
-                Icon(
-                    painter = painterResource(id = uiModel.navigationIconRes),
-                    tint = ProtonTheme.colors.iconNorm,
-                    contentDescription = uiModel.navigationIconContentDescription
-                )
             }
+        ) {
+            Icon(
+                painter = painterResource(id = uiModel.navigationIconRes),
+                tint = ProtonTheme.colors.iconNorm,
+                contentDescription = uiModel.navigationIconContentDescription
+            )
         }
     }
 }

@@ -18,12 +18,10 @@
 
 package ch.protonmail.android.navigation.route
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -31,7 +29,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import ch.protonmail.android.MainActivity
-import ch.protonmail.android.design.compose.navigation.LocalAnimationScopes
 import ch.protonmail.android.design.compose.navigation.get
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.feature.account.RemoveAccountDialog
@@ -104,16 +101,11 @@ internal fun NavGraphBuilder.addConversationDetail(
         popExitTransition = { RouteTransitions.exitTransitionRightToLeft },
         exitTransition = { RouteTransitions.exitTransitionRightToLeft }
     ) {
-        CompositionLocalProvider(
-            LocalAnimationScopes.LocalAnimatedVisibilityScope provides this@composable
-        ) {
-            ConversationDetailScreen(actions = actions)
-        }
+        ConversationDetailScreen(actions = actions)
     }
 }
 
 @Suppress("LongMethod", "LongParameterList")
-@OptIn(ExperimentalSharedTransitionApi::class)
 internal fun NavGraphBuilder.addMailbox(
     navController: NavHostController,
     fabHostState: ProtonFabHostState,
@@ -133,52 +125,48 @@ internal fun NavGraphBuilder.addMailbox(
             } else null
         }
     ) {
-        CompositionLocalProvider(
-            LocalAnimationScopes.LocalAnimatedVisibilityScope provides this@composable
-        ) {
-            MailboxScreen(
-                actions = MailboxScreen.Actions.Empty.copy(
-                    navigateToMailboxItem = { request ->
-                        val destination = when (request.shouldOpenInComposer) {
-                            true -> Destination.Screen.EditDraftComposer(MessageId(request.itemId.value))
-                            false -> Destination.Screen.ConversationRouter(
-                                ConversationId(request.itemId.value),
-                                request.subItemId?.let { mailboxItemId ->
-                                    MessageId(mailboxItemId.value)
-                                },
-                                request.openedFromLocation
-                            )
-                        }
-                        navController.navigate(destination)
-                    },
-                    navigateToComposer = { navController.navigate(Destination.Screen.Composer.route) },
-                    openDrawerMenu = openDrawerMenu,
-                    showSnackbar = showSnackbar,
-                    onAddLabel = { navController.navigate(Destination.Screen.FolderAndLabelSettings.route) },
-                    onAddFolder = { navController.navigate(Destination.Screen.FolderAndLabelSettings.route) },
-                    onAccountAvatarClicked = {
-                        navController.navigate(Destination.Screen.AccountsManager.route)
-                    },
-                    onNavigateToUpselling = { entryPoint, type ->
-                        navController.navigate(Destination.Screen.FeatureUpselling(entryPoint, type))
-                    },
-                    showMissingFeature = showFeatureMissingSnackbar,
-                    onEnterSearchMode = {
-                        setDrawerEnabled(false)
-                    },
-                    onExitSearchMode = {
-                        setDrawerEnabled(true)
-                    },
-                    onAttachmentReady = onAttachmentReady,
-                    onActionBarVisibilityChanged = onActionBarVisibilityChanged,
-                    onCustomizeToolbar = {
-                        navController.navigate(Destination.Screen.EditToolbarScreen(ToolbarType.List))
+        MailboxScreen(
+            actions = MailboxScreen.Actions.Empty.copy(
+                navigateToMailboxItem = { request ->
+                    val destination = when (request.shouldOpenInComposer) {
+                        true -> Destination.Screen.EditDraftComposer(MessageId(request.itemId.value))
+                        false -> Destination.Screen.ConversationRouter(
+                            ConversationId(request.itemId.value),
+                            request.subItemId?.let { mailboxItemId ->
+                                MessageId(mailboxItemId.value)
+                            },
+                            request.openedFromLocation
+                        )
                     }
-                ),
-                onEvent = onEvent,
-                fabHostState = fabHostState
-            )
-        }
+                    navController.navigate(destination)
+                },
+                navigateToComposer = { navController.navigate(Destination.Screen.Composer.route) },
+                openDrawerMenu = openDrawerMenu,
+                showSnackbar = showSnackbar,
+                onAddLabel = { navController.navigate(Destination.Screen.FolderAndLabelSettings.route) },
+                onAddFolder = { navController.navigate(Destination.Screen.FolderAndLabelSettings.route) },
+                onAccountAvatarClicked = {
+                    navController.navigate(Destination.Screen.AccountsManager.route)
+                },
+                onNavigateToUpselling = { entryPoint, type ->
+                    navController.navigate(Destination.Screen.FeatureUpselling(entryPoint, type))
+                },
+                showMissingFeature = showFeatureMissingSnackbar,
+                onEnterSearchMode = {
+                    setDrawerEnabled(false)
+                },
+                onExitSearchMode = {
+                    setDrawerEnabled(true)
+                },
+                onAttachmentReady = onAttachmentReady,
+                onActionBarVisibilityChanged = onActionBarVisibilityChanged,
+                onCustomizeToolbar = {
+                    navController.navigate(Destination.Screen.EditToolbarScreen(ToolbarType.List))
+                }
+            ),
+            onEvent = onEvent,
+            fabHostState = fabHostState
+        )
     }
 }
 

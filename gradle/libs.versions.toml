@@ -108,9 +108,6 @@ androidx-annotation = { module = "androidx.annotation:annotation", version.ref =
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-constraintlayout-compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "androidx-compose" }
-androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
-androidx-compose-animation-core = { module = "androidx.compose.animation:animation-core", version.ref = "androidx-compose" }
-androidx-compose-animation-graphics = { module = "androidx.compose.animation:animation-graphics", version.ref = "androidx-compose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-material3" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
@@ -281,12 +278,6 @@ compose = [
     "androidx-compose-ui",
     "androidx-compose-ui-tooling-preview",
     "androidx-constraintlayout-compose"
-]
-
-compose-animation =  [
-    "androidx-compose-animation",
-    "androidx-compose-animation-core",
-    "androidx-compose-animation-graphics",
 ]
 
 compose-debug = [
