@@ -27,8 +27,6 @@ import java.time.format.FormatStyle
 import java.util.Calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -169,9 +167,6 @@ fun SetCustomExpirationDialog(
         formattedTime.value = timeFormatter.format(calendar.time)
     }
 
-    val dateFieldInteractionSource = remember { MutableInteractionSource() }
-    val timeFieldInteractionSource = remember { MutableInteractionSource() }
-
     ProtonAlertDialog(
         modifier = modifier,
         onDismissRequest = {},
@@ -214,8 +209,7 @@ fun SetCustomExpirationDialog(
                             contentDescription = null,
                             tint = ProtonTheme.colors.iconNorm
                         )
-                    },
-                    interactionSource = dateFieldInteractionSource
+                    }
                 )
 
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
@@ -244,24 +238,8 @@ fun SetCustomExpirationDialog(
                             contentDescription = null,
                             tint = ProtonTheme.colors.iconNorm
                         )
-                    },
-                    interactionSource = timeFieldInteractionSource
+                    }
                 )
-            }
-
-            LaunchedEffect(dateFieldInteractionSource) {
-                dateFieldInteractionSource.interactions.collect {
-                    if (it is PressInteraction.Release) {
-                        onPickDate()
-                    }
-                }
-            }
-            LaunchedEffect(timeFieldInteractionSource) {
-                timeFieldInteractionSource.interactions.collect {
-                    if (it is PressInteraction.Release) {
-                        onPickTime()
-                    }
-                }
             }
         }
     )
