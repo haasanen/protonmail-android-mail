@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
-import ch.protonmail.android.mailcontact.domain.model.DeviceContact
+import ch.protonmail.android.mailcontact.domain.model.DeviceContactsWithSignature
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import kotlinx.coroutines.flow.Flow
@@ -40,9 +40,14 @@ interface RustContactDataSource {
 
     suspend fun getContactSuggestions(
         userId: UserId,
-        deviceContacts: List<DeviceContact>,
+        deviceContacts: DeviceContactsWithSignature,
         query: ContactSuggestionQuery
     ): Either<DataError, List<ContactMetadata>>
+
+    suspend fun preloadContactSuggestions(
+        userId: UserId,
+        deviceContacts: DeviceContactsWithSignature
+    ): Either<DataError, Unit>
 
     suspend fun getContactDetails(userId: UserId, contactId: LocalContactId): Either<DataError, ContactDetailCard>
 }

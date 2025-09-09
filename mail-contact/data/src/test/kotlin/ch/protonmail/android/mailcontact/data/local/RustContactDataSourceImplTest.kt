@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcontact.data.local
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalDeviceContact
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcontact.data.mapper.ContactGroupItemMapper
@@ -28,13 +27,15 @@ import ch.protonmail.android.mailcontact.data.mapper.ContactItemMapper
 import ch.protonmail.android.mailcontact.data.mapper.ContactItemTypeMapper
 import ch.protonmail.android.mailcontact.data.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcontact.data.mapper.DeviceContactsMapper
+import ch.protonmail.android.mailcontact.data.mapper.DeviceContactsWithSignatureMapper
 import ch.protonmail.android.mailcontact.data.mapper.GroupedContactsMapper
+import ch.protonmail.android.mailcontact.data.model.LocalDeviceContactsWithSignature
 import ch.protonmail.android.mailcontact.data.usecase.CreateRustContactWatcher
 import ch.protonmail.android.mailcontact.data.usecase.RustDeleteContact
 import ch.protonmail.android.mailcontact.data.usecase.RustGetContactDetails
 import ch.protonmail.android.mailcontact.data.usecase.RustGetContactSuggestions
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
-import ch.protonmail.android.mailcontact.domain.model.DeviceContact
+import ch.protonmail.android.mailcontact.domain.model.DeviceContactsWithSignature
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -82,7 +83,7 @@ class RustContactDataSourceImplTest {
     private val contactItemTypeMapper = ContactItemTypeMapper(contactItemMapper, contactGroupItemMapper)
     private val groupedContactsMapper = GroupedContactsMapper(contactItemTypeMapper)
     private val contactSuggestionsMapper = ContactSuggestionsMapper()
-    private val deviceContactsMapper = DeviceContactsMapper()
+    private val deviceContactsMapper = DeviceContactsWithSignatureMapper(DeviceContactsMapper())
 
     private val rustContactDataSource = RustContactDataSourceImpl(
         userSessionRepository,
@@ -248,8 +249,8 @@ class RustContactDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val query = ContactSuggestionQuery("test")
-        val localDeviceContacts = emptyList<LocalDeviceContact>()
-        val deviceContacts = emptyList<DeviceContact>()
+        val localDeviceContacts = LocalDeviceContactsWithSignature(contacts = emptyList(), signature = 0L)
+        val deviceContacts = DeviceContactsWithSignature.Empty
         val session = mockk<MailUserSessionWrapper>()
         val localContactSuggestions = listOf(
             LocalContactSuggestionTestData.contactSuggestion,
@@ -258,7 +259,7 @@ class RustContactDataSourceImplTest {
         val expected = listOf(ContactTestData.contactSuggestion, ContactTestData.contactGroupSuggestion)
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            rustGetContactSuggestions(session, localDeviceContacts, query.value)
+            rustGetContactSuggestions(userId, session, localDeviceContacts, query.value)
         } returns localContactSuggestions.right()
 
         // When
@@ -276,7 +277,7 @@ class RustContactDataSourceImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
-        val result = rustContactDataSource.getContactSuggestions(userId, emptyList(), query)
+        val result = rustContactDataSource.getContactSuggestions(userId, DeviceContactsWithSignature.Empty, query)
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)
@@ -328,6 +329,25 @@ class RustContactDataSourceImplTest {
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
+    @Test
+    fun `preload contact suggestions when session is available`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val session = mockk<MailUserSessionWrapper>()
+        val deviceContacts = DeviceContactsWithSignature.Empty
+        val local = LocalDeviceContactsWithSignature(contacts = emptyList(), signature = 0L)
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustGetContactSuggestions.preload(userId, session, local) } returns Unit.right()
+
+        // When
+        val result = rustContactDataSource.preloadContactSuggestions(userId, deviceContacts)
+
+        // Then
+        assertEquals(Unit.right(), result)
+        coVerify(exactly = 1) { rustGetContactSuggestions.preload(userId, session, local) }
     }
 }
 
