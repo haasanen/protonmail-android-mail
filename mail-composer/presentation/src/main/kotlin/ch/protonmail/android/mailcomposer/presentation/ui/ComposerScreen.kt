@@ -124,8 +124,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val sendExpiringMessageDialogState = remember {
         mutableStateOf(SendExpiringMessageDialogState(false, emptyList()))
     }
-    val discardDraftDialogState = remember { mutableStateOf(false) }
-    val showExpirationTimeDialog = remember { mutableStateOf(false) }
+    val discardDraftDialogState = rememberSaveable { mutableStateOf(false) }
+    val showExpirationTimeDialog = rememberSaveable { mutableStateOf(false) }
 
     val featureMissingSnackbarMessage = stringResource(id = R.string.feature_coming_soon)
     val scope = rememberCoroutineScope()

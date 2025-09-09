@@ -58,6 +58,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -84,7 +85,7 @@ import kotlinx.datetime.Instant as DateTimeInstant
 @Composable
 fun CustomExpirationDateTimePicker(onTimePicked: (ExpirationTimeUiModel) -> Unit, onDismiss: () -> Unit) {
 
-    val shownDialogType = remember { mutableStateOf(DialogType.SelectDate) }
+    val shownDialogType = rememberSaveable { mutableStateOf(DialogType.SelectDate) }
 
     val timePickerState = rememberTimePickerState(initialHour = INITIAL_TIME_HOUR, initialMinute = INITIAL_TIME_MINUTE)
     val datePickerState = rememberDatePickerState(
