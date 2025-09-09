@@ -32,10 +32,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.VerticalSpacer
@@ -60,6 +62,8 @@ import ch.protonmail.android.mailsidebar.presentation.upselling.SidebarUpsellRow
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -178,7 +182,16 @@ private fun SidebarHeader(hazeState: HazeState) {
     Box(
         modifier = Modifier
             .height(ProtonDimens.sideBarHeaderHeight)
-            .hazeEffect(state = hazeState) {
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(
+                        color = Color.Transparent
+                    ),
+                    blurRadius = 20.dp,
+                    noiseFactor = 0f
+                )
+            ) {
                 blurEnabled = true
             }
             .fillMaxWidth()
