@@ -98,7 +98,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
     Row(
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.RootItem)
-            .padding(ProtonDimens.Spacing.Large)
+            .padding(horizontal = ProtonDimens.Spacing.Large, vertical = ProtonDimens.Spacing.ModeratelyLarger)
             .fillMaxWidth()
     ) {
         ParticipantAvatar(

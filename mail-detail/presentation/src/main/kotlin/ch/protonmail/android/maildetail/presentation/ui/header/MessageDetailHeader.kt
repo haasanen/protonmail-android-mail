@@ -136,7 +136,7 @@ private fun MessageDetailHeaderLayout(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.Spacing.Large)
+            .padding(horizontal = ProtonDimens.Spacing.Large, vertical = ProtonDimens.Spacing.ModeratelyLarger)
     ) {
         Row(
             modifier = modifier
