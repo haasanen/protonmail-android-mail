@@ -40,19 +40,12 @@ Each merge to `main` branch builds the branch's HEAD and deploys it
 to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution).
 
 ## Signing
-All `release` builds done on CI are automatically signed with ProtonMail's keystore. In order to perform signing locally, the keystore will need to be placed into the `keystore/` directory and the credentials will be read from `private.properties` file.
+All `release` builds done on CI are automatically signed with ProtonMail's keystore. Signing locally is unsupported.
 
 ## Observability
 Crashes and errors that happen in `release` (non debuggable) builds are reported to Sentry in an anonymized form.
-The CI sets up the integration with Sentry by providing in the build environment `private.properties` and `sentry.properties` files that contain the secrets needed. 
-This can as well be performed locally by creating `private.properties` and `sentry.properties` files and filling them with the needed secrets (eg. `SentryDSN`; for more details about the `sentry.properties` file, see https://docs.sentry.io/platforms/android/gradle/#proguardr8--dexguard).
-
-## Use core libraries from local git submodule
-It is possible to run the application getting the "core" libraries from the local git submodule instead of gradle by setting the following flag to true in `gradle.properties` file:
-
-```
-useCoreGitSubmodule=true
-```
+The CI sets up the integration with Sentry by providing in the build environment `sentry.properties` files that contain the secrets needed. 
+This can as well be performed locally by creating a `sentry.properties` file and filling them with the needed secrets (eg. `SentryDSN`; for more details about the `sentry.properties` file, see https://docs.sentry.io/platforms/android/gradle/#proguardr8--dexguard).
 
 ## Code style
 This project's code style and formatting is checked by detekt. The rule set is [ktlint's default one](https://github.com/pinterest/ktlint)

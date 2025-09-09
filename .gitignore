@@ -40,9 +40,6 @@ fastlane/report.xml
 # Keystore
 keystore/*
 
-# Private properties
-private.properties
-
 # Sentry properties
 sentry.properties
 

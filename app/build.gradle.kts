@@ -34,19 +34,8 @@ plugins {
     id("app-config-plugin")
 }
 
-val privateProperties = Properties().apply {
-    @Suppress("SwallowedException")
-    try {
-        load(rootDir.resolve("private.properties").inputStream())
-    } catch (exception: java.io.FileNotFoundException) {
-        // Provide empty properties to allow the app to be built without secrets
-        Properties()
-    }
-}
-
 val accountSentryDSN: String = System.getenv("SENTRY_DSN_ACCOUNT") ?: ""
 val sentryDSN: String = System.getenv("SENTRY_DSN_MAIL") ?: ""
-val proxyToken: String? = privateProperties.getProperty("PROXY_TOKEN")
 
 val gitHashProvider: Provider<String> = providers.exec {
     commandLine("git", "rev-parse", "--short=7", "HEAD")
@@ -77,7 +66,6 @@ android {
 
         buildConfigField("String", "SENTRY_DSN", sentryDSN.toBuildConfigValue())
         buildConfigField("String", "ACCOUNT_SENTRY_DSN", accountSentryDSN.toBuildConfigValue())
-        buildConfigField("String", "PROXY_TOKEN", proxyToken.toBuildConfigValue())
         buildConfigField("String", "RUST_SDK_VERSION", "\"${libs.versions.proton.rust.core.get()}\"")
 
         setAssetLinksResValue("proton.me")

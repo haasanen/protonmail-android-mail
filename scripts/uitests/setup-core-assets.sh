@@ -22,8 +22,6 @@ set -o errexit
 
 PROJECT_ROOT_PATH=$(git rev-parse --show-toplevel)
 
-echo PROXY_TOKEN="$(curl -o - https://proxy.proton.black/token/get)" >> $PROJECT_ROOT_PATH/private.properties
-
 mkdir $PROJECT_ROOT_PATH/app/src/uiTest/assets -p
 base64 -d - < "$TEST_USERS_CREDENTIALS_FILE" > $PROJECT_ROOT_PATH/app/src/uiTest/assets/users.json
 base64 -d - < "$INTERNAL_API_FILE" > $PROJECT_ROOT_PATH/app/src/uiTest/assets/internal_api.json
