@@ -20,10 +20,12 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
+import kotlin.time.Instant
 
 @Composable
 fun SetMessageExpirationDialog(
@@ -32,8 +34,8 @@ fun SetMessageExpirationDialog(
     onDismiss: () -> Unit
 ) {
 
-    val selectedItem = remember { mutableStateOf(expirationTime) }
-    val showCustomExpirationTimeDialog = remember { mutableStateOf(false) }
+    val selectedItem = rememberSaveable(stateSaver = SelectedItemSaver) { mutableStateOf(expirationTime) }
+    val showCustomExpirationTimeDialog = rememberSaveable { mutableStateOf(false) }
 
     when {
         showCustomExpirationTimeDialog.value -> CustomExpirationDateTimePicker(
@@ -43,6 +45,7 @@ fun SetMessageExpirationDialog(
 
         else -> ExpirationTimeOptionsDialog(
             onTimePicked = {
+                selectedItem.value = it
                 if (it.selectedOption == ExpirationTimeOption.Custom) {
                     showCustomExpirationTimeDialog.value = true
                 } else {
@@ -50,7 +53,7 @@ fun SetMessageExpirationDialog(
                 }
             },
             onDismiss = onDismiss,
-            selectedItem
+            selectedItem.value
         )
     }
 }
@@ -64,3 +67,25 @@ fun PreviewSetExpirationTimeDialog() {
         onDismiss = {}
     )
 }
+
+private val SelectedItemSaver = mapSaver(
+    save = {
+        mapOf(
+            KEY_SELECTED_OPTION to it.selectedOption.name,
+            KEY_SELECTED_CUSTOM_TIME to it.customTime?.epochSeconds
+        )
+    },
+    restore = { map ->
+        val selectedOption = map[KEY_SELECTED_OPTION]?.let {
+            ExpirationTimeOption.valueOf(it.toString())
+        } ?: ExpirationTimeOption.None
+        val customTime = map[KEY_SELECTED_CUSTOM_TIME]?.let {
+            runCatching { Instant.fromEpochSeconds(it.toString().toLong()) }.getOrNull()
+        }
+
+        ExpirationTimeUiModel(selectedOption, customTime)
+    }
+)
+
+private const val KEY_SELECTED_OPTION = "selectedOptionKey"
+private const val KEY_SELECTED_CUSTOM_TIME = "selectedCustomTimeKey"
