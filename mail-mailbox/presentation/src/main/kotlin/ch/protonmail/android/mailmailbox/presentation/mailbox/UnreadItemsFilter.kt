@@ -18,6 +18,11 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring.DampingRatioLowBouncy
+import androidx.compose.animation.core.Spring.StiffnessHigh
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -35,6 +40,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
@@ -56,7 +62,16 @@ fun UnreadItemsFilter(
 
         is UnreadFilterState.Data -> {
             FilterChip(
-                modifier = modifier.testTag(UnreadItemsFilterTestTags.UnreadFilterChip),
+                modifier = modifier
+                    .animateContentSize(
+                        animationSpec =
+                        spring(
+                            stiffness = StiffnessHigh,
+                            dampingRatio = DampingRatioLowBouncy,
+                            visibilityThreshold = IntSize.VisibilityThreshold
+                        )
+                    )
+                    .testTag(UnreadItemsFilterTestTags.UnreadFilterChip),
                 colors = chipColors().copy(
                     containerColor = ProtonTheme.colors.backgroundNorm,
                     selectedContainerColor = ProtonTheme.colors.interactionBrandWeakNorm
