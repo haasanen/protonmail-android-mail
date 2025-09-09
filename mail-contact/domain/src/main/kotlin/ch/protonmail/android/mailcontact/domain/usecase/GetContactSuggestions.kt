@@ -23,6 +23,7 @@ import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
+import ch.protonmail.android.mailcontact.domain.model.DeviceContactsWithSignature
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import me.proton.core.domain.entity.UserId
@@ -38,9 +39,9 @@ class GetContactSuggestions @Inject constructor(
         userId: UserId,
         query: ContactSuggestionQuery
     ): Either<DataError, List<ContactMetadata>> {
-        val deviceContacts = deviceContactsRepository.getDeviceContacts(query.value)
+        val deviceContacts = deviceContactsRepository.getAllContacts(useCacheIfAvailable = true)
             .onLeft { Timber.w("contact-suggestions: Failed to get device contacts: $it") }
-            .getOrElse { emptyList() }
+            .getOrElse { DeviceContactsWithSignature.Empty }
 
         return contactsRepository.getContactSuggestions(userId, deviceContacts, query)
     }

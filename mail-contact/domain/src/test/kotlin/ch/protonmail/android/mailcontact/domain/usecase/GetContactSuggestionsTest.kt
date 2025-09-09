@@ -7,6 +7,7 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
+import ch.protonmail.android.mailcontact.domain.model.DeviceContactsWithSignature
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import ch.protonmail.android.testdata.contact.ContactTestData
@@ -33,7 +34,7 @@ class GetContactSuggestionsTest {
         // Given
         val userId = UserIdSample.Primary
         val query = ContactSuggestionQuery("test")
-        coEvery { deviceContactsRepository.getDeviceContacts(query.value) } returns deviceContacts.right()
+        coEvery { deviceContactsRepository.getAllContacts(true) } returns deviceContacts.right()
         coEvery {
             contactsRepository.getContactSuggestions(userId, deviceContacts, query)
         } returns emptyList<ContactMetadata>().right()
@@ -51,8 +52,8 @@ class GetContactSuggestionsTest {
         val userId = UserIdSample.Primary
         val query = ContactSuggestionQuery("test")
         val error = DeviceContactsRepository.DeviceContactsErrors.PermissionDenied
-        val deviceContactsFallback = emptyList<DeviceContact>()
-        coEvery { deviceContactsRepository.getDeviceContacts(query.value) } returns error.left()
+        val deviceContactsFallback = DeviceContactsWithSignature.Empty
+        coEvery { deviceContactsRepository.getAllContacts(true) } returns error.left()
         coEvery {
             contactsRepository.getContactSuggestions(userId, deviceContactsFallback, query)
         } returns emptyList<ContactMetadata>().right()
@@ -70,7 +71,7 @@ class GetContactSuggestionsTest {
         val userId = UserIdSample.Primary
         val query = ContactSuggestionQuery("test")
         val expected = listOf(ContactTestData.contactSuggestion, ContactTestData.contactGroupSuggestion)
-        coEvery { deviceContactsRepository.getDeviceContacts(query.value) } returns deviceContacts.right()
+        coEvery { deviceContactsRepository.getAllContacts(true) } returns deviceContacts.right()
         coEvery {
             contactsRepository.getContactSuggestions(userId, deviceContacts, query)
         } returns expected.right()
@@ -88,7 +89,7 @@ class GetContactSuggestionsTest {
         val userId = UserIdSample.Primary
         val query = ContactSuggestionQuery("test")
         val expected = DataError.Local.Unknown
-        coEvery { deviceContactsRepository.getDeviceContacts(query.value) } returns deviceContacts.right()
+        coEvery { deviceContactsRepository.getAllContacts(true) } returns deviceContacts.right()
         coEvery {
             contactsRepository.getContactSuggestions(userId, deviceContacts, query)
         } returns expected.left()
@@ -102,9 +103,12 @@ class GetContactSuggestionsTest {
 
     companion object {
 
-        private val deviceContacts = listOf(
-            DeviceContact(name = "First Device Contact", email = "first@pvtmail.me"),
-            DeviceContact(name = "Second Device Contact", email = "second@pvtmail.me")
+        private val deviceContacts = DeviceContactsWithSignature(
+            contacts = listOf(
+                DeviceContact(name = "First Device Contact", email = "first@pvtmail.me"),
+                DeviceContact(name = "Second Device Contact", email = "second@pvtmail.me")
+            ),
+            signature = 22L
         )
     }
 }
