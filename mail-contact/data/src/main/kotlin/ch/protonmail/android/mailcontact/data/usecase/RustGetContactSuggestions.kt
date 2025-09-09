@@ -21,24 +21,80 @@ package ch.protonmail.android.mailcontact.data.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalDeviceContact
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcontact.data.model.LocalDeviceContactsWithSignature
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.ContactSuggestion
+import uniffi.proton_mail_uniffi.ContactSuggestions
 import uniffi.proton_mail_uniffi.ContactSuggestionsResult
-import uniffi.proton_mail_uniffi.contactSuggestions
 import javax.inject.Inject
 
-class RustGetContactSuggestions @Inject constructor() {
+class RustGetContactSuggestions @Inject constructor(
+    private val contactSuggestions: RustContactSuggestions
+) {
+
+    private val cacheMutex = Mutex()
+
+    private val cachedByUser: MutableMap<UserId, CacheEntry> = mutableMapOf()
+
+    private data class CacheEntry(
+        val suggestions: ContactSuggestions,
+        val signature: Long
+    )
 
     suspend operator fun invoke(
+        userId: UserId,
         mailUserSession: MailUserSessionWrapper,
-        deviceContacts: List<LocalDeviceContact>,
+        deviceContacts: LocalDeviceContactsWithSignature,
         query: String
-    ): Either<DataError, List<ContactSuggestion>> =
-        when (val result = contactSuggestions(deviceContacts, mailUserSession.getRustUserSession())) {
-            is ContactSuggestionsResult.Error -> result.v1.toDataError().left()
-            is ContactSuggestionsResult.Ok -> result.v1.filtered(query).right()
+    ): Either<DataError, List<ContactSuggestion>> {
+
+        // Serve from cache only if we have cached contacts and device contacts signature matches
+        val cached = cacheMutex.withLock { cachedByUser[userId] }
+        if (cached != null && cached.signature == deviceContacts.signature) {
+            return cached.suggestions.filtered(query).right()
         }
+
+        // signature changed or not cached yet, fetch fresh suggestions
+        return when (
+            val result = contactSuggestions(
+                deviceContacts.contacts,
+                mailUserSession.getRustUserSession()
+            )
+        ) {
+            is ContactSuggestionsResult.Error -> result.v1.toDataError().left()
+            is ContactSuggestionsResult.Ok -> {
+                val freshContactSuggestions = result.v1
+
+                cacheMutex.withLock {
+                    Timber.d("contact-suggestions: Caching fresh contact suggestions")
+                    cachedByUser[userId] = CacheEntry(freshContactSuggestions, deviceContacts.signature)
+                }
+                freshContactSuggestions.filtered(query).right()
+            }
+        }
+    }
+
+    suspend fun preload(
+        userId: UserId,
+        mailUserSession: MailUserSessionWrapper,
+        deviceContacts: LocalDeviceContactsWithSignature
+    ): Either<DataError, Unit> {
+
+        return when (val res = contactSuggestions(deviceContacts.contacts, mailUserSession.getRustUserSession())) {
+            is ContactSuggestionsResult.Error -> res.v1.toDataError().left()
+            is ContactSuggestionsResult.Ok -> {
+                cacheMutex.withLock {
+                    cachedByUser[userId] = CacheEntry(res.v1, deviceContacts.signature)
+                }
+                Timber.d("contact-suggestions: Preloaded contact suggestions")
+                Unit.right()
+            }
+        }
+    }
 }
