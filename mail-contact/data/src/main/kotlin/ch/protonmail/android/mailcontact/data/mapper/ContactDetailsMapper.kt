@@ -64,6 +64,10 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalVCardPropTypeVideo
 import ch.protonmail.android.mailcommon.data.mapper.LocalVCardPropTypeVoice
 import ch.protonmail.android.mailcommon.data.mapper.LocalVCardPropTypeWork
 import ch.protonmail.android.mailcommon.data.mapper.LocalVCardUrl
+import ch.protonmail.android.mailcommon.data.mapper.LocalVCardUrlValue
+import ch.protonmail.android.mailcommon.data.mapper.LocalVCardUrlValueHttp
+import ch.protonmail.android.mailcommon.data.mapper.LocalVCardUrlValueNotHttp
+import ch.protonmail.android.mailcommon.data.mapper.LocalVCardUrlValueText
 import ch.protonmail.android.mailcontact.domain.model.ContactDate
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailAddress
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
@@ -75,7 +79,7 @@ import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.PartialDate
 import ch.protonmail.android.mailcontact.domain.model.VCardPropType
 import ch.protonmail.android.mailcontact.domain.model.VCardUrl
-import uniffi.proton_mail_uniffi.VCardUrlValue
+import ch.protonmail.android.mailcontact.domain.model.VCardUrlValue
 
 fun LocalContactDetailCard.toContactDetailCard() = ContactDetailCard(
     id = id.toContactId(),
@@ -140,14 +144,14 @@ private fun LocalContactDetailsTelephones.toContactDetailTelephone() = ContactDe
 )
 
 private fun LocalVCardUrl.toVCardUrl() = VCardUrl(
-    url = this.url.toUrl(),
+    url = this.url.toVCardUrlValue(),
     urlTypes = this.urlType.map { it.toVCardPropType() }
 )
 
-private fun VCardUrlValue.toUrl() = when (this) {
-    is VCardUrlValue.Http -> this.v1
-    is VCardUrlValue.NotHttp -> this.v1
-    is VCardUrlValue.Text -> this.v1
+private fun LocalVCardUrlValue.toVCardUrlValue() = when (this) {
+    is LocalVCardUrlValueHttp -> VCardUrlValue.Http(this.v1)
+    is LocalVCardUrlValueNotHttp -> VCardUrlValue.NotHttp(this.v1)
+    is LocalVCardUrlValueText -> VCardUrlValue.Text(this.v1)
 }
 
 private fun LocalVCardPropType.toVCardPropType() = when (this) {

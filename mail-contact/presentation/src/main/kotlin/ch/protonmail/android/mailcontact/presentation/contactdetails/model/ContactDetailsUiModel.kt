@@ -61,4 +61,4 @@ data class ContactDetailsItemUiModel(
 
 enum class QuickActionType { Message, Call, Share }
 
-enum class ContactDetailsItemType { Email, Phone, Other }
+enum class ContactDetailsItemType { Email, Phone, Url, Other }

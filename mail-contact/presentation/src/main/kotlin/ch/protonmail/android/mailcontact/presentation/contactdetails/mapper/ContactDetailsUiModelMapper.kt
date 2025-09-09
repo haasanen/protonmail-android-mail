@@ -34,6 +34,7 @@ import ch.protonmail.android.mailcontact.domain.model.ExtendedName
 import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.VCardPropType
 import ch.protonmail.android.mailcontact.domain.model.VCardUrl
+import ch.protonmail.android.mailcontact.domain.model.VCardUrlValue
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemGroupUiModel
@@ -171,10 +172,13 @@ class ContactDetailsUiModelMapper @Inject constructor(
     )
 
     private fun VCardUrl.toUiModel() = ContactDetailsItemUiModel(
-        contactDetailsItemType = ContactDetailsItemType.Other,
+        contactDetailsItemType = when (this.url) {
+            is VCardUrlValue.Http -> ContactDetailsItemType.Url
+            else -> ContactDetailsItemType.Other
+        },
         label = this.urlTypes.firstOrNull()?.toTextUiModel()
             ?: TextUiModel.TextRes(R.string.contact_property_url),
-        value = TextUiModel.Text(this.url)
+        value = TextUiModel.Text(this.url.value)
     )
 
     private fun VCardPropType.toTextUiModel() = when (this) {

@@ -18,6 +18,7 @@ import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.PartialDate
 import ch.protonmail.android.mailcontact.domain.model.VCardPropType
 import ch.protonmail.android.mailcontact.domain.model.VCardUrl
+import ch.protonmail.android.mailcontact.domain.model.VCardUrlValue
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemGroupUiModel
@@ -109,7 +110,7 @@ class ContactDetailsUiModelMapperTest {
                 ContactField.Urls(
                     list = listOf(
                         VCardUrl(
-                            url = "url",
+                            url = VCardUrlValue.Http("url"),
                             urlTypes = emptyList()
                         )
                     )
@@ -228,7 +229,7 @@ class ContactDetailsUiModelMapperTest {
                 ContactDetailsItemGroupUiModel(
                     contactDetailsItemUiModels = listOf(
                         ContactDetailsItemUiModel(
-                            contactDetailsItemType = ContactDetailsItemType.Other,
+                            contactDetailsItemType = ContactDetailsItemType.Url,
                             label = TextUiModel.TextRes(R.string.contact_property_url),
                             value = TextUiModel.Text("url")
                         )

@@ -314,12 +314,17 @@ private fun ContactDetailsItemGroup(
                                 id = R.string.contact_details_action_call_label
                             )
 
+                            ContactDetailsItemType.Url -> stringResource(
+                                id = R.string.contact_details_action_open_url_label
+                            )
+
                             ContactDetailsItemType.Other -> null
                         },
                         onClick = {
                             when (uiModel.contactDetailsItemType) {
                                 ContactDetailsItemType.Email -> onMessageContact(contactItemValue)
                                 ContactDetailsItemType.Phone -> launchPhoneApp(context, contactItemValue)
+                                ContactDetailsItemType.Url -> openUrl(context, contactItemValue)
                                 ContactDetailsItemType.Other -> Unit
                             }
                         }
@@ -397,6 +402,11 @@ private fun launchBrowser(context: Context, remoteId: String?) {
 private fun launchPhoneApp(context: Context, phoneNumber: String) {
     val uri = "tel:$phoneNumber".toUri()
     val intent = Intent(Intent.ACTION_DIAL, uri)
+    context.startActivity(intent)
+}
+
+private fun openUrl(context: Context, url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
     context.startActivity(intent)
 }
 

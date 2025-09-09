@@ -92,9 +92,18 @@ data class ContactDetailTelephone(
 )
 
 data class VCardUrl(
-    val url: String,
+    val url: VCardUrlValue,
     val urlTypes: List<VCardPropType>
 )
+
+sealed interface VCardUrlValue {
+
+    val value: String
+
+    data class Http(override val value: String) : VCardUrlValue
+    data class NotHttp(override val value: String) : VCardUrlValue
+    data class Text(override val value: String) : VCardUrlValue
+}
 
 sealed interface VCardPropType {
 

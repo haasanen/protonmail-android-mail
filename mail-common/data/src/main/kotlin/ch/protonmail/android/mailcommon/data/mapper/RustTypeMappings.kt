@@ -89,6 +89,7 @@ import uniffi.proton_mail_uniffi.SystemLabel
 import uniffi.proton_mail_uniffi.User
 import uniffi.proton_mail_uniffi.UserSettings
 import uniffi.proton_mail_uniffi.VCardUrl
+import uniffi.proton_mail_uniffi.VCardUrlValue
 import uniffi.proton_mail_uniffi.VcardPropType
 import uniffi.proton_mail_uniffi.ViewLayout
 import uniffi.proton_mail_uniffi.ViewMode
@@ -198,6 +199,10 @@ typealias LocalContactFieldTimeZones = ContactField.TimeZones
 typealias LocalContactFieldTitles = ContactField.Titles
 typealias LocalContactFieldUrls = ContactField.Urls
 typealias LocalVCardUrl = VCardUrl
+typealias LocalVCardUrlValue = VCardUrlValue
+typealias LocalVCardUrlValueHttp = VCardUrlValue.Http
+typealias LocalVCardUrlValueNotHttp = VCardUrlValue.NotHttp
+typealias LocalVCardUrlValueText = VCardUrlValue.Text
 typealias LocalVCardPropType = VcardPropType
 typealias LocalVCardPropTypeHome = VcardPropType.Home
 typealias LocalVCardPropTypeWork = VcardPropType.Work
