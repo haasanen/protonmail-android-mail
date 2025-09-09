@@ -620,7 +620,7 @@ fun ComposeMailFab(onComposeClick: () -> Unit) {
         modifier = Modifier
             .border(
                 ProtonDimens.OutlinedBorderSize,
-                ProtonTheme.colors.borderNorm, RoundedCornerShape(MailDimens.MailboxFabRadius)
+                ProtonTheme.colors.borderLight, RoundedCornerShape(MailDimens.MailboxFabRadius)
             )
             .background(
                 color = ProtonTheme.colors.interactionFabNorm,
@@ -644,7 +644,7 @@ fun IconOnlyComposeMailFab(onComposeClick: () -> Unit) {
         modifier = Modifier
             .border(
                 width = 1.dp,
-                color = ProtonTheme.colors.borderNorm,
+                color = ProtonTheme.colors.borderLight,
                 shape = CircleShape
             ),
         shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
