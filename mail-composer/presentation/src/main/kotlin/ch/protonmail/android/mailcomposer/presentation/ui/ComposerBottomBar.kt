@@ -90,7 +90,7 @@ private fun AttachmentsButton(onClick: () -> Unit, modifier: Modifier = Modifier
             Icon(
                 painter = painterResource(id = R.drawable.ic_proton_paper_clip),
                 contentDescription = stringResource(id = R.string.composer_add_attachments_content_description),
-                tint = ProtonTheme.colors.iconHint
+                tint = ProtonTheme.colors.iconWeak
             )
         }
     }
@@ -104,7 +104,7 @@ private fun DiscardDraftButton(onDiscardDraftClicked: () -> Unit) {
         Icon(
             painter = painterResource(id = R.drawable.ic_proton_trash_cross),
             contentDescription = stringResource(id = R.string.composer_button_discard_draft),
-            tint = ProtonTheme.colors.iconHint
+            tint = ProtonTheme.colors.iconWeak
         )
     }
 }
@@ -143,7 +143,7 @@ private fun BottomBarButton(
             Icon(
                 painter = painterResource(id = iconRes),
                 contentDescription = stringResource(id = contentDescriptionRes),
-                tint = ProtonTheme.colors.iconHint
+                tint = ProtonTheme.colors.iconWeak
             )
         }
         if (shouldShowCheckmark) {
