@@ -37,6 +37,7 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.component.ProtonDialogTitle
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.mailcommon.presentation.ui.isLandscape
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
@@ -70,9 +71,11 @@ private fun ExpirationTimeTitle() {
     Column {
         ProtonDialogTitle(titleResId = R.string.composer_expiration_time_bottom_sheet_title)
 
-        Spacer(Modifier.size(ProtonDimens.Spacing.Large))
+        if (!isLandscape()) {
+            Spacer(Modifier.size(ProtonDimens.Spacing.Large))
 
-        ProtonAlertDialogText(textResId = R.string.composer_expiration_time_bottom_sheet_description)
+            ProtonAlertDialogText(textResId = R.string.composer_expiration_time_bottom_sheet_description)
+        }
     }
 }
 
