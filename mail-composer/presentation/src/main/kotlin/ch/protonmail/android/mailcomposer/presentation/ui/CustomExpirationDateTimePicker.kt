@@ -34,7 +34,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -96,9 +95,9 @@ fun CustomExpirationDateTimePicker(onTimePicked: (ExpirationTimeUiModel) -> Unit
                 val instant = DateTimeInstant.fromEpochMilliseconds(utcTimeMillis)
 
                 val today = Clock.System.now().toLocalDateTime(timeZone).date
-                val eightyNineDaysFromNow = today.plus(26, DateTimeUnit.DAY)
+                val twentySixDaysFromNow = today.plus(26, DateTimeUnit.DAY)
                 val dateOfTimestamp = instant.toLocalDateTime(timeZone).date
-                return dateOfTimestamp in today..eightyNineDaysFromNow
+                return dateOfTimestamp in today..twentySixDaysFromNow
             }
 
             override fun isSelectableYear(year: Int): Boolean {
@@ -158,26 +157,16 @@ fun SetCustomExpirationDialog(
 ) {
 
     val dateFormatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
-    val dateTextFieldState = rememberTextFieldState()
+    val formattedDate = remember { datePickerState.getSelectedDate()?.format(dateFormatter) ?: "" }
     val timeFormatter = remember { SimpleDateFormat("hh:mm a", Locale.current.platformLocale) }
-    val timeTextFieldState = rememberTextFieldState()
+    val formattedTime = remember { mutableStateOf("") }
     val calendar = remember { Calendar.getInstance() }
-
-    LaunchedEffect(datePickerState.getSelectedDate()) {
-        val formattedDate = datePickerState.getSelectedDate()?.format(dateFormatter) ?: ""
-        dateTextFieldState.edit {
-            replace(0, this.length, formattedDate)
-        }
-    }
 
     LaunchedEffect(timePickerState.hour, timePickerState.minute) {
         calendar.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
         calendar.set(Calendar.MINUTE, timePickerState.minute)
         calendar.isLenient = false
-        val formattedTime = timeFormatter.format(calendar.time)
-        timeTextFieldState.edit {
-            replace(0, this.length, formattedTime)
-        }
+        formattedTime.value = timeFormatter.format(calendar.time)
     }
 
     val dateFieldInteractionSource = remember { MutableInteractionSource() }
@@ -209,7 +198,8 @@ fun SetCustomExpirationDialog(
                             shape = ProtonTheme.shapes.medium
                         )
                         .clickable(role = Role.Button, onClick = onPickDate),
-                    state = dateTextFieldState,
+                    value = formattedDate,
+                    onValueChange = {},
                     enabled = false,
                     readOnly = true,
                     textStyle = ProtonTheme.typography.bodyLargeNorm,
@@ -236,8 +226,10 @@ fun SetCustomExpirationDialog(
                         .background(
                             color = ProtonTheme.colors.backgroundNorm,
                             shape = ProtonTheme.shapes.medium
-                        ),
-                    state = timeTextFieldState,
+                        )
+                        .clickable(role = Role.Button, onClick = onPickTime),
+                    value = formattedTime.value,
+                    onValueChange = {},
                     enabled = false,
                     readOnly = true,
                     textStyle = ProtonTheme.typography.bodyLargeNorm,
