@@ -28,6 +28,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -42,13 +44,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -181,9 +181,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                                     testTag(ComposerTestTags.CollapseExpandArrow)
                                 }
                                 .rotate(recipientsButtonRotation.value),
-                            imageVector = ImageVector.vectorResource(
-                                id = R.drawable.ic_proton_chevron_tiny_down
-                            ),
+                            imageVector = Icons.Default.ArrowDropDown,
                             tint = ProtonTheme.colors.iconHint,
                             contentDescription = stringResource(id = R.string.composer_expand_recipients_button)
                         )
