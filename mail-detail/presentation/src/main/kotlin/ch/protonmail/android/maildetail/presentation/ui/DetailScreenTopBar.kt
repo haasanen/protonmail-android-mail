@@ -196,12 +196,13 @@ fun CustomSingleLineTopAppBar(
             Text(
                 modifier = Modifier
                     .wrapContentHeight(align = Alignment.CenterVertically)
-                    .padding(horizontal = ProtonDimens.Spacing.Jumbo)
+                    .padding()
                     .fillMaxWidth(),
                 text = title,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = ProtonTheme.typography.titleLargeMedium,
-                textAlign = TextAlign.Center
+                style = ProtonTheme.typography.titleLarge,
+                textAlign = TextAlign.Left
             )
         }
 
