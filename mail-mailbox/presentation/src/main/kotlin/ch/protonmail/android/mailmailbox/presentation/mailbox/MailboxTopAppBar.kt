@@ -242,8 +242,6 @@ object MailboxTopAppBar {
         val onTitleClick: () -> Unit,
         val onEnterSearchMode: () -> Unit,
         val onSearch: (query: String) -> Unit,
-        val onOpenUpsellingPage: () -> Unit,
-        val onCloseUpsellingPage: () -> Unit,
         val onAccountAvatarClicked: () -> Unit,
         val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit
     )
@@ -285,8 +283,6 @@ fun LoadingMailboxTopAppBarPreview() {
             onTitleClick = {},
             onEnterSearchMode = {},
             onSearch = {},
-            onOpenUpsellingPage = {},
-            onCloseUpsellingPage = {},
             onAccountAvatarClicked = {},
             onNavigateToUpselling = { _, _ -> }
         )
@@ -312,8 +308,6 @@ fun MailboxTopAppBarPreview() {
             onTitleClick = {},
             onEnterSearchMode = {},
             onSearch = {},
-            onOpenUpsellingPage = {},
-            onCloseUpsellingPage = {},
             onAccountAvatarClicked = {},
             onNavigateToUpselling = { _, _ -> }
         )

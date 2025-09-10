@@ -267,8 +267,6 @@ fun MailboxScreen(
             actions.onExitSearchMode()
             viewModel.submit(MailboxViewAction.ExitSearchMode)
         },
-        onOpenUpsellingPage = { Timber.d("On open upselling page") },
-        onCloseUpsellingPage = { viewModel.submit(MailboxViewAction.DismissBottomSheet) },
         onAttachmentClicked = { viewModel.submit(MailboxViewAction.RequestAttachment(it)) },
         onClearAll = { viewModel.submit(MailboxViewAction.ClearAll) },
         onClearAllConfirmed = { viewModel.submit(MailboxViewAction.ClearAllConfirmed) },
@@ -481,8 +479,6 @@ fun MailboxScreen(
                         onTitleClick = { scope.launch { lazyListState.animateScrollToItem(0) } },
                         onEnterSearchMode = { actions.onEnterSearchMode() },
                         onSearch = { query -> actions.onSearchQuery(query) },
-                        onOpenUpsellingPage = actions.onOpenUpsellingPage,
-                        onCloseUpsellingPage = actions.onCloseUpsellingPage,
                         onAccountAvatarClicked = actions.onAccountAvatarClicked,
                         onNavigateToUpselling = actions.onNavigateToUpselling
                     )
@@ -1213,8 +1209,6 @@ object MailboxScreen {
         val onSearchQuery: (String) -> Unit,
         val onSearchResult: () -> Unit,
         val onExitSearchMode: () -> Unit,
-        val onOpenUpsellingPage: () -> Unit,
-        val onCloseUpsellingPage: () -> Unit,
         val onAccountAvatarClicked: () -> Unit,
         val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit,
         val onClearAll: () -> Unit,
@@ -1274,8 +1268,6 @@ object MailboxScreen {
                 onEnterSearchMode = {},
                 onSearchQuery = {},
                 onSearchResult = {},
-                onOpenUpsellingPage = {},
-                onCloseUpsellingPage = {},
                 onAccountAvatarClicked = {},
                 showMissingFeature = {},
                 onAttachmentClicked = {},

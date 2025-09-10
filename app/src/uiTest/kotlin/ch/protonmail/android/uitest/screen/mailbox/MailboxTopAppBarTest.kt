@@ -219,8 +219,6 @@ internal class MailboxTopAppBarTest : HiltInstrumentedTest() {
                         onTitleClick = {},
                         onEnterSearchMode = {},
                         onSearch = {},
-                        onOpenUpsellingPage = {},
-                        onCloseUpsellingPage = {},
                         onAccountAvatarClicked = {}
                     )
                 )
