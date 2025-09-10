@@ -48,6 +48,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumHint
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.labelMediumNorm
@@ -89,7 +90,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
     }
     val fontColor = if (uiModel.isUnread) ProtonTheme.colors.textNorm else ProtonTheme.colors.textWeak
     val recipientsTextStyle = if (uiModel.isUnread) {
-        ProtonTheme.typography.titleMediumNorm
+        ProtonTheme.typography.bodyMediumNorm
     } else {
         ProtonTheme.typography.bodyMediumHint
     }
@@ -118,7 +119,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
                 trailingIcons = { Icons(uiModel, fontColor, labelTextStyle) }
             )
 
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
 
             ToRecipientsRow(recipientsTextStyle, uiModel)
         }

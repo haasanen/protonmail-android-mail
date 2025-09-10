@@ -170,7 +170,7 @@ private fun MessageDetailHeaderLayout(
                         Time(time = uiModel.time)
                     }
                 )
-                Spacer(modifier = modifier.height(ProtonDimens.Spacing.Tiny))
+                Spacer(modifier = modifier.height(ProtonDimens.Spacing.Small))
                 Row {
                     Column(
                         modifier = Modifier.weight(1f)
@@ -180,7 +180,7 @@ private fun MessageDetailHeaderLayout(
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
-                        Spacer(modifier.height(ProtonDimens.Spacing.Tiny))
+                        Spacer(modifier.height(ProtonDimens.Spacing.Small))
                         AllRecipients(
                             allRecipients = uiModel.allRecipients,
                             hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
@@ -461,7 +461,7 @@ private fun SenderDetails(
                 style = ProtonTheme.typography.bodyMediumNorm,
                 icons = { }
             )
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Compact))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
             ParticipantAddress(
                 participantUiModel = senderUiModel,
                 textColor = ProtonTheme.colors.textAccent
