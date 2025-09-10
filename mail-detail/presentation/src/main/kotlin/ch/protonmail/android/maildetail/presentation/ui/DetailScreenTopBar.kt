@@ -57,7 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallHint
+import ch.protonmail.android.design.compose.theme.bodyMediumHint
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -182,7 +182,7 @@ fun CustomSingleLineTopAppBar(
                     .padding(horizontal = ProtonDimens.Spacing.Jumbo)
                     .alpha(1 - subjectLineAlpha),
                 text = pluralStringResource(plurals.message_count_label_text, count, count),
-                style = ProtonTheme.typography.bodySmallHint,
+                style = ProtonTheme.typography.bodyMediumHint,
                 textAlign = TextAlign.Center
             )
         }
