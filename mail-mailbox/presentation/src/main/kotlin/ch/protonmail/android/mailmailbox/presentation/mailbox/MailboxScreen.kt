@@ -182,6 +182,16 @@ fun MailboxScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
+    fun dismissBottomSheet(continuation: () -> Unit = {}) {
+        scope.launch { bottomSheetState.hide() }
+            .invokeOnCompletion {
+                if (!bottomSheetState.isVisible) {
+                    showBottomSheet = false
+                }
+                continuation()
+            }
+    }
+
     BackHandler(mailboxState.mailboxListState is MailboxListState.Data.SelectionMode) {
         viewModel.submit(MailboxViewAction.ExitSelectionMode)
     }
@@ -269,16 +279,7 @@ fun MailboxScreen(
     mailboxState.bottomSheetState?.let {
         ConsumableLaunchedEffect(effect = it.bottomSheetVisibilityEffect) { bottomSheetEffect ->
             when (bottomSheetEffect) {
-                BottomSheetVisibilityEffect.Hide -> {
-                    scope
-                        .launch { bottomSheetState.hide() }
-                        .invokeOnCompletion {
-                            if (!bottomSheetState.isVisible) {
-                                showBottomSheet = false
-                            }
-                        }
-                }
-
+                BottomSheetVisibilityEffect.Hide -> dismissBottomSheet()
                 BottomSheetVisibilityEffect.Show -> showBottomSheet = true
             }
         }
@@ -370,8 +371,7 @@ fun MailboxScreen(
                 )
 
                 is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(onEvent = {
-                    onEvent(it)
-                    viewModel.submit(MailboxViewAction.DismissBottomSheet)
+                    dismissBottomSheet { onEvent(it) }
                 })
 
                 is SnoozeSheetState.Requested -> {
