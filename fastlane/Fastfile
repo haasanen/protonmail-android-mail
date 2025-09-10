@@ -116,7 +116,7 @@ platform :android do
   lane :deployToFirebaseInternalAlphaGroup do
     firebase_app_distribution(
       app: '1:75309174866:android:e4f24581e0ac723978cf8b',
-      android_artifact_path: './signedArtifacts/app-alpha-release.apk',
+      android_artifact_path: './signedArtifacts/app-prod-release.apk',
       # Service account is created on the CI from an env var each run (destroyed when finishing)
       service_credentials_file: '/tmp/service-account.json',
       groups: 'et-closed-alpha-testers',
