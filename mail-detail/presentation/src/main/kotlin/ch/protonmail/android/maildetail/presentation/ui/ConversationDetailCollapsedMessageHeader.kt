@@ -46,13 +46,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.bodyMediumHint
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.labelMediumNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.design.compose.theme.titleSmallNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
@@ -73,9 +72,13 @@ internal fun ConversationDetailCollapsedMessageHeader(
     modifier: Modifier = Modifier
 ) {
     val senderTextStyle = if (uiModel.isUnread) {
-        ProtonTheme.typography.titleMediumNorm
+        ProtonTheme.typography.titleMediumNorm.copy(
+            fontWeight = FontWeight.Bold
+        )
     } else {
-        ProtonTheme.typography.bodyLargeWeak
+        ProtonTheme.typography.bodyMediumWeak.copy(
+            fontWeight = FontWeight.Normal
+        )
     }
     val labelTextStyle = if (uiModel.isUnread) {
         ProtonTheme.typography.labelMediumNorm.copy(
@@ -86,7 +89,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
     }
     val fontColor = if (uiModel.isUnread) ProtonTheme.colors.textNorm else ProtonTheme.colors.textWeak
     val recipientsTextStyle = if (uiModel.isUnread) {
-        ProtonTheme.typography.titleSmallNorm
+        ProtonTheme.typography.titleMediumNorm
     } else {
         ProtonTheme.typography.bodyMediumHint
     }

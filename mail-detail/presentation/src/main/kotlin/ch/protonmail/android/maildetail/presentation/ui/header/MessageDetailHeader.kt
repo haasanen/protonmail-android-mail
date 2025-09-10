@@ -58,10 +58,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import ch.protonmail.android.design.compose.component.ProtonOutlinedIconButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
-import ch.protonmail.android.design.compose.theme.titleSmallNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
@@ -217,7 +217,7 @@ private fun MessageDetailHeaderLayout(
 private fun SenderNameRow(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
-    style: TextStyle = ProtonTheme.typography.titleSmallNorm,
+    style: TextStyle = ProtonTheme.typography.titleMediumNorm,
     icons: @Composable () -> Unit
 ) {
     Row(
@@ -457,7 +457,7 @@ private fun SenderDetails(
         ) {
             SenderNameRow(
                 participantUiModel = senderUiModel,
-                style = ProtonTheme.typography.bodySmallNorm,
+                style = ProtonTheme.typography.bodyMediumNorm,
                 icons = { }
             )
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Compact))
