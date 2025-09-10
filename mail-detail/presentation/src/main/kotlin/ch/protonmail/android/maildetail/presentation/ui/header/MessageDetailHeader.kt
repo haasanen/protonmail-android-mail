@@ -195,6 +195,7 @@ private fun MessageDetailHeaderLayout(
                     Spacer(modifier = modifier.size(ProtonDimens.Spacing.Large))
                     MessageDetailHeaderActions(
                         modifier = modifier
+                            .padding(top = ProtonDimens.Spacing.MediumLight)
                             .testTag(MessageDetailHeaderTestTags.ActionsRootItem),
                         uiModel = uiModel,
                         actions = actions
