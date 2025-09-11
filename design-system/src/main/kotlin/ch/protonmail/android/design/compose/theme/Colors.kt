@@ -731,7 +731,8 @@ class ProtonColors(
             sidebarTextSelected = ProtonPalette.BlueChalk,
             sidebarIconNorm = ProtonPalette.CadetBlue,
             sidebarIconWeak = ProtonPalette.Topaz,
-            sidebarIconSelected = ProtonPalette.Portage
+            sidebarIconSelected = ProtonPalette.Portage,
+            interactionBrandWeakNorm = ProtonPalette.BlueChalk
         )
 
         @Suppress("LongMethod")
@@ -788,7 +789,8 @@ class ProtonColors(
             sidebarTextSelected = ProtonPalette.Platinum,
             sidebarIconNorm = ProtonPalette.SantasGray,
             sidebarIconWeak = ProtonPalette.SonicSilver,
-            sidebarIconSelected = ProtonPalette.BlueBell
+            sidebarIconSelected = ProtonPalette.BlueBell,
+            interactionBrandWeakNorm = ProtonPalette.Rhino
         ).let {
             it.copy(
                 interactionFabNorm = it.shade40,

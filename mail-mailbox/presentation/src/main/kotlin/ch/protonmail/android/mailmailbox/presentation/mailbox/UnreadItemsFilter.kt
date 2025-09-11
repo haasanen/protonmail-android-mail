@@ -103,7 +103,13 @@ fun UnreadItemsFilter(
                                 append(state.numUnread.toString())
                             }
                         },
-                        style = ProtonTheme.typography.bodyMediumNorm
+                        style = if (state.isFilterEnabled) {
+                            ProtonTheme.typography.bodyMediumNorm.copy(
+                                color = ProtonTheme.colors.brandPlus30
+                            )
+                        } else {
+                            ProtonTheme.typography.bodyMediumNorm
+                        }
                     )
                 }
             )
