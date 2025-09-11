@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toAvailableActions
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
@@ -115,7 +116,7 @@ class RustConversationActionRepository @Inject constructor(
             conversationResult.fold(
                 ifLeft = { error ->
                     Timber.w("Failed to observe bottomBar actions due to conversation error $error")
-                    DataError.Local.NoDataCached.left()
+                    (error as? ConversationError.Other)?.error?.left() ?: DataError.Local.NoDataCached.left()
                 },
                 ifRight = { conversation ->
                     val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(
