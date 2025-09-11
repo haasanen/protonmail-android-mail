@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
+import uniffi.proton_mail_uniffi.ExecuteWhenOnlineCallbackAsync
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionForkResult
 import uniffi.proton_mail_uniffi.MailUserSessionUserResult
@@ -61,5 +62,14 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
     suspend fun getUser(): Either<DataError, User> = when (val result = userSession.user()) {
         is MailUserSessionUserResult.Error -> result.v1.toDataError().left()
         is MailUserSessionUserResult.Ok -> result.v1.right()
+    }
+
+    fun executeWhenOnline(block: () -> Unit) {
+        val callback = object : ExecuteWhenOnlineCallbackAsync {
+            override suspend fun onOnline() {
+                block()
+            }
+        }
+        userSession.executeWhenOnlineAsync(callback)
     }
 }
