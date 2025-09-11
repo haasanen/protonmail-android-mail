@@ -417,10 +417,14 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun prefillDraftFieldsFromShareInfo(intentShareInfo: IntentShareInfo): DraftFields {
+        val emailBody = when (composerStates.value.main.draftType) {
+            DraftMimeType.PlainText -> intentShareInfo.emailBody
+            DraftMimeType.Html -> intentShareInfo.emailBody?.replace("\n", "<br>")
+        }
         val draftBody = DraftBody(
             // Temporarily concatenate the shared text + the initial Rust body (to include the signature if present)
             buildString {
-                append(intentShareInfo.emailBody ?: "")
+                append(emailBody ?: "")
                 appendLine()
                 append(bodyTextField.text)
             }
