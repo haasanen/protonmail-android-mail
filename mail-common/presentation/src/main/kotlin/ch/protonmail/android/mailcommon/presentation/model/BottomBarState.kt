@@ -33,6 +33,7 @@ sealed interface BottomBarState {
     }
 
     object Loading : BottomBarState
+    object Offline : BottomBarState
 
     sealed interface Error : BottomBarState {
         object FailedLoadingActions : Error
@@ -49,4 +50,5 @@ sealed interface BottomBarEvent {
     object HideBottomSheet : BottomBarEvent
 
     object ErrorLoadingActions : BottomBarEvent
+    object Offline : BottomBarEvent
 }

@@ -32,6 +32,7 @@ class BottomBarReducer @Inject constructor() {
             is BottomBarEvent.HideBottomSheet -> currentState.toNewStateForHiding()
             is BottomBarEvent.ShowBottomSheet -> currentState.toNewStateForShowing()
             is BottomBarEvent.ErrorLoadingActions -> currentState.toNewStateForErrorLoading()
+            BottomBarEvent.Offline -> currentState.toNewStateForOfflineLoading()
         }
     }
 
@@ -40,11 +41,13 @@ class BottomBarReducer @Inject constructor() {
         is BottomBarState.Data.Shown -> BottomBarState.Data.Shown(operation.actionUiModels)
         is BottomBarState.Error.FailedLoadingActions -> BottomBarState.Data.Hidden(operation.actionUiModels)
         is BottomBarState.Loading -> BottomBarState.Data.Hidden(operation.actionUiModels)
+        is BottomBarState.Offline -> this
     }
 
     private fun BottomBarState.toNewStateForErrorLoading() = when (this) {
         is BottomBarState.Data -> this
         is BottomBarState.Error.FailedLoadingActions -> this
+        is BottomBarState.Offline,
         is BottomBarState.Loading -> BottomBarState.Error.FailedLoadingActions
     }
 
@@ -55,6 +58,11 @@ class BottomBarReducer @Inject constructor() {
 
     private fun BottomBarState.toNewStateForShowing() = when (this) {
         is BottomBarState.Data.Hidden -> BottomBarState.Data.Shown(this.actions)
+        else -> this
+    }
+
+    private fun BottomBarState.toNewStateForOfflineLoading() = when (this) {
+        BottomBarState.Loading -> BottomBarState.Offline
         else -> this
     }
 }

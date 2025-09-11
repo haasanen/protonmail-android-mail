@@ -67,7 +67,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -807,13 +806,9 @@ fun ConversationDetailScreen(
                 errorMessage = state.messagesState.message.string()
             )
 
-            is ConversationDetailsMessagesState.Loading -> ProtonCenteredProgress(
+            is ConversationDetailsMessagesState.Loading,
+            is ConversationDetailsMessagesState.Offline -> ProtonCenteredProgress(
                 modifier = Modifier.padding(innerPadding)
-            )
-
-            is ConversationDetailsMessagesState.Offline -> ProtonErrorMessage(
-                modifier = Modifier.padding(innerPadding),
-                errorMessage = stringResource(id = R.string.please_go_back_online_to_load_messages)
             )
         }
     }

@@ -63,6 +63,11 @@ internal class BottomBarReducerTest(
                 currentState = BottomBarState.Loading,
                 operation = BottomBarEvent.ErrorLoadingActions,
                 expectedState = BottomBarState.Error.FailedLoadingActions
+            ),
+            TestInput(
+                currentState = BottomBarState.Loading,
+                operation = BottomBarEvent.Offline,
+                expectedState = BottomBarState.Offline
             )
         )
 
@@ -106,6 +111,11 @@ internal class BottomBarReducerTest(
                 currentState = BottomBarState.Data.Hidden(actions),
                 operation = BottomBarEvent.HideBottomSheet,
                 expectedState = BottomBarState.Data.Hidden(actions)
+            ),
+            TestInput(
+                currentState = BottomBarState.Data.Hidden(actions),
+                operation = BottomBarEvent.Offline,
+                expectedState = BottomBarState.Data.Hidden(actions)
             )
         )
 
@@ -133,6 +143,11 @@ internal class BottomBarReducerTest(
             TestInput(
                 currentState = BottomBarState.Error.FailedLoadingActions,
                 operation = BottomBarEvent.HideBottomSheet,
+                expectedState = BottomBarState.Error.FailedLoadingActions
+            ),
+            TestInput(
+                currentState = BottomBarState.Error.FailedLoadingActions,
+                operation = BottomBarEvent.Offline,
                 expectedState = BottomBarState.Error.FailedLoadingActions
             )
         )

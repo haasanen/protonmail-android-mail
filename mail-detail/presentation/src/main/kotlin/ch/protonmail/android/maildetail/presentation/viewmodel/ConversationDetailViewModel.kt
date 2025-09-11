@@ -601,7 +601,7 @@ class ConversationDetailViewModel @Inject constructor(
             val initialScrollTo = initialScrollToMessageId
                 ?: conversationMessages.messageIdToOpen
                     .let { messageIdUiModelMapper.toUiModel(it) }
-            if (stateIsLoading() && allCollapsed(conversationViewState.messagesState)) {
+            if (stateIsLoadingOrOffline() && allCollapsed(conversationViewState.messagesState)) {
                 ConversationDetailEvent.MessagesData(
                     messagesUiModels,
                     initialScrollTo,
@@ -632,8 +632,8 @@ class ConversationDetailViewModel @Inject constructor(
         .filter { it.messageId.id == idUiModel?.id }
         .toNonEmptyListOrNull()
 
-    private fun stateIsLoading(): Boolean =
-        state.value.messagesState == ConversationDetailsMessagesState.Loading || state.value.messagesState == ConversationDetailsMessagesState.Offline
+    private fun stateIsLoadingOrOffline() = state.value.messagesState == ConversationDetailsMessagesState.Loading ||
+        state.value.messagesState == ConversationDetailsMessagesState.Offline
 
     private fun allCollapsed(viewState: Map<MessageId, InMemoryConversationStateRepository.MessageState>): Boolean =
         viewState.values.all { it == InMemoryConversationStateRepository.MessageState.Collapsed }
@@ -737,6 +737,7 @@ class ConversationDetailViewModel @Inject constructor(
         userId
     }.flatMapLatest { userId ->
         val errorEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions)
+        val offlineEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.Offline)
         val labelId = openedFromLocation
         val themeOptions = MessageThemeOptions(MessageTheme.Dark)
 
@@ -747,7 +748,13 @@ class ConversationDetailViewModel @Inject constructor(
             }
             observeDetailActions(userId, labelId, messageId, themeOptions).mapLatest { either ->
                 either.fold(
-                    ifLeft = { errorEvent },
+                    ifLeft = {
+                        if (it.isOfflineError()) {
+                            offlineEvent
+                        } else {
+                            errorEvent
+                        }
+                    },
                     ifRight = { actions ->
                         val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
                         ConversationDetailEvent.ConversationBottomBarEvent(
@@ -759,7 +766,13 @@ class ConversationDetailViewModel @Inject constructor(
         } else {
             observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
                 either.fold(
-                    ifLeft = { errorEvent },
+                    ifLeft = {
+                        if (it.isOfflineError()) {
+                            offlineEvent
+                        } else {
+                            errorEvent
+                        }
+                    },
                     ifRight = { actions ->
                         val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
                         ConversationDetailEvent.ConversationBottomBarEvent(
