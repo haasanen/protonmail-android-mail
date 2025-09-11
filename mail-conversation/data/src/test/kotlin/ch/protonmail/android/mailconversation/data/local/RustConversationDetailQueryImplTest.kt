@@ -80,9 +80,12 @@ class RustConversationDetailQueryImplTest {
         val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
         val userId = UserIdTestData.userId
         val watcherMock = mockk<WatchedConversation> {
-            every { conversation } returns expectedConversation
-            every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns messageToOpen
+            every { this@mockk.conversation } returns expectedConversation
+            every { this@mockk.messages } returns expectedMessages.messages
+            every { this@mockk.messageIdToOpen } returns messageToOpen
+            every { this@mockk.handle } returns mockk {
+                every { disconnect() } returns Unit
+            }
         }
         val localLabelId = LocalLabelId(1uL)
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
@@ -120,6 +123,9 @@ class RustConversationDetailQueryImplTest {
             every { this@mockk.conversation } returns expectedConversation
             every { this@mockk.messages } returns expectedMessages.messages
             every { this@mockk.messageIdToOpen } returns messageToOpen
+            every { this@mockk.handle } returns mockk {
+                every { disconnect() } returns Unit
+            }
         }
         val localLabelId = LocalLabelId(1uL)
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
@@ -179,7 +185,9 @@ class RustConversationDetailQueryImplTest {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
-
+            every { handle } returns mockk {
+                every { disconnect() } returns Unit
+            }
         }
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
@@ -198,6 +206,68 @@ class RustConversationDetailQueryImplTest {
     }
 
     @Test
+    fun `new watcher is created when current user changes event convo ids are same`() = runTest {
+        // Given
+        val oldUserId = UserIdTestData.userId
+        val newUserId = UserIdTestData.userId1
+        val newMailbox = mockk<MailboxWrapper>()
+        val conversationId1 = LocalConversationId(1u)
+        val conversationId2 = LocalConversationId(1u)
+        val messageToOpen = LocalMessageId(100u)
+        val callbackSlot = slot<LiveQueryCallback>()
+        val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
+        val expectedConversation1 = LocalConversationTestData.AugConversation
+        val expectedConversation2 = expectedConversation1.copy(id = conversationId2)
+        val watcherMock1 = mockk<WatchedConversation> {
+            every { conversation } returns expectedConversation1
+            every { messages } returns expectedMessages.messages
+            every { messageIdToOpen } returns messageToOpen
+            every { handle } returns mockk {
+                every { disconnect() } returns Unit
+            }
+        }
+        val watcherMock2 = mockk<WatchedConversation> {
+            every { conversation } returns expectedConversation2
+            every { messages } returns expectedMessages.messages
+            every { messageIdToOpen } returns messageToOpen
+            every { handle } returns mockk {
+                every { disconnect() } returns Unit
+            }
+        }
+        val localLabelId = LocalLabelId(1uL)
+        coEvery { rustMailboxFactory.create(oldUserId, localLabelId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.create(newUserId, localLabelId) } returns newMailbox.right()
+        coEvery {
+            createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot))
+        } returns watcherMock1.right()
+        coEvery {
+            createRustConversationWatcher(newMailbox, conversationId2, capture(callbackSlot))
+        } returns watcherMock2.right()
+
+        // When - First conversation
+        val job1 = launch {
+            rustConversationQuery.observeConversation(oldUserId, conversationId1, localLabelId).test {
+                assertEquals(expectedConversation1.right(), awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+        job1.join()
+
+        // When - Second conversation
+        val job2 = launch {
+            rustConversationQuery.observeConversation(newUserId, conversationId2, localLabelId).test {
+                assertEquals(expectedConversation2.right(), awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+        job2.join()
+
+        // Then
+        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId1, any()) }
+        coVerify(exactly = 1) { createRustConversationWatcher(newMailbox, conversationId2, any()) }
+    }
+
+    @Test
     fun `watcher is re-created when a different conversation id is passed`() = runTest {
         // Given
         val userId = UserIdTestData.userId
@@ -213,7 +283,7 @@ class RustConversationDetailQueryImplTest {
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
             every { handle } returns mockk {
-                every { destroy() } returns Unit
+                every { disconnect() } returns Unit
             }
         }
         val watcherMock2 = mockk<WatchedConversation> {
@@ -221,7 +291,7 @@ class RustConversationDetailQueryImplTest {
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
             every { handle } returns mockk {
-                every { destroy() } returns Unit
+                every { disconnect() } returns Unit
             }
         }
         val localLabelId = LocalLabelId(1uL)
@@ -269,6 +339,9 @@ class RustConversationDetailQueryImplTest {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
+            every { handle } returns mockk {
+                every { disconnect() } returns Unit
+            }
         }
         val localLabelId = LocalLabelId(1uL)
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()

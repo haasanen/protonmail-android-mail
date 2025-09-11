@@ -59,7 +59,7 @@ object MailConversationModule {
         fun bindsRustConversationsQuery(impl: RustConversationsQueryImpl): RustConversationsQuery
 
         @Binds
-        fun bindsRustConversationQuery(impl: RustConversationDetailQueryImpl): RustConversationDetailQuery
+        fun bindsRustConversationDetailQuery(impl: RustConversationDetailQueryImpl): RustConversationDetailQuery
 
         @Binds
         @Reusable

@@ -29,9 +29,11 @@ import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -67,7 +69,96 @@ class RustConversationDetailQueryImpl @Inject constructor(
         .asStateFlow()
         .filterNotNull()
 
-    private val conversationUpdatedCallback = object : LiveQueryCallback {
+    override suspend fun observeConversation(
+        userId: UserId,
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
+    ): Flow<Either<ConversationError, LocalConversation>> = callbackFlow {
+        initialiseOrUpdateWatcher(userId, conversationId, labelId)
+
+        val job = coroutineScope.launch {
+            conversationStatusFlow.collect { value ->
+                send(value)
+            }
+        }
+
+        awaitClose {
+            job.cancel()
+            coroutineScope.launch {
+                mutex.withLock {
+                    if (currentConversationId == conversationId) {
+                        Timber.d("conversation called destroy on $conversationId")
+                        destroy()
+                    }
+                }
+            }
+        }
+    }
+
+
+    override suspend fun observeConversationMessages(
+        userId: UserId,
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
+    ): Flow<Either<ConversationError, LocalConversationMessages>> = callbackFlow {
+        initialiseOrUpdateWatcher(userId, conversationId, labelId)
+
+        val job = coroutineScope.launch {
+            conversationMessagesStatusFlow.collect { value ->
+                send(value)
+            }
+        }
+
+        awaitClose {
+            job.cancel()
+            coroutineScope.launch {
+                mutex.withLock {
+                    if (currentConversationId == conversationId) {
+                        Timber.d("conversation called destroy on $conversationId")
+                        destroy()
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun initialiseOrUpdateWatcher(
+        userId: UserId,
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
+    ) {
+        mutex.withLock {
+            if (currentConversationId != conversationId || conversationWatcher == null || userId != currentUserId) {
+                // If the conversationId is different or there's no active watcher, destroy and create a new one
+                destroy()
+
+                val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
+                if (mailbox == null) {
+                    Timber.e("Failed to observe conversation, null mailbox")
+                    return@withLock
+                }
+
+                currentUserId = userId
+                currentLabelId = labelId
+                val convoWatcherEither = createRustConversationWatcher(
+                    mailbox, conversationId, conversationUpdatedCallback()
+                ).onLeft {
+                    Timber.w("Failed to create watcher for conversation: $it")
+                }.onRight {
+                    conversationWatcher = it
+                }
+
+                conversationMutableStatusFlow.value = convoWatcherEither.map { it.conversation }
+                conversationMessagesMutableStatusFlow.value = convoWatcherEither.map {
+                    LocalConversationMessages(it.messageIdToOpen, it.messages)
+                }
+                currentConversationId = conversationId
+            }
+        }
+
+    }
+
+    private fun conversationUpdatedCallback() = object : LiveQueryCallback {
         override fun onUpdate() {
             coroutineScope.launch {
                 mutex.withLock {
@@ -99,76 +190,21 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     conversationMessagesMutableStatusFlow.value = conversationEither.map {
                         LocalConversationMessages(it.messageIdToOpen, it.messages)
                     }
+
+                    Timber.d("Conversation updated: $currentConversationId")
                 }
             }
         }
-    }
-
-    override suspend fun observeConversation(
-        userId: UserId,
-        conversationId: LocalConversationId,
-        labelId: LocalLabelId
-    ): Flow<Either<ConversationError, LocalConversation>> {
-
-        initialiseOrUpdateWatcher(userId, conversationId, labelId)
-
-        return conversationStatusFlow
-    }
-
-    override suspend fun observeConversationMessages(
-        userId: UserId,
-        conversationId: LocalConversationId,
-        labelId: LocalLabelId
-    ): Flow<Either<ConversationError, LocalConversationMessages>> {
-
-        initialiseOrUpdateWatcher(userId, conversationId, labelId)
-
-        return conversationMessagesStatusFlow
-    }
-
-    private suspend fun initialiseOrUpdateWatcher(
-        userId: UserId,
-        conversationId: LocalConversationId,
-        labelId: LocalLabelId
-    ) {
-        mutex.withLock {
-            if (currentConversationId != conversationId || conversationWatcher == null) {
-                // If the conversationId is different or there's no active watcher, destroy and create a new one
-                destroy()
-
-                val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
-                if (mailbox == null) {
-                    Timber.e("Failed to observe conversation, null mailbox")
-                    return@withLock
-                }
-
-                currentUserId = userId
-                currentLabelId = labelId
-                val convoWatcherEither = createRustConversationWatcher(
-                    mailbox, conversationId, conversationUpdatedCallback
-                ).onLeft {
-                    Timber.w("Failed to create watcher for conversation: $it")
-                }.onRight {
-                    conversationWatcher = it
-                }
-
-                conversationMutableStatusFlow.value = convoWatcherEither.map { it.conversation }
-                conversationMessagesMutableStatusFlow.value = convoWatcherEither.map {
-                    LocalConversationMessages(it.messageIdToOpen, it.messages)
-                }
-                currentConversationId = conversationId
-            }
-        }
-
     }
 
     private fun destroy() {
         Timber.d("destroy watcher for $currentConversationId")
-        conversationWatcher?.handle?.destroy()
+
+        conversationWatcher?.handle?.disconnect()
+
         conversationWatcher = null
         currentConversationId = null
         conversationMessagesMutableStatusFlow.value = null
         conversationMutableStatusFlow.value = null
     }
-
 }
