@@ -222,7 +222,7 @@ fun ProtonSidebarAppVersionItem(
         textAlign = TextAlign.Center,
         color = ProtonTheme.colors.textWeak,
         style = ProtonTheme.typography.bodySmallHint,
-        maxLines = 1,
+        maxLines = 2,
         overflow = TextOverflow.Ellipsis
     )
 }
