@@ -187,6 +187,7 @@ import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
+import ch.protonmail.android.mailsession.domain.usecase.ExecuteWhenOnline
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
@@ -377,6 +378,8 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
 
     private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>()
+
+    private val executeWhenOnline = mockk<ExecuteWhenOnline>(relaxed = true)
     // endregion
 
     // region mappers
@@ -2550,7 +2553,8 @@ internal class ConversationDetailViewModelIntegrationTest {
         protonCalendarInstalled: IsProtonCalendarInstalled = isProtonCalendarInstalled,
         findContactByEmailAddress: FindContactByEmail = findContactByEmail,
         loadAvatarImg: LoadAvatarImage = loadAvatarImage,
-        observeAvatarImgStates: ObserveAvatarImageStates = observeAvatarImageStates
+        observeAvatarImgStates: ObserveAvatarImageStates = observeAvatarImageStates,
+        executeOnOnline: ExecuteWhenOnline = executeWhenOnline
     ) = ConversationDetailViewModel(
         observePrimaryUserId = observePrimaryUser,
         messageIdUiModelMapper = messageIdUiModelMapper,
@@ -2599,7 +2603,8 @@ internal class ConversationDetailViewModelIntegrationTest {
         answerRsvpEvent = answerRsvpEvent,
         snoozeRepository = snoozeRepository,
         unsubscribeFromNewsletter = unsubscribeFromNewsletter,
-        toolbarRefreshSignal = toolbarRefreshSignal
+        toolbarRefreshSignal = toolbarRefreshSignal,
+        executeWhenOnline = executeOnOnline
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

@@ -130,6 +130,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactA
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
+import ch.protonmail.android.mailsession.domain.usecase.ExecuteWhenOnline
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
@@ -141,6 +142,9 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -158,6 +162,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -215,7 +220,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val answerRsvpEvent: AnswerRsvpEvent,
     private val snoozeRepository: SnoozeRepository,
     private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter,
-    private val toolbarRefreshSignal: ToolbarActionsRefreshSignal
+    private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
+    private val executeWhenOnline: ExecuteWhenOnline
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -225,6 +231,24 @@ class ConversationDetailViewModel @Inject constructor(
             initialValue = null
         )
         .filterNotNull()
+
+    // Signal used to trigger a reload on connection change - as offline errors are treated as terminal ops.
+    private val reloadSignal = MutableSharedFlow<Unit>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    // Signal triggered when an offline state is detected.
+    //
+    // This VM has multiple observers that can trigger an offline state independently.
+    // For this reason, we need to ensure that multiple emissions are counted as one, as the signal
+    // will cause a screen reload to display the fetched data to the user.
+    private val offlineErrorSignal = MutableSharedFlow<Unit>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
 
     private val mutableDetailState = MutableStateFlow(initialState)
     private val conversationId = requireConversationId()
@@ -240,8 +264,10 @@ class ConversationDetailViewModel @Inject constructor(
     init {
         Timber.d("Open detail screen for conversation ID: $conversationId")
         setupObservers()
+        setupOfflineObserver()
     }
 
+    // This needs to go - see ET-4700
     private fun setupObservers() {
         jobs.addAll(
             listOf(
@@ -262,6 +288,20 @@ class ConversationDetailViewModel @Inject constructor(
     private suspend fun restartAllJobs() {
         stopAllJobs()
         setupObservers()
+    }
+
+    private fun setupOfflineObserver() {
+        offlineErrorSignal
+            .take(1)
+            .onEach {
+                executeWhenOnline(primaryUserId.first()) {
+                    viewModelScope.launch {
+                        Timber.d("Triggering reload signal for conversation $conversationId")
+                        reloadSignal.emit(Unit)
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     @Suppress("LongMethod", "ComplexMethod")
@@ -494,7 +534,9 @@ class ConversationDetailViewModel @Inject constructor(
                 }
             )
         }
-    }.launchIn(viewModelScope)
+    }
+        .restartableOn(reloadSignal)
+        .launchIn(viewModelScope)
 
     private fun observeConversationMetadata(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
         observeConversation(userId, conversationId, openedFromLocation)
@@ -502,6 +544,7 @@ class ConversationDetailViewModel @Inject constructor(
                 either.fold(
                     ifLeft = {
                         if (it.isOfflineError()) {
+                            signalOfflineError()
                             ConversationDetailEvent.NoNetworkError
                         } else {
                             ConversationDetailEvent.ErrorLoadingConversation
@@ -511,6 +554,7 @@ class ConversationDetailViewModel @Inject constructor(
                 )
             }
     }
+        .restartableOn(reloadSignal)
         .onEach { event ->
             emitNewStateFrom(event)
         }
@@ -526,6 +570,7 @@ class ConversationDetailViewModel @Inject constructor(
         ) { messagesEither, conversationViewState, primaryUserAddress, avatarImageStates ->
             val conversationMessages = messagesEither.getOrElse {
                 return@combine if (it.isOfflineError()) {
+                    signalOfflineError()
                     ConversationDetailEvent.NoNetworkError
                 } else {
                     ConversationDetailEvent.ErrorLoadingMessages
@@ -542,6 +587,7 @@ class ConversationDetailViewModel @Inject constructor(
                     }
                     message
                 }
+
                 else -> conversationMessages.messages
             }
 
@@ -576,6 +622,7 @@ class ConversationDetailViewModel @Inject constructor(
         .filterNotNull()
         .distinctUntilChanged()
         .flowOn(ioDispatcher)
+        .restartableOn(reloadSignal)
         .onEach { event ->
             emitNewStateFrom(event)
         }
@@ -585,7 +632,8 @@ class ConversationDetailViewModel @Inject constructor(
         .filter { it.messageId.id == idUiModel?.id }
         .toNonEmptyListOrNull()
 
-    private fun stateIsLoading(): Boolean = state.value.messagesState == ConversationDetailsMessagesState.Loading
+    private fun stateIsLoading(): Boolean =
+        state.value.messagesState == ConversationDetailsMessagesState.Loading || state.value.messagesState == ConversationDetailsMessagesState.Offline
 
     private fun allCollapsed(viewState: Map<MessageId, InMemoryConversationStateRepository.MessageState>): Boolean =
         viewState.values.all { it == InMemoryConversationStateRepository.MessageState.Collapsed }
@@ -721,9 +769,12 @@ class ConversationDetailViewModel @Inject constructor(
                 )
             }
         }
-    }.onEach { event ->
-        emitNewStateFrom(event)
-    }.launchIn(viewModelScope)
+    }
+        .restartableOn(reloadSignal)
+        .onEach { event ->
+            emitNewStateFrom(event)
+        }
+        .launchIn(viewModelScope)
 
 
     private fun showContactActionsBottomSheetAndLoadData(
@@ -869,6 +920,7 @@ class ConversationDetailViewModel @Inject constructor(
             val shouldExit = when (val entryPoint = operation.entryPoint) {
                 is MoveToBottomSheetEntryPoint.Message ->
                     entryPoint.isLastInCurrentLocation || isSingleMessageModeEnabled
+
                 is MoveToBottomSheetEntryPoint.Conversation -> true
                 else -> false
             }
@@ -1323,6 +1375,7 @@ class ConversationDetailViewModel @Inject constructor(
 
         }
     }
+        .restartableOn(reloadSignal)
         .launchIn(viewModelScope)
 
     private fun onOpenAttachmentClicked(attachmentId: AttachmentId) {
@@ -1616,7 +1669,15 @@ class ConversationDetailViewModel @Inject constructor(
         emitNewStateFrom(event)
     }
 
-    companion object {
+    private suspend fun signalOfflineError() {
+        Timber.d("Emitting offline signal...")
+        offlineErrorSignal.emit(Unit)
+    }
+
+    private fun <T> Flow<T>.restartableOn(signal: Flow<Unit>): Flow<T> = signal.onStart { emit(Unit) }
+        .flatMapLatest { this@restartableOn }
+
+    private companion object {
 
         val initialState = ConversationDetailState.Loading
     }

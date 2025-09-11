@@ -121,6 +121,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
+import ch.protonmail.android.mailsession.domain.usecase.ExecuteWhenOnline
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
@@ -140,6 +141,7 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -345,6 +347,8 @@ class ConversationDetailViewModelTest {
         every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
     }
 
+    private val executeWhenOnline = mockk<ExecuteWhenOnline>(relaxed = true)
+
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
     }
@@ -398,7 +402,8 @@ class ConversationDetailViewModelTest {
             answerRsvpEvent = answerRsvpEvent,
             snoozeRepository = snoozeRepository,
             unsubscribeFromNewsletter = unsubscribeFromNewsletter,
-            toolbarRefreshSignal = toolbarRefreshSignal
+            toolbarRefreshSignal = toolbarRefreshSignal,
+            executeWhenOnline = executeWhenOnline
         )
     }
 
@@ -637,6 +642,69 @@ class ConversationDetailViewModelTest {
 
             // then
             assertEquals(expectedState, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when offline, executeWhenOnline is called and reload signal is triggered when back online`() = runTest {
+        // Given
+        val labelId = LabelIdSample.AllMail
+        val offlineError = DataError.Remote.Http(NetworkError.NoNetwork)
+
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+
+        coEvery {
+            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+        } returns flow {
+            emit(ConversationError.Other(offlineError).left())
+        }
+
+        val onlineCallback = slot<() -> Unit>()
+        coEvery {
+            executeWhenOnline(UserIdSample.Primary, capture(onlineCallback))
+        } returns Unit
+
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = ofType<ConversationDetailEvent.ConversationData>()
+            )
+        } returns ConversationDetailState.Loading.copy(
+            conversationState = ConversationDetailMetadataState.Data(
+                ConversationDetailMetadataUiModelSample.WeatherForecast
+            )
+        )
+
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = ConversationDetailEvent.NoNetworkError
+            )
+        } returns ConversationDetailState.Loading.copy(
+            conversationState = ConversationDetailMetadataState.Error(
+                message = TextUiModel("No network")
+            )
+        )
+
+        // When
+        viewModel.state.test {
+            assertEquals(ConversationDetailState.Loading, awaitItem())
+
+            advanceUntilIdle()
+
+            // Then - verify executeWhenOnline was called
+            coVerify(exactly = 1) { executeWhenOnline(UserIdSample.Primary, any()) }
+
+            // Execute the captured callback (this mimics coming back online)
+            assertNotNull(onlineCallback.captured)
+            onlineCallback.captured.invoke()
+            advanceUntilIdle()
+
+            coVerify(exactly = 2) {
+                observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+            }
+
             cancelAndIgnoreRemainingEvents()
         }
     }
