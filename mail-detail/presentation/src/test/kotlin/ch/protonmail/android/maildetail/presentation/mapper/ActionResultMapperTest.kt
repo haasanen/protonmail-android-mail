@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionResult.Definiti
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult.UndoableActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
@@ -152,6 +153,19 @@ internal class ActionResultMapperTest {
         // Given
         val operation = ConversationDetailViewAction.SnoozeCompleted("snooze completed")
         val expectedResult = DefinitiveActionResult(TextUiModel("snooze completed"))
+
+        // When
+        val result = actionResultMapper.toActionResult(operation)
+
+        // Then
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `returns definitive result when operation is LastMessageDeleted`() {
+        // Given
+        val operation = ConversationDetailEvent.LastMessageDeleted
+        val expectedResult = DefinitiveActionResult(TextUiModel(R.string.message_deleted))
 
         // When
         val result = actionResultMapper.toActionResult(operation)

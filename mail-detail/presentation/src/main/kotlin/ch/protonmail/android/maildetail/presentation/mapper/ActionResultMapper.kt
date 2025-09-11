@@ -96,6 +96,10 @@ class ActionResultMapper @Inject constructor(
             UndoableActionResult(textUiModel)
         }
 
+        is ConversationDetailEvent.LastMessageDeleted -> {
+            DefinitiveActionResult(TextUiModel(R.string.message_deleted))
+        }
+
         is ConversationDetailViewAction.SnoozeCompleted ->
             DefinitiveActionResult(TextUiModel(operation.completeMessage))
 

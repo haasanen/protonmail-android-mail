@@ -155,6 +155,7 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     ) : ConversationDetailEvent, AffectingBottomSheet, AffectingMessageBar
 
     data class LastMessageMoved(val mailLabelText: MailLabelText) : ConversationDetailEvent, AffectingBottomSheet
+    data object LastMessageDeleted : ConversationDetailEvent, AffectingBottomSheet
 
     data object ExitScreen : ConversationDetailEvent, AffectingBottomSheet
     data class ExitScreenWithMessage(val operation: ConversationDetailOperation) :

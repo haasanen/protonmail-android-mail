@@ -26,42 +26,43 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.HandleOpenProtonCalendarRequest
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.OfflineErrorCancellingScheduleSend
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ExitScreenWithMessage
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ExitScreen
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.LastMessageMoved
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MessageMoved
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorDeletingMessage
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MessageBottomSheetEvent
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ScheduleSendCancelled
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorUnsnoozing
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomBarEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomSheetEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAddStar
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMarkingAsRead
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAttachmentDownloadInProgress
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorDeletingConversation
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingDecryptMessageError
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAnsweringRsvpEvent
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAttachmentDownloadInProgress
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorCancellingScheduleSend
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorDeletingConversation
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorDeletingMessage
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingDecryptMessageError
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingRetrieveMessageError
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingRetrievingMessageOffline
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorGettingAttachment
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorGettingAttachmentNotEnoughSpace
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorLabelingConversation
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorCancellingScheduleSend
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorLoadingConversation
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorLoadingMessages
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMarkingAsRead
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMarkingAsUnread
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorRemoveStar
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorUnsnoozing
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorUnsubscribingFromNewsletter
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ExitScreen
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ExitScreenWithMessage
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.HandleOpenProtonCalendarRequest
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.LastMessageDeleted
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.LastMessageMoved
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MessageBottomSheetEvent
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MessageMoved
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MessagesData
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.OfflineErrorCancellingScheduleSend
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.OpenAttachmentEvent
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ScheduleSendCancelled
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingDeleteDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
@@ -201,6 +202,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.PrintMessage,
                 is MessageMoved,
                 is LastMessageMoved,
+                is LastMessageDeleted,
                 is ExitScreen,
                 is ConversationDetailViewAction.SnoozeCompleted,
                 ConversationDetailViewAction.SnoozeDismissed,
@@ -215,8 +217,8 @@ class ConversationDetailReducer @Inject constructor(
     private fun ConversationDetailState.toLoadingErrorState(
         operation: ConversationDetailOperation
     ): Effect<TextUiModel> = when (operation) {
-        is ConversationDetailEvent.ErrorLoadingConversation,
-        is ConversationDetailEvent.ErrorLoadingMessages ->
+        is ErrorLoadingConversation,
+        is ErrorLoadingMessages ->
             Effect.of(TextUiModel(R.string.detail_error_loading_conversation))
 
         else -> loadingErrorEffect
@@ -246,6 +248,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ErrorCancellingScheduleSend -> R.string.error_cancel_schedule_send_failed
                 is OfflineErrorCancellingScheduleSend ->
                     R.string.offline_error_cancel_schedule_send_failed
+
                 is ErrorAnsweringRsvpEvent -> R.string.rsvp_widget_error_answering
                 is ErrorUnsubscribingFromNewsletter -> R.string.error_unsubscribe_newsletter
             }
@@ -298,7 +301,7 @@ class ConversationDetailReducer @Inject constructor(
             }
         }
 
-        is LastMessageMoved -> {
+        is LastMessageMoved, LastMessageDeleted -> {
             val actionResult = actionResultMapper.toActionResult(operation)
             if (actionResult != null) {
                 Effect.of(actionResult)

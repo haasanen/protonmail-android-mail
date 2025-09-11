@@ -358,6 +358,12 @@ class ConversationDetailReducerTest(
                     UndoableActionResult(TextUiModel.TextResWithArgs(string.message_moved_to, listOf("String")))
                 )
             ),
+            ConversationDetailEvent.LastMessageDeleted affects listOf(
+                BottomSheet,
+                ExitWithResult(
+                    DefinitiveActionResult(TextUiModel.TextRes(string.message_deleted))
+                )
+            ),
             ConversationDetailEvent.MessageMoved(MailLabelText("String")) affects listOf(BottomSheet, MessageBar),
             ConversationDetailEvent.ErrorMovingMessage affects listOf(BottomSheet, ErrorBar),
             ConversationDetailEvent.ErrorUnsnoozing affects listOf(ErrorBar),
