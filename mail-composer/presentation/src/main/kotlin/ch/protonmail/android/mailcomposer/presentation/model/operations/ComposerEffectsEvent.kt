@@ -124,6 +124,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 is OnStoreBodyError -> RecoverableError.SaveBodyFailed(draftError)
                 is OnStoreRecipientError -> RecoverableError.SaveRecipientFailed(draftError)
                 is OnStoreSubjectError -> RecoverableError.SaveSubjectFailed(draftError)
+                is OnFinalSaveError -> RecoverableError.FinalSaveError(draftError)
                 OnSendMessageError -> RecoverableError.SendMessageFailed
                 OnGetScheduleSendOptionsError -> RecoverableError.GetScheduleSendOptionsFailed
                 OnAddressNotValidForSending -> RecoverableError.SenderChange.AddressCanNotSend
@@ -139,6 +140,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         data class OnStoreBodyError(val draftError: SaveDraftError) : ErrorEvent
         data class OnStoreSubjectError(val draftError: SaveDraftError) : ErrorEvent
         data class OnStoreRecipientError(val draftError: SaveDraftError) : ErrorEvent
+        data class OnFinalSaveError(val draftError: SaveDraftError) : ErrorEvent
         data object OnSendMessageError : ErrorEvent
         data object OnGetScheduleSendOptionsError : ErrorEvent
         data object OnAddressNotValidForSending : ErrorEvent

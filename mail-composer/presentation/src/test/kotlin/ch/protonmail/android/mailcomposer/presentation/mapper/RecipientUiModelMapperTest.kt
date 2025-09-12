@@ -62,11 +62,11 @@ internal class RecipientUiModelMapperTest {
     }
 
     @Test
-    fun `should map from participants (valid)`() {
+    fun `should map from participants (valid to validating)`() {
         // Given
         val expectedRecipientUiModel = listOf(
-            RecipientUiModel.Valid(validAddress1),
-            RecipientUiModel.Valid(validAddress2)
+            RecipientUiModel.Validating(validAddress1),
+            RecipientUiModel.Validating(validAddress2)
         )
 
         // When
@@ -88,7 +88,7 @@ internal class RecipientUiModelMapperTest {
         // Given
         val expectedRecipientUiModel = listOf(
             RecipientUiModel.Invalid(invalidAddress),
-            RecipientUiModel.Valid(validAddress2)
+            RecipientUiModel.Validating(validAddress2)
         )
 
         // When
@@ -111,9 +111,9 @@ internal class RecipientUiModelMapperTest {
     fun `should map from participants (mixed)`() {
         // Given
         val expectedRecipientUiModel = listOf(
-            RecipientUiModel.Valid(validAddress1),
+            RecipientUiModel.Validating(validAddress1),
             RecipientUiModel.Invalid(invalidAddress),
-            RecipientUiModel.Valid(validAddress2)
+            RecipientUiModel.Validating(validAddress2)
         )
 
         // When

@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.R
@@ -371,6 +372,14 @@ internal class EffectsStateModificationTest(
                 initialState.copy(
                     refreshBody = Effect.of(draftDisplayBody),
                     changeBottomSheetVisibility = Effect.of(false)
+                )
+            ),
+            arrayOf(
+                "shows final draft save error",
+                initialState,
+                RecoverableError.FinalSaveError(SaveDraftError.SaveFailed),
+                initialState.copy(
+                    error = Effect.of(TextUiModel.TextRes(R.string.composer_error_store_draft_generic))
                 )
             )
         )

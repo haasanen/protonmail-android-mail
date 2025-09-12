@@ -155,6 +155,11 @@ internal sealed interface RecoverableError : EffectsStateModification {
             state.copy(error = Effect.of(SaveDraftErrorMapper.toTextUiModel(saveDraftError)))
     }
 
+    data class FinalSaveError(val saveDraftError: SaveDraftError) : RecoverableError {
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(error = Effect.of(SaveDraftErrorMapper.toTextUiModel(saveDraftError)))
+    }
+
     data object SendMessageFailed : RecoverableError {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =

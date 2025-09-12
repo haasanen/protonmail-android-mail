@@ -277,5 +277,6 @@ private fun List<ChipItem>.toUiModel() = mapNotNull { it ->
         is ChipItem.Counter -> null
         is ChipItem.Invalid -> RecipientUiModel.Invalid(it.value)
         is ChipItem.Valid -> RecipientUiModel.Valid(it.value)
+        is ChipItem.Validating -> RecipientUiModel.Validating(it.value)
     }
 }

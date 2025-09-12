@@ -189,9 +189,16 @@ internal class ComposerViewModelTest {
         coEvery { this@mockk.get() } returns true
     }
 
+    @BeforeTest
+    fun setUp() {
+        mockkStatic(android.graphics.Color::parseColor)
+        every { android.graphics.Color.parseColor(any()) } returns 0
+    }
+
     @AfterTest
-    fun teardown() {
+    fun tearDown() {
         unmockkAll()
+        unmockkStatic(android.graphics.Color::parseColor)
     }
 
     private fun viewModel() = ComposerViewModel(
@@ -445,6 +452,94 @@ internal class ComposerViewModelTest {
     }
 
     @Test
+    fun `should not send message when send button is clicked but draft fails to save (subject)`() = runTest {
+        // Given
+        val expectedSubject = Subject("Subject for the message")
+        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftBody = DraftBody("I am plaintext")
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.MailToRecipient))
+        val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        expectNetworkManagerIsConnected()
+        expectNoInputDraftAction()
+        expectStoreDraftSubjectFails(expectedSubject) { SaveDraftError.SaveFailed }
+        expectStoreDraftBodySucceeds(expectedDraftBody)
+        expectObservedMessageAttachments()
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
+            DraftFields(
+                sender = expectedSenderEmail,
+                subject = expectedSubject,
+                body = expectedDraftBody,
+                mimeType = DraftMimeType.Html,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc
+            )
+        }
+        expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
+
+        // When
+        val viewModel = viewModel()
+        viewModel.submit(ComposerAction.SendMessage)
+
+        // Then
+        coVerify(exactly = 0) { sendMessageMock() }
+        assertEquals(Effect.empty(), viewModel.composerStates.value.effects.closeComposerWithMessageSending)
+        assertEquals(
+            Effect.of(TextUiModel(R.string.composer_error_store_draft_generic)),
+            viewModel.composerStates.value.effects.error
+        )
+    }
+
+    @Test
+    fun `should not send message when send button is clicked but draft fails to save (body)`() = runTest {
+        // Given
+        val expectedSubject = Subject("Subject for the message")
+        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftBody = DraftBody("I am plaintext")
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.MailToRecipient))
+        val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        expectNetworkManagerIsConnected()
+        expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftBodyFails(expectedDraftBody) { SaveDraftError.SaveFailed }
+        expectObservedMessageAttachments()
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
+            DraftFields(
+                sender = expectedSenderEmail,
+                subject = expectedSubject,
+                body = expectedDraftBody,
+                mimeType = DraftMimeType.Html,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc
+            )
+        }
+        expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
+
+        // When
+        val viewModel = viewModel()
+        viewModel.submit(ComposerAction.SendMessage)
+
+        // Then
+        coVerify(exactly = 0) { sendMessageMock() }
+        assertEquals(Effect.empty(), viewModel.composerStates.value.effects.closeComposerWithMessageSending)
+        assertEquals(
+            Effect.of(TextUiModel(R.string.composer_error_store_draft_generic)),
+            viewModel.composerStates.value.effects.error
+        )
+    }
+
+    @Test
     fun `should send message in offline when send button is clicked while offline`() = runTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
@@ -576,7 +671,7 @@ internal class ComposerViewModelTest {
 
         // Then
         val currentState = viewModel.composerStates.value
-        assertEquals(TextUiModel(R.string.composer_error_store_draft_body), currentState.effects.error.consume())
+        assertEquals(TextUiModel(R.string.composer_error_store_draft_generic), currentState.effects.error.consume())
     }
 
     @Test
@@ -604,7 +699,7 @@ internal class ComposerViewModelTest {
 
         // Then
         val currentState = viewModel.composerStates.value
-        assertEquals(TextUiModel(R.string.composer_error_store_draft_subject), currentState.effects.error.consume())
+        assertEquals(TextUiModel(R.string.composer_error_store_draft_generic), currentState.effects.error.consume())
     }
 
     @Test
@@ -616,7 +711,7 @@ internal class ComposerViewModelTest {
             buildSingleRecipient("", "invalid email", DraftRecipientValidity.Invalid(RecipientValidityError.Format))
         )
         val recipientsUiModels = listOf(
-            RecipientUiModel.Valid("valid@email.com"),
+            RecipientUiModel.Validating("valid@email.com"),
             RecipientUiModel.Invalid("invalid email")
         )
         expectStoreDraftSubjectSucceeds(Subject(""))
@@ -640,7 +735,7 @@ internal class ComposerViewModelTest {
             // Then
             val currentState = viewModel.composerStates.value
             assertEquals(
-                TextUiModel(R.string.composer_error_store_draft_recipients),
+                TextUiModel(R.string.composer_error_store_draft_generic),
                 currentState.effects.error.consume()
             )
             cancelAndIgnoreRemainingEvents()
@@ -945,7 +1040,7 @@ internal class ComposerViewModelTest {
     fun `should set recipient to state when recipient was given as an input`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedRecipient = DraftRecipientTestData.MailToRecipient
+        val expectedRecipient = DraftRecipientTestData.MailToRecipient.copy(validity = DraftRecipientValidity.Valid)
         val expectedAction = DraftAction.ComposeToAddresses(listOf(expectedRecipient.address))
 
         expectNoInputDraftMessageId()
@@ -1197,18 +1292,6 @@ internal class ComposerViewModelTest {
         // Then
         coVerify { deleteAttachment(id1) }
         coVerify { deleteAttachment(id2) }
-    }
-
-    @BeforeTest
-    fun setUp() {
-        mockkStatic(android.graphics.Color::parseColor)
-        every { android.graphics.Color.parseColor(any()) } returns 0
-    }
-
-    @AfterTest
-    fun tearDown() {
-        unmockkAll()
-        unmockkStatic(android.graphics.Color::parseColor)
     }
 
     // This is both used to mock the result of the "composer init" in the cases where we

@@ -117,8 +117,8 @@ internal class RecipientsStateManagerTest {
             DraftRecipient.SingleRecipient(name = "", address = "@@")
         )
         val expectedToList: List<RecipientUiModel> = listOf(
-            RecipientUiModel.Valid("a@bb.cc"),
-            RecipientUiModel.Valid("@@")
+            RecipientUiModel.Validating("a@bb.cc"),
+            RecipientUiModel.Validating("@@")
         )
 
         val rawCcList = listOf(
@@ -128,10 +128,10 @@ internal class RecipientsStateManagerTest {
             DraftRecipient.SingleRecipient(name = "", address = "three@four.five")
         )
         val expectedCcList: List<RecipientUiModel> = listOf(
-            RecipientUiModel.Valid("one@two.three"),
-            RecipientUiModel.Valid("123"),
-            RecipientUiModel.Valid("two@three.four"),
-            RecipientUiModel.Valid("three@four.five")
+            RecipientUiModel.Validating("one@two.three"),
+            RecipientUiModel.Validating("123"),
+            RecipientUiModel.Validating("two@three.four"),
+            RecipientUiModel.Validating("three@four.five")
         )
 
         val rawBccList = listOf(
@@ -140,9 +140,9 @@ internal class RecipientsStateManagerTest {
             DraftRecipient.SingleRecipient(name = "", address = "com@example.test")
         )
         val expectedBccList: List<RecipientUiModel> = listOf(
-            RecipientUiModel.Valid("aaa"),
-            RecipientUiModel.Valid("test@example.com"),
-            RecipientUiModel.Valid("com@example.test")
+            RecipientUiModel.Validating("aaa"),
+            RecipientUiModel.Validating("test@example.com"),
+            RecipientUiModel.Validating("com@example.test")
         )
 
         // When

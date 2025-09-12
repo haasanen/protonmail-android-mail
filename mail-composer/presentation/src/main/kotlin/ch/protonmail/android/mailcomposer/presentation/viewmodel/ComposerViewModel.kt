@@ -27,6 +27,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
+import arrow.core.raise.either
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
@@ -46,6 +47,7 @@ import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.model.hasAnyRecipient
@@ -728,8 +730,13 @@ class ComposerViewModel @AssistedInject constructor(
         pendingStoreDraftJob?.cancel()
 
         val draftFields = currentDraftFields()
+
         if (!shouldSkipSave(draftFields)) {
-            forceDraftSave(draftFields)
+            forceDraftSave(draftFields).onLeft { saveError ->
+                emitNewStateFor(MainEvent.LoadingDismissed)
+                emitNewStateFor(EffectsEvent.ErrorEvent.OnFinalSaveError(saveError))
+                return
+            }
         }
 
         val event = getDraftId().fold(
@@ -751,7 +758,12 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun onSendMessage() {
         pendingStoreDraftJob?.cancel()
-        forceDraftSave(currentDraftFields())
+
+        forceDraftSave(currentDraftFields()).onLeft { saveError ->
+            emitNewStateFor(MainEvent.LoadingDismissed)
+            emitNewStateFor(EffectsEvent.ErrorEvent.OnFinalSaveError(saveError))
+            return
+        }
 
         sendMessage().fold(
             ifLeft = {
@@ -768,24 +780,24 @@ class ComposerViewModel @AssistedInject constructor(
         )
     }
 
-    private suspend fun forceDraftSave(fields: DraftFields) {
+    private suspend fun forceDraftSave(fields: DraftFields): Either<SaveDraftError, Unit> = either {
         updateRecipients(
             toRecipients = fields.recipientsTo.value,
             ccRecipients = fields.recipientsCc.value,
             bccRecipients = fields.recipientsBcc.value
         )
             .onLeft { saveError ->
-                emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreRecipientError(saveError))
+                raise(saveError)
             }
 
         storeDraftWithSubject(fields.subject)
             .onLeft { saveError ->
-                emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreSubjectError(saveError))
+                raise(saveError)
             }
 
         storeDraftWithBody(fields.body)
             .onLeft { saveError ->
-                emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreBodyError(saveError))
+                raise(saveError)
             }
 
         savedStateHandle[ComposerScreen.HasSavedDraftKey] = true

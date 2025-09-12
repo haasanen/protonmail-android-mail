@@ -66,7 +66,7 @@ internal class ComposerChipsListViewModelTest {
     @Test
     fun `when adding a duplicate item it emits the error state`() = runTest {
         // Given
-        val newItem = ChipItem.Valid("aa@bb.cc")
+        val newItem = ChipItem.Validating("aa@bb.cc")
         val expectedDuplicatedEffect = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
 
         // When + Then
