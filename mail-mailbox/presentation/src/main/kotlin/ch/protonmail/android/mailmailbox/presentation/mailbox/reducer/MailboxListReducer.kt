@@ -461,13 +461,16 @@ class MailboxListReducer @Inject constructor(
         when (currentState) {
             is MailboxListState.Data.SelectionMode -> currentState.copy(
                 areAllItemsSelected = true,
-                selectedMailboxItems = operation.allItems.map { item ->
-                    SelectedMailboxItem(
-                        id = item.id,
-                        isRead = item.isRead,
-                        isStarred = item.isStarred
-                    )
-                }.toSet()
+                selectedMailboxItems = operation.allItems
+                    .take(MailboxListState.maxItemSelectionLimit)
+                    .map { item ->
+                        SelectedMailboxItem(
+                            id = item.id,
+                            isRead = item.isRead,
+                            isStarred = item.isStarred
+                        )
+                    }
+                    .toSet()
             )
 
             else -> currentState

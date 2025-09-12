@@ -465,7 +465,11 @@ class MailboxViewModel @Inject constructor(
                 MailboxEvent.ItemClicked.ItemRemovedFromSelection(item)
             }
         } else {
-            MailboxEvent.ItemClicked.ItemAddedToSelection(item)
+            if (selectionMode.selectedMailboxItems.size >= MailboxListState.maxItemSelectionLimit) {
+                MailboxEvent.MaxSelectionLimitReached
+            } else {
+                MailboxEvent.ItemClicked.ItemAddedToSelection(item)
+            }
         }
 
         emitNewStateFrom(event)

@@ -77,6 +77,10 @@ sealed interface MailboxListState {
     }
 
     data object Loading : MailboxListState
+
+    companion object {
+        const val maxItemSelectionLimit = 100
+    }
 }
 
 fun MailboxListState.hasClearableOperations() = this is MailboxListState.Data.ViewMode && !this.searchState.isInSearch()

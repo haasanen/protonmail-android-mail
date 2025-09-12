@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState.Data.SelectionMode.SelectedMailboxItem
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
@@ -1242,6 +1243,43 @@ internal class MailboxListReducerTest(
                             isStarred = MailboxItemUiModelTestData.unreadMailboxItemUiModel.isStarred
                         )
                     ),
+                    swipeActions = null,
+                    searchState = MailboxSearchState.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                    areAllItemsSelected = true
+                )
+            ),
+            TestInput(
+                currentState = MailboxListState.Data.SelectionMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    selectedMailboxItems = emptySet(),
+                    swipeActions = null,
+                    searchState = MailboxSearchState.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                    areAllItemsSelected = false
+                ),
+                operation = MailboxEvent.AllItemsSelected(
+                    allItems = mutableListOf<MailboxItemUiModel>().apply {
+                        for (i in 0..200) {
+                            add(MailboxItemUiModelTestData.readMailboxItemUiModel.copy(id = i.toString()))
+                        }
+                    }
+                ),
+                expectedState = MailboxListState.Data.SelectionMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    selectedMailboxItems = mutableSetOf<SelectedMailboxItem>().apply {
+                        for (i in 0..99) {
+                            add(
+                                SelectedMailboxItem(
+                                    id = i.toString(),
+                                    isRead = MailboxItemUiModelTestData.readMailboxItemUiModel.isRead,
+                                    isStarred = MailboxItemUiModelTestData.readMailboxItemUiModel.isStarred
+                                )
+                            )
+                        }
+                    },
                     swipeActions = null,
                     searchState = MailboxSearchState.NotSearching,
                     shouldShowFab = true,

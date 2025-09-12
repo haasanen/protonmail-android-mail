@@ -333,6 +333,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
     ) : MailboxEvent, AffectingMailboxList
 
     data class ClearAll(val spamOrTrash: SpamOrTrash) : MailboxEvent, AffectingClearAllDialog
+
+    object MaxSelectionLimitReached : MailboxEvent, AffectingActionMessage
 }
 
 

@@ -3209,6 +3209,52 @@ internal class MailboxViewModelTest {
         }
     }
 
+    @Test
+    fun `when add item to selection that is over limit MaxSelectionLimitReached emitted`() = runTest {
+        // Given
+        val item = readMailboxItemUiModel
+        val listOfSelectedItems = mutableListOf(item)
+        for (i in 0..100) {
+            listOfSelectedItems.add(item.copy(id = i.toString()))
+        }
+
+        val secondItem = unreadMailboxItemUiModel.copy(id = 101.toString())
+        val initialState = createMailboxDataState()
+        val intermediateState = MailboxStateSampleData.createSelectionMode(listOfSelectedItems)
+        val expectedState = MailboxStateSampleData.createSelectionMode(listOf(secondItem))
+        expectedSelectedLabelCountStateChange(initialState)
+        returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
+        returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
+        every {
+            mailboxReducer.newStateFrom(
+                intermediateState,
+                MailboxEvent.ItemClicked.ItemRemovedFromSelection(item)
+            )
+        } returns expectedState
+        expectPagerMock()
+
+        mailboxViewModel.state.test {
+            // Given
+            awaitItem() // First emission for selected user
+
+            // When
+            mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
+
+            // Then
+            assertEquals(intermediateState, awaitItem())
+            verify(exactly = 1) {
+                mailboxReducer.newStateFrom(initialState, MailboxEvent.EnterSelectionMode(item))
+            }
+
+            mailboxViewModel.submit(MailboxViewAction.ItemClicked(secondItem))
+
+            awaitItem()
+            verify(exactly = 1) {
+                mailboxReducer.newStateFrom(intermediateState, MailboxEvent.MaxSelectionLimitReached)
+            }
+        }
+    }
+
     private fun returnExpectedStateForBottomBarEvent(
         intermediateState: MailboxState? = null,
         expectedState: MailboxState

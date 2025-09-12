@@ -95,6 +95,9 @@ class MailboxActionMessageReducer @Inject constructor(
             is MailboxViewAction.SwipeTrashAction -> UndoableActionResult(
                 TextUiModel(R.string.mailbox_action_trash_message)
             )
+
+            is MailboxEvent.MaxSelectionLimitReached ->
+                DefinitiveActionResult(TextUiModel(R.string.mailbox_action_maximum_selection_reached))
         }
         return Effect.of(actionResult)
     }
