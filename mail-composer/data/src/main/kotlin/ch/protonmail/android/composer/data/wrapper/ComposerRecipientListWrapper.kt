@@ -21,6 +21,7 @@ package ch.protonmail.android.composer.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toSaveDraftError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import uniffi.proton_mail_uniffi.AddSingleRecipientError
@@ -37,18 +38,18 @@ class ComposerRecipientListWrapper(private val rustRecipients: ComposerRecipient
     fun registerCallback(callback: ComposerRecipientValidationCallback) = rustRecipients.setCallback(callback)
 
     fun addSingleRecipient(recipient: SingleRecipientEntry): Either<SaveDraftError, Unit> =
-        when (rustRecipients.addSingleRecipient(recipient)) {
-            AddSingleRecipientError.OK -> Unit.right()
-            AddSingleRecipientError.DUPLICATE -> SaveDraftError.DuplicateRecipient.left()
-            AddSingleRecipientError.SAVE_FAILED -> SaveDraftError.SaveFailed.left()
-            AddSingleRecipientError.OTHER -> SaveDraftError.Other(DataError.Local.Unknown).left()
+        when (val error = rustRecipients.addSingleRecipient(recipient)) {
+            is AddSingleRecipientError.Ok -> Unit.right()
+            is AddSingleRecipientError.Duplicate -> SaveDraftError.DuplicateRecipient.left()
+            is AddSingleRecipientError.Other -> SaveDraftError.Other(DataError.Local.Unknown).left()
+            is AddSingleRecipientError.SaveFailed -> error.v1.toSaveDraftError().left()
         }
 
     fun removeSingleRecipient(recipient: SingleRecipientEntry): Either<SaveDraftError, Unit> =
-        when (rustRecipients.removeSingleRecipient(recipient.email)) {
-            RemoveRecipientError.OK -> Unit.right()
-            RemoveRecipientError.EMPTY_GROUP_NAME -> SaveDraftError.EmptyRecipientGroupName.left()
-            RemoveRecipientError.SAVE_FAILED -> SaveDraftError.SaveFailed.left()
-            RemoveRecipientError.OTHER -> SaveDraftError.Other(DataError.Local.Unknown).left()
+        when (val error = rustRecipients.removeSingleRecipient(recipient.email)) {
+            is RemoveRecipientError.Ok -> Unit.right()
+            is RemoveRecipientError.EmptyGroupName -> SaveDraftError.EmptyRecipientGroupName.left()
+            is RemoveRecipientError.Other -> SaveDraftError.Other(DataError.Local.Unknown).left()
+            is RemoveRecipientError.SaveFailed -> error.v1.toSaveDraftError().left()
         }
 }
