@@ -887,9 +887,6 @@ private fun MessagesContent(
             bottom = (padding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny).coerceAtLeast(0f.dp)
         )
 
-    val verticalPaddingPx =
-        contentPadding.calculateTopPadding().dpToPx() + contentPadding.calculateBottomPadding().dpToPx()
-
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
     val itemsHeight = remember { mutableStateMapOf<Int, Int>() }
@@ -966,8 +963,10 @@ private fun MessagesContent(
                 // account when calculating heights
                 val sumOfCardOverlap = (itemsHeight.size - 1) * headerOverlapHeightPx
 
-                val availableSpace =
-                    listState.layoutInfo.viewportSize.height - verticalPaddingPx - sumOfHeights + sumOfCardOverlap
+                val listHeight = listState.layoutInfo.viewportSize.height -
+                    listState.layoutInfo.afterContentPadding -
+                    listState.layoutInfo.beforeContentPadding
+                val availableSpace = listHeight - sumOfHeights + sumOfCardOverlap
                 if (itemsHeight.entries.last().value < availableSpace) {
                     // then we should expand to fit space
                     scrollToMessageMinimumHeightPx = availableSpace
