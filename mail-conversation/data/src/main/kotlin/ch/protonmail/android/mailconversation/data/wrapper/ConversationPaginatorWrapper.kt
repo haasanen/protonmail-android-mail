@@ -41,5 +41,6 @@ class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroll
 
     fun disconnect() {
         rustPaginator.handle().disconnect()
+        rustPaginator.terminate()
     }
 }

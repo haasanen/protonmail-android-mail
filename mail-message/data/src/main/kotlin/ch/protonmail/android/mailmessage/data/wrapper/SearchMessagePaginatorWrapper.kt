@@ -45,5 +45,6 @@ class SearchMessagePaginatorWrapper(
 
     override fun destroy() {
         rustPaginator.handle().disconnect()
+        rustPaginator.terminate()
     }
 }

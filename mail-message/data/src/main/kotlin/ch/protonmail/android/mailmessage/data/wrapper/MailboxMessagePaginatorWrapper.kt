@@ -45,5 +45,6 @@ class MailboxMessagePaginatorWrapper(
 
     override fun destroy() {
         rustPaginator.handle().disconnect()
+        rustPaginator.terminate()
     }
 }
