@@ -71,6 +71,6 @@ class RecipientsStateManager @Inject constructor() {
     fun hasValidRecipients() = mutableRecipients.value.let {
         it.toRecipients + it.ccRecipients + it.bccRecipients
     }.let { list ->
-        list.isNotEmpty() && list.all { it is RecipientUiModel.Valid && it.address.isNotBlank() }
+        list.isNotEmpty() && list.all { it !is RecipientUiModel.Invalid && it.address.isNotBlank() }
     }
 }
