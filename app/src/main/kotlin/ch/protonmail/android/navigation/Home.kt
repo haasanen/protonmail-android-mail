@@ -71,6 +71,7 @@ import ch.protonmail.android.mailcommon.presentation.SnackbarError
 import ch.protonmail.android.mailcommon.presentation.SnackbarNormal
 import ch.protonmail.android.mailcommon.presentation.SnackbarType
 import ch.protonmail.android.mailcommon.presentation.SnackbarUndo
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
@@ -160,10 +161,9 @@ fun Home(
         }
     }
     var isBottomBarVisible by remember { mutableStateOf(false) }
-    val bottomBarHeight = 80.dp
 
     val actionBarPadding by animateDpAsState(
-        targetValue = if (isBottomBarVisible) bottomBarHeight else 0.dp,
+        targetValue = if (isBottomBarVisible) MailDimens.BottomBarHeight else 0.dp,
         animationSpec = tween(
             durationMillis = 300,
             easing = FastOutSlowInEasing
