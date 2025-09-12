@@ -24,6 +24,8 @@ import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.data.model.scroller.PendingRequest
 import ch.protonmail.android.mailpagination.data.model.scroller.RequestType
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.MailScrollerError
+import uniffi.proton_mail_uniffi.MailScrollerErrorReason
 
 class ScrollerOnUpdateHandler<T>(
     private val tag: String,
@@ -37,11 +39,7 @@ class ScrollerOnUpdateHandler<T>(
         onPossibleAppendFollowUp: () -> Unit
     ) {
         if (pending == null) {
-            Timber.d(
-                "$tag: No pending request, processing indirect update " +
-                    "${update.javaClass.simpleName} as an invalidation"
-            )
-            invalidate()
+            processUpdateWhenNoPendingRequest(update)
             return
         }
 
@@ -172,6 +170,27 @@ class ScrollerOnUpdateHandler<T>(
                 pending.followUpResponse?.complete(emptyList<T>().right())
             }
         }
+    }
+
+    private fun processUpdateWhenNoPendingRequest(update: ScrollerUpdate<T>) {
+        if (shouldInvalidateWhenNoPending(update)) {
+            Timber.d(
+                "$tag: No pending request, processing ${update.javaClass.simpleName} as invalidation"
+            )
+            invalidate()
+        } else {
+            Timber.w(
+                "$tag: No pending request, ignoring ${update.javaClass.simpleName} update"
+            )
+        }
+    }
+
+    private fun shouldInvalidateWhenNoPending(update: ScrollerUpdate<*>): Boolean = when (update) {
+        is ScrollerUpdate.Error -> when (val error = update.error) {
+            is MailScrollerError.Reason -> error.v1 == MailScrollerErrorReason.DIRTY
+            is MailScrollerError.Other -> false
+        }
+        else -> true
     }
 }
 

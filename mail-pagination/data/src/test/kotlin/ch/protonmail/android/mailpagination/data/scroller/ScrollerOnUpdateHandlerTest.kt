@@ -28,6 +28,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import uniffi.proton_mail_uniffi.MailScrollerError
+import uniffi.proton_mail_uniffi.MailScrollerErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
 
 class ScrollerOnUpdateHandlerTest {
@@ -275,5 +276,31 @@ class ScrollerOnUpdateHandlerTest {
         // Then
         assertEquals(items, completed.getOrNull())
         verify(exactly = 0) { invalidate.invoke() }
+    }
+
+    @Test
+    fun `when there is no pending request and Error Other arrives, does NOT invalidate`() = runTest {
+        // Given
+        val update = ScrollerUpdate.Error(MailScrollerError.Other(ProtonError.Network))
+        val snapshot = emptyList<ScrollerItem>()
+
+        // When
+        handler().handleUpdate(pending = null, update = update, cacheSnapshot = snapshot, onPossibleAppendFollowUp = {})
+
+        // Then
+        verify(exactly = 0) { invalidate.invoke() }
+    }
+
+    @Test
+    fun `when there is no pending request and Error Reason DIRTY arrives, invalidates`() = runTest {
+        // Given
+        val update = ScrollerUpdate.Error(MailScrollerError.Reason(MailScrollerErrorReason.DIRTY))
+        val snapshot = emptyList<ScrollerItem>()
+
+        // When
+        handler().handleUpdate(pending = null, update = update, cacheSnapshot = snapshot, onPossibleAppendFollowUp = {})
+
+        // Then
+        verify(exactly = 1) { invalidate.invoke() }
     }
 }
