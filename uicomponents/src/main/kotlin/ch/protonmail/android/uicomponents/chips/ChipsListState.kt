@@ -91,7 +91,7 @@ class ChipsListState(
     fun isFocused(): Boolean = focusedState.value
 
     private fun add(item: String) {
-        items.add(ChipItem.Valid(item))
+        items.add(ChipItem.Validating(item))
     }
 
     fun onDelete() {

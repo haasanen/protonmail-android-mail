@@ -23,6 +23,7 @@ import androidx.compose.runtime.Stable
 @Stable
 sealed class ChipItem(open val value: String) {
 
+    data class Validating(override val value: String) : ChipItem(value)
     data class Valid(override val value: String) : ChipItem(value)
     data class Invalid(override val value: String) : ChipItem(value)
     data class Counter(override val value: String) : ChipItem(value)

@@ -37,6 +37,6 @@ internal object RecipientUiModelMapper {
     private fun singleRecipientToUiModel(recipient: DraftRecipient.SingleRecipient) = when (recipient.validity) {
         is DraftRecipientValidity.Invalid -> RecipientUiModel.Invalid(recipient.address)
         DraftRecipientValidity.Valid -> RecipientUiModel.Valid(recipient.address)
-        DraftRecipientValidity.Validating -> recipient.address.toModel()
+        DraftRecipientValidity.Validating -> RecipientUiModel.Validating(recipient.address)
     }
 }

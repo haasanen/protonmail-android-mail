@@ -32,6 +32,11 @@ fun RecipientUiModel.toDraftRecipient() = when (this) {
     is RecipientUiModel.Valid -> DraftRecipient.SingleRecipient(
         name = "",
         address = this.address,
+        validity = DraftRecipientValidity.Valid
+    )
+    is RecipientUiModel.Validating -> DraftRecipient.SingleRecipient(
+        name = "",
+        address = this.address,
         validity = DraftRecipientValidity.Validating
     )
 }

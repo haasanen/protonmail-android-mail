@@ -24,6 +24,7 @@ import kotlinx.collections.immutable.toImmutableList
 sealed class RecipientUiModel {
     data class Valid(val address: String) : RecipientUiModel()
     data class Invalid(val address: String) : RecipientUiModel()
+    data class Validating(val address: String) : RecipientUiModel()
 }
 
 fun List<RecipientUiModel>.toImmutableChipList() = this.map { it.toChipItem() }.toImmutableList()
@@ -31,4 +32,5 @@ fun List<RecipientUiModel>.toImmutableChipList() = this.map { it.toChipItem() }.
 private fun RecipientUiModel.toChipItem(): ChipItem = when (this) {
     is RecipientUiModel.Invalid -> ChipItem.Invalid(address)
     is RecipientUiModel.Valid -> ChipItem.Valid(address)
+    is RecipientUiModel.Validating -> ChipItem.Validating(address)
 }
