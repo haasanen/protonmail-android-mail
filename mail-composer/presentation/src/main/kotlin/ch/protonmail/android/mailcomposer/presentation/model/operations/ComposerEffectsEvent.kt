@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.model.operations
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.CompletionEffectsStateModification
@@ -120,9 +121,9 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 OnGetAddressesError -> RecoverableError.SenderChange.GetAddressesError
                 OnSetExpirationError -> RecoverableError.Expiration
                 OnDiscardDraftError -> RecoverableError.DiscardDraftFailed
-                OnStoreBodyError -> RecoverableError.SaveBodyFailed
-                OnStoreRecipientError -> RecoverableError.SaveRecipientFailed
-                OnStoreSubjectError -> RecoverableError.SaveSubjectFailed
+                is OnStoreBodyError -> RecoverableError.SaveBodyFailed(draftError)
+                is OnStoreRecipientError -> RecoverableError.SaveRecipientFailed(draftError)
+                is OnStoreSubjectError -> RecoverableError.SaveSubjectFailed(draftError)
                 OnSendMessageError -> RecoverableError.SendMessageFailed
                 OnGetScheduleSendOptionsError -> RecoverableError.GetScheduleSendOptionsFailed
                 OnAddressNotValidForSending -> RecoverableError.SenderChange.AddressCanNotSend
@@ -135,9 +136,9 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         data object OnGetAddressesError : ErrorEvent
         data object OnSetExpirationError : ErrorEvent
         data object OnDiscardDraftError : ErrorEvent
-        data object OnStoreBodyError : ErrorEvent
-        data object OnStoreSubjectError : ErrorEvent
-        data object OnStoreRecipientError : ErrorEvent
+        data class OnStoreBodyError(val draftError: SaveDraftError) : ErrorEvent
+        data class OnStoreSubjectError(val draftError: SaveDraftError) : ErrorEvent
+        data class OnStoreRecipientError(val draftError: SaveDraftError) : ErrorEvent
         data object OnSendMessageError : ErrorEvent
         data object OnGetScheduleSendOptionsError : ErrorEvent
         data object OnAddressNotValidForSending : ErrorEvent

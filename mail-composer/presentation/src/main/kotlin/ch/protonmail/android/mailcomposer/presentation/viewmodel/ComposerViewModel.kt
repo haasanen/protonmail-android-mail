@@ -305,13 +305,19 @@ class ComposerViewModel @AssistedInject constructor(
                 }
 
                 updateRecipients(toParticipants, ccParticipants, bccParticipants)
-                    .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreRecipientError) }
+                    .onLeft { saveError ->
+                        emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreRecipientError(saveError))
+                    }
 
                 storeDraftWithSubject(it.subject)
-                    .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreSubjectError) }
+                    .onLeft { saveError ->
+                        emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreSubjectError(saveError))
+                    }
 
                 storeDraftWithBody(it.body)
-                    .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreBodyError) }
+                    .onLeft { saveError ->
+                        emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreBodyError(saveError))
+                    }
 
                 savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
                 Timber.d("Draft saved.")
@@ -768,13 +774,19 @@ class ComposerViewModel @AssistedInject constructor(
             ccRecipients = fields.recipientsCc.value,
             bccRecipients = fields.recipientsBcc.value
         )
-            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreRecipientError) }
+            .onLeft { saveError ->
+                emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreRecipientError(saveError))
+            }
 
         storeDraftWithSubject(fields.subject)
-            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreSubjectError) }
+            .onLeft { saveError ->
+                emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreSubjectError(saveError))
+            }
 
         storeDraftWithBody(fields.body)
-            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreBodyError) }
+            .onLeft { saveError ->
+                emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreBodyError(saveError))
+            }
 
         savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
     }

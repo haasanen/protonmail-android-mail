@@ -24,7 +24,9 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcomposer.presentation.mapper.SaveDraftErrorMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 
 internal sealed class UnrecoverableError(@StringRes val resId: Int) : EffectsStateModification {
@@ -135,22 +137,22 @@ internal sealed interface RecoverableError : EffectsStateModification {
             state.copy(error = Effect.of(TextUiModel.TextRes(R.string.discard_draft_error)))
     }
 
-    data object SaveBodyFailed : RecoverableError {
+    data class SaveBodyFailed(val saveDraftError: SaveDraftError) : RecoverableError {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(error = Effect.of(TextUiModel(R.string.composer_error_store_draft_body)))
+            state.copy(error = Effect.of(SaveDraftErrorMapper.toTextUiModel(saveDraftError)))
     }
 
-    data object SaveRecipientFailed : RecoverableError {
+    data class SaveRecipientFailed(val saveDraftError: SaveDraftError) : RecoverableError {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(error = Effect.of(TextUiModel(R.string.composer_error_store_draft_recipients)))
+            state.copy(error = Effect.of(SaveDraftErrorMapper.toTextUiModel(saveDraftError)))
     }
 
-    data object SaveSubjectFailed : RecoverableError {
+    data class SaveSubjectFailed(val saveDraftError: SaveDraftError) : RecoverableError {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(error = Effect.of(TextUiModel(R.string.composer_error_store_draft_subject)))
+            state.copy(error = Effect.of(SaveDraftErrorMapper.toTextUiModel(saveDraftError)))
     }
 
     data object SendMessageFailed : RecoverableError {
