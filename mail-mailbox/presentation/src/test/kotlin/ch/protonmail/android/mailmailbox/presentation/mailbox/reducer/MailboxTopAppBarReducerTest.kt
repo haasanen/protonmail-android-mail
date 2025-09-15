@@ -21,8 +21,10 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState.Data.SelectionMode
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.readMailboxItemUiModel
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -101,7 +103,7 @@ internal class MailboxTopAppBarReducerTest(
             TestInput(
                 currentState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem),
                 operation = MailboxEvent.EnterSelectionMode(readMailboxItemUiModel),
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 1
@@ -140,20 +142,20 @@ internal class MailboxTopAppBarReducerTest(
 
         private val transitionsFromSelectionModeState = listOf(
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 ),
                 operation = MailboxEvent.EnterSelectionMode(readMailboxItemUiModel),
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 1
                 )
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
@@ -162,59 +164,59 @@ internal class MailboxTopAppBarReducerTest(
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 ),
                 operation = MailboxEvent.ItemClicked.ItemAddedToSelection(readMailboxItemUiModel),
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 43
                 )
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 ),
                 operation = MailboxEvent.ItemClicked.ItemRemovedFromSelection(readMailboxItemUiModel),
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 41
                 )
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 ),
                 operation = MailboxEvent.NewLabelSelected(trashLabel, selectedLabelCount = 42),
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     trashLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 )
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 ),
                 operation = MailboxEvent.SelectedLabelChanged(trashLabel),
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     trashLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 )
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
@@ -223,7 +225,7 @@ internal class MailboxTopAppBarReducerTest(
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
@@ -232,7 +234,7 @@ internal class MailboxTopAppBarReducerTest(
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
@@ -241,20 +243,20 @@ internal class MailboxTopAppBarReducerTest(
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 ),
                 operation = MailboxEvent.ItemsRemovedFromSelection(itemIds = listOf("1", "2", "3")),
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 39
                 )
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
@@ -263,7 +265,7 @@ internal class MailboxTopAppBarReducerTest(
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
@@ -272,7 +274,7 @@ internal class MailboxTopAppBarReducerTest(
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
@@ -281,30 +283,45 @@ internal class MailboxTopAppBarReducerTest(
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 ),
                 operation = MailboxViewAction.EnterSearchMode,
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 )
             ),
             TestInput(
-                currentState = MailboxTopAppBarState.Data.SelectionMode(
+                currentState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 ),
                 operation = MailboxViewAction.ExitSearchMode,
-                expectedState = MailboxTopAppBarState.Data.SelectionMode(
+                expectedState = SelectionMode(
                     inboxLabel.text(),
                     avatarItem,
                     selectedCount = 42
                 )
+            ),
+            TestInput(
+                currentState = SelectionMode(
+                    inboxLabel.text(),
+                    avatarItem,
+                    selectedCount = 42
+                ),
+                operation = MailboxEvent.AllItemsSelected(
+                    mutableListOf<MailboxItemUiModel>().apply {
+                        for (i in 0..200) {
+                            add(readMailboxItemUiModel.copy(id = i.toString()))
+                        }
+                    }
+                ),
+                expectedState = SelectionMode(inboxLabel.text(), avatarItem, selectedCount = 100)
             )
 
         )

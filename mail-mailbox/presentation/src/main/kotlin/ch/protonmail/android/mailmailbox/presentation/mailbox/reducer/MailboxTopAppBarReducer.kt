@@ -22,8 +22,10 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent.ItemsRemovedFromSelection
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState.Data.SelectionMode
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import javax.inject.Inject
 
@@ -99,7 +101,7 @@ class MailboxTopAppBarReducer @Inject constructor() {
 
         is MailboxTopAppBarState.Loading -> this
         is MailboxTopAppBarState.Data -> if (this !is MailboxTopAppBarState.Data.SearchMode)
-            MailboxTopAppBarState.Data.SelectionMode(
+            SelectionMode(
                 currentLabelName, primaryAvatarItem, selectedCount = 1
             ) else this
     }
@@ -112,18 +114,18 @@ class MailboxTopAppBarReducer @Inject constructor() {
     }
 
     private fun MailboxTopAppBarState.toNewStateForItemAddedToSelection() = when (this) {
-        is MailboxTopAppBarState.Data.SelectionMode -> this.copy(selectedCount = this.selectedCount + 1)
+        is SelectionMode -> this.copy(selectedCount = this.selectedCount + 1)
         else -> this
     }
 
     private fun MailboxTopAppBarState.toNewStateForItemRemovedFromSelection() = when (this) {
-        is MailboxTopAppBarState.Data.SelectionMode -> this.copy(selectedCount = this.selectedCount - 1)
+        is SelectionMode -> this.copy(selectedCount = this.selectedCount - 1)
         else -> this
     }
 
     private fun MailboxTopAppBarState.toNewStateForItemsRemovedFromSelection(removedItems: ItemsRemovedFromSelection) =
         when (this) {
-            is MailboxTopAppBarState.Data.SelectionMode ->
+            is SelectionMode ->
                 this.copy(selectedCount = this.selectedCount - removedItems.itemIds.size)
 
             else -> this
@@ -134,7 +136,7 @@ class MailboxTopAppBarReducer @Inject constructor() {
     ) = when (this) {
         is MailboxTopAppBarState.Data.DefaultMode -> copy(primaryAvatarItem = operation.item)
         is MailboxTopAppBarState.Data.SearchMode -> copy(primaryAvatarItem = operation.item)
-        is MailboxTopAppBarState.Data.SelectionMode -> copy(primaryAvatarItem = operation.item)
+        is SelectionMode -> copy(primaryAvatarItem = operation.item)
         is MailboxTopAppBarState.Loading -> MailboxTopAppBarState.Data.DefaultMode(
             currentLabelName = TextUiModel(""),
             primaryAvatarItem = operation.item
@@ -142,19 +144,24 @@ class MailboxTopAppBarReducer @Inject constructor() {
     }
 
     private fun MailboxTopAppBarState.toNewStateForAllItemsDeselected() = when (this) {
-        is MailboxTopAppBarState.Data.SelectionMode -> this.copy(selectedCount = 0)
+        is SelectionMode -> this.copy(selectedCount = 0)
         else -> this
     }
 
     private fun MailboxTopAppBarState.toNewStateForAllItemsSelected(operation: MailboxEvent.AllItemsSelected) =
         when (this) {
-            is MailboxTopAppBarState.Data.SelectionMode -> this.copy(selectedCount = operation.allItems.size)
+            is SelectionMode -> this.copy(
+                selectedCount = operation.allItems.size.coerceAtMost(
+                    MailboxListState.maxItemSelectionLimit
+                )
+            )
+
             else -> this
         }
 
     fun MailboxTopAppBarState.Data.with(currentLabelName: TextUiModel) = when (this) {
         is MailboxTopAppBarState.Data.DefaultMode -> copy(currentLabelName = currentLabelName)
         is MailboxTopAppBarState.Data.SearchMode -> copy(currentLabelName = currentLabelName)
-        is MailboxTopAppBarState.Data.SelectionMode -> copy(currentLabelName = currentLabelName)
+        is SelectionMode -> copy(currentLabelName = currentLabelName)
     }
 }
