@@ -26,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -47,9 +48,17 @@ fun <FocusedField> FocusableForm(
     content: @Composable FocusableFormScope<FocusedField>.(Map<FocusedField, FocusRequester>) -> Unit
 ) {
     var focusedField by rememberSaveable(inputs = emptyArray()) { mutableStateOf(initialFocus) }
-    val focusRequesters: Map<FocusedField, FocusRequester> = fieldList.associateWith { FocusRequester() }
-    val bringIntoViewRequesters: Map<FocusedField, BringIntoViewRequester> =
+
+    // Build requester maps once per field list identity
+    val focusRequesters = remember(fieldList) {
+        fieldList.associateWith {
+            FocusRequester()
+        }
+    }
+    val bringIntoViewRequesters = remember(fieldList) {
         fieldList.associateWith { BringIntoViewRequester() }
+    }
+
     val isKeyboardVisible by ch.protonmail.android.uicomponents.keyboardVisibilityAsState()
     val onFieldFocused: (FocusedField) -> Unit = {
         focusedField = it
