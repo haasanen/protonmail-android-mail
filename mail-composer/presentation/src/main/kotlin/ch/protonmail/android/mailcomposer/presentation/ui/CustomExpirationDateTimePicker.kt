@@ -21,7 +21,6 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
@@ -73,20 +72,33 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import timber.log.Timber
 import kotlin.time.Instant
 import kotlinx.datetime.Instant as DateTimeInstant
 
 @Composable
-fun CustomExpirationDateTimePicker(onTimePicked: (ExpirationTimeUiModel) -> Unit, onDismiss: () -> Unit) {
+fun CustomExpirationDateTimePicker(
+    onTimePicked: (ExpirationTimeUiModel) -> Unit,
+    onDismiss: () -> Unit,
+    initialTime: Instant
+) {
 
+    val timeZone = remember { TimeZone.currentSystemDefault() }
+    val localDateTime = remember(initialTime) {
+        val instant = DateTimeInstant.fromEpochMilliseconds(initialTime.toEpochMilliseconds())
+        val localDateTime = instant.toLocalDateTime(timeZone)
+        Timber.d("customtime: RECEIVE to local date time $localDateTime // instant: $instant")
+        localDateTime
+    }
     val shownDialogType = rememberSaveable { mutableStateOf(DialogType.SelectDate) }
 
-    val timePickerState = rememberTimePickerState(initialHour = INITIAL_TIME_HOUR, initialMinute = INITIAL_TIME_MINUTE)
+    val timePickerState = rememberTimePickerState(localDateTime.hour, localDateTime.minute)
     val datePickerState = rememberDatePickerState(
-        initialSelectedDate = LocalDate.now(),
+        initialSelectedDateMillis = localDateTime.toInstant(UtcOffset.ZERO).toEpochMilliseconds(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 val timeZone = TimeZone.currentSystemDefault()
@@ -133,6 +145,7 @@ fun CustomExpirationDateTimePicker(onTimePicked: (ExpirationTimeUiModel) -> Unit
                     val timeZone = TimeZone.currentSystemDefault()
                     val timestamp = Instant.fromEpochSeconds(dateTime.toInstant(timeZone).epochSeconds)
                     val expirationTime = ExpirationTimeUiModel(ExpirationTimeOption.Custom, timestamp)
+                    Timber.d("customtime: SET intant $timestamp")
                     onTimePicked(expirationTime)
                 }
             },
@@ -341,10 +354,12 @@ private enum class DialogType {
 
 @Preview
 @Composable
+@Suppress("MagicNumber")
 fun PreviewCustomExpirationTimeDialog() {
     CustomExpirationDateTimePicker(
         onTimePicked = {},
-        onDismiss = {}
+        onDismiss = {},
+        initialTime = Instant.fromEpochSeconds(1_709_557_304)
     )
 }
 
@@ -360,7 +375,4 @@ fun PreviewSetCustomExpirationDialog() {
         onDismiss = {}
     )
 }
-
-private const val INITIAL_TIME_HOUR = 8
-private const val INITIAL_TIME_MINUTE = 0
 
