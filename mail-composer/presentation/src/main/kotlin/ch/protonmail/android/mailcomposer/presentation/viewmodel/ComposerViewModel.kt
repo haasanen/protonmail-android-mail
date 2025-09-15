@@ -225,7 +225,7 @@ class ComposerViewModel @AssistedInject constructor(
         emit(messageExpirationEnabled.get())
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        started = SharingStarted.Eagerly,
         initialValue = true
     )
 
