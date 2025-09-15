@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -55,6 +56,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActions
 import kotlinx.coroutines.flow.filter
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun SwipeableItem(
     modifier: Modifier = Modifier,
@@ -67,28 +69,40 @@ fun SwipeableItem(
     val haptic = LocalHapticFeedback.current
     val threshold = SwipeThreshold.SWIPE_THRESHOLD_PERCENTAGE
 
+    // Ensure the action is triggered only once - multiple confirmValueChange calls may happen.
+    var actionTriggered by remember { mutableStateOf(false) }
+
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { dismissBoxValue ->
-            swipeActionsUiModel?.let {
-                when (dismissBoxValue) {
-                    SwipeToDismissBoxValue.StartToEnd -> {
-                        callbackForSwipeAction(it.start.swipeAction, swipeActionCallbacks)()
-                    }
+            if (!actionTriggered) {
+                swipeActionsUiModel?.let {
+                    when (dismissBoxValue) {
+                        SwipeToDismissBoxValue.StartToEnd -> {
+                            callbackForSwipeAction(it.start.swipeAction, swipeActionCallbacks)()
+                            actionTriggered = true
+                        }
 
-                    SwipeToDismissBoxValue.EndToStart -> {
-                        callbackForSwipeAction(it.end.swipeAction, swipeActionCallbacks)()
-                    }
+                        SwipeToDismissBoxValue.EndToStart -> {
+                            callbackForSwipeAction(it.end.swipeAction, swipeActionCallbacks)()
+                            actionTriggered = true
+                        }
 
-                    SwipeToDismissBoxValue.Settled -> Unit
+                        SwipeToDismissBoxValue.Settled -> Unit
+                    }
                 }
             }
-            false
+            false // Always reject - keep the item in place for visual feedback
         },
-        positionalThreshold = { _ ->
-            width * threshold
-        },
+        positionalThreshold = { _ -> width * threshold },
         enableFling = false
     )
+
+    // Reset action trigger flag when the user finishes the swipe action
+    LaunchedEffect(dismissState.targetValue) {
+        if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) {
+            actionTriggered = false
+        }
+    }
 
     val progressFlow = remember { snapshotFlow { dismissState.progress } }
     var hapticTriggered by remember { mutableStateOf(false) }
@@ -111,6 +125,7 @@ fun SwipeableItem(
     val enableDismissFromEndToStart = swipeActionsUiModel?.end?.let {
         it.swipeAction != SwipeAction.None && it.isEnabled
     } ?: false
+
     SwipeToDismissBox(
         modifier = modifier,
         state = dismissState,
@@ -169,10 +184,11 @@ fun SwipeableItem(
     }
 }
 
-// Same as the one exposed by M3 with the addition of `enableFling`: this is needed as otherwise
-// the default `velocityThreshold` might make users trigger swipe actions by mistake.
+// We're using the deprecated [SwipeToDismissBoxState.Saver] and [SwipeToDismissBoxState] constructors on purpose here.
+// There is no proper way to control the velocity threshold that is needed to prevent accidental swipes.
 // See https://issuetracker.google.com/issues/252334353
 @Composable
+@Suppress("Deprecation")
 private fun rememberSwipeToDismissBoxState(
     initialValue: SwipeToDismissBoxValue = SwipeToDismissBoxValue.Settled,
     confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = { true },
@@ -221,3 +237,5 @@ object SwipeActions {
         val onLabelAs: () -> Unit
     )
 }
+
+private const val DELAY_ANIMATION_VALUE = 200L
