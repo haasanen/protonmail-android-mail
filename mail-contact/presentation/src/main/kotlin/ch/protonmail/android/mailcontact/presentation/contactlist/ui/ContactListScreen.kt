@@ -4,7 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -178,7 +182,14 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
             },
             snackbarHost = {
                 DismissableSnackbarHost(
-                    modifier = Modifier.testTag(CommonTestTags.SnackbarHost),
+                    modifier = Modifier
+                        .testTag(CommonTestTags.SnackbarHost)
+                        .padding(
+                            bottom = WindowInsets.navigationBars
+                                .only(WindowInsetsSides.Bottom)
+                                .asPaddingValues()
+                                .calculateBottomPadding()
+                        ),
                     protonSnackbarHostState = snackbarHostState
                 )
             }
