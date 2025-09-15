@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Se han borrado un o más destinatarios duplicados.</string>
   <string name="composer_error_store_draft_subject">Error al guardar el asunto</string>
   <string name="composer_error_store_draft_recipients">Error al guardar los destinatarios de este borrador</string>
+  <string name="composer_error_store_draft_address_disabled">No se puede guardar el borrador - Esta dirección de remitente está desactivada</string>
+  <string name="composer_error_store_draft_address_pk_missing">No se puede guardar el borrador - Esta dirección de remitente no tiene una clave principal</string>
+  <string name="composer_error_store_draft_attachment_too_large">No se puede guardar el borrador - Los archivos adjuntos superan el límite de tamaño</string>
+  <string name="composer_error_store_draft_too_many_attachments">No se puede guardar el borrador - Se ha alcanzado el límite de archivos adjuntos</string>
+  <string name="composer_error_store_draft_duplicate_recipient">No se puede guardar el borrador - Uno o más destinatarios están duplicados</string>
+  <string name="composer_error_store_draft_recipient_group_name">No se puede guardar el borrador - Nombre de grupo de destinatarios no válido</string>
+  <string name="composer_error_store_draft_invalid_recipient">No se puede guardar borrador - Destinatario(s) no válido(s)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">No se puede guardar el borrador - Este mensaje no es un borrador</string>
+  <string name="composer_error_store_draft_generic">No se pudo guardar el borrador - Ocurrió un error genérico</string>
   <string name="composer_error_loading_draft">El contenido de este borrador no está disponible en este momento, no es posible editarlo.</string>
   <string name="composer_add_attachments_content_description">Añadir archivos adjuntos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar desde…</string>

@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Οι διπλότυποι παραλήπτες καταργήθηκαν</string>
   <string name="composer_error_store_draft_subject">Αποτυχία αποθήκευσης θέματος του προχείρου</string>
   <string name="composer_error_store_draft_recipients">Η αποθήκευση των παραληπτών αυτού του πρόχειρου απέτυχε</string>
+  <string name="composer_error_store_draft_address_disabled">Αδυναμία αποθήκευσης πρόχειρου - Αυτή η διεύθυνση αποστολέα είναι απενεργοποιημένη</string>
+  <string name="composer_error_store_draft_address_pk_missing">Αδυναμία αποθήκευσης πρόχειρου - Αυτή η διεύθυνση αποστολέα δεν έχει πρωτεύον κλειδί</string>
+  <string name="composer_error_store_draft_attachment_too_large">Αδυναμία αποθήκευσης πρόχειρου - Τα συνημμένα υπερβαίνουν το όριο μεγέθους</string>
+  <string name="composer_error_store_draft_too_many_attachments">Αδυναμία αποθήκευσης πρόχειρου - Τα όριο συνημμένων έχει επιτευχθεί</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Αδυναμία αποθήκευσης πρόχειρου - Ένας ή περισσότεροι παραλήπτες είναι διπλότυποι</string>
+  <string name="composer_error_store_draft_recipient_group_name">Αδυναμία αποθήκευσης πρόχειρου - Μη έγκυρο όνομα ομάδας παραλήπτη</string>
+  <string name="composer_error_store_draft_invalid_recipient">Αδυναμία αποθήκευσης πρόχειρου - Μη έγκυρος/οι παραλήπτης/ες</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Αδυναμία αποθήκευσης πρόχειρου - Αυτό το μήνυμα δεν είναι πρόχειρο</string>
+  <string name="composer_error_store_draft_generic">Αδυναμία αποθήκευσης πρόχειρου - Προέκυψε ένα γενικό σφάλμα</string>
   <string name="composer_error_loading_draft">Το περιεχόμενο αυτού του πρόχειρου δεν είναι διαθέσιμο προς το παρόν, η επεξεργασία δεν είναι εφικτή.</string>
   <string name="composer_add_attachments_content_description">Προσθήκη συνημμένων</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Εισαγωγή από…</string>

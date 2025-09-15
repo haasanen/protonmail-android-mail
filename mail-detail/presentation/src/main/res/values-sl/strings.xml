@@ -179,6 +179,9 @@
   <string name="snooze_message_unsnooze_banner_button">Prekliči dremež</string>
   <string name="unsubscribe_newsletter_banner_message">This message is from a mailing list.</string>
   <string name="unsubscribe_newsletter_banner_button">Unsubscribe</string>
+  <string name="unsubscribe_newsletter_dialog_text">Are you sure you want to unsubscribe? You’ll no longer receive emails from this mailing list.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Cancel</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Unsubscribe</string>
   <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
   <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
   <string name="detail_error_loading_single_message">Failed loading message</string>

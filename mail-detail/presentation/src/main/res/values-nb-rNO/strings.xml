@@ -173,6 +173,9 @@
   <string name="snooze_message_unsnooze_banner_button">Slumring av</string>
   <string name="unsubscribe_newsletter_banner_message">Denne meldingen er fra en e-postliste.</string>
   <string name="unsubscribe_newsletter_banner_button">Avslutt abonnement</string>
+  <string name="unsubscribe_newsletter_dialog_text">Er du sikker på at du vil avslutte abonnementet? Du vil ikke lenger motta e-poster fra denne e-postlisten.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Avbryt</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Avslutt abonnement</string>
   <string name="already_unsubscribed_banner_message">Du er avmeldt fra denne e-postlisten.</string>
   <string name="error_unsubscribe_newsletter">Mislyktes å avslutte abonnement på nyhetsbrev</string>
   <string name="detail_error_loading_single_message">Kunne ikke laste inn meldingen</string>

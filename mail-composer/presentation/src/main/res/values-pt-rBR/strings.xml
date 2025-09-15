@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">As duplicações do destinatário foram removidas</string>
   <string name="composer_error_store_draft_subject">O assunto não foi salvo</string>
   <string name="composer_error_store_draft_recipients">Erro ao salvar os destinatários deste rascunho</string>
+  <string name="composer_error_store_draft_address_disabled">Não foi possível salvar o rascunho - Endereço do remetente desativado</string>
+  <string name="composer_error_store_draft_address_pk_missing">Não foi possível salvar o rascunho - O remetente não tem uma chave primária</string>
+  <string name="composer_error_store_draft_attachment_too_large">Não foi possível salvar o rascunho - Os anexos excedem o limite de tamanho</string>
+  <string name="composer_error_store_draft_too_many_attachments">Não foi possível salvar o rascunho – Limite de anexos atingido</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Não foi possível salvar o rascunho - Um ou mais destinatários estão duplicados</string>
+  <string name="composer_error_store_draft_recipient_group_name">Não foi possível salvar o rascunho - Nome do grupo de destinatários inválido</string>
+  <string name="composer_error_store_draft_invalid_recipient">Não foi possível salvar o rascunho - Destinatário(s) inválido(s)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Não foi possível salvar o rascunho - A mensagem não é um rascunho</string>
+  <string name="composer_error_store_draft_generic">Não foi possível salvar o rascunho - Erro genérico</string>
   <string name="composer_error_loading_draft">O conteúdo deste rascunho não está disponível no momento. Não é possível editar.</string>
   <string name="composer_add_attachments_content_description">Adicionar anexos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar de…</string>

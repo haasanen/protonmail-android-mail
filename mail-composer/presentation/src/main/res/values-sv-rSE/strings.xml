@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Duplicerad mottagare borttagen</string>
   <string name="composer_error_store_draft_subject">Ämnesrad sparades inte</string>
   <string name="composer_error_store_draft_recipients">Det gick inte att lagra utkastets mottagare</string>
+  <string name="composer_error_store_draft_address_disabled">Kan inte spara utkast - denna avsändaradress är inaktiverad</string>
+  <string name="composer_error_store_draft_address_pk_missing">Kan inte spara utkast - denna avsändaradress har inte en primär nyckel</string>
+  <string name="composer_error_store_draft_attachment_too_large">Kan inte spara utkast - bilagor överskrider storleksgränsen</string>
+  <string name="composer_error_store_draft_too_many_attachments">Unable to save draft - Attachment limit reached</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Kan inte spara utkast - en eller flera mottagare är dubbletter</string>
+  <string name="composer_error_store_draft_recipient_group_name">Unable to save draft - Invalid recipient group name</string>
+  <string name="composer_error_store_draft_invalid_recipient">Kan inte spara utkast – Ogiltiga mottagare</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Kan inte spara utkast - detta meddelande är inte ett utkast</string>
+  <string name="composer_error_store_draft_generic">Kunde inte spara utkast - ett generiskt fel uppstod</string>
   <string name="composer_error_loading_draft">Innehållet i detta utkast är inte tillgängligt för närvarande, redigering är inte möjlig.</string>
   <string name="composer_add_attachments_content_description">Lägg till bilagor</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importera från…</string>

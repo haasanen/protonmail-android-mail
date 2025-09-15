@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Dubbele ontvanger(s) verwijderd</string>
   <string name="composer_error_store_draft_subject">Onderwerp lijn is niet opgeslagen</string>
   <string name="composer_error_store_draft_recipients">Opslaan van de ontvangers van dit concept is mislukt</string>
+  <string name="composer_error_store_draft_address_disabled">Kan concept niet opslaan - Dit afzenderadres is uitgeschakeld</string>
+  <string name="composer_error_store_draft_address_pk_missing">Kan concept niet opslaan - Dit afzenderadres heeft geen primaire sleutel</string>
+  <string name="composer_error_store_draft_attachment_too_large">Kan concept niet opslaan - Bijlagen overschrijden de maximale grootte</string>
+  <string name="composer_error_store_draft_too_many_attachments">Kan concept niet opslaan - Bijlagelimiet bereikt</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Unable to save draft - One or more recipients are duplicates</string>
+  <string name="composer_error_store_draft_recipient_group_name">Unable to save draft - Invalid recipient group name</string>
+  <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Unable to save draft - This message is not a draft</string>
+  <string name="composer_error_store_draft_generic">Unable to save draft - A generic error occurred</string>
   <string name="composer_error_loading_draft">De inhoud van dit concept is op dit moment niet beschikbaar, bewerken is niet mogelijk.</string>
   <string name="composer_add_attachments_content_description">Bestanden toevoegen</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importeren van…</string>
@@ -46,7 +55,7 @@
   <string name="composer_sender_quote">Op %s, schreef %s &lt;%s&gt;:</string>
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Bijlage-limiet bereikt</string>
-  <string name="composer_attachment_size_exceeded_dialog_message">De maximale grootte voor bijlagen is 1%1$s</string>
+  <string name="composer_attachment_size_exceeded_dialog_message">De maximale grootte voor bijlagen is %1$s</string>
   <string name="composer_attachment_encryption_failed_message">Versleuteling van de bijlage is mislukt. Om veiligheidsredenen zijn alle bijlagen verwijderd.</string>
   <string name="composer_too_many_attachments_error">Maximum aantal bijlage (100) overschreden.</string>
   <string name="composer_delete_attachment_error">Er is een onverwachte fout opgetreden tijdens het verwijderen van een bijlage.</string>

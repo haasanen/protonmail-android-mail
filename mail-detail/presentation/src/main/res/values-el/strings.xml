@@ -173,6 +173,9 @@
   <string name="snooze_message_unsnooze_banner_button">Αφαίρεση αναβολής</string>
   <string name="unsubscribe_newsletter_banner_message">Αυτό το μήνυμα είναι από μια λίστα αλληλογραφίας.</string>
   <string name="unsubscribe_newsletter_banner_button">Απεγγραφή</string>
+  <string name="unsubscribe_newsletter_dialog_text">Είστε σίγουροι ότι θέλετε να ακυρώσετε την εγγραφή σας; Δε θα λαμβάνετε πλέον μηνύματα ηλεκτρονικού ταχυδρομείου από αυτή τη λίστα αλληλογραφίας.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Ακύρωση</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Απεγγραφή</string>
   <string name="already_unsubscribed_banner_message">Έχετε απεγγραφεί από αυτήν τη λίστα αλληλογραφίας.</string>
   <string name="error_unsubscribe_newsletter">Αποτυχία απεγγραφής από αυτήν τη λίστα αλληλογραφίας.</string>
   <string name="detail_error_loading_single_message">Αποτυχία φόρτωσης μηνύματος</string>

@@ -44,6 +44,7 @@
   <string name="new_contact">Νέα επαφή</string>
   <string name="new_group">Νέα ομάδα</string>
   <string name="import_contact">Ανέβασμα επαφών συσκευής</string>
+  <string name="contact_deleted">Η επαφή διαγράφηκε</string>
   <string name="contact_delete_dialog_title">Διαγραφή %1$s;</string>
   <string name="contact_delete_dialog_text">Αυτή η επαφή θα διαγραφεί από τη λίστα επαφών σας.</string>
   <string name="contact_delete_dialog_cancel_button">Ακύρωση</string>
@@ -90,6 +91,7 @@
   <string name="contact_details_action_copy_label">Αντιγραφή</string>
   <string name="contact_details_action_message_label">Μήνυμα</string>
   <string name="contact_details_action_call_label">Κλήση</string>
+  <string name="contact_details_action_open_url_label">Άνοιγμα URL</string>
   <string name="contact_group_details_send_message_action">Αποστολή ομαδικού μηνύματος</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="one">%1$d επαφή</item>

@@ -44,6 +44,7 @@
   <string name="new_contact">Új névjegy</string>
   <string name="new_group">Új csoport</string>
   <string name="import_contact">Az eszköz névjegyeinek felötlése</string>
+  <string name="contact_deleted">Contact deleted</string>
   <string name="contact_delete_dialog_title">Törli a következőt: %1$s?</string>
   <string name="contact_delete_dialog_text">Ez a névjegy törölve lesz a névjegyzékéből.</string>
   <string name="contact_delete_dialog_cancel_button">Mégsem</string>
@@ -90,6 +91,7 @@
   <string name="contact_details_action_copy_label">Másolás</string>
   <string name="contact_details_action_message_label">Üzenet</string>
   <string name="contact_details_action_call_label">Hívás</string>
+  <string name="contact_details_action_open_url_label">Open URL</string>
   <string name="contact_group_details_send_message_action">Csoportüzenet küldése</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="one">%1$d kapcsolat</item>

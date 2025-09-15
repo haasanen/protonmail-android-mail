@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Destinatari duplicați eliminați</string>
   <string name="composer_error_store_draft_subject">Subiectul nu a fost salvat.</string>
   <string name="composer_error_store_draft_recipients">Stocarea destinatarului acestei ciorne a eșuat.</string>
+  <string name="composer_error_store_draft_address_disabled">Ciorna nu se poate salva - Această adresă de expeditor este dezactivată.</string>
+  <string name="composer_error_store_draft_address_pk_missing">Ciorna nu se poate salva - Această adresă de expeditor nu are o cheie primară.</string>
+  <string name="composer_error_store_draft_attachment_too_large">Ciorna nu se poate salva - Atașamentele depășesc limita de mărime.</string>
+  <string name="composer_error_store_draft_too_many_attachments">Ciorna nu se poate salva - Limita de atașamente a fost atinsă.</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Ciorna nu se poate salva - Unul sau mai mulți destinatari sunt dubluri.</string>
+  <string name="composer_error_store_draft_recipient_group_name">Ciorna nu se poate salva - Nume grup de destinatari invalid.</string>
+  <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Unable to save draft - This message is not a draft</string>
+  <string name="composer_error_store_draft_generic">Unable to save draft - A generic error occurred</string>
   <string name="composer_error_loading_draft">Conținutul acestei ciorne nu este disponibil momentan. Editarea nu este posibilă.</string>
   <string name="composer_add_attachments_content_description">Adăugare atașamente</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importare din…</string>

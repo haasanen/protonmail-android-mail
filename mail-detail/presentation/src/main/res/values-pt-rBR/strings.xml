@@ -173,6 +173,9 @@
   <string name="snooze_message_unsnooze_banner_button">Retomar</string>
   <string name="unsubscribe_newsletter_banner_message">Esta mensagem veio de uma lista de e-mails.</string>
   <string name="unsubscribe_newsletter_banner_button">Cancelar assinatura</string>
+  <string name="unsubscribe_newsletter_dialog_text">Tem certeza de que deseja cancelar a assinatura? Você não receberá mais e-mails desta lista de e-mails.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Cancelar</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Cancelar assinatura</string>
   <string name="already_unsubscribed_banner_message">Você já está descadastrado desta lista de e-mails.</string>
   <string name="error_unsubscribe_newsletter">Não foi possível cancelar a assinatura da lista de e-mails.</string>
   <string name="detail_error_loading_single_message">Erro ao carregar mensagem</string>

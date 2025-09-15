@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">重複した受取人(たち)が削除されました</string>
   <string name="composer_error_store_draft_subject">件名の保存に失敗しました</string>
   <string name="composer_error_store_draft_recipients">下書きの宛先の保存に失敗しました</string>
+  <string name="composer_error_store_draft_address_disabled">下書きを保存できません - この差出人アドレスは無効です</string>
+  <string name="composer_error_store_draft_address_pk_missing">下書きを保存できません - この差出人アドレスにはプライマリー キーがありません</string>
+  <string name="composer_error_store_draft_attachment_too_large">下書きを保存できません - 添付ファイルがサイズ制限を超過しています</string>
+  <string name="composer_error_store_draft_too_many_attachments">下書きを保存できません - 添付ファイル数の上限に達しました</string>
+  <string name="composer_error_store_draft_duplicate_recipient">下書きを保存できません - 宛先が重複しています</string>
+  <string name="composer_error_store_draft_recipient_group_name">下書きを保存できません - 無効な宛先グループ名です</string>
+  <string name="composer_error_store_draft_invalid_recipient">下書きを保存できません - 無効な宛先です</string>
+  <string name="composer_error_store_draft_message_not_a_draft">下書きを保存できません - このメッセージは下書きではありません</string>
+  <string name="composer_error_store_draft_generic">下書きを保存できませんでした - 一般的なエラーが発生しました。</string>
   <string name="composer_error_loading_draft">この下書きの内容は現時点では利用できません、編集はできません。</string>
   <string name="composer_add_attachments_content_description">添付ファイルの追加</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">インポート...</string>

@@ -44,6 +44,7 @@
   <string name="new_contact">Yeni kişi</string>
   <string name="new_group">Yeni grup</string>
   <string name="import_contact">Aygıt kişilerini yükle</string>
+  <string name="contact_deleted">Kişi silindi</string>
   <string name="contact_delete_dialog_title">%1$s silinsin mi?</string>
   <string name="contact_delete_dialog_text">Bu kişi, kişi listenizden silinecek.</string>
   <string name="contact_delete_dialog_cancel_button">İptal</string>
@@ -90,6 +91,7 @@
   <string name="contact_details_action_copy_label">Kopyala</string>
   <string name="contact_details_action_message_label">İleti</string>
   <string name="contact_details_action_call_label">Ara</string>
+  <string name="contact_details_action_open_url_label">Adresi aç</string>
   <string name="contact_group_details_send_message_action">Grup iletisi gönder</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="one">%1$d kişi</item>

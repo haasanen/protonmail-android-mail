@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Un ou plusieurs destinataires dupliqués ont été retirés.</string>
   <string name="composer_error_store_draft_subject">L\'enregistrement de l\'objet n\'a pas abouti.</string>
   <string name="composer_error_store_draft_recipients">L\'enregistrement des destinataires du brouillon n\'a pas abouti.</string>
+  <string name="composer_error_store_draft_address_disabled">L\'enregistrement du brouillon n\'a pas abouti. L\'adresse de l\'expéditeur a été désactivée.</string>
+  <string name="composer_error_store_draft_address_pk_missing">L\'enregistrement du brouillon n\'a pas abouti. L\'adresse de l\'expéditeur ne possède pas de clé principale</string>
+  <string name="composer_error_store_draft_attachment_too_large">L\'enregistrement du brouillon n\'a pas abouti. Les pièces jointes excédent la taille limite.</string>
+  <string name="composer_error_store_draft_too_many_attachments">L\'enregistrement du brouillon n\'a pas abouti. La limite de pièces jointes est atteinte</string>
+  <string name="composer_error_store_draft_duplicate_recipient">L\'enregistrement du brouillon n\'a pas abouti. Un ou plusieurs destinataires sont dupliqués</string>
+  <string name="composer_error_store_draft_recipient_group_name">L\'enregistrement du brouillon n\'a pas abouti. Ce nom de groupe de destinataires n\'est pas valide</string>
+  <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">L\'enregistrement du brouillon n\'a pas abouti. Ce message n\'est pas un brouillon</string>
+  <string name="composer_error_store_draft_generic">L\'enregistrement du brouillon n\'a pas abouti. Une erreur générique s\'est produite</string>
   <string name="composer_error_loading_draft">Le contenu de ce brouillon n\'est pas disponible pour l\'instant. La modification n\'est pas possible.</string>
   <string name="composer_add_attachments_content_description">Ajouter des pièces jointes</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importer depuis…</string>

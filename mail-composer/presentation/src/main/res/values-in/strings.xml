@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Penerima yang terduplikasi dihapus</string>
   <string name="composer_error_store_draft_subject">Baris subjek tidak disimpan</string>
   <string name="composer_error_store_draft_recipients">Gagal menyimpan draf penerima</string>
+  <string name="composer_error_store_draft_address_disabled">Unable to save draft - This sender address is disabled</string>
+  <string name="composer_error_store_draft_address_pk_missing">Unable to save draft - This sender address does not have a primary key</string>
+  <string name="composer_error_store_draft_attachment_too_large">Unable to save draft - Attachments exceed the size limit</string>
+  <string name="composer_error_store_draft_too_many_attachments">Unable to save draft - Attachment limit reached</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Unable to save draft - One or more recipients are duplicates</string>
+  <string name="composer_error_store_draft_recipient_group_name">Unable to save draft - Invalid recipient group name</string>
+  <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Unable to save draft - This message is not a draft</string>
+  <string name="composer_error_store_draft_generic">Unable to save draft - A generic error occurred</string>
   <string name="composer_error_loading_draft">Konten draf ini sedang tidak tersedia saat ini, penyuntingan tidak dimungkinkan.</string>
   <string name="composer_add_attachments_content_description">Tambah lampiran</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Impor dari…</string>

@@ -173,6 +173,9 @@
   <string name="snooze_message_unsnooze_banner_button">„Zurückstellen“ aufheben</string>
   <string name="unsubscribe_newsletter_banner_message">Diese Nachricht wurde von einer Verteilerliste gesendet.</string>
   <string name="unsubscribe_newsletter_banner_button">Abbestellen</string>
+  <string name="unsubscribe_newsletter_dialog_text">Möchten Sie sich wirklich abmelden? Sie erhalten dann keine E-Mails mehr von dieser Mailingliste.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Abbrechen</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Abmelden</string>
   <string name="already_unsubscribed_banner_message">Du wurdest aus dieser Verteilerliste ausgetragen.</string>
   <string name="error_unsubscribe_newsletter">Fehler beim Abbestellen des Newsletters</string>
   <string name="detail_error_loading_single_message">Fehler beim Laden der Nachricht</string>

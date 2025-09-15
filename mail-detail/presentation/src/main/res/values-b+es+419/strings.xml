@@ -173,6 +173,9 @@
   <string name="snooze_message_unsnooze_banner_button">Dejar de pausar</string>
   <string name="unsubscribe_newsletter_banner_message">Este mensaje proviene de una lista de correo.</string>
   <string name="unsubscribe_newsletter_banner_button">Cancelar la suscripción</string>
+  <string name="unsubscribe_newsletter_dialog_text">¿En verdad desea cancelar la suscripción? Ya no recibirá correos electrónicos de esta lista de correo.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Cancelar</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Cancelar la suscripción</string>
   <string name="already_unsubscribed_banner_message">Ha cancelado esta lista de correo.</string>
   <string name="error_unsubscribe_newsletter">Error al cancelar la suscripción al boletín</string>
   <string name="detail_error_loading_single_message">Error al cargar el mensaje</string>

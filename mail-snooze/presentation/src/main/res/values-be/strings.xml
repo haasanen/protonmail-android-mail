@@ -28,7 +28,7 @@
   <string name="snooze_sheet_snooze_title">Адкласці да</string>
   <string name="snooze_sheet_option_unsnooze">Скасаваць адкладанне</string>
   <string name="snooze_sheet_error_unable_to_snooze">Адбылася невядомая памылка пры адкладанні гэтай размовы</string>
-  <string name="snooze_sheet_error_unable_to_unsnooze">Адбылася невядомая памылка пры скасаванні адкладвання размовы</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Адбылася невядомая памылка пры скасаванні адкладання размовы</string>
   <string name="snooze_sheet_error_in_the_past">Час адкладання ўжо мінуў</string>
   <string name="snooze_sheet_success">Адкладзена да %s</string>
   <string name="unsnooze_sheet_success">Размова больш не адкладзена</string>

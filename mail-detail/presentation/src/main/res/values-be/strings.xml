@@ -67,7 +67,7 @@
   <string name="error_offline_loading_message">Вы па-за сеткай. Для адлюстравання змесціва гэтага паведамлення неабходна падключэнне да інтэрнэту.</string>
   <string name="error_get_attachment_failed">Не ўдалося атрымаць далучэнне.</string>
   <string name="error_attachment_download_in_progress">Спачатку завяршыце бягучае спампоўванне перад тым, як пачаць новае.</string>
-  <string name="error_get_attachment_not_enough_memory">Не ўдалося атрымаць далучэнне па прычыне недахопу памяці</string>
+  <string name="error_get_attachment_not_enough_memory">Не ўдалося атрымаць далучэнне з прычыны недахопу памяці</string>
   <string name="error_relabel_message_failed">Не ўдалося паўторна пазначыць паведамленне. Паўтарыце спробу</string>
   <string name="error_relabel_conversation_failed">Не ўдалося змяніць метку размовы. Паўтарыце спробу</string>
   <string name="please_go_back_online_to_load_messages">Вы па-за сеткай. Для загрузкі паведамленняў неабходна падключэнне да інтэрнэту</string>
@@ -179,6 +179,9 @@
   <string name="snooze_message_unsnooze_banner_button">Скасаваць адкладанне</string>
   <string name="unsubscribe_newsletter_banner_message">Гэта паведамленне са спіса рассылкі.</string>
   <string name="unsubscribe_newsletter_banner_button">Адпісацца</string>
+  <string name="unsubscribe_newsletter_dialog_text">Вы сапраўды хочаце скасаваць падпіску? Вы больш не будзеце атрымліваць лісты са спіса рассылкі.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Скасаваць</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Адпісацца</string>
   <string name="already_unsubscribed_banner_message">Вы адпісаліся ад гэтай рассылкі</string>
   <string name="error_unsubscribe_newsletter">Не ўдалося адпісацца ад рассылкі</string>
   <string name="detail_error_loading_single_message">Не ўдалося загрузіць паведамленне</string>

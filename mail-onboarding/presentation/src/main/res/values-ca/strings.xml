@@ -18,7 +18,7 @@
   -->
 <resources>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Us donem la benvinguda a Proton Mail, on la privacitat és una prioritat</string>
+  <string name="onboarding_welcome_title">Us donem la benvinguda al Proton Mail, on la privacitat és una prioritat</string>
   <string name="onboarding_welcome_description">Gaudiu de missatges xifrats, menys correu brossa, protecció contra suplantacions d\'identitat i rastrejadors bloquejats. Us donem la benvinguda a la privacitat.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Tot el que és important a l\'abast de la mà</string>

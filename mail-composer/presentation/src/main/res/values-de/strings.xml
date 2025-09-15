@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Doppelte Empfänger entfernt</string>
   <string name="composer_error_store_draft_subject">Betreffzeile wurde nicht gespeichert</string>
   <string name="composer_error_store_draft_recipients">Das Speichern der Empfänger dieses Entwurfs ist fehlgeschlagen</string>
+  <string name="composer_error_store_draft_address_disabled">Entwurf konnte nicht gespeichert werden – Diese Absenderadresse ist deaktiviert</string>
+  <string name="composer_error_store_draft_address_pk_missing">Entwurf konnte nicht gespeichert werden – Diese Absenderadresse hat keinen Hauptschlüssel</string>
+  <string name="composer_error_store_draft_attachment_too_large">Entwurf konnte nicht gespeichert werden – Anhänge überschreiten die Größenbeschränkung</string>
+  <string name="composer_error_store_draft_too_many_attachments">Entwurf konnte nicht gespeichert werden – Anzahl Anlagen überschritten</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Entwurf konnte nicht gespeichert werden – Ein oder mehrere Empfänger sind doppelt vorhanden</string>
+  <string name="composer_error_store_draft_recipient_group_name">Entwurf konnte nicht gespeichert werden – Name der Empfängergruppe ungültig</string>
+  <string name="composer_error_store_draft_invalid_recipient">Entwurf konnte nicht gespeichert werden – Ungültige(r) Empfänger</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Entwurf konnte nicht gespeichert werden – Diese Nachricht ist kein Entwurf</string>
+  <string name="composer_error_store_draft_generic">Entwurf konnte nicht gespeichert werden – Ein allgemeiner Fehler ist aufgetreten</string>
   <string name="composer_error_loading_draft">Der Inhalt dieses Entwurfs ist zu diesem Zeitpunkt nicht verfügbar, eine Bearbeitung ist daher nicht möglich.</string>
   <string name="composer_add_attachments_content_description">Anhänge hinzufügen</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importieren aus…</string>

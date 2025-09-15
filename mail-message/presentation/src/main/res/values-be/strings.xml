@@ -33,10 +33,10 @@
   <string name="attachment_show_more_label">+яшчэ %1$d</string>
   <string name="attachment_type_description">Тып файла: %1$s</string>
   <!-- Attachment Types -->
-  <string name="attachment_type_archive">з архівам</string>
+  <string name="attachment_type_archive">Архіў</string>
   <string name="attachment_type_image">Відарыс</string>
   <string name="attachment_type_video">з відэа</string>
-  <string name="attachment_type_audio">з аўдыя</string>
+  <string name="attachment_type_audio">Аўдыя</string>
   <string name="attachment_type_unknown">Невядома</string>
   <string name="attachment_type_pdf">PDF</string>
   <string name="attachment_type_text">з тэкстам</string>

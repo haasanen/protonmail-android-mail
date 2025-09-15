@@ -78,7 +78,7 @@
   <string name="upselling_comparison_table_storage">Сховішча</string>
   <string name="upselling_comparison_table_email_addresses">Адрасы электроннай пошты</string>
   <string name="upselling_comparison_table_custom_email_domain">Карыстальніцкі дамен электроннай пошты</string>
-  <string name="upselling_comparison_table_desktop_app">Доступ да настольнай праграмы</string>
+  <string name="upselling_comparison_table_desktop_app">Доступ да праграмы для камп\'ютара</string>
   <string name="upselling_comparison_table_unlimited_folders_labels">Неабмежаваная колькасць папак і метак</string>
   <string name="upselling_comparison_table_priority_support">Прыярытэтная падтрымка кліентаў</string>
   <!-- Rectangular plan buttons -->
@@ -89,7 +89,7 @@
   <string name="upselling_onboarding_choose_plan">Выберыце свой тарыфны план</string>
   <string name="upselling_onboarding_choose_plan_monthly">Штомесяц</string>
   <string name="upselling_onboarding_choose_plan_yearly">Штогод</string>
-  <string name="upselling_onboarding_best_value">Найлепшая цана</string>
+  <string name="upselling_onboarding_best_value">Найлепшы кошт</string>
   <string name="upselling_onboarding_yearly_savings">Плаціце штогод і зэканоміце %s</string>
   <string name="upselling_onboarding_entitlements_show_more">Паказаць больш</string>
   <string name="upselling_onboarding_entitlements_show_less">Паказаць менш</string>
@@ -102,10 +102,10 @@
   <string name="upselling_onboarding_free_entitlement_mail">1 адрас электроннай пошты</string>
   <!-- Other UI Items -->
   <string name="upselling_unlimited_description_override">Ваша ўніверсальная прэміяльная падпіска</string>
-  <string name="upselling_auto_renew_text">Аўтаматычнае падаўжэнне па тым жа самым кошце і на тых жа ўмовах пакуль не будзе скасавана</string>
+  <string name="upselling_auto_renew_text">Аўтападаўжэнне па тым жа самым кошце і на тых жа ўмовах пакуль не будзе скасавана</string>
   <string name="upselling_auto_renew_text_promo">Вітальная прапанова. Аўтаматычнае падаўжэнне %s%s пакуль не будзе скасавана</string>
   <string name="upselling_auto_renew_text_promo_short">Вітальная прапанова. Аўтаматычнае падаўжэнне за %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Аўтаматычнае падаўжэнне за %s%s пакуль не будзе скасавана</string>
+  <string name="upselling_auto_renew_text_standard">Аўтападаўжэнне за %s%s пакуль не будзе скасавана</string>
   <string name="upselling_social_proof_reviews">БОЛЬШ ЗА 2000 ВОДГУКАЎ</string>
   <string name="upselling_description_social_proof">Перайдзіце на тарыфны план, які радуе мільёны падпісчыкаў.</string>
   <string name="upselling_discount_tag">ЭКАНОМІЯ %s%%</string>
@@ -124,6 +124,6 @@
   <string name="upselling_snackbar_error_no_subscriptions">Немагчыма атрымаць падпіскі.</string>
   <!-- Snackbar texts -->
   <string name="upselling_snackbar_upgrade_in_progress">Адбываецца паляпшэнне падпіскі...</string>
-  <string name="upselling_snackbar_upgrade_error_generic">Адбылася памылка падчас паляпшэння вашай падпіскі.</string>
+  <string name="upselling_snackbar_upgrade_error_generic">Адбылася памылка пры паляпшэнні вашай падпіскі.</string>
   <string name="upselling_snackbar_upgrade_error_recoverable">Адбылася памылка. Паспрабуйце яшчэ раз.</string>
 </resources>

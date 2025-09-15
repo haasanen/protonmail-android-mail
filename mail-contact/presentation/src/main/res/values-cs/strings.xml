@@ -48,6 +48,7 @@
   <string name="new_contact">Nový kontakt</string>
   <string name="new_group">Nová skupina</string>
   <string name="import_contact">Nahrát kontakty ze zařízení</string>
+  <string name="contact_deleted">Kontakt smazán</string>
   <string name="contact_delete_dialog_title">Smazat %1$s?</string>
   <string name="contact_delete_dialog_text">Tento kontakt bude smazán z vašeho seznamu kontaktů.</string>
   <string name="contact_delete_dialog_cancel_button">Zrušit</string>
@@ -94,6 +95,7 @@
   <string name="contact_details_action_copy_label">Kopírovat</string>
   <string name="contact_details_action_message_label">Zpráva</string>
   <string name="contact_details_action_call_label">Volat</string>
+  <string name="contact_details_action_open_url_label">Otevřít URL</string>
   <string name="contact_group_details_send_message_action">Odeslat skupinovou zprávu</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="one">%1$d kontakt</item>

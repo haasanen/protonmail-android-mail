@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">S\'han eliminat un o més destinataris duplicats.</string>
   <string name="composer_error_store_draft_subject">L\'assumpte no s\'ha desat</string>
   <string name="composer_error_store_draft_recipients">S\'ha produït un error en desar els destinataris de l\'esborrany.</string>
+  <string name="composer_error_store_draft_address_disabled">No s\'ha pogut desar l\'esborrany - Aquesta adreça de remitent està desactivada</string>
+  <string name="composer_error_store_draft_address_pk_missing">No s\'ha pogut desar l\'esborrany - Aquesta adreça de remitent no té una clau primària</string>
+  <string name="composer_error_store_draft_attachment_too_large">No s\'ha pogut desar l\'esborrany - Els adjunts superen el límit de mida</string>
+  <string name="composer_error_store_draft_too_many_attachments">No s\'ha pogut desar l\'esborrany - S\'ha assolit el límit d\'adjunts</string>
+  <string name="composer_error_store_draft_duplicate_recipient">No s\'ha pogut desar l\'esborrany - Un o més destinataris estan duplicats</string>
+  <string name="composer_error_store_draft_recipient_group_name">No s\'ha pogut desar l\'esborrany - El nom del grup de destinataris no és vàlid</string>
+  <string name="composer_error_store_draft_invalid_recipient">No s\'ha pogut desar l\'esborrany - El(s) destinatari(s) no són vàlids</string>
+  <string name="composer_error_store_draft_message_not_a_draft">No s\'ha pogut desar l\'esborrany - Aquest missatge no és un esborrany</string>
+  <string name="composer_error_store_draft_generic">No s\'ha pogut desar l\'esborrany - S\'ha produït un error genèric</string>
   <string name="composer_error_loading_draft">El contingut d\'aquest esborrany no està disponible en aquest moment, no es pot editar.</string>
   <string name="composer_add_attachments_content_description">Afegiu fitxers adjunts</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar des de…</string>

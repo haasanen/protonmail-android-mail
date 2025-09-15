@@ -179,6 +179,9 @@
   <string name="snooze_message_unsnooze_banner_button">Zrušit odložení</string>
   <string name="unsubscribe_newsletter_banner_message">Tato zpráva pochází z e-mailového seznamu.</string>
   <string name="unsubscribe_newsletter_banner_button">Odhlásit odběr</string>
+  <string name="unsubscribe_newsletter_dialog_text">Jste si jistí, že se chcete odhlásit? Již nebudete dostávat e-maily z tohoto e-mailového seznamu.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Zpět</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Odhlásit odběr</string>
   <string name="already_unsubscribed_banner_message">Jste odhlášeni z tohoto e-mailového seznamu.</string>
   <string name="error_unsubscribe_newsletter">Nepodařilo se odhlásit z odběru novinek</string>
   <string name="detail_error_loading_single_message">Načtení zprávy selhalo</string>

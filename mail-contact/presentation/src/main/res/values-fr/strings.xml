@@ -44,6 +44,7 @@
   <string name="new_contact">Nouveau contact</string>
   <string name="new_group">Nouveau groupe</string>
   <string name="import_contact">Importer les contacts de l\'appareil</string>
+  <string name="contact_deleted">Le contact a été supprimé.</string>
   <string name="contact_delete_dialog_title">Supprimer %1$s ?</string>
   <string name="contact_delete_dialog_text">Ce contact sera supprimé de votre liste de contacts.</string>
   <string name="contact_delete_dialog_cancel_button">Annuler</string>
@@ -90,6 +91,7 @@
   <string name="contact_details_action_copy_label">Copier</string>
   <string name="contact_details_action_message_label">Message</string>
   <string name="contact_details_action_call_label">Appeler</string>
+  <string name="contact_details_action_open_url_label">Ouvrir l\'URL</string>
   <string name="contact_group_details_send_message_action">Envoyer un message de groupe.</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="one">%1$d contact</item>

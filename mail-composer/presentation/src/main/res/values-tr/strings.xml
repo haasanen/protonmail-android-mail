@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Çift alıcılar kaldırıldı</string>
   <string name="composer_error_store_draft_subject">Konu satırı kaydedilemedi</string>
   <string name="composer_error_store_draft_recipients">Bu taslağın alıcıları kaydedilemedi</string>
+  <string name="composer_error_store_draft_address_disabled">Taslak kaydedilemedi. Bu gönderici adresi kullanım dışı bırakılmış</string>
+  <string name="composer_error_store_draft_address_pk_missing">Taslak kaydedilemedi. Bu gönderici adresinin bir birincil anahtarı yok</string>
+  <string name="composer_error_store_draft_attachment_too_large">Taslak kaydedilemedi. Ek dosyaların boyutu sınırı aşıyor</string>
+  <string name="composer_error_store_draft_too_many_attachments">Taslak kaydedilemedi. Ek dosya sınırı aşıldı</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Taslak kaydedilemedi. Bir ya da birkaç alıcı yineleniyor</string>
+  <string name="composer_error_store_draft_recipient_group_name">Taslak kaydedilemedi. Alıcı grubu adı geçersiz</string>
+  <string name="composer_error_store_draft_invalid_recipient">Taslak kaydedilemedi. Alıcılar geçersiz</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Taslak kaydedilemedi. Bu ileti bir taslak değil</string>
+  <string name="composer_error_store_draft_generic">Taslak kaydedilemedi. Genel bir sorun çıktı</string>
   <string name="composer_error_loading_draft">Bu taslağın içeriği şu anda kullanılamıyor, düzenleme yapılamıyor.</string>
   <string name="composer_add_attachments_content_description">Dosyalar ekle</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Şuradan içe aktar…</string>

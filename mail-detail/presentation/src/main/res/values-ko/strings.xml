@@ -170,6 +170,9 @@
   <string name="snooze_message_unsnooze_banner_button">방해 금지 해제</string>
   <string name="unsubscribe_newsletter_banner_message">이 메시지는 메일링 리스트에서 전송되었습니다.</string>
   <string name="unsubscribe_newsletter_banner_button">구독 취소</string>
+  <string name="unsubscribe_newsletter_dialog_text">Are you sure you want to unsubscribe? You’ll no longer receive emails from this mailing list.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Cancel</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Unsubscribe</string>
   <string name="already_unsubscribed_banner_message">이 메일리스트에서 구독이 취소되었습니다.</string>
   <string name="error_unsubscribe_newsletter">뉴스레터 구독 해지에 실패했습니다.</string>
   <string name="detail_error_loading_single_message">메시지 불러오기 실패</string>

@@ -36,6 +36,15 @@
   <string name="composer_error_duplicate_recipient">Duplicitní příjemci odebráni</string>
   <string name="composer_error_store_draft_subject">Selhalo uložení předmětu</string>
   <string name="composer_error_store_draft_recipients">Uložení příjemců tohoto konceptu selhalo</string>
+  <string name="composer_error_store_draft_address_disabled">Koncept nelze uložit - tato adresa odesílatele je deaktivována</string>
+  <string name="composer_error_store_draft_address_pk_missing">Koncept nelze uložit - Tato adresa odesílatele nemá primární klíč</string>
+  <string name="composer_error_store_draft_attachment_too_large">Koncept nelze uložit - Přílohy překračují limit velikosti</string>
+  <string name="composer_error_store_draft_too_many_attachments">Koncept nelze uložit - Dosažen limit počtu příloh</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Koncept nelze uložit - Jeden nebo více příjemců je duplicitních</string>
+  <string name="composer_error_store_draft_recipient_group_name">Koncept nelze uložit - Neplatný název skupiny příjemců</string>
+  <string name="composer_error_store_draft_invalid_recipient">Koncept nelze uložit - Neplatní přijemce(i)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Koncept nelze uložit - Tato zpráva není koncept</string>
+  <string name="composer_error_store_draft_generic">Koncept nelze uložit - Došlo k obecné chybě</string>
   <string name="composer_error_loading_draft">Obsah tohoto konceptu není v tuto chvíli k dispozici, úprava není možná.</string>
   <string name="composer_add_attachments_content_description">Přidat přílohy</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importovat z…</string>

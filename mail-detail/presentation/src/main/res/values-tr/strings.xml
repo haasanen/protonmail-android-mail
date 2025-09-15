@@ -173,6 +173,9 @@
   <string name="snooze_message_unsnooze_banner_button">Ertelemeyi kaldır</string>
   <string name="unsubscribe_newsletter_banner_message">Bu ileti bir e-posta listesinden gönderilmiş.</string>
   <string name="unsubscribe_newsletter_banner_button">Aboneliği sonlandır</string>
+  <string name="unsubscribe_newsletter_dialog_text">Abonelikten ayrılmak istediğinize emin misiniz? Bu e-posta listesinden artık e-posta almayacaksınız.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">İptal</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Aboneliği sonlandır</string>
   <string name="already_unsubscribed_banner_message">Bu e-posta listesindeki aboneliğiniz sonlandırıldı.</string>
   <string name="error_unsubscribe_newsletter">Duyuru aboneliği sonlandırılamadı</string>
   <string name="detail_error_loading_single_message">İleti yüklenemedi</string>

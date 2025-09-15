@@ -173,6 +173,9 @@
   <string name="snooze_message_unsnooze_banner_button">Stäng av snooze</string>
   <string name="unsubscribe_newsletter_banner_message">Detta meddelande är från en e-postlista.</string>
   <string name="unsubscribe_newsletter_banner_button">Avsluta prenumeration</string>
+  <string name="unsubscribe_newsletter_dialog_text">Are you sure you want to unsubscribe? You’ll no longer receive emails from this mailing list.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Avbryt</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Avsluta prenumeration</string>
   <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
   <string name="error_unsubscribe_newsletter">Misslyckades att avsluta prenumeration på nyhetsbrev</string>
   <string name="detail_error_loading_single_message">Misslyckades ladda meddelande</string>
