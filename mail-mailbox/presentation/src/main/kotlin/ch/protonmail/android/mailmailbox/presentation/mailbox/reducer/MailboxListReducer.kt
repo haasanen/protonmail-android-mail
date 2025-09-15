@@ -457,24 +457,41 @@ class MailboxListReducer @Inject constructor(
         else -> currentState
     }
 
-    private fun reduceAllItemsSelected(operation: MailboxEvent.AllItemsSelected, currentState: MailboxListState) =
+    private fun reduceAllItemsSelected(
+        operation: MailboxEvent.AllItemsSelected,
+        currentState: MailboxListState
+    ): MailboxListState {
+        val state: MailboxListState
         when (currentState) {
-            is MailboxListState.Data.SelectionMode -> currentState.copy(
+            is MailboxListState.Data.SelectionMode -> state = currentState.copy(
                 areAllItemsSelected = true,
-                selectedMailboxItems = operation.allItems
-                    .take(MailboxListState.maxItemSelectionLimit)
-                    .map { item ->
-                        SelectedMailboxItem(
-                            id = item.id,
-                            isRead = item.isRead,
-                            isStarred = item.isStarred
+                selectedMailboxItems =
+                currentState.selectedMailboxItems.toMutableSet()
+                    .apply {
+                        addAll(
+                            operation.allItems
+                                // add up to the selection limit
+                                .take(
+                                    0.coerceAtLeast(
+                                        MailboxListState.maxItemSelectionLimit - currentState.selectedMailboxItems.size
+                                    )
+                                )
+                                .map { item ->
+                                    SelectedMailboxItem(
+                                        id = item.id,
+                                        isRead = item.isRead,
+                                        isStarred = item.isStarred
+                                    )
+                                }
+                                .toSet()
                         )
                     }
-                    .toSet()
             )
 
-            else -> currentState
+            else -> state = currentState
         }
+        return state
+    }
 
     private fun reduceAllItemsDeselected(currentState: MailboxListState) = when (currentState) {
         is MailboxListState.Data.SelectionMode -> currentState.copy(
