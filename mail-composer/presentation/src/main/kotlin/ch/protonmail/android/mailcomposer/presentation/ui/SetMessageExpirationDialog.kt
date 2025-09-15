@@ -25,6 +25,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 @Composable
@@ -40,7 +41,8 @@ fun SetMessageExpirationDialog(
     when {
         showCustomExpirationTimeDialog.value -> CustomExpirationDateTimePicker(
             onTimePicked = onTimePicked,
-            onDismiss = onDismiss
+            onDismiss = onDismiss,
+            initialTime = expirationTime.customTime ?: Clock.System.now()
         )
 
         else -> ExpirationTimeOptionsDialog(
