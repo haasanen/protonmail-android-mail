@@ -16,17 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
-
 package ch.protonmail.android.mailcontact.presentation.contactsearch
 
 import android.content.res.Configuration
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -70,6 +72,7 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
 
     Scaffold(
         containerColor = backgroundColor,
+        contentWindowInsets = WindowInsets(0),
         topBar = {
             ContactSearchTopBar(
                 modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
@@ -83,10 +86,6 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
                 }
             )
         },
-        contentWindowInsets = WindowInsets(
-            left = ProtonDimens.Spacing.Large,
-            right = ProtonDimens.Spacing.Large
-        ),
         content = { paddingValues ->
             ContactSearchContent(
                 modifier = Modifier.padding(paddingValues),
@@ -141,6 +140,16 @@ fun ContactSearchContent(
                     )
                 )
             }
+        }
+
+        item {
+            Spacer(
+                modifier = Modifier.padding(
+                    bottom = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
+                        .asPaddingValues()
+                        .calculateBottomPadding()
+                )
+            )
         }
     }
 }
