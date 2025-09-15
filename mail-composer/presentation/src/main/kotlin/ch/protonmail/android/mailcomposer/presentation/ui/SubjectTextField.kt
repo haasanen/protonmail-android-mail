@@ -36,6 +36,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
@@ -53,6 +56,8 @@ import ch.protonmail.android.mailcomposer.presentation.R
 internal fun SubjectTextField(
     textFieldState: TextFieldState,
     isFocused: Boolean,
+    focusRequester: FocusRequester,
+    nextFocusRequester: FocusRequester,
     cursorColor: Color = ProtonTheme.colors.iconAccent,
     modifier: Modifier = Modifier
 ) {
@@ -73,7 +78,9 @@ internal fun SubjectTextField(
         BasicTextField(
             modifier = Modifier
                 .padding(horizontal = 0.dp)
-                .weight(1f),
+                .weight(1f)
+                .focusRequester(focusRequester)
+                .focusProperties { next = nextFocusRequester },
             state = textFieldState,
             textStyle = ProtonTheme.typography.bodyMediumNorm,
             lineLimits = TextFieldLineLimits.SingleLine,

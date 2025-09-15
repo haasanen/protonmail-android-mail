@@ -67,6 +67,7 @@ fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: DraftDisplayBodyUiModel,
     shouldRequestFocus: Effect<Unit>,
+    focusRequester: FocusRequester,
     injectInlineAttachments: Effect<List<String>>,
     stripInlineAttachment: Effect<String>,
     refreshBody: Effect<DraftDisplayBodyUiModel>,
@@ -80,7 +81,6 @@ fun EditableMessageBodyWebView(
     var webView by remember { mutableStateOf<WebView?>(null) }
     var currentCursorPosition = remember { 0.dp }
     var currentLineHeight = remember { 0.dp }
-    val focusRequester = remember { FocusRequester() }
 
     fun onWebViewResize() {
         val height = webView?.height ?: 0

@@ -144,7 +144,10 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                         toChipTextFieldHeightPx = it.boundsInWindow().height
                     }
                 },
-            focusRequester = fieldFocusRequesters[FocusedFieldType.TO],
+            focusRequester = fieldFocusRequesters.getValue(FocusedFieldType.TO),
+            nextFocusRequester = if (shouldShowCcBcc) {
+                fieldFocusRequesters.getValue(FocusedFieldType.CC)
+            } else { fieldFocusRequesters.getValue(FocusedFieldType.SUBJECT) },
             actions = baseFieldActions.copy(
                 onSuggestionTermTyped = {
                     viewModel.submit(RecipientsActions.UpdateSearchTerm(it, ContactSuggestionsField.TO))
@@ -204,7 +207,8 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                 modifier = Modifier
                     .testTag(ComposerTestTags.CcRecipient)
                     .retainFieldFocusOnConfigurationChange(FocusedFieldType.CC),
-                focusRequester = fieldFocusRequesters[FocusedFieldType.CC],
+                focusRequester = fieldFocusRequesters.getValue(FocusedFieldType.CC),
+                nextFocusRequester = fieldFocusRequesters.getValue(FocusedFieldType.BCC),
                 actions = baseFieldActions.copy(
                     onSuggestionTermTyped = {
                         viewModel.submit(RecipientsActions.UpdateSearchTerm(it, ContactSuggestionsField.CC))
@@ -233,7 +237,8 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                     modifier = Modifier
                         .testTag(ComposerTestTags.BccRecipient)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
-                    focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],
+                    focusRequester = fieldFocusRequesters.getValue(FocusedFieldType.BCC),
+                    nextFocusRequester = fieldFocusRequesters.getValue(FocusedFieldType.SUBJECT),
                     actions = baseFieldActions.copy(
                         onSuggestionTermTyped = {
                             viewModel.submit(

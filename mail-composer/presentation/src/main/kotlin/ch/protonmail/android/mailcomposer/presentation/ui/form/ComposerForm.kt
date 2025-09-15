@@ -109,7 +109,6 @@ internal fun ComposerForm(
         initialFocus = FocusedFieldType.TO,
         onFocusedField = {
             Timber.d("Focus changed: onFocusedField: $it")
-            Timber.d("editor-webview: Focus changed: onFocusedField: $it")
 
             isSubjectFocused = it == FocusedFieldType.SUBJECT
         }
@@ -156,7 +155,9 @@ internal fun ComposerForm(
                         isFocused = isSubjectFocused,
                         modifier = maxWidthModifier
                             .testTag(ComposerTestTags.Subject)
-                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT)
+                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT),
+                        focusRequester = fieldFocusRequesters.getValue(FocusedFieldType.SUBJECT),
+                        nextFocusRequester = fieldFocusRequesters.getValue(FocusedFieldType.BODY)
                     )
                     MailDivider()
 
@@ -191,6 +192,7 @@ internal fun ComposerForm(
                         EditableMessageBodyWebView(
                             messageBodyUiModel = bodyInitialValue,
                             shouldRequestFocus = focusTextBody,
+                            focusRequester = fieldFocusRequesters.getValue(FocusedFieldType.BODY),
                             injectInlineAttachments = injectInlineAttachments,
                             stripInlineAttachment = stripInlineAttachment,
                             refreshBody = refreshBody,

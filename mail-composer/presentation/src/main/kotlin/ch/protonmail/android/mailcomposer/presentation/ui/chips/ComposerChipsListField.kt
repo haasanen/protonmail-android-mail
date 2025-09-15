@@ -78,7 +78,8 @@ fun ComposerChipsListField(
     label: String,
     chipsList: List<ChipItem>,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester? = null,
+    focusRequester: FocusRequester,
+    nextFocusRequester: FocusRequester,
     focusOnClick: Boolean = true,
     actions: ComposerChipsListField.Actions,
     contactSuggestionState: ContactSuggestionState,
@@ -147,6 +148,7 @@ fun ComposerChipsListField(
             label = label,
             modifier = modifier,
             focusRequester = focusRequester,
+            nextFocusRequester = nextFocusRequester,
             focusOnClick = focusOnClick,
             actions = actions,
             onChipItemClicked = { chipItem -> bottomSheetData = chipItem },
@@ -189,7 +191,8 @@ fun ComposerChipsListField(
 private fun ChipsListContent(
     label: String,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester? = null,
+    focusRequester: FocusRequester,
+    nextFocusRequester: FocusRequester,
     focusOnClick: Boolean = true,
     actions: ComposerChipsListField.Actions,
     onChipItemClicked: (ChipItem) -> Unit,
@@ -251,12 +254,13 @@ private fun ChipsListContent(
                         clickable(
                             interactionSource = interactionSource,
                             indication = null,
-                            onClick = { focusRequester?.requestFocus() }
+                            onClick = { focusRequester.requestFocus() }
                         )
                     },
                 textFieldState = textFieldState,
                 state = listState,
                 focusRequester = focusRequester,
+                nextFocusRequester = nextFocusRequester,
                 actions = chipsListActions
             )
 

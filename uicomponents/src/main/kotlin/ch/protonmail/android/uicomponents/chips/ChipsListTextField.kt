@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -51,7 +52,8 @@ fun ChipsListTextField(
     state: ChipsListState,
     textFieldState: TextFieldState,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester? = null,
+    focusRequester: FocusRequester,
+    nextFocusRequester: FocusRequester,
     cursorColor: Color = ProtonTheme.colors.iconAccent,
     textStyle: TextStyle = ProtonTheme.typography.bodyMediumNorm,
     animateChipsCreation: Boolean = false,
@@ -93,9 +95,9 @@ fun ChipsListTextField(
             is ChipItemsList.Unfocused.Multiple -> UnFocusedChipsList(
                 items.item,
                 items.counter
-            ) { focusRequester?.requestFocus() }
+            ) { focusRequester.requestFocus() }
 
-            is ChipItemsList.Unfocused.Single -> UnFocusedChipsList(items.item) { focusRequester?.requestFocus() }
+            is ChipItemsList.Unfocused.Single -> UnFocusedChipsList(items.item) { focusRequester.requestFocus() }
         }
 
         BasicTextField(
@@ -104,9 +106,8 @@ fun ChipsListTextField(
                 .weight(1f)
                 .align(Alignment.CenterVertically)
                 .testTag(ChipsTestTags.BasicTextField)
-                .thenIf(focusRequester != null) {
-                    focusRequester(focusRequester!!)
-                }
+                .focusRequester(focusRequester)
+                .focusProperties { next = nextFocusRequester }
                 .thenIf(!state.isFocused() && items !is ChipItemsList.Empty) {
                     height(0.dp)
                 }
