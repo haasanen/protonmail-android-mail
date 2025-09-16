@@ -23,7 +23,11 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.DrawerValue
@@ -50,6 +54,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -525,8 +530,7 @@ fun Home(
                 },
                 snackbarHost = {
                     DismissableSnackbarHost(
-                        modifier = Modifier
-                            .padding(bottom = actionBarPadding),
+                        modifier = Modifier.snackbarPadding(actionBarPadding, currentDestinationRoute),
                         protonSnackbarHostState = snackbarHost
                     )
                 }
@@ -752,7 +756,29 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onUpselling = { entryPoint, type -> navController.navigate(Screen.FeatureUpselling(entryPoint, type)) }
     )
 
-sealed interface BottomSheetType {
+private sealed interface BottomSheetType {
     data object Onboarding : BottomSheetType
     data class NotificationsPermissions(val permissionsState: NotificationsPermissionStateType) : BottomSheetType
+}
+
+@Composable
+private fun Modifier.snackbarPadding(
+    actionBarPadding: Dp,
+    currentDestinationRoute: String?,
+    isMailboxRoute: Boolean = currentDestinationRoute == Screen.Mailbox.route
+): Modifier {
+    return this
+        .padding(bottom = actionBarPadding)
+        .then(
+            if (isMailboxRoute) {
+                Modifier // No padding - Snackbar is above FAB in Mailbox
+            } else {
+                Modifier.padding(
+                    bottom = WindowInsets.navigationBars
+                        .only(WindowInsetsSides.Bottom)
+                        .asPaddingValues()
+                        .calculateBottomPadding()
+                )
+            }
+        )
 }
