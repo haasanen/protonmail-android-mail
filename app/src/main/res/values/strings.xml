@@ -19,7 +19,7 @@
 <resources>
     <string name="app_name" translatable="false">Proton Mail</string>
     <string name="dialog_sign_out_account_title">Sign out</string>
-    <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
+    <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
     <string name="dialog_sign_out_account_confirm">Sign out</string>
     <string name="dialog_sign_out_account_cancel">Cancel</string>
     <string name="dialog_remove_account_title">Remove account?</string>
