@@ -322,8 +322,16 @@ internal class MailboxTopAppBarReducerTest(
                     }
                 ),
                 expectedState = SelectionMode(inboxLabel.text(), avatarItem, selectedCount = 100)
+            ),
+            TestInput(
+                currentState = SelectionMode(
+                    inboxLabel.text(),
+                    avatarItem,
+                    selectedCount = 42
+                ),
+                operation = MailboxViewAction.SnoozeDismissed,
+                expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             )
-
         )
 
         private val transitionsFromSearchModeState = listOf(

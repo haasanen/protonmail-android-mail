@@ -165,7 +165,12 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data object ClearAllDismissed : MailboxViewAction, AffectingClearAllDialog
 
     object RequestSnoozeBottomSheet : MailboxViewAction, AffectingBottomSheet
-    object SnoozeDismissed : MailboxViewAction, AffectingMailboxList, AffectingBottomSheet
+    object SnoozeDismissed :
+        MailboxViewAction,
+        AffectingMailboxList,
+        AffectingBottomSheet,
+        AffectingTopAppBar,
+        AffectingBottomAppBar
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
