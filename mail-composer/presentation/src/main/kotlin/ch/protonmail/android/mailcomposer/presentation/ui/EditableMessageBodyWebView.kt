@@ -27,6 +27,7 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
+import androidx.annotation.MainThread
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.heightIn
@@ -209,6 +210,7 @@ fun EditableMessageBodyWebView(
                 },
             onRelease = {
                 Timber.d("editor-webview: webview is leaving composition for good.")
+                webView?.let { safeShutdownWebView(it) }
                 webView = null
             }
         )
@@ -229,6 +231,16 @@ private fun configureDarkLightMode(webView: WebView, isInDarkTheme: Boolean) {
     } else {
         webView.showInLightMode()
     }
+}
+
+@MainThread
+private fun safeShutdownWebView(wv: WebView) {
+    Timber.d("editor-webview: shutting down webview...")
+    try { wv.webViewClient = object : WebViewClient() {} } catch (_: Throwable) {}
+    try { wv.removeJavascriptInterface(JAVASCRIPT_CALLBACK_INTERFACE_NAME) } catch (_: Throwable) {}
+    try { wv.stopLoading() } catch (_: Throwable) {}
+    try { wv.onPause() } catch (_: Throwable) {}
+    try { wv.destroy() } catch (_: Throwable) {}
 }
 
 object EditableMessageBodyWebView {
