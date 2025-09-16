@@ -66,7 +66,7 @@ fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController) {
         ProtonInvertedTheme {
             WebAccountSettingScreen(
                 actions = WebSettingsScreenActions.Empty.copy(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.navigateBack() }
                 )
             )
         }
@@ -78,7 +78,7 @@ fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController) {
         ProtonInvertedTheme {
             WebEmailSettingScreen(
                 actions = WebSettingsScreenActions.Empty.copy(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.navigateBack() }
                 )
             )
         }
@@ -90,7 +90,7 @@ fun NavGraphBuilder.addWebFolderAndLabelSettings(navController: NavHostControlle
         ProtonInvertedTheme {
             WebFoldersAndLabelsSettingScreen(
                 actions = WebSettingsScreenActions.Empty.copy(
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateBack() },
                     onUpsellNavigation = { entryPoint, visibility ->
                         navController.navigate(Screen.FeatureUpselling(entryPoint, visibility))
                     }
@@ -105,7 +105,7 @@ fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(navController: NavHostContr
         ProtonInvertedTheme {
             WebPrivacyAndSecuritySettingsScreen(
                 actions = WebSettingsScreenActions.Empty.copy(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.navigateBack() }
                 )
             )
         }
@@ -117,7 +117,7 @@ fun NavGraphBuilder.addWebSpamFilterSettings(navController: NavHostController) {
         ProtonInvertedTheme {
             WebSpamFilterSettingsScreen(
                 actions = WebSettingsScreenActions.Empty.copy(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.navigateBack() }
                 )
             )
         }
