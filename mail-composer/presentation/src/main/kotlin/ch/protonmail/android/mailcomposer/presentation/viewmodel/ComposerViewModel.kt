@@ -652,7 +652,12 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    fun loadImage(url: String): MessageBodyImage? = loadMessageBodyImage(url).getOrNull()
+    fun loadImage(url: String): MessageBodyImage? = if (isComposerActive()) {
+        loadMessageBodyImage(url).getOrNull()
+    } else {
+        Timber.d("Not loading image, composer not active")
+        null
+    }
 
     private suspend fun onScheduleSendRequested() {
         getFormattedScheduleSendOptions()
@@ -868,6 +873,8 @@ class ComposerViewModel @AssistedInject constructor(
                 }
         }
     }
+
+    private fun isComposerActive(): Boolean = composerRegistry.isActive(composerInstanceUuid)
 
     private suspend fun primaryUserId() = primaryUserId.first()
 
