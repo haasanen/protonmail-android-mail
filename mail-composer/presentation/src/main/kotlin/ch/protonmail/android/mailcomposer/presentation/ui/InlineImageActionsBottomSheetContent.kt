@@ -40,6 +40,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 fun InlineImageActionsBottomSheetContent(
@@ -49,35 +50,39 @@ fun InlineImageActionsBottomSheetContent(
     modifier: Modifier = Modifier
 ) {
 
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = ProtonDimens.Spacing.Large),
-        shape = ProtonTheme.shapes.extraLarge,
-        elevation = CardDefaults.cardElevation(),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
-        )
-    ) {
-        Column(
+    Column {
+        Card(
             modifier = modifier
-        ) {
-
-            ActionItem(stringResource(R.string.composer_send_as_attachment)) {
-                onTransformToAttachment(contentId)
-            }
-
-            HorizontalDivider(
-                modifier = Modifier.padding(0.dp),
-                thickness = 1.dp,
-                color = ProtonTheme.colors.separatorNorm
+                .fillMaxWidth()
+                .padding(horizontal = ProtonDimens.Spacing.Large),
+            shape = ProtonTheme.shapes.extraLarge,
+            elevation = CardDefaults.cardElevation(),
+            colors = CardDefaults.cardColors().copy(
+                containerColor = ProtonTheme.colors.backgroundInvertedSecondary
             )
+        ) {
+            Column(
+                modifier = modifier
+            ) {
 
-            ActionItem(stringResource(R.string.composer_remove_inline_image)) {
-                onRemove(contentId)
+                ActionItem(stringResource(R.string.composer_send_as_attachment)) {
+                    onTransformToAttachment(contentId)
+                }
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(0.dp),
+                    thickness = 1.dp,
+                    color = ProtonTheme.colors.separatorNorm
+                )
+
+                ActionItem(stringResource(R.string.composer_remove_inline_image)) {
+                    onRemove(contentId)
+                }
+
             }
-
         }
+
+        BottomNavigationBarSpacer()
     }
 }
 

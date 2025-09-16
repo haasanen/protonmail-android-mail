@@ -45,6 +45,7 @@ import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ActionGroup
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ActionGroupItem
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import kotlinx.collections.immutable.persistentListOf
 
@@ -103,6 +104,8 @@ fun RecipientChipActionsBottomSheetContent(
                     onClick = onClick
                 )
             }
+
+            BottomNavigationBarSpacer()
         }
     }
 }
