@@ -185,9 +185,6 @@ internal class ComposerViewModelTest {
         }
     }
     private val reducer = ComposerStateReducer()
-    private val isMessagePasswordEnabled = mockk<FeatureFlag<Boolean>> {
-        coEvery { this@mockk.get() } returns true
-    }
 
     @BeforeTest
     fun setUp() {
@@ -226,7 +223,6 @@ internal class ComposerViewModelTest {
         scheduleSendMessage,
         getSenderAddresses,
         changeSenderAddress,
-        isMessagePasswordEnabled,
         composerRegistry,
         testDispatcher,
         isMessageExpirationEnabled,

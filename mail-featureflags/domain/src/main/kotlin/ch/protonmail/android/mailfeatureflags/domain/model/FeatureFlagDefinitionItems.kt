@@ -34,14 +34,6 @@ data object LinkifyUrlEnabled : FeatureFlagDefinition(
     defaultValue = true
 )
 
-data object MessagePasswordEnabled : FeatureFlagDefinition(
-    key = "external_encryption_enabled",
-    name = "External Encryption (Message Password)",
-    category = FeatureFlagCategory.Composer,
-    description = "Allow to set password to encrypt message to external recipients",
-    defaultValue = true
-)
-
 data object UpsellingEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7Upselling",
     name = "Enable Feature Upsell",

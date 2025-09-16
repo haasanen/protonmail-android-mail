@@ -99,7 +99,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplay
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.PreloadContactSuggestions
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
@@ -171,7 +170,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val scheduleSend: ScheduleSendMessage,
     private val getSenderAddresses: GetSenderAddresses,
     private val changeSenderAddress: ChangeSenderAddress,
-    @IsMessagePasswordEnabled private val messagePasswordEnabled: FeatureFlag<Boolean>,
     private val composerRegistry: ActiveComposerRegistry,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
     @IsMessageExpirationEnabled private val messageExpirationEnabled: FeatureFlag<Boolean>,
@@ -225,14 +223,6 @@ class ComposerViewModel @AssistedInject constructor(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
         initialValue = false
-    )
-
-    val isMessagePasswordEnabled: StateFlow<Boolean> = flow {
-        emit(messagePasswordEnabled.get())
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = true
     )
 
     init {

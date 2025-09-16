@@ -28,14 +28,12 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDb
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageExpirationEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.MessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
 import dagger.Module
 import dagger.Provides
@@ -62,22 +60,10 @@ object FeatureFlagsModule {
     fun provideMessageDetailEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(MessageDetailEnabled.key, false)
 
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideMessagePasswordEnabledDefinitions(): FeatureFlagDefinition = MessagePasswordEnabled
-
     @Provides
     @Singleton
     @FeatureFlagsCoroutineScope
     fun provideFeatureFlagsCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    @Provides
-    @Singleton
-    @IsMessagePasswordEnabled
-    fun provideMessagePasswordEnabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(key = MessagePasswordEnabled.key, false)
 
     @Provides
     @IntoSet
