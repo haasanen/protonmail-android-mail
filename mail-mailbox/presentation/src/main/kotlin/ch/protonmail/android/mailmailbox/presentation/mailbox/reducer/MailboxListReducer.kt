@@ -463,30 +463,31 @@ class MailboxListReducer @Inject constructor(
     ): MailboxListState {
         val state: MailboxListState
         when (currentState) {
-            is MailboxListState.Data.SelectionMode -> state = currentState.copy(
-                areAllItemsSelected = true,
-                selectedMailboxItems =
-                currentState.selectedMailboxItems.toMutableSet()
-                    .apply {
-                        addAll(
-                            operation.allItems
-                                // add up to the selection limit
-                                .take(
-                                    0.coerceAtLeast(
-                                        MailboxListState.maxItemSelectionLimit - currentState.selectedMailboxItems.size
-                                    )
-                                )
-                                .map { item ->
-                                    SelectedMailboxItem(
-                                        id = item.id,
-                                        isRead = item.isRead,
-                                        isStarred = item.isStarred
-                                    )
-                                }
-                                .toSet()
-                        )
+            is MailboxListState.Data.SelectionMode -> {
+                val selectedIds = currentState.selectedMailboxItems.map { it.id }
+                val limitedSelection = currentState.selectedMailboxItems.toMutableSet()
+                limitedSelection.addAll(
+                    operation.allItems.let { allItems ->
+                        // remove selected id's so we don't add duplicates
+                        allItems.filter { !selectedIds.contains(it.id) }.take(
+                            // add additional items up to our maximum supported limit
+                            0.coerceAtLeast(
+                                MailboxListState.maxItemSelectionLimit - selectedIds.size
+                            )
+                        ).map {
+                            SelectedMailboxItem(
+                                id = it.id,
+                                isRead = it.isRead,
+                                isStarred = it.isStarred
+                            )
+                        }
                     }
-            )
+                )
+                state = currentState.copy(
+                    areAllItemsSelected = true,
+                    selectedMailboxItems = limitedSelection
+                )
+            }
 
             else -> state = currentState
         }
