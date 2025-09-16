@@ -26,14 +26,6 @@ data object DebugInspectDbEnabled : FeatureFlagDefinition(
     defaultValue = false
 )
 
-data object LinkifyUrlEnabled : FeatureFlagDefinition(
-    key = "linkify_url_enabled",
-    name = "Linkify Urls in Detail",
-    category = FeatureFlagCategory.Details,
-    description = "Makes urls clickable in Message Detail",
-    defaultValue = true
-)
-
 data object UpsellingEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7Upselling",
     name = "Enable Feature Upsell",

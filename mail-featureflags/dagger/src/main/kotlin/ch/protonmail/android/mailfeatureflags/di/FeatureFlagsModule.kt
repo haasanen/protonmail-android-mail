@@ -25,13 +25,11 @@ import ch.protonmail.android.mailfeatureflags.data.local.factory.BooleanFeatureF
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
-import ch.protonmail.android.mailfeatureflags.domain.model.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
@@ -64,17 +62,6 @@ object FeatureFlagsModule {
     @Singleton
     @FeatureFlagsCoroutineScope
     fun provideFeatureFlagsCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideLinkifyUrlEnabledDefinitions(): FeatureFlagDefinition = LinkifyUrlEnabled
-
-    @Provides
-    @Singleton
-    @IsLinkifyUrlsEnabled
-    fun provideLinkifyUrlEnabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(key = LinkifyUrlEnabled.key, false)
 
     @Provides
     @Singleton

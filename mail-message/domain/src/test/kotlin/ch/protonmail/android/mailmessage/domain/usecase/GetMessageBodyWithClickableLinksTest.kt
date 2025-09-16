@@ -2,7 +2,6 @@ package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -24,10 +23,7 @@ class GetMessageBodyWithClickableLinksTest(
     private val getDecryptedMessageBody = mockk<GetDecryptedMessageBody>()
 
     private val getMessageBodyWithClickableLinks = GetMessageBodyWithClickableLinks(
-        getDecryptedMessageBody = getDecryptedMessageBody,
-        isLinkifyUrlEnabled = mockk<FeatureFlag<Boolean>> {
-            coEvery { this@mockk.get() } returns true
-        }
+        getDecryptedMessageBody = getDecryptedMessageBody
     )
 
     @Test
