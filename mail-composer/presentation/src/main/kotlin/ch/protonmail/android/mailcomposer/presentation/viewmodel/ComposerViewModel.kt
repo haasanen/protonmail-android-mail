@@ -48,11 +48,13 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.model.hasAnyRecipient
 import ch.protonmail.android.mailcomposer.domain.model.haveBlankRecipients
 import ch.protonmail.android.mailcomposer.domain.model.haveBlankSubject
+import ch.protonmail.android.mailcomposer.domain.usecase.CanSendWithExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
@@ -75,15 +77,15 @@ import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
-import ch.protonmail.android.mailcomposer.presentation.mapper.toDraftRecipient
 import ch.protonmail.android.mailcomposer.presentation.mapper.toDomainModel
+import ch.protonmail.android.mailcomposer.presentation.mapper.toDraftRecipient
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerStates
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.ObservedComposerDataChanges
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.ObservedComposerDataChanges
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
@@ -184,6 +186,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val getDraftSenderValidationError: GetDraftSenderValidationError,
     private val preloadContactSuggestions: PreloadContactSuggestions,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
+    private val canSendWithExpirationTime: CanSendWithExpirationTime,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -768,7 +771,20 @@ class ComposerViewModel @AssistedInject constructor(
             emitNewStateFor(CompositeEvent.OnSendWithEmptySubject)
             return
         }
-        onSendMessage()
+
+        when (val result = canSendWithExpirationTime().getOrNull()) {
+            SendWithExpirationTimeResult.CanSend -> onSendMessage()
+            is SendWithExpirationTimeResult.ExpirationWillNotApplyWarning -> {
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationWillNotApply(result.recipients))
+            }
+            is SendWithExpirationTimeResult.ExpirationMayNotApplyWarning -> {
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(result.recipients))
+            }
+            null -> {
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(emptyList()))
+            }
+        }
+
     }
 
     private suspend fun onSendMessage() {

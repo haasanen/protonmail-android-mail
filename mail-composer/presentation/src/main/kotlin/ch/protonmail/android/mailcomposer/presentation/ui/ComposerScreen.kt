@@ -71,6 +71,7 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcommon.presentation.compose.toPx
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerBottomSheetContent
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerUiModel
@@ -84,7 +85,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.operations.Composer
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.dismissKeyboard
@@ -122,7 +122,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val senderChangedNoticeDialogState = remember { mutableStateOf<String?>(null) }
     val sendWithoutSubjectDialogState = remember { mutableStateOf(false) }
     val sendExpiringMessageDialogState = remember {
-        mutableStateOf(SendExpiringMessageDialogState(false, emptyList()))
+        mutableStateOf(SendExpiringMessageDialogState(false, TextUiModel("")))
     }
     val discardDraftDialogState = rememberSaveable { mutableStateOf(false) }
     val showExpirationTimeDialog = rememberSaveable { mutableStateOf(false) }
@@ -417,12 +417,16 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
     if (sendExpiringMessageDialogState.value.isVisible) {
         SendExpiringMessageDialog(
-            externalRecipients = sendExpiringMessageDialogState.value.externalParticipants,
+            text = sendExpiringMessageDialogState.value.text,
             onConfirmClicked = {
                 viewModel.submit(ComposerAction.ConfirmSendExpirationSetToExternal)
                 sendExpiringMessageDialogState.value = sendExpiringMessageDialogState.value.copy(isVisible = false)
             },
             onDismissClicked = {
+                sendExpiringMessageDialogState.value = sendExpiringMessageDialogState.value.copy(isVisible = false)
+            },
+            onAddPasswordClicked = {
+                actions.onSetMessagePasswordClick()
                 sendExpiringMessageDialogState.value = sendExpiringMessageDialogState.value.copy(isVisible = false)
             }
         )
@@ -607,7 +611,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
     ConsumableLaunchedEffect(effect = effectsState.confirmSendExpiringMessage) {
         sendExpiringMessageDialogState.value = SendExpiringMessageDialogState(
-            isVisible = true, externalParticipants = it
+            isVisible = true,
+            text = it
         )
     }
 
@@ -714,7 +719,7 @@ private sealed interface BottomSheetType {
 
 private data class SendExpiringMessageDialogState(
     val isVisible: Boolean,
-    val externalParticipants: List<Participant>
+    val text: TextUiModel
 )
 
 private data class AttachmentsFileSizeExceededDialogState(

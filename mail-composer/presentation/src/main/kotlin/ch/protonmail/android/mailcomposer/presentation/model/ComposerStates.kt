@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import kotlinx.collections.immutable.ImmutableList
@@ -118,7 +117,7 @@ sealed interface ComposerState {
         val focusTextBody: Effect<Unit> = Effect.empty(),
         val sendingErrorEffect: Effect<TextUiModel> = Effect.empty(),
         val senderChangedNotice: Effect<TextUiModel> = Effect.empty(),
-        val confirmSendExpiringMessage: Effect<List<Participant>>,
+        val confirmSendExpiringMessage: Effect<TextUiModel>,
         val openFilesPicker: Effect<Unit>,
         val openPhotosPicker: Effect<Unit>,
         val openCamera: Effect<Unit>,

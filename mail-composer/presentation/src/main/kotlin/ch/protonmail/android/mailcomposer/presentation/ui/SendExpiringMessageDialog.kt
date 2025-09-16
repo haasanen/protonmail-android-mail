@@ -21,56 +21,55 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.mailcomposer.presentation.R
 
 @Composable
+@Suppress("UseComposableActions")
 fun SendExpiringMessageDialog(
-    externalRecipients: List<Recipient>,
+    text: TextUiModel,
     onConfirmClicked: () -> Unit,
     onDismissClicked: () -> Unit,
+    onAddPasswordClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ProtonAlertDialog(
         modifier = modifier,
         titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_title,
         text = {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
-            ) {
-                Text(
-                    text = stringResource(
-                        id = R.string.composer_send_expiring_message_to_external_recipients_dialog_text
-                    ),
-                    style = ProtonTheme.typography.bodyMediumWeak
-                )
-                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
-                Text(
-                    text = externalRecipients.joinToString(separator = "\n") { it.address },
-                    style = ProtonTheme.typography.bodyMediumWeak
-                )
-            }
+            Text(
+                text = text.string(),
+                style = ProtonTheme.typography.bodyMediumWeak
+            )
         },
-        dismissButton = {
-            ProtonAlertDialogButton(
-                titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_cancel
-            ) { onDismissClicked() }
-        },
+        dismissButton = { },
         confirmButton = {
-            ProtonAlertDialogButton(
-                titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_confirm
-            ) { onConfirmClicked() }
+            Column {
+                ProtonAlertDialogButton(
+                    titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_confirm
+                ) { onConfirmClicked() }
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
+
+                ProtonAlertDialogButton(
+                    titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_add_password
+                ) { onAddPasswordClicked() }
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
+
+                ProtonAlertDialogButton(
+                    titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_cancel
+                ) { onDismissClicked() }
+            }
         },
         onDismissRequest = {}
     )

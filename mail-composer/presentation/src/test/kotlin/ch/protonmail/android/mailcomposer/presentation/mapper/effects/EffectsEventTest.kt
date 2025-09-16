@@ -27,8 +27,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Recipient
-import io.mockk.mockk
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -50,7 +48,6 @@ internal class EffectsEventTest(
     companion object {
 
         private val attachmentError = AttachmentAddError.AttachmentTooLarge
-        private val externalRecipients: List<Recipient> = mockk()
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -155,15 +152,6 @@ internal class EffectsEventTest(
                 EffectsEvent.SendEvent.OnCancelSendNoSubject,
                 ComposerStateModifications(
                     effectsModification = ConfirmationsEffectsStateModification.CancelSendNoSubject
-                )
-            ),
-            arrayOf(
-                "SendEvent OnCancelSendNoSubject to modification",
-                EffectsEvent.SendEvent.OnSendExpiringToExternalRecipients(externalRecipients),
-                ComposerStateModifications(
-                    effectsModification = ConfirmationsEffectsStateModification.ShowExternalExpiringRecipients(
-                        externalRecipients
-                    )
                 )
             ),
             arrayOf(
