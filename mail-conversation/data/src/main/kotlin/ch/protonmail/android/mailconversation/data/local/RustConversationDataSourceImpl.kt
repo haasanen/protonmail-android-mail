@@ -117,6 +117,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         conversations: List<LocalConversationId>
     ) {
         withContext(ioDispatcher) {
+            Timber.d("rust-conversation: mark conversation as read: conversation count: ${conversations.size}")
             executeMailboxAction(
                 userId = userId,
                 labelId = labelId,
@@ -132,6 +133,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         conversations: List<LocalConversationId>
     ) {
         withContext(ioDispatcher) {
+            Timber.d("rust-conversation: mark conversation as unread: conversation count: ${conversations.size}")
             executeMailboxAction(
                 userId = userId,
                 labelId = labelId,
