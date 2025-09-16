@@ -41,7 +41,9 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.Att
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationMayNotApplyConfirmationRequested
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationWillNotApplyConfirmationRequested
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import io.mockk.every
@@ -66,6 +68,7 @@ internal class CompositeEventTest(
 
     companion object {
 
+        private val expirationRecipients = listOf("external@foo.com")
         private val senderEmail = SenderEmail("sender@email.com")
         private val draftDisplayBody = DraftDisplayBodyUiModel("<html>draft display body</html>")
         private val draftFields = DraftFields(
@@ -129,7 +132,7 @@ internal class CompositeEventTest(
                 CompositeEvent.OnSendWithEmptySubject,
                 ComposerStateModifications(
                     mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
-                    effectsModification = ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
+                    effectsModification = SendNoSubjectConfirmationRequested
                 )
             ),
             arrayOf(
@@ -159,6 +162,22 @@ internal class CompositeEventTest(
                 ComposerStateModifications(
                     attachmentsModification = AttachmentsStateModification.ListUpdated(noErrorList),
                     effectsModification = null
+                )
+            ),
+            arrayOf(
+                "On Send with expiration may fail to modification",
+                CompositeEvent.OnSendWithExpirationMayNotApply(expirationRecipients),
+                ComposerStateModifications(
+                    mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
+                    effectsModification = SendExpirationMayNotApplyConfirmationRequested(expirationRecipients)
+                )
+            ),
+            arrayOf(
+                "On Send with expiration will fail to modification",
+                CompositeEvent.OnSendWithExpirationWillNotApply(expirationRecipients),
+                ComposerStateModifications(
+                    mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
+                    effectsModification = SendExpirationWillNotApplyConfirmationRequested(expirationRecipients)
                 )
             )
         )

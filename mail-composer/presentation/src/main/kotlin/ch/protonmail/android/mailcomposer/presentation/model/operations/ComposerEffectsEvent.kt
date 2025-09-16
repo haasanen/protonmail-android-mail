@@ -30,7 +30,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 
 internal sealed interface EffectsEvent : ComposerStateEvent {
 
@@ -153,8 +152,6 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
             effectsModification = when (this) {
                 is OnCancelSendNoSubject -> ConfirmationsEffectsStateModification.CancelSendNoSubject
-                is OnSendExpiringToExternalRecipients ->
-                    ConfirmationsEffectsStateModification.ShowExternalExpiringRecipients(externalRecipients)
 
                 is OnSendMessage -> CompletionEffectsStateModification.SendMessage.SendAndExit
                 is OnOfflineSendMessage -> CompletionEffectsStateModification.SendMessage.SendAndExitOffline
@@ -172,7 +169,6 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         data object OnOfflineScheduleSendMessage : SendEvent
 
         data object OnCancelSendNoSubject : SendEvent
-        data class OnSendExpiringToExternalRecipients(val externalRecipients: List<Recipient>) : SendEvent
         data class OnSendingError(val message: String) : SendEvent
     }
 

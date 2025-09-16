@@ -53,6 +53,11 @@ object DraftRecipientTestData {
         name = ""
     )
 
+    val ExternalRecipient = build(
+        address = "external@gmail.com",
+        name = ""
+    )
+
     fun build(address: String = "email@pm.me", name: String) = DraftRecipient.SingleRecipient(
         name,
         address,

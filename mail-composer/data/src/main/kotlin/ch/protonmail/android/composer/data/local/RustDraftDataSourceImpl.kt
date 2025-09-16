@@ -322,7 +322,10 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     override suspend fun validateSendWithExpiration(): Either<DataError, DraftRecipientExpirationFeatureReport> =
         when (val result = draftCache.get().validateRecipientsExpirationFeature()) {
-            is DraftValidateRecipientsExpirationFeatureResult.Error -> result.v1.toDataError().left()
+            is DraftValidateRecipientsExpirationFeatureResult.Error -> {
+                Timber.e("rust-draft: Failed to validate send with expiration: ${result.v1}")
+                result.v1.toDataError().left()
+            }
             is DraftValidateRecipientsExpirationFeatureResult.Ok -> result.v1.right()
         }
 

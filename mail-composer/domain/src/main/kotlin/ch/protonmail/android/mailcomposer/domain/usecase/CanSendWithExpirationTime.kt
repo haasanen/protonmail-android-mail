@@ -32,8 +32,10 @@ class CanSendWithExpirationTime @Inject constructor(
     suspend operator fun invoke(): Either<DataError, SendWithExpirationTimeResult> =
         messageExpirationTimeRepository.validateSendWithExpirationTime().map {
             return when {
-                it.unsupported.isNotEmpty() -> SendWithExpirationTimeResult.ExpirationWillNotApplyWarning
-                it.unknown.isNotEmpty() -> SendWithExpirationTimeResult.ExpirationMayNotApplyWarning
+                it.unsupported.isNotEmpty() ->
+                    SendWithExpirationTimeResult.ExpirationWillNotApplyWarning(it.unsupported)
+                it.unknown.isNotEmpty() ->
+                    SendWithExpirationTimeResult.ExpirationMayNotApplyWarning(it.unknown)
                 else -> SendWithExpirationTimeResult.CanSend
             }.right()
         }

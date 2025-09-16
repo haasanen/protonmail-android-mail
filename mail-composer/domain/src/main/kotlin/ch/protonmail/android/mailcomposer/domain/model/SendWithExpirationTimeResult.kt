@@ -20,6 +20,6 @@ package ch.protonmail.android.mailcomposer.domain.model
 
 sealed interface SendWithExpirationTimeResult {
     data object CanSend : SendWithExpirationTimeResult
-    data object ExpirationMayNotApplyWarning : SendWithExpirationTimeResult
-    data object ExpirationWillNotApplyWarning : SendWithExpirationTimeResult
+    data class ExpirationMayNotApplyWarning(val recipients: List<String>) : SendWithExpirationTimeResult
+    data class ExpirationWillNotApplyWarning(val recipients: List<String>) : SendWithExpirationTimeResult
 }

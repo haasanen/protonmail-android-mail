@@ -46,9 +46,11 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult
 import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.usecase.CanSendWithExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
@@ -180,6 +182,10 @@ internal class ComposerViewModelTest {
     }
     private val saveMessageExpirationTime = mockk<SaveMessageExpirationTime>()
 
+    private val canSendWithExpirationTime = mockk<CanSendWithExpirationTime> {
+        coEvery { this@mockk.invoke() } returns SendWithExpirationTimeResult.CanSend.right()
+    }
+
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<DraftBody>()
         every { this@mockk.invoke(capture(bodySlot)) } answers {
@@ -234,6 +240,7 @@ internal class ComposerViewModelTest {
         getDraftSenderValidationError,
         preloadContactSuggestions,
         saveMessageExpirationTime,
+        canSendWithExpirationTime,
         observePrimaryUserIdMock
     )
 
@@ -1067,6 +1074,56 @@ internal class ComposerViewModelTest {
     }
 
     @Test
+    fun `should show warning when send button is clicked with expiration set and external recipients`() = runTest {
+        // Given
+        val expectedSubject = Subject("Subject")
+        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftBody = DraftBody("I am plaintext")
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.ExternalRecipient))
+        val recipientsCc = RecipientsCc(listOf())
+        val recipientsBcc = RecipientsBcc(listOf())
+        val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        val externalAddresses = listOf(DraftRecipientTestData.ExternalRecipient.address)
+        expectNetworkManagerIsConnected()
+        expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftBodySucceeds(expectedDraftBody)
+        expectObservedMessageAttachments()
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+        expectCanSendMessageWithExpiration(
+            SendWithExpirationTimeResult.ExpirationWillNotApplyWarning(externalAddresses)
+        )
+        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
+            DraftFields(
+                sender = expectedSenderEmail,
+                subject = expectedSubject,
+                body = expectedDraftBody,
+                mimeType = DraftMimeType.Html,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc
+            )
+        }
+        expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
+
+        // When
+        val viewModel = viewModel()
+        viewModel.submit(ComposerAction.SendMessage)
+
+        // Then
+        coVerify { sendMessageMock wasNot Called }
+        val expected: Effect<TextUiModel> = Effect.of(
+            TextUiModel.TextResWithArgs(
+                R.string.composer_send_expiring_message_to_external_will_fail,
+                externalAddresses
+            )
+        )
+        assertEquals(expected, viewModel.composerStates.value.effects.confirmSendExpiringMessage)
+    }
+
+    @Test
     fun `should send message when sending an expiring message to external recipients was confirmed`() = runTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
@@ -1460,6 +1517,10 @@ internal class ComposerViewModelTest {
 
     private fun expectNoRestoredState(savedStateHandle: SavedStateHandle) {
         every { savedStateHandle.get<Boolean>(ComposerScreen.HasSavedDraftKey) } returns null
+    }
+
+    private fun expectCanSendMessageWithExpiration(result: SendWithExpirationTimeResult) {
+        coEvery { canSendWithExpirationTime() } returns result.right()
     }
 
     private fun TestScope.advanceDebounce() {

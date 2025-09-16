@@ -49,8 +49,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Recipient
-import io.mockk.mockk
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
@@ -73,7 +71,7 @@ internal class EffectsStateModificationTest(
     companion object {
 
         private val initialState = ComposerState.Effects.initial()
-        private val externalRecipients = listOf(mockk<Recipient>())
+        private val expirationRecipients = listOf("external@foo.com")
         private val draftDisplayBody = DraftDisplayBodyUiModel("<html>draft display body</html>")
         private val draftFields = DraftFields(
             SenderEmail("author@proton.me"),
@@ -262,12 +260,6 @@ internal class EffectsStateModificationTest(
                 )
             ),
             arrayOf(
-                "shows external expiring recipients confirmation",
-                initialState,
-                ConfirmationsEffectsStateModification.ShowExternalExpiringRecipients(externalRecipients),
-                initialState.copy(confirmSendExpiringMessage = Effect.of(externalRecipients))
-            ),
-            arrayOf(
                 "removes inline attachments and hide bottomsheet",
                 initialState,
                 ContentEffectsStateModifications.OnInlineAttachmentRemoved("cid-123"),
@@ -380,6 +372,31 @@ internal class EffectsStateModificationTest(
                 RecoverableError.FinalSaveError(SaveDraftError.SaveFailed),
                 initialState.copy(
                     error = Effect.of(TextUiModel.TextRes(R.string.composer_error_store_draft_generic))
+                )
+            ),
+            arrayOf(
+                "Show confirmation when send with expiration to externals may fail",
+                initialState,
+                ConfirmationsEffectsStateModification
+                    .SendExpirationMayNotApplyConfirmationRequested(expirationRecipients),
+                initialState.copy(
+                    confirmSendExpiringMessage = Effect.of(
+                        event = TextUiModel.TextRes(R.string.composer_send_expiring_message_to_external_may_fail)
+                    )
+                )
+            ),
+            arrayOf(
+                "Show confirmation when send with expiration to externals will fail",
+                initialState,
+                ConfirmationsEffectsStateModification
+                    .SendExpirationWillNotApplyConfirmationRequested(expirationRecipients),
+                initialState.copy(
+                    confirmSendExpiringMessage = Effect.of(
+                        event = TextUiModel.TextResWithArgs(
+                            value = R.string.composer_send_expiring_message_to_external_will_fail,
+                            formatArgs = expirationRecipients
+                        )
+                    )
                 )
             )
         )

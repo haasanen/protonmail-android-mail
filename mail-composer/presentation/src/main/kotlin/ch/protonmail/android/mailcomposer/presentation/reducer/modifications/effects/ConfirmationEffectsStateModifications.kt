@@ -19,9 +19,10 @@
 package ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 
 internal sealed interface ConfirmationsEffectsStateModification : EffectsStateModification {
     data object SendNoSubjectConfirmationRequested : EffectsStateModification {
@@ -30,18 +31,35 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
             state.copy(confirmSendingWithoutSubject = Effect.of(Unit))
     }
 
+    data class SendExpirationMayNotApplyConfirmationRequested(val recipients: List<String>) : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            confirmSendExpiringMessage = Effect.of(
+                event = TextUiModel.TextRes(R.string.composer_send_expiring_message_to_external_may_fail)
+            )
+        )
+    }
+
+    data class SendExpirationWillNotApplyConfirmationRequested(
+        val recipients: List<String>
+    ) : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            confirmSendExpiringMessage = Effect.of(
+                event = TextUiModel.TextResWithArgs(
+                    value = R.string.composer_send_expiring_message_to_external_will_fail,
+                    formatArgs = recipients
+                )
+            )
+        )
+    }
+
     data object CancelSendNoSubject : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
             changeFocusToField = Effect.of(FocusedFieldType.SUBJECT),
             confirmSendingWithoutSubject = Effect.empty()
         )
-    }
-
-    data class ShowExternalExpiringRecipients(val externalRecipients: List<Recipient>) : EffectsStateModification {
-
-        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(confirmSendExpiringMessage = Effect.of(externalRecipients))
     }
 
     data object DiscardDraftConfirmationRequested : EffectsStateModification {
