@@ -39,7 +39,7 @@ data object MessageExpirationEnabled : FeatureFlagDefinition(
     name = "Message Expiration",
     category = FeatureFlagCategory.Composer,
     description = "Allow to set message expiration in composer",
-    defaultValue = true
+    defaultValue = false
 )
 
 data object MessageDetailEnabled : FeatureFlagDefinition(

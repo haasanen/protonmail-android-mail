@@ -762,6 +762,11 @@ class ComposerViewModel @AssistedInject constructor(
             return
         }
 
+        if (!isMessageExpirationEnabled.value) {
+            onSendMessage()
+            return
+        }
+
         when (val result = canSendWithExpirationTime().getOrNull()) {
             SendWithExpirationTimeResult.CanSend -> onSendMessage()
             is SendWithExpirationTimeResult.ExpirationWillNotApplyWarning -> {
