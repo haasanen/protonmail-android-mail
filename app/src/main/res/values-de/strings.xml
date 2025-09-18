@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Abmelden</string>
-  <string name="dialog_sign_out_account_description">Die mit deinem Konto verknüpften Daten verbleiben auf diesem Gerät, es sei denn, du entscheidest dich, sie zu löschen.</string>
+  <string name="dialog_sign_out_account_description">Die mit Ihrem Konto verbundenen Daten bleiben auf diesem Gerät gespeichert, es sei denn, du entscheidest dich, sie zu löschen.</string>
   <string name="dialog_sign_out_account_confirm">Abmelden</string>
   <string name="dialog_sign_out_account_cancel">Abbrechen</string>
   <string name="dialog_remove_account_title">Konto entfernen?</string>

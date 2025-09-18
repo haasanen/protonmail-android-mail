@@ -72,13 +72,15 @@
   <string name="composer_bottom_bar_expiration_time_one_day">1 den</string>
   <string name="composer_bottom_bar_expiration_time_three_days">3 dny</string>
   <string name="composer_bottom_bar_expiration_time_one_week">1 týden</string>
-  <string name="composer_bottom_bar_expiration_time_custom">Vlastní</string>
+  <string name="composer_bottom_bar_expiration_time_custom">V konkrétní datum</string>
   <string name="composer_error_setting_expiration_time">Nastavení doby platnosti selhalo</string>
   <!-- Send expiring message to external recipients dialog -->
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Vypršení platnosti není podporováno</string>
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_text">Místo toho doporučujeme nastavit heslo pro následující příjemce:</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Přidat heslo pro použití vypršení platnosti</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_cancel">Zpět</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Přesto odeslat</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Přidat ochranu heslem</string>
+  <string name="composer_send_expiring_message_to_external_may_fail">Nemohli jsme potvrdit, že všichni příjemci používají Proton Mail. Vypršení platnosti zprávy podporují pouze adresy Proton. V tomto případě doporučujeme místo toho přidat heslo.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail">Někteří příjemci (%1$s) ve výchozím nastavení nepodporují vypršení platnosti. Přidejte heslo, abyste povolili vypršení platnosti pro příjemce, kteří nepoužívají Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Zaslání upozornění</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Odesílání zpráv z @pm.me je placená funkce. Vaše zpráva bude odeslána z vaší výchozí adresy.</string>
@@ -150,4 +152,9 @@
   <string name="composer_attachment_upload_error_retry">Některé přílohy se nepodařilo nahrát. Zkuste to prosím znovu.</string>
   <string name="composer_external_encryption_unexpected_error">Neočekávaná chyba %s. Zkuste to znovu.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Vybraná adresa nemůže být použita k odeslání. Vaše zpráva bude odeslána z vaší výchozí adresy.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Nastavte, kdy bude zpráva odebrána z doručené pošty příjemce a z vaší složky Odeslané. Chcete-li nastavit vypršení platnosti zpráv pro uživatele, kteří nepoužívají Proton, přidejte heslo.</string>
+  <string name="expiration_time_set_time_and_date">Nastavit čas a datum</string>
+  <string name="composer_expiration_set_expiration">Nastavit vypršení platnosti</string>
+  <string name="composer_expiration_pick_time_title">Nastavit čas</string>
+  <string name="composer_expiration_time_custom_time_on">%1$s</string>
 </resources>

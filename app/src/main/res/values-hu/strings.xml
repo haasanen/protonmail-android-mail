@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Kijelentkezés</string>
-  <string name="dialog_sign_out_account_description">A fiókjához társított adatok ezen az eszköz maradnak, amíg nem választja a törlésüket.</string>
+  <string name="dialog_sign_out_account_description">A fiókjához kapcsolódó adatok ezen az eszközön maradnak, hacsak nem dönt úgy, hogy törli őket.</string>
   <string name="dialog_sign_out_account_confirm">Kijelentkezés</string>
   <string name="dialog_sign_out_account_cancel">Mégsem</string>
   <string name="dialog_remove_account_title">Fiók törlése?</string>

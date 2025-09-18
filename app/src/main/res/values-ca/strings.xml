@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Tanca la sessió</string>
-  <string name="dialog_sign_out_account_description">Les dades associades al compte es mantindran en aquest dispositiu tret que seleccioneu suprimir-les.</string>
+  <string name="dialog_sign_out_account_description">Les dades associades al vostre compte es mantindran en aquest dispositiu tret que decidiu eliminar-les.</string>
   <string name="dialog_sign_out_account_confirm">Tanca la sessió</string>
   <string name="dialog_sign_out_account_cancel">Cancel·la</string>
   <string name="dialog_remove_account_title">Voleu esborrar el compte?</string>

@@ -99,7 +99,7 @@
   </plurals>
   <string name="contact_bottom_sheet_redirect_to_web_title">Tillgänglig på webb</string>
   <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Avfärda</string>
-  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Creating contacts or groups in the app is not yet ready. For now, you can create them in the web app and they’ll sync to your device.</string>
-  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Editing contacts or groups in the app is not yet ready. For now, you can edit them in the web app and changes will sync to your device.</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Skapande av kontakter eller grupper i appen är ännu inte klart. För tillfället kan du skapa dem i webbappen så kommer det synkroniseras till din enhet.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Redigering av kontakter eller grupper i appen är ännu inte klart. För tillfället kan du redigera dem i webbappen och ändringarna kommer synkroniseras till din enhet.</string>
   <string name="contact_bottom_sheet_redirect_to_web_button">Fortsätt på webb</string>
 </resources>

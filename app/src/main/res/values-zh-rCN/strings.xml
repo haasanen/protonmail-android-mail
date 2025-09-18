@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">登出</string>
-  <string name="dialog_sign_out_account_description">除非您选择删除，否则与您账户相关的数据将保留在此设备上。</string>
+  <string name="dialog_sign_out_account_description">除非选择删除，跟您账户有关的数据将保留在此设备上</string>
   <string name="dialog_sign_out_account_confirm">登出</string>
   <string name="dialog_sign_out_account_cancel">取消</string>
   <string name="dialog_remove_account_title">移除账号?</string>

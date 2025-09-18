@@ -94,7 +94,7 @@
   <string name="upselling_onboarding_entitlements_show_more">Паказаць больш</string>
   <string name="upselling_onboarding_entitlements_show_less">Паказаць менш</string>
   <string name="upselling_onboarding_button_continue_free">Працягнуць карыстацца бясплатным тарыфным планам</string>
-  <string name="upselling_onboarding_autorenew">Спаганяецца сума ў памеры %s з інтэрвалам аплаты раз у %s</string>
+  <string name="upselling_onboarding_autorenew">Спаганяецца сума ў памеры %s кожныя %s</string>
   <string name="upselling_onboarding_autorenew_welcome_offer">Вітальная прапанова. Аўтаматычна падаўжаецца за %s кожныя %s</string>
   <string name="upselling_onboarding_autorenew_month">месяц</string>
   <string name="upselling_onboarding_autorenew_year">12 месяцаў</string>

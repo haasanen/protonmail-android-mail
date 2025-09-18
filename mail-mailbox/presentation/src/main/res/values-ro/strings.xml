@@ -111,7 +111,7 @@
   <string name="mailbox_action_clear_spam_dialog_body_message">Ștergeți definitiv toate mesajele din folderul «Nedorite»?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Ștergeți definitiv toate mesajele din folderul «Nedorite»?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Operația de golire este programată."</string>
-  <string name="mailbox_action_maximum_selection_reached">"Maximum selection reached"</string>
+  <string name="mailbox_action_maximum_selection_reached">"Limită de selectare atinsă"</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">Se deschide atașamentul…</string>
   <string name="mailbox_attachment_download_error">Nu se poate deschide atașamentul. Reîncercați.</string>

@@ -121,7 +121,7 @@
   <string name="mailbox_action_clear_spam_dialog_body_message">Вы сапраўды хочаце незваротна выдаліць усе паведамленні з папкі Спам?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Вы сапраўды хочаце незваротна выдаліць усе размовы з папкі Спам?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Запланавана аперацыя па ачыстцы"</string>
-  <string name="mailbox_action_maximum_selection_reached">"Maximum selection reached"</string>
+  <string name="mailbox_action_maximum_selection_reached">"Дасягнуты максімум выбраных паведамленняў"</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">Адкрыццё далучэння...</string>
   <string name="mailbox_attachment_download_error">Немагчыма адкрыць далучэнне. Паспрабуйце яшчэ раз.</string>

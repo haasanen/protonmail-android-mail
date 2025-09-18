@@ -121,7 +121,7 @@
   <string name="mailbox_action_clear_spam_dialog_body_message">Naozaj chcete natrvalo odstrániť všetky správy v priečinku Spam?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Naozaj chcete natrvalo odstrániť všetky konverzácie v priečinku Spam?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Operácia vyčistenia je naplánovaná"</string>
-  <string name="mailbox_action_maximum_selection_reached">"Maximum selection reached"</string>
+  <string name="mailbox_action_maximum_selection_reached">"Bol dosiahnutý maximálny počet výberov"</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">Otváranie prílohy…</string>
   <string name="mailbox_attachment_download_error">Nie je možné otvoriť prílohu. Skúste to znova, prosím.</string>

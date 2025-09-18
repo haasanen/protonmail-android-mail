@@ -123,11 +123,11 @@
   <string name="notifications_on">On</string>
   <string name="notifications_off">Off</string>
   <!-- Customize Toolbar -->
-  <string name="mail_settings_custom_toolbar_title">Customize toolbars</string>
+  <string name="mail_settings_custom_toolbar_title">Dostosuj paski narzędzi</string>
   <string name="mail_settings_custom_toolbar_list_view_title">List toolbar</string>
-  <string name="mail_settings_custom_toolbar_list_view_description">This toolbar appears when you select multiple messages in a list (e.g., Inbox, Trash, etc.)</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Ten pasek narzędzi pojawi się po wybraniu wielu wiadomości z listy (np. Odebrane, Kosz itp.).</string>
   <string name="mail_settings_custom_toolbar_message_view_title">Message toolbar</string>
-  <string name="mail_settings_custom_toolbar_message_view_description">This toolbar remains visible while reading messages</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Ten pasek narzędzi pozostaje widoczny podczas czytania wiadomości</string>
   <string name="mail_settings_custom_toolbar_conversation_view_title">Conversation toolbar</string>
   <string name="mail_settings_custom_toolbar_conversation_view_description">This toolbar remains visible while reading messages</string>
   <string name="mail_settings_custom_toolbar_edit_actions">Edit actions</string>
@@ -136,7 +136,7 @@
   <string name="mail_settings_custom_toolbar_nav_title_list">Edytuj pasek narzędzi</string>
   <string name="mail_settings_custom_toolbar_nav_title_convo">Conversation toolbar</string>
   <string name="mail_settings_custom_toolbar_nav_title_message">Message toolbar</string>
-  <string name="mail_settings_custom_toolbar_nav_button_save">Save</string>
+  <string name="mail_settings_custom_toolbar_nav_button_save">Zapisz</string>
   <string name="mail_settings_custom_toolbar_header">The toolbar can have 1–5 actions. You can\'t remove the last remaining action.</string>
   <string name="mail_settings_custom_toolbar_reset">Reset to default</string>
   <string name="mail_settings_custom_toolbar_reset_title">Do you want to reset the toolbar settings?</string>

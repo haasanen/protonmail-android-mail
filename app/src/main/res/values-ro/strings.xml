@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Deconectare</string>
-  <string name="dialog_sign_out_account_description">Datele asociate contului vor rămâne pe acest dispozitiv dacă nu selectați să le ștergeți.</string>
+  <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
   <string name="dialog_sign_out_account_confirm">Deconectare</string>
   <string name="dialog_sign_out_account_cancel">Anulare</string>
   <string name="dialog_remove_account_title">Eliminați contul?</string>

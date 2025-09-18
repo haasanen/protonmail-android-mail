@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Cerrar sesión</string>
-  <string name="dialog_sign_out_account_description">Los datos asociados a su cuenta permanecerán en este dispositivo a menos que elija eliminarlo.</string>
+  <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
   <string name="dialog_sign_out_account_confirm">Cerrar sesión</string>
   <string name="dialog_sign_out_account_cancel">Cancelar</string>
   <string name="dialog_remove_account_title">¿Borrar la cuenta?</string>

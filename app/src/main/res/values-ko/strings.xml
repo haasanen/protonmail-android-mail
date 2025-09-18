@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">로그아웃</string>
-  <string name="dialog_sign_out_account_description">사용자 계정과 연관되어 있는 데이터를 삭제하도록 설정하지 않는 한 이 장치에 유지됩니다.</string>
+  <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
   <string name="dialog_sign_out_account_confirm">로그아웃</string>
   <string name="dialog_sign_out_account_cancel">취소</string>
   <string name="dialog_remove_account_title">계정을 삭제할까요?</string>

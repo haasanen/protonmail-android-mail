@@ -36,15 +36,15 @@
   <string name="composer_error_duplicate_recipient">Duplicitní príjemcovia odstránení</string>
   <string name="composer_error_store_draft_subject">Riadok predmetu nebol uložený</string>
   <string name="composer_error_store_draft_recipients">Uloženie príjemcov tohto konceptu zlyhalo</string>
-  <string name="composer_error_store_draft_address_disabled">Unable to save draft - This sender address is disabled</string>
-  <string name="composer_error_store_draft_address_pk_missing">Unable to save draft - This sender address does not have a primary key</string>
-  <string name="composer_error_store_draft_attachment_too_large">Unable to save draft - Attachments exceed the size limit</string>
-  <string name="composer_error_store_draft_too_many_attachments">Unable to save draft - Attachment limit reached</string>
-  <string name="composer_error_store_draft_duplicate_recipient">Unable to save draft - One or more recipients are duplicates</string>
-  <string name="composer_error_store_draft_recipient_group_name">Unable to save draft - Invalid recipient group name</string>
-  <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
-  <string name="composer_error_store_draft_message_not_a_draft">Unable to save draft - This message is not a draft</string>
-  <string name="composer_error_store_draft_generic">Unable to save draft - A generic error occurred</string>
+  <string name="composer_error_store_draft_address_disabled">Koncept nie je možné uložiť – táto adresa odosielateľa je deaktivovaná.</string>
+  <string name="composer_error_store_draft_address_pk_missing">Koncept nie je možné uložiť – táto adresa odosielateľa nemá primárny kľúč.</string>
+  <string name="composer_error_store_draft_attachment_too_large">Koncept nie je možné uložiť – prílohy prekračujú limit veľkosti</string>
+  <string name="composer_error_store_draft_too_many_attachments">Koncept nie je možné uložiť –bol dosiahnutý limit príloh.</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Koncept nie je možné uložiť – jeden alebo viacerí príjemcovia sú duplicitní</string>
+  <string name="composer_error_store_draft_recipient_group_name">Koncept nie je možné uložiť – neplatný názov skupiny príjemcov</string>
+  <string name="composer_error_store_draft_invalid_recipient">Koncept nie je možné uložiť –neplatný príjemca(ovia)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Koncept nie je možné uložiť – táto správa nie je koncept</string>
+  <string name="composer_error_store_draft_generic">Koncept nie je možné uložiť – došlo k všeobecnej chybe</string>
   <string name="composer_error_loading_draft">Obsah tohto konceptu nie je momentálne dostupný, úprava nie je možná.</string>
   <string name="composer_add_attachments_content_description">Pripojiť prílohy</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importovať z…</string>
@@ -72,13 +72,15 @@
   <string name="composer_bottom_bar_expiration_time_one_day">1 deň</string>
   <string name="composer_bottom_bar_expiration_time_three_days">3 dni</string>
   <string name="composer_bottom_bar_expiration_time_one_week">1 týždeň</string>
-  <string name="composer_bottom_bar_expiration_time_custom">Vlastná</string>
+  <string name="composer_bottom_bar_expiration_time_custom">On specific date</string>
   <string name="composer_error_setting_expiration_time">Nastavenie doby platnosti zlyhalo</string>
   <!-- Send expiring message to external recipients dialog -->
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Expirácia nie je podporovaná</string>
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_text">Odporúčame miesto toho nastaviť heslo pre nasledujúcich príjemcov:</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Add Password to Use Expiration</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_cancel">Zrušiť</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Napriek tomu odoslať</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Add password protection</string>
+  <string name="composer_send_expiring_message_to_external_may_fail">We could not confirm all recipients use Proton Mail. Only Proton addresses support message expiration. In this case, we suggest adding a password instead.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Odoslanie oznámenia</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Posielanie správ z domény @pm.me je platená funkcia. Vaša správa bude odoslaná z vašej predvolenej adresy.</string>
@@ -150,4 +152,9 @@
   <string name="composer_attachment_upload_error_retry">Niektoré prílohy sa nepodarilo nahrať. Skúste to prosím znova, prosím.</string>
   <string name="composer_external_encryption_unexpected_error">Neočakávaná chyba %s. Skúste to znova.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Vybraná adresa sa nedá použiť na odoslanie. Vaša správa bude odoslaná z vašej predvolenej adresy.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder.To expire messages for non-Proton users, add a password.</string>
+  <string name="expiration_time_set_time_and_date">Set time and date</string>
+  <string name="composer_expiration_set_expiration">Set expiration</string>
+  <string name="composer_expiration_pick_time_title">Set time</string>
+  <string name="composer_expiration_time_custom_time_on">On %1$s</string>
 </resources>

@@ -101,7 +101,7 @@
   <string name="mailbox_action_clear_spam_dialog_body_message">Er du sikker på at du vil slette alle meldinger i søppelpostmappen permanent?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Er du sikker på at du vil slette alle samtaler i søppelpostmappen permanent?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Tømoperasjon er planlagt"</string>
-  <string name="mailbox_action_maximum_selection_reached">"Maximum selection reached"</string>
+  <string name="mailbox_action_maximum_selection_reached">"Maksimalt utvalg nådd"</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">Åpner vedlegg…</string>
   <string name="mailbox_attachment_download_error">Kan ikke åpne vedlegget. Prøv igjen.</string>

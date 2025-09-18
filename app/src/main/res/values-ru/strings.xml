@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Выйти</string>
-  <string name="dialog_sign_out_account_description">Данные, связанные с вашим аккаунтом, останутся на этом устройстве, если вы не выберете их удаление.</string>
+  <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
   <string name="dialog_sign_out_account_confirm">Выйти</string>
   <string name="dialog_sign_out_account_cancel">Отменить</string>
   <string name="dialog_remove_account_title">Удалить аккаунт?</string>

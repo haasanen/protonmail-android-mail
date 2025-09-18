@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Logga ut</string>
-  <string name="dialog_sign_out_account_description">Data associerat med ditt konto kommer finnas kvar på denna enhet om du inte väljer att ta bort det.</string>
+  <string name="dialog_sign_out_account_description">Data associerat med ditt konto kommer att finnas kvar på denna enhet om du inte väljer att ta bort det.</string>
   <string name="dialog_sign_out_account_confirm">Logga ut</string>
   <string name="dialog_sign_out_account_cancel">Avbryt</string>
   <string name="dialog_remove_account_title">Ta bort konto?</string>

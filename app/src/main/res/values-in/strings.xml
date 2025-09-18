@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Keluar</string>
-  <string name="dialog_sign_out_account_description">Data yang terhubung dengan akun Anda akan tetap tersimpan pada perangkat ini kecuali Anda memilih untuk menghapusnya.</string>
+  <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
   <string name="dialog_sign_out_account_confirm">Keluar</string>
   <string name="dialog_sign_out_account_cancel">Batalkan</string>
   <string name="dialog_remove_account_title">Hapus akun?</string>

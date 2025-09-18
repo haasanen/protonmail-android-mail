@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Odjava</string>
-  <string name="dialog_sign_out_account_description">Podatki, povezani z vašim računom, bodo ostali v tej napravi, razen če jih izbrišete.</string>
+  <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
   <string name="dialog_sign_out_account_confirm">Odjavi se</string>
   <string name="dialog_sign_out_account_cancel">Prekliči</string>
   <string name="dialog_remove_account_title">Odstrani račun?</string>

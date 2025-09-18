@@ -72,13 +72,15 @@
   <string name="composer_bottom_bar_expiration_time_one_day">1 dag</string>
   <string name="composer_bottom_bar_expiration_time_three_days">3 dagen</string>
   <string name="composer_bottom_bar_expiration_time_one_week">1 week</string>
-  <string name="composer_bottom_bar_expiration_time_custom">Aangepast</string>
+  <string name="composer_bottom_bar_expiration_time_custom">Op een specifieke datum</string>
   <string name="composer_error_setting_expiration_time">Vervaltijd instellen mislukt</string>
   <!-- Send expiring message to external recipients dialog -->
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Vervaldatum niet ondersteund</string>
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_text">Wij raden aan een wachtwoord in te stellen voor de volgende ontvangers:</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Add Password to Use Expiration</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_cancel">Annuleren</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Toch verzenden</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Add password protection</string>
+  <string name="composer_send_expiring_message_to_external_may_fail">We could not confirm all recipients use Proton Mail. Only Proton addresses support message expiration. In this case, we suggest adding a password instead.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Melding versturen</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Berichten versturen vanaf een @pm.me-adres is enkel beschikbaar voor betalende gebruikers. Uw bericht wordt verzonden vanaf.</string>
@@ -148,4 +150,9 @@
   <string name="composer_attachment_upload_error_retry">Sommige bijlagen konden niet worden geüpload. Probeer het opnieuw.</string>
   <string name="composer_external_encryption_unexpected_error">Onverwachte fout %s. Probeer opnieuw.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Het geselecteerde adres kan niet worden gebruikt om te verzenden. Uw bericht wordt verzonden vanaf uw standaard adres.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder.To expire messages for non-Proton users, add a password.</string>
+  <string name="expiration_time_set_time_and_date">Set time and date</string>
+  <string name="composer_expiration_set_expiration">Set expiration</string>
+  <string name="composer_expiration_pick_time_title">Set time</string>
+  <string name="composer_expiration_time_custom_time_on">On %1$s</string>
 </resources>

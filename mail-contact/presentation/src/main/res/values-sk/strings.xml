@@ -95,7 +95,7 @@
   <string name="contact_details_action_copy_label">Kopírovať</string>
   <string name="contact_details_action_message_label">Správa</string>
   <string name="contact_details_action_call_label">Zavolať</string>
-  <string name="contact_details_action_open_url_label">Open URL</string>
+  <string name="contact_details_action_open_url_label">Otvoriť URL</string>
   <string name="contact_group_details_send_message_action">Poslať skupinovú správu</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="one">%1$d kontakt</item>

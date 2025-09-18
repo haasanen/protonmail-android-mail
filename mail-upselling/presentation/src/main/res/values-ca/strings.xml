@@ -104,7 +104,7 @@
   <string name="upselling_unlimited_description_override">La subscripció prèmium tot en un</string>
   <string name="upselling_auto_renew_text">Es renovarà automàticament al mateix preu i condicions tret que es cancel·li</string>
   <string name="upselling_auto_renew_text_promo">Oferta de benvinguda. Es renovarà automàticament per %s%s tret que es cancel·li</string>
-  <string name="upselling_auto_renew_text_promo_short">Oferta de benvinguda. Es renovarà automàticament per %s%s.</string>
+  <string name="upselling_auto_renew_text_promo_short">Oferta de benvinguda. Es renova automàticament a %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Es renovarà automàticament per %s %s tret que es cancel·li</string>
   <string name="upselling_social_proof_reviews">MÉS DE 2.000 RESSENYES</string>
   <string name="upselling_description_social_proof">Accediu a l\'experiència que entusiasma milions de subscriptors.</string>
