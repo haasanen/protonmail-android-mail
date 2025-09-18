@@ -19,18 +19,26 @@
 package ch.protonmail.android.mailupselling.presentation.ui.screen
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -53,6 +61,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -121,8 +130,17 @@ internal fun UpsellingScreenContent(
 
     Scaffold(
         containerColor = Color.Transparent,
+        contentWindowInsets = WindowInsets(0),
         bottomBar = {
             if (plans.list is PlanUpgradeInstanceListUiModel.Data) {
+                val configuration = LocalConfiguration.current
+                val screenHeight = configuration.screenHeightDp.dp
+                val maxHeight = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    screenHeight / 3
+                } else {
+                    screenHeight / 2
+                }
+
                 Column(
                     modifier = Modifier
                         .onSizeChanged { size ->
@@ -130,9 +148,15 @@ internal fun UpsellingScreenContent(
                         }
                         .background(ProtonTheme.colors.brandPlus20)
                         .hazeEffect(state = hazeState)
+                        .heightIn(max = maxHeight)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     UpsellingPlanButtonsFooter(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .windowInsetsPadding(
+                                WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                            ),
                         plans = plans.list,
                         actions = actions
                     )
@@ -150,7 +174,8 @@ internal fun UpsellingScreenContent(
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .background(backgroundGradient)
-                    .padding(bottom = footerHeight + ProtonDimens.Spacing.Large),
+                    .padding(bottom = footerHeight + ProtonDimens.Spacing.Large)
+                    .windowInsetsPadding(WindowInsets.safeDrawing),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
@@ -218,6 +243,12 @@ internal fun UpsellingScreenContent(
                 IconButton(
                     modifier = Modifier
                         .padding(ProtonDimens.Spacing.Tiny)
+                        .padding(
+                            top = WindowInsets.safeDrawing
+                                .only(WindowInsetsSides.Top)
+                                .asPaddingValues()
+                                .calculateTopPadding()
+                        )
                         .align(alignment = Alignment.TopEnd)
                         .zIndex(1f),
                     onClick = actions.onDismiss
