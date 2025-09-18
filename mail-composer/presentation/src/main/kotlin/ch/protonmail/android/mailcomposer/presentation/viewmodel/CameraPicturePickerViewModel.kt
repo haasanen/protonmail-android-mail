@@ -57,6 +57,12 @@ class CameraPicturePickerViewModel @Inject constructor(
         }
     }
 
+    fun onCaptureFinished() {
+        viewModelScope.launch {
+            _state.emit(State.Initial)
+        }
+    }
+
     private suspend fun generateFileForCapture() = when (val file = getTempImageFile()) {
         null -> {
             Timber.w("Failed to generate temp file in cache dir to capture image")

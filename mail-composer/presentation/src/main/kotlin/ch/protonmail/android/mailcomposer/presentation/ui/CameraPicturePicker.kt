@@ -51,8 +51,9 @@ fun CameraPicturePicker(
         is CameraPicturePickerViewModel.State.Initial -> Unit
 
         is CameraPicturePickerViewModel.State.FileInfo -> CameraPicturePicker(
-            current.fileUri,
-            onCaptured
+            fileUri = current.fileUri,
+            onCaptured = onCaptured,
+            onCaptureFinished = { viewModel.onCaptureFinished() }
         )
 
         is CameraPicturePickerViewModel.State.CheckPermissions -> CheckCameraPermissions(
@@ -85,7 +86,11 @@ fun CheckCameraPermissions(onPermissionGranted: () -> Unit) {
 }
 
 @Composable
-fun CameraPicturePicker(fileUri: Uri, onCaptured: (Uri) -> Unit) {
+fun CameraPicturePicker(
+    fileUri: Uri,
+    onCaptured: (Uri) -> Unit,
+    onCaptureFinished: () -> Unit
+) {
 
     val cameraIntent = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
@@ -94,6 +99,7 @@ fun CameraPicturePicker(fileUri: Uri, onCaptured: (Uri) -> Unit) {
             if (success) {
                 onCaptured(fileUri)
             }
+            onCaptureFinished()
         }
     )
 

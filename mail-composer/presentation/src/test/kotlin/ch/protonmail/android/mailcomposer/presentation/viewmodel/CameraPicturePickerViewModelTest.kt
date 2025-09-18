@@ -111,4 +111,16 @@ class CameraPicturePickerViewModelTest {
             assertEquals(expected, awaitItem())
         }
     }
+
+    @Test
+    fun `emits Initial state when picture captured is called`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            // When
+            viewModel.onCaptureFinished()
+
+            // Then
+            assertEquals(CameraPicturePickerViewModel.State.Initial, awaitItem())
+        }
+    }
 }
