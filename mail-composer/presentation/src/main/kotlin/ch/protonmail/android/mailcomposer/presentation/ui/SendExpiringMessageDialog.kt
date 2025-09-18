@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
@@ -55,18 +56,21 @@ fun SendExpiringMessageDialog(
         confirmButton = {
             Column {
                 ProtonAlertDialogButton(
+                    modifier = Modifier.align(Alignment.End),
                     titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_confirm
                 ) { onConfirmClicked() }
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
                 ProtonAlertDialogButton(
+                    modifier = Modifier.align(Alignment.End),
                     titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_add_password
                 ) { onAddPasswordClicked() }
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
                 ProtonAlertDialogButton(
+                    modifier = Modifier.align(Alignment.End),
                     titleResId = R.string.composer_send_expiring_message_to_external_recipients_dialog_cancel
                 ) { onDismissClicked() }
             }
