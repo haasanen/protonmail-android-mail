@@ -101,11 +101,14 @@ class RsvpEventUiModelMapperTest {
 
         // Then
         val expected = RsvpEventUiModel(
+            eventId = EventId("id"),
+            startsAt = 123,
             title = TextUiModel.Text("Inbox OKR Weekly"),
             dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
             isAttendanceOptional = false,
             buttons = RsvpButtonsUiModel.Hidden,
             calendar = RsvpCalendarUiModel(
+                calendarId = CalendarId("id"),
                 color = Color.Magenta,
                 name = TextUiModel.Text("Work")
             ),

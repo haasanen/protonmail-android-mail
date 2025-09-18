@@ -182,6 +182,14 @@ class MainActivity : AppCompatActivity() {
                     values.recipient
                 )
 
+            is OpenProtonCalendarIntentValues.OpenUriInProtonCalendar -> {
+                ProtonCalendarUtil.getIntentToOpenEventInProtonCalendar(
+                    values.eventId,
+                    values.calendarId,
+                    values.recurrenceId
+                )
+            }
+
             is OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore ->
                 ProtonCalendarUtil.getIntentToProtonCalendarOnPlayStore()
         }

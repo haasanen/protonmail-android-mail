@@ -179,6 +179,8 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         AffectingMessageBar
 
     data object ErrorUnsubscribingFromNewsletter : ConversationDetailEvent, AffectingErrorBar
+
+    data object ErrorOpeningEventInCalendar : ConversationDetailEvent, AffectingErrorBar
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {

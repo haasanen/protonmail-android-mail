@@ -27,15 +27,20 @@ import ch.protonmail.android.maildetail.presentation.model.RsvpCalendarUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpOrganizerUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpStatusUiModel
+import ch.protonmail.android.mailmessage.domain.model.CalendarId
+import ch.protonmail.android.mailmessage.domain.model.EventId
 
 object RsvpWidgetPreviewData {
 
     val UnansweredWithMultipleParticipants = RsvpEventUiModel(
+        eventId = EventId(""),
+        startsAt = 0,
         title = TextUiModel.Text("Whispers of Tomorrow: An Evening of Unexpected Wonders"),
         dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
         buttons = RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Unanswered, isAnsweringInProgress = false),
         calendar = RsvpCalendarUiModel(
+            calendarId = CalendarId(""),
             color = Color.Magenta,
             name = TextUiModel.Text("Work")
         ),
@@ -71,11 +76,14 @@ object RsvpWidgetPreviewData {
     )
 
     val AnsweredWithOneParticipantAndStatus = RsvpEventUiModel(
+        eventId = EventId(""),
+        startsAt = 0,
         title = TextUiModel.Text("Inbox OKR Weekly"),
         dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
         buttons = RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Yes, isAnsweringInProgress = false),
         calendar = RsvpCalendarUiModel(
+            calendarId = CalendarId(""),
             color = Color.Magenta,
             name = TextUiModel.Text("Work")
         ),

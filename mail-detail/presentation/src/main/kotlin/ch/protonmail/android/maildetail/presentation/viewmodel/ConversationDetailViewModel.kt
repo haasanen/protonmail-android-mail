@@ -26,6 +26,8 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.getOrElse
+import arrow.core.left
+import arrow.core.right
 import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
@@ -89,6 +91,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.UnStar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
@@ -1493,19 +1496,52 @@ class ConversationDetailViewModel @Inject constructor(
             ?.attachments
             ?.firstOrNull { uiModel -> uiModel.isCalendar }
 
-        if (firstCalendarAttachment == null) return
+        if (firstCalendarAttachment == null) {
+            getRsvpEventIntentValues(messageUiModel.messageRsvpWidgetUiModel).fold(
+                ifLeft = {
+                    emitNewStateFrom(ConversationDetailEvent.ErrorOpeningEventInCalendar)
+                },
+                ifRight = {
+                    val intent = OpenProtonCalendarIntentValues.OpenUriInProtonCalendar(
+                        it.eventId,
+                        it.calendarId,
+                        it.recurrenceId
+                    )
+                    emitNewStateFrom(ConversationDetailEvent.HandleOpenProtonCalendarRequest(intent))
+                }
+            )
+        } else {
+            getAttachmentIntentValues(
+                userId = primaryUserId.first(),
+                openMode = AttachmentOpenMode.Open,
+                attachmentId = AttachmentId(firstCalendarAttachment.id.value)
+            ).fold(
+                ifLeft = {
+                    Timber.d("Failed to download attachment: $it")
+                    emitNewStateFrom(ConversationDetailEvent.ErrorOpeningEventInCalendar)
+                },
+                ifRight = {
+                    val intent = OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar(it.uri, sender, recipient)
+                    emitNewStateFrom(ConversationDetailEvent.HandleOpenProtonCalendarRequest(intent))
+                }
+            )
+        }
+    }
 
-        getAttachmentIntentValues(
-            userId = primaryUserId.first(),
-            openMode = AttachmentOpenMode.Open,
-            attachmentId = AttachmentId(firstCalendarAttachment.id.value)
-        ).fold(
-            ifLeft = { Timber.d("Failed to download attachment: $it") },
-            ifRight = {
-                val intent = OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar(it.uri, sender, recipient)
-                emitNewStateFrom(ConversationDetailEvent.HandleOpenProtonCalendarRequest(intent))
-            }
-        )
+    private fun getRsvpEventIntentValues(rsvpWidgetUiModel: RsvpWidgetUiModel): Either<Unit, RsvpEventIntentValues> {
+        val event = when (rsvpWidgetUiModel) {
+            is RsvpWidgetUiModel.Shown -> rsvpWidgetUiModel.event
+            else -> null
+        }
+        return if (event?.eventId != null && event.calendar?.calendarId != null) {
+            RsvpEventIntentValues(
+                event.eventId.id,
+                event.calendar.calendarId.id,
+                event.startsAt
+            ).right()
+        } else {
+            Unit.left()
+        }
     }
 
     private fun handleMarkMessageUnread(action: ConversationDetailViewAction.MarkMessageUnread) {
@@ -1721,4 +1757,6 @@ class ConversationDetailViewModel @Inject constructor(
 
         val initialState = ConversationDetailState.Loading
     }
+
+    data class RsvpEventIntentValues(val eventId: String, val calendarId: String, val recurrenceId: Long)
 }

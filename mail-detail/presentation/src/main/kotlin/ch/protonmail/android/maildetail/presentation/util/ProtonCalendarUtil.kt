@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.util
 
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled.Companion.PROTON_CALENDAR_PACKAGE_NAME
 
 object ProtonCalendarUtil {
@@ -41,6 +42,21 @@ object ProtonCalendarUtil {
         setPackage(PROTON_CALENDAR_PACKAGE_NAME)
         putExtra(EXTRA_SENDER, sender)
         putExtra(EXTRA_RECIPIENT, recipient)
+    }
+
+    fun getIntentToOpenEventInProtonCalendar(
+        eventId: String,
+        calendarId: String,
+        recurrenceId: Long
+    ): Intent {
+        val uri = (
+            "https://calendar.proton.me/event?Action=VIEW&EventID=$eventId&" +
+                "CalendarID=$calendarId&RecurrenceID=$recurrenceId"
+            ).toUri()
+        return Intent(
+            Intent.ACTION_VIEW,
+            uri
+        )
     }
 
     fun getIntentToProtonCalendarOnPlayStore() = Intent(Intent.ACTION_VIEW).apply {

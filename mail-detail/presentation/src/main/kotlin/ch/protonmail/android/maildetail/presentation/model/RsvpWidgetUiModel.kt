@@ -20,6 +20,8 @@ package ch.protonmail.android.maildetail.presentation.model
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailmessage.domain.model.CalendarId
+import ch.protonmail.android.mailmessage.domain.model.EventId
 
 interface RsvpWidgetUiModel {
 
@@ -30,6 +32,8 @@ interface RsvpWidgetUiModel {
 }
 
 data class RsvpEventUiModel(
+    val eventId: EventId?,
+    val startsAt: Long,
     val title: TextUiModel,
     val dateTime: TextUiModel,
     val isAttendanceOptional: Boolean,
@@ -67,6 +71,7 @@ data class RsvpOrganizerUiModel(
 )
 
 data class RsvpCalendarUiModel(
+    val calendarId: CalendarId,
     val color: Color,
     val name: TextUiModel
 )

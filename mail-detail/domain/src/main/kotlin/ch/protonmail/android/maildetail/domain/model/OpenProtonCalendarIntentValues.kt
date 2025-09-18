@@ -27,5 +27,11 @@ sealed class OpenProtonCalendarIntentValues {
         val recipient: String
     ) : OpenProtonCalendarIntentValues()
 
-    object OpenProtonCalendarOnPlayStore : OpenProtonCalendarIntentValues()
+    data class OpenUriInProtonCalendar(
+        val eventId: String,
+        val calendarId: String,
+        val recurrenceId: Long
+    ) : OpenProtonCalendarIntentValues()
+
+    data object OpenProtonCalendarOnPlayStore : OpenProtonCalendarIntentValues()
 }

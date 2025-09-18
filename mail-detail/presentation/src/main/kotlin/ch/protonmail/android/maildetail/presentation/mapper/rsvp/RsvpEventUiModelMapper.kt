@@ -53,6 +53,8 @@ class RsvpEventUiModelMapper @Inject constructor(
         }
 
         return RsvpEventUiModel(
+            eventId = eventDetails.eventId,
+            startsAt = eventDetails.startsAt,
             title = eventDetails.getEventTitle(),
             dateTime = formatRsvpWidgetTime(eventDetails.occurrence, eventDetails.startsAt, eventDetails.endsAt),
             isAttendanceOptional = isAttendanceOptional(eventDetails.state),
@@ -87,6 +89,7 @@ class RsvpEventUiModelMapper @Inject constructor(
         answerInProgress?.toRsvpAttendeeAnswer() ?: status?.toRsvpAttendeeAnswer()
 
     private fun RsvpCalendar.toUiModel() = RsvpCalendarUiModel(
+        calendarId = this.id,
         color = colorMapper.toColor(this.color).getOrElse { Color.Unspecified },
         name = TextUiModel.Text(this.name)
     )
