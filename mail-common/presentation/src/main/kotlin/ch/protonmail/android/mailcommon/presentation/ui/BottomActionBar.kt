@@ -86,7 +86,7 @@ fun BottomActionBar(
                     ambientColor = ProtonTheme.colors.shadowSoft,
                     spotColor = ProtonTheme.colors.shadowSoft
                 )
-                .background(ProtonTheme.colors.backgroundNorm)
+                .background(ProtonTheme.colors.backgroundInvertedSecondary)
                 .windowInsetsPadding(
                     WindowInsets.safeDrawing
                         .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
