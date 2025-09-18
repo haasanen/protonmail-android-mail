@@ -21,8 +21,13 @@ package me.proton.android.core.accountmanager.presentation.switcher.v1
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,7 +49,11 @@ fun AccountSwitcherDropdownMenuContent(
     other: List<AccountListItem>,
     onEvent: (AccountSwitchEvent) -> Unit
 ) {
-    Column(modifier.background(LocalColors.current.backgroundNorm)) {
+    Column(
+        modifier
+            .background(LocalColors.current.backgroundNorm)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+    ) {
         if (primary != null) {
             AccountSwitcherRowWithSignIn(
                 accountListItem = primary,

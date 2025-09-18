@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -471,7 +472,7 @@ fun Home(
     ProtonModalBottomSheetLayout(
         showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
-        contentWindowInsets = { WindowInsets(0) },
+        contentWindowInsets = { WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal) },
         sheetContent = {
             when (val type = bottomSheetType) {
                 is BottomSheetType.NotificationsPermissions -> NotificationsPermissionBottomSheet(
@@ -775,7 +776,7 @@ private fun Modifier.snackbarPadding(
             } else {
                 Modifier.padding(
                     bottom = WindowInsets.navigationBars
-                        .only(WindowInsetsSides.Bottom)
+                        .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
                         .asPaddingValues()
                         .calculateBottomPadding()
                 )

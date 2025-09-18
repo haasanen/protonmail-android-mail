@@ -38,7 +38,9 @@ fun ProtonModalBottomSheetLayout(
     sheetState: SheetState,
     onDismissed: () -> Unit,
     dismissOnBack: Boolean,
-    contentWindowInsets: @Composable () -> WindowInsets = { WindowInsets.systemBars.only(WindowInsetsSides.Top) },
+    contentWindowInsets: @Composable () -> WindowInsets = {
+        WindowInsets.systemBars.only(WindowInsetsSides.Top)
+    },
     content: @Composable () -> Unit
 ) {
     content()

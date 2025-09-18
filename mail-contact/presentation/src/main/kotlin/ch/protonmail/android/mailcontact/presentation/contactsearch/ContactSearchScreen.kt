@@ -72,7 +72,7 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
 
     Scaffold(
         containerColor = backgroundColor,
-        contentWindowInsets = WindowInsets(0),
+        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
         topBar = {
             ContactSearchTopBar(
                 modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
@@ -145,7 +145,7 @@ fun ContactSearchContent(
         item {
             Spacer(
                 modifier = Modifier.padding(
-                    bottom = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
+                    bottom = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
                         .asPaddingValues()
                         .calculateBottomPadding()
                 )

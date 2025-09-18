@@ -124,7 +124,7 @@ fun AccountsSwitcherBottomSheetScreen(
                         modifier = Modifier.height(
                             WindowInsets
                                 .navigationBars
-                                .only(WindowInsetsSides.Bottom)
+                                .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
                                 .asPaddingValues()
                                 .calculateBottomPadding()
                         )

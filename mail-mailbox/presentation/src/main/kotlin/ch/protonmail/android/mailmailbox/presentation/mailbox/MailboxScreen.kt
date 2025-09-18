@@ -42,13 +42,13 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -460,12 +460,10 @@ fun MailboxScreen(
 
         if (mailboxListState is MailboxListState.Data && mailboxListState.shouldShowFab) {
             AnimatedComposeMailFab(
-                modifier = modifier.padding(
-                    bottom = WindowInsets
-                        .navigationBars
-                        .only(WindowInsetsSides.Bottom)
-                        .asPaddingValues()
-                        .calculateBottomPadding()
+                modifier = modifier.windowInsetsPadding(
+                    WindowInsets
+                        .safeDrawing
+                        .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
                 ),
                 showMinimized = showMinimizedFab,
                 onComposeClick = actions.navigateToComposer
@@ -476,7 +474,7 @@ fun MailboxScreen(
     Scaffold(
         modifier = modifier.testTag(MailboxScreenTestTags.Root),
         containerColor = ProtonTheme.colors.backgroundNorm,
-        contentWindowInsets = WindowInsets(0),
+        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
         topBar = {
             val localDensity = LocalDensity.current
             Column(
@@ -502,7 +500,9 @@ fun MailboxScreen(
                 if (mailboxState.topAppBarState !is MailboxTopAppBarState.Data.SearchMode) {
 
                     MailboxStickyHeader(
-                        modifier = Modifier,
+                        modifier = Modifier.windowInsetsPadding(
+                            WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                        ),
                         state = mailboxState,
                         actions = stickyHeaderActions
                     )

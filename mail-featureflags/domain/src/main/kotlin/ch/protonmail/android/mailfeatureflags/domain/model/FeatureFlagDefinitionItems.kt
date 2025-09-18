@@ -47,7 +47,7 @@ data object UpsellingEnabled : FeatureFlagDefinition(
     name = "Enable Feature Upsell",
     category = FeatureFlagCategory.Global,
     description = "Makes the upsell flow available for all supported entry points",
-    defaultValue = false
+    defaultValue = true
 )
 
 data object MessageExpirationEnabled : FeatureFlagDefinition(

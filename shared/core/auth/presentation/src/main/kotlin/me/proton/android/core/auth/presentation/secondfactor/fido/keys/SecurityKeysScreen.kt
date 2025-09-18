@@ -22,9 +22,13 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -55,14 +59,22 @@ fun SecurityKeysScreen(
         modifier = modifier,
         topBar = {
             ProtonSettingsTopBar(
-                modifier = Modifier.statusBarsPadding(),
+                modifier = Modifier.windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Top + WindowInsetsSides.Horizontal
+                    )
+                ),
                 title = stringResource(R.string.auth_fido_security_keys_title),
                 onBackClick = onBackClick
             )
         },
         content = { paddingValues ->
             SecurityKeysList(
-                modifier = Modifier.padding(paddingValues),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+                    ),
                 onManageSecurityKeysClicked = onManageSecurityKeysClicked,
                 onAddSecurityKeyClicked = onAddSecurityKeyClicked
             )
@@ -131,8 +143,7 @@ fun LearnMoreText(@StringRes text: Int) {
             id = text,
             stringResource(id = R.string.auth_fido_security_keys_learn_more)
         ),
-        hyperLinks =
-        mutableMapOf(
+        hyperLinks = mutableMapOf(
             stringResource(id = R.string.auth_fido_security_keys_learn_more)
                 to stringResource(id = R.string.security_keys_learn_more_link)
         ),

@@ -38,6 +38,7 @@ import ch.protonmail.android.mailbugreport.presentation.model.bugreport.state.Bu
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 internal fun BugReportScreenContent(
@@ -113,6 +114,8 @@ internal fun BugReportScreenContent(
                 shouldShowError = validationErrors.showActualResultError,
                 modifier = Modifier.retainFieldFocusOnConfigurationChange(BugReportFocusableField.ActualResult)
             )
+
+            BottomNavigationBarSpacer()
         }
     }
 }

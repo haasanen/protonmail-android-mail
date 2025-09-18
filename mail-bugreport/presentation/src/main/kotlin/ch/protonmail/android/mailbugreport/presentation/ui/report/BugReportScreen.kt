@@ -99,7 +99,9 @@ private fun BugReportScreenImpl(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
+        contentWindowInsets = WindowInsets.safeDrawing.only(
+            WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
+        ),
         topBar = {
             ProtonMediumTopAppBar(
                 title = { Text(text = stringResource(R.string.report_a_problem_title)) },
