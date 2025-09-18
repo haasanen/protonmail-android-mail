@@ -49,7 +49,7 @@ class DraftCache @Inject constructor(
 
     fun get(): DraftWrapper {
         val key = activeComposerRepository.getLatestActiveInstance()
-            ?: throw IllegalStateException("Caching draft without an Active Composer instance")
+            ?: throw IllegalStateException("Trying to get cached draft without an Active Composer instance")
 
         val draftWrapper = draftByComposerInstance[key]
             ?: throw IllegalStateException("Attempting to access draft operations while no draft object exists")
