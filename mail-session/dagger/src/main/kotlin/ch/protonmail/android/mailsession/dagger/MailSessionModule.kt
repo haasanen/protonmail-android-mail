@@ -27,6 +27,7 @@ import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObser
 import ch.protonmail.android.mailsession.data.keychain.AndroidKeyChain
 import ch.protonmail.android.mailsession.data.keychain.KeyChainLocalDataSource
 import ch.protonmail.android.mailsession.data.keychain.KeyChainLocalDataSourceImpl
+import ch.protonmail.android.mailsession.data.logging.SentryIssueReporter
 import ch.protonmail.android.mailsession.data.network.AndroidDnsResolver
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
@@ -47,6 +48,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import uniffi.proton_issue_reporter_service_uniffi.IssueReporter
 import uniffi.proton_mail_uniffi.DeviceInfoProvider
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.OsKeyChain
@@ -111,5 +113,9 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindKeyChainLocalDataSource(impl: KeyChainLocalDataSourceImpl): KeyChainLocalDataSource
+
+        @Binds
+        @Singleton
+        fun bindIssueReporter(impl: SentryIssueReporter): IssueReporter
     }
 }

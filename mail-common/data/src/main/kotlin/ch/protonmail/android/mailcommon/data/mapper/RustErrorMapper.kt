@@ -65,7 +65,6 @@ fun DraftUndoSendError.toDataError(): DataError = when (this) {
     is DraftUndoSendError.Other -> this.v1.toDataError()
     is DraftUndoSendError.Reason -> when (this.v1) {
         DraftUndoSendErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftUndoSendErrorReason.MESSAGE_IS_NOT_A_DRAFT,
         DraftUndoSendErrorReason.MESSAGE_CAN_NOT_BE_UNDO_SENT,
         DraftUndoSendErrorReason.SEND_CAN_NO_LONGER_BE_UNDONE -> DataError.Local.UndoSendError
     }

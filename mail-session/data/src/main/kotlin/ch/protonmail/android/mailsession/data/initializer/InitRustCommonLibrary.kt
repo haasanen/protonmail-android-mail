@@ -29,6 +29,7 @@ import ch.protonmail.android.mailsession.domain.model.RustApiConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.android.core.humanverification.domain.ChallengeNotifierCallback
 import timber.log.Timber
+import uniffi.proton_issue_reporter_service_uniffi.IssueReporter
 import uniffi.proton_mail_uniffi.ApiConfig
 import uniffi.proton_mail_uniffi.AppDetails
 import uniffi.proton_mail_uniffi.CreateMailSessionResult
@@ -49,6 +50,7 @@ class InitRustCommonLibrary @Inject constructor(
     private val deviceInfoProvider: DeviceInfoProvider,
     private val rustApiConfig: RustApiConfig,
     private val keyChain: OsKeyChain,
+    private val issueReporter: IssueReporter,
     private val androidDnsResolver: AndroidDnsResolver
 ) {
 
@@ -85,7 +87,8 @@ class InitRustCommonLibrary @Inject constructor(
                 params = sessionParams,
                 keyChain = keyChain,
                 hvNotifier = challengeNotifierCallback,
-                deviceInfoProvider = deviceInfoProvider
+                deviceInfoProvider = deviceInfoProvider,
+                issueReporter = issueReporter
             )
         ) {
             is CreateMailSessionResult.Error -> {
