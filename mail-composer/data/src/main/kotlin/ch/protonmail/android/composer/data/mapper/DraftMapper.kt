@@ -161,6 +161,7 @@ fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
 
         DraftSendErrorReason.EoPasswordDecrypt -> SendDraftError.ExternalPasswordDecryptError
         DraftSendErrorReason.ExpirationTimeTooSoon -> SendDraftError.ExpirationTimeTooSoon
+        DraftSendErrorReason.MessageTooLarge -> SendDraftError.AttachmentsError
     }
 }
 
