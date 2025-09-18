@@ -22,6 +22,7 @@ import androidx.paging.compose.LazyPagingItems
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 
 sealed class MailboxScreenState {
+    object CouldNotLoadUserSession : MailboxScreenState()
     object Loading : MailboxScreenState()
     object Empty : MailboxScreenState()
     object UnexpectedError : MailboxScreenState()

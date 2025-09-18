@@ -34,6 +34,7 @@
     <string name="mailbox_default_sender">(No Sender)</string>
     <string name="mailbox_error_message_offline">You are offline, unable to retrieve items</string>
     <string name="mailbox_error_message_generic">Loading mailbox failed</string>
+    <string name="mailbox_error_message_user_session">Unable to load session.  Please check your connection and try again.</string>
     <string name="mailbox_error_message_unexpected">Something went unexpectedly wrong</string>
     <string name="mailbox_is_empty_title">No messages</string>
     <string name="trash_is_empty_title">Nothing in Trash</string>

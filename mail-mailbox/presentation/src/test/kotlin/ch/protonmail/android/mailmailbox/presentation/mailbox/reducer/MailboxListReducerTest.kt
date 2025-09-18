@@ -168,7 +168,37 @@ internal class MailboxListReducerTest(
                 )
             ),
             TestInput(
+                currentState = MailboxListState.CouldNotLoadUserSession,
+                operation = MailboxEvent.SelectedLabelChanged(MailLabelTestData.spamSystemLabel),
+                expectedState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                )
+            ),
+            TestInput(
                 currentState = MailboxListState.Loading,
+                operation = MailboxEvent.NewLabelSelected(MailLabelTestData.customLabelOne, UNREAD_COUNT),
+                expectedState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                )
+            ),
+            TestInput(
+                currentState = MailboxListState.CouldNotLoadUserSession,
                 operation = MailboxEvent.NewLabelSelected(MailLabelTestData.customLabelOne, UNREAD_COUNT),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.customLabelOne,
@@ -1365,6 +1395,21 @@ internal class MailboxListReducerTest(
                     avatarImagesUiModel = AvatarImagesUiModel.Empty,
                     areAllItemsSelected = false
                 )
+            ),
+            TestInput(
+                currentState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = true,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                ),
+                operation = MailboxEvent.CouldNotLoadUserSession,
+                expectedState = MailboxListState.CouldNotLoadUserSession
             )
         )
 

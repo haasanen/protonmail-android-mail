@@ -100,7 +100,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -276,8 +279,16 @@ fun MailboxScreen(
         onClearAll = { viewModel.submit(MailboxViewAction.ClearAll) },
         onClearAllConfirmed = { viewModel.submit(MailboxViewAction.ClearAllConfirmed) },
         onClearAllDismissed = { viewModel.submit(MailboxViewAction.ClearAllDismissed) },
-        onSnooze = { viewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet) }
+        onSnooze = { viewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet) },
+        validateUserSession = { viewModel.submit(MailboxViewAction.ValidateUserSession) }
     )
+
+    val lifecycle = LocalLifecycleOwner.current
+    LaunchedEffect(key1 = Unit) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.submit(MailboxViewAction.ValidateUserSession)
+        }
+    }
 
     mailboxState.bottomSheetState?.let {
         ConsumableLaunchedEffect(effect = it.bottomSheetVisibilityEffect) { bottomSheetEffect ->
@@ -703,6 +714,7 @@ private fun MailboxSwipeRefresh(
     val currentViewState = remember(items.loadState, state) {
         when {
             state is MailboxListState.Loading -> MailboxScreenState.Loading
+            state is MailboxListState.CouldNotLoadUserSession -> MailboxScreenState.CouldNotLoadUserSession
             searchMode.isInSearch() -> items.mapToUiStatesInSearch(searchMode, lastViewState)
             else -> items.mapToUiStates(refreshRequested)
         }
@@ -809,6 +821,7 @@ private fun MailboxSwipeRefresh(
                 modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)
             )
 
+            is MailboxScreenState.CouldNotLoadUserSession,
             is MailboxScreenState.SearchLoadingWithData,
             is MailboxScreenState.SearchData,
             is MailboxScreenState.LoadingWithData,
@@ -984,6 +997,11 @@ private fun MailboxItemsList(
                 is MailboxScreenState.AppendError -> AppendError(
                     message = stringResource(id = R.string.mailbox_error_message_generic),
                     onClick = { items.retry() }
+                )
+
+                is MailboxScreenState.CouldNotLoadUserSession -> AppendError(
+                    message = stringResource(id = R.string.mailbox_error_message_user_session),
+                    onClick = { actions.validateUserSession() }
                 )
 
                 else -> {
@@ -1239,7 +1257,8 @@ object MailboxScreen {
         val onClearAllDismissed: () -> Unit,
         val onSnooze: () -> Unit,
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
-        val onCustomizeToolbar: () -> Unit
+        val onCustomizeToolbar: () -> Unit,
+        val validateUserSession: () -> Unit
     ) {
 
         companion object {
@@ -1301,7 +1320,8 @@ object MailboxScreen {
                 onNavigateToUpselling = { _, _ -> },
                 onSnooze = {},
                 onCustomizeToolbar = {},
-                onActionBarVisibilityChanged = {}
+                onActionBarVisibilityChanged = {},
+                validateUserSession = {}
             )
         }
     }

@@ -30,6 +30,7 @@ import ch.protonmail.android.mailsession.domain.model.UserSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.session.SessionId
@@ -95,4 +96,6 @@ internal class FakeUserSessionRepository(
     override suspend fun setBiometricAppProtection(): Either<DataError, Unit> {
         TODO("Not yet implemented")
     }
+
+    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId> = observePrimaryUserId().filterNotNull()
 }

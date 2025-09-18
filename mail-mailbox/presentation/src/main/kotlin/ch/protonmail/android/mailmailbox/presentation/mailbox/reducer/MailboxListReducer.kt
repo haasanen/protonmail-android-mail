@@ -89,6 +89,7 @@ class MailboxListReducer @Inject constructor(
             is MailboxEvent.AttachmentReadyEvent -> reduceAttachmentReady(operation, currentState)
             is MailboxEvent.AttachmentErrorEvent -> reduceAttachmentDownloadError(currentState)
             is MailboxEvent.PaginatorInvalidated -> reducePaginatorInvalidated(operation, currentState)
+            is MailboxEvent.CouldNotLoadUserSession -> reduceCouldNotLoadUserSession()
         }
     }
 
@@ -243,6 +244,7 @@ class MailboxListReducer @Inject constructor(
     ): MailboxListState.Data {
         val currentMailLabel = operation.selectedLabel
         return when (currentState) {
+            is MailboxListState.CouldNotLoadUserSession,
             is MailboxListState.Loading -> MailboxListState.Data.ViewMode(
                 currentMailLabel,
                 openItemEffect = Effect.empty(),
@@ -274,6 +276,7 @@ class MailboxListReducer @Inject constructor(
     ): MailboxListState.Data {
         val currentMailLabel = operation.selectedLabel
         return when (currentState) {
+            is MailboxListState.CouldNotLoadUserSession,
             is MailboxListState.Loading -> MailboxListState.Data.ViewMode(
                 currentMailLabel,
                 openItemEffect = Effect.empty(),
@@ -557,4 +560,6 @@ class MailboxListReducer @Inject constructor(
 
         else -> currentState
     }
+
+    private fun reduceCouldNotLoadUserSession(): MailboxListState = MailboxListState.CouldNotLoadUserSession
 }

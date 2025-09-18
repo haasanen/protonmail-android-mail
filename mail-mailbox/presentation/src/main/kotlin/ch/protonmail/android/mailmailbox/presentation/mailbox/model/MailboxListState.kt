@@ -77,6 +77,7 @@ sealed interface MailboxListState {
     }
 
     data object Loading : MailboxListState
+    data object CouldNotLoadUserSession : MailboxListState
 
     companion object {
         const val maxItemSelectionLimit = 100

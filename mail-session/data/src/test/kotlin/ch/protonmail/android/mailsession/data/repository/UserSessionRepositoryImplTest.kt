@@ -209,6 +209,33 @@ class UserSessionRepositoryImplTest {
         coVerify(exactly = 1) { mailSession.userContextFromSession(any()) }
     }
 
+    @Test
+    fun `caching of a new user session will trigger observer`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val userId1 = UserIdTestData.userId1
+        val expectedMailUserSession = mockk<MailUserSessionWrapper>()
+        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+
+
+        // When
+        userSessionRepository.getUserSession(userId)
+        // Then
+        userSessionRepository.observeUserSessionAvailable(userId).test {
+            assertEquals(userId, awaitItem())
+        }
+
+        // When
+        userSessionRepository.getUserSession(userId1)
+
+        // Then
+        userSessionRepository.observeUserSessionAvailable(userId1).test {
+            assertEquals(userId1, awaitItem())
+        }
+    }
+
+
     private fun mailSessionWithNoUserSessionsStored() = mockk<MailSessionWrapper> {
         coEvery { getAccount(any()) } returns DataError.Local.NoDataCached.left()
         coEvery { getAccounts() } returns emptyList<StoredAccount>().right()

@@ -171,10 +171,11 @@ internal sealed interface MailboxViewAction : MailboxOperation {
         AffectingBottomSheet,
         AffectingTopAppBar,
         AffectingBottomAppBar
+    object ValidateUserSession : MailboxViewAction
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
-
+    object CouldNotLoadUserSession : MailboxEvent, AffectingMailboxList
     data class LabelAsConfirmed(
         val viewMode: ViewMode,
         val itemCount: Int,

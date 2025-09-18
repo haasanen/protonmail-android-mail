@@ -112,7 +112,8 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.GetUserHasValidSession
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserIdWithValidSession
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
@@ -143,7 +144,6 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.DispatcherProvider
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.map
 
 @HiltViewModel
 @SuppressWarnings("LongParameterList", "TooManyFunctions", "LargeClass")
@@ -151,8 +151,9 @@ class MailboxViewModel @Inject constructor(
     @AppScope private val appScope: CoroutineScope,
     private val mailboxPagerFactory: MailboxPagerFactory,
     private val getCurrentViewModeForLabel: GetCurrentViewModeForLabel,
-    observePrimaryUserId: ObservePrimaryUserId,
+    private val observePrimaryUserIdWithValidSession: ObservePrimaryUserIdWithValidSession,
     private val observeMailLabels: ObserveMailLabels,
+    private val getUserHasValidSession: GetUserHasValidSession,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
     private val observeSelectedMailLabelId: ObserveSelectedMailLabelId,
     private val observeLoadedMailLabelId: ObserveLoadedMailLabelId,
@@ -193,7 +194,7 @@ class MailboxViewModel @Inject constructor(
     private val eventLoopRepository: EventLoopRepository
 ) : ViewModel() {
 
-    private val primaryUserId = observePrimaryUserId().filterNotNull()
+    private val primaryUserId = observePrimaryUserIdWithValidSession().filterNotNull()
     private val mutableState = MutableStateFlow(initialState)
     private val itemIds = Collections.synchronizedList(mutableListOf<String>())
     private val folderColorSettings = primaryUserId.flatMapLatest {
@@ -370,6 +371,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet(viewAction)
                 is MailboxViewAction.SignalMoveToCompleted -> handleMoveToCompleted(viewAction)
                 is MailboxViewAction.SignalLabelAsCompleted -> handleLabelAsCompleted(viewAction)
+                is MailboxViewAction.ValidateUserSession -> handleValidateUserSession()
             }
         }
     }
@@ -435,6 +437,7 @@ class MailboxViewModel @Inject constructor(
         when (state.value.mailboxListState) {
             is MailboxListState.Data.SelectionMode -> handleItemClickInSelectionMode(item)
             is MailboxListState.Data.ViewMode -> handleItemClickInViewMode(item)
+            is MailboxListState.CouldNotLoadUserSession,
             is MailboxListState.Loading -> {
                 Timber.d("Loading state can't handle item clicks")
             }
@@ -1150,6 +1153,15 @@ class MailboxViewModel @Inject constructor(
     private fun emitNewStateFrom(operation: MailboxOperation) {
         val state = mailboxReducer.newStateFrom(state.value, operation)
         mutableState.value = state
+    }
+
+    // A user can be logged in but not have a valid user session, in this case the app can't function.  User sessions
+    // are cached, but in rare cases such as migration RUST will not have even cached the session and therefore network
+    // connection is obligatory and we MUST load the session before the app can recover
+    private suspend fun handleValidateUserSession() {
+        if (state.value.mailboxListState is MailboxListState.Loading && !getUserHasValidSession()) {
+            emitNewStateFrom(MailboxEvent.CouldNotLoadUserSession)
+        }
     }
 
     private fun Flow<MailboxState>.observeUnreadFilterState() =

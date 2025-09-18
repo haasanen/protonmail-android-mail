@@ -40,8 +40,10 @@ import ch.protonmail.android.mailsession.domain.model.UserSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -64,6 +66,7 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     // Cache to store MailUserSession per UserId
     private val userSessionCache = mutableMapOf<UserId, MailUserSessionWrapper>()
+    private val userSessionUpdatedTrigger = MutableSharedFlow<UserId>(replay = 1)
 
     private suspend fun getStoredAccount(userId: UserId) = mailSession.getAccount(userId.toLocalUserId())
 
@@ -123,19 +126,30 @@ class UserSessionRepositoryImpl @Inject constructor(
         userSessionCache.remove(userId)
     }
 
+    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId> = userSessionUpdatedTrigger.filter {
+        it == userId
+    }.distinctUntilChanged()
+
     override suspend fun getUserSession(userId: UserId): MailUserSessionWrapper? {
         // Return cached session if it exists
-        userSessionCache[userId]?.let { return it }
+        userSessionCache[userId]?.let {
+            return it
+        }
 
         // Create and store session if not in cache
-        val session = getStoredAccount(userId).getOrNull()?.let { account ->
-            mailSession.getAccountSessions(account).getOrNull()?.firstOrNull()
+        val storedAccount = getStoredAccount(userId).getOrNull()
+        val session = storedAccount?.let { account ->
+            val accountSessions = mailSession.getAccountSessions(account).getOrNull()
+            accountSessions?.firstOrNull()
         }
-        val userContext = session?.let { mailSession.userContextFromSession(it) }?.getOrNull()
-        if (userContext != null) {
-            userSessionCache[userId] = userContext
+        // throws network error
+        val userContext = session?.let { mailSession.userContextFromSession(it) }
+        userContext?.getOrNull()?.let {
+            userSessionUpdatedTrigger.emit(userId)
+            userSessionCache[userId] = it
+            return it
         }
-        return userContext
+        return null
     }
 
     override suspend fun getUserSettings(userId: UserId): UserSettings? {

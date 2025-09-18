@@ -68,6 +68,8 @@ interface UserSessionRepository {
     suspend fun setAutoLockPinCode(autoLockPin: AutoLockPin): Either<SetAutoLockPinError, Unit>
 
     suspend fun setBiometricAppProtection(): Either<DataError, Unit>
+
+    fun observeUserSessionAvailable(userId: UserId): Flow<UserId>
 }
 
 fun UserSessionRepository.onAccountState(state: AccountState, initialState: Boolean = true): Flow<Account> =

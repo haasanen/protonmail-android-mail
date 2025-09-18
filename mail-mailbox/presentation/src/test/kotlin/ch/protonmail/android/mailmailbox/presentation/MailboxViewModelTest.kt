@@ -110,7 +110,8 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSh
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.GetUserHasValidSession
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserIdWithValidSession
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
@@ -175,7 +176,7 @@ internal class MailboxViewModelTest {
     private val actionUiModelMapper = ActionUiModelMapper()
     private val swipeActionsMapper = SwipeActionsMapper()
 
-    private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
+    private val observePrimaryUserId = mockk<ObservePrimaryUserIdWithValidSession> {
         every { this@mockk.invoke() } returns flowOf(userId)
     }
 
@@ -244,6 +245,9 @@ internal class MailboxViewModelTest {
     private val deleteMessages = mockk<DeleteMessages>()
     private val starMessages = mockk<StarMessages>()
     private val starConversations = mockk<StarConversations>()
+    private val getUserHasValidSession = mockk<GetUserHasValidSession> {
+        coEvery { this@mockk.invoke() } returns true
+    }
     private val unStarMessages = mockk<UnStarMessages>()
     private val unStarConversations = mockk<UnStarConversations>()
     private val getBottomSheetActions = mockk<GetBottomSheetActions>()
@@ -302,7 +306,7 @@ internal class MailboxViewModelTest {
             appScope = scope,
             mailboxPagerFactory = pagerFactory,
             getCurrentViewModeForLabel = getCurrentViewModeForLabel,
-            observePrimaryUserId = observePrimaryUserId,
+            observePrimaryUserIdWithValidSession = observePrimaryUserId,
             observeMailLabels = observeMailLabels,
             observeSwipeActionsPreference = observeSwipeActionsPreference,
             observeSelectedMailLabelId = observeSelectedMailLabelId,
@@ -341,7 +345,8 @@ internal class MailboxViewModelTest {
             observeViewModeChanged = observeViewModeChanged,
             toolbarRefreshSignal = toolbarRefreshSignal,
             terminateConversationPaginator = terminateConversationPaginator,
-            eventLoopRepository = eventLoopRepository
+            eventLoopRepository = eventLoopRepository,
+            getUserHasValidSession = getUserHasValidSession
         )
     }
 
@@ -921,6 +926,68 @@ internal class MailboxViewModelTest {
                 }
             }
         }
+
+    @Test
+    fun `when loading and validateUserSession is false then emit CouldNotLoadUserSession`() = runTest {
+        // Given
+        coEvery { getUserHasValidSession() } returns false
+        coEvery { observeUnreadCounters(userId = any()) } returns emptyFlow()
+        coEvery { observeMailLabels(userId = any()) } returns emptyFlow()
+
+        // When
+        mailboxViewModel.state.test {
+            // Then
+            val actual = awaitItem()
+            val expected = MailboxState(
+                mailboxListState = MailboxListState.Loading,
+                topAppBarState = MailboxTopAppBarState.Loading,
+                unreadFilterState = UnreadFilterState.Loading,
+                bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
+                deleteDialogState = DeleteDialogState.Hidden,
+                clearAllDialogState = DeleteDialogState.Hidden,
+                bottomSheetState = null,
+                actionResult = Effect.empty(),
+                error = Effect.empty()
+            )
+
+            // when
+            mailboxViewModel.submit(MailboxViewAction.ValidateUserSession)
+            assertEquals(expected, actual)
+            awaitItem()
+            verify { mailboxReducer.newStateFrom(actual, MailboxEvent.CouldNotLoadUserSession) }
+        }
+    }
+
+    @Test
+    fun `when loading and validateUserSession is true then do not emit CouldNotLoadUserSession`() = runTest {
+        // Given
+        coEvery { getUserHasValidSession() } returns true
+        coEvery { observeUnreadCounters(userId = any()) } returns emptyFlow()
+        coEvery { observeMailLabels(userId = any()) } returns emptyFlow()
+
+        // When
+        mailboxViewModel.state.test {
+            // Then
+            val actual = awaitItem()
+            val expected = MailboxState(
+                mailboxListState = MailboxListState.Loading,
+                topAppBarState = MailboxTopAppBarState.Loading,
+                unreadFilterState = UnreadFilterState.Loading,
+                bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
+                deleteDialogState = DeleteDialogState.Hidden,
+                clearAllDialogState = DeleteDialogState.Hidden,
+                bottomSheetState = null,
+                actionResult = Effect.empty(),
+                error = Effect.empty()
+            )
+
+            // when
+            mailboxViewModel.submit(MailboxViewAction.ValidateUserSession)
+            assertEquals(expected, actual)
+            coVerify(exactly = 1) { getUserHasValidSession.invoke() }
+            verify(exactly = 0) { mailboxReducer.newStateFrom(actual, MailboxEvent.CouldNotLoadUserSession) }
+        }
+    }
 
     @Test
     fun `when avatar click action is submitted to remove item from selection, new state is created and emitted`() =
