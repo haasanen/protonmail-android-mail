@@ -49,8 +49,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentDataType
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDataType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -65,6 +68,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.autolock.standalone.LocalLockScreenEntryPointIsStandalone
+import me.proton.core.compose.autofill.autofill
 
 @Composable
 internal fun PinInputSection(
@@ -130,9 +134,18 @@ internal fun PinSecureInputField(
 ) {
     val isStandalone = LocalLockScreenEntryPointIsStandalone.current
 
+    val pinInputFieldModifier = modifier
+        .semantics {
+            contentDataType = ContentDataType.None
+        }
+        .autofill(
+            autofillTypes = emptyList(),
+            onFill = {}
+        )
+
     if (!isStandalone) {
         PinInsertionSecureField(
-            modifier = modifier,
+            modifier = pinInputFieldModifier,
             state = pinTextFieldState,
             keyboardOptions = keyboardOptions,
             onNext = onNext,
@@ -143,7 +156,7 @@ internal fun PinSecureInputField(
     } else {
         Column {
             StandalonePinInsertionSecureField(
-                modifier = modifier,
+                modifier = pinInputFieldModifier,
                 state = pinTextFieldState,
                 keyboardOptions = keyboardOptions,
                 onNext = onNext,
