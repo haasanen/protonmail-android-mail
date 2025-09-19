@@ -554,7 +554,9 @@ private fun LongRecipientItemWithExpiryPreview() {
 private fun SnoozedUntilPreview() {
     val itemWithExpiry = MailboxItemUiModelPreviewData.Conversation.MultipleRecipientWithLabel.copy(
         snoozedUntil = SnoozeStatusUiModel.SnoozeStatus(
-            TextUiModel.PluralisedText(R.plurals.snoozed_in_days, 10),
+            TextUiModel.TextResWithArgs(
+                R.string.snooze_sheet_success, listOf("Sat 10th")
+            ),
             true
         )
     )

@@ -23,55 +23,28 @@ import ch.protonmail.android.mailsnooze.domain.model.ConversationSnoozeStatus
 import ch.protonmail.android.mailsnooze.domain.model.Snoozed
 import ch.protonmail.android.mailsnooze.presentation.R
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeStatusUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.mapper.DayTimeMapper
 import javax.inject.Inject
 import kotlin.time.Clock
 
-class SnoozeStatusUiModelMapper @Inject constructor() {
+class SnoozeStatusUiModelMapper @Inject constructor(private val dayTimeMapper: DayTimeMapper) {
 
     fun toUiModel(snoozeInfo: ConversationSnoozeStatus): SnoozeStatusUiModel {
+
         when (snoozeInfo) {
             is Snoozed -> {
                 val duration = snoozeInfo.until.minus(Clock.System.now())
-                if (duration.inWholeMilliseconds <= 0) {
-                    return SnoozeStatusUiModel.NoStatus
-                }
-
-                val days = duration.inWholeDays
-                val hours = duration.inWholeHours % 24
-                val minutes = duration.inWholeMinutes % 60
-
-                return when {
-                    days > 0 -> SnoozeStatusUiModel.SnoozeStatus(
-                        TextUiModel.PluralisedText(
-                            R.plurals.snoozed_in_days,
-                            days.toInt()
-                        ),
-                        false
-                    )
-
-                    hours > 0 -> SnoozeStatusUiModel.SnoozeStatus(
-                        TextUiModel.PluralisedText(
-                            R.plurals.snooze_in_hours,
-                            hours.toInt()
-                        ),
-                        false
-                    )
-
-                    minutes > 0 -> SnoozeStatusUiModel.SnoozeStatus(
-                        TextUiModel.PluralisedText(
-                            R.plurals.snooze_in_minutes,
-                            minutes.toInt()
-                        ),
-                        true
-                    )
-
-                    else -> SnoozeStatusUiModel.NoStatus
-                }
+                val text = TextUiModel(
+                    R.string.snooze_sheet_success,
+                    dayTimeMapper.toDayTime(snoozeInfo.until)
+                )
+                return SnoozeStatusUiModel.SnoozeStatus(
+                    formattedDateText = text,
+                    highlight = duration.inWholeHours <= 0
+                )
             }
 
-            else -> {
-                return SnoozeStatusUiModel.NoStatus
-            }
+            else -> return SnoozeStatusUiModel.NoStatus
         }
     }
 }
