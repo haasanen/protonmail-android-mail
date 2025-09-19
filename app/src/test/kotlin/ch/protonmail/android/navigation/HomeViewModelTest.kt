@@ -519,4 +519,26 @@ class HomeViewModelTest {
         }
     }
 
+    @Test
+    fun `navigate to draft when undo send message succeeds`() = runTest {
+        // Given
+        coEvery { undoSendMessage(userId, messageId) } returns Unit.right()
+
+        // When
+        homeViewModel.undoSendMessage(messageId)
+
+        // Then
+        homeViewModel.state.test {
+            val expected = Effect.of(
+                NavigationEffect.NavigateTo(
+                    route = Destination.Screen.EditDraftComposer(messageId),
+                    navOptions = NavOptions.Builder()
+                        .setPopUpTo(route = Destination.Screen.Mailbox.route, inclusive = false, saveState = false)
+                        .build()
+                )
+            )
+            assertEquals(expected, awaitItem().navigateToEffect)
+        }
+    }
+
 }

@@ -141,6 +141,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             primaryUserId.firstOrNull()?.let {
                 undoSendMessage(it, messageId)
+                    .onRight { navigateToDraftInComposer(messageId) }
             } ?: Timber.e("Primary user is not available!")
         }
     }
@@ -149,16 +150,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             primaryUserId.firstOrNull()?.let { userId ->
                 cancelScheduleSendMessage(userId, messageId)
-                    .onRight {
-                        val popUpToMailbox = NavOptions.Builder()
-                            .setPopUpTo(route = Destination.Screen.Mailbox.route, inclusive = false, saveState = false)
-                            .build()
-                        val navigateToComposer = NavigationEffect.NavigateTo(
-                            route = Destination.Screen.EditDraftComposer(messageId),
-                            navOptions = popUpToMailbox
-                        )
-                        mutableState.update { it.copy(navigateToEffect = Effect.of(navigateToComposer)) }
-                    }
+                    .onRight { navigateToDraftInComposer(messageId) }
             } ?: Timber.e("Primary user is not available!")
         }
     }
@@ -174,6 +166,17 @@ class HomeViewModel @Inject constructor(
     fun recordViewOfMailboxScreen() = recordMailboxScreenView()
 
     fun formatTime(time: Instant) = formatFullDate(time)
+
+    private fun navigateToDraftInComposer(messageId: MessageId) {
+        val popUpToMailbox = NavOptions.Builder()
+            .setPopUpTo(route = Destination.Screen.Mailbox.route, inclusive = false, saveState = false)
+            .build()
+        val navigateToComposer = NavigationEffect.NavigateTo(
+            route = Destination.Screen.EditDraftComposer(messageId),
+            navOptions = popUpToMailbox
+        )
+        mutableState.update { it.copy(navigateToEffect = Effect.of(navigateToComposer)) }
+    }
 
     private fun emitNewStateFor(messageSendingStatus: MessageSendingStatus) {
         if (messageSendingStatus is MessageSendingStatus.NoStatus) {
