@@ -127,6 +127,86 @@ function trackCursorPosition() {
 trackCursorPosition();
 
 /*******************************************************************************
+ * Enhanced ProtonMail Quote Toggle Handler - START
+*******************************************************************************/
+document.addEventListener('click', function(e) {
+    const quote = e.target.closest('.protonmail_quote');
+    if (quote) {
+        const parentQuote = quote.parentElement?.closest('.protonmail_quote');
+        if (!parentQuote && !quote.hasAttribute('data-expanded')) {
+            quote.setAttribute('data-expanded', '');
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+});
+
+// Handle Enter key to keep quotes at the bottom
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const container = range.startContainer;
+            let currentElement = container.nodeType === Node.TEXT_NODE ? container.parentElement : container;
+
+            const allQuotes = document.querySelectorAll('.protonmail_quote');
+            let quoteToMove = null;
+
+            allQuotes.forEach(quote => {
+                const isTopLevel = !quote.parentElement?.closest('.protonmail_quote');
+                if (isTopLevel) {
+                    const position = currentElement.compareDocumentPosition(quote);
+                    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+                        if (!quoteToMove) {
+                            quoteToMove = quote;
+                        }
+                    }
+                }
+            });
+
+            if (quoteToMove) {
+                setTimeout(() => {
+                    const editor = document.getElementById('$EDITOR_ID') || document.body;
+                    const quote = quoteToMove;
+                    quote.parentNode.removeChild(quote);
+                    editor.appendChild(quote);
+
+                    const prevSibling = quote.previousElementSibling;
+                    if (prevSibling && prevSibling.tagName !== 'BR') {
+                        const br = document.createElement('br');
+                        editor.insertBefore(br, quote);
+                    }
+                }, 10);
+            }
+        }
+    }
+});
+
+// Handle selection changes (prevents from auto-expanding and glitching)
+document.addEventListener('selectionchange', function() {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const container = range.commonAncestorContainer;
+        let element = container.nodeType === Node.TEXT_NODE ? container.parentElement : container;
+        const collapsedQuote = element?.closest('.protonmail_quote:not([data-expanded])');
+
+        if (collapsedQuote) {
+            selection.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.setStartAfter(collapsedQuote);
+            newRange.collapse(true);
+            selection.addRange(newRange);
+        }
+    }
+});
+
+/*******************************************************************************
+ * Enhanced ProtonMail Quote Toggle Handler - END
+*******************************************************************************/
+
+/*******************************************************************************
  * Public functions invoked by kotlin through webview evaluate javascript method
  ******************************************************************************/
 
