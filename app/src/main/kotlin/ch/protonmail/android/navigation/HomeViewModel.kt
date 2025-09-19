@@ -150,6 +150,7 @@ class HomeViewModel @Inject constructor(
     fun undoScheduleSendMessage(messageId: MessageId) {
         viewModelScope.launch {
             primaryUserId.firstOrNull()?.let { userId ->
+                showCancellingScheduleSend(messageId)
                 cancelScheduleSendMessage(userId, messageId)
                     .onRight { navigateToDraftInComposer(messageId) }
                     .onLeft { showUndoSendError(messageId) }
@@ -168,6 +169,12 @@ class HomeViewModel @Inject constructor(
     fun recordViewOfMailboxScreen() = recordMailboxScreenView()
 
     fun formatTime(time: Instant) = formatFullDate(time)
+
+    private fun showCancellingScheduleSend(messageId: MessageId) {
+        mutableState.update {
+            it.copy(messageSendingStatusEffect = Effect.of(MessageSendingStatus.CancellingScheduleSend(messageId)))
+        }
+    }
 
     private fun showUndoSendError(messageId: MessageId) {
         mutableState.update {

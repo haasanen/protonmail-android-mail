@@ -575,4 +575,26 @@ class HomeViewModelTest {
         }
     }
 
+    @Test
+    fun `shows 'cancelling' snackbar when cancel schedule send message is triggered`() = runTest {
+        // Given
+        val messageId = MessageIdSample.LocalDraft
+        val previousScheduleTime = PreviousScheduleSendTime(Instant.DISTANT_FUTURE)
+
+        coEvery { cancelScheduleSendMessage(userId, messageId) } returns previousScheduleTime.right()
+
+        // When
+        homeViewModel.undoScheduleSendMessage(messageId)
+
+        // Then
+        homeViewModel.state.test {
+            val expected: Effect<MessageSendingStatus> = Effect.of(
+                MessageSendingStatus.CancellingScheduleSend(messageId)
+            )
+            val actual = awaitItem()
+            assertEquals(expected, actual.messageSendingStatusEffect)
+            assertNotNull(actual.navigateToEffect.consume())
+        }
+    }
+
 }

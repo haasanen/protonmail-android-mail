@@ -333,12 +333,11 @@ fun Home(
     }
 
     val undoSendErrorMessage = stringResource(R.string.undo_failure_message)
-    fun showUndoSendErrorSnackbar() = scope.launch {
-        snackbarHost.showSnackbar(
-            type = ProtonSnackbarType.ERROR,
-            message = undoSendErrorMessage
-        )
-    }
+    fun showUndoSendErrorSnackbar() = showSnackbar(snackbarType = SnackbarError(undoSendErrorMessage))
+
+    val cancellingScheduleSendMessage = stringResource(R.string.cancelling_scheduled_send_message)
+    fun showCancellingScheduledMessageSnackbar() =
+        showSnackbar(snackbarType = SnackbarNormal(cancellingScheduleSendMessage))
 
     ConsumableLaunchedEffect(state.messageSendingStatusEffect) { sendingStatus ->
         when (sendingStatus) {
@@ -368,6 +367,10 @@ fun Home(
 
             is MessageSendingStatus.UndoSendError -> {
                 showUndoSendErrorSnackbar()
+            }
+
+            is MessageSendingStatus.CancellingScheduleSend -> {
+                showCancellingScheduledMessageSnackbar()
             }
         }
     }
