@@ -22,7 +22,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.ViewGroup.MarginLayoutParams
-import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.WindowCompat.getInsetsController
@@ -35,6 +34,7 @@ import com.journeyapps.barcodescanner.Size
 import dagger.hilt.android.AndroidEntryPoint
 import me.proton.android.core.devicemigration.presentation.R
 import me.proton.android.core.devicemigration.presentation.databinding.ActivityEdmQrCaptureBinding
+import me.proton.core.presentation.ui.ProtonActivity
 import me.proton.core.presentation.utils.doOnApplyWindowInsets
 import me.proton.core.presentation.utils.launchOnScreenView
 import me.proton.core.presentation.utils.onClick
@@ -48,7 +48,7 @@ import kotlin.math.roundToInt
  * Modeled after [com.journeyapps.barcodescanner.CaptureActivity].
  */
 @AndroidEntryPoint
-public class EdmQrCaptureActivity : ComponentActivity() {
+public class EdmQrCaptureActivity : ProtonActivity() {
 
     private val binding: ActivityEdmQrCaptureBinding by viewBinding(ActivityEdmQrCaptureBinding::inflate)
     private lateinit var capture: CaptureManager
