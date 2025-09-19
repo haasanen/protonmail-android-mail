@@ -38,6 +38,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.core.view.OnReceiveContentListener
@@ -61,6 +62,7 @@ import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyPla
 import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyWebView
 import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField
+import ch.protonmail.android.mailcomposer.presentation.ui.util.ComposerFocusUtils
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
@@ -121,6 +123,9 @@ internal fun ComposerForm(
             }
         }
 
+        val webViewCache = remember { mutableStateOf<WebView?>(null) }
+        val context = LocalContext.current
+
         Column(
             modifier = modifier.fillMaxWidth()
         ) {
@@ -157,7 +162,13 @@ internal fun ComposerForm(
                             .testTag(ComposerTestTags.Subject)
                             .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT),
                         focusRequester = fieldFocusRequesters.getValue(FocusedFieldType.SUBJECT),
-                        nextFocusRequester = fieldFocusRequesters.getValue(FocusedFieldType.BODY)
+                        nextFocusRequester = fieldFocusRequesters.getValue(FocusedFieldType.BODY),
+                        onNextToBody = {
+
+                            webViewCache.value?.let { webView ->
+                                ComposerFocusUtils.focusEditorAndShowKeyboard(webView, context)
+                            }
+                        }
                     )
                     MailDivider()
 
@@ -176,7 +187,6 @@ internal fun ComposerForm(
                 }
             }
 
-            val webViewCache = remember { mutableStateOf<WebView?>(null) }
             if (showSubjectAndBody) {
 
                 when (draftType) {

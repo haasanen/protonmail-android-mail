@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.KeyboardActionHandler
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Text
@@ -58,6 +59,7 @@ internal fun SubjectTextField(
     isFocused: Boolean,
     focusRequester: FocusRequester,
     nextFocusRequester: FocusRequester,
+    onNextToBody: () -> Unit,
     cursorColor: Color = ProtonTheme.colors.iconAccent,
     modifier: Modifier = Modifier
 ) {
@@ -85,6 +87,14 @@ internal fun SubjectTextField(
             textStyle = ProtonTheme.typography.bodyMediumNorm,
             lineLimits = TextFieldLineLimits.SingleLine,
             keyboardOptions = keyboardOptions,
+            onKeyboardAction = KeyboardActionHandler { performDefaultAction ->
+                // Do NOT call performDefaultAction(). We deliberately prevent Compose's
+                // default focus traversal because the target is a WebView (non-Compose focus node).
+                // Default traversal would hide the IME.
+                //
+                // Instead, perform a manual handoff to the WebView (focus editor + show IME).
+                onNextToBody()
+            },
             cursorBrush = SolidColor(cursorColor),
             decorator = { innerTextField ->
 

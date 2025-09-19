@@ -40,8 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -51,6 +51,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
+import ch.protonmail.android.mailcomposer.presentation.ui.util.ComposerFocusUtils
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
@@ -76,7 +77,6 @@ fun EditableMessageBodyWebView(
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val localDensity = LocalDensity.current
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     var webView by remember { mutableStateOf<WebView?>(null) }
     var currentCursorPosition = remember { 0.dp }
@@ -176,6 +176,7 @@ fun EditableMessageBodyWebView(
         val width = if (constraints.hasFixedWidth) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
         val height = if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
         val layoutParams = FrameLayout.LayoutParams(width, height)
+        val context = LocalContext.current
 
         AndroidView(
             factory = { context ->
@@ -192,6 +193,8 @@ fun EditableMessageBodyWebView(
                     this.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
                     this.webViewClient = client
 
+                    isFocusable = true
+                    isFocusableInTouchMode = true
                     webView = this
                 }
             },
@@ -200,10 +203,9 @@ fun EditableMessageBodyWebView(
                 .focusRequester(focusRequester)
                 .onFocusEvent { event ->
                     if (event.hasFocus) {
-                        Timber.d("editor-webview: composable webview has focus; focusing html element...")
-                        webView?.evaluateJavascript("focusEditor();") {
-                            Timber.d("editor-webview: editor webview got focused; show keyboard...")
-                            keyboardController?.show()
+                        webView?.let { wv ->
+                            Timber.d("editor-webview: focusing html element and showing keyboard...")
+                            ComposerFocusUtils.focusEditorAndShowKeyboard(wv, context)
                         }
                     }
                 },
