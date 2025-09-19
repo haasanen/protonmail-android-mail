@@ -30,7 +30,7 @@ fun MailDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(
         modifier = modifier.testTag(MailDividerTestTags.HeaderDivider),
         thickness = MailDimens.SeparatorHeight,
-        color = ProtonTheme.colors.separatorNorm
+        color = ProtonTheme.colors.borderNorm
     )
 }
 
