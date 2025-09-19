@@ -22,6 +22,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.navigation.NavOptions
 import app.cash.turbine.test
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.file.IntentExtraKeys
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
@@ -538,6 +539,39 @@ class HomeViewModelTest {
                 )
             )
             assertEquals(expected, awaitItem().navigateToEffect)
+        }
+    }
+
+    @Test
+    fun `show undo send error when cancel schedule send message fails`() = runTest {
+        // Given
+        val messageId = MessageIdSample.LocalDraft
+        val previousScheduleTime = PreviousScheduleSendTime(Instant.DISTANT_FUTURE)
+
+        coEvery { cancelScheduleSendMessage(userId, messageId) } returns DataError.Local.UndoSendError.left()
+
+        // When
+        homeViewModel.undoScheduleSendMessage(messageId)
+
+        // Then
+        homeViewModel.state.test {
+            val expected: Effect<MessageSendingStatus> = Effect.of(MessageSendingStatus.UndoSendError(messageId))
+            assertEquals(expected, awaitItem().messageSendingStatusEffect)
+        }
+    }
+
+    @Test
+    fun `show undo send error when undo send message fails`() = runTest {
+        // Given
+        coEvery { undoSendMessage(userId, messageId) } returns DataError.Local.UndoSendError.left()
+
+        // When
+        homeViewModel.undoSendMessage(messageId)
+
+        // Then
+        homeViewModel.state.test {
+            val expected: Effect<MessageSendingStatus> = Effect.of(MessageSendingStatus.UndoSendError(messageId))
+            assertEquals(expected, awaitItem().messageSendingStatusEffect)
         }
     }
 

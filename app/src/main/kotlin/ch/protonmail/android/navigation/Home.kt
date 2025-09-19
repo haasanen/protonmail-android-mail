@@ -332,6 +332,14 @@ fun Home(
         }
     }
 
+    val undoSendErrorMessage = stringResource(R.string.undo_failure_message)
+    fun showUndoSendErrorSnackbar() = scope.launch {
+        snackbarHost.showSnackbar(
+            type = ProtonSnackbarType.ERROR,
+            message = undoSendErrorMessage
+        )
+    }
+
     ConsumableLaunchedEffect(state.messageSendingStatusEffect) { sendingStatus ->
         when (sendingStatus) {
             is MessageSendingStatus.MessageSentFinal -> {
@@ -356,6 +364,10 @@ fun Home(
                 val formattedDate = viewModel.formatTime(sendingStatus.deliveryTime)
                 showMessageScheduleSentWithUndoSnackbar(sendingStatus.messageId, formattedDate)
                 viewModel.confirmMessageAsSeen(sendingStatus.messageId)
+            }
+
+            is MessageSendingStatus.UndoSendError -> {
+                showUndoSendErrorSnackbar()
             }
         }
     }

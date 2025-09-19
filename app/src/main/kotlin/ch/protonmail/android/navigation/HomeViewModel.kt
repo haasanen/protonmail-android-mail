@@ -142,6 +142,7 @@ class HomeViewModel @Inject constructor(
             primaryUserId.firstOrNull()?.let {
                 undoSendMessage(it, messageId)
                     .onRight { navigateToDraftInComposer(messageId) }
+                    .onLeft { showUndoSendError(messageId) }
             } ?: Timber.e("Primary user is not available!")
         }
     }
@@ -151,6 +152,7 @@ class HomeViewModel @Inject constructor(
             primaryUserId.firstOrNull()?.let { userId ->
                 cancelScheduleSendMessage(userId, messageId)
                     .onRight { navigateToDraftInComposer(messageId) }
+                    .onLeft { showUndoSendError(messageId) }
             } ?: Timber.e("Primary user is not available!")
         }
     }
@@ -166,6 +168,12 @@ class HomeViewModel @Inject constructor(
     fun recordViewOfMailboxScreen() = recordMailboxScreenView()
 
     fun formatTime(time: Instant) = formatFullDate(time)
+
+    private fun showUndoSendError(messageId: MessageId) {
+        mutableState.update {
+            it.copy(messageSendingStatusEffect = Effect.of(MessageSendingStatus.UndoSendError(messageId)))
+        }
+    }
 
     private fun navigateToDraftInComposer(messageId: MessageId) {
         val popUpToMailbox = NavOptions.Builder()
