@@ -18,7 +18,11 @@
 
 package ch.protonmail.android.mailsession.data.logging
 
-import timber.log.Timber
+import io.sentry.Sentry
+import io.sentry.SentryEvent
+import io.sentry.SentryLevel
+import io.sentry.protocol.Message
+import io.sentry.protocol.User
 import uniffi.proton_issue_reporter_service_uniffi.IssueLevel
 import uniffi.proton_issue_reporter_service_uniffi.IssueReporter
 import uniffi.proton_issue_reporter_service_uniffi.UserIssueReporter
@@ -31,8 +35,7 @@ class SentryIssueReporter @Inject constructor() : IssueReporter {
         message: String,
         keys: Map<String, String>
     ) {
-        timberLog(level, message, keys)
-
+        reportToSentry(level, message, keys)
     }
 
     override fun newUserReporter(userId: String): UserIssueReporter {
@@ -42,29 +45,39 @@ class SentryIssueReporter @Inject constructor() : IssueReporter {
                 message: String,
                 keys: Map<String, String>
             ) {
-                timberLog(level, message, keys, userId)
+                reportToSentry(level, message, keys, userId)
             }
-
         }
     }
 
-    private fun timberLog(
+    private fun reportToSentry(
         level: IssueLevel,
         message: String,
         keys: Map<String, String>,
         userId: String? = null
     ) {
-        val payload = when {
-            userId != null -> keys.toMutableMap().put("userId", userId)
-            else -> keys
-        }
-        when (level) {
-            IssueLevel.CRITICAL,
-            IssueLevel.ERROR -> Timber.e(message, payload)
+        val event = SentryEvent()
+        event.level = level.toSentryLevel()
+        event.message = message.toSentryMessage()
+        keys.forEach { key, value -> event.setExtra(key, value) }
 
-            IssueLevel.WARNING -> Timber.w(message, payload)
+        Sentry.captureEvent(event) { scope ->
+            userId?.let {
+                val user = User().apply { id = userId }
+                scope.user = user
+            }
         }
     }
 
+    private fun IssueLevel.toSentryLevel() = when (this) {
+        IssueLevel.CRITICAL -> SentryLevel.ERROR
+        IssueLevel.ERROR -> SentryLevel.ERROR
+        IssueLevel.WARNING -> SentryLevel.WARNING
+    }
 
+    private fun String.toSentryMessage(): Message {
+        val sentryMessage = Message()
+        sentryMessage.message = this
+        return sentryMessage
+    }
 }
