@@ -42,6 +42,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalContactFieldTelephones
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactFieldTimeZones
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactFieldTitles
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactFieldUrls
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactGroup
 import ch.protonmail.android.mailcommon.data.mapper.LocalExtendedName
 import ch.protonmail.android.mailcommon.data.mapper.LocalGenderKind
 import ch.protonmail.android.mailcommon.data.mapper.LocalGenderKindFemale
@@ -74,6 +75,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailTelephone
 import ch.protonmail.android.mailcontact.domain.model.ContactField
+import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.ExtendedName
 import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.PartialDate
@@ -126,7 +128,13 @@ private fun LocalPartialDate.toPartialDate() = PartialDate(
 
 private fun LocalContactDetailsEmail.toContactDetailEmail() = ContactDetailEmail(
     email = this.email,
-    emailType = this.emailType.map { it.toVCardPropType() }
+    emailType = this.emailType.map { it.toVCardPropType() },
+    groups = this.groups.map { it.toContactGroup() }
+)
+
+private fun LocalContactGroup.toContactGroup() = ContactGroup(
+    name = this.name,
+    color = this.color
 )
 
 private fun LocalContactDetailAddress.toContactDetailAddress() = ContactDetailAddress(

@@ -83,7 +83,13 @@ data class ContactDetailAddress(
 
 data class ContactDetailEmail(
     val email: String,
-    val emailType: List<VCardPropType>
+    val emailType: List<VCardPropType>,
+    val groups: List<ContactGroup>
+)
+
+data class ContactGroup(
+    val name: String,
+    val color: String
 )
 
 data class ContactDetailTelephone(

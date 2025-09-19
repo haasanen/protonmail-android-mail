@@ -13,6 +13,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactDetailAddress
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactField
+import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.ExtendedName
 import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.PartialDate
@@ -21,6 +22,7 @@ import ch.protonmail.android.mailcontact.domain.model.VCardUrl
 import ch.protonmail.android.mailcontact.domain.model.VCardUrlValue
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemBadgeUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemGroupUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemType
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemUiModel
@@ -61,11 +63,13 @@ class ContactDetailsUiModelMapperTest {
                     list = listOf(
                         ContactDetailEmail(
                             email = "pm@pm.me",
-                            emailType = listOf(VCardPropType.Home)
+                            emailType = listOf(VCardPropType.Home),
+                            groups = listOf(ContactGroup(name = "group", color = "color"))
                         ),
                         ContactDetailEmail(
                             email = "proton@pm.me",
-                            emailType = listOf(VCardPropType.Work)
+                            emailType = listOf(VCardPropType.Work),
+                            groups = emptyList()
                         )
                     )
                 ),
@@ -158,7 +162,8 @@ class ContactDetailsUiModelMapperTest {
                         ContactDetailsItemUiModel(
                             contactDetailsItemType = ContactDetailsItemType.Email,
                             label = TextUiModel.TextRes(R.string.contact_type_home),
-                            value = TextUiModel.Text("pm@pm.me")
+                            value = TextUiModel.Text("pm@pm.me"),
+                            badges = listOf(ContactDetailsItemBadgeUiModel(name = "group", color = Color.Blue))
                         ),
                         ContactDetailsItemUiModel(
                             contactDetailsItemType = ContactDetailsItemType.Email,

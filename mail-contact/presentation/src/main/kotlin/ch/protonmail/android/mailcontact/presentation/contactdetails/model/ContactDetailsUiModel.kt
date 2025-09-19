@@ -56,7 +56,13 @@ data class ContactDetailsItemGroupUiModel(
 data class ContactDetailsItemUiModel(
     val contactDetailsItemType: ContactDetailsItemType,
     val label: TextUiModel,
-    val value: TextUiModel
+    val value: TextUiModel,
+    val badges: List<ContactDetailsItemBadgeUiModel> = emptyList()
+)
+
+data class ContactDetailsItemBadgeUiModel(
+    val name: String,
+    val color: Color
 )
 
 enum class QuickActionType { Message, Call, Share }

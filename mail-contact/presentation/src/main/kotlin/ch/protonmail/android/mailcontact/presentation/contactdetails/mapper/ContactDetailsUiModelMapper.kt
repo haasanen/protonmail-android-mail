@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailTelephone
 import ch.protonmail.android.mailcontact.domain.model.ContactField
+import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.ExtendedName
 import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.VCardPropType
@@ -37,6 +38,7 @@ import ch.protonmail.android.mailcontact.domain.model.VCardUrl
 import ch.protonmail.android.mailcontact.domain.model.VCardUrlValue
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemBadgeUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemGroupUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemType
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemUiModel
@@ -137,7 +139,13 @@ class ContactDetailsUiModelMapper @Inject constructor(
         contactDetailsItemType = ContactDetailsItemType.Email,
         label = this.emailType.firstOrNull()?.toTextUiModel()
             ?: TextUiModel.TextRes(R.string.contact_type_email),
-        value = TextUiModel.Text(this.email)
+        value = TextUiModel.Text(this.email),
+        badges = this.groups.map { it.toUiModel() }
+    )
+
+    private fun ContactGroup.toUiModel() = ContactDetailsItemBadgeUiModel(
+        name = this.name,
+        color = colorMapper.toColor(this.color).getOrElse { Color.Unspecified }
     )
 
     private fun GenderKind.toUiModel(): ContactDetailsItemUiModel {

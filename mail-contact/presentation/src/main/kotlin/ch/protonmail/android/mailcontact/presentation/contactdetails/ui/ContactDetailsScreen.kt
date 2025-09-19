@@ -358,6 +358,15 @@ private fun ContactDetailsItemGroup(
                         }
                     )
                 )
+                if (uiModel.badges.isNotEmpty()) {
+                    Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        ContactDetailsBadges(uiModel.badges)
+                    }
+                }
             }
             if (index != itemGroupUiModel.contactDetailsItemUiModels.size - 1) {
                 MailDivider()

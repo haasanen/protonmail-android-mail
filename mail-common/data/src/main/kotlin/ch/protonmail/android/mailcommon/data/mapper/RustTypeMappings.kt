@@ -39,6 +39,7 @@ import uniffi.proton_mail_uniffi.ContactDetailsEmail
 import uniffi.proton_mail_uniffi.ContactDetailsTelephones
 import uniffi.proton_mail_uniffi.ContactEmailItem
 import uniffi.proton_mail_uniffi.ContactField
+import uniffi.proton_mail_uniffi.ContactGroup
 import uniffi.proton_mail_uniffi.ContactItem
 import uniffi.proton_mail_uniffi.ContactItemType
 import uniffi.proton_mail_uniffi.ContactSuggestion
@@ -187,6 +188,7 @@ typealias LocalContactFieldAddresses = ContactField.Addresses
 typealias LocalContactDetailAddress = ContactDetailAddress
 typealias LocalContactFieldEmails = ContactField.Emails
 typealias LocalContactDetailsEmail = ContactDetailsEmail
+typealias LocalContactGroup = ContactGroup
 typealias LocalContactFieldLanguages = ContactField.Languages
 typealias LocalContactFieldLogos = ContactField.Logos
 typealias LocalContactFieldMembers = ContactField.Members
