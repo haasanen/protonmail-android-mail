@@ -165,6 +165,7 @@ fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
         SendErrorReason.ErrorWithMessage.PackageError(v1)
 
     is DraftSendErrorReason.EoPasswordDecrypt -> SendErrorReason.ErrorNoMessage.ExternalPasswordDecryptFailed
+    DraftSendErrorReason.MessageTooLarge -> SendErrorReason.ErrorNoMessage.AttachmentTooLarge
 }
 
 fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
