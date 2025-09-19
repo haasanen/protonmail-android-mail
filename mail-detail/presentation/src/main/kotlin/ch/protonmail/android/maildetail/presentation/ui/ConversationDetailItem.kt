@@ -145,7 +145,7 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
             .border(
                 width = MailDimens.DefaultBorder,
                 color = ProtonTheme.colors.borderNorm,
-                shape = ProtonTheme.shapes.large
+                shape = ProtonTheme.shapes.conversation
             )
             .shadow(
                 elevation = if (isSystemInDarkTheme()) {
@@ -153,11 +153,11 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
                 } else {
                     ProtonDimens.ShadowElevation.Lifted
                 },
-                shape = ProtonTheme.shapes.large,
+                shape = ProtonTheme.shapes.conversation,
                 ambientColor = ProtonTheme.colors.shadowSoft,
                 spotColor = ProtonTheme.colors.shadowSoft
             ),
-        shape = ProtonTheme.shapes.large,
+        shape = ProtonTheme.shapes.conversation,
         colors = CardDefaults.elevatedCardColors(
             containerColor = ProtonTheme.colors.backgroundNorm
         ),
@@ -271,6 +271,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                 is RsvpWidgetUiModel.Error -> RsvpWidgetError(
                     onRetry = { actions.onRetryRsvpEventLoading(uiModel.messageId) }
                 )
+
                 is RsvpWidgetUiModel.Shown -> RsvpWidget(
                     uiModel = uiModel.messageRsvpWidgetUiModel.event,
                     actions = RsvpWidget.Actions(
