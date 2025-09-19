@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import androidx.navigation.NavOptions
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
 import ch.protonmail.android.mailcommon.data.file.isExternal
 import ch.protonmail.android.mailcommon.data.file.isStartedFromLauncher
@@ -146,8 +147,18 @@ class HomeViewModel @Inject constructor(
 
     fun undoScheduleSendMessage(messageId: MessageId) {
         viewModelScope.launch {
-            primaryUserId.firstOrNull()?.let {
-                cancelScheduleSendMessage(it, messageId)
+            primaryUserId.firstOrNull()?.let { userId ->
+                cancelScheduleSendMessage(userId, messageId)
+                    .onRight {
+                        val popUpToMailbox = NavOptions.Builder()
+                            .setPopUpTo(route = Destination.Screen.Mailbox.route, inclusive = false, saveState = false)
+                            .build()
+                        val navigateToComposer = NavigationEffect.NavigateTo(
+                            route = Destination.Screen.EditDraftComposer(messageId),
+                            navOptions = popUpToMailbox
+                        )
+                        mutableState.update { it.copy(navigateToEffect = Effect.of(navigateToComposer)) }
+                    }
             } ?: Timber.e("Primary user is not available!")
         }
     }

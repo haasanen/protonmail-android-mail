@@ -20,6 +20,7 @@ package ch.protonmail.android.navigation
 
 import android.content.Intent
 import android.net.Uri
+import androidx.navigation.NavOptions
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.file.IntentExtraKeys
@@ -43,6 +44,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessag
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.model.NavigationEffect
 import ch.protonmail.android.navigation.share.NewIntentObserver
@@ -490,6 +492,31 @@ class HomeViewModelTest {
 
         // Then
         coVerify { cancelScheduleSendMessage(userId, messageId) }
+    }
+
+    @Test
+    fun `navigate to draft when cancel schedule send message succeeds`() = runTest {
+        // Given
+        val messageId = MessageIdSample.LocalDraft
+        val previousScheduleTime = PreviousScheduleSendTime(Instant.DISTANT_FUTURE)
+
+        coEvery { cancelScheduleSendMessage(userId, messageId) } returns previousScheduleTime.right()
+
+        // When
+        homeViewModel.undoScheduleSendMessage(messageId)
+
+        // Then
+        homeViewModel.state.test {
+            val expected = Effect.of(
+                NavigationEffect.NavigateTo(
+                    route = Destination.Screen.EditDraftComposer(messageId),
+                    navOptions = NavOptions.Builder()
+                        .setPopUpTo(route = Destination.Screen.Mailbox.route, inclusive = false, saveState = false)
+                        .build()
+                )
+            )
+            assertEquals(expected, awaitItem().navigateToEffect)
+        }
     }
 
 }
