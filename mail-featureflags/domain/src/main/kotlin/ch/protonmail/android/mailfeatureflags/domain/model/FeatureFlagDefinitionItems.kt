@@ -50,6 +50,14 @@ data object UpsellingEnabled : FeatureFlagDefinition(
     defaultValue = true
 )
 
+data object AndroidDnsMultithread : FeatureFlagDefinition(
+    key = "MailAndroidV7DnsMultithread",
+    name = "Enable concurrent DNS resolutions",
+    category = FeatureFlagCategory.Global,
+    description = "Allow parallel execution of DNS callbacks",
+    defaultValue = false
+)
+
 data object MessageExpirationEnabled : FeatureFlagDefinition(
     key = "message_expiration_enabled",
     name = "Message Expiration",

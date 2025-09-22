@@ -29,7 +29,9 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEna
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.LinkifyUrlEnabled
@@ -96,6 +98,12 @@ object FeatureFlagsModule {
     fun provideUpsellEnabled(factory: BooleanFeatureFlagFactory) = factory.create(key = UpsellingEnabled.key, false)
 
     @Provides
+    @Singleton
+    @IsMultithreadDnsDispatcherEnabled
+    fun provideMultithreadedDnsDispatcher(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = AndroidDnsMultithread.key, false)
+
+    @Provides
     @IntoSet
     @Singleton
     fun provideDebugInspectDbEnabledDefinition(): FeatureFlagDefinition = DebugInspectDbEnabled
@@ -125,6 +133,11 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun provideUpsellEnabledDefinitions(): FeatureFlagDefinition = UpsellingEnabled
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideMultiThreadDnsDefinition(): FeatureFlagDefinition = AndroidDnsMultithread
 
     @Provides
     @IntoSet

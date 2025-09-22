@@ -24,68 +24,98 @@ import java.util.concurrent.Executors
 import android.net.DnsResolver
 import android.os.CancellationSignal
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.IpAddr
 import uniffi.proton_mail_uniffi.Resolver
 import uniffi.proton_mail_uniffi.ResolverException
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+@Singleton
 class AndroidDnsResolver @Inject constructor(
-    private val networkManager: NetworkManager
+    private val networkManager: NetworkManager,
+    @IsMultithreadDnsDispatcherEnabled private val isMultithreadDnsDispatcherEnabled: FeatureFlag<Boolean>
 ) : Resolver {
 
     private val resolver: DnsResolver = DnsResolver.getInstance()
 
-    private val executorService = Executors.newSingleThreadExecutor()
+    private val featureFlagMutex = Mutex()
+    private var useMultithreadDns: Boolean? = null
+
+    private val dispatcherIoAsExecutor by lazy {
+        Dispatchers.IO.asExecutor()
+    }
+
+    private val singleThreadExecutor by lazy {
+        Executors.newSingleThreadExecutor()
+    }
 
     @Throws(ResolverException::class)
-    override suspend fun resolve(host: String): List<IpAddr>? = suspendCancellableCoroutine { continuation ->
-        Timber.tag("DnsResolution").d("required for host: $host")
+    override suspend fun resolve(host: String): List<IpAddr>? {
+        val useMultithreadDispatcher = resolveFeatureFlag()
 
-        val network = runCatching { networkManager.activeNetwork }.getOrNull()
-        when {
-            network == null -> {
-                val exception = ResolverException.Network("Network is unavailable! Throwing")
-                Timber.tag("DnsResolution").d("DNS resolution error: $exception.")
-                continuation.resumeWithException(exception)
-            }
+        return suspendCancellableCoroutine { continuation ->
+            Timber.tag("DnsResolution").d("required for host: $host")
 
-            else -> {
-                Timber.tag("DnsResolution").d("Resolving via ${network.networkHandle}")
-
-                val cancelSignal = CancellationSignal()
-                continuation.invokeOnCancellation { cancelSignal.cancel() }
-
-                val callback = object : DnsResolver.Callback<List<InetAddress>> {
-
-                    override fun onAnswer(answer: List<InetAddress>, rcode: Int) {
-                        Timber.tag("DnsResolution").d("DNS host for '$host' resolved to $answer")
-                        continuation.resume(answer.mapNotNull { it.toRustIpAddress() })
-                    }
-
-                    override fun onError(error: DnsResolver.DnsException) {
-                        val exception = ResolverException.Other("DNS resolution for '$host' errored: $error")
-                        Timber.tag("DnsResolution").d("DNS resolution error: $exception")
-                        continuation.resumeWithException(exception)
-                    }
-                }
-
-                runCatching {
-                    resolver.query(
-                        network,
-                        host,
-                        DnsResolver.FLAG_EMPTY,
-                        executorService,
-                        cancelSignal,
-                        callback
-                    )
-                }.getOrElse {
-                    val exception = ResolverException.Other("DNS resolution for '$host' error from resolver: $it")
+            val network = runCatching { networkManager.activeNetwork }.getOrNull()
+            when {
+                network == null -> {
+                    val exception = ResolverException.Network("Network is unavailable! Throwing")
                     Timber.tag("DnsResolution").d("DNS resolution error: $exception")
                     continuation.resumeWithException(exception)
+                }
+
+                else -> {
+                    val executorType = if (useMultithreadDispatcher) "multithread" else "singlethread"
+                    Timber.tag("DnsResolution").d("Resolving via ${network.networkHandle} - $executorType")
+
+                    val cancelSignal = CancellationSignal()
+                    continuation.invokeOnCancellation { cancelSignal.cancel() }
+
+                    val callback = object : DnsResolver.Callback<List<InetAddress>> {
+
+                        override fun onAnswer(answer: List<InetAddress>, rcode: Int) {
+                            Timber.tag("DnsResolution").d("DNS host for '$host' resolved to $answer - $executorType")
+                            continuation.resume(answer.mapNotNull { it.toRustIpAddress() })
+                        }
+
+                        override fun onError(error: DnsResolver.DnsException) {
+                            val exception =
+                                ResolverException.Other("DNS resolution for '$host' errored: $error")
+                            Timber.tag("DnsResolution").d("DNS resolution error: $exception - $executorType")
+                            continuation.resumeWithException(exception)
+                        }
+                    }
+
+                    val executor = if (useMultithreadDispatcher) {
+                        dispatcherIoAsExecutor
+                    } else {
+                        singleThreadExecutor
+                    }
+
+                    runCatching {
+                        resolver.query(
+                            network,
+                            host,
+                            DnsResolver.FLAG_EMPTY,
+                            executor,
+                            cancelSignal,
+                            callback
+                        )
+                    }.getOrElse {
+                        val exception = ResolverException.Other("DNS resolution for '$host' error from resolver: $it")
+                        Timber.tag("DnsResolution").d("DNS resolution error: $exception - $executorType")
+                        continuation.resumeWithException(exception)
+                    }
                 }
             }
         }
@@ -102,6 +132,18 @@ class AndroidDnsResolver @Inject constructor(
         return when (this) {
             is Inet6Address -> IpAddr.V6(address)
             else -> IpAddr.V4(address)
+        }
+    }
+
+    private suspend fun resolveFeatureFlag(): Boolean {
+        return useMultithreadDns ?: featureFlagMutex.withLock {
+            useMultithreadDns ?: run {
+                Timber.tag("DnsResolution").d("Resolving multithread FF flag")
+                val featureFlagValue = isMultithreadDnsDispatcherEnabled.get()
+                Timber.tag("DnsResolution").d("FF resolved to $featureFlagValue")
+                useMultithreadDns = featureFlagValue
+                featureFlagValue
+            }
         }
     }
 }
