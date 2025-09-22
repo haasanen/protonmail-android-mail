@@ -30,6 +30,7 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBo
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationListBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
@@ -133,12 +134,13 @@ internal class RustConversationDataSourceImplTest {
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationIdSample.AugConversation
         val localLabelId = LocalLabelId(3uL)
+        val entryPoint = ConversationDetailEntryPoint.PushNotification
         coEvery {
-            rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId)
+            rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId, entryPoint)
         } returns flowOf(LocalConversationTestData.AugConversation.right())
 
         // When
-        val result = dataSource.observeConversation(userId, conversationId, localLabelId).first()
+        val result = dataSource.observeConversation(userId, conversationId, localLabelId, entryPoint).first()
 
         // Then
         assertEquals(LocalConversationTestData.AugConversation.right(), result)
@@ -159,19 +161,27 @@ internal class RustConversationDataSourceImplTest {
             messages = messages
         )
         val localLabelId = LocalLabelId(3uL)
+        val entryPoint = ConversationDetailEntryPoint.PushNotification
         coEvery {
             rustConversationDetailQuery.observeConversationMessages(
-                userId, conversationId, localLabelId
+                userId, conversationId, localLabelId, entryPoint
             )
         } returns flowOf(localConversationMessages.right())
 
         // When
-        dataSource.observeConversationMessages(userId, conversationId, localLabelId).test {
+        dataSource.observeConversationMessages(userId, conversationId, localLabelId, entryPoint).test {
 
             // Then
             val result = awaitItem()
             assertEquals(localConversationMessages.right(), result)
-            coVerify { rustConversationDetailQuery.observeConversationMessages(userId, conversationId, localLabelId) }
+            coVerify {
+                rustConversationDetailQuery.observeConversationMessages(
+                    userId,
+                    conversationId,
+                    localLabelId,
+                    entryPoint
+                )
+            }
 
             awaitComplete()
         }

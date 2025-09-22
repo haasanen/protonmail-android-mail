@@ -23,8 +23,10 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
+import ch.protonmail.android.mailconversation.data.mapper.toOrigin
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -72,9 +74,10 @@ class RustConversationDetailQueryImpl @Inject constructor(
     override suspend fun observeConversation(
         userId: UserId,
         conversationId: LocalConversationId,
-        labelId: LocalLabelId
+        labelId: LocalLabelId,
+        entryPoint: ConversationDetailEntryPoint
     ): Flow<Either<ConversationError, LocalConversation>> = callbackFlow {
-        initialiseOrUpdateWatcher(userId, conversationId, labelId)
+        initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint)
 
         val job = coroutineScope.launch {
             conversationStatusFlow.collect { value ->
@@ -99,9 +102,10 @@ class RustConversationDetailQueryImpl @Inject constructor(
     override suspend fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId,
-        labelId: LocalLabelId
+        labelId: LocalLabelId,
+        entryPoint: ConversationDetailEntryPoint
     ): Flow<Either<ConversationError, LocalConversationMessages>> = callbackFlow {
-        initialiseOrUpdateWatcher(userId, conversationId, labelId)
+        initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint)
 
         val job = coroutineScope.launch {
             conversationMessagesStatusFlow.collect { value ->
@@ -125,7 +129,8 @@ class RustConversationDetailQueryImpl @Inject constructor(
     private suspend fun initialiseOrUpdateWatcher(
         userId: UserId,
         conversationId: LocalConversationId,
-        labelId: LocalLabelId
+        labelId: LocalLabelId,
+        entryPoint: ConversationDetailEntryPoint
     ) {
         mutex.withLock {
             if (currentConversationId != conversationId || conversationWatcher == null || userId != currentUserId) {
@@ -141,7 +146,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                 currentUserId = userId
                 currentLabelId = labelId
                 val convoWatcherEither = createRustConversationWatcher(
-                    mailbox, conversationId, conversationUpdatedCallback()
+                    mailbox, conversationId, conversationUpdatedCallback(), entryPoint.toOrigin()
                 ).onLeft {
                     Timber.w("Failed to create watcher for conversation: $it")
                 }.onRight {

@@ -47,6 +47,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
@@ -227,11 +228,11 @@ class ConversationDetailViewModelTest {
         } returns flowOf(emptyList<ContactMetadata.Contact>().right())
     }
     private val observeConversation: ObserveConversation = mockk {
-        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
+        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any(), any()) } returns
             flowOf(ConversationSample.WeatherForecast.right())
     }
     private val observeConversationMessages: ObserveConversationMessages = mockk {
-        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns flowOf(
+        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any(), any()) } returns flowOf(
             ConversationMessages(
                 nonEmptyListOf(
                     MessageSample.Invoice,
@@ -243,7 +244,7 @@ class ConversationDetailViewModelTest {
     }
     private val observeDetailBottomBarActions = mockk<ObserveDetailBottomBarActions> {
         coEvery {
-            this@mockk(UserIdSample.Primary, any(), ConversationIdSample.WeatherForecast)
+            this@mockk(UserIdSample.Primary, any(), ConversationIdSample.WeatherForecast, any())
         } returns flowOf(
             listOf(Action.Archive, Action.MarkUnread).right()
         )
@@ -262,6 +263,8 @@ class ConversationDetailViewModelTest {
         every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns null
         every { get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns "allmail"
         every { get<String>(ConversationDetailScreen.IsSingleMessageMode) } returns "false"
+        every { get<String>(ConversationDetailScreen.ConversationDetailEntryPointNameKey) } returns
+            ConversationDetailEntryPoint.Mailbox.name
     }
     private val starMessages = mockk<StarMessages>()
     private val unStarMessages = mockk<UnStarMessages>()
@@ -473,7 +476,7 @@ class ConversationDetailViewModelTest {
         val labelId = LabelIdSample.AllMail
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
-            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
         } returns flowOf(ConversationError.UnknownMessage.left())
         coEvery {
             reducer.newStateFrom(
@@ -504,7 +507,7 @@ class ConversationDetailViewModelTest {
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
 
         coEvery {
-            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
         } returns flow {
             emit(ConversationSample.WeatherForecast.right())
             emit(ConversationError.Other(DataError.Remote.Http(NetworkError.NoNetwork)).left())
@@ -601,7 +604,7 @@ class ConversationDetailViewModelTest {
         val labelId = LabelIdSample.AllMail
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
-            observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+            observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
         } returns flowOf(ConversationError.Other(DataError.Remote.Http(NetworkError.ServerError)).left())
         coEvery {
             reducer.newStateFrom(
@@ -627,7 +630,7 @@ class ConversationDetailViewModelTest {
         val labelId = LabelIdSample.AllMail
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
-            observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+            observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
         } returns flowOf(ConversationError.Other(DataError.Remote.Http(NetworkError.NoNetwork)).left())
         coEvery {
             reducer.newStateFrom(
@@ -655,7 +658,7 @@ class ConversationDetailViewModelTest {
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
 
         coEvery {
-            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
         } returns flow {
             emit(ConversationError.Other(offlineError).left())
         }
@@ -702,7 +705,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
 
             coVerify(exactly = 2) {
-                observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+                observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
             }
 
             cancelAndIgnoreRemainingEvents()
@@ -729,7 +732,7 @@ class ConversationDetailViewModelTest {
         val expected = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
-            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any())
         } returns flowOf(actions.right())
         coEvery {
             reducer.newStateFrom(
@@ -766,7 +769,7 @@ class ConversationDetailViewModelTest {
         } returns messages.first()
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
-            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any())
         } returns flowOf(DataError.Local.NoDataCached.left())
         coEvery {
             reducer.newStateFrom(
@@ -795,7 +798,7 @@ class ConversationDetailViewModelTest {
 
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
-            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any())
         } returns flowOf(actions.right())
         coEvery {
             reducer.newStateFrom(
@@ -814,7 +817,12 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
 
             coVerify(exactly = 2) {
-                observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+                observeDetailBottomBarActions(
+                    UserIdSample.Primary,
+                    labelId,
+                    ConversationIdSample.WeatherForecast,
+                    any()
+                )
             }
 
             cancelAndIgnoreRemainingEvents()
@@ -1547,7 +1555,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
 
             // Then
-            coVerify { observeConversation(any(), any(), any()) }
+            coVerify { observeConversation(any(), any(), any(), any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1597,7 +1605,7 @@ class ConversationDetailViewModelTest {
         val labelId = LabelIdSample.AllMail
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
 
-        coEvery { observeConversationMessages(userId, conversationId, labelId) } returns flowOf(
+        coEvery { observeConversationMessages(userId, conversationId, labelId, any()) } returns flowOf(
             ConversationMessages(
                 nonEmptyListOf(
                     MessageSample.Invoice,
@@ -1999,7 +2007,8 @@ class ConversationDetailViewModelTest {
             observeConversationMessages(
                 UserIdSample.Primary,
                 ConversationIdSample.WeatherForecast,
-                labelId
+                labelId,
+                any()
             )
         } returns flowOf(
             ConversationMessages(

@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toAvailableActions
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -106,12 +107,14 @@ class RustConversationActionRepository @Inject constructor(
     override suspend fun observeAllBottomBarActions(
         userId: UserId,
         labelId: LabelId,
-        conversationId: ConversationId
+        conversationId: ConversationId,
+        entryPoint: ConversationDetailEntryPoint
     ): Flow<Either<DataError, AllBottomBarActions>> {
         return rustConversationDataSource.observeConversation(
             userId = userId,
             conversationId = conversationId.toLocalConversationId(),
-            labelId = labelId.toLocalLabelId()
+            labelId = labelId.toLocalLabelId(),
+            entryPoint = entryPoint
         ).mapLatest { conversationResult ->
             conversationResult.fold(
                 ifLeft = { error ->

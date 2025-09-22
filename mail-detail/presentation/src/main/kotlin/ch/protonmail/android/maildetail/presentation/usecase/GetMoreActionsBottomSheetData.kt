@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
@@ -66,10 +67,13 @@ class GetMoreActionsBottomSheetData @Inject constructor(
     suspend fun forConversation(
         userId: UserId,
         labelId: LabelId,
-        conversationId: ConversationId
+        conversationId: ConversationId,
+        entryPoint: ConversationDetailEntryPoint
     ): DetailMoreActionsBottomSheetEvent.DataLoaded? =
         getConversationAvailableActions(userId, labelId, conversationId).map { availableActions ->
-            val conversation = observeConversation(userId, conversationId, labelId).firstOrNull()?.getOrNull()
+            val conversation = observeConversation(userId, conversationId, labelId, entryPoint)
+                .firstOrNull()
+                ?.getOrNull()
                 ?: return null
 
             return DetailMoreActionsBottomSheetEvent.DataLoaded(

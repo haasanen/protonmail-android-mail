@@ -22,6 +22,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -48,10 +49,11 @@ class GetMessagesInSameExclusiveLocation @Inject constructor(
         userId: UserId,
         conversationId: ConversationId,
         messageId: MessageId,
-        labelId: LabelId
+        labelId: LabelId,
+        entryPoint: ConversationDetailEntryPoint
     ): Either<DataError, List<Message>> = either {
         val messages = observeConversationMessages
-            .invoke(userId, conversationId, labelId)
+            .invoke(userId, conversationId, labelId, entryPoint)
             .firstOrNull()
             ?.getOrNull()
             ?.messages

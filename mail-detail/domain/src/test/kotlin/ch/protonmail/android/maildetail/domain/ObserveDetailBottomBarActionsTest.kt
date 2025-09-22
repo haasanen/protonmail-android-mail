@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveAllConversationBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
@@ -65,12 +66,13 @@ internal class ObserveDetailBottomBarActionsTest {
             hiddenActions = listOf(Action.Star, Action.Label),
             visibleActions = listOf(Action.Spam, Action.Archive)
         )
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
-            observeAllConversationBottomBarActions(userId, labelId, conversationId)
+            observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint)
         } returns flowOf(allActions.right())
 
         // When
-        observeDetailActions(userId, labelId, conversationId).test {
+        observeDetailActions(userId, labelId, conversationId, entryPoint).test {
             // Then
             val expected = listOf(Action.Spam, Action.Archive)
             assertEquals(expected.right(), awaitItem())
@@ -109,9 +111,10 @@ internal class ObserveDetailBottomBarActionsTest {
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationIdSample.Invoices
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
 
         val flow = MutableSharedFlow<Either<DataError, AllBottomBarActions>>()
-        coEvery { observeAllConversationBottomBarActions(userId, labelId, conversationId) } returns flow
+        coEvery { observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint) } returns flow
 
         val actionsSet = AllBottomBarActions(
             visibleActions = listOf(Action.Spam, Action.Archive),
@@ -128,7 +131,7 @@ internal class ObserveDetailBottomBarActionsTest {
         val finalExpectedSet = listOf(Action.Star, Action.Label)
 
         // When + Then
-        observeDetailActions(userId, labelId, conversationId).test {
+        observeDetailActions(userId, labelId, conversationId, entryPoint).test {
             flow.emit(actionsSet.right())
             assertEquals(firstExpectedSet.right(), awaitItem())
 
@@ -144,10 +147,11 @@ internal class ObserveDetailBottomBarActionsTest {
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationIdSample.Invoices
         val error = DataError.Local.Unknown.left()
-        coEvery { observeDetailActions(userId, labelId, conversationId) } returns flowOf(error)
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
+        coEvery { observeDetailActions(userId, labelId, conversationId, entryPoint) } returns flowOf(error)
 
         // When
-        observeDetailActions(userId, labelId, conversationId).test {
+        observeDetailActions(userId, labelId, conversationId, entryPoint).test {
             // Then
             assertEquals(error, awaitItem())
             awaitComplete()

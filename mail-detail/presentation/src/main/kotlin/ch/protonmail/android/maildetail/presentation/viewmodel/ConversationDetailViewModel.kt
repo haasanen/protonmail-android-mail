@@ -39,6 +39,7 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.isOfflineError
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
@@ -254,6 +255,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val conversationId = requireConversationId()
     private val initialScrollToMessageId = getInitialScrollToMessageId()
     private val openedFromLocation = getOpenedFromLocation()
+    private val conversationEntryPoint = getEntryPoint()
     private val attachmentsState = MutableStateFlow<Map<MessageId, List<AttachmentMetadata>>>(emptyMap())
     val isSingleMessageModeEnabled = getIsSingleMessageMode()
 
@@ -539,7 +541,7 @@ class ConversationDetailViewModel @Inject constructor(
         .launchIn(viewModelScope)
 
     private fun observeConversationMetadata(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
-        observeConversation(userId, conversationId, openedFromLocation)
+        observeConversation(userId, conversationId, openedFromLocation, conversationEntryPoint)
             .mapLatest { either ->
                 either.fold(
                     ifLeft = {
@@ -563,7 +565,7 @@ class ConversationDetailViewModel @Inject constructor(
     @Suppress("LongMethod")
     private fun observeConversationMessages(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
         combine(
-            observeConversationMessages(userId, conversationId, openedFromLocation),
+            observeConversationMessages(userId, conversationId, openedFromLocation, conversationEntryPoint),
             observeConversationViewState(),
             observePrimaryUserAddress(),
             observeAvatarImageStates()
@@ -764,7 +766,7 @@ class ConversationDetailViewModel @Inject constructor(
                 )
             }
         } else {
-            observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
+            observeDetailActions(userId, labelId, conversationId, conversationEntryPoint).mapLatest { either ->
                 either.fold(
                     ifLeft = {
                         if (it.isOfflineError()) {
@@ -993,8 +995,12 @@ class ConversationDetailViewModel @Inject constructor(
 
             val userId = primaryUserId.first()
             val labelId = openedFromLocation
-            val moreActions = getMoreActionsBottomSheetData.forConversation(userId, labelId, conversationId)
-                ?: return@launch
+            val moreActions = getMoreActionsBottomSheetData.forConversation(
+                userId,
+                labelId,
+                conversationId,
+                conversationEntryPoint
+            ) ?: return@launch
 
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
         }
@@ -1021,6 +1027,12 @@ class ConversationDetailViewModel @Inject constructor(
         val labelId = savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey)
             ?: throw IllegalStateException("No opened from label id given")
         return LabelId(labelId)
+    }
+
+    private fun getEntryPoint(): ConversationDetailEntryPoint {
+        val value = savedStateHandle.get<String>(ConversationDetailScreen.ConversationDetailEntryPointNameKey)
+            ?: throw IllegalStateException("No Entry point given")
+        return ConversationDetailEntryPoint.valueOf(value)
     }
 
     private suspend fun emitNewStateFrom(event: ConversationDetailOperation) {
@@ -1559,7 +1571,8 @@ class ConversationDetailViewModel @Inject constructor(
             userId,
             conversationId,
             messageId,
-            labelId
+            labelId,
+            conversationEntryPoint
         ).getOrElse {
             Timber.d("Unable to determine the number of messages in the current location - $labelId")
             return true

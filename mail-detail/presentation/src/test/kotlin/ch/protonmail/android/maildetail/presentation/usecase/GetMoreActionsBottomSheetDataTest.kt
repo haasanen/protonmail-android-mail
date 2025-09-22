@@ -6,6 +6,7 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
@@ -141,13 +142,21 @@ class GetMoreActionsBottomSheetDataTest {
         val conversationId = ConversationIdSample.WeatherForecast
         val conversation = ConversationSample.WeatherForecast
         val availableActions = AvailableActionsTestData.replyActionsOnly
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
             getConversationAvailableActions(userId, labelId, conversationId)
         } returns availableActions.right()
-        coEvery { observeConversation(userId, conversationId, labelId) } returns flowOf(conversation.right())
+        coEvery {
+            observeConversation(
+                userId,
+                conversationId,
+                labelId,
+                entryPoint
+            )
+        } returns flowOf(conversation.right())
 
         // When
-        val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId)
+        val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId, entryPoint)
 
         // Then
         val expected = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
@@ -166,13 +175,21 @@ class GetMoreActionsBottomSheetDataTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Archive.labelId
         val conversationId = ConversationIdSample.WeatherForecast
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
             getConversationAvailableActions(userId, labelId, conversationId)
         } returns DataError.Local.NoDataCached.left()
-        coEvery { observeConversation(userId, conversationId, labelId) } returns flowOf(conversation.right())
+        coEvery {
+            observeConversation(
+                userId,
+                conversationId,
+                labelId,
+                entryPoint
+            )
+        } returns flowOf(conversation.right())
 
         // When
-        val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId)
+        val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId, entryPoint)
 
         // Then
         assertNull(actual)

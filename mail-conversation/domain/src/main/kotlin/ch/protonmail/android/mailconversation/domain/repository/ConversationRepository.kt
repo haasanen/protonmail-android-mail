@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -50,7 +51,8 @@ interface ConversationRepository {
     suspend fun observeConversation(
         userId: UserId,
         id: ConversationId,
-        labelId: LabelId
+        labelId: LabelId,
+        entryPoint: ConversationDetailEntryPoint
     ): Flow<Either<ConversationError, Conversation>>
 
     /**
@@ -59,7 +61,8 @@ interface ConversationRepository {
     suspend fun observeConversationMessages(
         userId: UserId,
         conversationId: ConversationId,
-        labelId: LabelId
+        labelId: LabelId,
+        entryPoint: ConversationDetailEntryPoint
     ): Flow<Either<ConversationError, ConversationMessages>>
 
     suspend fun move(

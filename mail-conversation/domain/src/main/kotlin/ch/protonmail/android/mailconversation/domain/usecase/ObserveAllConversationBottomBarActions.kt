@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailconversation.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.domain.entity.UserId
@@ -31,6 +32,7 @@ class ObserveAllConversationBottomBarActions @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
-        conversationId: ConversationId
-    ) = actionRepository.observeAllBottomBarActions(userId, labelId, conversationId)
+        conversationId: ConversationId,
+        entryPoint: ConversationDetailEntryPoint
+    ) = actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint)
 }

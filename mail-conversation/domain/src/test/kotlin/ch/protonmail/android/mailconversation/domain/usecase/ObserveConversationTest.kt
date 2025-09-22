@@ -22,6 +22,7 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -41,6 +42,7 @@ class ObserveConversationTest {
             this@mockk.observeConversation(
                 userId,
                 any(),
+                any(),
                 any()
             )
         } returns flowOf(ConversationError.UnknownLabel.left())
@@ -54,11 +56,12 @@ class ObserveConversationTest {
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val error = ConversationError.NullValueReturned
         val labelId = LabelId("3")
-        coEvery { repository.observeConversation(userId, conversationId, labelId) } returns
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
+        coEvery { repository.observeConversation(userId, conversationId, labelId, entryPoint) } returns
             flowOf(error.left())
 
         // When
-        observeConversation(userId, conversationId, labelId).test {
+        observeConversation(userId, conversationId, labelId, entryPoint).test {
             // Then
             assertEquals(error.left(), awaitItem())
             awaitComplete()
@@ -71,10 +74,13 @@ class ObserveConversationTest {
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val conversation = ConversationTestData.conversation
         val labelId = LabelId("3")
-        coEvery { repository.observeConversation(userId, conversationId, labelId) } returns flowOf(conversation.right())
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
+        coEvery { repository.observeConversation(userId, conversationId, labelId, entryPoint) } returns flowOf(
+            conversation.right()
+        )
 
         // When
-        observeConversation(userId, conversationId, labelId).test {
+        observeConversation(userId, conversationId, labelId, entryPoint).test {
             // Then
             assertEquals(conversation.right(), awaitItem())
             awaitComplete()
@@ -87,10 +93,13 @@ class ObserveConversationTest {
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val conversation = ConversationTestData.conversation
         val labelId = LabelId("3")
-        coEvery { repository.observeConversation(userId, conversationId, labelId) } returns flowOf(conversation.right())
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
+        coEvery { repository.observeConversation(userId, conversationId, labelId, entryPoint) } returns flowOf(
+            conversation.right()
+        )
 
         // When
-        observeConversation(userId, conversationId, labelId).test {
+        observeConversation(userId, conversationId, labelId, entryPoint).test {
             // Then
             assertEquals(conversation.right(), awaitItem())
             awaitComplete()

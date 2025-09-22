@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -324,12 +325,20 @@ internal class RustConversationActionRepositoryTest {
         val labelId = SystemLabelId.Inbox.labelId
         val conversationId = ConversationId("1")
         val expected = DataError.Local.NoDataCached.left()
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
 
-        coEvery { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) } returns
+        coEvery {
+            rustConversationDataSource.observeConversation(
+                userId,
+                any(),
+                labelId.toLocalLabelId(),
+                entryPoint
+            )
+        } returns
             flowOf(ConversationError.UnknownLabel.left())
 
         // When + Then
-        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId).test {
+        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint).test {
             assertEquals(expected, awaitItem())
             awaitComplete()
         }
@@ -351,6 +360,7 @@ internal class RustConversationActionRepositoryTest {
             listOf(ConversationAction.Star),
             listOf(ConversationAction.MarkRead)
         )
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
 
         coEvery {
             rustConversationDataSource.getAllAvailableBottomBarActions(
@@ -360,11 +370,18 @@ internal class RustConversationActionRepositoryTest {
             )
         } returns rustAvailableActions.right()
 
-        coEvery { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) } returns
+        coEvery {
+            rustConversationDataSource.observeConversation(
+                userId,
+                any(),
+                labelId.toLocalLabelId(),
+                entryPoint
+            )
+        } returns
             flowOf(mockk<LocalConversation>().right())
 
         // When + Then
-        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId).test {
+        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint).test {
             assertEquals(expectedActions, awaitItem())
             awaitComplete()
         }

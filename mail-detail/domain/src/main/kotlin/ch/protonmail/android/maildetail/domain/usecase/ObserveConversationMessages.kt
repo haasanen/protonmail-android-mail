@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -35,7 +36,8 @@ class ObserveConversationMessages @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         conversationId: ConversationId,
-        labelId: LabelId
+        labelId: LabelId,
+        entryPoint: ConversationDetailEntryPoint
     ): Flow<Either<ConversationError, ConversationMessages>> =
-        conversationRepository.observeConversationMessages(userId, conversationId, labelId)
+        conversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint)
 }

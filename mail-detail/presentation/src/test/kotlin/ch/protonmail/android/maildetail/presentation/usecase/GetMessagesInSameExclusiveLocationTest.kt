@@ -24,6 +24,7 @@ import arrow.core.nonEmptyListOf
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.presentation.usecase.TestData.conversationId
@@ -65,12 +66,13 @@ internal class GetMessagesInSameExclusiveLocationTest {
         @Test
         fun `should return error when messages can not be fetched`() = runTest {
             // Given
+            val entryPoint = ConversationDetailEntryPoint.Mailbox
             coEvery {
-                observeConversationMessages.invoke(userId, conversationId, localLabelId)
+                observeConversationMessages.invoke(userId, conversationId, localLabelId, entryPoint)
             } returns flowOf(ConversationError.UnknownLabel.left())
 
             // When
-            val result = getMessagesInSameExclusiveLocation(userId, conversationId, messageId, localLabelId)
+            val result = getMessagesInSameExclusiveLocation(userId, conversationId, messageId, localLabelId, entryPoint)
 
             // Then
             assertEquals(DataError.Local.NoDataCached.left(), result)
@@ -93,12 +95,19 @@ internal class GetMessagesInSameExclusiveLocationTest {
         @Test
         fun `should return the correct count of messages in the location`() = runTest {
             // Given
+            val entryPoint = ConversationDetailEntryPoint.Mailbox
             coEvery {
-                observeConversationMessages.invoke(userId, conversationId, localLabelId)
+                observeConversationMessages.invoke(userId, conversationId, localLabelId, entryPoint)
             } returns flowOf(ConversationMessages(testInput.messagesList, testInput.messageId).right())
 
             // When
-            val result = getMessagesInSameExclusiveLocation(userId, conversationId, testInput.messageId, localLabelId)
+            val result = getMessagesInSameExclusiveLocation(
+                userId,
+                conversationId,
+                testInput.messageId,
+                localLabelId,
+                entryPoint
+            )
                 .getOrNull()
 
             // Then

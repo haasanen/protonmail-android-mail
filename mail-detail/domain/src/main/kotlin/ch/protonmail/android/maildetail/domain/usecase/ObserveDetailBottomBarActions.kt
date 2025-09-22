@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveAllConversationBottomBarActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -40,8 +41,14 @@ class ObserveDetailBottomBarActions @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
-        conversationId: ConversationId
-    ): Flow<Either<DataError, List<Action>>> = observeAllConversationBottomBarActions(userId, labelId, conversationId)
+        conversationId: ConversationId,
+        entryPoint: ConversationDetailEntryPoint
+    ): Flow<Either<DataError, List<Action>>> = observeAllConversationBottomBarActions(
+        userId,
+        labelId,
+        conversationId,
+        entryPoint
+    )
         .map { eitherResult ->
             eitherResult.map { allBottomBarActions ->
                 allBottomBarActions.visibleActions

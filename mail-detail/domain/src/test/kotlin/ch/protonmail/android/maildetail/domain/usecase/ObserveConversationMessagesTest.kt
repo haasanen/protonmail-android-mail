@@ -24,6 +24,7 @@ import arrow.core.nonEmptyListOf
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -56,9 +57,10 @@ internal class ObserveConversationMessagesTest {
             MessageSample.AugWeatherForecast.messageId
         ).right()
         val labelId = LabelId("1")
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
             conversationRepository.observeConversationMessages(
-                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId
+                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, entryPoint
             )
         } returns flowOf(conversationMessages.right())
 
@@ -66,7 +68,8 @@ internal class ObserveConversationMessagesTest {
         observeConversationMessages(
             UserIdSample.Primary,
             ConversationIdSample.WeatherForecast,
-            labelId
+            labelId,
+            entryPoint
         ).test {
 
             // then
@@ -84,9 +87,10 @@ internal class ObserveConversationMessagesTest {
             message.messageId
         ).right()
         val labelId = LabelId("1")
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
             conversationRepository.observeConversationMessages(
-                UserIdSample.Primary, ConversationIdSample.Invoices, labelId
+                UserIdSample.Primary, ConversationIdSample.Invoices, labelId, entryPoint
             )
         } returns
             flowOf(ConversationMessages(nonEmptyListOf(message), MessageSample.Invoice.messageId).right())
@@ -95,7 +99,8 @@ internal class ObserveConversationMessagesTest {
         observeConversationMessages(
             UserIdSample.Primary,
             ConversationIdSample.Invoices,
-            labelId
+            labelId,
+            entryPoint
         ).test {
 
             // then
@@ -109,9 +114,10 @@ internal class ObserveConversationMessagesTest {
         // given
         val error = ConversationError.NullValueReturned.left()
         val labelId = LabelId("1")
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
             conversationRepository.observeConversationMessages(
-                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId
+                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, entryPoint
             )
         } returns flowOf(error)
 
@@ -119,7 +125,8 @@ internal class ObserveConversationMessagesTest {
         observeConversationMessages(
             UserIdSample.Primary,
             ConversationIdSample.WeatherForecast,
-            labelId
+            labelId,
+            entryPoint
         ).test {
 
             // then

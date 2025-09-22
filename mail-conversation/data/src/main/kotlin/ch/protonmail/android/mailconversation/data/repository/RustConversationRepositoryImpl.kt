@@ -28,6 +28,7 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationDataSou
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -63,18 +64,28 @@ class RustConversationRepositoryImpl @Inject constructor(
     override suspend fun observeConversation(
         userId: UserId,
         id: ConversationId,
-        labelId: LabelId
+        labelId: LabelId,
+        entryPoint: ConversationDetailEntryPoint
     ): Flow<Either<ConversationError, Conversation>> = rustConversationDataSource
-        .observeConversation(userId, id.toLocalConversationId(), labelId.toLocalLabelId())
+        .observeConversation(
+            userId = userId,
+            conversationId = id.toLocalConversationId(),
+            labelId = labelId.toLocalLabelId(),
+            entryPoint = entryPoint
+        )
         .map { eitherFlow -> eitherFlow.map { it.toConversation() } }
 
 
     override suspend fun observeConversationMessages(
         userId: UserId,
         conversationId: ConversationId,
-        labelId: LabelId
+        labelId: LabelId,
+        entryPoint: ConversationDetailEntryPoint
     ): Flow<Either<ConversationError, ConversationMessages>> = rustConversationDataSource.observeConversationMessages(
-        userId, conversationId.toLocalConversationId(), labelId.toLocalLabelId()
+        userId = userId,
+        conversationId = conversationId.toLocalConversationId(),
+        labelId = labelId.toLocalLabelId(),
+        entryPoint = entryPoint
     ).map { eitherConversationMessages ->
         eitherConversationMessages.flatMap { it.toConversationMessagesWithMessageToOpen() }
     }

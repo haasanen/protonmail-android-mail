@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
@@ -40,6 +41,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeInformation
+import uniffi.proton_mail_uniffi.OpenConversationOrigin
 
 fun LocalConversation.toConversation() = Conversation(
     conversationId = this.id.toConversationId(),
@@ -79,3 +81,7 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen():
     ).right()
 }
 
+fun ConversationDetailEntryPoint.toOrigin() = when (this) {
+    ConversationDetailEntryPoint.PushNotification -> OpenConversationOrigin.PUSH_NOTIFICATION
+    ConversationDetailEntryPoint.Mailbox -> OpenConversationOrigin.DEFAULT
+}

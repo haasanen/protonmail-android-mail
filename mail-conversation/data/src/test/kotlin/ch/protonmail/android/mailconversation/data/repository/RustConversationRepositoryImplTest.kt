@@ -29,6 +29,7 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationDataSou
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -97,21 +98,30 @@ class RustConversationRepositoryImplTest {
         val localConversation = LocalConversationTestData.AugConversation
         val expected = localConversation.toConversation()
         val labelId = LabelId("2")
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
             rustConversationDataSource.observeConversation(
                 userId,
                 any(),
-                labelId.toLocalLabelId()
+                labelId.toLocalLabelId(),
+                entryPoint
             )
         } returns flowOf(localConversation.right())
 
         // When
-        rustConversationRepository.observeConversation(userId, conversationId, labelId).test {
+        rustConversationRepository.observeConversation(userId, conversationId, labelId, entryPoint).test {
             val result = awaitItem().getOrNull()
 
             // Then
             assertEquals(expected, result)
-            coVerify { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) }
+            coVerify {
+                rustConversationDataSource.observeConversation(
+                    userId,
+                    any(),
+                    labelId.toLocalLabelId(),
+                    entryPoint
+                )
+            }
 
             awaitComplete()
         }
@@ -123,17 +133,32 @@ class RustConversationRepositoryImplTest {
         // Given
         val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val labelId = LabelId("2")
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
 
-        coEvery { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) } returns
+        coEvery {
+            rustConversationDataSource.observeConversation(
+                userId,
+                any(),
+                labelId.toLocalLabelId(),
+                entryPoint
+            )
+        } returns
             flowOf(ConversationError.NullValueReturned.left())
 
         // When
-        rustConversationRepository.observeConversation(userId, conversationId, labelId).test {
+        rustConversationRepository.observeConversation(userId, conversationId, labelId, entryPoint).test {
             val result = awaitItem().getOrNull()
 
             // Then
             assertEquals(null, result)
-            coVerify { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) }
+            coVerify {
+                rustConversationDataSource.observeConversation(
+                    userId,
+                    any(),
+                    labelId.toLocalLabelId(),
+                    entryPoint
+                )
+            }
 
             awaitComplete()
         }
@@ -155,17 +180,19 @@ class RustConversationRepositoryImplTest {
         )
         val expectedConversationMessages = localConversationMessages.toConversationMessagesWithMessageToOpen()
         val labelId = LabelId("2")
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
 
         coEvery {
             rustConversationDataSource.observeConversationMessages(
                 userId,
                 conversationId.toLocalConversationId(),
-                labelId.toLocalLabelId()
+                labelId.toLocalLabelId(),
+                entryPoint
             )
         } returns flowOf(localConversationMessages.right())
 
         // When
-        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId).test {
+        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint).test {
             val result = awaitItem()
 
             // Then
@@ -174,7 +201,8 @@ class RustConversationRepositoryImplTest {
                 rustConversationDataSource.observeConversationMessages(
                     userId,
                     conversationId.toLocalConversationId(),
-                    labelId.toLocalLabelId()
+                    labelId.toLocalLabelId(),
+                    entryPoint
                 )
             }
             awaitComplete()
@@ -188,17 +216,19 @@ class RustConversationRepositoryImplTest {
         val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val expectedError = ConversationError.ConvoWithNoMessages.left()
         val labelId = LabelId("2")
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
 
         coEvery {
             rustConversationDataSource.observeConversationMessages(
                 userId,
                 conversationId.toLocalConversationId(),
-                labelId.toLocalLabelId()
+                labelId.toLocalLabelId(),
+                entryPoint
             )
         } returns flowOf(LocalConversationMessages(LocalMessageIdSample.AugWeatherForecast, emptyList()).right())
 
         // When
-        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId).test {
+        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint).test {
             val result = awaitItem()
 
             // Then
@@ -207,7 +237,8 @@ class RustConversationRepositoryImplTest {
                 rustConversationDataSource.observeConversationMessages(
                     userId,
                     conversationId.toLocalConversationId(),
-                    labelId.toLocalLabelId()
+                    labelId.toLocalLabelId(),
+                    entryPoint
                 )
             }
             awaitComplete()

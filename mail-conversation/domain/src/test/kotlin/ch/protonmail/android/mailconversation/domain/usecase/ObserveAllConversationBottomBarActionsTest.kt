@@ -9,6 +9,7 @@ import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import io.mockk.coEvery
@@ -37,12 +38,13 @@ class ObserveAllConversationBottomBarActionsTest {
                 listOf(Action.Star, Action.Label)
             ).right()
         )
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
-            actionRepository.observeAllBottomBarActions(userId, labelId, conversationId)
+            actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint)
         } returns expected
 
         // When
-        val actual = observeAllConversationBottomBarActions(userId, labelId, conversationId)
+        val actual = observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint)
 
         // Then
         assertEquals(expected, actual)
@@ -55,6 +57,7 @@ class ObserveAllConversationBottomBarActionsTest {
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationIdSample.Newsletter
         val sharedFlow = MutableSharedFlow<Either<DataError, AllBottomBarActions>>()
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
 
         val expectedFirst =
             AllBottomBarActions(listOf(Action.MarkRead, Action.MarkUnread), listOf(Action.Star, Action.Label)).right()
@@ -66,11 +69,11 @@ class ObserveAllConversationBottomBarActionsTest {
             ).right()
 
         coEvery {
-            actionRepository.observeAllBottomBarActions(userId, labelId, conversationId)
+            actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint)
         } returns sharedFlow
 
         // When + Then
-        observeAllConversationBottomBarActions(userId, labelId, conversationId).test {
+        observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint).test {
             sharedFlow.emit(expectedFirst)
             assertEquals(expectedFirst, awaitItem())
             sharedFlow.emit(expectedSecond)
@@ -85,10 +88,18 @@ class ObserveAllConversationBottomBarActionsTest {
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationIdSample.Newsletter
         val expected = flowOf(DataError.Local.Unknown.left())
-        coEvery { actionRepository.observeAllBottomBarActions(userId, labelId, conversationId) } returns expected
+        val entryPoint = ConversationDetailEntryPoint.Mailbox
+        coEvery {
+            actionRepository.observeAllBottomBarActions(
+                userId,
+                labelId,
+                conversationId,
+                entryPoint
+            )
+        } returns expected
 
         // When
-        val actual = observeAllConversationBottomBarActions(userId, labelId, conversationId)
+        val actual = observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint)
 
         // Then
         assertEquals(expected, actual)
