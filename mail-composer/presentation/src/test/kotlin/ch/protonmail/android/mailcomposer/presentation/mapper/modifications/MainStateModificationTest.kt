@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
 import kotlinx.collections.immutable.toImmutableList
@@ -75,9 +76,10 @@ internal class MainStateModificationTest(
             arrayOf(
                 "set sender and quoted content from initial state",
                 initialState,
-                MainStateModification.OnDraftReady(draftUiModel),
+                MainStateModification.OnDraftReady(draftUiModel, true),
                 initialState.copy(
-                    sender = SenderUiModel(draftUiModel.draftFields.sender.value)
+                    sender = SenderUiModel(draftUiModel.draftFields.sender.value),
+                    initialFocusedField = FocusedFieldType.BODY
                 )
             ),
             arrayOf(

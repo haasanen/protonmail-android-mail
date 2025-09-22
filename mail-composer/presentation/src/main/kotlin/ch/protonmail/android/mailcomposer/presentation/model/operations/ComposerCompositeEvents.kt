@@ -41,7 +41,7 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
 
     override fun toStateModifications(): ComposerStateModifications = when (this) {
         is DraftContentReady -> ComposerStateModifications(
-            mainModification = MainStateModification.OnDraftReady(draftUiModel),
+            mainModification = MainStateModification.OnDraftReady(draftUiModel, bodyShouldTakeFocus),
             effectsModification = ContentEffectsStateModifications.DraftContentReady(
                 fields = draftUiModel,
                 isDataRefresh = isDataRefreshed,
@@ -50,7 +50,7 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         )
 
         is DraftContentUpdated -> ComposerStateModifications(
-            mainModification = MainStateModification.OnDraftReady(draftUiModel),
+            mainModification = MainStateModification.OnDraftReady(draftUiModel, false),
             effectsModification = ContentEffectsStateModifications.DraftBodyChanged(
                 refreshedBody = draftUiModel.draftDisplayBodyUiModel
             )

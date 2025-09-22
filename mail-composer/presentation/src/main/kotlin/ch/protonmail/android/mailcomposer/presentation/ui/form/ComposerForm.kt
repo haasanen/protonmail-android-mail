@@ -81,6 +81,7 @@ internal fun ComposerForm(
     bodyTextFieldState: TextFieldState,
     attachments: AttachmentGroupUiModel,
     focusTextBody: Effect<Unit>,
+    initialFocusField: FocusedFieldType = FocusedFieldType.TO,
     actions: ComposerForm.Actions,
     formHeightPx: Float,
     injectInlineAttachments: Effect<List<String>>,
@@ -108,7 +109,7 @@ internal fun ComposerForm(
             FocusedFieldType.SUBJECT,
             FocusedFieldType.BODY
         ),
-        initialFocus = FocusedFieldType.TO,
+        initialFocus = initialFocusField,
         onFocusedField = {
             Timber.d("Focus changed: onFocusedField: $it")
 

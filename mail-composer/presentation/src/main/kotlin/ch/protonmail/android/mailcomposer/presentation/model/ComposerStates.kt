@@ -49,7 +49,8 @@ sealed interface ComposerState {
         val draftType: DraftMimeType,
         val senderAddresses: ImmutableList<SenderUiModel>,
         val isSubmittable: Boolean,
-        val loadingType: LoadingType
+        val loadingType: LoadingType,
+        val initialFocusedField: FocusedFieldType
     ) {
 
         companion object {
@@ -59,7 +60,8 @@ sealed interface ComposerState {
                 draftType = DraftMimeType.Html,
                 senderAddresses = emptyList<SenderUiModel>().toImmutableList(),
                 isSubmittable = false,
-                loadingType = LoadingType.None
+                loadingType = LoadingType.None,
+                initialFocusedField = FocusedFieldType.TO
             )
         }
     }

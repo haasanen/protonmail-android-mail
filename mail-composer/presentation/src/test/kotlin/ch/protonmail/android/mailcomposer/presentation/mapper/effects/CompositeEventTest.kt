@@ -111,7 +111,8 @@ internal class CompositeEventTest(
                 draftContentReady,
                 ComposerStateModifications(
                     mainModification = MainStateModification.OnDraftReady(
-                        draftUiModel = draftUiModel
+                        draftUiModel = draftUiModel,
+                        bodyShouldTakeFocus = draftContentReady.bodyShouldTakeFocus
                     ),
                     effectsModification = ContentEffectsStateModifications.DraftContentReady(
                         draftUiModel,
