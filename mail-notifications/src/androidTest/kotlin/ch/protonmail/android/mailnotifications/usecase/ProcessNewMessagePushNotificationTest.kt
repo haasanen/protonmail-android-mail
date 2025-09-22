@@ -41,18 +41,14 @@ import ch.protonmail.android.mailnotifications.domain.usecase.intents.CreateNewM
 import ch.protonmail.android.mailnotifications.subText
 import ch.protonmail.android.mailnotifications.text
 import ch.protonmail.android.mailnotifications.title
-import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsettings.domain.model.ExtendedNotificationPreference
 import ch.protonmail.android.mailsettings.domain.usecase.notifications.GetExtendedNotificationsSetting
 import ch.protonmail.android.test.annotations.suite.SmokeTest
 import io.mockk.CapturingSlot
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.runs
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.unmockkAll
@@ -89,10 +85,6 @@ internal class ProcessNewMessagePushNotificationTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private val eventLoopRepository = mockk<EventLoopRepository> {
-        coEvery { this@mockk.trigger(any()) } just runs
-    }
-
     private val processNewMessagePushNotification: ProcessNewMessagePushNotification
         get() = ProcessNewMessagePushNotification(
             context,
@@ -100,8 +92,7 @@ internal class ProcessNewMessagePushNotificationTest {
             notificationManagerCompatProxy,
             getNotificationsExtendedPreference,
             createNewMessageNavigationIntent,
-            createNotificationAction,
-            eventLoopRepository
+            createNotificationAction
         )
 
     private val userData = LocalPushNotificationData.UserPushData(UserId(RawUserId), RawUserEmail)
@@ -172,10 +163,6 @@ internal class ProcessNewMessagePushNotificationTest {
             createNotificationAction(expectedMarkAsReadPayload)
             createNotificationAction(dismissNotificationPayload)
             createNotificationAction(dismissGroupPayload)
-        }
-
-        coVerify {
-            eventLoopRepository.trigger(userData.userId)
         }
 
         confirmVerified(createNotificationAction)

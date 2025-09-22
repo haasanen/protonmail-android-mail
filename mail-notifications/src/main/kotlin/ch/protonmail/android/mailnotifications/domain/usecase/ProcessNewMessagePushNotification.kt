@@ -30,7 +30,6 @@ import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSend
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNotificationAction
 import ch.protonmail.android.mailnotifications.domain.usecase.intents.CreateNewMessageNavigationIntent
-import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsettings.domain.usecase.notifications.GetExtendedNotificationsSetting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -41,8 +40,7 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
     private val notificationManagerCompatProxy: NotificationManagerCompatProxy,
     private val getNotificationsExtendedPreference: GetExtendedNotificationsSetting,
     private val createNewMessageNavigationIntent: CreateNewMessageNavigationIntent,
-    private val createNotificationAction: CreateNotificationAction,
-    private val eventLoopRepository: EventLoopRepository
+    private val createNotificationAction: CreateNotificationAction
 ) {
 
     @Suppress("LongMethod")
@@ -50,13 +48,6 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
 
         val userData = notificationData.userData
         val pushData = notificationData.pushData
-
-        // Trigger event loop when notifications arrive, as required metadata might not be there (yet)
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastExecutionTime >= DEBOUNCE_INTERVAL_MS) {
-            lastExecutionTime = currentTime
-            eventLoopRepository.trigger(userData.userId)
-        }
 
         val notificationTitle = resolveNotificationTitle(pushData.sender)
         val notificationUserAddress = userData.userEmail
@@ -136,9 +127,4 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
         }
     }
 
-    companion object {
-
-        private var lastExecutionTime: Long = 0
-        private const val DEBOUNCE_INTERVAL_MS = 1_000
-    }
 }
