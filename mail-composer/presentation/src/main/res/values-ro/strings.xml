@@ -72,15 +72,15 @@
   <string name="composer_bottom_bar_expiration_time_one_day">o zi</string>
   <string name="composer_bottom_bar_expiration_time_three_days">3 zile</string>
   <string name="composer_bottom_bar_expiration_time_one_week">o săptămână</string>
-  <string name="composer_bottom_bar_expiration_time_custom">On specific date</string>
+  <string name="composer_bottom_bar_expiration_time_custom">La o anumită dată</string>
   <string name="composer_error_setting_expiration_time">Setarea timpului de expirare a eșuat.</string>
   <!-- Send expiring message to external recipients dialog -->
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Add Password to Use Expiration</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Adăugați parola pentru a utiliza expirarea</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_cancel">Anulare</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Trimitere așa</string>
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Add password protection</string>
-  <string name="composer_send_expiring_message_to_external_may_fail">We could not confirm all recipients use Proton Mail. Only Proton addresses support message expiration. In this case, we suggest adding a password instead.</string>
-  <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Adăugare protecție cu parolă</string>
+  <string name="composer_send_expiring_message_to_external_may_fail">Nu s-a putut confirma dacă toți destinatarii folosesc Proton Mail. Doar adresele Proton acceptă expirarea mesajelor. În acest caz, vă sugerăm să adăugați o parolă.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail">Unii destinatari (%1$s) nu acceptă expirarea în mod implicit. Adăugați o parolă pentru a activa expirarea pentru destinatarii care nu folosesc Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Notificare trimitere</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Trimiterea de mesaje de la adrese cu domeniul @pm.me este o funcție cu plată. Mesajul vă va fi trimis de pe adresa implicită.</string>
@@ -151,9 +151,9 @@
   <string name="composer_attachment_upload_error_retry">Câteva atașamente nu au putut fi încărcate. Mai încercați.</string>
   <string name="composer_external_encryption_unexpected_error">Eroare neașteptată %s. Reîncercați.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Adresa selectată nu poate fi folosită pentru trimitere. Mesajul va fi trimis de la adresa implicită.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder.To expire messages for non-Proton users, add a password.</string>
-  <string name="expiration_time_set_time_and_date">Set time and date</string>
-  <string name="composer_expiration_set_expiration">Set expiration</string>
-  <string name="composer_expiration_pick_time_title">Set time</string>
-  <string name="composer_expiration_time_custom_time_on">On %1$s</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Stabiliți când mesajul va fi șters din mesajele primite ale destinatarului și folderul de mesaje trimise personal. Pentru ca mesajele să expire pentru utilizatorii non-Proton, adăugați o parolă.</string>
+  <string name="expiration_time_set_time_and_date">Setare oră și dată</string>
+  <string name="composer_expiration_set_expiration">Setare expirare</string>
+  <string name="composer_expiration_pick_time_title">Setare oră</string>
+  <string name="composer_expiration_time_custom_time_on">La %1$s</string>
 </resources>

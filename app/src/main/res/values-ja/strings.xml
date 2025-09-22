@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">サインアウト</string>
-  <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
+  <string name="dialog_sign_out_account_description">アカウントに関連付けられたデータは、削除を選択しない限り、このデバイスに残ります。</string>
   <string name="dialog_sign_out_account_confirm">サインアウト</string>
   <string name="dialog_sign_out_account_cancel">キャンセル</string>
   <string name="dialog_remove_account_title">アカウントを削除?</string>

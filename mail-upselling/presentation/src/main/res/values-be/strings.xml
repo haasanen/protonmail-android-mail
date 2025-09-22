@@ -19,7 +19,7 @@
 <resources>
   <!-- Upselling -->
   <string name="upselling_button_item_content_description">Кнопка паляпшэння</string>
-  <string name="upselling_close_button_content_description">Кнопка Закрыць</string>
+  <string name="upselling_close_button_content_description">Кнопка закрыцця</string>
   <!-- Upselling: Mailbox -->
   <string name="upselling_mailbox_plus_description_override">Для разблакіроўкі большага памеру сховішча і прэміяльных функцый.</string>
   <string name="upselling_mailbox_plus_title">Палепшыць да Mail Plus</string>

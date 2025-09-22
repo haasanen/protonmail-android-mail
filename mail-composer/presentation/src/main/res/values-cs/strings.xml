@@ -156,5 +156,5 @@
   <string name="expiration_time_set_time_and_date">Nastavit čas a datum</string>
   <string name="composer_expiration_set_expiration">Nastavit vypršení platnosti</string>
   <string name="composer_expiration_pick_time_title">Nastavit čas</string>
-  <string name="composer_expiration_time_custom_time_on">%1$s</string>
+  <string name="composer_expiration_time_custom_time_on">V(e) %1$s</string>
 </resources>

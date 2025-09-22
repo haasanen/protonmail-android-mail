@@ -179,9 +179,9 @@
   <string name="snooze_message_unsnooze_banner_button">Anuluj odłożenie</string>
   <string name="unsubscribe_newsletter_banner_message">Wiadomość pochodzi z listy mailingowej.</string>
   <string name="unsubscribe_newsletter_banner_button">Anuluj subskrypcję</string>
-  <string name="unsubscribe_newsletter_dialog_text">Czy na pewno chcesz się wypisać? Nie będziesz już otrzymywać e-maili z tej listy mailingowej.</string>
+  <string name="unsubscribe_newsletter_dialog_text">Czy na pewno chcesz anulować subskrypcję? Nie będziesz już otrzymywać wiadomości z tej listy mailingowej.</string>
   <string name="unsubscribe_newsletter_dialog_cancel">Anuluj</string>
-  <string name="unsubscribe_newsletter_dialog_confirm">Wypisz się</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Anuluj subskrypcję</string>
   <string name="already_unsubscribed_banner_message">Anulowano subskrypcję listy mailingowej.</string>
   <string name="error_unsubscribe_newsletter">Nie udało się anulować subskrypcji</string>
   <string name="detail_error_loading_single_message">Ładowanie wiadomość nie powiodło się</string>

@@ -125,9 +125,9 @@
   <!-- Customize Toolbar -->
   <string name="mail_settings_custom_toolbar_title">Dostosuj paski narzędzi</string>
   <string name="mail_settings_custom_toolbar_list_view_title">List toolbar</string>
-  <string name="mail_settings_custom_toolbar_list_view_description">Ten pasek narzędzi pojawi się po wybraniu wielu wiadomości z listy (np. Odebrane, Kosz itp.).</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Pasek narzędzi jest widoczny podczas zaznaczania wiadomości (np. w folderze Odebrane, kosz itp.)</string>
   <string name="mail_settings_custom_toolbar_message_view_title">Message toolbar</string>
-  <string name="mail_settings_custom_toolbar_message_view_description">Ten pasek narzędzi pozostaje widoczny podczas czytania wiadomości</string>
+  <string name="mail_settings_custom_toolbar_message_view_description">Pasek narzędzi jest widoczny podczas czytania wiadomości</string>
   <string name="mail_settings_custom_toolbar_conversation_view_title">Conversation toolbar</string>
   <string name="mail_settings_custom_toolbar_conversation_view_description">This toolbar remains visible while reading messages</string>
   <string name="mail_settings_custom_toolbar_edit_actions">Edit actions</string>
