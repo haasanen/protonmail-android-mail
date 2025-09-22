@@ -28,6 +28,8 @@ import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactDetailsScreen.CONTACT_DETAILS_ID_KEY
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.CONTACT_GROUP_DETAILS_ID_KEY
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationDetailEntryPointNameKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.IsSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
@@ -57,32 +59,38 @@ sealed class Destination(val route: String) {
 
         object ConversationRouter : Destination(
             "mailbox/conversation/${ConversationIdKey.wrap()}/" +
-                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}"
-        ) {
-
-            operator fun invoke(
-                conversationId: ConversationId,
-                scrollToMessageId: MessageId? = null,
-                openedFromLocation: LabelId
-            ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
-                .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
-                .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
-        }
-
-        object Conversation : Destination(
-            "mailbox/conversation/${ConversationIdKey.wrap()}/" +
-                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/${IsSingleMessageMode.wrap()}"
+                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/" +
+                ConversationDetailEntryPointNameKey.wrap()
         ) {
 
             operator fun invoke(
                 conversationId: ConversationId,
                 scrollToMessageId: MessageId? = null,
                 openedFromLocation: LabelId,
-                isSingleMessageMode: Boolean
+                entryPoint: ConversationDetailEntryPoint
+            ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
+                .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
+                .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
+                .replace(ConversationDetailEntryPointNameKey.wrap(), entryPoint.name)
+        }
+
+        object Conversation : Destination(
+            "mailbox/conversation/${ConversationIdKey.wrap()}/" +
+                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/" +
+                "${IsSingleMessageMode.wrap()}/${ConversationDetailEntryPointNameKey.wrap()}"
+        ) {
+
+            operator fun invoke(
+                conversationId: ConversationId,
+                scrollToMessageId: MessageId? = null,
+                openedFromLocation: LabelId,
+                isSingleMessageMode: Boolean,
+                entryPoint: ConversationDetailEntryPoint
             ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
                 .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
                 .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
                 .replace(IsSingleMessageMode.wrap(), isSingleMessageMode.toString())
+                .replace(ConversationDetailEntryPointNameKey.wrap(), entryPoint.name)
         }
 
         object Composer : Destination("composer")

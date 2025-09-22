@@ -44,8 +44,10 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactD
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationDetailEntryPointNameKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
@@ -82,7 +84,10 @@ internal fun NavGraphBuilder.addConversationDetail(
                     ?.takeIf { it != "null" }
                     ?.let(::MessageId),
                 openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
-                isSingleMessageMode = singleMessageMode
+                isSingleMessageMode = singleMessageMode,
+                entryPoint = ConversationDetailEntryPoint.valueOf(
+                    backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
+                )
             )
 
             Timber.d("Conversation Router resolved 'is single message mode' to $isSingleMessageMode")
@@ -131,11 +136,12 @@ internal fun NavGraphBuilder.addMailbox(
                     val destination = when (request.shouldOpenInComposer) {
                         true -> Destination.Screen.EditDraftComposer(MessageId(request.itemId.value))
                         false -> Destination.Screen.ConversationRouter(
-                            ConversationId(request.itemId.value),
-                            request.subItemId?.let { mailboxItemId ->
+                            conversationId = ConversationId(request.itemId.value),
+                            scrollToMessageId = request.subItemId?.let { mailboxItemId ->
                                 MessageId(mailboxItemId.value)
                             },
-                            request.openedFromLocation
+                            openedFromLocation = request.openedFromLocation,
+                            entryPoint = ConversationDetailEntryPoint.Mailbox
                         )
                     }
                     navController.navigate(destination)

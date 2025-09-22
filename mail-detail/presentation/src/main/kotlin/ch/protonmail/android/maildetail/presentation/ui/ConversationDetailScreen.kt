@@ -1106,6 +1106,7 @@ object ConversationDetailScreen {
     const val ScrollToMessageIdKey = "scroll to message id"
     const val IsSingleMessageMode = "is showing single message"
     const val OpenedFromLocationKey = "opened from location"
+    const val ConversationDetailEntryPointNameKey = "detail origin entry point"
 
     data class Actions(
         val onExit: (notifyUserMessage: ActionResult?) -> Unit,

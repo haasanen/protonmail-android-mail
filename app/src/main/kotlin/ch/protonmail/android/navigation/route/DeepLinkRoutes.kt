@@ -30,6 +30,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import ch.protonmail.android.R
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailnotifications.domain.NotificationInteraction
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.mailnotifications.domain.resolveNotificationInteraction
@@ -89,7 +90,8 @@ internal fun NavGraphBuilder.addDeepLinkHandler(navController: NavHostController
                         Destination.Screen.ConversationRouter(
                             conversationId = state.conversationId,
                             scrollToMessageId = state.scrollToMessageId,
-                            openedFromLocation = state.contextLabelId
+                            openedFromLocation = state.contextLabelId,
+                            entryPoint = ConversationDetailEntryPoint.PushNotification
                         )
                     ) {
                         popUpTo(Destination.Screen.Mailbox.route) { inclusive = false }
