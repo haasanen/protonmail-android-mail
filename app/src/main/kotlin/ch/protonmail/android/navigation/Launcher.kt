@@ -32,7 +32,8 @@ import me.proton.core.domain.entity.UserId
 
 @Composable
 fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel = hiltViewModel()) {
-    val state by viewModel.state.collectAsStateWithLifecycle(LauncherState.Processing)
+    // Do not set a default initial value because we may miss a state update
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (state) {
         LauncherState.AccountNeeded -> viewModel.submit(LauncherViewModel.Action.AddAccount)
