@@ -37,7 +37,8 @@ internal data class AppSettingsUiModel(
     val theme: TextUiModel,
     val deviceContactsEnabled: Boolean,
     val notificationsEnabledStatus: TextUiModel,
-    val mobileSignature: MobileSignatureUiModel
+    val mobileSignature: MobileSignatureUiModel,
+    val appIconName: TextUiModel
 )
 
 internal sealed interface AppSettingsAction

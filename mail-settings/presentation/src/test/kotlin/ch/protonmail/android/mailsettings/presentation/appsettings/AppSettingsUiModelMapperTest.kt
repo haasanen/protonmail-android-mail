@@ -39,13 +39,14 @@ internal class AppSettingsUiModelMapperTest(
 
     @Test
     fun `should map to ui model`() {
-        val uiModel = AppSettingsUiModelMapper.toUiModel(args.appSettings, args.notificationsEnabled)
+        val uiModel = AppSettingsUiModelMapper.toUiModel(args.appSettings, args.notificationsEnabled, args.appName)
         assertEquals(expectedUiModel, uiModel)
     }
 
     companion object {
 
         val baseAppSettings = AppSettingsTestData.appSettings
+        val appIconName = TextUiModel("Proton Mail")
 
         val baseUiModel = AppSettingsUiModel(
             autoLockEnabled = false,
@@ -54,7 +55,8 @@ internal class AppSettingsUiModelMapperTest(
             deviceContactsEnabled = true,
             theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
             notificationsEnabledStatus = TextUiModel(R.string.notifications_on),
-            mobileSignature = MobileSignatureTestData.SignatureEmpty
+            mobileSignature = MobileSignatureTestData.SignatureEmpty,
+            appIconName = appIconName
         )
 
         @JvmStatic
@@ -142,6 +144,10 @@ internal class AppSettingsUiModelMapperTest(
             )
         )
 
-        data class Arguments(val appSettings: AppSettings, val notificationsEnabled: Boolean)
+        data class Arguments(
+            val appSettings: AppSettings,
+            val notificationsEnabled: Boolean,
+            val appName: TextUiModel = appIconName
+        )
     }
 }

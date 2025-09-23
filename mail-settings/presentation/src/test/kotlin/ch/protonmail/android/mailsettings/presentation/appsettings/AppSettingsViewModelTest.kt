@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetAppIconDescription
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
 import ch.protonmail.android.mailsettings.presentation.testdata.MobileSignatureTestData
@@ -55,7 +56,7 @@ internal class AppSettingsViewModelTest {
         coEvery { this@mockk.updateUseCombineContacts(any()) } returns Unit.right()
     }
 
-    private val notificationSettingsUsecase = mockk<GetNotificationsEnabled> {
+    private val getNotificationsEnabled = mockk<GetNotificationsEnabled> {
         every { this@mockk.invoke() } returns true
     }
 
@@ -65,6 +66,10 @@ internal class AppSettingsViewModelTest {
         } returns flowOf(UpsellingVisibility.NORMAL)
     }
 
+    private val getAppIconDescription = mockk<GetAppIconDescription> {
+        every { this@mockk.invoke() } returns TextUiModel("Proton Mail")
+    }
+
     private lateinit var viewModel: AppSettingsViewModel
 
     @Before
@@ -72,7 +77,9 @@ internal class AppSettingsViewModelTest {
 
         viewModel = AppSettingsViewModel(
             appSettingsRepository,
-            notificationSettingsUsecase, observeUpsellingVisibility
+            getNotificationsEnabled,
+            observeUpsellingVisibility,
+            getAppIconDescription
         )
     }
 
@@ -101,7 +108,8 @@ internal class AppSettingsViewModelTest {
                 deviceContactsEnabled = true,
                 theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
                 notificationsEnabledStatus = TextUiModel(R.string.notifications_on),
-                mobileSignature = MobileSignatureTestData.SignatureEmpty
+                mobileSignature = MobileSignatureTestData.SignatureEmpty,
+                appIconName = TextUiModel.Text("Proton Mail")
             )
             assertEquals(expected, actual.settings)
         }

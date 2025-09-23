@@ -38,7 +38,8 @@ internal object AppSettingsScreenPreviewData {
                 MobileSignatureStatus.Enabled,
                 "This is a mobile signature",
                 TextUiModel.TextRes(R.string.mail_settings_app_customization_mobile_signature_on)
-            )
+            ),
+            appIconName = TextUiModel.Text("Default")
         ),
         upsellingVisibility = UpsellingVisibility.HIDDEN
     )
@@ -54,6 +55,7 @@ internal object AppSettingsScreenPreviewData {
         onNavigateToMobileSignatureSettings = {},
         onCustomizeToolbarClick = {},
         onViewApplicationLogsClick = {},
+        onAppIconSettingsClick = {},
         onBackClick = {}
     )
 }

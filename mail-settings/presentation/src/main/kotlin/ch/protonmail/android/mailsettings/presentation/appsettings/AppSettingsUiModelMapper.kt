@@ -26,7 +26,11 @@ import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.
 
 internal object AppSettingsUiModelMapper {
 
-    fun toUiModel(appSettings: AppSettings, notificationsEnabled: Boolean): AppSettingsUiModel {
+    fun toUiModel(
+        appSettings: AppSettings,
+        notificationsEnabled: Boolean,
+        appIconDescription: TextUiModel
+    ): AppSettingsUiModel {
         return AppSettingsUiModel(
             autoLockEnabled = appSettings.hasAutoLock,
             alternativeRoutingEnabled = appSettings.hasAlternativeRouting,
@@ -34,7 +38,8 @@ internal object AppSettingsUiModelMapper {
             theme = appSettings.theme.toTextUiModel(),
             deviceContactsEnabled = appSettings.hasCombinedContactsEnabled,
             notificationsEnabledStatus = getNotificationStatus(notificationsEnabled),
-            mobileSignature = MobileSignatureUiModelMapper.toUiModel(appSettings.mobileSignaturePreference)
+            mobileSignature = MobileSignatureUiModelMapper.toUiModel(appSettings.mobileSignaturePreference),
+            appIconName = appIconDescription
         )
     }
 

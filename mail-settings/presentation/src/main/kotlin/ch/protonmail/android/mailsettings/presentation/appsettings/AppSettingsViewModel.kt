@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
+import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetAppIconDescription
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,16 +34,18 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AppSettingsViewModel @Inject constructor(
     val appSettingsRepository: AppSettingsRepository,
-    val getNotificationsEnabledUsecase: GetNotificationsEnabled,
-    val observeUpsellingVisibility: ObserveUpsellingVisibility
+    val getNotificationsEnabled: GetNotificationsEnabled,
+    val observeUpsellingVisibility: ObserveUpsellingVisibility,
+    val getAppIconDescription: GetAppIconDescription
 ) : ViewModel() {
 
     val state = combine(
         appSettingsRepository.observeAppSettings(),
         observeUpsellingVisibility()
     ) { appSettings, upsellVisibility ->
-        val notificationsEnabled = getNotificationsEnabledUsecase()
-        val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings, notificationsEnabled)
+        val notificationsEnabled = getNotificationsEnabled()
+        val appIconDescription = getAppIconDescription()
+        val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings, notificationsEnabled, appIconDescription)
         AppSettingsState.Data(settings = uiModel, upsellingVisibility = upsellVisibility)
     }
         .stateIn(

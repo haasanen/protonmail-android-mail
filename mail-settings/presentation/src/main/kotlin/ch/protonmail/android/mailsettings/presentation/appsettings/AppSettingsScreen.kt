@@ -63,6 +63,7 @@ import ch.protonmail.android.design.compose.component.ProtonSettingsToggleItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
 import ch.protonmail.android.mailsettings.presentation.R
@@ -157,6 +158,10 @@ private fun AppSettingsScreenContent(
                     },
                     onClick = actions.onAutoLockClick
                 )
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+
+                AppIconSettingsItem(appIconName = state.settings.appIconName, onClick = actions.onAppIconSettingsClick)
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
@@ -314,6 +319,36 @@ private fun ProtectionSettingsItem(
         ProtonAppSettingsItemInvert(
             name = stringResource(id = R.string.mail_settings_app_customization_protection),
             hint = autoLockStatus,
+            onClick = onClick,
+            icon = {
+                ProtonMainSettingsIcon(
+                    iconRes = R.drawable.ic_proton_chevron_right,
+                    contentDescription = stringResource(id = R.string.mail_settings_app_customization_protection),
+                    tint = ProtonTheme.colors.iconHint
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun AppIconSettingsItem(
+    modifier: Modifier = Modifier,
+    appIconName: TextUiModel,
+    onClick: () -> Unit = {}
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+
+        ProtonAppSettingsItemInvert(
+            name = stringResource(R.string.mail_settings_app_icon),
+            hint = appIconName.string(),
             onClick = onClick,
             icon = {
                 ProtonMainSettingsIcon(
@@ -569,6 +604,7 @@ object AppSettingsScreen {
         val onThemeClick: () -> Unit,
         val onPushNotificationsClick: () -> Unit,
         val onAutoLockClick: () -> Unit,
+        val onAppIconSettingsClick: () -> Unit,
         val onAppLanguageClick: () -> Unit,
         val onSwipeToNextEmailClick: () -> Unit,
         val onSwipeActionsClick: () -> Unit,
