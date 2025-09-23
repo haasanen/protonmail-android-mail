@@ -92,5 +92,5 @@ fun ProtonError.toDataError(): DataError = when (this) {
     is ProtonError.OtherReason -> DataError.Local.Unknown
     is ProtonError.ServerError -> DataError.Remote.Http(NetworkError.ServerError)
     is ProtonError.Unexpected -> DataError.Local.Unknown
-    is ProtonError.NonProcessableActions -> DataError.Local.NonProcessableActions
+    is ProtonError.NonProcessableActions -> DataError.Local.UnsupportedOperation
 }
