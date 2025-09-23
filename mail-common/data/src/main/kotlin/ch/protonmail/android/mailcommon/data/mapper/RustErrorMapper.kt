@@ -40,7 +40,7 @@ fun UserSessionError.toDataError(): DataError = when (this) {
         is SessionReason.DuplicateSession,
         is SessionReason.MethodCalledInWrongOrigin,
         is SessionReason.UnknownLabel,
-        is SessionReason.UserSessionNotInitialized -> DataError.Local.Unknown
+        is SessionReason.UserSessionNotInitialized -> DataError.Local.NoUserSession
     }
 }
 

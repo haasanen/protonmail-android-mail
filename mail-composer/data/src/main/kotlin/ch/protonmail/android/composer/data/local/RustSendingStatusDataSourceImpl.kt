@@ -132,7 +132,7 @@ class RustSendingStatusDataSourceImpl @Inject constructor(
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-draft: updating sending status; Failing due to No Session.")
-            return DataError.Local.Unknown.left()
+            return DataError.Local.NoUserSession.left()
         }
         return closure(session)
     }

@@ -957,7 +957,7 @@ class MailboxViewModel @Inject constructor(
         val selectionModeDataState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionModeDataState == null) {
             Timber.d("MailboxListState is not in SelectionMode")
-            return DataError.Local.Unknown.left()
+            return DataError.Local.UnsupportedOperation.left()
         }
         val userId = primaryUserId.filterNotNull().first()
         val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())

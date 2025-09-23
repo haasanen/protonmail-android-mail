@@ -23,6 +23,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
 import ch.protonmail.android.mailcommon.data.mapper.LocalGroupedContacts
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.data.ContactRustCoroutineScope
 import ch.protonmail.android.mailcontact.data.mapper.ContactSuggestionsMapper
@@ -86,7 +87,7 @@ class RustContactDataSourceImpl @Inject constructor(
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-contact: trying to get contact suggestions with a null session")
-            return DataError.Local.Unknown.left()
+            return DataError.Local.NoUserSession.left()
         }
 
         val localDeviceContacts = deviceContactsMapper.toLocalDeviceContact(deviceContacts)
@@ -99,7 +100,7 @@ class RustContactDataSourceImpl @Inject constructor(
         deviceContacts: DeviceContactsWithSignature
     ): Either<DataError, Unit> {
         val session = userSessionRepository.getUserSession(userId)
-            ?: return DataError.Local.Unknown.left().also {
+            ?: return DataError.Local.NoUserSession.left().also {
                 Timber.e("rust-contact: preload with a null session")
             }
 
@@ -133,17 +134,17 @@ class RustContactDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteContact(userId: UserId, contactId: LocalContactId): Either<DataError.Local, Unit> {
+    override suspend fun deleteContact(userId: UserId, contactId: LocalContactId): Either<DataError, Unit> {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-contact: trying to load message with a null session")
-            return DataError.Local.Unknown.left()
+            return DataError.Local.NoUserSession.left()
         }
 
-        return when (rustDeleteContact(session, contactId)) {
+        return when (val result = rustDeleteContact(session, contactId)) {
             is VoidActionResult.Error -> {
                 Timber.e("rust-contact: Failed to delete contact")
-                return DataError.Local.Unknown.left()
+                return result.v1.toDataError().left()
             }
 
             VoidActionResult.Ok -> Unit.right()
@@ -189,9 +190,9 @@ class RustContactDataSourceImpl @Inject constructor(
             }
 
             createRustContactWatcher(session, callback)
-                .mapLeft { err ->
-                    Timber.e("rust-contact-data-source: failed creating contact watcher $err")
-                    DataError.Local.Unknown
+                .mapLeft { error ->
+                    Timber.e("rust-contact-data-source: failed creating contact watcher $error")
+                    error
                 }
                 .map { watcher ->
                     groupedContactsFlow.value = watcher.contactList

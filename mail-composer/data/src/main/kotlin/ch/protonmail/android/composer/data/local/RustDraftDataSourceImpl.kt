@@ -170,7 +170,7 @@ class RustDraftDataSourceImpl @Inject constructor(
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-draft: Trying to discard draft with null session; Failing.")
-            return DataError.Local.Unknown.left()
+            return DataError.Local.NoUserSession.left()
         }
 
         return discardRustDraft(session, messageId.toLocalMessageId())

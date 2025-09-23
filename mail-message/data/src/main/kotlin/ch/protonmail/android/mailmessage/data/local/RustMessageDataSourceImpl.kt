@@ -176,7 +176,7 @@ class RustMessageDataSourceImpl @Inject constructor(
             val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to mark message read with a null mailbox")
-                return@withContext DataError.Local.Unknown.left()
+                return@withContext DataError.Local.UnsupportedOperation.left()
             }
 
             Timber.d("rust-message: marking message as read...")

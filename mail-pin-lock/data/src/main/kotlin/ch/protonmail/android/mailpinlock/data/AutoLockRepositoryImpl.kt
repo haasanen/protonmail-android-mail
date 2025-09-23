@@ -104,7 +104,7 @@ class AutoLockRepositoryImpl @Inject constructor(
 
     override suspend fun getRemainingAttempts(): Either<DataError, Int> {
         return mailSessionRepository.getMailSession().getRemainingAttempts().flatMap {
-            it?.toInt()?.right() ?: DataError.Local.Unknown.left()
+            it?.toInt()?.right() ?: DataError.Local.NotFound.left()
         }
     }
 }

@@ -36,7 +36,7 @@ interface RustContactDataSource {
 
     suspend fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>>
 
-    suspend fun deleteContact(userId: UserId, contactId: LocalContactId): Either<DataError.Local, Unit>
+    suspend fun deleteContact(userId: UserId, contactId: LocalContactId): Either<DataError, Unit>
 
     suspend fun getContactSuggestions(
         userId: UserId,
