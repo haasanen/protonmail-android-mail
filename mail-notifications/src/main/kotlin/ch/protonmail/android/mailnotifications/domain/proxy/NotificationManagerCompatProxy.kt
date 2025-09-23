@@ -27,6 +27,8 @@ interface NotificationManagerCompatProxy {
 
     fun dismissNotification(notificationId: Int)
 
+    fun dismissAllNotifications()
+
     fun showNotification(notificationId: Int, notification: Notification)
 
     fun areNotificationsEnabled(): Boolean

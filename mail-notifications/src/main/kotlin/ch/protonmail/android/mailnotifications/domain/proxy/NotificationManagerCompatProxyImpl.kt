@@ -35,6 +35,10 @@ internal class NotificationManagerCompatProxyImpl @Inject constructor(
         notificationManagerCompat.cancel(notificationId)
     }
 
+    override fun dismissAllNotifications() {
+        notificationManagerCompat.cancelAll()
+    }
+
     @SuppressLint("MissingPermission")
     override fun showNotification(notificationId: Int, notification: Notification) {
         notificationManagerCompat.notify(notificationId, notification)
