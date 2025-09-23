@@ -33,7 +33,6 @@ import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentV
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.isOfflineError
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -1429,13 +1428,7 @@ class ConversationDetailViewModel @Inject constructor(
                 getAttachmentIntentValues(userId, attachmentId).fold(
                     ifLeft = {
                         Timber.d("Failed to download attachment: $it")
-                        val event = when (it) {
-                            is DataError.Local.OutOfMemory ->
-                                ConversationDetailEvent.ErrorGettingAttachmentNotEnoughSpace
-
-                            else -> ConversationDetailEvent.ErrorGettingAttachment
-                        }
-                        emitNewStateFrom(event)
+                        emitNewStateFrom(ConversationDetailEvent.ErrorGettingAttachment)
                     },
                     ifRight = { emitNewStateFrom(ConversationDetailEvent.OpenAttachmentEvent(it)) }
                 )

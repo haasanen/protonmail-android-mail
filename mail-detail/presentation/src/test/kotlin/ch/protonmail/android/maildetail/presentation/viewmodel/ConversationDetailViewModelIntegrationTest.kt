@@ -1156,49 +1156,6 @@ internal class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    fun `verify not enough space error is shown when getting attachment failed due to insufficient storage`() =
-        runTest {
-            // given
-            val expectedAttachmentCount = Random().nextInt(100)
-            val defaultExpanded = MessageSample.AugWeatherForecast
-            val expectedExpanded = MessageSample.Invoice
-            val messages = nonEmptyListOf(
-                defaultExpanded,
-                expectedExpanded
-            )
-            val expandedMessageId = expectedExpanded.messageId
-            mockAttachmentDownload(
-                messages = messages,
-                expandedMessageId = expandedMessageId,
-                expectedAttachmentCount = expectedAttachmentCount,
-                defaultExpanded = defaultExpanded,
-                expectedError = DataError.Local.OutOfMemory
-            )
-
-            val viewModel = buildConversationDetailViewModel()
-
-            viewModel.state.test {
-                skipItems(4)
-                viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.messageId)))
-                skipItems(1)
-
-                // When
-                viewModel.submit(
-                    OnAttachmentClicked(
-                        messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
-                        AttachmentId(0.toString())
-                    )
-                )
-                val actualState = awaitItem()
-
-                // Then
-                coVerify { getAttachmentIntentValues(userId, AttachmentId(0.toString())) }
-                assertEquals(Effect.of(TextUiModel(R.string.error_get_attachment_not_enough_memory)), actualState.error)
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
     fun `verify delete dialog is shown when delete conversation is called`() = runTest {
         // Given
         val expectedTitle = TextUiModel(R.string.conversation_delete_dialog_title)
