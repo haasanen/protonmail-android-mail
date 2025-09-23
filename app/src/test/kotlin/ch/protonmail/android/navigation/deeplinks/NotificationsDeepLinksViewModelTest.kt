@@ -25,6 +25,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
+import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -41,6 +42,7 @@ import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.usecase.SetPrimaryAccount
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToConversation
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToInbox
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToMessage
 import ch.protonmail.android.testdata.account.AccountTestSample
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -71,6 +73,8 @@ internal class NotificationsDeepLinksViewModelTest {
     private val observeMessage = mockk<ObserveMessage>()
     private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId>()
 
+    private val isShowSingleMessage = mockk<IsShowSingleMessageMode>()
+
     private lateinit var viewModel: NotificationsDeepLinksViewModel
 
     @BeforeTest
@@ -83,7 +87,8 @@ internal class NotificationsDeepLinksViewModelTest {
             userSessionRepository = userSessionRepository,
             observeMessage = observeMessage,
             setPrimaryAccount = setPrimaryAccount,
-            findLocalSystemLabelId = findLocalSystemLabelId
+            findLocalSystemLabelId = findLocalSystemLabelId,
+            isShowSingleMessageMode = isShowSingleMessage
         )
     }
 
@@ -121,9 +126,10 @@ internal class NotificationsDeepLinksViewModelTest {
 
         expectPrimaryId(userId)
         expectMessage(userId, messageId, AlphaAppQAReport)
+        expectSingleMessageMode(userId, false)
 
         // When
-        viewModel.navigateToMessage(messageId.id, userId.id)
+        viewModel.navigateToDetails(messageId.id, userId.id)
 
         // Then
         viewModel.state.test {
@@ -141,7 +147,7 @@ internal class NotificationsDeepLinksViewModelTest {
         expectPrimaryId(userId)
 
         // When
-        viewModel.navigateToMessage(messageId.id, userId.id)
+        viewModel.navigateToDetails(messageId.id, userId.id)
 
         // Then
         viewModel.state.test {
@@ -159,7 +165,7 @@ internal class NotificationsDeepLinksViewModelTest {
         expectMessageError(userId, messageId)
 
         // When
-        viewModel.navigateToMessage(messageId.id, userId.id)
+        viewModel.navigateToDetails(messageId.id, userId.id)
 
         // Then
         viewModel.state.test {
@@ -189,7 +195,7 @@ internal class NotificationsDeepLinksViewModelTest {
     }
 
     @Test
-    fun `should switch account and emit switched for message notification to active non primary account`() = runTest {
+    fun `should switch account and emit switched for notification to non primary account (convo)`() = runTest {
         // Given
         val activeAccount = AccountTestSample.Primary.copy(primaryAddress = "test@email.com")
         val notificationUserId = getUserId()
@@ -208,9 +214,42 @@ internal class NotificationsDeepLinksViewModelTest {
         expectAccounts(userId = notificationUserId, account = secondaryAccount)
         expectMessage(secondaryAccount.userId, messageId, AlphaAppQAReport)
         coEvery { setPrimaryAccount(notificationUserId) } just runs
+        expectSingleMessageMode(secondaryAccount.userId, false)
 
         // When
-        viewModel.navigateToMessage(messageId.id, secondaryAccount.userId.id)
+        viewModel.navigateToDetails(messageId.id, secondaryAccount.userId.id)
+
+        // Then
+        viewModel.state.test {
+            assertEquals(expectedEvent, awaitItem())
+            coVerify { setPrimaryAccount(secondaryAccount.userId) }
+        }
+    }
+
+    @Test
+    fun `should switch account and emit switched for notification to non primary account (message)`() = runTest {
+        // Given
+        val activeAccount = AccountTestSample.Primary.copy(primaryAddress = "test@email.com")
+        val notificationUserId = getUserId()
+        val secondaryAccount = AccountTestSample.Primary.copy(userId = notificationUserId)
+        val messageId = getRemoteMessageId()
+        val labelId = LabelId("1")
+
+        val expectedEvent = NavigateToMessage(
+            conversationId = AlphaAppQAReport.conversationId,
+            userSwitchedEmail = AccountTestSample.Primary.primaryAddress,
+            contextLabelId = labelId,
+            messageId = AlphaAppQAReport.messageId
+        )
+
+        expectPrimaryId(activeAccount.userId)
+        expectAccounts(userId = notificationUserId, account = secondaryAccount)
+        expectMessage(secondaryAccount.userId, messageId, AlphaAppQAReport)
+        coEvery { setPrimaryAccount(notificationUserId) } just runs
+        expectSingleMessageMode(secondaryAccount.userId, true)
+
+        // When
+        viewModel.navigateToDetails(messageId.id, secondaryAccount.userId.id)
 
         // Then
         viewModel.state.test {
@@ -235,10 +274,11 @@ internal class NotificationsDeepLinksViewModelTest {
 
         expectPrimaryId(userId)
         expectMessage(userId, messageId, message)
+        expectSingleMessageMode(userId, false)
         coEvery { findLocalSystemLabelId(userId, SystemLabelId.AllMail) } returns MailLabelId.System(labelId)
 
         // When
-        viewModel.navigateToMessage(messageId.id, userId.id)
+        viewModel.navigateToDetails(messageId.id, userId.id)
 
         // Then
         viewModel.state.test {
@@ -273,5 +313,9 @@ internal class NotificationsDeepLinksViewModelTest {
         } returns flowOf(
             DataError.Local.Unknown.left()
         )
+    }
+
+    private fun expectSingleMessageMode(userId: UserId, value: Boolean) {
+        coEvery { isShowSingleMessage(userId) } returns value
     }
 }

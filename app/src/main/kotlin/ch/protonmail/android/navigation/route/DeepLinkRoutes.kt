@@ -61,7 +61,7 @@ internal fun NavGraphBuilder.addDeepLinkHandler(navController: NavHostController
 
                     when (interaction) {
                         is NotificationInteraction.SingleTap -> {
-                            viewModel.navigateToMessage(messageId = interaction.messageId, userId = interaction.userId)
+                            viewModel.navigateToDetails(messageId = interaction.messageId, userId = interaction.userId)
                         }
 
                         is NotificationInteraction.GroupTap -> {
@@ -87,10 +87,26 @@ internal fun NavGraphBuilder.addDeepLinkHandler(navController: NavHostController
 
                 is NotificationsDeepLinksViewModel.State.NavigateToConversation -> {
                     navController.navigate(
-                        Destination.Screen.ConversationRouter(
+                        Destination.Screen.Conversation(
                             conversationId = state.conversationId,
                             scrollToMessageId = state.scrollToMessageId,
                             openedFromLocation = state.contextLabelId,
+                            isSingleMessageMode = false,
+                            entryPoint = ConversationDetailEntryPoint.PushNotification
+                        )
+                    ) {
+                        popUpTo(Destination.Screen.Mailbox.route) { inclusive = false }
+                    }
+                    showUserSwitchedEmailIfRequired(context, state.userSwitchedEmail)
+                }
+
+                is NotificationsDeepLinksViewModel.State.NavigateToMessage -> {
+                    navController.navigate(
+                        Destination.Screen.Conversation(
+                            conversationId = state.conversationId,
+                            scrollToMessageId = state.messageId,
+                            openedFromLocation = state.contextLabelId,
+                            isSingleMessageMode = true,
                             entryPoint = ConversationDetailEntryPoint.PushNotification
                         )
                     ) {

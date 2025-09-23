@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
+import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -58,7 +59,8 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val setPrimaryAccount: SetPrimaryAccount,
     private val observeMessage: ObserveMessage,
-    private val findLocalSystemLabelId: FindLocalSystemLabelId
+    private val findLocalSystemLabelId: FindLocalSystemLabelId,
+    private val isShowSingleMessageMode: IsShowSingleMessageMode
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<State>(State.Launched)
@@ -66,11 +68,11 @@ class NotificationsDeepLinksViewModel @Inject constructor(
 
     private var navigateJob: Job? = null
 
-    fun navigateToMessage(messageId: String, userId: String) {
+    fun navigateToDetails(messageId: String, userId: String) {
         if (isOffline()) {
             navigateToInbox(userId)
         } else {
-            navigateToMessageOrConversation(RemoteMessageId(messageId), UserId(userId))
+            resolveNavigation(RemoteMessageId(messageId), UserId(userId))
         }
     }
 
@@ -98,20 +100,20 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         }
     }
 
-    private fun navigateToMessageOrConversation(messageId: RemoteMessageId, userId: UserId) {
+    private fun resolveNavigation(messageId: RemoteMessageId, userId: UserId) {
         Timber.d("navigateToMessage: $messageId, $userId")
         navigateJob?.cancel()
         navigateJob = viewModelScope.launch {
             when (val switchAccountResult = switchActiveUserIfRequiredTo(userId.id)) {
                 AccountSwitchResult.AccountSwitchError -> navigateToInbox(userId.id)
-                is AccountSwitchResult.AccountSwitched -> navigateToMessageOrConversation(
+                is AccountSwitchResult.AccountSwitched -> resolveNavigation(
                     this.coroutineContext,
                     messageId,
                     switchAccountResult.newUserId,
                     switchAccountResult.newEmail
                 )
 
-                AccountSwitchResult.NotRequired -> navigateToMessageOrConversation(
+                AccountSwitchResult.NotRequired -> resolveNavigation(
                     this.coroutineContext,
                     messageId,
                     userId
@@ -120,7 +122,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         }
     }
 
-    private suspend fun navigateToMessageOrConversation(
+    private suspend fun resolveNavigation(
         coroutineContext: CoroutineContext,
         remoteMessageId: RemoteMessageId,
         userId: UserId,
@@ -135,7 +137,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
                         navigateToInbox(userId.id)
                     }
                     .onRight { message ->
-                        navigateToConversation(message, userId, switchedAccountEmail)
+                        navigateToDetails(message, userId, switchedAccountEmail)
                         coroutineContext.cancel()
                     }
             }
@@ -152,7 +154,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         return AccountSwitchResult.AccountSwitched(targetAccount.userId, targetAccount.primaryAddress)
     }
 
-    private suspend fun navigateToConversation(
+    private suspend fun navigateToDetails(
         message: Message,
         userId: UserId,
         switchedAccountEmail: String?
@@ -160,12 +162,21 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         val labelId = message.exclusiveLocation.getLabelId(userId) ?: return
 
         _state.update {
-            State.NavigateToConversation(
-                conversationId = message.conversationId,
-                userSwitchedEmail = switchedAccountEmail,
-                contextLabelId = labelId,
-                scrollToMessageId = message.messageId
-            )
+            if (isShowSingleMessageMode(userId)) {
+                State.NavigateToMessage(
+                    conversationId = message.conversationId,
+                    userSwitchedEmail = switchedAccountEmail,
+                    contextLabelId = labelId,
+                    messageId = message.messageId
+                )
+            } else {
+                State.NavigateToConversation(
+                    conversationId = message.conversationId,
+                    userSwitchedEmail = switchedAccountEmail,
+                    contextLabelId = labelId,
+                    scrollToMessageId = message.messageId
+                )
+            }
         }
     }
 
@@ -188,6 +199,13 @@ class NotificationsDeepLinksViewModel @Inject constructor(
             data object ActiveUser : NavigateToInbox
             data class ActiveUserSwitched(val email: String) : NavigateToInbox
         }
+
+        data class NavigateToMessage(
+            val conversationId: ConversationId,
+            val messageId: MessageId,
+            val userSwitchedEmail: String? = null,
+            val contextLabelId: LabelId
+        ) : State
 
         data class NavigateToConversation(
             val conversationId: ConversationId,
