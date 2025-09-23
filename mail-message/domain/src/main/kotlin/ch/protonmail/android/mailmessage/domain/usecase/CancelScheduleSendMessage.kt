@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.mailmessage.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.repository.PreviousScheduleSendTimeRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.PreviousScheduleSendTimeRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 

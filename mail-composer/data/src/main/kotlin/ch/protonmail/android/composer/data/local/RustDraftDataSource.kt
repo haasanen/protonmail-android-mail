@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
@@ -56,7 +57,7 @@ interface RustDraftDataSource {
     suspend fun observeRecipientsValidation(): Flow<List<DraftRecipient>>
     suspend fun send(): Either<SendDraftError, Unit>
     suspend fun scheduleSend(timestamp: Long): Either<SendDraftError, Unit>
-    suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
+    suspend fun undoSend(userId: UserId, messageId: MessageId): Either<UndoSendError, Unit>
     suspend fun attachmentList(): Either<DataError, AttachmentsWrapper>
     suspend fun updateToRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>
     suspend fun updateCcRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>

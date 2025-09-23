@@ -24,6 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
@@ -911,7 +912,7 @@ internal class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val messageId = MessageIdSample.LocalDraft
-        val expected = DataError.Local.NoUserSession
+        val expected = UndoSendError.Other(DataError.Local.NoUserSession)
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
@@ -926,7 +927,7 @@ internal class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val messageId = MessageId("810")
-        val expectedError = DataError.Local.NoUserSession
+        val expectedError = UndoSendError.UndoSendFailed
         val mailSession = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         coEvery { rustCancelScheduleSend(mailSession, messageId.toLocalMessageId()) } returns expectedError.left()

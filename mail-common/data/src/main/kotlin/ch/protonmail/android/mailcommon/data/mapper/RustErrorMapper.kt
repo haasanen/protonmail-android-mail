@@ -22,12 +22,8 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
-import uniffi.proton_mail_uniffi.DraftCancelScheduleSendError
-import uniffi.proton_mail_uniffi.DraftCancelScheduleSendErrorReason
 import uniffi.proton_mail_uniffi.DraftDiscardError
 import uniffi.proton_mail_uniffi.DraftDiscardErrorReason
-import uniffi.proton_mail_uniffi.DraftUndoSendError
-import uniffi.proton_mail_uniffi.DraftUndoSendErrorReason
 import uniffi.proton_mail_uniffi.EventError
 import uniffi.proton_mail_uniffi.EventErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
@@ -58,24 +54,6 @@ fun DraftDiscardError.toDataError(): DataError = when (this) {
     is DraftDiscardError.Reason -> when (this.v1) {
         DraftDiscardErrorReason.MESSAGE_DOES_NOT_EXIST,
         DraftDiscardErrorReason.DELETE_FAILED -> DataError.Local.DiscardDraftError
-    }
-}
-
-fun DraftUndoSendError.toDataError(): DataError = when (this) {
-    is DraftUndoSendError.Other -> this.v1.toDataError()
-    is DraftUndoSendError.Reason -> when (this.v1) {
-        DraftUndoSendErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftUndoSendErrorReason.MESSAGE_CAN_NOT_BE_UNDO_SENT,
-        DraftUndoSendErrorReason.SEND_CAN_NO_LONGER_BE_UNDONE -> DataError.Local.UndoSendError
-    }
-}
-
-fun DraftCancelScheduleSendError.toDataError(): DataError = when (this) {
-    is DraftCancelScheduleSendError.Other -> this.v1.toDataError()
-    is DraftCancelScheduleSendError.Reason -> when (this.v1) {
-        DraftCancelScheduleSendErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftCancelScheduleSendErrorReason.MESSAGE_NOT_SCHEDULED,
-        DraftCancelScheduleSendErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.UndoSendError
     }
 }
 

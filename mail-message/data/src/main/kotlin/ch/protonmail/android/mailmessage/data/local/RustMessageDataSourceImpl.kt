@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -402,12 +403,12 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun cancelScheduleSendMessage(
         userId: UserId,
         messageId: MessageId
-    ): Either<DataError, PreviousScheduleSendTime> {
+    ): Either<UndoSendError, PreviousScheduleSendTime> {
         Timber.d("rust-message: Cancels schedule send raft...")
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-message: Trying to cancel schedule send with null session; Failing.")
-            return DataError.Local.NoUserSession.left()
+            return UndoSendError.Other(DataError.Local.NoUserSession).left()
         }
 
         return cancelScheduleSendMessage(session, messageId.toLocalMessageId()).map {

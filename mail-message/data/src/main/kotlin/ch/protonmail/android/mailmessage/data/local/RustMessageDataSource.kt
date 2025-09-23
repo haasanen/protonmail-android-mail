@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
@@ -122,5 +123,5 @@ interface RustMessageDataSource {
     suspend fun cancelScheduleSendMessage(
         userId: UserId,
         messageId: MessageId
-    ): Either<DataError, PreviousScheduleSendTime>
+    ): Either<UndoSendError, PreviousScheduleSendTime>
 }

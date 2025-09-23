@@ -49,6 +49,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
@@ -239,12 +240,12 @@ class RustDraftDataSourceImpl @Inject constructor(
             VoidDraftSendResult.Ok -> Unit.right()
         }
 
-    override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit> {
+    override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<UndoSendError, Unit> {
         Timber.d("rust-draft: Undo sending draft...")
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-draft: Trying to undo send with null session; Failing.")
-            return DataError.Local.NoUserSession.left()
+            return UndoSendError.Other(DataError.Local.NoUserSession).left()
         }
 
         return rustDraftUndoSend(session, messageId.toLocalMessageId()).onRight {

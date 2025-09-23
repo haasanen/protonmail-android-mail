@@ -48,8 +48,6 @@ sealed interface DataError {
 
         data object DiscardDraftError : Local
 
-        data object UndoSendError : Local
-
         data object NotFound : Local
 
         /**

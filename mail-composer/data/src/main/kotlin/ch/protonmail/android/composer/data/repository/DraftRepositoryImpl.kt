@@ -27,6 +27,7 @@ import ch.protonmail.android.composer.data.mapper.toScheduleSendOptions
 import ch.protonmail.android.composer.data.mapper.toSenderAddresses
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -103,7 +104,7 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun scheduleSend(time: Instant): Either<SendDraftError, Unit> =
         draftDataSource.scheduleSend(time.epochSeconds)
 
-    override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
+    override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<UndoSendError, Unit> =
         draftDataSource.undoSend(userId, messageId)
 
     override suspend fun getBody(): Either<DataError, DraftBody> = draftDataSource.body().map { DraftBody(it) }

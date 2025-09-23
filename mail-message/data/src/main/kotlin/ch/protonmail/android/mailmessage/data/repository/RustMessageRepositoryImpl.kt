@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.repository
 import java.io.File
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -132,7 +133,8 @@ class RustMessageRepositoryImpl @Inject constructor(
     override suspend fun cancelScheduleSend(
         userId: UserId,
         messageId: MessageId
-    ): Either<DataError, PreviousScheduleSendTime> = rustMessageDataSource.cancelScheduleSendMessage(userId, messageId)
+    ): Either<UndoSendError, PreviousScheduleSendTime> =
+        rustMessageDataSource.cancelScheduleSendMessage(userId, messageId)
 
 
     override suspend fun deleteMessages(

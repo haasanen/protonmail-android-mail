@@ -22,8 +22,8 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.data.mapper.toUndoSendError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.DraftCancelScheduleSendResult
 import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
@@ -35,9 +35,9 @@ class RustCancelScheduleSendMessage @Inject constructor() {
     suspend operator fun invoke(
         mailSession: MailUserSessionWrapper,
         messageId: LocalMessageId
-    ): Either<DataError, DraftCancelScheduledSendInfo> =
+    ): Either<UndoSendError, DraftCancelScheduledSendInfo> =
         when (val result = draftCancelScheduleSend(mailSession.getRustUserSession(), messageId)) {
-            is DraftCancelScheduleSendResult.Error -> result.v1.toDataError().left()
+            is DraftCancelScheduleSendResult.Error -> result.v1.toUndoSendError().left()
             is DraftCancelScheduleSendResult.Ok -> result.v1.right()
         }
 }

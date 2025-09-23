@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -136,5 +137,8 @@ interface MessageRepository {
 
     suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
 
-    suspend fun cancelScheduleSend(userId: UserId, messageId: MessageId): Either<DataError, PreviousScheduleSendTime>
+    suspend fun cancelScheduleSend(
+        userId: UserId,
+        messageId: MessageId
+    ): Either<UndoSendError, PreviousScheduleSendTime>
 }

@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.data.file.IntentExtraKeys
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserSample
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -471,7 +472,7 @@ class HomeViewModelTest {
     @Test
     fun `confirmMessageAsSeen fails when primary user is unavailable`() = runTest {
         // Given
-        coEvery { observePrimaryUserId() } returns MutableStateFlow<UserId?>(null)
+        coEvery { observePrimaryUserId() } returns MutableStateFlow(null)
 
         // When
         homeViewModel.confirmMessageAsSeen(MessageIdSample.LocalDraft)
@@ -546,9 +547,8 @@ class HomeViewModelTest {
     fun `show undo send error when cancel schedule send message fails`() = runTest {
         // Given
         val messageId = MessageIdSample.LocalDraft
-        val previousScheduleTime = PreviousScheduleSendTime(Instant.DISTANT_FUTURE)
 
-        coEvery { cancelScheduleSendMessage(userId, messageId) } returns DataError.Local.UndoSendError.left()
+        coEvery { cancelScheduleSendMessage(userId, messageId) } returns UndoSendError.UndoSendFailed.left()
 
         // When
         homeViewModel.undoScheduleSendMessage(messageId)
@@ -563,7 +563,7 @@ class HomeViewModelTest {
     @Test
     fun `show undo send error when undo send message fails`() = runTest {
         // Given
-        coEvery { undoSendMessage(userId, messageId) } returns DataError.Local.UndoSendError.left()
+        coEvery { undoSendMessage(userId, messageId) } returns UndoSendError.UndoSendFailed.left()
 
         // When
         homeViewModel.undoSendMessage(messageId)

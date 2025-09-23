@@ -22,8 +22,8 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.data.mapper.toUndoSendError
+import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.VoidDraftUndoSendResult
 import uniffi.proton_mail_uniffi.draftUndoSend
@@ -34,13 +34,13 @@ class RustDraftUndoSend @Inject constructor() {
     suspend operator fun invoke(
         mailSession: MailUserSessionWrapper,
         messageId: LocalMessageId
-    ): Either<DataError, Unit> = when (
+    ): Either<UndoSendError, Unit> = when (
         val result = draftUndoSend(
             mailSession.getRustUserSession(),
             messageId
         )
     ) {
-        is VoidDraftUndoSendResult.Error -> result.v1.toDataError().left()
+        is VoidDraftUndoSendResult.Error -> result.v1.toUndoSendError().left()
         is VoidDraftUndoSendResult.Ok -> Unit.right()
     }
 }
