@@ -44,7 +44,7 @@ class CreateRustMessageAccessor @Inject constructor() {
     ): Either<DataError, LocalMessageMetadata> = when (val result = message(session.getRustUserSession(), messageId)) {
         is MessageResult.Error -> result.v1.toDataError().left()
         is MessageResult.Ok -> when (val message = result.v1) {
-            null -> DataError.Local.NoDataCached.left()
+            null -> DataError.Local.NotFound.left()
             else -> message.right()
         }
     }
@@ -57,13 +57,13 @@ class CreateRustMessageAccessor @Inject constructor() {
             is ResolveMessageIdResult.Error -> result.v1.toDataError().left()
             is ResolveMessageIdResult.Ok -> result.v1.toMessageId().right()
         }.getOrElse {
-            return DataError.Local.NoDataCached.left()
+            return DataError.Local.NotFound.left()
         }
 
         return when (val result = message(session.getRustUserSession(), messageId.toLocalMessageId())) {
             is MessageResult.Error -> result.v1.toDataError().left()
             is MessageResult.Ok -> when (val message = result.v1) {
-                null -> DataError.Local.NoDataCached.left()
+                null -> DataError.Local.NotFound.left()
                 else -> message.right()
             }
         }

@@ -119,7 +119,7 @@ class RustConversationActionRepository @Inject constructor(
             conversationResult.fold(
                 ifLeft = { error ->
                     Timber.w("Failed to observe bottomBar actions due to conversation error $error")
-                    (error as? ConversationError.Other)?.error?.left() ?: DataError.Local.NoDataCached.left()
+                    (error as? ConversationError.Other)?.error?.left() ?: DataError.Local.IllegalStateError.left()
                 },
                 ifRight = { conversation ->
                     val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(

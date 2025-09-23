@@ -58,7 +58,7 @@ internal class UpdateAutoShowEmbeddedImagesSettingTest {
     fun `when user id is null an error is returned`() = runTest {
         // Given
         every { observePrimaryUserId() } returns flowOf(null)
-        val expectedResult = DataError.Local.NoDataCached.left()
+        val expectedResult = DataError.Local.IllegalStateError.left()
 
         // When
         val result = useCase(true)
@@ -75,7 +75,7 @@ internal class UpdateAutoShowEmbeddedImagesSettingTest {
         coEvery { mailSettingsRepository.getMailSettings(any()) } returns settingsMock
         coEvery { settingsMock.showImages } returns null
 
-        val expectedResult = DataError.Local.NoDataCached.left()
+        val expectedResult = DataError.Local.NotFound.left()
 
         // When
         val result = useCase(true)

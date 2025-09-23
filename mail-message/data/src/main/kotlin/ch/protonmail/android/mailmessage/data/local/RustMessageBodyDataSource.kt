@@ -53,7 +53,7 @@ class RustMessageBodyDataSource @Inject constructor(
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
         val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-            ?: return@withContext DataError.Local.NoDataCached.left()
+            ?: return@withContext DataError.Local.IllegalStateError.left()
 
         return@withContext createRustMessageBodyAccessor(mailbox, messageId)
             .onLeft { Timber.e("rust-message: Failed to get message body $it") }
@@ -79,7 +79,7 @@ class RustMessageBodyDataSource @Inject constructor(
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
         val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-            ?: return@withContext DataError.Local.NoDataCached.left()
+            ?: return@withContext DataError.Local.IllegalStateError.left()
 
         return@withContext createRustMessageBodyAccessor(mailbox, messageId)
             .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
@@ -93,7 +93,7 @@ class RustMessageBodyDataSource @Inject constructor(
             // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
             // the current labelId is not needed to get the body and is planned to be dropped on this API
             val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-                ?: return@withContext DataError.Local.NoDataCached.left()
+                ?: return@withContext DataError.Local.IllegalStateError.left()
 
             return@withContext createRustMessageBodyAccessor(mailbox, messageId)
                 .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }

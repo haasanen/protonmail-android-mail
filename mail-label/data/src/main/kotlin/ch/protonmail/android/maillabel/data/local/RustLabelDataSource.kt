@@ -148,7 +148,7 @@ class RustLabelDataSource @Inject constructor(
             val session = userSessionRepository.getUserSession(userId)
             if (session == null) {
                 Timber.e("rust-label: trying to get all mail label id with null session.")
-                return@withContext DataError.Local.NoDataCached.left()
+                return@withContext DataError.Local.NoUserSession.left()
             }
             return@withContext rustGetAllMailLabelId(session)
         }

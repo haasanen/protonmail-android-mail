@@ -324,7 +324,7 @@ internal class RustConversationActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val conversationId = ConversationId("1")
-        val expected = DataError.Local.NoDataCached.left()
+        val expected = DataError.Local.IllegalStateError.left()
         val entryPoint = ConversationDetailEntryPoint.Mailbox
 
         coEvery {

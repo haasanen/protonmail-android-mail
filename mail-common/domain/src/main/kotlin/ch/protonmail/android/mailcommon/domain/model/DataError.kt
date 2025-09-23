@@ -44,6 +44,8 @@ sealed interface DataError {
 
         data object UnsupportedOperation : Local
 
+        data object IllegalStateError : Local
+
         data object DiscardDraftError : Local
 
         data object UndoSendError : Local

@@ -42,7 +42,7 @@ class CreateRustMessageWatcher @Inject constructor() {
             is WatchMessageResult.Error -> result.v1.toDataError().left()
             is WatchMessageResult.Ok -> {
                 when (val watcher = result.v1) {
-                    null -> DataError.Local.NoDataCached.left()
+                    null -> DataError.Local.NotFound.left()
                     else -> watcher.right()
                 }
             }

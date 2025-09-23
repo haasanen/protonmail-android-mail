@@ -176,7 +176,7 @@ class RustMessageDataSourceImpl @Inject constructor(
             val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to mark message read with a null mailbox")
-                return@withContext DataError.Local.UnsupportedOperation.left()
+                return@withContext DataError.Local.IllegalStateError.left()
             }
 
             Timber.d("rust-message: marking message as read...")
@@ -191,7 +191,7 @@ class RustMessageDataSourceImpl @Inject constructor(
             val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to mark unread with null Mailbox! failing")
-                return@withContext DataError.Local.NoDataCached.left()
+                return@withContext DataError.Local.IllegalStateError.left()
             }
 
             return@withContext rustMarkMessagesUnread(mailbox, messages)
@@ -224,7 +224,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to move messages with null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
         return@withContext rustMoveMessages(mailbox, toLabelId, messageIds)
             .onLeft { Timber.e("rust-message: Failed to move messages $it") }
@@ -248,7 +248,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
         return@withContext getRustAvailableMessageActions(mailbox, messageId, themeOpts)
     }
@@ -261,7 +261,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get all available actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext getRustAllMessageListBottomBarActions(mailbox, messageIds)
@@ -276,7 +276,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get all available message actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext getRustAllMessageBottomBarActions(mailbox, themeOpts, messageId)
@@ -290,7 +290,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
         val moveActions = getRustMessageMoveToActions(mailbox, messageIds)
         return@withContext moveActions.map { it.filterIsInstance<MoveAction.SystemFolder>() }
@@ -304,7 +304,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available label actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
         return@withContext getRustMessageLabelAsActions(mailbox, messageIds)
     }
@@ -317,7 +317,7 @@ class RustMessageDataSourceImpl @Inject constructor(
             val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to delete messages with null Mailbox! failing")
-                return@withContext DataError.Local.NoDataCached.left()
+                return@withContext DataError.Local.IllegalStateError.left()
             }
 
             return@withContext rustDeleteMessages(mailbox, messageIds)
@@ -335,7 +335,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to label messages with null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext rustLabelMessages(
@@ -360,7 +360,7 @@ class RustMessageDataSourceImpl @Inject constructor(
             val mailbox = rustMailboxFactory.create(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to mark message as legitimate with null Mailbox! failing")
-                return@withContext DataError.Local.NoDataCached.left()
+                return@withContext DataError.Local.IllegalStateError.left()
             }
 
             return@withContext rustMarkMessageAsLegitimate(mailbox, messageId)
@@ -371,7 +371,7 @@ class RustMessageDataSourceImpl @Inject constructor(
             val mailbox = rustMailboxFactory.create(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to unblock sender with null Mailbox! failing")
-                return@withContext DataError.Local.NoDataCached.left()
+                return@withContext DataError.Local.IllegalStateError.left()
             }
 
             return@withContext rustUnblockAddress(mailbox, email)
@@ -382,7 +382,7 @@ class RustMessageDataSourceImpl @Inject constructor(
             val mailbox = rustMailboxFactory.create(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to report phishing with null Mailbox! failing")
-                return@withContext DataError.Local.NoDataCached.left()
+                return@withContext DataError.Local.IllegalStateError.left()
             }
 
             return@withContext rustReportPhishing(mailbox, messageId)

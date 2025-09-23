@@ -43,9 +43,9 @@ class ObservePrivacySettings @Inject constructor(
             observeBackgroundSyncSetting()
         ) { mailSettings, preventScreenshotSetting, backgroundSyncSetting ->
             either {
-                mailSettings ?: raise(DataError.Local.NoDataCached)
-                val preventScreenshots = preventScreenshotSetting.getOrNull() ?: raise(DataError.Local.NoDataCached)
-                val backgroundSync = backgroundSyncSetting.getOrNull() ?: raise(DataError.Local.NoDataCached)
+                mailSettings ?: raise(DataError.Local.NotFound)
+                val preventScreenshots = preventScreenshotSetting.getOrNull() ?: raise(DataError.Local.NotFound)
+                val backgroundSync = backgroundSyncSetting.getOrNull() ?: raise(DataError.Local.NotFound)
 
                 PrivacySettings(
                     allowBackgroundSync = backgroundSync.isEnabled,

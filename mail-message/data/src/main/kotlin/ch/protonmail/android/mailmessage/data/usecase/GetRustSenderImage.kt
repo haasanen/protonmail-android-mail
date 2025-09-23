@@ -37,7 +37,7 @@ class GetRustSenderImage @Inject constructor() {
         is MailUserSessionImageForSenderResult.Error -> result.v1.toDataError().left()
         is MailUserSessionImageForSenderResult.Ok -> {
             when (val image = result.v1) {
-                null -> DataError.Local.NoDataCached.left()
+                null -> DataError.Local.NotFound.left()
                 else -> image.right()
             }
         }

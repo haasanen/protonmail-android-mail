@@ -96,7 +96,7 @@ class MoveMessagesTest {
         val result = moveMessages(userId, messageIds, destinationLabel)
 
         // Then
-        assertEquals(DataError.Local.NoDataCached.left(), result)
+        assertEquals(DataError.Local.IllegalStateError.left(), result)
     }
 
     private fun expectFindLocalLabelFails(systemLabelId: SystemLabelId) {

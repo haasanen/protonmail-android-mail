@@ -371,7 +371,7 @@ internal class RustConversationDataSourceImplTest {
         )
 
         // Then
-        assertEquals(DataError.Local.NoDataCached.left(), result)
+        assertEquals(DataError.Local.IllegalStateError.left(), result)
         verify { rustLabelConversations wasNot Called }
     }
 

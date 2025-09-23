@@ -50,7 +50,7 @@ class MoveMessages @Inject constructor(
         val localLabelId = findLocalSystemLabelId(userId, systemLabelId)?.labelId
         if (localLabelId == null) {
             Timber.e("move-message: Local label id cannot be found for SystemLabelId $systemLabelId")
-            return DataError.Local.NoDataCached.left()
+            return DataError.Local.IllegalStateError.left()
         }
 
         messageRepository.moveTo(userId, messageIds, localLabelId).bind()

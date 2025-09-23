@@ -75,7 +75,7 @@ internal class GetMessagesInSameExclusiveLocationTest {
             val result = getMessagesInSameExclusiveLocation(userId, conversationId, messageId, localLabelId, entryPoint)
 
             // Then
-            assertEquals(DataError.Local.NoDataCached.left(), result)
+            assertEquals(DataError.Local.NotFound.left(), result)
         }
     }
 

@@ -57,7 +57,7 @@ class GetMessagesInSameExclusiveLocation @Inject constructor(
             .firstOrNull()
             ?.getOrNull()
             ?.messages
-            ?: raise(DataError.Local.NoDataCached)
+            ?: raise(DataError.Local.NotFound)
 
         val currentMessage = messages.firstOrNull { it.messageId == messageId }
         messages.filter { it.exclusiveLocation == currentMessage?.exclusiveLocation }

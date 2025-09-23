@@ -60,7 +60,7 @@ internal class ObservePrivacySettingsTest {
     @Test
     fun `when fetched mail settings are null, an error is returned`() = runTest {
         // Given
-        val expectedResult = DataError.Local.NoDataCached.left()
+        val expectedResult = DataError.Local.NotFound.left()
         expectValidPreventScreenshotsPreference()
         expectValidBackgroundSyncPreference()
         coEvery { observeMailSettings(userId) } returns flowOf(null)
@@ -75,7 +75,7 @@ internal class ObservePrivacySettingsTest {
     @Test
     fun `when prevent screenshots settings cannot be fetched, an error is returned`() = runTest {
         // Given
-        val expectedResult = DataError.Local.NoDataCached.left()
+        val expectedResult = DataError.Local.NotFound.left()
         expectValidMailSettingsPreference()
         coEvery { observePreventScreenshotsSetting() } returns flowOf(PreferencesError.left())
         expectValidBackgroundSyncPreference()
@@ -90,7 +90,7 @@ internal class ObservePrivacySettingsTest {
     @Test
     fun `when background sync settings cannot be fetched, an error is returned`() = runTest {
         // Given
-        val expectedResult = DataError.Local.NoDataCached.left()
+        val expectedResult = DataError.Local.NotFound.left()
         expectValidMailSettingsPreference()
         expectValidPreventScreenshotsPreference()
         coEvery { observeBackgroundSyncSetting() } returns flowOf(PreferencesError.left())

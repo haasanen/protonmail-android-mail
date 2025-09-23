@@ -68,7 +68,7 @@ class MailSessionWrapper(private val mailSession: MailSession) {
             is MailSessionGetAccountResult.Error -> result.v1.toDataError().left()
             is MailSessionGetAccountResult.Ok -> {
                 when (val data = result.v1) {
-                    null -> DataError.Local.NoDataCached.left()
+                    null -> DataError.Local.NotFound.left()
                     else -> data.right()
                 }
             }
@@ -79,7 +79,7 @@ class MailSessionWrapper(private val mailSession: MailSession) {
             is MailSessionGetPrimaryAccountResult.Error -> result.v1.toDataError().left()
             is MailSessionGetPrimaryAccountResult.Ok -> {
                 when (val data = result.v1) {
-                    null -> DataError.Local.NoDataCached.left()
+                    null -> DataError.Local.NotFound.left()
                     else -> data.right()
                 }
             }

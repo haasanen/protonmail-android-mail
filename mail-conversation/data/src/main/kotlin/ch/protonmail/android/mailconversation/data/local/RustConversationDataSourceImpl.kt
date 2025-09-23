@@ -175,7 +175,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext getRustConversationBottomSheetActions(mailbox, conversationId)
@@ -189,7 +189,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext getRustConversationListBottomBarActions(mailbox, conversationIds)
@@ -203,7 +203,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext getRustConversationBottomBarActions(mailbox, conversationId)
@@ -220,7 +220,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to label conversations with null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext rustLabelConversations(
@@ -251,7 +251,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext getRustConversationMoveToActions(mailbox, conversationIds)
@@ -268,7 +268,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to label conversations with null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
 
         return@withContext rustMoveConversations(mailbox, toLabelId, conversationIds)
@@ -294,7 +294,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available label actions for null Mailbox! failing")
-            return@withContext DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.IllegalStateError.left()
         }
         return@withContext getRustConversationLabelAsActions(mailbox, conversationIds)
     }
@@ -322,7 +322,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         }.getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: Failed to perform $actionName, null mailbox")
-            return DataError.Local.NoDataCached.left()
+            return DataError.Local.IllegalStateError.left()
         }
 
         return Either.catch {

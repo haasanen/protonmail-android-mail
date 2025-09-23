@@ -45,7 +45,7 @@ class MoveMessageTest {
     @Test
     fun `when move to returns error then return error`() = runTest {
         // Given
-        val error = DataError.Local.NoDataCached.left()
+        val error = DataError.Local.IllegalStateError.left()
         val toLabelId = SystemLabelId.Spam.labelId
         coEvery { moveMessages(userId, listOf(messageId), toLabelId) } returns error
 

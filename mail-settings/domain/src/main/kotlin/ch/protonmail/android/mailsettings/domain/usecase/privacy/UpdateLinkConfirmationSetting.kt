@@ -33,7 +33,7 @@ class UpdateLinkConfirmationSetting @Inject constructor(
 ) {
 
     suspend operator fun invoke(newValue: Boolean): Either<DataError, Unit> {
-        val userId = observePrimaryUserId().firstOrNull() ?: return DataError.Local.NoDataCached.left()
+        val userId = observePrimaryUserId().firstOrNull() ?: return DataError.Local.IllegalStateError.left()
         mailSettingsRepository.updateConfirmLink(userId, newValue)
         return Unit.right()
     }
