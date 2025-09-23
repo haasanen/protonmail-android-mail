@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.mod
+package ch.protonmail.android.mailcomposer.domain.model
 
 data class RecipientsNotSupportingExpiration(
     val unsupported: List<String>,

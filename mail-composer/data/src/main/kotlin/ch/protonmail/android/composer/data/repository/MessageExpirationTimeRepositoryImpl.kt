@@ -23,7 +23,7 @@ import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.mapper.toMessageExpiration
 import ch.protonmail.android.composer.data.mapper.toRecipientsNotSupportingExpiration
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
+import ch.protonmail.android.mailcomposer.domain.model.RecipientsNotSupportingExpiration
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository

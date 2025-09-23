@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcomposer.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
+import ch.protonmail.android.mailcomposer.domain.model.RecipientsNotSupportingExpiration
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 
