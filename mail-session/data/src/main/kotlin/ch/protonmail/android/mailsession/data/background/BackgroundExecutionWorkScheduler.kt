@@ -35,12 +35,12 @@ class BackgroundExecutionWorkScheduler @Inject constructor(
             workerId = WORKER_ID,
             tag = BACKGROUND_WORK_TAG,
             worker = BackgroundExecutionWorker::class.java,
-            existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE,
+            existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
             initialDelay = 30.seconds.toJavaDuration()
         )
     }
 
-    fun cancelPendingWork() {
+    suspend fun cancelPendingWork() {
         cancelWorkManagerWork.cancelAllWorkByTag(BACKGROUND_WORK_TAG)
     }
 

@@ -49,7 +49,7 @@ internal class BackgroundExecutionWorkSchedulerTest {
                 workerId = any(),
                 tag = BACKGROUND_WORK_TAG,
                 worker = BackgroundExecutionWorker::class.java,
-                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE,
+                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
                 initialDelay = 30.seconds.toJavaDuration()
             )
         } just runs
@@ -63,7 +63,7 @@ internal class BackgroundExecutionWorkSchedulerTest {
                 workerId = DEFAULT_WORKER_ID,
                 tag = BACKGROUND_WORK_TAG,
                 worker = BackgroundExecutionWorker::class.java,
-                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE,
+                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
                 initialDelay = 30.seconds.toJavaDuration()
             )
 

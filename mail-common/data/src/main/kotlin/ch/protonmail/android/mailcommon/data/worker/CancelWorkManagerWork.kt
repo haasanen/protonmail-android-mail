@@ -19,13 +19,14 @@
 package ch.protonmail.android.mailcommon.data.worker
 
 import androidx.work.WorkManager
+import androidx.work.await
 import javax.inject.Inject
 
 class CancelWorkManagerWork @Inject constructor(
     private val workManager: WorkManager
 ) {
 
-    fun cancelAllWorkByTag(tag: String) {
-        workManager.cancelAllWorkByTag(tag)
+    suspend fun cancelAllWorkByTag(tag: String) {
+        workManager.cancelAllWorkByTag(tag).await()
     }
 }

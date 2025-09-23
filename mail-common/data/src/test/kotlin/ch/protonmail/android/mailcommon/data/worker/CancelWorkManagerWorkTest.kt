@@ -20,9 +20,11 @@ package ch.protonmail.android.mailcommon.data.worker
 
 import androidx.work.Operation
 import androidx.work.WorkManager
+import com.google.common.util.concurrent.SettableFuture
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 internal class CancelWorkManagerWorkTest {
@@ -31,16 +33,21 @@ internal class CancelWorkManagerWorkTest {
     private val cancelWorkManagerWork = CancelWorkManagerWork(workManager)
 
     @Test
-    fun `should proxy the cancellation call to WorkManager`() {
+    fun `cancelAllWorkByTag should call workManager cancelAllWorkByTag and await`() = runTest {
         // Given
         val tag = "tag"
-        val operation = mockk<Operation>()
-        every { workManager.cancelAllWorkByTag(tag) } returns operation
+        val mockOperation = mockk<Operation>()
+        val completedFuture = SettableFuture.create<Operation.State.SUCCESS>()
+        completedFuture.set(Operation.SUCCESS)
+
+        every { mockOperation.result } returns completedFuture
+        every { workManager.cancelAllWorkByTag(tag) } returns mockOperation
 
         // When
         cancelWorkManagerWork.cancelAllWorkByTag(tag)
 
         // Then
-        verify(exactly = 1) { workManager.cancelAllWorkByTag(tag) }
+        verify { workManager.cancelAllWorkByTag(tag) }
+        verify { mockOperation.result }
     }
 }
