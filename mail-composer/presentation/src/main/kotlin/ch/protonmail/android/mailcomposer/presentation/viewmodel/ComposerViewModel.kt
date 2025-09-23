@@ -389,7 +389,7 @@ class ComposerViewModel @AssistedInject constructor(
         createEmptyDraft(primaryUserId())
             .onRight { draftFields ->
                 // ensure the displayBody prop that the UI uses to set initial value is up-to-date with the signature
-                bodyTextField.replaceText(draftFields.body.value)
+                bodyTextField.replaceText(draftFields.body.value, resetRange = true)
 
                 emitNewStateFor(
                     CompositeEvent.DraftContentReady(
@@ -608,7 +608,8 @@ class ComposerViewModel @AssistedInject constructor(
 
             }
             .onRight { bodyWithNewSignature ->
-                bodyTextField.replaceText(bodyWithNewSignature.value)
+                val formerSelection = bodyTextField.selection
+                bodyTextField.replaceText(bodyWithNewSignature.value, formerSelection)
 
                 // This needs to be created directly as we're emitting a state change.
                 val draftDisplayBody = buildDraftDisplayBody(
@@ -884,7 +885,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private fun initComposerFields(draftFields: DraftFields) {
         subjectTextField.replaceText(draftFields.subject.value)
-        bodyTextField.replaceText(draftFields.body.value)
+        bodyTextField.replaceText(draftFields.body.value, resetRange = true)
         recipientsStateManager.setFromDraftRecipients(
             toRecipients = draftFields.recipientsTo.value,
             ccRecipients = draftFields.recipientsCc.value,

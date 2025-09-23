@@ -18,20 +18,28 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcomposer.presentation.R
 
 @Composable
 fun EditableMessageBodyPlainText(
@@ -45,7 +53,8 @@ fun EditableMessageBodyPlainText(
 
     BasicTextField(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+            .padding(vertical = ProtonDimens.Spacing.Large)
             .onGloballyPositioned {
                 if (shouldFocus.value) {
                     focusRequester.requestFocus()
@@ -53,11 +62,28 @@ fun EditableMessageBodyPlainText(
             }
             .focusRequester(focusRequester),
         textStyle = ProtonTheme.typography.bodyMediumNorm,
-        state = bodyTextFieldState
+        cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor),
+        state = bodyTextFieldState,
+        decorator = @Composable { innerTextField ->
+            if (bodyTextFieldState.text.isEmpty()) {
+                PlaceholderText()
+            }
+
+            innerTextField()
+        }
     )
 
     ConsumableLaunchedEffect(shouldRequestFocus) {
         shouldFocus.value = true
     }
+}
 
+@Composable
+private fun PlaceholderText() {
+    Text(
+        modifier = Modifier.testTag(ComposerTestTags.MessageBodyPlaceholder),
+        text = stringResource(R.string.compose_message_placeholder),
+        color = ProtonTheme.colors.textHint,
+        style = ProtonTheme.typography.bodyMediumNorm
+    )
 }
