@@ -100,6 +100,7 @@ import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.onboarding.Onboarding
+import ch.protonmail.android.navigation.route.addAppIconSettings
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockIntervalSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
@@ -737,6 +738,7 @@ fun Home(
                         onClose = { navController.navigateBack() },
                         onShowSuccessSnackbar = { showNormalSnackbar(it) }
                     )
+                    addAppIconSettings(navController)
                     addPinDialog(navController)
                     addSwipeActionsSettings(navController)
                     addThemeSettings(navController)

@@ -147,6 +147,7 @@ sealed class Destination(val route: String) {
         object CombinedContactsSettings : Destination("settings/combinedContacts")
         object PrivacySettings : Destination("settings/account/privacy")
         object LanguageSettings : Destination("settings/appLanguage")
+        object AppIconSettings : Destination("settings/appIcon")
         object SwipeActionsSettings : Destination("settings/swipeActions")
         object EditSwipeActionSettings : Destination("settings/swipeActions/edit/${SWIPE_DIRECTION_KEY.wrap()}") {
 

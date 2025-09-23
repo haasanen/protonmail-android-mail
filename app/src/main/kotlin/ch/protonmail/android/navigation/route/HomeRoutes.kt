@@ -315,6 +315,9 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                     onAppLanguageClick = {
                         navController.navigate(Destination.Screen.LanguageSettings.route)
                     },
+                    onAppIconSettingsClick = {
+                        navController.navigate(Destination.Screen.AppIconSettings.route)
+                    },
                     onNavigateToMobileSignatureSettings = {
                         navController.navigate(Destination.Screen.MobileSignatureSettings.route)
                     },

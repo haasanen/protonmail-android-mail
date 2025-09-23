@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import ch.protonmail.android.design.compose.navigation.require
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
+import ch.protonmail.android.feature.appicon.ui.AppIconSettingsScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportScreen
@@ -139,6 +140,17 @@ internal fun NavGraphBuilder.addPrivacySettings(navController: NavHostController
             modifier = Modifier,
             onBackClick = { navController.navigateBack() }
         )
+    }
+}
+
+internal fun NavGraphBuilder.addAppIconSettings(navController: NavHostController) {
+    composable(route = Screen.AppIconSettings.route) {
+        ProtonInvertedTheme {
+            AppIconSettingsScreen(
+                modifier = Modifier,
+                onBackClick = { navController.navigateBack() }
+            )
+        }
     }
 }
 
