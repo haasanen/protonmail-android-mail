@@ -129,7 +129,7 @@ class RustDraftDataSourceImpl @Inject constructor(
     override suspend fun getMessageId(): Either<DataError, MessageId> =
         when (val result = draftCache.get().messageId()) {
             is DraftMessageIdResult.Error -> result.v1.toDataError().left()
-            is DraftMessageIdResult.Ok -> result.v1?.toMessageId()?.right() ?: DataError.Local.NoDraftId.left()
+            is DraftMessageIdResult.Ok -> result.v1?.toMessageId()?.right() ?: DataError.Local.NotFound.left()
         }
 
     override suspend fun open(userId: UserId, messageId: MessageId): Either<OpenDraftError, LocalDraftWithSyncStatus> {

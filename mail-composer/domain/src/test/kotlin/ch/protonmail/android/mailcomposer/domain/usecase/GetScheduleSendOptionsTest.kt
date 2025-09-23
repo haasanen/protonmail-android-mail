@@ -46,7 +46,7 @@ class GetScheduleSendOptionsTest {
     @Test
     fun `returns error when get schedule send options fails`() = runTest {
         // Given
-        val expected = DataError.Local.NoDraftId
+        val expected = DataError.Local.NotFound
         givenGetScheduleSendOptionsFails(expected)
 
         // When

@@ -48,7 +48,7 @@ sealed interface DataError {
 
         data object UndoSendError : Local
 
-        data object NoDraftId : Local
+        data object NotFound : Local
 
         data object NoAutoDeleteBanner : Local
 

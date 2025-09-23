@@ -36,7 +36,7 @@ class GetDraftIdTest {
     @Test
     fun `returns error when get message id fails`() = runTest {
         // Given
-        val expected = DataError.Local.NoDraftId
+        val expected = DataError.Local.NotFound
         givenGetMessageIdFails(expected)
 
         // When

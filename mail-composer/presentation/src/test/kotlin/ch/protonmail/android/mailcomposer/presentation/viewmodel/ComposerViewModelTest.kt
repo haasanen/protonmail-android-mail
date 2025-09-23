@@ -1420,7 +1420,7 @@ internal class ComposerViewModelTest {
     }
 
     private fun expectedNoDraftSaved() {
-        coEvery { getDraftId() } returns DataError.Local.NoDraftId.left()
+        coEvery { getDraftId() } returns DataError.Local.NotFound.left()
     }
 
     private fun expectedUserId(userId: () -> UserId): UserId = userId().also {
