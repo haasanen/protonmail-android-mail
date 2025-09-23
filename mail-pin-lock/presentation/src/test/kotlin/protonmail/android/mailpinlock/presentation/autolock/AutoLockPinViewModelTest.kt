@@ -382,7 +382,7 @@ internal class AutoLockPinViewModelTest {
     fun `should emit sign out request and confirmation on verification (failure)`() = runTest {
         // Given
         expectValidOpeningMode(AutoLockInsertionMode.VerifyPin)
-        coEvery { signOutAllAccounts() } returns DataError.Local.Unknown.left()
+        coEvery { signOutAllAccounts() } returns DataError.Local.CryptoError.left()
 
         // When
         val viewModel = viewModel()

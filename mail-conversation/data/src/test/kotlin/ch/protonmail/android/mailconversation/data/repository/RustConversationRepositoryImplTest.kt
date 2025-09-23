@@ -421,7 +421,7 @@ class RustConversationRepositoryImplTest {
             val selectedLabelIds = listOf(LabelIdSample.RustLabel1, LabelIdSample.RustLabel2)
             val partiallySelectedLabelIds = listOf(LabelIdSample.RustLabel3)
             val shouldArchive = false
-            val expectedError = DataError.Local.Unknown
+            val expectedError = DataError.Local.CryptoError
 
             coEvery {
                 rustConversationDataSource.labelConversations(

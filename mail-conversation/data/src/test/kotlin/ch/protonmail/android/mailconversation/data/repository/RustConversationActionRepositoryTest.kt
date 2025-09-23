@@ -301,7 +301,7 @@ internal class RustConversationActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val conversationIds = listOf(ConversationId("1"))
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
 
         coEvery {
             rustConversationDataSource.getAllAvailableListBottomBarActions(

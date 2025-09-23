@@ -55,7 +55,7 @@ class ContactRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteContact(userId: UserId, contactId: ContactId): Either<DataError.Local, Unit> =
+    override suspend fun deleteContact(userId: UserId, contactId: ContactId): Either<DataError, Unit> =
         localContactDataSource.deleteContact(userId, contactId.toLocalContactId())
 
     override suspend fun updateContact(

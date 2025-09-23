@@ -138,7 +138,7 @@ class GetMoveToLocationsTest {
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationId("1")
-        val error = DataError.Local.Unknown.left()
+        val error = DataError.Local.CryptoError.left()
         coEvery { getConversationMoveToLocations(userId, labelId, listOf(conversationId)) } returns error
 
         // When

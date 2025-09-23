@@ -103,7 +103,7 @@ class ShouldShowRecipientsTest {
         val sentMailLabel = MailLabelTestData.sentSystemLabel
         coEvery { getCurrentMailLabel(userId) } returns sentMailLabel
         coEvery { observeSystemMailLabels(userId) } returns flowOf(
-            DataError.Local.Unknown.left()
+            DataError.Local.CryptoError.left()
         )
 
         // When

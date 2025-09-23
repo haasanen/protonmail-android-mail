@@ -97,7 +97,7 @@ class RustSendingStatusDataSourceImplTest {
     fun `observeMessageSendingStatus returns empty flow when watcher creation fails`() = runTest {
         // Given
         coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
-        coEvery { createRustDraftSendWatcher(testSession, any()) } returns DataError.Local.Unknown.left()
+        coEvery { createRustDraftSendWatcher(testSession, any()) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.observeMessageSendingStatus(testUserId).toList()
@@ -159,7 +159,7 @@ class RustSendingStatusDataSourceImplTest {
     fun `queryUnseenMessageSendingStatuses returns error when querying fails`() = runTest {
         // Given
         coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
-        coEvery { rustQueryUnseenDraftSendResults(testSession) } returns DataError.Local.Unknown.left()
+        coEvery { rustQueryUnseenDraftSendResults(testSession) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.queryUnseenMessageSendingStatuses(testUserId)
@@ -209,7 +209,7 @@ class RustSendingStatusDataSourceImplTest {
     fun `deleteMessageSendingStatuses returns error when deletion fails`() = runTest {
         // Given
         coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
-        coEvery { rustDeleteDraftSendResult(testSession, any()) } returns DataError.Local.Unknown.left()
+        coEvery { rustDeleteDraftSendResult(testSession, any()) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.deleteMessageSendingStatuses(testUserId, listOf(testMessageId))
@@ -247,7 +247,7 @@ class RustSendingStatusDataSourceImplTest {
     fun `markMessageSendingStatusesAsSeen returns error when marking fails`() = runTest {
         // Given
         coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
-        coEvery { rustMarkDraftSendResultAsSeen(testSession, any()) } returns DataError.Local.Unknown.left()
+        coEvery { rustMarkDraftSendResultAsSeen(testSession, any()) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.markMessageSendingStatusesAsSeen(testUserId, listOf(testMessageId))

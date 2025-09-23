@@ -88,7 +88,7 @@ class GetContactSuggestionsTest {
         // Given
         val userId = UserIdSample.Primary
         val query = ContactSuggestionQuery("test")
-        val expected = DataError.Local.Unknown
+        val expected = DataError.Local.CryptoError
         coEvery { deviceContactsRepository.getAllContacts(true) } returns deviceContacts.right()
         coEvery {
             contactsRepository.getContactSuggestions(userId, deviceContacts, query)

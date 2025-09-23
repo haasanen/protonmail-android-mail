@@ -57,7 +57,7 @@ class ReportPhishingMessageTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.AugWeatherForecast
-        val expected = DataError.Local.Unknown
+        val expected = DataError.Local.CryptoError
         coEvery { messageRepository.reportPhishing(userId, messageId) } returns expected.left()
 
         // When

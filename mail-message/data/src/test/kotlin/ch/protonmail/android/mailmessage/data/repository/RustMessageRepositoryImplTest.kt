@@ -261,7 +261,7 @@ internal class RustMessageRepositoryImplTest {
                     it.toLocalMessageId()
                 }
             )
-        } returns DataError.Local.Unknown.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val result = repository.starMessages(userId, messageIds)
@@ -269,7 +269,7 @@ internal class RustMessageRepositoryImplTest {
         // Then
         coVerify { rustMessageDataSource.starMessages(userId, messageIds.map { it.toLocalMessageId() }) }
         assert(result.isLeft())
-        assertEquals(DataError.Local.Unknown, result.swap().getOrElse { null })
+        assertEquals(DataError.Local.CryptoError, result.swap().getOrElse { null })
     }
 
     @Test
@@ -294,7 +294,7 @@ internal class RustMessageRepositoryImplTest {
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
         coEvery {
             rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() })
-        } returns DataError.Local.Unknown.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val result = repository.unStarMessages(userId, messageIds)
@@ -302,7 +302,7 @@ internal class RustMessageRepositoryImplTest {
         // Then
         coVerify { rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() }) }
         assert(result.isLeft())
-        assertEquals(DataError.Local.Unknown, result.swap().getOrElse { null })
+        assertEquals(DataError.Local.CryptoError, result.swap().getOrElse { null })
     }
 
     @Test
@@ -358,7 +358,7 @@ internal class RustMessageRepositoryImplTest {
             val selectedLabelIds = listOf(LabelIdSample.RustLabel1, LabelIdSample.RustLabel2)
             val partiallySelectedLabelIds = listOf(LabelIdSample.RustLabel3)
             val shouldArchive = false
-            val expectedError = DataError.Local.Unknown
+            val expectedError = DataError.Local.CryptoError
 
             coEvery {
                 rustMessageDataSource.labelMessages(
@@ -406,7 +406,7 @@ internal class RustMessageRepositoryImplTest {
         runTest {
             // Given
             val messageId = LocalMessageIdSample.AugWeatherForecast
-            val expectedError = DataError.Local.Unknown
+            val expectedError = DataError.Local.CryptoError
 
             coEvery { rustMessageDataSource.markMessageAsLegitimate(userId, messageId) } returns expectedError.left()
 
@@ -440,7 +440,7 @@ internal class RustMessageRepositoryImplTest {
         runTest {
             // Given
             val email = "abc@pm.me"
-            val expectedError = DataError.Local.Unknown
+            val expectedError = DataError.Local.CryptoError
 
             coEvery { rustMessageDataSource.unblockSender(userId, email) } returns expectedError.left()
 
@@ -474,7 +474,7 @@ internal class RustMessageRepositoryImplTest {
         runTest {
             // Given
             val messageId = LocalMessageIdSample.AugWeatherForecast
-            val expectedError = DataError.Local.Unknown
+            val expectedError = DataError.Local.CryptoError
 
             coEvery { rustMessageDataSource.reportPhishing(userId, messageId) } returns expectedError.left()
 
@@ -510,7 +510,7 @@ internal class RustMessageRepositoryImplTest {
         runTest {
             // Given
             val labelId = LabelIdSample.Trash
-            val expectedError = DataError.Local.Unknown
+            val expectedError = DataError.Local.CryptoError
 
             coEvery {
                 rustMessageDataSource.deleteAllMessagesInLocation(userId, labelId.toLocalLabelId())

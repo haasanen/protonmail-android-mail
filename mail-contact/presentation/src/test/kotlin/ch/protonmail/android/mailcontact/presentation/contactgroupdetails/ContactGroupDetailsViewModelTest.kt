@@ -104,7 +104,12 @@ class ContactGroupDetailsViewModelTest {
             savedStateHandle.get<String>(ContactGroupDetailsScreen.CONTACT_GROUP_DETAILS_ID_KEY)
         } returns contactGroupId.id
         coEvery { observePrimaryUserId() } returns flowOf(UserIdTestData.userId)
-        coEvery { getContactGroupDetails(UserIdTestData.userId, contactGroupId) } returns DataError.Local.Unknown.left()
+        coEvery {
+            getContactGroupDetails(
+                UserIdTestData.userId,
+                contactGroupId
+            )
+        } returns DataError.Local.CryptoError.left()
 
         // When
         viewModel.state.test {

@@ -2064,7 +2064,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         initGenericObserverMocks()
 
         val viewModel = buildConversationDetailViewModel()
-        coEvery { move.invoke(any(), any(), any<SystemLabelId>()) } returns DataError.Local.Unknown.left()
+        coEvery { move.invoke(any(), any(), any<SystemLabelId>()) } returns DataError.Local.CryptoError.left()
 
         // When + Then
         viewModel.state.test {

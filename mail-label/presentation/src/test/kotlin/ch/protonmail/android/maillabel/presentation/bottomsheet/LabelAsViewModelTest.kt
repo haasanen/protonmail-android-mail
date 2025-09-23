@@ -334,7 +334,7 @@ internal class LabelAsViewModelTest {
         )
 
         expectLoadedDataForConversation(conversationId = conversationId, initialState = initialState)
-        coEvery { labelConversations(any(), any(), any(), any()) } returns DataError.Local.Unknown.left()
+        coEvery { labelConversations(any(), any(), any(), any()) } returns DataError.Local.CryptoError.left()
 
         // When
         val confirmAction = LabelAsOperation.LabelAsAction.OperationConfirmed(false)

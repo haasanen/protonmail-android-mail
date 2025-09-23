@@ -86,7 +86,7 @@ class RustAttachmentDataSourceImplTest {
         val userId = UserId("test-user-id")
         val attachmentId = LocalAttachmentId(1u)
         val session = mockk<MailUserSessionWrapper>()
-        val expectedError = DataError.Local.Unknown
+        val expectedError = DataError.Local.CryptoError
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { getRustAttachment(session, attachmentId) } returns expectedError.left()
 

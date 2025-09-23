@@ -67,7 +67,7 @@ class GetBottomBarActionsTest {
         val labelId = LabelTestData.systemLabel.labelId
         val mailboxItems = listOf(MailboxItemId("1"))
         val viewMode = ViewMode.ConversationGrouping
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { getBottomSheetActions(userId, labelId, mailboxItems, viewMode) } returns expected
 
         // When

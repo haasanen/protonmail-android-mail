@@ -143,7 +143,7 @@ class RustContactDataSourceImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustContactWatcher(session, capture(contactListUpdatedCallbackSlot))
-        } returns DataError.Local.Unknown.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val result = rustContactDataSource.observeAllContacts(userId).first()
@@ -204,7 +204,7 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.deleteContact(userId, contactId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(DataError.Local.NoUserSession.left(), result)
     }
 
     @Test
@@ -221,7 +221,7 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.deleteContact(userId, contactId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(DataError.Local.NoDataCached.left(), result)
     }
 
     @Test
@@ -280,7 +280,7 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.getContactSuggestions(userId, DeviceContactsWithSignature.Empty, query)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(DataError.Local.NoUserSession.left(), result)
     }
 
     @Test
@@ -322,13 +322,13 @@ class RustContactDataSourceImplTest {
         val contactId = LocalContactTestData.contactId1
         val session = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { rustGetContactDetails(session, contactId) } returns DataError.Local.Unknown.left()
+        coEvery { rustGetContactDetails(session, contactId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = rustContactDataSource.getContactDetails(userId, contactId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(DataError.Local.CryptoError.left(), result)
     }
 
     @Test

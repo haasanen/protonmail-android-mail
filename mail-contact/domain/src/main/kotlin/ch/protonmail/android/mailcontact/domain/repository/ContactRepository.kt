@@ -54,7 +54,7 @@ interface ContactRepository {
     /**
      * Delete contact from [userId] by [contactId].
      */
-    suspend fun deleteContact(userId: UserId, contactId: ContactId): Either<DataError.Local, Unit>
+    suspend fun deleteContact(userId: UserId, contactId: ContactId): Either<DataError, Unit>
 
     /**
      * Update contact from [userId], by [contactId], using [contactCards].

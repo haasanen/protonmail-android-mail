@@ -52,13 +52,13 @@ class MailboxBannersRepositoryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         coEvery {
             rustGetAutoDeleteBanner(userSessionMock, labelId.toLocalLabelId())
-        } returns DataError.Local.Unknown.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val actual = mailboxBannersRepository.getAutoDeleteBanner(userId, labelId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(DataError.Local.CryptoError.left(), actual)
     }
 
     @Test

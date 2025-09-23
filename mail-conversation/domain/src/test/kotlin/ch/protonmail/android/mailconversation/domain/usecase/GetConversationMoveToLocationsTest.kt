@@ -59,7 +59,7 @@ class GetConversationMoveToLocationsTest {
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val conversationIds = listOf(ConversationIdSample.Newsletter)
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { actionRepository.getSystemMoveToLocations(userId, labelId, conversationIds) } returns expected
         every { observeCustomMailFolders(userId) } returns flowOf()
 

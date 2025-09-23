@@ -26,13 +26,18 @@ class GetAutoDeleteBannerTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LabelIdSample.Trash
-        coEvery { mailboxBannersRepository.getAutoDeleteBanner(userId, labelId) } returns DataError.Local.Unknown.left()
+        coEvery {
+            mailboxBannersRepository.getAutoDeleteBanner(
+                userId,
+                labelId
+            )
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val actual = getAutoDeleteBanner(userId, labelId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(DataError.Local.CryptoError.left(), actual)
     }
 
     @Test

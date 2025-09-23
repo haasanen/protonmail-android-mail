@@ -280,14 +280,14 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val expected = DataError.Local.Unknown
+        val expected = DataError.Local.NoUserSession
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
         val actual = dataSource.discard(userId, messageId)
 
         // Then
-        assertEquals(actual, expected.left())
+        assertEquals(expected.left(), actual)
     }
 
     @Test
@@ -313,13 +313,13 @@ class RustDraftDataSourceImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery {
             discardRustDraft(mockUserSession, messageId.toLocalMessageId())
-        } returns DataError.Local.Unknown.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val actual = dataSource.discard(userId, messageId)
 
         // Then
-        assertEquals(actual, DataError.Local.Unknown.left())
+        assertEquals(actual, DataError.Local.CryptoError.left())
     }
 
     @Test

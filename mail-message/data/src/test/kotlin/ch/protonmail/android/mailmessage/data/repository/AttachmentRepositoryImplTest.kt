@@ -82,7 +82,7 @@ class AttachmentRepositoryImplTest {
         // Given
         val userId = UserIdSample.Primary
         val attachmentId = AttachmentId("1221")
-        val expectedError = DataError.Local.Unknown
+        val expectedError = DataError.Local.CryptoError
 
         coEvery {
             rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId())

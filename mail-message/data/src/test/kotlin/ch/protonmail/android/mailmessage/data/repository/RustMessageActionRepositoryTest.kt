@@ -264,7 +264,7 @@ class RustMessageActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val messageIds = listOf(MessageId("1"))
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
 
         coEvery {
             rustMessageDataSource.getAllAvailableListBottomBarActions(

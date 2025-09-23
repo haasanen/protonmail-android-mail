@@ -67,13 +67,13 @@ internal class IsPaidUserTest {
     @Test
     fun `returns error when user is not valid`() = runTest {
         // Given
-        every { observeUser.invoke(userId) } returns flowOf(DataError.Local.Unknown.left())
+        every { observeUser.invoke(userId) } returns flowOf(DataError.Local.CryptoError.left())
 
         // When
         val actual = isPaidUser(userId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(DataError.Local.CryptoError.left(), actual)
     }
 
 }

@@ -70,7 +70,7 @@ class MobileSignatureRepositoryTest {
     @Test
     fun `observeMobileSignature defaults to Empty when data source fails`() = runTest {
         // Given
-        coEvery { dataSource.getMobileSignature(userId) } returns DataError.Local.Unknown.left()
+        coEvery { dataSource.getMobileSignature(userId) } returns DataError.Local.CryptoError.left()
 
         // When / Then
         repository.observeMobileSignature(userId).test {

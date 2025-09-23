@@ -87,7 +87,7 @@ class ObserveAllConversationBottomBarActionsTest {
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationIdSample.Newsletter
-        val expected = flowOf(DataError.Local.Unknown.left())
+        val expected = flowOf(DataError.Local.CryptoError.left())
         val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery {
             actionRepository.observeAllBottomBarActions(

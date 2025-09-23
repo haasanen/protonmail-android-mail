@@ -308,7 +308,7 @@ internal class NotificationsDeepLinksViewModelTest {
     }
 
     private fun expectMessageError(userId: UserId, remoteMessageId: RemoteMessageId) {
-        coEvery { getMessage(userId, remoteMessageId) } returns DataError.Local.Unknown.left()
+        coEvery { getMessage(userId, remoteMessageId) } returns DataError.Local.CryptoError.left()
     }
 
     private fun expectSingleMessageMode(userId: UserId, value: Boolean) {

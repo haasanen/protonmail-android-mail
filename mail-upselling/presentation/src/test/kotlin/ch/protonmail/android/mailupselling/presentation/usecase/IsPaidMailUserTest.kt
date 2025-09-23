@@ -77,12 +77,12 @@ internal class IsPaidMailUserTest {
     @Test
     fun `returns error when user is not valid`() = runTest {
         // Given
-        every { observeUser.invoke(userId) } returns flowOf(DataError.Local.Unknown.left())
+        every { observeUser.invoke(userId) } returns flowOf(DataError.Local.CryptoError.left())
 
         // When
         val actual = isPaidMailUser(userId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(DataError.Local.CryptoError.left(), actual)
     }
 }

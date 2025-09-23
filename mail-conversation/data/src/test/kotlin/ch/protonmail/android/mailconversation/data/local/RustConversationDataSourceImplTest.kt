@@ -359,7 +359,7 @@ internal class RustConversationDataSourceImplTest {
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
         val shouldArchive = false
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.labelConversations(

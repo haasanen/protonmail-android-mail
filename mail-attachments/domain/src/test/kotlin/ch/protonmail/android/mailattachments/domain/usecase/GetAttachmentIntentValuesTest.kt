@@ -95,12 +95,12 @@ class GetAttachmentIntentValuesTest {
                 userId = userId,
                 attachmentId = attachmentId
             )
-        } returns DataError.Local.OutOfMemory.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val result = getAttachmentIntentValues(userId, attachmentId)
 
         // Then
-        assertEquals(DataError.Local.OutOfMemory.left(), result)
+        assertEquals(DataError.Local.CryptoError.left(), result)
     }
 }

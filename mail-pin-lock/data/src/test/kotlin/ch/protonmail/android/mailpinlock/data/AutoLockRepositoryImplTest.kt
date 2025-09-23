@@ -225,7 +225,7 @@ class AutoLockRepositoryImplTest {
     @Test
     fun `when shouldAutoLock fails then return error`() = runTest {
         // Given
-        coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns DataError.Local.Unknown.left()
+        coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = autoLockRepositoryImpl.shouldAutoLock()
@@ -371,7 +371,7 @@ class AutoLockRepositoryImplTest {
     @Test
     fun `when setting biometric protection, call is proxied correctly to the mailsession (failure)`() = runTest {
         // Given
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { mockMailSessionWrapper.setBiometricAppProtection() } returns expected
 
         // When
@@ -386,7 +386,7 @@ class AutoLockRepositoryImplTest {
     @Test
     fun `when removing biometric protection, call is proxied correctly to the mailsession (success)`() = runTest {
         // Given
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { mockMailSessionWrapper.unsetBiometricAppProtection() } returns expected
 
         // When
@@ -417,7 +417,7 @@ class AutoLockRepositoryImplTest {
     @Test
     fun `when querying for remaining attempts errors, the error is propagated`() = runTest {
         // Given
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { mockMailSessionWrapper.getRemainingAttempts() } returns expected
 
         // When

@@ -65,7 +65,7 @@ class RustAppSettingsDataSourceTest {
 
     @Test
     fun `when getAppSettings and error then returns mapped error`() = runTest {
-        val expectedError = DataError.Local.Unknown
+        val expectedError = DataError.Local.NoUserSession
         coEvery { mailSession.getAppSettings() } returns
             MailSessionGetAppSettingsResult.Error(
                 UserSessionError.Reason(

@@ -98,7 +98,7 @@ internal class AutoLockPinDialogViewModelTest {
             autoLockRepository.verifyAutoLockPinCode(autoLockPin)
         } returns VerifyAutoLockPinError.IncorrectPin.left()
 
-        coEvery { autoLockRepository.getRemainingAttempts() } returns DataError.Local.Unknown.left()
+        coEvery { autoLockRepository.getRemainingAttempts() } returns DataError.Local.CryptoError.left()
 
         val expectedError = TextUiModel.TextRes(R.string.mail_settings_pin_insertion_error_unknown)
 
@@ -194,7 +194,7 @@ internal class AutoLockPinDialogViewModelTest {
             autoLockRepository.deleteAutoLockPinCode(autoLockPin)
         } returns VerifyAutoLockPinError.IncorrectPin.left()
 
-        coEvery { autoLockRepository.getRemainingAttempts() } returns DataError.Local.Unknown.left()
+        coEvery { autoLockRepository.getRemainingAttempts() } returns DataError.Local.CryptoError.left()
 
         val expectedError = TextUiModel.TextRes(R.string.mail_settings_pin_insertion_error_unknown)
 

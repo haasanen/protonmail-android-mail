@@ -56,7 +56,7 @@ class RustAppLockDataSourceTest {
 
     @Test
     fun `when shouldAutoLock and error then returns mapped error`() = runTest {
-        val expectedError = DataError.Local.Unknown
+        val expectedError = DataError.Local.NoUserSession
         val mailSession = mockk<MailSession> {
             coEvery { this@mockk.shouldAutoLock() } returns
                 MailSessionShouldAutoLockResult.Error(

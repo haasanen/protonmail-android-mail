@@ -46,7 +46,7 @@ class GetAllMessageBottomBarActionsTest {
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val messageIds = listOf(MessageIdSample.AlphaAppQAReport)
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { actionRepository.getAllListBottomBarActions(userId, labelId, messageIds) } returns expected
 
         // When

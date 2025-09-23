@@ -56,7 +56,7 @@ class DeleteContactTest {
         // Given
         coEvery {
             contactRepository.deleteContact(userId, contactId)
-        } returns DataError.Local.Unknown.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val result = deleteContact(userId, contactId)

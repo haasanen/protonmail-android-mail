@@ -39,7 +39,7 @@ class ChangeSenderAddressTest {
         // Given
         val sender = SenderEmail("sender@pm.me")
         coEvery { draftRepository.changeSender(sender) } returns Unit.right()
-        coEvery { draftRepository.getBody() } returns DataError.Local.Unknown.left()
+        coEvery { draftRepository.getBody() } returns DataError.Local.CryptoError.left()
 
         // When
         val actual = changeSenderAddress(sender)

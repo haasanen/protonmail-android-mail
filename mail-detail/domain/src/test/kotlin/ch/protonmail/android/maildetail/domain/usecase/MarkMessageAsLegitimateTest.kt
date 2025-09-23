@@ -39,7 +39,7 @@ class MarkMessageAsLegitimateTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val expected = DataError.Local.Unknown
+        val expected = DataError.Local.CryptoError
         coEvery { messageRepository.markMessageAsLegitimate(userId, messageId) } returns expected.left()
 
         // When

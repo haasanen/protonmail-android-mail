@@ -74,13 +74,13 @@ internal class UpdateToolbarPreferencesTest {
         // Given
         coEvery {
             repository.saveActions(userId, ToolbarType.Conversation, selectedPrefs)
-        } returns DataError.Local.Unknown.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val actual = updateToolbarPreferences(userId, ToolbarType.Conversation, actionsPreference)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(DataError.Local.CryptoError.left(), actual)
         coVerify(exactly = 1) { repository.saveActions(userId, ToolbarType.Conversation, selectedPrefs) }
         confirmVerified(repository)
     }

@@ -186,7 +186,7 @@ internal class MigrateAutoLockLegacyPreferenceTest {
         expectBiometricsEnabled(true)
         val expected = MigrationError.AutoLockFailure.FailedToSetBiometricPreference.left()
 
-        coEvery { userSessionRepository.setBiometricAppProtection() } returns DataError.Local.Unknown.left()
+        coEvery { userSessionRepository.setBiometricAppProtection() } returns DataError.Local.CryptoError.left()
 
         // When
         val result = migrateAutoLockLegacyPreference()

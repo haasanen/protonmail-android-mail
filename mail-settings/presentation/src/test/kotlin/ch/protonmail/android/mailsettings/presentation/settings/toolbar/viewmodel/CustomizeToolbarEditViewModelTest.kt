@@ -240,7 +240,7 @@ internal class CustomizeToolbarEditViewModelTest {
         every { observePrimaryUserId() } returns flowOf(userId)
         coEvery { inMemoryRepo.inMemoryPreferences(any()) } returns flowOf(temporaryPrefs.right())
         every { toolbarRefreshSignal.refresh() } just runs
-        coEvery { updateToolbarPreferences(userId, type, temporaryPrefs) } returns DataError.Local.Unknown.left()
+        coEvery { updateToolbarPreferences(userId, type, temporaryPrefs) } returns DataError.Local.CryptoError.left()
         every { reducer.toNewState(any(), type, any()) } returns mockk()
 
         // When + Then

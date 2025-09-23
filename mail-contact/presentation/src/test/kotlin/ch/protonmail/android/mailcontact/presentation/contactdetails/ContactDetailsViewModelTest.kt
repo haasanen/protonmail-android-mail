@@ -124,7 +124,7 @@ class ContactDetailsViewModelTest {
         val contactId = ContactIdTestData.contactId1
         coEvery { savedStateHandle.get<String>(ContactDetailsScreen.CONTACT_DETAILS_ID_KEY) } returns contactId.id
         coEvery { observePrimaryUserId() } returns flowOf(UserIdTestData.userId)
-        coEvery { getContactDetails(UserIdTestData.userId, contactId) } returns DataError.Local.Unknown.left()
+        coEvery { getContactDetails(UserIdTestData.userId, contactId) } returns DataError.Local.CryptoError.left()
 
         // When
         viewModel.state.test {

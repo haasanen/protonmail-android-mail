@@ -44,7 +44,7 @@ class GetConversationLabelAsActionsTest {
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val conversationIds = listOf(ConversationIdSample.Newsletter)
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { actionRepository.getAvailableLabelAsActions(userId, labelId, conversationIds) } returns expected
 
         // When

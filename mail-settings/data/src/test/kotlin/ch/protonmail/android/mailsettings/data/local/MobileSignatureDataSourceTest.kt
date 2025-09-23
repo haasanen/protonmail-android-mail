@@ -109,7 +109,7 @@ class MobileSignatureDataSourceImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         every { createRustCustomSettings(any()) } returns wrapper
 
-        val error = DataError.Local.Unknown
+        val error = DataError.Local.CryptoError
         coEvery { wrapper.getMobileSignature() } returns error.left()
 
         // When
@@ -155,7 +155,7 @@ class MobileSignatureDataSourceImplTest {
         val signature = "My signature"
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         every { createRustCustomSettings(any()) } returns wrapper
-        val error = DataError.Local.Unknown
+        val error = DataError.Local.CryptoError
         coEvery { wrapper.setMobileSignature(signature) } returns error.left()
 
         // When
@@ -199,7 +199,7 @@ class MobileSignatureDataSourceImplTest {
         // Given
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         every { createRustCustomSettings(any()) } returns wrapper
-        val error = DataError.Local.Unknown
+        val error = DataError.Local.CryptoError
         coEvery { wrapper.setMobileSignatureEnabled(false) } returns error.left()
 
         // When

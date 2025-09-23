@@ -53,7 +53,7 @@ class GetMessageAvailableActionsTest {
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val messageId = MessageIdSample.AlphaAppQAReport
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { actionRepository.getAvailableActions(userId, labelId, messageId, themeOptions) } returns expected
 
         // When

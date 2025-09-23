@@ -251,7 +251,7 @@ internal class RustMessageDataSourceImplTest {
                 address,
                 bimi
             )
-        } returns DataError.Local.Unknown.left()
+        } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.getSenderImage(userId, address, bimi)
@@ -284,7 +284,7 @@ internal class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.markRead(userId, messageIds)
@@ -301,7 +301,7 @@ internal class RustMessageDataSourceImplTest {
         val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMarkMessagesRead(mailbox, messageIds) } returns DataError.Local.Unknown.left()
+        coEvery { rustMarkMessagesRead(mailbox, messageIds) } returns DataError.Local.CryptoError.left()
         coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
 
         // When
@@ -353,7 +353,7 @@ internal class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.markUnread(userId, messageIds)
@@ -530,7 +530,7 @@ internal class RustMessageDataSourceImplTest {
             val labelId = LocalLabelId(1uL)
             val mailbox = mockk<MailboxWrapper>()
             val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
-            val expected = DataError.Local.Unknown
+            val expected = DataError.Local.CryptoError
 
             coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
             coEvery { getRustAllListBottomBarActions(mailbox, messageIds) } returns expected.left()
@@ -548,7 +548,7 @@ internal class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.deleteMessages(userId, messageIds)
@@ -583,7 +583,7 @@ internal class RustMessageDataSourceImplTest {
         val labelId = LocalLabelId(1uL)
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.moveMessages(userId, messageIds, labelId)
@@ -650,7 +650,7 @@ internal class RustMessageDataSourceImplTest {
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
         val shouldArchive = false
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.labelMessages(
@@ -719,7 +719,7 @@ internal class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageId = LocalMessageId(1uL)
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.markMessageAsLegitimate(userId, messageId)
@@ -771,7 +771,7 @@ internal class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val email = "abc@pm.me"
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.unblockSender(userId, email)
@@ -823,7 +823,7 @@ internal class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = dataSource.reportPhishing(userId, messageId)
@@ -896,14 +896,14 @@ internal class RustMessageDataSourceImplTest {
             val mailSession = mockk<MailUserSessionWrapper>()
 
             coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-            coEvery { rustDeleteAllMessagesInLabel(mailSession, labelId) } returns DataError.Local.Unknown.left()
+            coEvery { rustDeleteAllMessagesInLabel(mailSession, labelId) } returns DataError.Local.CryptoError.left()
 
             // When
             val result = dataSource.deleteAllMessagesInLocation(userId, labelId)
 
             // Then
             coVerify { rustDeleteAllMessagesInLabel(mailSession, labelId) }
-            assertEquals(DataError.Local.Unknown.left(), result)
+            assertEquals(DataError.Local.CryptoError.left(), result)
         }
 
     @Test

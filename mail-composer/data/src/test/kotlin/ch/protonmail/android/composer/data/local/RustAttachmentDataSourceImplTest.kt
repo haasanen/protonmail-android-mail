@@ -247,7 +247,7 @@ class RustAttachmentDataSourceImplTest {
     fun `attachment deletion fails when attachmentList call returns error`() = runTest {
         // Given
         val attachmentId = AttachmentId("123")
-        val error = DataError.Local.Unknown
+        val error = DataError.Local.CryptoError
 
         coEvery { rustDraftDataSource.attachmentList() } returns error.left()
 

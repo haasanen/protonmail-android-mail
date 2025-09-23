@@ -38,7 +38,7 @@ class UnblockSenderTest {
         // Given
         val userId = UserIdSample.Primary
         val email = "abc@pm.me"
-        val expected = DataError.Local.Unknown
+        val expected = DataError.Local.CryptoError
         coEvery { messageRepository.unblockSender(userId, email) } returns expected.left()
 
         // When

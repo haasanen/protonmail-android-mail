@@ -121,13 +121,13 @@ class DraftRepositoryImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        coEvery { draftDataSource.discard(userId, messageId) } returns DataError.Local.Unknown.left()
+        coEvery { draftDataSource.discard(userId, messageId) } returns DataError.Local.CryptoError.left()
 
         // When
         val actual = draftRepository.discardDraft(userId, messageId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(DataError.Local.CryptoError.left(), actual)
     }
 
     @Test
@@ -232,7 +232,7 @@ class DraftRepositoryImplTest {
     @Test
     fun `returns error when get schedule send options fails`() = runTest(dispatcher) {
         // Given
-        val expected = DataError.Local.Unknown
+        val expected = DataError.Local.CryptoError
         coEvery { draftDataSource.getScheduleSendOptions() } returns expected.left()
 
         // When
@@ -288,13 +288,13 @@ class DraftRepositoryImplTest {
     fun `returns error when load image failed`() = runTest {
         // Given
         val url = "url"
-        every { draftDataSource.loadImage(url) } returns DataError.Local.Unknown.left()
+        every { draftDataSource.loadImage(url) } returns DataError.Local.CryptoError.left()
 
         // When
         val actual = draftRepository.loadImage(url)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(DataError.Local.CryptoError.left(), actual)
     }
 
     @Test

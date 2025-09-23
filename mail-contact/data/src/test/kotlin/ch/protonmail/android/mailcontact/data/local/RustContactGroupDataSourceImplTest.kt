@@ -73,12 +73,12 @@ class RustContactGroupDataSourceImplTest {
         val contactGroupId = LocalContactGroupId(100u)
         val session = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { rustGetContactGroupDetails(session, contactGroupId) } returns DataError.Local.Unknown.left()
+        coEvery { rustGetContactGroupDetails(session, contactGroupId) } returns DataError.Local.CryptoError.left()
 
         // When
         val result = rustContactGroupDataSource.getContactGroupDetails(userId, contactGroupId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(DataError.Local.CryptoError.left(), result)
     }
 }

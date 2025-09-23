@@ -180,7 +180,7 @@ class UserSessionRepositoryImplTest {
         val userId = UserIdTestData.userId
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
         val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
-        val expectedError = DataError.Local.Unknown.left()
+        val expectedError = DataError.Local.CryptoError.left()
         val flow = MutableSharedFlow<Either<DataError, LocalUser>>()
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
         every { rustUserDataSource.observeUser(expectedMailUserSession) } returns flow

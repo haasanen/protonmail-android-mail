@@ -200,7 +200,7 @@ class AppSettingsRepositoryTest {
     @Test
     fun `when error retrieving settings then return default settings and log error`() = runTest {
         // Given
-        val error = DataError.Local.Unknown
+        val error = DataError.Local.CryptoError
         val expectedSettings = AppSettings.default()
         coEvery {
             appSettingsDataSource.getAppSettings(mockMailSessionWrapper)

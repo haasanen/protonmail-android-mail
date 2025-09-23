@@ -64,7 +64,7 @@ class SaveMessagePasswordTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
-        val expected = MessagePasswordError.Other(DataError.Local.Unknown)
+        val expected = MessagePasswordError.Other(DataError.Local.CryptoError)
         coEvery {
             messagePasswordRepository.savePassword(MessagePassword(password, passwordHint))
         } returns expected.left()

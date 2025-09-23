@@ -113,7 +113,7 @@ class GetLabelAsBottomSheetContentTest {
         val items = listOf(LabelAsItemId("1"))
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
-        val expected = DataError.Local.Unknown.left()
+        val expected = DataError.Local.CryptoError.left()
         coEvery { getConversationLabelAsActions(userId, labelId, convoIds) } returns expected
 
         // When

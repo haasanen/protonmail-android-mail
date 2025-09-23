@@ -146,7 +146,7 @@ internal class ObserveDetailBottomBarActionsTest {
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationIdSample.Invoices
-        val error = DataError.Local.Unknown.left()
+        val error = DataError.Local.CryptoError.left()
         val entryPoint = ConversationDetailEntryPoint.Mailbox
         coEvery { observeDetailActions(userId, labelId, conversationId, entryPoint) } returns flowOf(error)
 
