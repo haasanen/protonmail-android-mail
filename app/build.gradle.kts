@@ -16,7 +16,6 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import java.util.Properties
 import com.android.build.api.dsl.VariantDimension
 import configuration.extensions.protonEnvironment
 

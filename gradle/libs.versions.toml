@@ -239,6 +239,8 @@ appLibs = [
     "androidx-activity-ktx",
     "androidx-appcompat",
     "androidx-biometrics",
+    "androidx-compose-ui-tooling",
+    "androidx-compose-ui-tooling-preview",
     "androidx-compose-runtime-livedata",
     "androidx-core-splashscreen",
     "androidx-hilt-navigation-compose",
