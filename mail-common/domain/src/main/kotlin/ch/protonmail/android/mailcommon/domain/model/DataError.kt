@@ -32,8 +32,6 @@ sealed interface DataError {
 
         data object DecryptionError : Local
 
-        data object EncryptionError : Local
-
         data object NoDataCached : Local
 
         data object NoUserSession : Local
