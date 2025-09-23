@@ -18,36 +18,36 @@
 
 package ch.protonmail.android.navigation.deeplinks
 
-import android.content.Context
 import android.content.Intent
-import ch.protonmail.android.MainActivity
+import ch.protonmail.android.feature.appicon.usecase.CreateLaunchIntent
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class NotificationsDeepLinkHelperImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val createLaunchIntent: CreateLaunchIntent
 ) : NotificationsDeepLinkHelper {
 
     override fun buildMessageDeepLinkIntent(
         notificationId: String,
         messageId: String,
         userId: String
-    ): Intent = Intent(
-        Intent.ACTION_VIEW,
-        buildMessageDeepLinkUri(notificationId, messageId, userId),
-        context,
-        MainActivity::class.java
-    ).apply {
-        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+    ): Intent {
+        val intent = createLaunchIntent()?.apply {
+            action = Intent.ACTION_VIEW
+            data = buildMessageDeepLinkUri(notificationId, messageId, userId)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+
+        return intent!!
     }
 
-    override fun buildMessageGroupDeepLinkIntent(notificationId: String, userId: String): Intent = Intent(
-        Intent.ACTION_VIEW,
-        buildMessageGroupDeepLinkUri(notificationId, userId),
-        context,
-        MainActivity::class.java
-    ).apply {
-        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+    override fun buildMessageGroupDeepLinkIntent(notificationId: String, userId: String): Intent {
+        val intent = createLaunchIntent()?.apply {
+            action = Intent.ACTION_VIEW
+            data = buildMessageGroupDeepLinkUri(notificationId, userId)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+
+        return intent!!
     }
 }
