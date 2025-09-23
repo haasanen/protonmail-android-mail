@@ -125,7 +125,7 @@ class SetMessagePasswordReducerTest(
                     error = Effect.empty()
                 ),
                 operation = MessagePasswordOperation.Event.SetPasswordDataError(
-                    error = DataError.Local.DecryptionError
+                    error = DataError.Local.CryptoError
                 ),
                 expectedState = SetMessagePasswordState.Data(
                     initialMessagePasswordValue = EMPTY_STRING,
@@ -136,7 +136,7 @@ class SetMessagePasswordReducerTest(
                     error = Effect.of(
                         TextUiModel.TextResWithArgs(
                             R.string.composer_external_encryption_unexpected_error,
-                            listOf(DataError.Local.DecryptionError.javaClass.simpleName)
+                            listOf(DataError.Local.CryptoError.javaClass.simpleName)
                         )
                     )
                 )

@@ -186,7 +186,7 @@ private fun DraftAttachmentUploadError.toDataError() = when (this) {
         DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE,
         DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.Unknown
 
-        DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.DecryptionError
+        DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.CryptoError
         DraftAttachmentUploadErrorReason.TIMEOUT -> DataError.Remote.Http(NetworkError.Timeout)
     }
 }

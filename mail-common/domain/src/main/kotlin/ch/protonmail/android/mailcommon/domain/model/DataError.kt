@@ -30,7 +30,7 @@ sealed interface DataError {
 
         data object TypeConversionError : Local
 
-        data object DecryptionError : Local
+        data object CryptoError : Local
 
         data object NoDataCached : Local
 
