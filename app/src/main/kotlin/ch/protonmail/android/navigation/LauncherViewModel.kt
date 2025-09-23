@@ -27,6 +27,7 @@ import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplica
 import ch.protonmail.android.legacymigration.domain.usecase.ObserveLegacyMigrationStatus
 import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
 import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
@@ -57,6 +58,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.login.LoginInput
+import me.proton.android.core.auth.presentation.login.LoginOutput
 import me.proton.android.core.auth.presentation.onAddAccountResult
 import me.proton.android.core.auth.presentation.onLoginResult
 import me.proton.android.core.auth.presentation.onSignUpResult
@@ -80,6 +82,9 @@ class LauncherViewModel @Inject constructor(
     private val shouldMigrateLegacyAccount: ShouldMigrateLegacyAccount,
     @IsUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
 ) : ViewModel() {
+
+    private val _duplicateDialogErrorEffect = MutableStateFlow<Effect<Unit>>(Effect.empty())
+    val duplicateDialogErrorEffect = _duplicateDialogErrorEffect.asStateFlow()
 
     private val mutableState = MutableStateFlow(Processing)
     val state: StateFlow<LauncherState> = mutableState.asStateFlow()
@@ -143,8 +148,18 @@ class LauncherViewModel @Inject constructor(
         with(authOrchestrator) {
             register(context)
             onAddAccountResult { result -> if (!result) context.finish() }
-            onLoginResult { result -> if (result != null) { onSwitchToAccount(result.userId.toUserId()) } }
-            onSignUpResult { result -> if (result != null) { onSwitchToAccount(result.userId.toUserId()) } }
+            onLoginResult { result ->
+                when (result) {
+                    is LoginOutput.LoggedIn -> onSwitchToAccount(result.userId.toUserId())
+                    is LoginOutput.DuplicateAccount -> onDuplicateAccountError()
+                    else -> Timber.e("Unknown login result $result")
+                }
+            }
+            onSignUpResult { result ->
+                if (result != null) {
+                    onSwitchToAccount(result.userId.toUserId())
+                }
+            }
 
             viewModelScope.launch {
                 if (shouldMigrateLegacyAccount()) {
@@ -242,6 +257,8 @@ class LauncherViewModel @Inject constructor(
     private fun onSwitchToAccount(userId: UserId) = viewModelScope.launch {
         setPrimaryAccount(userId)
     }
+
+    private fun onDuplicateAccountError() = _duplicateDialogErrorEffect.tryEmit(Effect.of(Unit))
 
     private fun onRequestNotificationPermission() {
         notificationsPermissionOrchestrator.requestPermissionIfRequired()

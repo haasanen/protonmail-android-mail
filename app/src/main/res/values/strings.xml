@@ -49,6 +49,7 @@
     <string name="mailbox_message_scheduling">Scheduling message…</string>
     <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
     <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
+    <string name="launcher_alert_duplicate_account_description">The user is already signed in</string>
 
     <string name="settings_change_icon_title">App Icon</string>
     <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>

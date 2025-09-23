@@ -22,4 +22,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class LoginOutput(val userId: String) : Parcelable
+sealed class LoginOutput : Parcelable {
+
+    class LoggedIn(val userId: String) : LoginOutput()
+    class DuplicateAccount(val userId: String) : LoginOutput()
+}

@@ -103,6 +103,7 @@ public fun LoginScreen(
     onHelpClicked: () -> Unit,
     initialUsername: String? = null,
     onSuccess: (String) -> Unit = {},
+    onDuplicate: (String) -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -114,6 +115,7 @@ public fun LoginScreen(
         onHelpClicked = onHelpClicked,
         onLoginClicked = { viewModel.submit(it) },
         onSuccess = onSuccess,
+        onDuplicate = onDuplicate,
         onScreenView = viewModel::onScreenView,
         state = state
     )
@@ -127,12 +129,13 @@ public fun LoginScreen(
     onHelpClicked: () -> Unit = {},
     onLoginClicked: (LoginAction.Login) -> Unit = {},
     onSuccess: (String) -> Unit = {},
+    onDuplicate: (String) -> Unit = {},
     onScreenView: () -> Unit = {},
     state: LoginViewState = LoginViewState.Idle
 ) {
     LaunchedEffect(state) {
         when (state) {
-            is LoginViewState.Error.AlreadyLoggedIn -> onSuccess(state.userId)
+            is LoginViewState.Error.AlreadyLoggedIn -> onDuplicate(state.userId)
             is LoginViewState.LoggedIn -> onSuccess(state.userId)
             is LoginViewState.Awaiting2fa -> onSuccess(state.userId)
             is LoginViewState.Awaiting2Pass -> onSuccess(state.userId)

@@ -17,7 +17,6 @@
 
 package me.proton.android.core.auth.presentation.login
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -82,7 +81,8 @@ class LoginActivity : ProtonSecureActivity() {
                     initialUsername = input.username,
                     onCloseClicked = { finish() },
                     onHelpClicked = { authOrchestrator.startLoginHelpWorkflow() },
-                    onSuccess = { onSuccess(it) }
+                    onSuccess = { onSuccess(it) },
+                    onDuplicate = { onDuplicateError(it) }
                 )
             }
         }
@@ -94,14 +94,22 @@ class LoginActivity : ProtonSecureActivity() {
 
     private fun onSuccess(userId: String) {
         setResult(
-            Activity.RESULT_OK,
-            Intent().apply { putExtra(ARG_OUTPUT, LoginOutput(userId = userId)) }
+            RESULT_OK,
+            Intent().apply { putExtra(ARG_OUTPUT, LoginOutput.LoggedIn(userId = userId)) }
+        )
+        finish()
+    }
+
+    private fun onDuplicateError(userId: String) {
+        setResult(
+            RESULT_OK,
+            Intent().apply { putExtra(ARG_OUTPUT, LoginOutput.DuplicateAccount(userId = userId)) }
         )
         finish()
     }
 
     private fun onClose() {
-        setResult(Activity.RESULT_CANCELED)
+        setResult(RESULT_CANCELED)
         finish()
     }
 

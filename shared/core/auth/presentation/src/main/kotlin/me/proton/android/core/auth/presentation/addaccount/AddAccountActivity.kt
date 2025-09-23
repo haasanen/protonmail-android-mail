@@ -17,7 +17,6 @@
 
 package me.proton.android.core.auth.presentation.addaccount
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -62,12 +61,12 @@ class AddAccountActivity : ProtonActivity() {
     }
 
     private fun onSuccess() {
-        setResult(Activity.RESULT_OK)
+        setResult(RESULT_OK)
         finish()
     }
 
     private fun onClose() {
-        setResult(Activity.RESULT_CANCELED)
+        setResult(RESULT_CANCELED)
         finish()
     }
 }
