@@ -49,7 +49,7 @@ class MailboxBannersRepositoryImpl @Inject constructor(
         return rustGetAutoDeleteBanner(session, labelId.toLocalLabelId())
             .onLeft { Timber.e("Getting the auto-delete banner failed.") }
             .flatMap {
-                it?.toAutoDeleteBanner()?.right() ?: DataError.Local.NoAutoDeleteBanner.left()
+                it?.toAutoDeleteBanner()?.right() ?: DataError.Local.NotFound.left()
             }
     }
 }
