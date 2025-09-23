@@ -18,12 +18,10 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <path
-        android:fillColor="@color/white"
-        android:pathData="M0,0h108v108h-108z" />
-</vector>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="90"
+        android:startColor="#EDECEB"
+        android:endColor="#EDECEB"
+        android:type="linear" />
+</shape>

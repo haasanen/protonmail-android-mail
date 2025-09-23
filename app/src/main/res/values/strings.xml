@@ -18,6 +18,12 @@
   -->
 <resources>
     <string name="app_name" translatable="false">Proton Mail</string>
+    <string name="app_icon_name_classic">Classic</string>
+    <string name="app_icon_name_dark">Dark</string>
+    <string name="app_icon_name_retro">Retro</string>
+    <string name="app_icon_name_weather">Weather</string>
+    <string name="app_icon_name_notes">Notes</string>
+    <string name="app_icon_name_calculator">Calculator</string>
     <string name="dialog_sign_out_account_title">Sign out</string>
     <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
     <string name="dialog_sign_out_account_confirm">Sign out</string>
