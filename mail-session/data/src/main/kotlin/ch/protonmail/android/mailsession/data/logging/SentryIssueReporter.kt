@@ -25,29 +25,18 @@ import io.sentry.protocol.Message
 import io.sentry.protocol.User
 import uniffi.proton_issue_reporter_service_uniffi.IssueLevel
 import uniffi.proton_issue_reporter_service_uniffi.IssueReporter
-import uniffi.proton_issue_reporter_service_uniffi.UserIssueReporter
 import javax.inject.Inject
 
 class SentryIssueReporter @Inject constructor() : IssueReporter {
 
+
     override fun report(
         level: IssueLevel,
+        userId: String?,
         message: String,
         keys: Map<String, String>
     ) {
-        reportToSentry(level, message, keys)
-    }
-
-    override fun newUserReporter(userId: String): UserIssueReporter {
-        return object : UserIssueReporter {
-            override fun report(
-                level: IssueLevel,
-                message: String,
-                keys: Map<String, String>
-            ) {
-                reportToSentry(level, message, keys, userId)
-            }
-        }
+        reportToSentry(level, message, keys, userId)
     }
 
     private fun reportToSentry(
