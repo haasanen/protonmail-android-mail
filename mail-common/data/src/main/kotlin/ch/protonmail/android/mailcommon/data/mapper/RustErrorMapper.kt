@@ -22,8 +22,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
-import uniffi.proton_mail_uniffi.EventError
-import uniffi.proton_mail_uniffi.EventErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.SessionReason
 import uniffi.proton_mail_uniffi.UserSessionError
@@ -44,14 +42,6 @@ fun ActionError.toDataError(): DataError = when (this) {
         ActionErrorReason.UNKNOWN_LABEL,
         ActionErrorReason.UNKNOWN_MESSAGE,
         ActionErrorReason.UNKNOWN_CONTENT_ID -> DataError.Local.NoDataCached
-    }
-}
-
-fun EventError.toDataError(): DataError = when (this) {
-    is EventError.Other -> this.v1.toDataError()
-    is EventError.Reason -> when (this.v1) {
-        EventErrorReason.REFRESH,
-        EventErrorReason.SUBSCRIBER -> DataError.Local.Unknown
     }
 }
 
