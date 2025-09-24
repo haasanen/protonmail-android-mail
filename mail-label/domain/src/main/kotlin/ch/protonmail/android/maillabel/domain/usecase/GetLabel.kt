@@ -22,12 +22,11 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -40,15 +39,13 @@ class GetLabel @Inject constructor(private val labelRepository: LabelRepository)
     ): Either<DataError, Label?> = Either.catch {
         labelRepository.getLabel(userId, labelType, labelId)
     }.mapLeft {
-        val error = when (it) {
-            is UnknownHostException -> NetworkError.NoNetwork
-            is SocketTimeoutException -> NetworkError.Unreachable
+        when (it) {
+            is UnknownHostException -> DataError.Remote.NoNetwork
+            is SocketTimeoutException -> DataError.Remote.Unreachable
             else -> {
                 Timber.e("Unknown error while getting labels: $it")
-                NetworkError.Unknown
+                DataError.Remote.Unknown
             }
         }
-
-        DataError.Remote.Http(error)
     }
 }

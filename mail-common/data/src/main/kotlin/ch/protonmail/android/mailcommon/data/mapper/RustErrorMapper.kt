@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcommon.data.mapper
 
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
@@ -46,9 +45,9 @@ fun ActionError.toDataError(): DataError = when (this) {
 }
 
 fun ProtonError.toDataError(): DataError = when (this) {
-    is ProtonError.Network -> DataError.Remote.Http(NetworkError.NoNetwork)
+    is ProtonError.Network -> DataError.Remote.NoNetwork
     is ProtonError.OtherReason -> DataError.Local.Unknown
-    is ProtonError.ServerError -> DataError.Remote.Http(NetworkError.ServerError)
+    is ProtonError.ServerError -> DataError.Remote.ServerError
     is ProtonError.Unexpected -> DataError.Local.Unknown
     is ProtonError.NonProcessableActions -> DataError.Local.UnsupportedOperation
 }

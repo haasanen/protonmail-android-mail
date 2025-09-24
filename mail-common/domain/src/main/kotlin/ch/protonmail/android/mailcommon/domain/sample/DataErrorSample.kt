@@ -19,11 +19,10 @@
 package ch.protonmail.android.mailcommon.domain.sample
 
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 
 object DataErrorSample {
 
     val NoCache = DataError.Local.NoDataCached
-    val Unreachable = DataError.Remote.Http(NetworkError.Unreachable)
-    val Offline = DataError.Remote.Http(NetworkError.NoNetwork)
+    val Unreachable = DataError.Remote.Unreachable
+    val Offline = DataError.Remote.NoNetwork
 }

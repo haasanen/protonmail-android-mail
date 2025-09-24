@@ -23,7 +23,7 @@ import ch.protonmail.android.mailbugreport.presentation.R
 import ch.protonmail.android.mailbugreport.presentation.model.bugreport.state.BugReportState
 import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportFocusableField
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
+import ch.protonmail.android.mailcommon.domain.model.isOfflineError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
@@ -82,8 +82,8 @@ internal sealed interface EffectsStateModification : BugReportStateModification<
 
         override fun apply(state: BugReportState.Effects): BugReportState.Effects {
             val textRes = when (dataError) {
-                is DataError.Remote.Http -> {
-                    if (dataError.networkError is NetworkError.NoNetwork) {
+                is DataError.Remote -> {
+                    if (dataError.isOfflineError()) {
                         R.string.report_a_problem_offline_error
                     } else {
                         R.string.report_a_problem_generic_error

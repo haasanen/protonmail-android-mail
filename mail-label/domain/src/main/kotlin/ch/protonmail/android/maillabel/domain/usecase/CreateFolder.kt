@@ -22,12 +22,11 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.NewLabel
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -42,16 +41,14 @@ class CreateFolder @Inject constructor(private val labelRepository: LabelReposit
     ): Either<DataError, Unit> = Either.catch {
         labelRepository.createLabel(userId, buildNewLabel(name, color, parentId, notifications))
     }.mapLeft {
-        val error = when (it) {
-            is UnknownHostException -> NetworkError.NoNetwork
-            is SocketTimeoutException -> NetworkError.Unreachable
+        when (it) {
+            is UnknownHostException -> DataError.Remote.NoNetwork
+            is SocketTimeoutException -> DataError.Remote.Unreachable
             else -> {
                 Timber.e("Unknown error while creating folder: $it")
-                NetworkError.Unknown
+                DataError.Remote.Unknown
             }
         }
-
-        DataError.Remote.Http(error)
     }
 
     private fun buildNewLabel(

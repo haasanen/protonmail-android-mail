@@ -18,7 +18,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
@@ -672,7 +671,7 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `load image returns DataError when unsuccessful`() = runTest {
         // Given
-        val expected = DataError.Remote.Http(NetworkError.NoNetwork)
+        val expected = DataError.Remote.NoNetwork
         val cid = "image-content-id"
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
@@ -711,7 +710,7 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `get schedule send options returns DataError when unsuccessful`() = runTest {
         // Given
-        val expected = DataError.Remote.Http(NetworkError.NoNetwork)
+        val expected = DataError.Remote.NoNetwork
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.scheduleSendOptions() } returns DraftScheduleSendOptionsResult.Error(

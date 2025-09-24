@@ -61,14 +61,25 @@ sealed interface DataError {
      */
     sealed interface Remote : DataError {
 
-        /**
-         * The API returned a failure response
-         */
-        data class Http(
-            val networkError: NetworkError,
-            val apiErrorInfo: String? = null,
-            val isRetryable: Boolean = false
-        ) : Remote
+        object Forbidden : Remote
+
+        object NoNetwork : Remote
+
+        object NotFound : Remote
+
+        object ServerError : Remote
+
+        object Unauthorized : Remote
+
+        object Unreachable : Remote
+
+        object Parse : Remote
+
+        object BadRequest : Remote
+
+        object UnprocessableEntity : Remote
+
+        object Timeout : Remote
 
         /**
          * This object is not meant to be actively used.
@@ -79,4 +90,4 @@ sealed interface DataError {
     }
 }
 
-fun DataError.isOfflineError() = this is DataError.Remote.Http && this.networkError is NetworkError.NoNetwork
+fun DataError.isOfflineError() = this is DataError.Remote.NoNetwork

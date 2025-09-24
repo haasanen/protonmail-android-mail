@@ -29,7 +29,6 @@ import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
@@ -511,7 +510,7 @@ class ConversationDetailViewModelTest {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
         } returns flow {
             emit(ConversationSample.WeatherForecast.right())
-            emit(ConversationError.Other(DataError.Remote.Http(NetworkError.NoNetwork)).left())
+            emit(ConversationError.Other(DataError.Remote.NoNetwork).left())
         }
         coEvery {
             reducer.newStateFrom(
@@ -606,7 +605,7 @@ class ConversationDetailViewModelTest {
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
-        } returns flowOf(ConversationError.Other(DataError.Remote.Http(NetworkError.ServerError)).left())
+        } returns flowOf(ConversationError.Other(DataError.Remote.ServerError).left())
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
@@ -632,7 +631,7 @@ class ConversationDetailViewModelTest {
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any())
-        } returns flowOf(ConversationError.Other(DataError.Remote.Http(NetworkError.NoNetwork)).left())
+        } returns flowOf(ConversationError.Other(DataError.Remote.NoNetwork).left())
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
@@ -654,7 +653,7 @@ class ConversationDetailViewModelTest {
     fun `when offline, executeWhenOnline is called and reload signal is triggered when back online`() = runTest {
         // Given
         val labelId = LabelIdSample.AllMail
-        val offlineError = DataError.Remote.Http(NetworkError.NoNetwork)
+        val offlineError = DataError.Remote.NoNetwork
 
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
 

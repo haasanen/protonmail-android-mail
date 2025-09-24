@@ -21,7 +21,8 @@ package ch.protonmail.android.maillabel.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
+import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -29,8 +30,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import org.junit.Test
 import kotlin.test.AfterTest
 import kotlin.test.assertEquals
@@ -77,7 +76,7 @@ class CreateFolderTest {
     @Test
     fun `when label creation fails, then return error`() = runTest {
         // Given
-        val expectedResult = DataError.Remote.Http(NetworkError.Unknown)
+        val expectedResult = DataError.Remote.Unknown
         coEvery { labelRepository.createLabel(UserIdTestData.userId, defaultTestNewFolder) } throws Exception("Test")
 
         // When

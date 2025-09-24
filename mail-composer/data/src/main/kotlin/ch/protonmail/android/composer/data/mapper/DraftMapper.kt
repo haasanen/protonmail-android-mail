@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -187,7 +186,7 @@ private fun DraftAttachmentUploadError.toDataError() = when (this) {
         DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.Unknown
 
         DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.CryptoError
-        DraftAttachmentUploadErrorReason.TIMEOUT -> DataError.Remote.Http(NetworkError.Timeout)
+        DraftAttachmentUploadErrorReason.TIMEOUT -> DataError.Remote.Timeout
     }
 }
 

@@ -35,7 +35,6 @@ import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.legacymigration.domain.repository.LegacyMobileSignatureRepository
 import ch.protonmail.android.legacymigration.domain.repository.LegacySignatureRepository
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.wrapper.LoginFlowWrapper
 import ch.protonmail.android.mailsession.domain.model.LoginError
@@ -292,7 +291,7 @@ class LegacyAccountRepositoryImplTest {
         // Given
         coEvery {
             mailSessionRepository.getMailSession().newLoginFlow()
-        } returns DataError.Remote.Http(NetworkError.UnprocessableEntity).left()
+        } returns DataError.Remote.UnprocessableEntity.left()
 
         // When
         val result = repository.migrateLegacyAccount(accountInfo)

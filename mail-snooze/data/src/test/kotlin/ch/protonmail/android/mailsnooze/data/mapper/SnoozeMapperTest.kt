@@ -20,7 +20,6 @@ package ch.protonmail.android.mailsnooze.data.mapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalNonDefaultWeekStart
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailsnooze.domain.model.CustomUnset
 import ch.protonmail.android.mailsnooze.domain.model.LaterThisWeek
 import ch.protonmail.android.mailsnooze.domain.model.NextWeek
@@ -91,7 +90,7 @@ class SnoozeMapperTest {
     fun `map proton error to snooze error`() {
         val error = SnoozeErrorRemote.Other(ProtonError.Network)
         assertEquals(
-            SnoozeError.Other(DataError.Remote.Http(NetworkError.NoNetwork)),
+            SnoozeError.Other(DataError.Remote.NoNetwork),
             error.toSnoozeError()
         )
     }
@@ -109,7 +108,7 @@ class SnoozeMapperTest {
     fun `map proton error to unsnooze error`() {
         val error = SnoozeErrorRemote.Other(ProtonError.Network)
         assertEquals(
-            UnsnoozeError.Other(DataError.Remote.Http(NetworkError.NoNetwork)),
+            UnsnoozeError.Other(DataError.Remote.NoNetwork),
             error.toUnsnoozeError()
         )
     }

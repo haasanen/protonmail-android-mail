@@ -21,15 +21,14 @@ package ch.protonmail.android.maillabel.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -60,7 +59,7 @@ class DeleteLabelTest {
     @Test
     fun `when label deletion fails, then return error`() = runTest {
         // Given
-        val expectedResult = DataError.Remote.Http(NetworkError.Unknown)
+        val expectedResult = DataError.Remote.Unknown
         coEvery {
             labelRepository.deleteLabel(UserIdTestData.userId, LabelType.MessageLabel, labelId)
         } throws Exception("Test")

@@ -21,7 +21,6 @@ package ch.protonmail.android.maillabel.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import io.mockk.coEvery
@@ -57,7 +56,7 @@ class CreateLabelTest {
     @Test
     fun `when label creation fails, then return error`() = runTest {
         // Given
-        val expectedResult = DataError.Remote.Http(NetworkError.Unknown)
+        val expectedResult = DataError.Remote.Unknown
         coEvery { labelRepository.createLabel(userId, defaultTestNewLabel) } throws Exception("Test")
 
         // When

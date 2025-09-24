@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailconversation.domain.entity
 
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
+import ch.protonmail.android.mailcommon.domain.model.isOfflineError
 
 sealed interface ConversationError {
     data object UnknownLabel : ConversationError
@@ -32,5 +32,4 @@ sealed interface ConversationError {
 }
 
 fun ConversationError.isOfflineError() = this is ConversationError.Other &&
-    this.error is DataError.Remote.Http &&
-    this.error.networkError is NetworkError.NoNetwork
+    this.error.isOfflineError()

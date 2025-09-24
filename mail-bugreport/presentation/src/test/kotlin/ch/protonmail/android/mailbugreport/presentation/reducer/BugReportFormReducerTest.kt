@@ -26,7 +26,6 @@ import ch.protonmail.android.mailbugreport.presentation.model.bugreport.state.Bu
 import ch.protonmail.android.mailbugreport.presentation.model.bugreport.state.BugReportStates
 import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportFocusableField
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import org.junit.Test
@@ -117,7 +116,7 @@ internal class BugReportFormReducerTest(
             arrayOf(
                 "should trigger offline error when connectivity not present",
                 initialState(),
-                EffectEvent.ErrorOnSubmission(DataError.Remote.Http(networkError = NetworkError.NoNetwork)),
+                EffectEvent.ErrorOnSubmission(DataError.Remote.NoNetwork),
                 initialState().copy(
                     effects = initialEffectsState().copy(
                         submissionError = Effect.of(TextUiModel.TextRes(R.string.report_a_problem_offline_error))

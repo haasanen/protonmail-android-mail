@@ -27,7 +27,7 @@ internal class DataErrorExtensionsTest {
     @Test
     fun `data error is an offline error when type is Remote http and contains No Network Error`() {
         // given
-        val dataError = DataError.Remote.Http(NetworkError.NoNetwork)
+        val dataError = DataError.Remote.NoNetwork
         // then
         assertTrue(dataError.isOfflineError())
     }
@@ -35,7 +35,7 @@ internal class DataErrorExtensionsTest {
     @Test
     fun `data error is not an offline error when type is Remote http and does not contain No Network Error`() {
         // given
-        val dataError = DataError.Remote.Http(NetworkError.ServerError)
+        val dataError = DataError.Remote.ServerError
         // then
         assertFalse(dataError.isOfflineError())
     }
