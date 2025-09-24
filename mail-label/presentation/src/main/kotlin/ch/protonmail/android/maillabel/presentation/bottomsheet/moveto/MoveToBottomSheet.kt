@@ -34,7 +34,6 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
-import ch.protonmail.android.uicomponents.bottomsheet.BottomSheetAnimatedContent
 import me.proton.core.domain.entity.UserId
 
 @Composable
@@ -62,31 +61,25 @@ fun MoveToBottomSheetScreen(
         onMoveToComplete = actions.onMoveToComplete
     )
 
-    BottomSheetAnimatedContent(
-        state = state,
-        loadingState = MoveToState.Loading,
-        errorStates = setOf(MoveToState.Error),
-        animationKey = { state is MoveToState.Data }
-    ) { currentState ->
-        when (currentState) {
-            is MoveToState.Data -> MoveToBottomSheetContent(
-                dataState = currentState,
-                actions = contentActions,
-                modifier = modifier
+    val currentState = state
+    when (currentState) {
+        is MoveToState.Data -> MoveToBottomSheetContent(
+            dataState = currentState,
+            actions = contentActions,
+            modifier = modifier
+        )
+
+        is MoveToState.Loading -> Column {
+            ProtonHorizontallyCenteredProgress(
+                modifier = Modifier.padding(vertical = ProtonDimens.Spacing.ExtraLarge)
             )
 
-            is MoveToState.Loading -> Column {
-                ProtonHorizontallyCenteredProgress(
-                    modifier = Modifier.padding(vertical = ProtonDimens.Spacing.ExtraLarge)
-                )
+            BottomNavigationBarSpacer()
+        }
 
-                BottomNavigationBarSpacer()
-            }
-
-            is MoveToState.Error -> {
-                actions.onError(stringResource(R.string.bottom_sheet_move_to_error_fetch))
-                actions.onDismiss()
-            }
+        is MoveToState.Error -> {
+            actions.onError(stringResource(R.string.bottom_sheet_move_to_error_fetch))
+            actions.onDismiss()
         }
     }
 }
