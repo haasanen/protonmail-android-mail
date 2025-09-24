@@ -19,6 +19,7 @@
 package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
 
 import java.util.UUID
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -32,6 +33,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import ch.protonmail.android.uicomponents.bottomsheet.BottomSheetAnimatedContent
 import me.proton.core.domain.entity.UserId
 
@@ -73,9 +75,13 @@ fun MoveToBottomSheetScreen(
                 modifier = modifier
             )
 
-            is MoveToState.Loading -> ProtonHorizontallyCenteredProgress(
-                modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large)
-            )
+            is MoveToState.Loading -> Column {
+                ProtonHorizontallyCenteredProgress(
+                    modifier = Modifier.padding(vertical = ProtonDimens.Spacing.ExtraLarge)
+                )
+
+                BottomNavigationBarSpacer()
+            }
 
             is MoveToState.Error -> {
                 actions.onError(stringResource(R.string.bottom_sheet_move_to_error_fetch))
