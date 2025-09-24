@@ -25,6 +25,7 @@ import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class AttachmentRepositoryImpl @Inject constructor(
     override suspend fun deleteAttachment(attachmentId: AttachmentId): Either<DataError, Unit> =
         rustAttachmentDataSource.removeAttachment(attachmentId)
 
-    override suspend fun deleteInlineAttachment(contentId: String): Either<DataError, Unit> =
+    override suspend fun deleteInlineAttachment(contentId: String): Either<AttachmentDeleteError, Unit> =
         rustAttachmentDataSource.removeInlineAttachment(contentId)
 
     override suspend fun addAttachment(fileUri: Uri): Either<AddAttachmentError, Unit> =

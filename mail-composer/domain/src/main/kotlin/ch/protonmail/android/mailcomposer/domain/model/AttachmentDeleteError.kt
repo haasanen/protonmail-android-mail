@@ -18,8 +18,14 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
+import ch.protonmail.android.mailcommon.domain.model.DataError
+
 sealed interface AttachmentDeleteError {
-    data object InvalidDraftMessage : AttachmentDeleteError
+    data object MessageAlreadySent : AttachmentDeleteError
+    data object MessageDoesNotExist : AttachmentDeleteError
+    data object RetriableError : AttachmentDeleteError
     data object FailedToDeleteFile : AttachmentDeleteError
     data object Unknown : AttachmentDeleteError
+
+    data class Other(val error: DataError) : AttachmentDeleteError
 }

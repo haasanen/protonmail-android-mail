@@ -22,6 +22,7 @@ import android.net.Uri
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toDeleteAttachmentError
 import ch.protonmail.android.composer.data.mapper.toObserveAttachmentsError
 import ch.protonmail.android.mailattachments.data.mapper.toAttachmentError
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
@@ -362,7 +363,7 @@ class RustAttachmentDataSourceImplTest {
         val result = dataSource.removeInlineAttachment(cid)
 
         // Then
-        assertEquals(rustError.toObserveAttachmentsError().left(), result)
+        assertEquals(rustError.toDeleteAttachmentError().left(), result)
     }
 
 }

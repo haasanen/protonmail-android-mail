@@ -35,6 +35,7 @@ import ch.protonmail.android.mailcommon.data.file.FileInformation
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
@@ -164,30 +165,31 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             )
         }
 
-    override suspend fun removeInlineAttachment(cid: String): Either<DataError, Unit> = withContext(ioDispatcher) {
-        val listResult = rustDraftDataSource.attachmentList()
+    override suspend fun removeInlineAttachment(cid: String): Either<AttachmentDeleteError, Unit> =
+        withContext(ioDispatcher) {
+            val listResult = rustDraftDataSource.attachmentList()
 
-        return@withContext listResult.fold(
-            ifLeft = { error ->
-                Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
-                error.left()
-            },
-            ifRight = { attachmentListWrapper ->
+            return@withContext listResult.fold(
+                ifLeft = { error ->
+                    Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
+                    AttachmentDeleteError.Other(error).left()
+                },
+                ifRight = { attachmentListWrapper ->
 
-                when (val removeResult = attachmentListWrapper.removeInlineAttachment(cid)) {
-                    is AttachmentListRemoveWithCidResult.Ok -> {
-                        Timber.d("rust-draft-attachments: Removed inline attachment: $cid")
-                        Unit.right()
-                    }
+                    when (val removeResult = attachmentListWrapper.removeInlineAttachment(cid)) {
+                        is AttachmentListRemoveWithCidResult.Ok -> {
+                            Timber.d("rust-draft-attachments: Removed inline attachment: $cid")
+                            Unit.right()
+                        }
 
-                    is AttachmentListRemoveWithCidResult.Error -> {
-                        Timber.e("rust-draft-attachments: Failed to remove inline attachment: ${removeResult.v1}")
-                        removeResult.v1.toDeleteAttachmentError().left()
+                        is AttachmentListRemoveWithCidResult.Error -> {
+                            Timber.e("rust-draft-attachments: Failed to remove inline attachment: ${removeResult.v1}")
+                            removeResult.v1.toDeleteAttachmentError().left()
+                        }
                     }
                 }
-            }
-        )
-    }
+            )
+        }
 
     private suspend fun AttachmentsWrapper.getAttachments(): Either<DataError, List<AttachmentMetadataWithState>> {
         return when (val result = this.attachments()) {

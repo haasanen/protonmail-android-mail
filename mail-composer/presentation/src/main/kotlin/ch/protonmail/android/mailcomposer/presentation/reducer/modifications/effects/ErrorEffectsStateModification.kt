@@ -114,9 +114,13 @@ internal sealed interface RecoverableError : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = when (error) {
             AttachmentDeleteError.FailedToDeleteFile,
-            AttachmentDeleteError.InvalidDraftMessage,
+            AttachmentDeleteError.MessageAlreadySent,
+            AttachmentDeleteError.MessageDoesNotExist,
+            is AttachmentDeleteError.Other,
+            AttachmentDeleteError.RetriableError,
             AttachmentDeleteError.Unknown ->
                 state.copy(error = Effect.of(TextUiModel(R.string.composer_delete_attachment_error)))
+
         }
     }
 

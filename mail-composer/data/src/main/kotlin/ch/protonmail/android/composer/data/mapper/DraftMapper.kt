@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -159,9 +160,39 @@ fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
     }
 }
 
-fun DraftAttachmentUploadError.toObserveAttachmentsError() = this.toDataError()
+fun DraftAttachmentUploadError.toObserveAttachmentsError() = when (this) {
+    is DraftAttachmentUploadError.Other -> this.v1.toDataError()
+    is DraftAttachmentUploadError.Reason -> when (this.v1) {
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT,
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER -> DataError.Local.NotFound
 
-fun DraftAttachmentUploadError.toDeleteAttachmentError() = this.toDataError()
+        DraftAttachmentUploadErrorReason.TIMEOUT -> DataError.Remote.Timeout
+        DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> DataError.Local.IllegalStateError
+        DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE,
+        DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS,
+        DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE -> DataError.Local.Unknown
+
+        DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.CryptoError
+    }
+}
+
+fun DraftAttachmentUploadError.toDeleteAttachmentError() = when (this) {
+    is DraftAttachmentUploadError.Other -> AttachmentDeleteError.Other(this.v1.toDataError())
+    is DraftAttachmentUploadError.Reason -> when (this.v1) {
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER -> AttachmentDeleteError.MessageDoesNotExist
+
+        DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> AttachmentDeleteError.MessageAlreadySent
+        DraftAttachmentUploadErrorReason.TIMEOUT,
+        DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> AttachmentDeleteError.RetriableError
+
+        DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE,
+        DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS,
+        DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE,
+        DraftAttachmentUploadErrorReason.CRYPTO -> AttachmentDeleteError.Other(DataError.Local.Unknown)
+    }
+}
 
 fun DraftPasswordError.toMessagePasswordError() = when (this) {
     is DraftPasswordError.Other -> MessagePasswordError.Other(this.v1.toDataError())
@@ -172,22 +203,6 @@ fun DraftPasswordError.toMessagePasswordError() = when (this) {
 
 fun DraftPassword?.toMessagePassword() = this?.let {
     MessagePassword(this.password, this.hint ?: "")
-}
-
-private fun DraftAttachmentUploadError.toDataError() = when (this) {
-    is DraftAttachmentUploadError.Other -> this.v1.toDataError()
-    is DraftAttachmentUploadError.Reason -> when (this.v1) {
-        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
-        DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE,
-        DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS,
-        DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE,
-        DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE,
-        DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.Unknown
-
-        DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.CryptoError
-        DraftAttachmentUploadErrorReason.TIMEOUT -> DataError.Remote.Timeout
-    }
 }
 
 private fun LocalMimeType.toDraftMimeType() = when (this) {
