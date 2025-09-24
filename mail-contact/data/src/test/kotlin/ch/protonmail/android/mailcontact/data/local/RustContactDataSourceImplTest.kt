@@ -221,7 +221,7 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.deleteContact(userId, contactId)
 
         // Then
-        assertEquals(DataError.Local.NoDataCached.left(), result)
+        assertEquals(DataError.Local.NotFound.left(), result)
     }
 
     @Test

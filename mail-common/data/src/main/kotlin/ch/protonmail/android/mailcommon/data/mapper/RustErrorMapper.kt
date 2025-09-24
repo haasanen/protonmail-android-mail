@@ -21,16 +21,20 @@ package ch.protonmail.android.mailcommon.data.mapper
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
+import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.SessionReason
 import uniffi.proton_mail_uniffi.UserSessionError
 
 fun UserSessionError.toDataError(): DataError = when (this) {
     is UserSessionError.Other -> this.v1.toDataError()
-    is UserSessionError.Reason -> when (this.v1) {
+    is UserSessionError.Reason -> when (val error = this.v1) {
+        is SessionReason.MethodCalledInWrongOrigin -> DataError.Local.Other(
+            "MethodCalledInWrongOrigin: expected: ${error.expected}, actual: ${error.actual}"
+        )
+
+        is SessionReason.UnknownLabel -> DataError.Local.NotFound
         is SessionReason.DuplicateSession,
-        is SessionReason.MethodCalledInWrongOrigin,
-        is SessionReason.UnknownLabel,
         is SessionReason.UserSessionNotInitialized -> DataError.Local.NoUserSession
     }
 }
@@ -40,14 +44,19 @@ fun ActionError.toDataError(): DataError = when (this) {
     is ActionError.Reason -> when (v1) {
         ActionErrorReason.UNKNOWN_LABEL,
         ActionErrorReason.UNKNOWN_MESSAGE,
-        ActionErrorReason.UNKNOWN_CONTENT_ID -> DataError.Local.NoDataCached
+        ActionErrorReason.UNKNOWN_CONTENT_ID -> DataError.Local.NotFound
     }
 }
 
 fun ProtonError.toDataError(): DataError = when (this) {
     is ProtonError.Network -> DataError.Remote.NoNetwork
-    is ProtonError.OtherReason -> DataError.Local.Unknown
+    is ProtonError.OtherReason -> this.toDataError()
     is ProtonError.ServerError -> DataError.Remote.ServerError
     is ProtonError.Unexpected -> DataError.Local.Unknown
     is ProtonError.NonProcessableActions -> DataError.Local.UnsupportedOperation
+}
+
+fun ProtonError.OtherReason.toDataError() = when (val error = this.v1) {
+    OtherErrorReason.InvalidParameter -> DataError.Local.InvalidRequest
+    is OtherErrorReason.Other -> DataError.Local.Other(error.v1)
 }

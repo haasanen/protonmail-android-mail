@@ -277,7 +277,7 @@ class RustAttachmentDataSourceImplTest {
         val result = dataSource.removeAttachment(attachmentId)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(DataError.Local.Other("internal failure").left(), result)
     }
 
     @Test
