@@ -7,6 +7,7 @@ import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
@@ -121,13 +122,14 @@ class DraftRepositoryImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        coEvery { draftDataSource.discard(userId, messageId) } returns DataError.Local.CryptoError.left()
+        val expectedError = DiscardDraftError.DeleteDraftFailed
+        coEvery { draftDataSource.discard(userId, messageId) } returns expectedError.left()
 
         // When
         val actual = draftRepository.discardDraft(userId, messageId)
 
         // Then
-        assertEquals(DataError.Local.CryptoError.left(), actual)
+        assertEquals(expectedError.left(), actual)
     }
 
     @Test

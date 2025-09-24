@@ -21,6 +21,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
@@ -281,7 +282,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val expected = DataError.Local.NoUserSession
+        val expected = DiscardDraftError.Other(DataError.Local.NoUserSession)
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
@@ -311,16 +312,17 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.RustJobApplication
+        val discardDraftError = DiscardDraftError.DeleteDraftFailed
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery {
             discardRustDraft(mockUserSession, messageId.toLocalMessageId())
-        } returns DataError.Local.CryptoError.left()
+        } returns discardDraftError.left()
 
         // When
         val actual = dataSource.discard(userId, messageId)
 
         // Then
-        assertEquals(actual, DataError.Local.CryptoError.left())
+        assertEquals(discardDraftError.left(), actual)
     }
 
     @Test

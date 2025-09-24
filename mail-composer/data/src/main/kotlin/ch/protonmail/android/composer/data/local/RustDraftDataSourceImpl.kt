@@ -51,6 +51,7 @@ import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
+import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
@@ -167,11 +168,11 @@ class RustDraftDataSourceImpl @Inject constructor(
             .map { it.toLocalDraft() }
     }
 
-    override suspend fun discard(userId: UserId, messageId: MessageId): Either<DataError, Unit> {
+    override suspend fun discard(userId: UserId, messageId: MessageId): Either<DiscardDraftError, Unit> {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-draft: Trying to discard draft with null session; Failing.")
-            return DataError.Local.NoUserSession.left()
+            return DiscardDraftError.Other(DataError.Local.NoUserSession).left()
         }
 
         return discardRustDraft(session, messageId.toLocalMessageId())

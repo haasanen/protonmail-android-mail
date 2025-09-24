@@ -46,8 +46,6 @@ sealed interface DataError {
 
         data object IllegalStateError : Local
 
-        data object DiscardDraftError : Local
-
         data object NotFound : Local
 
         /**

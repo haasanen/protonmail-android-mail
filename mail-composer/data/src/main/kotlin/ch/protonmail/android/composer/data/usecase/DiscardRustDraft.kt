@@ -20,8 +20,8 @@ package ch.protonmail.android.composer.data.usecase
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toDiscardDraftError
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.VoidDraftDiscardResult
 import uniffi.proton_mail_uniffi.draftDiscard
@@ -31,7 +31,7 @@ class DiscardRustDraft @Inject constructor() {
 
     suspend operator fun invoke(mailSession: MailUserSessionWrapper, messageId: LocalMessageId) =
         when (val result = draftDiscard(mailSession.getRustUserSession(), messageId)) {
-            is VoidDraftDiscardResult.Error -> result.v1.toDataError().left()
+            is VoidDraftDiscardResult.Error -> result.v1.toDiscardDraftError().left()
             is VoidDraftDiscardResult.Ok -> Unit.right()
         }
 }

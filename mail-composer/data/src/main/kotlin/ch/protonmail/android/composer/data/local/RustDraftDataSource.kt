@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
+import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
@@ -51,7 +52,7 @@ interface RustDraftDataSource {
     suspend fun getMessageId(): Either<DataError, MessageId>
     suspend fun open(userId: UserId, messageId: MessageId): Either<OpenDraftError, LocalDraftWithSyncStatus>
     suspend fun create(userId: UserId, action: DraftAction): Either<OpenDraftError, LocalDraft>
-    suspend fun discard(userId: UserId, messageId: MessageId): Either<DataError, Unit>
+    suspend fun discard(userId: UserId, messageId: MessageId): Either<DiscardDraftError, Unit>
     suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit>
     suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>
     suspend fun observeRecipientsValidation(): Flow<List<DraftRecipient>>

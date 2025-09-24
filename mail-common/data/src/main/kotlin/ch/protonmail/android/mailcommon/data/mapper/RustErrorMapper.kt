@@ -22,8 +22,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
-import uniffi.proton_mail_uniffi.DraftDiscardError
-import uniffi.proton_mail_uniffi.DraftDiscardErrorReason
 import uniffi.proton_mail_uniffi.EventError
 import uniffi.proton_mail_uniffi.EventErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
@@ -46,14 +44,6 @@ fun ActionError.toDataError(): DataError = when (this) {
         ActionErrorReason.UNKNOWN_LABEL,
         ActionErrorReason.UNKNOWN_MESSAGE,
         ActionErrorReason.UNKNOWN_CONTENT_ID -> DataError.Local.NoDataCached
-    }
-}
-
-fun DraftDiscardError.toDataError(): DataError = when (this) {
-    is DraftDiscardError.Other -> this.v1.toDataError()
-    is DraftDiscardError.Reason -> when (this.v1) {
-        DraftDiscardErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftDiscardErrorReason.DELETE_FAILED -> DataError.Local.DiscardDraftError
     }
 }
 
