@@ -18,6 +18,7 @@
 
 package me.proton.android.core.auth.presentation.passmanagement
 
+import android.content.Context
 import ch.protonmail.android.design.compose.viewmodel.UiEventFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -36,9 +37,13 @@ import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 import uniffi.proton_account_uniffi.PasswordFlow
 import uniffi.proton_account_uniffi.PasswordFlowChangeMboxPassResult
 import uniffi.proton_account_uniffi.SimplePasswordState.COMPLETE
+import uniffi.proton_account_uniffi.SimplePasswordState.INVALID
+import uniffi.proton_account_uniffi.SimplePasswordState.WANT_CHANGE
 import uniffi.proton_account_uniffi.SimplePasswordState.WANT_PASS
+import uniffi.proton_account_uniffi.SimplePasswordState.WANT_TFA
 
 class MailboxPasswordHandler private constructor(
+    private val context: Context,
     private val getUserId: () -> CoreUserId,
     private val getFlow: suspend () -> FlowManager.CurrentFlow,
     private val uiEventFlow: UiEventFlow<PasswordManagementEvent>
@@ -81,7 +86,9 @@ class MailboxPasswordHandler private constructor(
         currentState: UserInput,
         token: PasswordValidatorToken?
     ): Flow<PasswordManagementState> = flow {
-        if (result) {
+        if (passwordFlow.getState() == COMPLETE) {
+            uiEventFlow.emit(PasswordManagementEvent.LoginPasswordSaved)
+        } else if (result) {
             emitAll(submitMailboxPassChange(passwordFlow, currentState, token))
         } else {
             emit(currentState.copyWithMailboxPassword { it.copy(loading = false) })
@@ -103,21 +110,7 @@ class MailboxPasswordHandler private constructor(
             return@flow
         }
 
-        val submitResult = safeExecute(currentState) {
-            passwordFlow.submitPass(currentState.mailboxPassword.current)
-        } ?: return@flow
-
-        handlePasswordSubmitResult(
-            userId = getUserId(),
-            passwordFlow = passwordFlow,
-            submitResult = submitResult,
-            currentState = currentState,
-            token = token,
-            createAwaitingState = ::Awaiting2faForMailbox,
-            submitChangeFunction = { passwordFlow, currentState, token ->
-                submitMailboxPassChange(passwordFlow, currentState, token)
-            }
-        )
+        emitAll(submitMailboxPassChange(passwordFlow, currentState, token))
     }
 
     private fun validateMailboxPasswordInputs(
@@ -141,19 +134,21 @@ class MailboxPasswordHandler private constructor(
         val mailboxPasswordState = currentState.mailboxPassword
         val changeResult = safeExecute(currentState) {
             passwordFlow.changeMboxPass(
+                currentPassword = mailboxPasswordState.current,
                 newMboxPass = mailboxPasswordState.new,
                 confirmPassword = mailboxPasswordState.confirmNew,
                 token = (token as? PasswordValidatorTokenWrapper)?.toRust()
             )
         } ?: return@flow
 
-        handleMailboxPasswordChangeResult(passwordFlow, changeResult, currentState)
+        handleMailboxPasswordChangeResult(passwordFlow, changeResult, currentState, token)
     }
 
     private suspend fun FlowCollector<PasswordManagementState>.handleMailboxPasswordChangeResult(
         passwordFlow: PasswordFlow,
         changeResult: PasswordFlowChangeMboxPassResult,
-        currentState: UserInput
+        currentState: UserInput,
+        token: PasswordValidatorToken?
     ) {
         when (changeResult) {
             is PasswordFlowChangeMboxPassResult.Error -> {
@@ -161,7 +156,7 @@ class MailboxPasswordHandler private constructor(
                 if (validationError != null) {
                     emit(currentState.setMailboxPasswordValidationError(validationError))
                 } else {
-                    emit(Error.General(changeResult.v1.toString(), currentState))
+                    emit(Error.General(changeResult.v1.getErrorMessage(context), currentState))
                 }
 
                 goToInitState(passwordFlow)
@@ -169,8 +164,11 @@ class MailboxPasswordHandler private constructor(
 
             is PasswordFlowChangeMboxPassResult.Ok -> {
                 when (changeResult.v1) {
+                    WANT_PASS -> Unit // Not used in Rust
+                    WANT_TFA -> emit(Awaiting2faForMailbox(getUserId(), currentState, token))
+                    WANT_CHANGE -> emitAll(submitMailboxPassChange(passwordFlow, currentState, token))
                     COMPLETE -> uiEventFlow.emit(PasswordManagementEvent.MailboxPasswordSaved)
-                    else -> emit(Error.InvalidState(currentState))
+                    INVALID -> emit(Error.InvalidState(currentState))
                 }
             }
         }
@@ -198,10 +196,11 @@ class MailboxPasswordHandler private constructor(
     companion object {
 
         fun create(
+            context: Context,
             getFlow: suspend () -> FlowManager.CurrentFlow,
             getUserId: () -> CoreUserId,
             uiEventFlow: UiEventFlow<PasswordManagementEvent>
-        ): MailboxPasswordHandler = MailboxPasswordHandler(getUserId, getFlow, uiEventFlow)
+        ): MailboxPasswordHandler = MailboxPasswordHandler(context, getUserId, getFlow, uiEventFlow)
     }
 }
 

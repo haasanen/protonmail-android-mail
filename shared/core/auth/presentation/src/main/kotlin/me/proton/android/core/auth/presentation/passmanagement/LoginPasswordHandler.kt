@@ -18,6 +18,7 @@
 
 package me.proton.android.core.auth.presentation.passmanagement
 
+import android.content.Context
 import ch.protonmail.android.design.compose.viewmodel.UiEventFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -38,9 +39,13 @@ import uniffi.proton_account_uniffi.LoginFlowSubmitNewPasswordResult
 import uniffi.proton_account_uniffi.PasswordFlow
 import uniffi.proton_account_uniffi.PasswordFlowChangePassResult
 import uniffi.proton_account_uniffi.SimplePasswordState.COMPLETE
+import uniffi.proton_account_uniffi.SimplePasswordState.INVALID
+import uniffi.proton_account_uniffi.SimplePasswordState.WANT_CHANGE
 import uniffi.proton_account_uniffi.SimplePasswordState.WANT_PASS
+import uniffi.proton_account_uniffi.SimplePasswordState.WANT_TFA
 
 class LoginPasswordHandler private constructor(
+    private val context: Context,
     private val getUserId: () -> CoreUserId,
     private val getFlow: suspend () -> FlowManager.CurrentFlow,
     private val uiEventFlow: UiEventFlow<PasswordManagementEvent>
@@ -113,7 +118,9 @@ class LoginPasswordHandler private constructor(
         currentState: UserInput,
         token: PasswordValidatorToken?
     ): Flow<PasswordManagementState> = flow {
-        if (result) {
+        if (passwordFlow.getState() == COMPLETE) {
+            uiEventFlow.emit(PasswordManagementEvent.LoginPasswordSaved)
+        } else if (result) {
             emitAll(submitPassChange(passwordFlow, currentState, token))
         } else {
             emit(currentState.copyWithLoginPassword { it.copy(loading = false) })
@@ -135,21 +142,7 @@ class LoginPasswordHandler private constructor(
             return@flow
         }
 
-        val submitResult = safeExecute(currentState) {
-            passwordFlow.submitPass(currentState.loginPassword.current)
-        } ?: return@flow
-
-        handlePasswordSubmitResult(
-            userId = getUserId(),
-            passwordFlow = passwordFlow,
-            submitResult = submitResult,
-            currentState = currentState,
-            token = token,
-            createAwaitingState = ::Awaiting2faForLogin,
-            submitChangeFunction = { passwordFlow, currentState, token ->
-                submitPassChange(passwordFlow, currentState, token)
-            }
-        )
+        emitAll(submitPassChange(passwordFlow, currentState, token))
     }
 
     private fun validatePasswordInputs(currentPassword: String, token: PasswordValidatorToken?): ValidationError? {
@@ -170,19 +163,21 @@ class LoginPasswordHandler private constructor(
         val loginPasswordState = currentState.loginPassword
         val changeResult = safeExecute(currentState) {
             passwordFlow.changePass(
+                currentPassword = loginPasswordState.current,
                 newPass = loginPasswordState.new,
                 confirmPassword = loginPasswordState.confirmNew,
                 token = (token as? PasswordValidatorTokenWrapper)?.toRust()
             )
         } ?: return@flow
 
-        handlePasswordChangeResult(passwordFlow, changeResult, currentState)
+        handlePasswordChangeResult(passwordFlow, changeResult, currentState, token)
     }
 
     private suspend fun FlowCollector<PasswordManagementState>.handlePasswordChangeResult(
         passwordFlow: PasswordFlow,
         changeResult: PasswordFlowChangePassResult,
-        currentState: UserInput
+        currentState: UserInput,
+        token: PasswordValidatorToken?
     ) {
         when (changeResult) {
             is PasswordFlowChangePassResult.Error -> {
@@ -190,15 +185,18 @@ class LoginPasswordHandler private constructor(
                 if (validationError != null) {
                     emit(currentState.setPasswordValidationError(validationError))
                 } else {
-                    emit(Error.General(changeResult.v1.toString(), currentState))
+                    emit(Error.General(changeResult.v1.getErrorMessage(context), currentState))
                 }
                 goToInitState(passwordFlow)
             }
 
             is PasswordFlowChangePassResult.Ok -> {
                 when (changeResult.v1) {
+                    WANT_PASS -> Unit // Not used in Rust
+                    WANT_TFA -> emit(Awaiting2faForLogin(getUserId(), currentState, token))
+                    WANT_CHANGE -> emitAll(submitPassChange(passwordFlow, currentState, token))
                     COMPLETE -> uiEventFlow.emit(PasswordManagementEvent.LoginPasswordSaved)
-                    else -> emit(Error.InvalidState(currentState))
+                    INVALID -> emit(Error.InvalidState(currentState))
                 }
             }
         }
@@ -226,10 +224,11 @@ class LoginPasswordHandler private constructor(
     companion object {
 
         fun create(
+            context: Context,
             getUserId: () -> CoreUserId,
             getPasswordFlow: suspend () -> FlowManager.CurrentFlow,
             uiEventFlow: UiEventFlow<PasswordManagementEvent>
-        ): LoginPasswordHandler = LoginPasswordHandler(getUserId, getPasswordFlow, uiEventFlow)
+        ): LoginPasswordHandler = LoginPasswordHandler(context, getUserId, getPasswordFlow, uiEventFlow)
     }
 }
 

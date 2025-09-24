@@ -18,6 +18,7 @@
 
 package me.proton.android.core.auth.presentation.passmanagement
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,11 +27,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.UiEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import me.proton.android.core.account.domain.model.CoreUserId
@@ -47,16 +48,13 @@ import me.proton.android.core.auth.presentation.passmanagement.PasswordManagemen
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateMailboxPassword
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.UserInput
 import me.proton.core.compose.viewmodel.BaseViewModel
-import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 import uniffi.proton_account_uniffi.ChangePasswordScreenId
-import uniffi.proton_account_uniffi.PasswordFlow
-import uniffi.proton_account_uniffi.PasswordFlowSubmitPassResult
-import uniffi.proton_account_uniffi.SimplePasswordState
 import uniffi.proton_account_uniffi.recordChangePasswordScreenView
 import javax.inject.Inject
 
 @HiltViewModel
 class PasswordManagementViewModel @Inject constructor(
+    @ApplicationContext context: Context,
     private val savedStateHandle: SavedStateHandle,
     private val observePasswordConfig: ObservePasswordConfig,
     private val flowManager: FlowManager,
@@ -77,12 +75,14 @@ class PasswordManagementViewModel @Inject constructor(
     val uiEvent: UiEventFlow<PasswordManagementEvent> = UiEventFlow()
 
     private val loginPasswordHandler = LoginPasswordHandler.create(
+        context = context,
         getPasswordFlow = ::getCurrentFlow,
         getUserId = { userId },
         uiEventFlow = uiEvent
     )
 
     private val mailboxPasswordHandler = MailboxPasswordHandler.create(
+        context = context,
         getFlow = ::getCurrentFlow,
         getUserId = { userId },
         uiEventFlow = uiEvent
@@ -233,50 +233,6 @@ class PasswordManagementViewModel @Inject constructor(
         }
         super.onCleared()
     }
-}
-
-@Suppress("LongParameterList")
-suspend fun FlowCollector<PasswordManagementState>.handlePasswordSubmitResult(
-    userId: CoreUserId?,
-    passwordFlow: PasswordFlow,
-    submitResult: PasswordFlowSubmitPassResult,
-    currentState: UserInput,
-    token: PasswordValidatorToken?,
-    createAwaitingState: (CoreUserId, UserInput, PasswordValidatorToken?) -> PasswordManagementState,
-    submitChangeFunction: suspend (PasswordFlow, UserInput, PasswordValidatorToken?) -> Flow<PasswordManagementState>
-) {
-    when (submitResult) {
-        is PasswordFlowSubmitPassResult.Error -> {
-            emit(PasswordManagementState.Error.General(submitResult.v1.toString(), currentState))
-        }
-
-        is PasswordFlowSubmitPassResult.Ok -> {
-            when (submitResult.v1) {
-                SimplePasswordState.WANT_TFA -> handleTwoFactorAuthentication(
-                    userId,
-                    currentState,
-                    token,
-                    createAwaitingState
-                )
-
-                SimplePasswordState.WANT_CHANGE -> emitAll(submitChangeFunction(passwordFlow, currentState, token))
-                else -> emit(PasswordManagementState.Error.InvalidState(currentState))
-            }
-        }
-    }
-}
-
-private suspend fun FlowCollector<PasswordManagementState>.handleTwoFactorAuthentication(
-    userId: CoreUserId?,
-    currentState: UserInput,
-    token: PasswordValidatorToken?,
-    createAwaitingState: (CoreUserId, UserInput, PasswordValidatorToken?) -> PasswordManagementState
-) {
-    if (userId == null) {
-        emit(PasswordManagementState.Error.InvalidUserId(currentState))
-        return
-    }
-    emit(createAwaitingState(userId, currentState, token))
 }
 
 interface ErrorHandler {
