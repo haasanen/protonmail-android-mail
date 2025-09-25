@@ -187,7 +187,7 @@ class ScrollerOnUpdateHandler<T>(
 
     private fun shouldInvalidateWhenNoPending(update: ScrollerUpdate<*>): Boolean = when (update) {
         is ScrollerUpdate.Error -> when (val error = update.error) {
-            is MailScrollerError.Reason -> error.v1 == MailScrollerErrorReason.DIRTY
+            is MailScrollerError.Reason -> error.v1 == MailScrollerErrorReason.NOT_SYNCED
             is MailScrollerError.Other -> false
         }
         else -> true

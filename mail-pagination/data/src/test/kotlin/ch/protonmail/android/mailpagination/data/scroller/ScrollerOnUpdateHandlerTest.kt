@@ -294,7 +294,7 @@ class ScrollerOnUpdateHandlerTest {
     @Test
     fun `when there is no pending request and Error Reason DIRTY arrives, invalidates`() = runTest {
         // Given
-        val update = ScrollerUpdate.Error(MailScrollerError.Reason(MailScrollerErrorReason.DIRTY))
+        val update = ScrollerUpdate.Error(MailScrollerError.Reason(MailScrollerErrorReason.NOT_SYNCED))
         val snapshot = emptyList<ScrollerItem>()
 
         // When

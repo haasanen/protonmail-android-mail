@@ -41,12 +41,12 @@ class PagingEventExtTest {
         // Given
         val inputFlow = flowOf(
             PagingEvent.Append(listOf("item1", "item2")),
-            PagingEvent.Error(PaginationError.DirtyPaginationData),
+            PagingEvent.Error(PaginationError.PaginationDataNotSynced),
             PagingEvent.Refresh(listOf("refresh item")),
             PagingEvent.Invalidate
         )
         val expected = listOf(
-            RefreshEvent.Error(PaginationError.DirtyPaginationData),
+            RefreshEvent.Error(PaginationError.PaginationDataNotSynced),
             RefreshEvent.Refresh(listOf("refresh item"))
         )
 
@@ -72,13 +72,13 @@ class PagingEventExtTest {
     @Test
     fun `refresh event to either returns left when event is error`() = runTest {
         // Given
-        val inputFlow = flowOf(RefreshEvent.Error<String>(PaginationError.DirtyPaginationData))
+        val inputFlow = flowOf(RefreshEvent.Error<String>(PaginationError.PaginationDataNotSynced))
 
         // When
         val result = inputFlow.refreshEventToEither()
 
         // Then
-        assertEquals(PaginationError.DirtyPaginationData.left(), result)
+        assertEquals(PaginationError.PaginationDataNotSynced.left(), result)
     }
 
     @Test
@@ -96,13 +96,13 @@ class PagingEventExtTest {
     @Test
     fun `append event to either returns left when event is error`() = runTest {
         // Given
-        val inputFlow = flowOf(AppendEvent.Error<String>(PaginationError.DirtyPaginationData))
+        val inputFlow = flowOf(AppendEvent.Error<String>(PaginationError.PaginationDataNotSynced))
 
         // When
         val result = inputFlow.appendEventToEither()
 
         // Then
-        assertEquals(PaginationError.DirtyPaginationData.left(), result)
+        assertEquals(PaginationError.PaginationDataNotSynced.left(), result)
     }
 
 }

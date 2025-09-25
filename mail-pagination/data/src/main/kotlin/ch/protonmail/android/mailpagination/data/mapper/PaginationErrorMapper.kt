@@ -34,6 +34,6 @@ fun LocalMailScrollerError.toPaginationError(): PaginationError = when (this) {
         is ProtonError.Unexpected -> PaginationError.Other(this.v1.toDataError())
     }
     is MailScrollerError.Reason -> when (this.v1) {
-        MailScrollerErrorReason.DIRTY -> PaginationError.DirtyPaginationData
+        MailScrollerErrorReason.NOT_SYNCED -> PaginationError.PaginationDataNotSynced
     }
 }
