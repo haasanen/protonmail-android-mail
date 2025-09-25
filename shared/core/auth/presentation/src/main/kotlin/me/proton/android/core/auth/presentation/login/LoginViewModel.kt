@@ -20,6 +20,7 @@ package me.proton.android.core.auth.presentation.login
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.design.compose.viewmodel.UiEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,11 +33,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.android.core.auth.presentation.IODispatcher
 import me.proton.android.core.auth.presentation.challenge.toUserBehavior
-import ch.protonmail.android.design.compose.viewmodel.UiEventFlow
 import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlowLoginResult
 import uniffi.proton_account_uniffi.LoginFlowUserIdResult
+import uniffi.proton_account_uniffi.PostLoginValidationError
 import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetSessionResult
@@ -143,13 +144,21 @@ class LoginViewModel @Inject internal constructor(
     }
 
     private suspend fun getErrorState(error: LoginError): LoginViewState {
-        return when (error) {
-            is LoginError.DuplicateSession -> handleDuplicateSessionError(error)
+        return when {
+            error is LoginError.DuplicateSession -> handleDuplicateSessionError(error)
+            (error as? LoginError.PostLoginValidationFailed)?.v1 is PostLoginValidationError.FreeAccountLimitExceeded
+            -> handleLoginValidationError(error)
+
             else -> {
                 emitLoginError(error.getErrorMessage(context))
                 LoginViewState.Idle
             }
         }
+    }
+
+    private suspend fun handleLoginValidationError(error: LoginError.PostLoginValidationFailed): LoginViewState {
+        emitLoginError(message = error.getErrorMessage(context), close = true)
+        return LoginViewState.Idle
     }
 
     private suspend fun handleDuplicateSessionError(error: LoginError.DuplicateSession): LoginViewState {
@@ -161,8 +170,8 @@ class LoginViewModel @Inject internal constructor(
             }
     }
 
-    private suspend fun emitLoginError(message: String) {
-        uiEvent.emit(LoginEvent.FailedToLogin(message))
+    private suspend fun emitLoginError(message: String, close: Boolean = false) {
+        uiEvent.emit(LoginEvent.FailedToLogin(message, close))
     }
 
     private suspend fun getLoginFlow() = (loginFlowDeferred.await() as MailSessionNewLoginFlowResult.Ok).v1

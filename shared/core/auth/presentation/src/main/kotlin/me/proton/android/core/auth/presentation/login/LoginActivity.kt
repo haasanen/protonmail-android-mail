@@ -69,7 +69,7 @@ class LoginActivity : ProtonSecureActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 loginViewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
-                        is LoginEvent.FailedToLogin -> showError(uiEvent.message)
+                        is LoginEvent.FailedToLogin -> showError(uiEvent.message, uiEvent.close)
                     }
                 }
             }
@@ -88,8 +88,11 @@ class LoginActivity : ProtonSecureActivity() {
         }
     }
 
-    private fun showError(message: String?) {
+    private fun showError(message: String?, close: Boolean) {
         errorToast(message ?: getString(R.string.presentation_error_general))
+        if (close) {
+            onClose()
+        }
     }
 
     private fun onSuccess(userId: String) {

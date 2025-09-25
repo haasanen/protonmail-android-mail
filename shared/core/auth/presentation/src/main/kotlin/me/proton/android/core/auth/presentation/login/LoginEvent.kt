@@ -19,5 +19,5 @@
 package me.proton.android.core.auth.presentation.login
 
 sealed interface LoginEvent {
-    data class FailedToLogin(val message: String) : LoginEvent
+    data class FailedToLogin(val message: String, val close: Boolean = false) : LoginEvent
 }
