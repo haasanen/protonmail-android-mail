@@ -44,7 +44,6 @@ class StartBackgroundExecution @Inject constructor(
                     .onSuccess { Timber.tag("BackgroundExecution").d("Status sent to flow successfully.") }
                     .onFailure { Timber.tag("BackgroundExecution").d("Failed to send status to flow.") }
 
-                close()
                 Timber.tag("BackgroundExecution").d("Flow closed after sending status.")
             }
 
