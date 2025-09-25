@@ -81,7 +81,7 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
         is PostLoginValidationError.DelinquentUser -> context.getString(R.string.auth_user_check_delinquent_error)
         is PostLoginValidationError.FreeAccountLimitExceeded -> context.resources.getQuantityString(
             R.plurals.auth_user_check_max_free_error,
-            loginError.v1.toInt()
+            loginError.v1.toInt(), loginError.v1.toInt()
         )
     }
 }

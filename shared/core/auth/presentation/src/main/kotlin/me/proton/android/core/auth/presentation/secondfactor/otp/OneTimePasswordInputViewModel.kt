@@ -79,11 +79,6 @@ class OneTimePasswordInputViewModel @Inject constructor(
         emit(Idle)
     }
 
-    private fun onClose(message: String? = null): Flow<OneTimePasswordInputState> = flow {
-        sessionInterface.deleteAccount(userId.id)
-        emit(Closed(message = message))
-    }
-
     private fun onValidateAndAuthenticate(action: Authenticate) = flow {
         emit(Loading)
         when (action.code.isBlank()) {
@@ -117,6 +112,9 @@ class OneTimePasswordInputViewModel @Inject constructor(
     private fun onSubmitTotpError(err: LoginFlowSubmitTotpResult.Error, loginFlow: LoginFlow) = flow {
         if (loginFlow.isAwaiting2fa()) {
             emitAll(onError(err.v1))
+        } else if (err.v1 is LoginError.PostLoginValidationFailed) {
+            // keep the account in account manager but signed out
+            emitAll(onClose(message = err.v1.getErrorMessage(context), deleteAccount = false))
         } else {
             flowManager.clearCache(userId)
             emitAll(onClose(message = context.getString(R.string.auth_second_factor_incorrect_code)))
@@ -126,6 +124,14 @@ class OneTimePasswordInputViewModel @Inject constructor(
     private fun onError(error: LoginError): Flow<OneTimePasswordInputState> = flow {
         emit(Error.LoginFlow(error.getErrorMessage(context)))
     }
+
+    private fun onClose(message: String? = null, deleteAccount: Boolean = true): Flow<OneTimePasswordInputState> =
+        flow {
+            if (deleteAccount) {
+                sessionInterface.deleteAccount(userId.id)
+            }
+            emit(Closed(message = message))
+        }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {
         when (loginFlow.isAwaitingMailboxPassword()) {
