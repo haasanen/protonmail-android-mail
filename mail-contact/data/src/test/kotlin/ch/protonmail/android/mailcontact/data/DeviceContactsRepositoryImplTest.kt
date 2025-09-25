@@ -17,9 +17,10 @@ import org.junit.Assert
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @Suppress("MaxLineLength")
-class DeviceContactsRepositoryImplTest {
+internal class DeviceContactsRepositoryImplTest {
 
     private val columnIndexDisplayName = 1
     private val columnIndexEmail = 2
@@ -30,6 +31,7 @@ class DeviceContactsRepositoryImplTest {
         } returns columnIndexDisplayName
         every { getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS) } returns columnIndexEmail
         every { moveToPosition(any()) } returns true
+        every { isNull(any<Int>()) } returns false
         every { getString(columnIndexDisplayName) } returns "display name"
         every { getString(columnIndexEmail) } returns "email"
         every { close() } just runs
@@ -58,8 +60,8 @@ class DeviceContactsRepositoryImplTest {
             contentResolverMock.query(
                 any(),
                 any(),
-                isNull(),
-                isNull(),
+                any(),
+                any(),
                 any()
             )
         } returns cursorMock
@@ -106,7 +108,7 @@ class DeviceContactsRepositoryImplTest {
 
         // Then
         assertNotNull(actual)
-        Assert.assertTrue(actual.size == 0)
+        assertTrue(actual.isEmpty())
         verify(exactly = 0) { cursorMock.getString(columnIndexDisplayName) }
         verify(exactly = 0) { cursorMock.getString(columnIndexEmail) }
     }
@@ -126,6 +128,124 @@ class DeviceContactsRepositoryImplTest {
         assertEquals(DeviceContactsRepository.DeviceContactsErrors.PermissionDenied.left(), actual)
         verify(exactly = 0) { cursorMock.getString(columnIndexDisplayName) }
         verify(exactly = 0) { cursorMock.getString(columnIndexEmail) }
+    }
+
+    @Test
+    fun `when content resolver throws a generic exception, left is emitted`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        val query = "cont"
+
+        expectCursorQueryThrowsException()
+        expectContactsCount(0)
+
+        // When
+        val actual = deviceContactsRepository.getDeviceContacts(query)
+
+        // Then
+        assertEquals(DeviceContactsRepository.DeviceContactsErrors.Unknown.left(), actual)
+        verify(exactly = 0) { cursorMock.getString(columnIndexDisplayName) }
+        verify(exactly = 0) { cursorMock.getString(columnIndexEmail) }
+    }
+
+    @Test
+    fun `when email address column is null, entries are not added`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        val query = "cont"
+
+        expectCursorQuery(query)
+        expectContactsCount(2)
+
+        every { cursorMock.getString(columnIndexEmail) } returns null
+
+        // When
+        val actual = deviceContactsRepository.getDeviceContacts(query).getOrNull()
+
+        // Then
+        assertNotNull(actual)
+        assertTrue(actual.isEmpty())
+        verify(exactly = 2) { cursorMock.getString(columnIndexEmail) }
+        verify(exactly = 0) { cursorMock.getString(columnIndexDisplayName) }
+    }
+
+    @Test
+    fun `when email address column index is null, entries are not added`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        val query = "cont"
+
+        expectCursorQuery(query)
+        expectContactsCount(2)
+
+        every { cursorMock.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS) } returns -1
+
+        // When
+        val actual = deviceContactsRepository.getDeviceContacts(query).getOrNull()
+
+        // Then
+        assertNotNull(actual)
+        assertTrue(actual.isEmpty())
+        verify(exactly = 0) { cursorMock.getString(columnIndexEmail) }
+        verify(exactly = 0) { cursorMock.getString(columnIndexDisplayName) }
+    }
+
+    @Test
+    fun `when null display name column, fall back to the email address`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        val query = "cont"
+
+        expectCursorQuery(query)
+        expectContactsCount(2)
+
+        every { cursorMock.getString(columnIndexDisplayName) } returns null
+
+        // When
+        val actual = deviceContactsRepository.getDeviceContacts(query).getOrNull()
+
+        // Then
+        assertNotNull(actual)
+        assertEquals(actual.size, 2)
+        assertTrue(actual.all { it.name == it.email })
+        verify(exactly = 2) { cursorMock.getString(columnIndexEmail) }
+        verify(exactly = 2) { cursorMock.getString(columnIndexDisplayName) }
+    }
+
+    @Test
+    fun `when null display name column index, fall back to the email address`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        val query = "cont"
+
+        expectCursorQuery(query)
+        expectContactsCount(2)
+
+        every { cursorMock.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY) } returns -1
+
+        // When
+        val actual = deviceContactsRepository.getDeviceContacts(query).getOrNull()
+
+        // Then
+        assertNotNull(actual)
+        assertEquals(actual.size, 2)
+        assertTrue(actual.all { it.name == it.email })
+        verify(exactly = 2) { cursorMock.getString(columnIndexEmail) }
+        verify(exactly = 0) { cursorMock.getString(columnIndexDisplayName) }
+    }
+
+    @Test
+    fun `when cursor can't move to position, then no entry is added`() = runTest(testDispatcherProvider.Main) {
+        // Given
+        val query = "cont"
+
+        expectCursorQuery(query)
+        expectContactsCount(2)
+        every { cursorMock.moveToPosition(1) } returns false
+
+        // When
+        val actual = deviceContactsRepository.getDeviceContacts(query).getOrNull()
+
+        // Then
+        assertNotNull(actual)
+        assertEquals(actual.size, 1)
+        verify(exactly = 1) { cursorMock.getString(columnIndexEmail) }
+        verify(exactly = 1) { cursorMock.getString(columnIndexDisplayName) }
     }
 
     @Test
@@ -175,5 +295,11 @@ class DeviceContactsRepositoryImplTest {
         assertEquals(1, result.contacts.size)
         verify(exactly = 1) { cursorMock.getString(columnIndexDisplayName) }
         verify(exactly = 1) { cursorMock.getString(columnIndexEmail) }
+    }
+
+    private fun expectCursorQueryThrowsException() {
+        every {
+            contentResolverMock.query(any(), any(), any(), any(), any())
+        } throws Exception("You shall not pass either")
     }
 }
