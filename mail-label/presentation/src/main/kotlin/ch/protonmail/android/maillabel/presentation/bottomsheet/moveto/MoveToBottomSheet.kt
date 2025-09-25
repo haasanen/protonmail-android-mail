@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -43,8 +44,9 @@ fun MoveToBottomSheetScreen(
     modifier: Modifier = Modifier
 ) {
 
+    val vmSessionKey = remember { UUID.randomUUID().toString() }
     val viewModel = hiltViewModel<MoveToViewModel, MoveToViewModel.Factory>(
-        key = providedData.identifier()
+        key = vmSessionKey
     ) { factory ->
         factory.create(providedData)
     }
@@ -102,9 +104,5 @@ object MoveToBottomSheet {
         val currentLocationLabelId: LabelId,
         val items: List<MoveToItemId>,
         val entryPoint: MoveToBottomSheetEntryPoint
-    ) {
-
-        private val identifier by lazy { UUID.randomUUID().toString() }
-        fun identifier() = identifier
-    }
+    )
 }

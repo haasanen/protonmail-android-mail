@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -42,8 +43,9 @@ fun LabelAsBottomSheetScreen(
     modifier: Modifier = Modifier
 ) {
 
+    val vmSessionKey = remember { UUID.randomUUID().toString() }
     val viewModel = hiltViewModel<LabelAsViewModel, LabelAsViewModel.Factory>(
-        key = providedData.identifier()
+        key = vmSessionKey
     ) { factory ->
         factory.create(providedData)
     }
@@ -99,9 +101,5 @@ object LabelAsBottomSheet {
         val currentLocationLabelId: LabelId,
         val items: List<LabelAsItemId>,
         val entryPoint: LabelAsBottomSheetEntryPoint
-    ) {
-
-        private val identifier by lazy { UUID.randomUUID().toString() }
-        fun identifier() = identifier
-    }
+    )
 }
