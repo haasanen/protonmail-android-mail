@@ -51,8 +51,7 @@ class DeviceContactsRepositoryImpl @Inject constructor(
         return withContext(ioDispatcher) {
             try {
                 queryContacts(query).right()
-            } catch (e: SecurityException) {
-                Timber.e(e, "Failed to query contacts due to permission issue")
+            } catch (_: SecurityException) {
                 DeviceContactsRepository.DeviceContactsErrors.PermissionDenied.left()
             } catch (e: Exception) {
                 Timber.e(e, "Failed to query contacts")
