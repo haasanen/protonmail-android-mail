@@ -145,7 +145,9 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
             .border(
                 width = MailDimens.DefaultBorder,
                 color = ProtonTheme.colors.borderNorm,
-                shape = ProtonTheme.shapes.conversation
+                // attention here, there seems to be a bug in the Card and we cannot use shapes.conversations for now
+                // This bug causes unreactive buttons on long messages (reply, reply all etc do not respond)
+                shape = ProtonTheme.shapes.large
             )
             .shadow(
                 elevation = if (isSystemInDarkTheme()) {
@@ -153,11 +155,11 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
                 } else {
                     ProtonDimens.ShadowElevation.Lifted
                 },
-                shape = ProtonTheme.shapes.conversation,
+                shape = ProtonTheme.shapes.large,
                 ambientColor = ProtonTheme.colors.shadowSoft,
                 spotColor = ProtonTheme.colors.shadowSoft
             ),
-        shape = ProtonTheme.shapes.conversation,
+        shape = ProtonTheme.shapes.large,
         colors = CardDefaults.elevatedCardColors(
             containerColor = ProtonTheme.colors.backgroundNorm
         ),
