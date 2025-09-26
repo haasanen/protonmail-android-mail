@@ -171,9 +171,9 @@ class RustMessageListQueryImpl @Inject constructor(
                             }
                         }
 
-                        if (paginatorState?.pendingRequest != null &&
-                            paginatorState?.pendingRequest?.isCompleted() == true
-                        ) {
+                        if (paginatorState?.pendingRequest == null) {
+                            Timber.d("rust-message-query: No pending request")
+                        } else if (paginatorState?.pendingRequest?.isCompleted() == true) {
                             Timber.d("rust-message-query: Clearing completed pending request")
                             paginatorState = paginatorState?.copy(pendingRequest = null)
                         } else {

@@ -170,10 +170,9 @@ class RustConversationsQueryImpl @Inject constructor(
                             }
                         }
 
-                        if (paginatorState?.pendingRequest != null &&
-                            paginatorState?.pendingRequest?.isCompleted() == true
-                        ) {
-
+                        if (paginatorState?.pendingRequest == null) {
+                            Timber.d("rust-conversation-query: No pending request")
+                        } else if (paginatorState?.pendingRequest?.isCompleted() == true) {
                             Timber.d("rust-conversation-query: Clearing completed pending request")
                             paginatorState = paginatorState?.copy(pendingRequest = null)
                         } else {
