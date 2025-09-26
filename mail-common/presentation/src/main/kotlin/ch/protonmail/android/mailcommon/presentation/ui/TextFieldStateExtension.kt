@@ -29,11 +29,3 @@ fun TextFieldState.replaceText(text: String, resetRange: Boolean = false) {
         if (resetRange) selection = TextRange.Zero
     }
 }
-
-fun TextFieldState.replaceText(text: String, selectionOverride: TextRange) {
-    clearText()
-    edit {
-        append(text)
-        selection = selectionOverride
-    }
-}

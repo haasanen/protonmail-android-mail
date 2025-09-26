@@ -608,8 +608,7 @@ class ComposerViewModel @AssistedInject constructor(
 
             }
             .onRight { bodyWithNewSignature ->
-                val formerSelection = bodyTextField.selection
-                bodyTextField.replaceText(bodyWithNewSignature.value, formerSelection)
+                bodyTextField.replaceText(bodyWithNewSignature.value)
 
                 // This needs to be created directly as we're emitting a state change.
                 val draftDisplayBody = buildDraftDisplayBody(
