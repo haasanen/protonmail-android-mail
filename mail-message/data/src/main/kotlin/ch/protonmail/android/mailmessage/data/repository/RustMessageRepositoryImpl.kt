@@ -41,12 +41,18 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 class RustMessageRepositoryImpl @Inject constructor(
     private val rustMessageDataSource: RustMessageDataSource,
     private val undoRepository: UndoRepository
 ) : MessageRepository {
+
+    override suspend fun terminatePaginator(userId: UserId) {
+        Timber.d("Terminating message paginator for userId: $userId")
+        rustMessageDataSource.terminatePaginator(userId)
+    }
 
     override suspend fun getSenderImage(
         userId: UserId,

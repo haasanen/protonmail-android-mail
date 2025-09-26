@@ -110,6 +110,16 @@ class RustMessageListQueryImpl @Inject constructor(
         }
     }
 
+    override suspend fun terminatePaginator(userId: UserId) {
+        if (paginatorState?.pageDescriptor?.userId == userId) {
+            paginatorMutex.withLock {
+                destroy()
+            }
+        } else {
+            Timber.d("rust-message-query: Not terminating paginator, userId does not match")
+        }
+    }
+
     private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {
         Timber.d("rust-message-query: [destroy and] initialize paginator instance...")
         destroy()
@@ -179,9 +189,13 @@ class RustMessageListQueryImpl @Inject constructor(
         pageKey.pageToLoad == PageToLoad.First
 
     private fun destroy() {
-        Timber.d("rust-message-query: disconnecting and destroying watcher")
-        paginatorState?.paginatorWrapper?.destroy()
-        paginatorState = null
+        if (paginatorState == null) {
+            Timber.d("rust-message-query: no paginator to destroy")
+        } else {
+            Timber.d("rust-message-query: disconnecting and destroying paginator")
+            paginatorState?.paginatorWrapper?.destroy()
+            paginatorState = null
+        }
     }
 
     private fun invalidateLoadedItems() {
@@ -222,8 +236,9 @@ class RustMessageListQueryImpl @Inject constructor(
     }
 
     private sealed interface PageDescriptor {
-        data class Default(val userId: UserId, val labelId: LabelId, val unread: Boolean) : PageDescriptor
-        data class Search(val userId: UserId, val keyword: String) : PageDescriptor
+        val userId: UserId
+        data class Default(override val userId: UserId, val labelId: LabelId, val unread: Boolean) : PageDescriptor
+        data class Search(override val userId: UserId, val keyword: String) : PageDescriptor
     }
 
     private fun PageKey.toPageDescriptor(userId: UserId): PageDescriptor = when (this) {

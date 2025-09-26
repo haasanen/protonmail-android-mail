@@ -48,6 +48,11 @@ class RustConversationRepositoryImpl @Inject constructor(
     private val undoRepository: UndoRepository
 ) : ConversationRepository {
 
+    override suspend fun terminatePaginator(userId: UserId) {
+        Timber.d("rust-conversation-repo: terminatePaginator for userId: $userId")
+        rustConversationDataSource.terminatePaginator(userId)
+    }
+
     override suspend fun getConversations(
         userId: UserId,
         pageKey: PageKey.DefaultPageKey

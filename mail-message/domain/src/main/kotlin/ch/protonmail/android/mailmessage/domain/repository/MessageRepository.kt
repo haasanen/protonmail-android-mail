@@ -34,6 +34,8 @@ import me.proton.core.domain.entity.UserId
 @Suppress("TooManyFunctions", "ComplexInterface")
 interface MessageRepository {
 
+    suspend fun terminatePaginator(userId: UserId)
+
     suspend fun getSenderImage(
         userId: UserId,
         address: String,

@@ -99,6 +99,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustMessageDataSource {
 
+    override suspend fun terminatePaginator(userId: UserId) = rustMessageListQuery.terminatePaginator(userId)
+
     override suspend fun getMessage(
         userId: UserId,
         messageId: LocalMessageId

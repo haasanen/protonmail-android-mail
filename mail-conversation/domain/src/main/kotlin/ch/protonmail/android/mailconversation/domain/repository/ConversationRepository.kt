@@ -35,6 +35,8 @@ import me.proton.core.domain.entity.UserId
 @Suppress("TooManyFunctions", "ComplexInterface")
 interface ConversationRepository {
 
+    suspend fun terminatePaginator(userId: UserId)
+
     /**
      * Load all [Conversation] from local cache for [userId].
      */

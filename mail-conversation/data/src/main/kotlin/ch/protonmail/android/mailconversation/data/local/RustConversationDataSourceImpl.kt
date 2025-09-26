@@ -74,6 +74,8 @@ class RustConversationDataSourceImpl @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustConversationDataSource {
 
+    override suspend fun terminatePaginator(userId: UserId) = rustConversationsQuery.terminatePaginator(userId)
+
     /**
      * Gets the first x conversations for this labelId.
      * Adds in an Invalidation Observer on the label that will be fired when any conversation
