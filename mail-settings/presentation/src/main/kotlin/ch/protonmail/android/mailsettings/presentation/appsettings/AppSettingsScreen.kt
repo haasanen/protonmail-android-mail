@@ -22,9 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.provider.Settings
-import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,22 +33,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,11 +57,9 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.model.string
-import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsHeader
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsItemDivider
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 
@@ -171,8 +162,6 @@ private fun AppSettingsScreenContent(
 
                 MailExperienceSettingsItem(
                     swipeToNextEmail = false, // not implemented coming soon
-                    mobileSignature = state.settings.mobileSignature,
-                    upsellingVisibility = state.upsellingVisibility,
                     actions = actions
                 )
 
@@ -355,8 +344,6 @@ private fun UseCombinedContactsSettingsItem(
 private fun MailExperienceSettingsItem(
     modifier: Modifier = Modifier,
     swipeToNextEmail: Boolean,
-    mobileSignature: MobileSignatureUiModel,
-    upsellingVisibility: UpsellingVisibility,
     actions: AppSettingsScreen.Actions
 ) {
     Card(
@@ -393,123 +380,7 @@ private fun MailExperienceSettingsItem(
                     )
                 }
             )
-
-            SettingsItemDivider()
-
-            if (mobileSignature.signatureStatus == MobileSignatureStatus.NeedsPaidVersion) {
-                MobileSignatureSettingsItemForFreePlan(
-                    modifier = modifier,
-                    mobileSignature = mobileSignature,
-                    upsellingVisibility = upsellingVisibility,
-                    onNavigateToUpselling = actions.onNavigateToUpselling
-                )
-            } else {
-                MobileSignatureSettingsItemForPaidPlan(
-                    modifier = modifier,
-                    mobileSignature = mobileSignature,
-                    onNavigateToMobileSignatureSettings = actions.onNavigateToMobileSignatureSettings
-                )
-            }
-
         }
-    }
-}
-
-@Composable
-private fun MobileSignatureSettingsItemForFreePlan(
-    modifier: Modifier = Modifier,
-    mobileSignature: MobileSignatureUiModel,
-    upsellingVisibility: UpsellingVisibility,
-    onNavigateToUpselling: (UpsellingEntryPoint.Feature, UpsellingVisibility) -> Unit
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = ProtonTheme.shapes.extraLarge,
-        elevation = CardDefaults.cardElevation(),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
-        )
-    ) {
-
-        val context = LocalContext.current
-        val fallbackText =
-            stringResource(ch.protonmail.android.mailupselling.presentation.R.string.upselling_upgrade_plan_generic)
-
-        val onNavigateToUpsell: () -> Unit = {
-            when (upsellingVisibility) {
-                UpsellingVisibility.HIDDEN -> {
-                    Toast.makeText(context, fallbackText, Toast.LENGTH_SHORT).show()
-                }
-
-                UpsellingVisibility.PROMO,
-                UpsellingVisibility.NORMAL -> onNavigateToUpselling(
-                    UpsellingEntryPoint.Feature.MobileSignature,
-                    upsellingVisibility
-                )
-            }
-        }
-        ProtonAppSettingsItemInvert(
-            name = stringResource(id = R.string.mail_settings_app_customization_mobile_signature_header),
-            hint = mobileSignature.statusText.string(),
-            onClick = onNavigateToUpsell,
-            icon = {
-                UpsellIcon()
-            },
-            iconContainerSize = DpSize(
-                ProtonDimens.IconSize.ExtraLarge, ProtonDimens.IconSize.MediumLarge
-            )
-        )
-    }
-}
-
-@Composable
-private fun MobileSignatureSettingsItemForPaidPlan(
-    modifier: Modifier = Modifier,
-    mobileSignature: MobileSignatureUiModel,
-    onNavigateToMobileSignatureSettings: () -> Unit
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = ProtonTheme.shapes.extraLarge,
-        elevation = CardDefaults.cardElevation(),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
-        )
-    ) {
-
-        ProtonAppSettingsItemInvert(
-            name = stringResource(id = R.string.mail_settings_app_customization_mobile_signature_header),
-            hint = mobileSignature.statusText.string(),
-            onClick = onNavigateToMobileSignatureSettings,
-            icon = {
-                ProtonMainSettingsIcon(
-                    iconRes = R.drawable.ic_proton_chevron_right,
-                    contentDescription = stringResource(
-                        id = R.string.mail_settings_app_customization_mobile_signature
-                    ),
-                    tint = ProtonTheme.colors.iconHint
-                )
-
-            },
-            iconContainerSize = DpSize(
-                ProtonDimens.IconSize.Default, ProtonDimens.IconSize.Default
-            )
-        )
-    }
-}
-
-@Composable
-private fun UpsellIcon() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_proton_mail_upsell),
-            contentDescription = null,
-            tint = Color.Unspecified
-        )
     }
 }
 
@@ -572,7 +443,7 @@ object AppSettingsScreen {
         val onAppLanguageClick: () -> Unit,
         val onSwipeToNextEmailClick: () -> Unit,
         val onSwipeActionsClick: () -> Unit,
-        val onNavigateToMobileSignatureSettings: () -> Unit,
+        val onNavigateToSignatureSettings: () -> Unit,
         val onNavigateToUpselling: (UpsellingEntryPoint.Feature, UpsellingVisibility) -> Unit,
         val onCustomizeToolbarClick: () -> Unit,
         val onViewApplicationLogsClick: () -> Unit,

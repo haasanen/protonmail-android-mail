@@ -43,9 +43,11 @@ import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinS
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.settings.combinedcontacts.CombinedContactsSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsDialog
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.MobileSignatureSettingsScreen
+import ch.protonmail.android.mailsettings.presentation.settings.signature.mobile.MobileSignatureSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.notifications.ui.PushNotificationsSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.privacy.PrivacySettingsScreen
+import ch.protonmail.android.mailsettings.presentation.settings.signature.SignatureSettingsMenuScreen
+import ch.protonmail.android.mailsettings.presentation.settings.signature.email.EmailSignatureSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionsPreferenceScreen
@@ -149,6 +151,39 @@ internal fun NavGraphBuilder.addMobileSignatureSettings(navController: NavHostCo
                 modifier = Modifier,
                 signatureActions = MobileSignatureSettingsScreen.Actions.Empty.copy(
                     onBackClick = { navController.navigateBack() }
+                )
+            )
+        }
+    }
+}
+
+internal fun NavGraphBuilder.addEmailSignatureSettings(navController: NavHostController) {
+    composable(route = Screen.EmailSignatureSettings.route) {
+        ProtonInvertedTheme {
+            EmailSignatureSettingScreen(
+                modifier = Modifier,
+                actions = WebSettingsScreenActions.Empty.copy(
+                    onBackClick = { navController.navigateBack() }
+                )
+            )
+        }
+    }
+}
+
+internal fun NavGraphBuilder.addSignatureMenuSettings(navController: NavHostController) {
+    composable(route = Screen.SignatureSettingsMenu.route) {
+        ProtonInvertedTheme {
+            SignatureSettingsMenuScreen(
+                modifier = Modifier,
+                actions = SignatureSettingsMenuScreen.Actions(
+                    onBackClick = { navController.navigateBack() },
+                    onNavigateToMobileSignatureSettings =
+                    { navController.navigate(Screen.MobileSignatureSettings.route) },
+                    onNavigateToUpselling = { entryPoint, type ->
+                        navController.navigate(Screen.FeatureUpselling(entryPoint, type))
+                    },
+                    onNavigateToEmailSignatureSettings =
+                    { navController.navigate(Screen.EmailSignatureSettings.route) }
                 )
             )
         }

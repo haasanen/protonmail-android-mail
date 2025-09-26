@@ -115,6 +115,7 @@ import ch.protonmail.android.navigation.route.addConversationDetail
 import ch.protonmail.android.navigation.route.addCustomizeToolbarSettings
 import ch.protonmail.android.navigation.route.addDeepLinkHandler
 import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
+import ch.protonmail.android.navigation.route.addEmailSignatureSettings
 import ch.protonmail.android.navigation.route.addExportLogsSettings
 import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
 import ch.protonmail.android.navigation.route.addLanguageSettings
@@ -127,6 +128,7 @@ import ch.protonmail.android.navigation.route.addRemoveAccountDialog
 import ch.protonmail.android.navigation.route.addSetMessagePassword
 import ch.protonmail.android.navigation.route.addSettings
 import ch.protonmail.android.navigation.route.addSignOutAccountDialog
+import ch.protonmail.android.navigation.route.addSignatureMenuSettings
 import ch.protonmail.android.navigation.route.addSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addThemeSettings
 import ch.protonmail.android.navigation.route.addUpsellingRoutes
@@ -733,6 +735,8 @@ fun Home(
                     addPrivacySettings(navController)
                     addAutoLockSettings(navController)
                     addMobileSignatureSettings(navController)
+                    addEmailSignatureSettings(navController)
+                    addSignatureMenuSettings(navController)
                     addAutoLockPinScreen(
                         onClose = { navController.navigateBack() },
                         onShowSuccessSnackbar = { showNormalSnackbar(it) }

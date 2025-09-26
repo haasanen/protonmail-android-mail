@@ -50,6 +50,7 @@ object SettingsScreenPreviewData {
         onSecurityKeysClicked = {},
         onPasswordManagementClicked = {},
         onAccountStorageClicked = {},
-        onBackClick = {}
+        onBackClick = {},
+        onSignatureClicked = {}
     )
 }

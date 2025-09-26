@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.webspamsettings
+package ch.protonmail.android.mailsettings.presentation.settings.signature.email
 
 import app.cash.turbine.test
 import arrow.core.left
@@ -30,11 +30,8 @@ import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
-import ch.protonmail.android.mailsettings.presentation.ObserveWebSettingsStateFlow
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
-import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
@@ -50,7 +47,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class WebSpamFilterSettingsViewModelTest {
+class EmailSignatureSettingsViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -81,18 +78,12 @@ class WebSpamFilterSettingsViewModelTest {
     private val handleCloseWebSettings = mockk<HandleCloseWebSettings> {
         coEvery { this@mockk() } just Runs
     }
-    private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
-        coEvery { this@mockk.invoke() } returns flowOf(UpsellingVisibility.HIDDEN)
-    }
 
-    private fun buildViewModel() = WebSpamFilterSettingsViewModel(
-        ObserveWebSettingsStateFlow(
-            observePrimaryUserId = observePrimaryUserId,
-            forkSession = forkSession,
-            appSettingsRepository = appSettingsRepository,
-            observeWebSettingsConfig = observeWebSettingsConfig,
-            observeUpsellingVisibility = observeUpsellingVisibility
-        ),
+    private fun buildViewModel() = EmailSignatureSettingsViewModel(
+        observePrimaryUserId = observePrimaryUserId,
+        forkSession = forkSession,
+        appSettingsRepository = appSettingsRepository,
+        observeWebSettingsConfig = observeWebSettingsConfig,
         handleCloseWebSettings = handleCloseWebSettings
     )
 

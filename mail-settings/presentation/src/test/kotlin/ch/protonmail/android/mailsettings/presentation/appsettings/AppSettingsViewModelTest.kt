@@ -27,7 +27,6 @@ import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepositor
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
-import ch.protonmail.android.mailsettings.presentation.testdata.MobileSignatureTestData
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -100,8 +99,7 @@ internal class AppSettingsViewModelTest {
                 customLanguage = null,
                 deviceContactsEnabled = true,
                 theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
-                notificationsEnabledStatus = TextUiModel(R.string.notifications_on),
-                mobileSignature = MobileSignatureTestData.SignatureEmpty
+                notificationsEnabledStatus = TextUiModel(R.string.notifications_on)
             )
             assertEquals(expected, actual.settings)
         }

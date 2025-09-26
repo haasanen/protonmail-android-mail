@@ -178,6 +178,13 @@ fun MainSettingsScreen(
                     SettingsItemDivider()
 
                     ProtonMainSettingsItem(
+                        name = stringResource(id = string.mail_settings_signature),
+                        iconRes = R.drawable.ic_proton_card_identity,
+                        onClick = actions.onSignatureClicked
+                    )
+
+                    SettingsItemDivider()
+                    ProtonMainSettingsItem(
                         name = stringResource(id = string.mail_settings_app),
                         iconRes = R.drawable.ic_proton_mobile,
                         onClick = actions.onAppSettingsClick
@@ -301,6 +308,7 @@ object MainSettingsScreen {
         val onSecurityKeysClicked: () -> Unit,
         val onPasswordManagementClicked: (UserId?) -> Unit,
         val onAccountStorageClicked: () -> Unit,
+        val onSignatureClicked: () -> Unit,
         val onBackClick: () -> Unit
     )
 }

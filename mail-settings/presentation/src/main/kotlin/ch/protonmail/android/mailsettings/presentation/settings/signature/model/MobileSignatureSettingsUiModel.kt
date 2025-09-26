@@ -16,14 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model
+package ch.protonmail.android.mailsettings.presentation.settings.signature.model
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
 
-data class MobileSignatureUiModel(
-    val signatureStatus: MobileSignatureStatus,
+data class MobileSignatureSettingsUiModel(
+    val enabled: Boolean,
     val signatureValue: String,
-    val statusText: TextUiModel
+    val signatureStatus: MobileSignatureStatus,
+    val editSignatureEffect: Effect<Unit>
 )
 

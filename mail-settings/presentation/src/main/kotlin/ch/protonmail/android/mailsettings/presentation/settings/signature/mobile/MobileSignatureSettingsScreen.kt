@@ -16,12 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature
+package ch.protonmail.android.mailsettings.presentation.settings.signature.mobile
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,39 +28,44 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
-import ch.protonmail.android.design.compose.component.ProtonSettingsToggleItem
-import ch.protonmail.android.mailsettings.presentation.R
-
 import ch.protonmail.android.design.compose.component.ProtonAppSettingsItemNorm
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonMainSettingsIcon
 import ch.protonmail.android.design.compose.component.ProtonOutlinedTextField
 import ch.protonmail.android.design.compose.component.ProtonSettingsDetailsAppBar
+import ch.protonmail.android.design.compose.component.ProtonSettingsToggleItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureSettingsUiModel
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureState
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureViewAction
+import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
+import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.R.string
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureSettingsUiModel
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureState
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureViewAction
 
 @Composable
 fun MobileSignatureSettingsScreen(
     modifier: Modifier = Modifier,
     signatureActions: MobileSignatureSettingsScreen.Actions,
-    viewModel: MobileSignatureViewModel = hiltViewModel()
+    viewModel: MobileSignatureSettingsViewModel = hiltViewModel()
 ) {
 
     val actions = signatureActions.copy(
@@ -100,7 +101,7 @@ private fun MobileSignatureSettingsScreen(
         modifier = modifier,
         topBar = {
             ProtonSettingsDetailsAppBar(
-                title = stringResource(id = R.string.mail_settings_app_customization_mobile_signature_header),
+                title = stringResource(id = string.mail_settings_app_customization_mobile_signature_header),
                 onBackClick = actions.onBackClick
             )
         },
@@ -151,12 +152,12 @@ private fun EditSignatureDialog(
         },
         dismissButton = {
             ProtonAlertDialogButton(
-                titleResId = R.string.presentation_alert_cancel
+                titleResId = string.presentation_alert_cancel
             ) { editSignatureDialogState.value = false }
         },
         confirmButton = {
             ProtonAlertDialogButton(
-                titleResId = R.string.presentation_alert_ok
+                titleResId = string.presentation_alert_ok
             ) {
                 signatureUpdated(signatureText.text)
                 editSignatureDialogState.value = false
@@ -174,7 +175,6 @@ private fun MobileSignatureSettingsContent(
     actions: MobileSignatureSettingsScreen.Actions
 ) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = ProtonTheme.shapes.extraLarge,
@@ -185,13 +185,13 @@ private fun MobileSignatureSettingsContent(
         ) {
             ProtonSettingsToggleItem(
                 modifier = Modifier.padding(ProtonDimens.Spacing.Large),
-                name = stringResource(R.string.mail_settings_app_customization_mobile_signature_enable),
+                name = stringResource(string.mail_settings_app_customization_mobile_signature_enable),
                 value = settings.enabled,
                 onToggle = actions.onToggleSignatureEnabled
             )
         }
 
-        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -215,8 +215,6 @@ private fun MobileSignatureSettingsContent(
                 }
             )
         }
-
-        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Jumbo))
     }
 }
 
@@ -227,7 +225,9 @@ object MobileSignatureSettingsScreen {
         val onEditSignatureClick: () -> Unit,
         val onSignatureUpdated: (String) -> Unit
     ) {
+
         companion object {
+
             val Empty = Actions(
                 onBackClick = {},
                 onToggleSignatureEnabled = {},
@@ -246,6 +246,7 @@ private fun PreviewMobileSignatureEnabled() {
             settings = MobileSignatureSettingsUiModel(
                 enabled = true,
                 signatureValue = "Sent from Proton Mail",
+                signatureStatus = MobileSignatureStatus.Enabled,
                 editSignatureEffect = Effect.empty()
             ),
             actions = MobileSignatureSettingsScreen.Actions.Empty
@@ -260,6 +261,7 @@ private fun PreviewMobileSignatureDisabled() {
         MobileSignatureSettingsContent(
             settings = MobileSignatureSettingsUiModel(
                 enabled = false,
+                signatureStatus = MobileSignatureStatus.Disabled,
                 signatureValue = "Sent from Proton Mail",
                 editSignatureEffect = Effect.empty()
             ),

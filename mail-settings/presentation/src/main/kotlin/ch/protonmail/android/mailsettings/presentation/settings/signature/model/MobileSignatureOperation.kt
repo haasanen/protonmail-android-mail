@@ -16,9 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model
+package ch.protonmail.android.mailsettings.presentation.settings.signature.model
 
-sealed interface MobileSignatureState {
-    data object Loading : MobileSignatureState
-    data class Data(val settings: MobileSignatureSettingsUiModel) : MobileSignatureState
+
+sealed interface MobileSignatureOperation
+
+sealed interface MobileSignatureViewAction : MobileSignatureOperation {
+    data class ToggleSignatureEnabled(val enabled: Boolean) : MobileSignatureViewAction
+    data object EditSignatureValue : MobileSignatureViewAction
+    data class UpdateSignatureValue(val value: String) : MobileSignatureViewAction
+}
+
+sealed interface MobileSignatureEvent : MobileSignatureOperation {
+    data class SignatureLoaded(
+        val signatureSettingsUiModel: MobileSignatureSettingsUiModel
+    ) : MobileSignatureEvent
 }

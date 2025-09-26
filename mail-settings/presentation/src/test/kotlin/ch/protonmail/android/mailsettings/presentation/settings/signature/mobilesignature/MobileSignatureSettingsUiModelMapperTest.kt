@@ -16,19 +16,20 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature
+package ch.protonmail.android.mailsettings.presentation.settings.signature.mobilesignature
 
+import androidx.annotation.StringRes
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.mapper.MobileSignatureUiModelMapper
+import ch.protonmail.android.mailsettings.presentation.settings.signature.mapper.MobileSignatureUiModelMapper
 import ch.protonmail.android.mailsettings.presentation.testdata.MobileSignatureTestData
 import ch.protonmail.android.mailsettings.presentation.R
 import kotlin.test.assertEquals
 import kotlin.test.fail
 import org.junit.Test
 
-class MobileSignatureUiModelMapperTest {
+class MobileSignatureSettingsUiModelMapperTest {
 
     @Test
     fun `toUiModel maps Enabled preference to UI with ON text`() {
@@ -118,7 +119,7 @@ class MobileSignatureUiModelMapperTest {
         assertEquals(Effect.empty(), settings.editSignatureEffect)
     }
 
-    private fun assertTextRes(text: TextUiModel, @androidx.annotation.StringRes expectedRes: Int) {
+    private fun assertTextRes(text: TextUiModel, @StringRes expectedRes: Int) {
         when (text) {
             is TextUiModel.TextRes -> assertEquals(expectedRes, text.value)
             else -> fail("Expected TextUiModel.TextRes($expectedRes), was $text")

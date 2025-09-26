@@ -128,6 +128,8 @@ sealed class Destination(val route: String) {
         object SecurityKeysSettings : Destination("settings/securityKeys")
         object SpamFilterSettings : Destination("settings/spamFilter")
         object MobileSignatureSettings : Destination("settings/mobileSignature")
+        object EmailSignatureSettings : Destination("settings/emailSignature")
+        object SignatureSettingsMenu : Destination("settings/signatureMenu")
         object AutoLockSettings : Destination("settings/autolock")
         object AutoLockInterval : Destination("settings/autolock/interval")
         object AutoLockPinScreen : Destination("settings/autolock/pin/${AutoLockPinModeKey.wrap()}") {

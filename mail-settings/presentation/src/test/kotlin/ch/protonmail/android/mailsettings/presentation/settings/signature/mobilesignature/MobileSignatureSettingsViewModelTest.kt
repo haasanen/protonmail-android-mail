@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature
+package ch.protonmail.android.mailsettings.presentation.settings.signature.mobilesignature
 
 import app.cash.turbine.test
 import arrow.core.right
@@ -24,10 +24,11 @@ import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.mapper.MobileSignatureUiModelMapper
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureState
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureViewAction
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.reducer.MobileSignatureReducer
+import ch.protonmail.android.mailsettings.presentation.settings.signature.mobile.MobileSignatureSettingsViewModel
+import ch.protonmail.android.mailsettings.presentation.settings.signature.mapper.MobileSignatureUiModelMapper
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureState
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureViewAction
+import ch.protonmail.android.mailsettings.presentation.settings.signature.reducer.MobileSignatureReducer
 import ch.protonmail.android.mailsettings.presentation.testdata.MobileSignatureTestData
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
@@ -43,7 +44,7 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class MobileSignatureViewModelTest {
+class MobileSignatureSettingsViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -65,7 +66,7 @@ class MobileSignatureViewModelTest {
     fun `loads and returns the initial signature preference`() = runTest {
         // Given
         val expected = MobileSignatureState.Data(MobileSignatureUiModelMapper.toSettingsUiModel(initialPreference))
-        val viewModel = MobileSignatureViewModel(
+        val viewModel = MobileSignatureSettingsViewModel(
             observePrimaryUserId = observePrimaryUserId,
             mobileSignatureRepository = mobileSignatureRepository,
             reducer = reducer
@@ -91,7 +92,7 @@ class MobileSignatureViewModelTest {
         val mobileSignatureFlow = MutableSharedFlow<MobileSignaturePreference>()
         every { mobileSignatureRepository.observeMobileSignature(userId) } returns mobileSignatureFlow
 
-        val viewModel = MobileSignatureViewModel(
+        val viewModel = MobileSignatureSettingsViewModel(
             observePrimaryUserId = observePrimaryUserId,
             mobileSignatureRepository = mobileSignatureRepository,
             reducer = reducer
@@ -122,7 +123,7 @@ class MobileSignatureViewModelTest {
         val pref = MobileSignaturePreference("sig", MobileSignatureStatus.Disabled)
         every { mobileSignatureRepository.observeMobileSignature(userId) } returns flowOf(pref)
         coEvery { mobileSignatureRepository.setMobileSignatureEnabled(userId, true) } returns Unit.right()
-        val viewModel = MobileSignatureViewModel(
+        val viewModel = MobileSignatureSettingsViewModel(
             observePrimaryUserId = observePrimaryUserId,
             mobileSignatureRepository = mobileSignatureRepository,
             reducer = reducer
@@ -148,7 +149,7 @@ class MobileSignatureViewModelTest {
         val pref = MobileSignaturePreference(oldSignature, MobileSignatureStatus.Enabled)
         every { mobileSignatureRepository.observeMobileSignature(userId) } returns flowOf(pref)
         coEvery { mobileSignatureRepository.setMobileSignature(userId, newSignature) } returns Unit.right()
-        val viewModel = MobileSignatureViewModel(
+        val viewModel = MobileSignatureSettingsViewModel(
             observePrimaryUserId = observePrimaryUserId,
             mobileSignatureRepository = mobileSignatureRepository,
             reducer = reducer

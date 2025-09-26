@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,15 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.domain.model
+package ch.protonmail.android.mailsettings.presentation.settings.signature.model
 
-data class WebSettingsConfig(
-    val baseUrl: String,
-    val accountSettingsAction: String,
-    val emailSettingsAction: String,
-    val labelSettingsAction: String,
-    val spamFilterSettingsAction: String,
-    val privacySecuritySettingsAction: String,
-    val subscriptionDetailsAction: String,
-    val emailSignatureAction: String
-)
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+
+sealed interface MobileSignatureMenuState {
+    data object Loading : MobileSignatureMenuState
+    data class Data(val settings: MobileSignatureUiModel, val upsellingVisibility: UpsellingVisibility) :
+        MobileSignatureMenuState
+}

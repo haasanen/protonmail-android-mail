@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureUiModel
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 
 internal sealed class AppSettingsState {
@@ -27,6 +26,7 @@ internal sealed class AppSettingsState {
         val settings: AppSettingsUiModel,
         val upsellingVisibility: UpsellingVisibility
     ) : AppSettingsState()
+
     data object Loading : AppSettingsState()
 }
 
@@ -36,8 +36,7 @@ internal data class AppSettingsUiModel(
     val customLanguage: String?,
     val theme: TextUiModel,
     val deviceContactsEnabled: Boolean,
-    val notificationsEnabledStatus: TextUiModel,
-    val mobileSignature: MobileSignatureUiModel
+    val notificationsEnabledStatus: TextUiModel
 )
 
 internal sealed interface AppSettingsAction

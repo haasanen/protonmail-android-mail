@@ -16,18 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature
+package ch.protonmail.android.mailsettings.presentation.settings.signature.mobile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.mapper.MobileSignatureUiModelMapper
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureEvent
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureOperation
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureState
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureViewAction
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.reducer.MobileSignatureReducer
+import ch.protonmail.android.mailsettings.presentation.settings.signature.mapper.MobileSignatureUiModelMapper
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureEvent
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureOperation
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureState
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureViewAction
+import ch.protonmail.android.mailsettings.presentation.settings.signature.reducer.MobileSignatureReducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MobileSignatureViewModel @Inject constructor(
+class MobileSignatureSettingsViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val mobileSignatureRepository: MobileSignatureRepository,
     private val reducer: MobileSignatureReducer
@@ -54,13 +54,12 @@ class MobileSignatureViewModel @Inject constructor(
     init {
         observePrimaryUserId()
             .filterNotNull()
-            .flatMapLatest { userId ->
-                mobileSignatureRepository.observeMobileSignature(userId)
-            }
-            .onEach {
+            .flatMapLatest { userId -> mobileSignatureRepository.observeMobileSignature(userId) }
+            .onEach { signaturePreference ->
                 emitNewStateFor(
                     MobileSignatureEvent.SignatureLoaded(
-                        signatureSettingsUiModel = MobileSignatureUiModelMapper.toSettingsUiModel(it)
+                        signatureSettingsUiModel =
+                        MobileSignatureUiModelMapper.toSettingsUiModel(signaturePreference)
                     )
                 )
             }

@@ -19,9 +19,7 @@
 package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
 import ch.protonmail.android.mailsettings.presentation.R
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureUiModel
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 
 internal object AppSettingsScreenPreviewData {
@@ -33,12 +31,7 @@ internal object AppSettingsScreenPreviewData {
             customLanguage = null,
             deviceContactsEnabled = false,
             theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
-            notificationsEnabledStatus = TextUiModel("On"),
-            mobileSignature = MobileSignatureUiModel(
-                MobileSignatureStatus.Enabled,
-                "This is a mobile signature",
-                TextUiModel.TextRes(R.string.mail_settings_app_customization_mobile_signature_on)
-            )
+            notificationsEnabledStatus = TextUiModel("On")
         ),
         upsellingVisibility = UpsellingVisibility.HIDDEN
     )
@@ -51,7 +44,7 @@ internal object AppSettingsScreenPreviewData {
         onSwipeToNextEmailClick = {},
         onSwipeActionsClick = {},
         onNavigateToUpselling = { _, _ -> },
-        onNavigateToMobileSignatureSettings = {},
+        onNavigateToSignatureSettings = {},
         onCustomizeToolbarClick = {},
         onViewApplicationLogsClick = {},
         onBackClick = {}
