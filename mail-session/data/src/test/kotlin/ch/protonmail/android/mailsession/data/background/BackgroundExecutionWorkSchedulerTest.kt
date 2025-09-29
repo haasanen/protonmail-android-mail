@@ -29,8 +29,6 @@ import io.mockk.mockk
 import io.mockk.runs
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toJavaDuration
 
 internal class BackgroundExecutionWorkSchedulerTest {
 
@@ -49,8 +47,7 @@ internal class BackgroundExecutionWorkSchedulerTest {
                 workerId = any(),
                 tag = BACKGROUND_WORK_TAG,
                 worker = BackgroundExecutionWorker::class.java,
-                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-                initialDelay = 30.seconds.toJavaDuration()
+                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
             )
         } just runs
 
@@ -63,8 +60,7 @@ internal class BackgroundExecutionWorkSchedulerTest {
                 workerId = DEFAULT_WORKER_ID,
                 tag = BACKGROUND_WORK_TAG,
                 worker = BackgroundExecutionWorker::class.java,
-                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-                initialDelay = 30.seconds.toJavaDuration()
+                existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
             )
 
             cancelWorkManagerWork wasNot called
