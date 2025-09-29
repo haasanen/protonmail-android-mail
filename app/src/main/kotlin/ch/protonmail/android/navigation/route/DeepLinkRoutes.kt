@@ -30,6 +30,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import ch.protonmail.android.R
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailnotifications.domain.NotificationInteraction
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
@@ -49,6 +50,8 @@ internal fun NavGraphBuilder.addDeepLinkHandler(navController: NavHostController
         val context = LocalContext.current
         val viewModel: NotificationsDeepLinksViewModel = hiltViewModel()
         val state = viewModel.state.collectAsState().value
+
+        ProtonCenteredProgress()
 
         LaunchedEffect(key1 = state) {
             when (state) {
