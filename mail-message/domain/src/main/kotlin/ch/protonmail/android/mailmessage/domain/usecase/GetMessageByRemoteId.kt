@@ -25,6 +25,7 @@ import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -40,11 +41,15 @@ class GetMessageByRemoteId @Inject constructor(
         while (attempts.addAndFetch(1) < MAX_RETRY_ATTEMPTS) {
             val message = getByRemoteId(userId, messageId)
             if (message.isRight()) {
+                Timber.tag("GetMessageByRemoteId").d("getting message $messageId succeeded (${attempts.load()})")
                 return message
             }
+            Timber.tag("GetMessageByRemoteId").d("Error: getting message $messageId failed (${attempts.load()})")
         }
 
-        return getByRemoteId(userId, messageId)
+        val result = getByRemoteId(userId, messageId)
+        Timber.tag("GetMessageByRemoteId").d("getting message $messageId last attempt result: $result")
+        return result
     }
 
     private suspend fun getByRemoteId(userId: UserId, messageId: RemoteMessageId): Either<DataError, Message> =
