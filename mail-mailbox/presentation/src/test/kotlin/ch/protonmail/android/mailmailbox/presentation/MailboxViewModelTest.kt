@@ -110,6 +110,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
@@ -132,6 +133,7 @@ import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import ch.protonmail.android.testdata.user.UserIdTestData.userId1
 import io.mockk.Called
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -296,6 +298,7 @@ internal class MailboxViewModelTest {
     private val terminateConversationPaginator = mockk<TerminateConversationPaginator> {
         coEvery { this@mockk(any()) } returns Unit
     }
+    private val eventLoopRepository = mockk<EventLoopRepository>()
     private val scope = TestScope(UnconfinedTestDispatcher())
 
     private val mailboxViewModel by lazy {
@@ -342,7 +345,8 @@ internal class MailboxViewModelTest {
             observeViewModeChanged = observeViewModeChanged,
             toolbarRefreshSignal = toolbarRefreshSignal,
             terminateConversationPaginator = terminateConversationPaginator,
-            terminateMessagePaginator = terminateMessagePaginator
+            terminateMessagePaginator = terminateMessagePaginator,
+            eventLoopRepository = eventLoopRepository
         )
     }
 
@@ -1286,7 +1290,7 @@ internal class MailboxViewModelTest {
     }
 
     @Test
-    fun `when refresh action is submitted, new state is produced and emitted`() = runTest {
+    fun `when refresh action is submitted, event loop is triggered and new state is produced and emitted`() = runTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
@@ -1307,12 +1311,14 @@ internal class MailboxViewModelTest {
                 MailboxViewAction.Refresh
             )
         } returns expectedState
+        coEvery { eventLoopRepository.trigger(userId) } just Runs
 
         // When
         mailboxViewModel.submit(MailboxViewAction.Refresh)
         mailboxViewModel.state.test {
             // Then
             assertEquals(expectedState, awaitItem())
+            coVerify { eventLoopRepository.trigger(userId) }
         }
     }
 

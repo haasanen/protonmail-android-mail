@@ -112,6 +112,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAc
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -190,7 +191,8 @@ class MailboxViewModel @Inject constructor(
     private val observeViewModeChanged: ObserveViewModeChanged,
     private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
     private val terminateConversationPaginator: TerminateConversationPaginator,
-    private val terminateMessagePaginator: TerminateMessagePaginator
+    private val terminateMessagePaginator: TerminateMessagePaginator,
+    private val eventLoopRepository: EventLoopRepository
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
@@ -323,7 +325,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.OnAvatarImageLoadRequested -> handleOnAvatarImageLoadRequested(viewAction.item)
                 is MailboxViewAction.OnAvatarImageLoadFailed -> handleOnAvatarImageLoadFailed(viewAction.item)
                 is MailboxViewAction.OnItemLongClicked -> handleItemLongClick(viewAction.item)
-                is MailboxViewAction.Refresh -> emitNewStateFrom(viewAction)
+                is MailboxViewAction.Refresh -> handlePullToRefresh(viewAction)
                 is MailboxViewAction.RefreshCompleted -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.ItemClicked -> handleItemClick(viewAction.item)
                 is MailboxViewAction.OnOfflineWithData -> emitNewStateFrom(viewAction)
@@ -370,6 +372,11 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SignalLabelAsCompleted -> handleLabelAsCompleted(viewAction)
             }
         }
+    }
+
+    private suspend fun handlePullToRefresh(viewAction: MailboxViewAction.Refresh) {
+        emitNewStateFrom(viewAction)
+        eventLoopRepository.trigger(primaryUserId.first())
     }
 
     private fun handleRequestAttachment(action: MailboxViewAction.RequestAttachment) {
