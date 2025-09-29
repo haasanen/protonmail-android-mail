@@ -47,7 +47,7 @@ data object UpsellingEnabled : FeatureFlagDefinition(
     name = "Enable Feature Upsell",
     category = FeatureFlagCategory.Upselling,
     description = "Makes the upsell flow available for all supported entry points",
-    defaultValue = true
+    defaultValue = false
 )
 
 data object OnboardingUpsellingEnabled : FeatureFlagDefinition(
@@ -55,7 +55,7 @@ data object OnboardingUpsellingEnabled : FeatureFlagDefinition(
     name = "Enable Onboarding Upsell",
     category = FeatureFlagCategory.Upselling,
     description = "Makes the upsell flow available during the onboarding",
-    defaultValue = true
+    defaultValue = false
 )
 
 data object AndroidDnsMultithread : FeatureFlagDefinition(
