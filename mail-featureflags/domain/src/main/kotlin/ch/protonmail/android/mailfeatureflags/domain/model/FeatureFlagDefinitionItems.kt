@@ -45,8 +45,16 @@ data object MessagePasswordEnabled : FeatureFlagDefinition(
 data object UpsellingEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7Upselling",
     name = "Enable Feature Upsell",
-    category = FeatureFlagCategory.Global,
+    category = FeatureFlagCategory.Upselling,
     description = "Makes the upsell flow available for all supported entry points",
+    defaultValue = true
+)
+
+data object OnboardingUpsellingEnabled : FeatureFlagDefinition(
+    key = "MailAndroidV7OnboardingUpselling",
+    name = "Enable Onboarding Upsell",
+    category = FeatureFlagCategory.Upselling,
+    description = "Makes the upsell flow available during the onboarding",
     defaultValue = true
 )
 

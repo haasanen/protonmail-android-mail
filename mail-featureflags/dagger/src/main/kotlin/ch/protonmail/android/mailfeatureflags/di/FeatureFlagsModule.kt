@@ -30,6 +30,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailE
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
@@ -38,6 +39,7 @@ import ch.protonmail.android.mailfeatureflags.domain.model.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessagePasswordEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
 import dagger.Module
 import dagger.Provides
@@ -63,7 +65,6 @@ object FeatureFlagsModule {
     @IsMessageDetailEnabled
     fun provideMessageDetailEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(MessageDetailEnabled.key, false)
-
 
     @Provides
     @IntoSet
@@ -96,6 +97,12 @@ object FeatureFlagsModule {
     @Singleton
     @IsUpsellEnabled
     fun provideUpsellEnabled(factory: BooleanFeatureFlagFactory) = factory.create(key = UpsellingEnabled.key, false)
+
+    @Provides
+    @Singleton
+    @IsOnboardingUpsellEnabled
+    fun provideOnboardingUpsellEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = OnboardingUpsellingEnabled.key, false)
 
     @Provides
     @Singleton
@@ -133,6 +140,11 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun provideUpsellEnabledDefinitions(): FeatureFlagDefinition = UpsellingEnabled
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideObdnUpsellEnabledDefinition(): FeatureFlagDefinition = OnboardingUpsellingEnabled
 
     @Provides
     @IntoSet
