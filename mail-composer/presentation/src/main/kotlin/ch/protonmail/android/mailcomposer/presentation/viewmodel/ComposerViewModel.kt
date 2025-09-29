@@ -773,9 +773,11 @@ class ComposerViewModel @AssistedInject constructor(
             is SendWithExpirationTimeResult.ExpirationWillNotApplyWarning -> {
                 emitNewStateFor(CompositeEvent.OnSendWithExpirationWillNotApply(result.recipients))
             }
+
             is SendWithExpirationTimeResult.ExpirationMayNotApplyWarning -> {
                 emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(result.recipients))
             }
+
             null -> {
                 emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(emptyList()))
             }
@@ -795,7 +797,7 @@ class ComposerViewModel @AssistedInject constructor(
         sendMessage().fold(
             ifLeft = {
                 Timber.w("composer: Send message failed. Error: $it")
-                emitNewStateFor(EffectsEvent.ErrorEvent.OnSendMessageError)
+                emitNewStateFor(EffectsEvent.ErrorEvent.OnSendMessageError(it))
             },
             ifRight = {
                 if (networkManager.isConnectedToNetwork()) {
@@ -875,7 +877,7 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onScheduleSend(time: Instant) = scheduleSend(time)
-        .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnSendMessageError) }
+        .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnSendMessageError(it)) }
         .onRight {
             if (networkManager.isConnectedToNetwork()) {
                 emitNewStateFor(EffectsEvent.SendEvent.OnScheduleSendMessage)

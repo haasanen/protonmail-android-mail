@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.CompletionEffectsStateModification
@@ -124,7 +125,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 is OnStoreRecipientError -> RecoverableError.SaveRecipientFailed(draftError)
                 is OnStoreSubjectError -> RecoverableError.SaveSubjectFailed(draftError)
                 is OnFinalSaveError -> RecoverableError.FinalSaveError(draftError)
-                OnSendMessageError -> RecoverableError.SendMessageFailed
+                is OnSendMessageError -> RecoverableError.SendMessageFailed(sendError)
                 OnGetScheduleSendOptionsError -> RecoverableError.GetScheduleSendOptionsFailed
                 OnAddressNotValidForSending -> RecoverableError.SenderChange.AddressCanNotSend
                 OnChangeSenderFailure -> RecoverableError.SenderChange.ChangeSenderFailure
@@ -140,7 +141,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         data class OnStoreSubjectError(val draftError: SaveDraftError) : ErrorEvent
         data class OnStoreRecipientError(val draftError: SaveDraftError) : ErrorEvent
         data class OnFinalSaveError(val draftError: SaveDraftError) : ErrorEvent
-        data object OnSendMessageError : ErrorEvent
+        data class OnSendMessageError(val sendError: SendDraftError) : ErrorEvent
         data object OnGetScheduleSendOptionsError : ErrorEvent
         data object OnAddressNotValidForSending : ErrorEvent
         data object OnRefreshBodyFailed : ErrorEvent

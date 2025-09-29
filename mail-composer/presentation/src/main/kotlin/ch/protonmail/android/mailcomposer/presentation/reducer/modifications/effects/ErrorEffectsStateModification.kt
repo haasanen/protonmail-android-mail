@@ -25,8 +25,10 @@ import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.mapper.SaveDraftErrorMapper
+import ch.protonmail.android.mailcomposer.presentation.mapper.SendDraftErrorMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 
 internal sealed class UnrecoverableError(@StringRes val resId: Int) : EffectsStateModification {
@@ -77,6 +79,7 @@ internal sealed interface RecoverableError : EffectsStateModification {
                         }
                     )
                 )
+
                 AttachmentAddError.RetryUpload -> state.copy(
                     warning = Effect.of(TextUiModel(R.string.composer_attachment_upload_error_retry))
                 )
@@ -156,14 +159,15 @@ internal sealed interface RecoverableError : EffectsStateModification {
     }
 
     data class FinalSaveError(val saveDraftError: SaveDraftError) : RecoverableError {
+
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
             state.copy(error = Effect.of(SaveDraftErrorMapper.toTextUiModel(saveDraftError)))
     }
 
-    data object SendMessageFailed : RecoverableError {
+    data class SendMessageFailed(val error: SendDraftError) : RecoverableError {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(error = Effect.of(TextUiModel(R.string.composer_error_send_message)))
+            state.copy(error = Effect.of(SendDraftErrorMapper.toTextUiModel(error)))
     }
 
     data object GetScheduleSendOptionsFailed : RecoverableError {

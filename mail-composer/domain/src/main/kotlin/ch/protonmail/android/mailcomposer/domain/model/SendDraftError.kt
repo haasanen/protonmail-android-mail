@@ -25,8 +25,10 @@ sealed interface SendDraftError {
     data object InvalidSenderAddress : SendDraftError
     data object InvalidRecipient : SendDraftError
     data object AttachmentsError : SendDraftError
+    data object MessageIsTooLarge : SendDraftError
     data object ScheduleSendError : SendDraftError
-    data object CorruptedData : SendDraftError
+    data object PackageError : SendDraftError
+    data object MessageNotExisting : SendDraftError
     data object ExternalPasswordDecryptError : SendDraftError
     data object ExpirationTimeTooSoon : SendDraftError
 

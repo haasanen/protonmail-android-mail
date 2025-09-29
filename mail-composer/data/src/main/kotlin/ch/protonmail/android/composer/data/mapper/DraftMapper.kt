@@ -151,12 +151,12 @@ fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
         is DraftSendErrorReason.ScheduleSendExpired,
         is DraftSendErrorReason.ScheduleSendMessageLimitExceeded -> SendDraftError.ScheduleSendError
 
-        is DraftSendErrorReason.MessageDoesNotExist,
-        is DraftSendErrorReason.PackageError -> SendDraftError.CorruptedData
+        is DraftSendErrorReason.MessageDoesNotExist -> SendDraftError.MessageNotExisting
+        is DraftSendErrorReason.PackageError -> SendDraftError.PackageError
 
         DraftSendErrorReason.EoPasswordDecrypt -> SendDraftError.ExternalPasswordDecryptError
         DraftSendErrorReason.ExpirationTimeTooSoon -> SendDraftError.ExpirationTimeTooSoon
-        DraftSendErrorReason.MessageTooLarge -> SendDraftError.AttachmentsError
+        DraftSendErrorReason.MessageTooLarge -> SendDraftError.MessageIsTooLarge
     }
 }
 

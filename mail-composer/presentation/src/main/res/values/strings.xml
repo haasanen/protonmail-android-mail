@@ -135,7 +135,6 @@
     <string name="composer_schedule_send_custom_title">Custom</string>
     <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
     <string name="composer_schedule_send_custom_description">Pick time and date</string>
-    <string name="composer_error_send_message">Error sending message</string>
     <string name="composer_schedule_send_previously_set">Previously set</string>
     <string name="composer_schedule_send_custom_time_label">Time</string>
     <string name="composer_schedule_send_custom_date_label">Date</string>
@@ -155,4 +154,15 @@
     <string name="composer_expiration_set_expiration">Set expiration</string>
     <string name="composer_expiration_pick_time_title">Set time</string>
     <string name="composer_expiration_time_custom_time_on">On %1$s</string>
+    <string name="composer_error_send_draft_generic" />
+    <string name="composer_error_send_draft_invalid_sender">Disabled or invalid email address. Check that the address is valid and active.</string>
+    <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
+    <string name="composer_error_send_draft_already_sent">Message was already sent</string>
+    <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
+    <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
+    <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
+    <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
+    <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
+    <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>
+    <string name="composer_error_send_draft_package_error">Problem sending message. Please try again.</string>
 </resources>
