@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">Přizpůsobení mobilní aplikace</string>
   <string name="mail_settings_theme">Motiv</string>
   <string name="mail_settings_auto_lock">Automatické uzamčení</string>
+  <string name="mail_settings_app_icon">Ikona aplikace</string>
   <string name="mail_settings_alternative_routing">Alternativní směrování</string>
   <string name="mail_settings_app_language">Jazyk aplikace</string>
   <string name="mail_settings_app_language_sys_default">Podle systému</string>

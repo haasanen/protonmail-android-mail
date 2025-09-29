@@ -39,7 +39,7 @@
   <string name="auth_username_placeholder">Імя карыстальніка або адрас электроннай пошты</string>
   <string name="auth_password_placeholder">Пароль</string>
   <string name="auth_login_assistive_text">Увядзіце вашу электронную пошту Proton або імя карыстальніка.</string>
-  <string name="auth_account_details">Увядзіце падрабязнасці вашага ўліковага запісу Proton.</string>
+  <string name="auth_account_details">Увядзіце падрабязнасці свайго ўліковага запісу Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Праблема з уваходам. Паспрабуйце яшчэ раз.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Патрэбна антыспамавая праверка.</string>
   <string name="auth_login_error_invalid_action_invalid_credentials">Няправільныя ўліковыя даныя для ўваходу. Паспрабуйце яшчэ раз.</string>
@@ -102,7 +102,7 @@
   <string name="auth_signup_validation_passwords_do_not_match">Паролі не супадаюць.</string>
   <string name="auth_signup_validation_password_input_invalid">Няправільны ўвод пароля.</string>
   <string name="auth_signup_validation_username">Увядзіце імя карыстальніка</string>
-  <string name="auth_signup_validation_email">Электронны ліст не можа быць пустым.</string>
+  <string name="auth_signup_validation_email">Ліст не можа быць пустым.</string>
   <string name="auth_signup_validation_username_input_invalid">Няправільны ўвод імя карыстальніка.</string>
   <string name="auth_signup_validation_email_input_invalid">Памылковы ўвод імя карыстальніка.</string>
   <string name="auth_signup_username_unavailable_error">Імя карыстальніка ўжо занята. Выберыце іншае імя карыстальніка.</string>
@@ -130,7 +130,7 @@
   </plurals>
   <string name="common_error_something_went_wrong">Нешта пайшло не так. Паспрабуйце яшчэ раз.</string>
   <string name="auth_fido_config_error">Памылка атрымання захаваных ключоў.</string>
-  <string name="auth_fido_reading_key_error">Памылка пры чытанні ключа бяспекі.</string>
+  <string name="auth_fido_reading_key_error">Памылка чытання ключа бяспекі.</string>
   <string name="auth_fido_submit_key_error">Памылка адпраўкі даных ключа.</string>
   <string name="auth_fido_reading_key_progress">Чытанне ключа бяспекі.</string>
   <string name="auth_fido_authenticating_in_progress">Аўтэнтыфікацыя з ключом бяспекі.</string>

@@ -36,15 +36,15 @@
   <string name="composer_error_duplicate_recipient">Destinatari duplicati rimossi</string>
   <string name="composer_error_store_draft_subject">Salvataggio dell\'oggetto della bozza non riuscito</string>
   <string name="composer_error_store_draft_recipients">Salvataggio dei destinatari della bozza non riuscito</string>
-  <string name="composer_error_store_draft_address_disabled">Impossibile salvare la bozza - Questo indirizzo del mittente è disattivato</string>
-  <string name="composer_error_store_draft_address_pk_missing">Impossibile salvare la bozza - Questo indirizzo del mittente non ha una chiave primaria</string>
-  <string name="composer_error_store_draft_attachment_too_large">Impossibile salvare la bozza - Gli allegati superano il limite di dimensione</string>
-  <string name="composer_error_store_draft_too_many_attachments">Impossibile salvare la bozza - Raggiunto il limite di allegati</string>
-  <string name="composer_error_store_draft_duplicate_recipient">Impossibile salvare la bozza - Uno o più destinatari sono duplicati</string>
-  <string name="composer_error_store_draft_recipient_group_name">Impossibile salvare la bozza - Nome del gruppo di destinatari non valido</string>
-  <string name="composer_error_store_draft_invalid_recipient">Impossibile salvare la bozza - Destinatari non validi</string>
-  <string name="composer_error_store_draft_message_not_a_draft">Impossibile salvare la bozza - Questo messaggio non è una bozza</string>
-  <string name="composer_error_store_draft_generic">Impossibile salvare la bozza - Si è verificato un errore generico</string>
+  <string name="composer_error_store_draft_address_disabled">Salvataggio della bozza non riuscito. Indirizzo mittente attuale non attivo.</string>
+  <string name="composer_error_store_draft_address_pk_missing">Salvataggio della bozza non riuscito. Chiave principale del mittente mancante.</string>
+  <string name="composer_error_store_draft_attachment_too_large">Salvataggio della bozza non riuscito. Limite di dimensione degli allegati superato.</string>
+  <string name="composer_error_store_draft_too_many_attachments">Salvataggio della bozza non riuscito. Limite di allegati superato.</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Salvataggio della bozza non riuscito. Destinatario inserito molteplici volte.</string>
+  <string name="composer_error_store_draft_recipient_group_name">Salvataggio della bozza non riuscito. Gruppo destinatario non valido.</string>
+  <string name="composer_error_store_draft_invalid_recipient">Salvataggio della bozza non riuscito. Destinatario non valido.</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Questo messaggio non è una bozza</string>
+  <string name="composer_error_store_draft_generic">Salvataggio della bozza non riuscito. Si è verificato un errore.</string>
   <string name="composer_error_loading_draft">Caricamento del contenuto della bozza non riuscito. Modifica della bozza non disponibile.</string>
   <string name="composer_add_attachments_content_description">Aggiungi degli allegati</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importa da...</string>
@@ -72,15 +72,15 @@
   <string name="composer_bottom_bar_expiration_time_one_day">1 giorno</string>
   <string name="composer_bottom_bar_expiration_time_three_days">3 giorni</string>
   <string name="composer_bottom_bar_expiration_time_one_week">1 settimana</string>
-  <string name="composer_bottom_bar_expiration_time_custom">In una data specifica</string>
+  <string name="composer_bottom_bar_expiration_time_custom">Data esatta</string>
   <string name="composer_error_setting_expiration_time">Impostazione della scadenza non riuscita</string>
   <!-- Send expiring message to external recipients dialog -->
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Aggiungi password per usare la scadenza</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Imposta una password</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_cancel">Annulla</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Invia comunque</string>
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Protezione con password</string>
-  <string name="composer_send_expiring_message_to_external_may_fail">Non siamo riusciti a confermare che tutti i destinatari utilizzino Proton Mail. Solo gli indirizzi Proton supportano la scadenza dei messaggi. In questo caso, ti consigliamo di aggiungere una password.</string>
-  <string name="composer_send_expiring_message_to_external_will_fail">Alcuni destinatari (%1$s) non supportano la scadenza per impostazione predefinita. Aggiungi una password per abilitare la scadenza anche per i destinatari non Proton Mail.</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Imposta una password per crittografare il messaggio</string>
+  <string name="composer_send_expiring_message_to_external_may_fail">Alcuni destinatari potrebbero non avere una scadenza. Imposta una password per crittografare i messaggi e abilitare la scadenza per i destinatari che non usano Proton Mail.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail">Alcuni destinatari (%1$s) non hanno una scadenza. Imposta una password per crittografare i messaggi e abilitare la scadenza per i destinatari che non usano Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Invia dall\'indirizzo email predefinito</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">L\'invio dei messaggi dall\'indirizzo @pm.me è una funzionalità a pagamento. Il messaggio verrà inviato dall\'indirizzo email predefinito.</string>
@@ -150,9 +150,10 @@
   <string name="composer_attachment_upload_error_retry">Caricamento di alcuni allegati non riuscito</string>
   <string name="composer_external_encryption_unexpected_error">Errore imprevisto %s</string>
   <string name="composer_sender_changed_original_address_cannot_send">Invio con l\'indirizzo email attuale non valido. Questo messaggio verrà inviato dall\'indirizzo email predefinito.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Imposta quando il message sarà delete dalla inbox del recipient e dalla tua folder Sent. Per expire i message per user non-Proton, aggiungi una password.</string>
-  <string name="expiration_time_set_time_and_date">Scegli la data e l\'orario</string>
-  <string name="composer_expiration_set_expiration">Imposta la scadenza</string>
-  <string name="composer_expiration_pick_time_title">Imposta l\'ora</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Imposta il tempo dopo il quale il messaggio verrà eliminato.
+Imposta una password per crittografare i messaggi e abilitare la scadenza per i destinatari che non usano Proton Mail.</string>
+  <string name="expiration_time_set_time_and_date">Seleziona la data e l\'orario</string>
+  <string name="composer_expiration_set_expiration">Imposta la scadenza</string>
+  <string name="composer_expiration_pick_time_title">Imposta l\'orario</string>
   <string name="composer_expiration_time_custom_time_on">Il %1$s</string>
 </resources>

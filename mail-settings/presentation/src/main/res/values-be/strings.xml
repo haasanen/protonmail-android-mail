@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">Наладжванне мабільнай праграмы</string>
   <string name="mail_settings_theme">Тэма</string>
   <string name="mail_settings_auto_lock">Аўтаблакіроўка</string>
+  <string name="mail_settings_app_icon">Значок праграмы</string>
   <string name="mail_settings_alternative_routing">Альтэрнатыўная маршрутызацыя</string>
   <string name="mail_settings_app_language">Мова праграмы</string>
   <string name="mail_settings_app_language_sys_default">Адпаведна сістэме</string>

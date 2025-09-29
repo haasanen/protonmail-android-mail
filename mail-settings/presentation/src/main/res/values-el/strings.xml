@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">Προσαρμογές εφαρμογής για κινητά</string>
   <string name="mail_settings_theme">Θέμα</string>
   <string name="mail_settings_auto_lock">Αυτόματο κλείδωμα</string>
+  <string name="mail_settings_app_icon">Εικονίδιο εφαρμογής</string>
   <string name="mail_settings_alternative_routing">Εναλλακτική δρομολόγηση</string>
   <string name="mail_settings_app_language">Γλώσσα εφαρμογής</string>
   <string name="mail_settings_app_language_sys_default">Προεπιλογή συστήματος</string>

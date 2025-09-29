@@ -124,11 +124,11 @@
   <string name="discard_draft_dialog_text">Ваш чарнавік не будзе захаваны</string>
   <string name="discard_draft_dialog_confirm_button">Адхіліць</string>
   <string name="discard_draft_dialog_dismiss_button">Скасаваць</string>
-  <string name="discard_draft_error">Памылка пры адхіленні чарнавіка</string>
+  <string name="discard_draft_error">Памылка адхілення чарнавіка</string>
   <string name="composer_remove_inline_image">Выдаліць</string>
   <string name="composer_send_as_attachment">Адправіць як далучэнне</string>
   <string name="composer_remove_recipient_action_item">Выдаліць</string>
-  <string name="composer_copy_recipient_action_item">Капіяваць</string>
+  <string name="composer_copy_recipient_action_item">Скапіяваць</string>
   <string name="schedule_send_content_description">Запланаваць адпраўку</string>
   <string name="composer_error_retrieving_schedule_send_options">Збой пры генерацыі часу \"планавання адпраўкі\"</string>
   <string name="composer_schedule_send_content_description">Запланаваць адпраўку</string>

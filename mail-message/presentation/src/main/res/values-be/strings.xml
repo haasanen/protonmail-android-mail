@@ -40,7 +40,7 @@
   <string name="attachment_type_unknown">Невядома</string>
   <string name="attachment_type_pdf">PDF</string>
   <string name="attachment_type_text">з тэкстам</string>
-  <string name="attachment_type_document">з дакументам</string>
+  <string name="attachment_type_document">Дакумент</string>
   <string name="attachment_type_spreadsheet">з электроннай табліцай</string>
   <string name="attachment_type_presentation">з прэзентацыяй</string>
   <string name="attachment_type_calendar">Каляндар</string>

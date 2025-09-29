@@ -17,8 +17,14 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="app_icon_name_classic">Classica</string>
+  <string name="app_icon_name_dark">Scura</string>
+  <string name="app_icon_name_retro">Retro</string>
+  <string name="app_icon_name_weather">Meteo</string>
+  <string name="app_icon_name_notes">Note</string>
+  <string name="app_icon_name_calculator">Calcolatrice</string>
   <string name="dialog_sign_out_account_title">Esci dall\'account</string>
-  <string name="dialog_sign_out_account_description">I dati associati al tuo account resteranno su questo dispositivo, a meno che tu non scelga di eliminarli.</string>
+  <string name="dialog_sign_out_account_description">Sei sicuro di voler uscire da questo account?</string>
   <string name="dialog_sign_out_account_confirm">Esci</string>
   <string name="dialog_sign_out_account_cancel">Annulla</string>
   <string name="dialog_remove_account_title">Rimuovi l\'account</string>
@@ -42,4 +48,12 @@
   <string name="mailbox_message_scheduling">Programmazione dell\'invio in corso</string>
   <string name="mailbox_message_scheduling_offline">Nessuna connessione a Internet. Programmazione dell\'invio sospesa.</string>
   <string name="mailbox_message_scheduled_for_sending_success">Questo messaggio verrà inviato il %1$s</string>
+  <string name="settings_change_icon_title">Icona dell\'app</string>
+  <string name="settings_change_icon_description">Maschera l\'app di Proton Mail con un\'icona discreta. Verrà comunque mostrato il nome e l\'icona classica di ProtonMail nelle notifiche.</string>
+  <string name="settings_change_icon_confirmation_title">Cambia l\'icona</string>
+  <string name="settings_change_icon_confirmation_details">Sei sicuro di voler cambiare l\'icona dell\'app?\n\nL\'app verrà chiusa e la nuova icona apparirà nella schermata iniziale.</string>
+  <string name="settings_change_icon_action_cancel">Annulla</string>
+  <string name="settings_change_icon_change_icon">Cambia l\'icona</string>
+  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
+  <string name="settings_change_icon_header_discreet">Icona discreta</string>
 </resources>

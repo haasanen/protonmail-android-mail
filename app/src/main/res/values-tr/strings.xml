@@ -17,6 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="app_icon_name_classic">Klasik</string>
+  <string name="app_icon_name_dark">Koyu</string>
+  <string name="app_icon_name_retro">Retro</string>
+  <string name="app_icon_name_weather">Hava</string>
+  <string name="app_icon_name_notes">Notlar</string>
+  <string name="app_icon_name_calculator">Hesaplayıcı</string>
   <string name="dialog_sign_out_account_title">Oturumu kapat</string>
   <string name="dialog_sign_out_account_description">Hesabınızla ilişkili veriler, silmeyi seçmediğiniz sürece bu aygıtta kalır.</string>
   <string name="dialog_sign_out_account_confirm">Oturumu kapat</string>
@@ -42,4 +48,12 @@
   <string name="mailbox_message_scheduling">İleti zamanlanıyor…</string>
   <string name="mailbox_message_scheduling_offline">Çevrim dışı: İleti zamanlanmak üzere sıraya alındı</string>
   <string name="mailbox_message_scheduled_for_sending_success">Bu ileti %1$s zamanında gönderilecek</string>
+  <string name="settings_change_icon_title">Uygulama simgesi</string>
+  <string name="settings_change_icon_description">Proton Mail uygulamasını farklı bir simge ile gizleyin. Bildirimlerde hala varsayılan Proton Mail adı ve simgesi görüntülenir.</string>
+  <string name="settings_change_icon_confirmation_title">Uygulama simgesi değiştirilsin mi?</string>
+  <string name="settings_change_icon_confirmation_details">Bu işlem, Proton Mail uygulamasının kapanmasına ve tüm bildirimlerin yok sayılmasına neden olur.\n\nProton Mail uygulamasını yeniden başlatmak için yeni uygulama simgenize dokunun.</string>
+  <string name="settings_change_icon_action_cancel">İptal</string>
+  <string name="settings_change_icon_change_icon">Simgeyi değiştir</string>
+  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
+  <string name="settings_change_icon_header_discreet">Gizli uygulama simgesi</string>
 </resources>

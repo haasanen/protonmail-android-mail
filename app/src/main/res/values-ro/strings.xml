@@ -17,6 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="app_icon_name_classic">Clasică</string>
+  <string name="app_icon_name_dark">Întunecată</string>
+  <string name="app_icon_name_retro">Retro</string>
+  <string name="app_icon_name_weather">Meteo</string>
+  <string name="app_icon_name_notes">Note</string>
+  <string name="app_icon_name_calculator">Calculator</string>
   <string name="dialog_sign_out_account_title">Deconectare</string>
   <string name="dialog_sign_out_account_description">Datele asociate contului vor rămâne pe acest dispozitiv dacă nu selectați să le ștergeți.</string>
   <string name="dialog_sign_out_account_confirm">Deconectare</string>
@@ -42,4 +48,12 @@
   <string name="mailbox_message_scheduling">Se programează mesajul…</string>
   <string name="mailbox_message_scheduling_offline">Deconectat: mesaj pus în lista pentru programare</string>
   <string name="mailbox_message_scheduled_for_sending_success">Acest mesaj va fi trimis la data de %1$s</string>
+  <string name="settings_change_icon_title">Pictogramă aplicație</string>
+  <string name="settings_change_icon_description">Deghizați aplicația Proton Mail cu o pictogramă discretă. Notificările vor afișa în continuare numele și pictograma implicite Proton Mail.</string>
+  <string name="settings_change_icon_confirmation_title">Modificați pictograma aplicației?</string>
+  <string name="settings_change_icon_confirmation_details">Acest lucru va determina închiderea aplicației Proton Mail și anularea tuturor notificărilor.\n\nPentru a reporni Proton Mail, atingeți noua pictogramă a aplicației.</string>
+  <string name="settings_change_icon_action_cancel">Anulare</string>
+  <string name="settings_change_icon_change_icon">Modificare pictogramă</string>
+  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
+  <string name="settings_change_icon_header_discreet">Pictogramă discretă aplicație</string>
 </resources>

@@ -17,6 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="app_icon_name_classic">Klasická</string>
+  <string name="app_icon_name_dark">Tmavá</string>
+  <string name="app_icon_name_retro">Retro</string>
+  <string name="app_icon_name_weather">Počasie</string>
+  <string name="app_icon_name_notes">Poznámky</string>
+  <string name="app_icon_name_calculator">Kalkulačka</string>
   <string name="dialog_sign_out_account_title">Odhlásiť sa</string>
   <string name="dialog_sign_out_account_description">Údaje spojené s vaším účtom zostanú v tomto zariadení, pokiaľ sa nerozhodnete ich vymazať.</string>
   <string name="dialog_sign_out_account_confirm">Odhlásiť sa</string>
@@ -42,4 +48,12 @@
   <string name="mailbox_message_scheduling">Plánovanie správy…</string>
   <string name="mailbox_message_scheduling_offline">Offline: správa vo fronte na plánovanie</string>
   <string name="mailbox_message_scheduled_for_sending_success">Táto správa bude odoslaná %1$s</string>
+  <string name="settings_change_icon_title">Ikona aplikácie</string>
+  <string name="settings_change_icon_description">Zamaskujte aplikáciu Proton Mail pomocou diskrétnej ikony. Oznámenia budú naďalej zobrazovať predvolený názov a ikonu Proton Mail.</string>
+  <string name="settings_change_icon_confirmation_title">Zmeniť ikonu aplikácie?</string>
+  <string name="settings_change_icon_confirmation_details">Aplikácia Proton Mail sa zatvorí a všetky oznámenia budú zrušené.\n\nAk chcete aplikáciu Proton Mail znovu spustiť, stačí kliknúť na novú ikonu aplikácie.</string>
+  <string name="settings_change_icon_action_cancel">Zrušiť</string>
+  <string name="settings_change_icon_change_icon">Zmeniť ikonu</string>
+  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
+  <string name="settings_change_icon_header_discreet">Nenápadná ikona aplikácie</string>
 </resources>

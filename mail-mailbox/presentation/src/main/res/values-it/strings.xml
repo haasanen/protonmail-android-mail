@@ -101,7 +101,7 @@
   <string name="mailbox_action_clear_spam_dialog_body_message">Sei sicuro di voler eliminare definitivamente tutti i messaggi presenti nella cartella spam?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Sei sicuro di voler eliminare definitivamente tutte le conversazioni presenti nella cartella spam?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Lo svuotamento è programmato"</string>
-  <string name="mailbox_action_maximum_selection_reached">"Selezione massima raggiunta"</string>
+  <string name="mailbox_action_maximum_selection_reached">"Limite di elementi selezionati raggiunto"</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">Scaricamento dell\'allegato in corso</string>
   <string name="mailbox_attachment_download_error">Scaricamento del file allegato non riuscito</string>

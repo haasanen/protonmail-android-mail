@@ -21,7 +21,7 @@
   <string name="upselling_button_item_content_description">Botó d\'actualització</string>
   <string name="upselling_close_button_content_description">Botó per a tancar</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">Per desbloquejar més emmagatzematge i característiques prèmium.</string>
+  <string name="upselling_mailbox_plus_description_override">Per a desbloquejar més emmagatzematge i característiques prèmium.</string>
   <string name="upselling_mailbox_plus_title">Millora al pla Mail Plus</string>
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Proveu Mail Plus</string>
@@ -32,7 +32,7 @@
   <string name="upselling_mailbox_plus_promo_skip">Omet l\'oferta</string>
   <string name="upselling_mailbox_plus_promo_renewal">%s pel 1r mes, després %s al mes</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Envieu correus de grup fàcilment. Trobareu això i més a Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">Envieu correus de grup fàcilment. Trobareu això i més al Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Agrupeu els contactes</string>
   <!-- Upselling: Labels -->
   <string name="upselling_labels_plus_description_override">Tot el que necessiteu per mantenir-vos organitzat. Aconseguiu això i més amb Mail Plus. </string>
@@ -48,13 +48,13 @@
   <string name="upselling_auto_delete_plus_title">Buida la paperera automàticament</string>
   <!-- Upselling: Schedule Send -->
   <string name="upselling_schedule_send_plus_description_override">Personalitzeu quan s\'enviarà un correu electrònic. Trobareu això i més a Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Programeu-ho ara per enviar-ho més tard</string>
+  <string name="upselling_schedule_send_plus_title">Planifiqueu ara, envieu més tard</string>
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Ajorneu-ho — i feu que s\'entregui més tard. Trobareu això i més a Mail Plus.</string>
   <string name="upselling_snooze_plus_title">És un mal moment per aquest correu electrònic?</string>
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Milloreu de pla per a una flexibilitat total</string>
-  <string name="upselling_upgrade_plan_generic">Us cal una subscripció de pagament a Proton Mail per accedir a aquesta característica.</string>
+  <string name="upselling_upgrade_plan_generic">Necessiteu una subscripció de pagament del Proton Mail per a accedir a aquesta característica.</string>
   <!-- Onboarding Upselling -->
   <string name="upselling_onboarding_premium_value_included">Característiques prèmium incloses</string>
   <string name="upselling_onboarding_feature_e2e">Xifratge d\'extrem a extrem</string>

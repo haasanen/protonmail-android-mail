@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">Personalitzacions de l\'aplicació mòbil</string>
   <string name="mail_settings_theme">Tema</string>
   <string name="mail_settings_auto_lock">Bloqueig automàtic</string>
+  <string name="mail_settings_app_icon">Icona de l\'aplicació</string>
   <string name="mail_settings_alternative_routing">Enrutament alternatiu</string>
   <string name="mail_settings_app_language">Idioma de l\'aplicació</string>
   <string name="mail_settings_app_language_sys_default">Valor per defecte del sistema</string>
@@ -142,7 +143,7 @@
   <string name="mail_settings_custom_toolbar_reset_title">Voleu restablir les preferències de la barra d\'eines?</string>
   <string name="mail_settings_custom_toolbar_reset_confirm">Confirma</string>
   <string name="mail_settings_custom_toolbar_save_error">No s\'han pogut desar les accions de la barra d\'eines. Torneu-ho a provar.</string>
-  <string name="mail_settings_custom_toolbar_read_error">No s\'han pogut llegir les accions de la barra d\'eines. Torneu-ho a provar.</string>
+  <string name="mail_settings_custom_toolbar_read_error">No s\'ha pogut llegir les accions de la barra d\'eines. Torneu-ho a provar.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">S\'ha produït un error. Proveu de nou.</string>
 </resources>

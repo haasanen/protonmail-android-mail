@@ -23,7 +23,7 @@
   <string name="edm_missing_camera_permission_body">Per iniciar sessió amb el codi QR necessitareu permetre que %1$s accedeixi a la vostra càmera. Ho podeu fer a les preferències del dispositiu.</string>
   <string name="edm_missing_camera_permission_footer">Sempre tindreu el control: podeu canviar-ho en qualsevol moment a preferències del dispositiu.</string>
   <string name="edm_missing_camera_permission_settings">Preferències</string>
-  <string name="intro_origin_sign_in_title">Inicieu sessió en un altre dispositiu</string>
+  <string name="intro_origin_sign_in_title">Inicieu la sessió en un altre dispositiu</string>
   <string name="intro_origin_sign_in_subtitle">Com iniciar sessió amb un codi QR</string>
   <string name="intro_origin_sign_in_hint_1">1. Obriu qualsevol aplicació de Proton al dispositiu en què vulgueu iniciar la sessió.</string>
   <string name="intro_origin_sign_in_hint_2">2. A la pantalla d’inici de sessió, seleccioneu <b> He oblidat la contrasenya </b> o <b> Problemes per iniciar la sessió? </b> (a les aplicacions mòbils, seleccioneu <b> Ajuda</b>).</string>

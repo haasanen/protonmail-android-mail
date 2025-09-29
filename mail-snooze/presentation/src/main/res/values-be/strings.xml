@@ -35,7 +35,7 @@
   <string name="snooze_picker_content_description">Адкладанне паведамлення</string>
   <string name="snooze_picker_button_title">Захаваць</string>
   <string name="snooze_custom_upsell_title">Карыстальніцкія дата і час</string>
-  <string name="snooze_custom_upsell_title_short">Карыстальніцкія</string>
+  <string name="snooze_custom_upsell_title_short">Карыстальніцкае</string>
   <string name="snooze_custom_upsell_hint_short">Палепшыць для доступу</string>
   <plurals name="snoozed_in_days">
     <item quantity="one">Адкладзена да заўтра</item>

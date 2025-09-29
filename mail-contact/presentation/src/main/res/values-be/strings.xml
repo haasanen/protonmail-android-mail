@@ -82,7 +82,7 @@
   <string name="contact_property_gender">Пол</string>
   <string name="contact_property_language">Мова</string>
   <string name="contact_property_time_zone">Часавы пояс</string>
-  <string name="contact_gender_female">Жанчына</string>
+  <string name="contact_gender_female">Жаночы</string>
   <string name="contact_gender_male">Мужчына</string>
   <string name="contact_gender_none">Адсутнічае</string>
   <string name="contact_gender_not_applicable">Не прымяняецца</string>
@@ -105,7 +105,7 @@
   </plurals>
   <string name="contact_bottom_sheet_redirect_to_web_title">Даступна ў вэб-праграме</string>
   <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Адхіліць</string>
-  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Стварэнне кантактаў або груп у праграме пакуль недаступна. Яны могуць быць створаны ў вэб-праграме, а потым сінхранізаваны з вашай прыладай.</string>
-  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Рэдагаванне кантактаў або груп у праграме пакуль недаступна. Яны могуць быць адрэдагаваны ў вэб-праграме, а потым сінхранізаваны з вашай прыладай.</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Стварэнне кантактаў або груп у праграме пакуль немагчыма. Яны могуць быць створаны ў вэб-праграме, а потым сінхранізаваны з вашай прыладай.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Рэдагаванне кантактаў або груп у праграме пакуль недаступна. У цяперашні час вы можаце зрабіць гэта ў вэб-праграме, а змены будуць сінхранізавацца з вашай прыладай.</string>
   <string name="contact_bottom_sheet_redirect_to_web_button">Працягнуць у вэб-праграме</string>
 </resources>

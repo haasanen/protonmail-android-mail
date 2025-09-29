@@ -72,13 +72,13 @@
   <string name="composer_bottom_bar_expiration_time_one_day">1 dzień</string>
   <string name="composer_bottom_bar_expiration_time_three_days">3 dni</string>
   <string name="composer_bottom_bar_expiration_time_one_week">1 tydzień</string>
-  <string name="composer_bottom_bar_expiration_time_custom">On specific date</string>
+  <string name="composer_bottom_bar_expiration_time_custom">W określonym dniu</string>
   <string name="composer_error_setting_expiration_time">Ustawienie czasu wygaśnięcia nie powiodło się</string>
   <!-- Send expiring message to external recipients dialog -->
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Add Password to Use Expiration</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Dodaj hasło, aby użyć wygasania</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_cancel">Anuluj</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Wyślij mimo to</string>
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Add password protection</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Dodaj ochronę hasłem</string>
   <string name="composer_send_expiring_message_to_external_may_fail">We could not confirm all recipients use Proton Mail. Only Proton addresses support message expiration. In this case, we suggest adding a password instead.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
   <!-- Sender changed dialog -->
@@ -155,6 +155,6 @@
   <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder.To expire messages for non-Proton users, add a password.</string>
   <string name="expiration_time_set_time_and_date">Set time and date</string>
   <string name="composer_expiration_set_expiration">Set expiration</string>
-  <string name="composer_expiration_pick_time_title">Set time</string>
+  <string name="composer_expiration_pick_time_title">Ustaw czas</string>
   <string name="composer_expiration_time_custom_time_on">On %1$s</string>
 </resources>

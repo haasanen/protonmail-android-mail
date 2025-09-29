@@ -154,7 +154,7 @@
   <string name="rsvp_widget_event_ended">L\'esdeveniment ha <b>finalitzat</b></string>
   <string name="rsvp_widget_event_cancelled">Esdeveniment <b>cancel·lat</b></string>
   <string name="rsvp_widget_invite_outdated">Aquesta invitació ha caducat</string>
-  <string name="rsvp_widget_event_cancelled_invite_outdated">Aquest esdeveniment s\'ha cancelat. La invitatció ha caducat.</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">S\'ha cancel·lat l\'esdeveniment. Aquesta invitació està desfasada.</string>
   <string name="rsvp_widget_offline_invite_outdated">Esteu desconnectats. La informació que es mostra podria no estar actualitzada.</string>
   <string name="rsvp_widget_address_is_incorrect">No es pot fer servir aquesta adreça per respondre. Si us plau, actualitzeu la informació del vostre compte.</string>
   <string name="rsvp_widget_user_is_organizer">Sou l\'organitzador.</string>

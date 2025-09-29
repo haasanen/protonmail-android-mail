@@ -127,6 +127,7 @@
   <string name="undo_success_message">Η ενέργεια αναιρέθηκε</string>
   <string name="undo_failure_message">Η αναίρεση απέτυχε</string>
   <string name="feature_coming_soon">Η δυνατότητα θα είναι διαθέσιμη σύντομα…</string>
+  <string name="cancelling_scheduled_send_message">Γίνεται Ακύρωση…</string>
   <!-- date time picker -->
   <string name="time_picker_custom_time_label">Ώρα</string>
   <string name="time_picker_custom_date_label">Ημερομηνία</string>

@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">Mobil uygulama özelleştirmeleri</string>
   <string name="mail_settings_theme">Tema</string>
   <string name="mail_settings_auto_lock">Otomatik kilitleme</string>
+  <string name="mail_settings_app_icon">Uygulama simgesi</string>
   <string name="mail_settings_alternative_routing">Alternatif yönlendirme</string>
   <string name="mail_settings_app_language">Uygulama dili</string>
   <string name="mail_settings_app_language_sys_default">Sistem varsayılanı</string>

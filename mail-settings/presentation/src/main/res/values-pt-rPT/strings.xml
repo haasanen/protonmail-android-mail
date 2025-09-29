@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">Personalizações da aplicação móvel</string>
   <string name="mail_settings_theme"> Tema</string>
   <string name="mail_settings_auto_lock">Bloqueio automático</string>
+  <string name="mail_settings_app_icon">App icon</string>
   <string name="mail_settings_alternative_routing">Redirecionamento alternativo</string>
   <string name="mail_settings_app_language">Idioma da aplicação</string>
   <string name="mail_settings_app_language_sys_default">Predefinição do sistema</string>

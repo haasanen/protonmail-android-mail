@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">Mobilalkalmazás testreszabása</string>
   <string name="mail_settings_theme">Téma</string>
   <string name="mail_settings_auto_lock">Automatikus zárolás</string>
+  <string name="mail_settings_app_icon">App icon</string>
   <string name="mail_settings_alternative_routing">Alternatív útválasztás</string>
   <string name="mail_settings_app_language">Alkalmazás nyelve</string>
   <string name="mail_settings_app_language_sys_default">Rendszer alapértelmezett</string>

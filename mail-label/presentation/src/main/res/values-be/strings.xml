@@ -30,7 +30,7 @@
   <string name="label_title_snoozed">Адкладзеныя</string>
   <string name="label_title_folders">Папкі</string>
   <string name="label_title_create_label">Стварэнне меткі</string>
-  <string name="label_title_create_folder">Стварэнне папкі</string>
+  <string name="label_title_create_folder">Стварыць папку</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Перамясціць у…</string>
   <string name="bottom_sheet_done_action">Гатова</string>

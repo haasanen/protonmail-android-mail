@@ -44,7 +44,7 @@
   <string name="new_contact">Nuevo contacto</string>
   <string name="new_group">Nuevo grupo</string>
   <string name="import_contact">Cargar los contactos del dispositivo</string>
-  <string name="contact_deleted">Contact deleted</string>
+  <string name="contact_deleted">Se ha eliminado el contacto.</string>
   <string name="contact_delete_dialog_title">¿Eliminar %1$s?</string>
   <string name="contact_delete_dialog_text">Este contacto se eliminará de tu lista de contactos.</string>
   <string name="contact_delete_dialog_cancel_button">Cancelar</string>

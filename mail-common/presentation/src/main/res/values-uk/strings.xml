@@ -127,6 +127,7 @@
   <string name="undo_success_message">Дію скасовано</string>
   <string name="undo_failure_message">Не вдалося скасувати дію</string>
   <string name="feature_coming_soon">Функція невдовзі з\'явиться…</string>
+  <string name="cancelling_scheduled_send_message">Cancelling…</string>
   <!-- date time picker -->
   <string name="time_picker_custom_time_label">Час</string>
   <string name="time_picker_custom_date_label">Дата</string>

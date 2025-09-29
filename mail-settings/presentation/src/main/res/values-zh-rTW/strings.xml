@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">行動裝置應用程式自訂</string>
   <string name="mail_settings_theme">布景主題</string>
   <string name="mail_settings_auto_lock">自動鎖定</string>
+  <string name="mail_settings_app_icon">App icon</string>
   <string name="mail_settings_alternative_routing">替代路由</string>
   <string name="mail_settings_app_language">應用程式語言</string>
   <string name="mail_settings_app_language_sys_default">系統預設</string>

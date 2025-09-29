@@ -17,6 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="app_icon_name_classic">Κλασικό</string>
+  <string name="app_icon_name_dark">Σκοτεινό</string>
+  <string name="app_icon_name_retro">Ρετρό</string>
+  <string name="app_icon_name_weather">Καιρός</string>
+  <string name="app_icon_name_notes">Σημειώσεις</string>
+  <string name="app_icon_name_calculator">Αριθμομηχανή</string>
   <string name="dialog_sign_out_account_title">Αποσύνδεση</string>
   <string name="dialog_sign_out_account_description">Τα δεδομένα που σχετίζονται με τον λογαριασμό σας θα παραμείνουν σε αυτήν τη συσκευή, εκτός εάν επιλέξετε να τα διαγράψετε.</string>
   <string name="dialog_sign_out_account_confirm">Αποσύνδεση</string>
@@ -42,4 +48,12 @@
   <string name="mailbox_message_scheduling">Γίνεται προγραμματισμός μηνύματος…</string>
   <string name="mailbox_message_scheduling_offline">Εκτός σύνδεσης: το μήνυμα τέθηκε σε αναμονή για προγραμματισμό</string>
   <string name="mailbox_message_scheduled_for_sending_success">Αυτό το μήνυμα θα αποσταλεί στις %1$s</string>
+  <string name="settings_change_icon_title">Εικονίδιο εφαρμογής</string>
+  <string name="settings_change_icon_description">Μεταμφιέστε την εφαρμογή Proton Mail με ένα διακριτικό εικονίδιο. Οι ειδοποιήσεις θα εξακολουθούν να εμφανίζουν το προεπιλεγμένο όνομα και εικονίδιο Proton Mail.</string>
+  <string name="settings_change_icon_confirmation_title">Αλλαγή εικονιδίου εφαρμογής;</string>
+  <string name="settings_change_icon_confirmation_details">Αυτό θα προκαλέσει το κλείσιμο της εφαρμογής Proton Mail και όλες οι ειδοποιήσεις να απορριφθούν.\n\nΓια να επανεκκινήσετε το Proton Mail, απλώς πατήστε το εικονίδιο της νέας σας εφαρμογής.</string>
+  <string name="settings_change_icon_action_cancel">Ακύρωση</string>
+  <string name="settings_change_icon_change_icon">Αλλαγή εικονιδίου</string>
+  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
+  <string name="settings_change_icon_header_discreet">Διακριτικό εικονίδιο εφαρμογής</string>
 </resources>

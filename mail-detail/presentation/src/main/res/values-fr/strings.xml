@@ -176,7 +176,7 @@
   <string name="unsubscribe_newsletter_dialog_text">Voulez-vous vraiment vous désabonner ? Vous ne recevrez plus de messages de cette liste de diffusion.</string>
   <string name="unsubscribe_newsletter_dialog_cancel">Annuler</string>
   <string name="unsubscribe_newsletter_dialog_confirm">Se désabonner</string>
-  <string name="already_unsubscribed_banner_message">Vous êtes désinscrit de cette liste de diffusion</string>
+  <string name="already_unsubscribed_banner_message">Vous êtes désabonné de cette liste de diffusion.</string>
   <string name="error_unsubscribe_newsletter">La désinscription à la newsletter n\'a pas abouti.</string>
   <string name="detail_error_loading_single_message">Le message n\'a pas pu être chargé.</string>
 </resources>

@@ -17,6 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="app_icon_name_classic">Clássico</string>
+  <string name="app_icon_name_dark">Escuro</string>
+  <string name="app_icon_name_retro">Retro</string>
+  <string name="app_icon_name_weather">Clima</string>
+  <string name="app_icon_name_notes">Notas</string>
+  <string name="app_icon_name_calculator">Calculadora</string>
   <string name="dialog_sign_out_account_title">Encerrar sessão</string>
   <string name="dialog_sign_out_account_description">Os dados associados à sua conta permanecerão neste dispositivo, a menos que você opte por excluí-los.</string>
   <string name="dialog_sign_out_account_confirm">Encerrar sessão</string>
@@ -42,4 +48,12 @@
   <string name="mailbox_message_scheduling">Agendando mensagem...</string>
   <string name="mailbox_message_scheduling_offline">Off-line: mensagem na fila para agendamento</string>
   <string name="mailbox_message_scheduled_for_sending_success">Esta mensagem será enviada em %1$s</string>
+  <string name="settings_change_icon_title">Ícone do aplicativo</string>
+  <string name="settings_change_icon_description">Disfarce o aplicativo do Proton Mail com um ícone discreto. As notificações ainda exibirão o nome e o ícone padrão do Proton Mail.</string>
+  <string name="settings_change_icon_confirmation_title">Alterar ícone do aplicativo?</string>
+  <string name="settings_change_icon_confirmation_details">Isso fará com que o aplicativo do Proton Mail seja fechado e todas as notificações sejam dispensadas.\n\nPara reiniciar o Proton Mail, basta tocar no novo ícone do aplicativo.</string>
+  <string name="settings_change_icon_action_cancel">Cancelar</string>
+  <string name="settings_change_icon_change_icon">Alterar ícone</string>
+  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
+  <string name="settings_change_icon_header_discreet">Ícone discreto do aplicativo</string>
 </resources>

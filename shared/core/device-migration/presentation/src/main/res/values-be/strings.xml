@@ -35,7 +35,7 @@
   <string name="intro_origin_sign_in_tip_3">Proton ніколі не будзе прасіць вас адсканіраваць QR-код на вэб-сайтах, якія не належаць да <b>https://proton.me</b> або ў не афіцыйных праграмах Proton.</string>
   <string name="intro_origin_sign_in_begin">Сканіраваць QR-код</string>
   <string name="intro_origin_biometrics_title">Разблакіруйце сваю прыладу, каб працягнуць</string>
-  <string name="manual_code_input_title">Увесці код уручную</string>
+  <string name="manual_code_input_title">Увядзіце код уручную</string>
   <string name="manual_code_input_description">Націсніце кнопку <b>Увайсці з дапамогай QR-кода</b> у меню дапамогі экрана ўваходу, а потым націсніце <b>Увесці ключ уручную</b>. Гэтыя дзеянні дазволяць атрымаць доступ да кода прылады, на якой вы хочаце ўвайсці.</string>
   <string name="manual_code_input_code_label">Код</string>
   <string name="manual_code_input_clear_code">Ачысціць</string>
@@ -52,7 +52,7 @@
   <string name="target_sign_in_instruction_4">4. Сканіруйце код, каб увайсці</string>
   <string name="target_sign_in_error_title">Не атрымалася ўвайсці</string>
   <string name="target_sign_in_retryable_error">Паспрабуйце згенерыраваць новы QR-код.</string>
-  <string name="target_sign_in_error_new_qr">Згенерыраваць QR-код</string>
+  <string name="target_sign_in_error_new_qr">Згенераваць QR-код</string>
   <string name="target_sign_in_error_back_to_signin">Вярнуцца да ўваходу</string>
   <string name="target_sign_in_learn_more">Даведацца больш</string>
   <string name="proton_error_non_processable_actions">Адно або некалькі дзеянняў не могуць быць апрацаваны. Выйдзіце з сістэмы і яшчэ раз увайдзіце ў свой уліковы запіс.</string>

@@ -17,6 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="app_icon_name_classic">Класічны</string>
+  <string name="app_icon_name_dark">Цёмны</string>
+  <string name="app_icon_name_retro">Рэтра</string>
+  <string name="app_icon_name_weather">Надвор\'е</string>
+  <string name="app_icon_name_notes">Нататкі</string>
+  <string name="app_icon_name_calculator">Калькулятар</string>
   <string name="dialog_sign_out_account_title">Выхад</string>
   <string name="dialog_sign_out_account_description">Даныя, якія звязаны з вашым уліковым запісам застануцца на гэтай прыладзе, пакуль вы не вырашыце выдаліць іх.</string>
   <string name="dialog_sign_out_account_confirm">Выйсці</string>
@@ -42,4 +48,12 @@
   <string name="mailbox_message_scheduling">Планаванне паведамлення…</string>
   <string name="mailbox_message_scheduling_offline">Вы па-за сеткай: паведамленне ў чарзе на планаванне</string>
   <string name="mailbox_message_scheduled_for_sending_success">Гэта паведамленне будзе адпраўлена %1$s</string>
+  <string name="settings_change_icon_title">Значок праграмы</string>
+  <string name="settings_change_icon_description">Замаскіраваць праграму праграма Proton Mail з дапамогай непрыметнага значка. Апавяшчэнні як і раней будуць адлюстроўваць прадвызначаную назву Proton Mail і значок.</string>
+  <string name="settings_change_icon_confirmation_title">Змяніць значок праграмы?</string>
+  <string name="settings_change_icon_confirmation_details">Гэта прывядзе да закрыцця праграмы Proton Mail, і ўсе апавяшчэнні будуць адхілены.\n\nПроста націсніце на новы значок праграмы, каб перазапусціць Proton Mail.</string>
+  <string name="settings_change_icon_action_cancel">Скасаваць</string>
+  <string name="settings_change_icon_change_icon">Змяніць значок</string>
+  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
+  <string name="settings_change_icon_header_discreet">Непрыкметны значок праграмы</string>
 </resources>

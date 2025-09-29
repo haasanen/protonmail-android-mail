@@ -127,6 +127,7 @@
   <string name="undo_success_message">Ação revertida</string>
   <string name="undo_failure_message">Falha ao reverter a ação</string>
   <string name="feature_coming_soon">Este recurso chegará em breve…</string>
+  <string name="cancelling_scheduled_send_message">Cancelando…</string>
   <!-- date time picker -->
   <string name="time_picker_custom_time_label">Hora</string>
   <string name="time_picker_custom_date_label">Data</string>

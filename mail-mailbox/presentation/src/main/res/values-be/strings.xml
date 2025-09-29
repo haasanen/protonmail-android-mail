@@ -24,7 +24,7 @@
   <string name="mailbox_toolbar_search_button_content_description">Пошук</string>
   <string name="mailbox_toolbar_exit_search_mode_content_description">Выхад з рэжыму пошуку</string>
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Ачысціць пошукавы запыт</string>
-  <string name="mailbox_toolbar_searchview_query_text_field_content_description">Увесці пошукавы запыт</string>
+  <string name="mailbox_toolbar_searchview_query_text_field_content_description">Увядзіце пошукавы запыт</string>
   <string name="filter_unread_button_text">Непрачытаныя</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">Выбраны: %d</item>
@@ -45,10 +45,10 @@
   <string name="mailbox_is_empty_spam_description">Ваша папка са спамам пустая</string>
   <string name="mailbox_is_empty_trash_description">Здаецца, што тут нічога няма</string>
   <plurals name="mailbox_action_trash">
-    <item quantity="one">Паведамленне перамешчана ў Сметніцу</item>
-    <item quantity="few">%d паведамленні перамешчаны ў Сметніцу</item>
-    <item quantity="many">%d паведамленняў перамешчаны ў Сметніцу</item>
-    <item quantity="other">%d паведамленняў перамешчаны ў Сметніцу</item>
+    <item quantity="one">Паведамленне перамешчана ў сметніцу</item>
+    <item quantity="few">%d паведамленні перамешчаны ў сметніцу</item>
+    <item quantity="many">%d паведамленняў перамешчаны ў сметніцу</item>
+    <item quantity="other">%d паведамленняў перамешчаны ў сметніцу</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_title">
     <item quantity="one">Выдаліць размову</item>
@@ -115,8 +115,8 @@
   <string name="mailbox_action_clear_trash_spam_upsell_cta">Палепшыце свой тарыфны план, каб скарыстацца функцыяй аўтаматычнага выдалення</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Паведамленні, якія знаходзяцца ў папках \"Сметніца\" і \"Спам\" больш за 30 дзён будуць выдаляцца аўтаматычна.</string>
   <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Аўтавыдаленне выключана. Паведамленні ў папках \"Сметніца\" і \"Спам\" будуць захоўвацца там, пакуль вы не выдаліце іх уручную.</string>
-  <string name="mailbox_action_clear_trash_dialog_title">Ачысціць папку Сметніцы</string>
-  <string name="mailbox_action_clear_spam_dialog_title">Ачысціць папку Спам</string>
+  <string name="mailbox_action_clear_trash_dialog_title">Ачысціць сметніцу</string>
+  <string name="mailbox_action_clear_spam_dialog_title">Ачысціць папку са спамам</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Вы сапраўды хочаце незваротна выдаліць усе паведамленні з папкі Сметніца?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Вы сапраўды хочаце незваротна выдаліць усе паведамленні з папкі Спам?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Вы сапраўды хочаце незваротна выдаліць усе размовы з папкі Спам?</string>

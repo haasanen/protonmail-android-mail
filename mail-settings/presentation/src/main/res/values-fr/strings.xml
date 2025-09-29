@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">Personnalisations de l\'application mobile</string>
   <string name="mail_settings_theme">Thème</string>
   <string name="mail_settings_auto_lock">Verrouillage automatique</string>
+  <string name="mail_settings_app_icon">Icône de l\'application</string>
   <string name="mail_settings_alternative_routing">Routage alternatif</string>
   <string name="mail_settings_app_language">Langue de l\'application</string>
   <string name="mail_settings_app_language_sys_default">Identique au système</string>
@@ -141,8 +142,8 @@
   <string name="mail_settings_custom_toolbar_reset">Rétablir les valeurs par défaut</string>
   <string name="mail_settings_custom_toolbar_reset_title">Voulez-vous réinitialiser les paramètres de la barre d\'outils ?</string>
   <string name="mail_settings_custom_toolbar_reset_confirm">Confirmer</string>
-  <string name="mail_settings_custom_toolbar_save_error">Impossible de sauvegarder les actions dans la barre d\'outils. Veuillez réessayer.</string>
-  <string name="mail_settings_custom_toolbar_read_error">Impossible de lire les actions de la barre d\'outils. Veuillez réessayer</string>
+  <string name="mail_settings_custom_toolbar_save_error">La sauvegarde des actions dans la barre d\'outils n\'a pas abouti. Veuillez réessayer.</string>
+  <string name="mail_settings_custom_toolbar_read_error">La lecture des actions de la barre d\'outils n\'a pas abouti. Veuillez réessayer.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Une erreur est survenue. Veuillez réessayer.</string>
 </resources>

@@ -41,8 +41,8 @@
   <string name="composer_error_store_draft_attachment_too_large">No s\'ha pogut desar l\'esborrany - Els adjunts superen el límit de mida</string>
   <string name="composer_error_store_draft_too_many_attachments">No s\'ha pogut desar l\'esborrany - S\'ha assolit el límit d\'adjunts</string>
   <string name="composer_error_store_draft_duplicate_recipient">No s\'ha pogut desar l\'esborrany - Un o més destinataris estan duplicats</string>
-  <string name="composer_error_store_draft_recipient_group_name">No s\'ha pogut desar l\'esborrany - El nom del grup de destinataris no és vàlid</string>
-  <string name="composer_error_store_draft_invalid_recipient">No s\'ha pogut desar l\'esborrany - El(s) destinatari(s) no són vàlids</string>
+  <string name="composer_error_store_draft_recipient_group_name">No s\'ha pogut desar l\'esborrany - El nom del grup destinatari no és vàlid</string>
+  <string name="composer_error_store_draft_invalid_recipient">No s\'ha pogut desar l\'esborrany - Destinatari(s) no vàlids</string>
   <string name="composer_error_store_draft_message_not_a_draft">No s\'ha pogut desar l\'esborrany - Aquest missatge no és un esborrany</string>
   <string name="composer_error_store_draft_generic">No s\'ha pogut desar l\'esborrany - S\'ha produït un error genèric</string>
   <string name="composer_error_loading_draft">El contingut d\'aquest esborrany no està disponible en aquest moment, no es pot editar.</string>
@@ -152,7 +152,7 @@
   <string name="composer_sender_changed_original_address_cannot_send">L\'adreça seleccionada no es pot utilitzar per enviar. El vostre missatge s\'enviarà des de la vostra adreça per defecte.</string>
   <string name="composer_expiration_time_bottom_sheet_description">Establiu quan el missatge serà eliminat de la safata d\'entrada del destinatari i de la vostra carpeta d\'elements enviats. Per a fer caducar missatges per a usuaris que no són de Proton, afegiu una contrasenya.</string>
   <string name="expiration_time_set_time_and_date">Establiu l\'hora i la data</string>
-  <string name="composer_expiration_set_expiration">Establiu-ne la caducitat</string>
+  <string name="composer_expiration_set_expiration">Establiu la caducitat</string>
   <string name="composer_expiration_pick_time_title">Establiu l\'hora</string>
   <string name="composer_expiration_time_custom_time_on">El %1$s</string>
 </resources>

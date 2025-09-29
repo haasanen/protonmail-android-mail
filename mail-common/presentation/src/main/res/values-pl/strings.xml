@@ -127,6 +127,7 @@
   <string name="undo_success_message">Akcja została cofnięta</string>
   <string name="undo_failure_message">Cofnięcie akcji nie powiodło się</string>
   <string name="feature_coming_soon">Funkcja dostępna wkrótce…</string>
+  <string name="cancelling_scheduled_send_message">Anulowanie…</string>
   <!-- date time picker -->
   <string name="time_picker_custom_time_label">Godzina</string>
   <string name="time_picker_custom_date_label">Data</string>

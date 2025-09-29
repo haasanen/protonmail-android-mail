@@ -127,6 +127,7 @@
   <string name="undo_success_message">操作を取り消しました</string>
   <string name="undo_failure_message">操作の取り消しに失敗しました</string>
   <string name="feature_coming_soon">近日公開予定です。</string>
+  <string name="cancelling_scheduled_send_message">Cancelling…</string>
   <!-- date time picker -->
   <string name="time_picker_custom_time_label">時間</string>
   <string name="time_picker_custom_date_label">日付</string>

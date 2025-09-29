@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">モバイルアプリのカスタマイズ</string>
   <string name="mail_settings_theme">テーマ</string>
   <string name="mail_settings_auto_lock">自動ロック</string>
+  <string name="mail_settings_app_icon">App icon</string>
   <string name="mail_settings_alternative_routing">代替ルーティング</string>
   <string name="mail_settings_app_language">アプリ言語</string>
   <string name="mail_settings_app_language_sys_default">システム標準</string>

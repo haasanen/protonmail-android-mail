@@ -35,19 +35,19 @@
   <string name="upselling_contact_groups_plus_description_override">Адпраўляйце групавыя лісты з лёгкасцю. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Групаванне кантактаў</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Стварайце ўсё неабходнае, каб і далей заставацца арганізаванымі. Атрымайце гэту функцыю і многія іншыя з Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">Стварайце ўсё неабходнае, каб і далей падтрымліваць парадак. Атрымайце гэту функцыю і многія іншыя з Mail Plus. </string>
   <string name="upselling_labels_plus_title">Неабходна больш метак або папак?</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Стварайце ўсё неабходнае, каб і далей заставацца арганізаванымі. Атрымайце гэту функцыю і многія іншыя з Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">Стварайце ўсё неабходнае, каб і далей падтрымліваць парадак. Атрымайце гэту функцыю і многія іншыя з Mail Plus. </string>
   <string name="upselling_folders_plus_title">Неабходна больш метак або папак?</string>
   <!-- Upselling: Mobile Signature -->
   <string name="upselling_mobile_signature_plus_description_override">Зрабіце свой мабільны подпіс. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>
   <string name="upselling_mobile_signature_plus_title">Персаналізуйце свой подпіс</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Выдаляе спам і сметніцу праз 30 дзён. Атрымайце гэту функцыі і многія іншыя з Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_description_override">Выдаляе спам і сметніцу праз 30 дзён. Атрымайце гэту функцыю і многія іншыя з Mail Plus.</string>
   <string name="upselling_auto_delete_plus_title">Аўтаматычнае выдаленне сметніцы</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Наладжвайце, калі будзе адпраўлены ліст. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_description_override">Наладзьце час адпраўкі ліста. Атрымлівайце асалоду ад гэтай функцыяі і многіх іншых з Mail Plus.</string>
   <string name="upselling_schedule_send_plus_title">Заплануйце цяпер, а адпраўце пазней</string>
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Адкладзіце ліст — і ён будзе дастаўлены пазней. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>

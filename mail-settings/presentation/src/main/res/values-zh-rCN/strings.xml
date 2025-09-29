@@ -40,6 +40,7 @@
   <string name="mail_settings_app_hint">移动应用自定义设置</string>
   <string name="mail_settings_theme">主题</string>
   <string name="mail_settings_auto_lock">自动锁定</string>
+  <string name="mail_settings_app_icon">App icon</string>
   <string name="mail_settings_alternative_routing">备用线路</string>
   <string name="mail_settings_app_language">语言</string>
   <string name="mail_settings_app_language_sys_default">跟随系统</string>

@@ -17,6 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="app_icon_name_classic">Clàssic</string>
+  <string name="app_icon_name_dark">Fosc</string>
+  <string name="app_icon_name_retro">Retro</string>
+  <string name="app_icon_name_weather">Temps</string>
+  <string name="app_icon_name_notes">Notes</string>
+  <string name="app_icon_name_calculator">Calculadora</string>
   <string name="dialog_sign_out_account_title">Tanca la sessió</string>
   <string name="dialog_sign_out_account_description">Les dades associades al vostre compte es mantindran en aquest dispositiu tret que decidiu eliminar-les.</string>
   <string name="dialog_sign_out_account_confirm">Tanca la sessió</string>
@@ -42,4 +48,12 @@
   <string name="mailbox_message_scheduling">S\'està planificant el missatge...</string>
   <string name="mailbox_message_scheduling_offline">Fora de línia: missatge a la cua per a la planificació</string>
   <string name="mailbox_message_scheduled_for_sending_success">Aquest missatge s\'enviarà el %1$s.</string>
+  <string name="settings_change_icon_title">Icona de l\'aplicació</string>
+  <string name="settings_change_icon_description">Opteu per una icona discreta per a l\'aplicació de Proton Mail. Les notificacions encara mostraran el nom i la icona de Proton Mail per defecte.</string>
+  <string name="settings_change_icon_confirmation_title">Voleu canviar la icona de l\'aplicació?</string>
+  <string name="settings_change_icon_confirmation_details">Això farà que l\'aplicació de Proton Mail es tanqui i es descartin totes les notificacions.\n\nPer reiniciar Proton Mail, només cal que toqueu la nova icona de l\'aplicació.</string>
+  <string name="settings_change_icon_action_cancel">Cancel·la</string>
+  <string name="settings_change_icon_change_icon">Canvia la icona</string>
+  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
+  <string name="settings_change_icon_header_discreet">Icona discreta de l\'aplicació</string>
 </resources>
