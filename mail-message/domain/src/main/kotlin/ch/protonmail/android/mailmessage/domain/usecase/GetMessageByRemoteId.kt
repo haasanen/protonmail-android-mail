@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -21,16 +21,16 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class ObserveMessage @Inject constructor(
+class GetMessageByRemoteId @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> =
+    operator fun invoke(userId: UserId, messageId: RemoteMessageId): Flow<Either<DataError, Message>> =
         messageRepository.observeMessage(userId, messageId)
 }

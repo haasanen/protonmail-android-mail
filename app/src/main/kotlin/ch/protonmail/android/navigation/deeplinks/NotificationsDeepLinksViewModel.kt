@@ -31,7 +31,7 @@ import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageByRemoteId
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -58,7 +58,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val userSessionRepository: UserSessionRepository,
     private val setPrimaryAccount: SetPrimaryAccount,
-    private val observeMessage: ObserveMessage,
+    private val getMessage: GetMessageByRemoteId,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val isShowSingleMessageMode: IsShowSingleMessageMode
 ) : ViewModel() {
@@ -128,7 +128,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         userId: UserId,
         switchedAccountEmail: String? = null
     ) {
-        observeMessage(userId, remoteMessageId)
+        getMessage(userId, remoteMessageId)
             .distinctUntilChanged()
             .collectLatest { messageResult ->
                 messageResult

@@ -34,7 +34,7 @@ import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample.AlphaAppQAReport
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageByRemoteId
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -70,7 +70,7 @@ internal class NotificationsDeepLinksViewModelTest {
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val setPrimaryAccount = mockk<SetPrimaryAccount>()
-    private val observeMessage = mockk<ObserveMessage>()
+    private val getMessage = mockk<GetMessageByRemoteId>()
     private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId>()
 
     private val isShowSingleMessage = mockk<IsShowSingleMessageMode>()
@@ -85,7 +85,7 @@ internal class NotificationsDeepLinksViewModelTest {
             networkManager = networkManager,
             observePrimaryUserId = observePrimaryUserId,
             userSessionRepository = userSessionRepository,
-            observeMessage = observeMessage,
+            getMessage = getMessage,
             setPrimaryAccount = setPrimaryAccount,
             findLocalSystemLabelId = findLocalSystemLabelId,
             isShowSingleMessageMode = isShowSingleMessage
@@ -303,13 +303,13 @@ internal class NotificationsDeepLinksViewModelTest {
         message: Message
     ) {
         coEvery {
-            observeMessage(userId, remoteMessageId)
+            getMessage(userId, remoteMessageId)
         } returns flowOf(message.right())
     }
 
     private fun expectMessageError(userId: UserId, remoteMessageId: RemoteMessageId) {
         coEvery {
-            observeMessage(userId, remoteMessageId)
+            getMessage(userId, remoteMessageId)
         } returns flowOf(
             DataError.Local.Unknown.left()
         )

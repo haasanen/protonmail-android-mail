@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageByRemoteId
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationDismissPendingIntentData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
@@ -47,7 +47,7 @@ import javax.inject.Inject
 internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : BroadcastReceiver() {
 
     @Inject
-    lateinit var observeMessage: ObserveMessage
+    lateinit var getMessage: GetMessageByRemoteId
 
     @Inject
     lateinit var moveMessage: MoveMessage
@@ -87,7 +87,7 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
         val remoteMessageId = RemoteMessageId(actionData.messageId)
 
         coroutineScope.launch {
-            val message = observeMessage(userId, remoteMessageId)
+            val message = getMessage(userId, remoteMessageId)
                 .firstOrNull()
                 ?.getOrNull()
 
