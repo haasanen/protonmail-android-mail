@@ -304,15 +304,11 @@ internal class NotificationsDeepLinksViewModelTest {
     ) {
         coEvery {
             getMessage(userId, remoteMessageId)
-        } returns flowOf(message.right())
+        } returns message.right()
     }
 
     private fun expectMessageError(userId: UserId, remoteMessageId: RemoteMessageId) {
-        coEvery {
-            getMessage(userId, remoteMessageId)
-        } returns flowOf(
-            DataError.Local.Unknown.left()
-        )
+        coEvery { getMessage(userId, remoteMessageId) } returns DataError.Local.Unknown.left()
     }
 
     private fun expectSingleMessageMode(userId: UserId, value: Boolean) {

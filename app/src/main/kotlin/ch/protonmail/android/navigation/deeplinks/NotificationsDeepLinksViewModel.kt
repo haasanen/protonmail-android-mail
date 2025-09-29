@@ -42,8 +42,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -129,17 +127,13 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         switchedAccountEmail: String? = null
     ) {
         getMessage(userId, remoteMessageId)
-            .distinctUntilChanged()
-            .collectLatest { messageResult ->
-                messageResult
-                    .onLeft {
-                        Timber.e("Unable to fetch message - Navigating to inbox. - $it")
-                        navigateToInbox(userId.id)
-                    }
-                    .onRight { message ->
-                        navigateToDetails(message, userId, switchedAccountEmail)
-                        coroutineContext.cancel()
-                    }
+            .onLeft {
+                Timber.e("Unable to fetch message - Navigating to inbox. - $it")
+                navigateToInbox(userId.id)
+            }
+            .onRight { message ->
+                navigateToDetails(message, userId, switchedAccountEmail)
+                coroutineContext.cancel()
             }
     }
 

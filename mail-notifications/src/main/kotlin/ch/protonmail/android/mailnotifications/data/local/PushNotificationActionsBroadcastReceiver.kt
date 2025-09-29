@@ -36,7 +36,6 @@ import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNoti
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.deserialize
@@ -87,9 +86,7 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
         val remoteMessageId = RemoteMessageId(actionData.messageId)
 
         coroutineScope.launch {
-            val message = getMessage(userId, remoteMessageId)
-                .firstOrNull()
-                ?.getOrNull()
+            val message = getMessage(userId, remoteMessageId).getOrNull()
 
             if (message == null) {
                 Timber.e("Unable to fetch message for action ${actionData.action} - remoteId '$remoteMessageId'")

@@ -93,19 +93,4 @@ internal class ObserveMessageTest {
             awaitComplete()
         }
     }
-
-    @Test
-    fun `returns message when it exists in repository (via remoteMessageId)`() = runTest {
-        // Given
-        val messageId = RemoteMessageId(MessageTestData.RAW_MESSAGE_ID)
-        val message = MessageTestData.message
-        every { repository.observeMessage(userId, messageId) } returns flowOf(message.right())
-
-        // When
-        observeMessage(userId, messageId).test {
-            // Then
-            assertEquals(message.right(), awaitItem())
-            awaitComplete()
-        }
-    }
 }
