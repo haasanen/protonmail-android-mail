@@ -104,7 +104,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
-import ch.protonmail.android.mailmessage.domain.usecase.TerminateMessagePaginator
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
@@ -292,9 +291,6 @@ internal class MailboxViewModelTest {
     private val toolbarRefreshSignal = mockk<ToolbarActionsRefreshSignal> {
         every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
     }
-    private val terminateMessagePaginator = mockk<TerminateMessagePaginator> {
-        coEvery { this@mockk(any()) } returns Unit
-    }
     private val terminateConversationPaginator = mockk<TerminateConversationPaginator> {
         coEvery { this@mockk(any()) } returns Unit
     }
@@ -345,7 +341,6 @@ internal class MailboxViewModelTest {
             observeViewModeChanged = observeViewModeChanged,
             toolbarRefreshSignal = toolbarRefreshSignal,
             terminateConversationPaginator = terminateConversationPaginator,
-            terminateMessagePaginator = terminateMessagePaginator,
             eventLoopRepository = eventLoopRepository
         )
     }
@@ -406,23 +401,6 @@ internal class MailboxViewModelTest {
 
         // Then
         coVerify(exactly = 1) { terminateConversationPaginator.invoke(userId) }
-        coVerify { terminateMessagePaginator wasNot Called }
-    }
-
-    @Test
-    fun `onCleared terminates message paginator when ViewMode is NoConversationGrouping`() = runTest {
-        // Given
-        val initialMailLabel = MailLabelTestData.inboxSystemLabel
-        coEvery { getSelectedMailLabelId.invoke() } returns initialMailLabel.id
-        expectViewModeForCurrentLocation(NoConversationGrouping)
-
-        // When
-        mailboxViewModel.cleanupOnCleared()
-        advanceUntilIdle()
-
-        // Then
-        coVerify(exactly = 1) { terminateMessagePaginator.invoke(userId) }
-        coVerify { terminateConversationPaginator wasNot Called }
     }
 
     @Test

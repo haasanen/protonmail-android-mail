@@ -104,7 +104,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
-import ch.protonmail.android.mailmessage.domain.usecase.TerminateMessagePaginator
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
@@ -191,7 +190,6 @@ class MailboxViewModel @Inject constructor(
     private val observeViewModeChanged: ObserveViewModeChanged,
     private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
     private val terminateConversationPaginator: TerminateConversationPaginator,
-    private val terminateMessagePaginator: TerminateMessagePaginator,
     private val eventLoopRepository: EventLoopRepository
 ) : ViewModel() {
 
@@ -294,7 +292,9 @@ class MailboxViewModel @Inject constructor(
             val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
             when (viewMode) {
                 ViewMode.ConversationGrouping -> terminateConversationPaginator(userId)
-                ViewMode.NoConversationGrouping -> terminateMessagePaginator(userId)
+                ViewMode.NoConversationGrouping -> {
+                    Timber.d("Skip terminating message paginator (singleton scope)")
+                }
             }
         }
     }
