@@ -101,6 +101,8 @@ class RustConversationsQueryImpl @Inject constructor(
                     val followUp = paginatorState?.pendingRequest?.followUpResponse
                     followUp?.awaitWithTimeout(NONE_FOLLOWUP_GRACE_MS, firstResponse) {
                         Timber.d("rust-conversation-query: Follow-up response timed out.")
+
+                        clearPendingRequest()
                     } ?: firstResponse
                 }
             }
@@ -222,6 +224,15 @@ class RustConversationsQueryImpl @Inject constructor(
     private fun invalidateLoadedItems() {
         coroutineScope.launch {
             invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated)
+        }
+    }
+
+    private fun clearPendingRequest() {
+        coroutineScope.launch {
+            paginatorMutex.withLock {
+                paginatorState = paginatorState?.copy(pendingRequest = null)
+                Timber.d("rust-conversation-query: Cleared pending request")
+            }
         }
     }
 
