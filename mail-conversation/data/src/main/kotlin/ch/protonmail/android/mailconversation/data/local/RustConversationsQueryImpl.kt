@@ -34,6 +34,7 @@ import ch.protonmail.android.mailpagination.data.model.scroller.isCompleted
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerCache
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerOnUpdateHandler
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate
+import ch.protonmail.android.mailpagination.data.scroller.itemCount
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
@@ -87,7 +88,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
         Timber.d("rust-conversation-query: Paging: querying ${pageKey.pageToLoad.name} page for conversation")
 
-        return when (pageKey.pageToLoad) {
+        val response = when (pageKey.pageToLoad) {
             PageToLoad.First,
             PageToLoad.Next -> {
                 val deferred = setPendingRequest(RequestType.Append)
@@ -112,6 +113,17 @@ class RustConversationsQueryImpl @Inject constructor(
                 deferred.await()
             }
         }
+
+        response.fold(
+            ifLeft = { error ->
+                Timber.d("rust-conversation-query: Page loading failed with error=%s", error)
+            },
+            ifRight = { conversations ->
+                Timber.d("rust-conversation-query: Page loading completed with %d conversations", conversations.size)
+            }
+        )
+
+        return response
     }
 
     override suspend fun terminatePaginator(userId: UserId) {
@@ -152,17 +164,26 @@ class RustConversationsQueryImpl @Inject constructor(
     private fun conversationsUpdatedCallback(onUpdateHandler: ScrollerOnUpdateHandler<LocalConversation>) =
         object : ConversationScrollerLiveQueryCallback {
             override fun onUpdate(update: ConversationScrollerUpdate) {
-                Timber.d("rust-conversation-query: Received paginator update: ${update.javaClass.simpleName}")
                 coroutineScope.launch {
                     paginatorMutex.withLock {
 
+                        val scrollerUpdate = update.toScrollerUpdate()
+                        Timber.d(
+                            "rust-conversation-query: Received paginator update: %s with %d items, current cache: %d",
+                            update.javaClass.simpleName,
+                            scrollerUpdate.itemCount(),
+                            paginatorState?.scrollerCache?.itemCount() ?: 0
+                        )
+
                         // Update internal cache
                         val snapshot = paginatorState?.scrollerCache?.applyUpdate(
-                            update.toScrollerUpdate()
+                            scrollerUpdate
                         ) ?: emptyList()
                         val pending = paginatorState?.pendingRequest
 
-                        onUpdateHandler.handleUpdate(pending, update.toScrollerUpdate(), snapshot) {
+                        Timber.d("rust-conversation-query: Cache now has ${snapshot.size} items")
+
+                        onUpdateHandler.handleUpdate(pending, scrollerUpdate, snapshot) {
                             // We need to wait for the follow-up response
                             if (pending?.type == RequestType.Append) {
                                 Timber.d("rust-conversation-query: Triggering follow-up after immediate Append None")
