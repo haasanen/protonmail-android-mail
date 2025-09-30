@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import me.proton.android.core.payment.domain.model.ProductDetail
 import me.proton.android.core.payment.domain.usecase.GetAvailableUpgrades
 import me.proton.core.domain.entity.UserId
@@ -78,14 +79,14 @@ class AvailableUpgradesCache @Inject constructor(
             }
         }
 
-        return mutableStateFlow
-            .first { it !is CacheState.Loading }
-            .let { state ->
-                when (state) {
-                    is CacheState.Success -> state.upgrades
-                    else -> emptyList()
-                }
+        return withTimeoutOrNull(COLLECTION_TIMEOUT_MS) {
+            mutableStateFlow.first { it !is CacheState.Loading }
+        }?.let { state ->
+            when (state) {
+                is CacheState.Success -> state.upgrades
+                else -> emptyList()
             }
+        } ?: emptyList()
     }
 
     fun invalidateAll() {
@@ -114,9 +115,14 @@ class AvailableUpgradesCache @Inject constructor(
             val upgrades = getAvailableUpgrades()
             stateFlow.value = CacheState.Success(upgrades)
         } catch (e: Exception) {
-            Timber.e(e, "Failed to load available upgrades")
+            Timber.d(e, "Failed to load available upgrades")
             stateFlow.value = CacheState.Error(e)
         }
+    }
+
+    private companion object {
+
+        const val COLLECTION_TIMEOUT_MS = 15_000L
     }
 }
 
