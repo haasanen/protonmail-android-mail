@@ -41,6 +41,7 @@ include(":shared:core:payment:domain")
 include(":shared:core:payment:presentation")
 include(":shared:core:payment-google:dagger")
 include(":shared:core:payment-google:data")
+include(":shared:core:payment-google:domain")
 include(":shared:core:payment-google:presentation")
 
 includeBuild("build-plugin")

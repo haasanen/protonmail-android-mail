@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.proton.core.utilKotlin)
 
     implementation(project(":shared:core:payment:domain"))
+    implementation(project(":shared:core:payment-google:domain"))
 
     implementation(libs.kotlinx.datetime)
     implementation(libs.javax.inject)

@@ -23,8 +23,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import me.proton.android.core.payment.domain.PaymentManager
 import me.proton.android.core.payment.domain.PurchaseListener
+import me.proton.android.core.payment.google.data.GoogleServicesUtilsImpl
 import me.proton.android.core.payment.google.data.PaymentManagerImpl
 import me.proton.android.core.payment.google.data.PurchaseStoreListener
+import me.proton.android.core.payment.google.domain.GoogleServicesUtils
 import me.proton.android.core.payment.google.presentation.PurchaseOrchestratorImpl
 import me.proton.android.core.payment.presentation.PurchaseOrchestrator
 
@@ -44,5 +46,8 @@ object CorePaymentGoogleModule {
 
         @Binds
         fun providePurchaseStoreListener(purchaseStoreListener: PurchaseStoreListener): PurchaseListener
+
+        @Binds
+        fun bindGoogleServicesUtils(impl: GoogleServicesUtilsImpl): GoogleServicesUtils
     }
 }
