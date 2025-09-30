@@ -33,10 +33,10 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.payment.domain.model.ProductDetail
+import javax.inject.Provider
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -49,21 +49,24 @@ internal class ObserveUpsellingVisibilityTest {
     private val observeUser = mockk<ObserveUser>()
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
 
-    private val mutableFlow = MutableStateFlow(true)
     private val isUpsellEnabled = mockk<FeatureFlag<Boolean>>()
+
+    private val playServicesAvailable = mockk<Provider<Boolean>> {
+        every { this@mockk.get() } returns true
+    }
 
     private lateinit var observeUpselling: ObserveUpsellingVisibility
 
     @BeforeTest
     fun setup() {
         every { observePrimaryUserId() } returns flowOf(UserIdTestData.userId)
-        mutableFlow.tryEmit(true)
 
         observeUpselling = ObserveUpsellingVisibility(
             getPromotionStatus,
             observeMailPlusPlanUpgrades,
             observeUser,
             observePrimaryUserId,
+            playServicesAvailable,
             isUpsellEnabled
         )
     }
@@ -71,6 +74,19 @@ internal class ObserveUpsellingVisibilityTest {
     @AfterTest
     fun teardown() {
         unmockkAll()
+    }
+
+    @Test
+    fun `should return hidden when play services are unavailable`() = runTest {
+        // Given
+        every { playServicesAvailable.get() } returns false
+
+        // When
+        observeUpselling().test {
+            // Then
+            assertEquals(UpsellingVisibility.HIDDEN, awaitItem())
+            awaitComplete()
+        }
     }
 
     @Test

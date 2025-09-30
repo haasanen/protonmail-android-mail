@@ -24,10 +24,12 @@ import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlanUpgrades
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlansError
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.payment.domain.model.ProductDetail
 import me.proton.core.domain.entity.UserId
+import javax.inject.Provider
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -35,8 +37,29 @@ import kotlin.test.assertTrue
 internal class GetUpsellingOnboardingVisibilityTests {
 
     private val getOnboardingPlanUpgrades = mockk<GetOnboardingPlanUpgrades>()
+    private val playServicesAvailable = mockk<Provider<Boolean>> {
+        every { this@mockk.get() } returns true
+    }
 
     private val userId = UserId("user-id")
+
+    @Test
+    fun `should return false when play services are unavailable`() = runTest {
+        // Given
+        val playServicesAvailable = mockk<Provider<Boolean>> {
+            coEvery { this@mockk.get() } returns false
+        }
+
+        // When
+        val actual = GetUpsellingOnboardingVisibility(
+            getOnboardingPlanUpgrades,
+            playServicesAvailable,
+            mockk()
+        ).invoke(userId)
+
+        // Then
+        assertFalse(actual)
+    }
 
     @Test
     fun `should return false when FF is disabled`() = runTest {
@@ -48,6 +71,7 @@ internal class GetUpsellingOnboardingVisibilityTests {
         // When
         val actual = GetUpsellingOnboardingVisibility(
             getOnboardingPlanUpgrades,
+            playServicesAvailable,
             isUpsellEnabled
         ).invoke(userId)
 
@@ -67,6 +91,7 @@ internal class GetUpsellingOnboardingVisibilityTests {
         // When
         val actual = GetUpsellingOnboardingVisibility(
             getOnboardingPlanUpgrades,
+            playServicesAvailable,
             isUpsellEnabled
         ).invoke(userId)
 
@@ -86,6 +111,7 @@ internal class GetUpsellingOnboardingVisibilityTests {
         // When
         val actual = GetUpsellingOnboardingVisibility(
             getOnboardingPlanUpgrades,
+            playServicesAvailable,
             isUpsellEnabled
         ).invoke(userId)
 

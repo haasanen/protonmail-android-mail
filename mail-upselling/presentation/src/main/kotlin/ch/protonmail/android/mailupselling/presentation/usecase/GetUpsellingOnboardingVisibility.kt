@@ -20,14 +20,19 @@ package ch.protonmail.android.mailupselling.presentation.usecase
 
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
+import ch.protonmail.android.mailupselling.domain.annotation.PlayServicesAvailableValue
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlanUpgrades
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
+import javax.inject.Provider
 
 class GetUpsellingOnboardingVisibility @Inject constructor(
     private val getOnboardingUpsellingPlans: GetOnboardingPlanUpgrades,
+    @PlayServicesAvailableValue private val playServicesAvailable: Provider<Boolean>,
     @IsOnboardingUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
 ) {
 
-    suspend operator fun invoke(userId: UserId) = isUpsellEnabled.get() && getOnboardingUpsellingPlans(userId).isRight()
+    suspend operator fun invoke(userId: UserId) = playServicesAvailable.get() &&
+        isUpsellEnabled.get() &&
+        getOnboardingUpsellingPlans(userId).isRight()
 }

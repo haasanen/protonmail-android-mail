@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailupselling.dagger
 
+import ch.protonmail.android.mailupselling.domain.annotation.PlayServicesAvailableValue
 import ch.protonmail.android.mailupselling.domain.annotation.UpsellingCacheScope
 import dagger.Module
 import dagger.Provides
@@ -26,6 +27,8 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import me.proton.android.core.payment.google.domain.GoogleServicesAvailability
+import me.proton.android.core.payment.google.domain.GoogleServicesUtils
 import javax.inject.Singleton
 
 @Module
@@ -36,4 +39,10 @@ object CacheModule {
     @Singleton
     @UpsellingCacheScope
     fun provideScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    @Provides
+    @PlayServicesAvailableValue
+    @Singleton
+    fun providePlayServicesAvailable(gmsUtils: GoogleServicesUtils) =
+        gmsUtils.getPlayServicesAvailability() == GoogleServicesAvailability.Success
 }
