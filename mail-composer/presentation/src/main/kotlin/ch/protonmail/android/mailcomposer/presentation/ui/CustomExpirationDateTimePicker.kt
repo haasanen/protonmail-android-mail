@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
+import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -167,9 +169,12 @@ fun SetCustomExpirationDialog(
     modifier: Modifier = Modifier
 ) {
 
-    val dateFormatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
+    val context = LocalContext.current
+    val dateFormatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL) }
     val formattedDate = remember { datePickerState.getSelectedDate()?.format(dateFormatter) ?: "" }
-    val timeFormatter = remember { SimpleDateFormat("hh:mm a", Locale.current.platformLocale) }
+    val is24HoursFormat = remember { DateFormat.is24HourFormat(context) }
+    val timePattern = if (is24HoursFormat) "HH:mm" else "hh:mm a"
+    val timeFormatter = remember { SimpleDateFormat(timePattern, Locale.current.platformLocale) }
     val formattedTime = remember { mutableStateOf("") }
     val calendar = remember { Calendar.getInstance() }
 
