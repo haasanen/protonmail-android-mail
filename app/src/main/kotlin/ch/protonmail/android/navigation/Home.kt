@@ -54,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -82,6 +83,8 @@ import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSn
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
+import ch.protonmail.android.mailcomposer.presentation.mapper.SendErrorReasonMapper
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -317,13 +320,13 @@ fun Home(
         snackbarHost.showSnackbar(message = sendingMessageOfflineText, type = ProtonSnackbarType.NORM)
     }
 
-    val errorSendingMessageText = stringResource(id = R.string.mailbox_message_sending_error)
+    val context = LocalContext.current
     val errorSendingMessageActionText = stringResource(id = R.string.mailbox_message_sending_error_action)
-    fun showErrorSendingMessageSnackbar() = scope.launch {
+    fun showErrorSendingMessageSnackbar(reason: SendErrorReason) = scope.launch {
         val shouldShowAction = viewModel.shouldNavigateToDraftsOnSendingFailure(navController.currentDestination)
         val result = snackbarHost.showSnackbar(
             type = ProtonSnackbarType.ERROR,
-            message = errorSendingMessageText,
+            message = SendErrorReasonMapper.toSendErrorMessage(context, reason),
             actionLabel = if (shouldShowAction) errorSendingMessageActionText else null,
             duration = if (shouldShowAction) SnackbarDuration.Long else SnackbarDuration.Short
         )
@@ -347,7 +350,7 @@ fun Home(
                 viewModel.confirmMessageAsSeen(sendingStatus.messageId)
             }
 
-            is MessageSendingStatus.SendMessageError -> showErrorSendingMessageSnackbar()
+            is MessageSendingStatus.SendMessageError -> showErrorSendingMessageSnackbar(sendingStatus.reason)
             is MessageSendingStatus.NoStatus -> {}
             is MessageSendingStatus.MessageSentUndoable -> {
                 showMessageSentWithUndoSnackbar(sendingStatus.messageId)

@@ -165,4 +165,7 @@
     <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
     <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>
     <string name="composer_error_send_draft_package_error">Problem sending message. Please try again.</string>
+    <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
+    <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
+    <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
 </resources>
