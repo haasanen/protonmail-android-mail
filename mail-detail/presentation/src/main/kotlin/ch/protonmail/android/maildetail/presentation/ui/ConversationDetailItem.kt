@@ -24,6 +24,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -139,33 +140,39 @@ fun ConversationDetailItem(
 
 @Composable
 private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    ElevatedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .border(
-                width = MailDimens.DefaultBorder,
-                color = ProtonTheme.colors.borderNorm,
-                shape = ProtonTheme.shapes.conversation
-            )
-            .shadow(
-                elevation = if (isSystemInDarkTheme()) {
-                    ProtonDimens.ShadowElevation.Raised
-                } else {
-                    ProtonDimens.ShadowElevation.Lifted
-                },
-                shape = ProtonTheme.shapes.conversation,
-                ambientColor = ProtonTheme.colors.shadowSoft,
-                spotColor = ProtonTheme.colors.shadowSoft
+    // ET-4775 box is added here to hide the bottom corners of the top card until there is a fix to the android bug -
+    // we cannot add a card shape with bottom radii at 0
+    Box(Modifier.background(ProtonTheme.colors.backgroundNorm)) {
+        ElevatedCard(
+            modifier = modifier
+                .fillMaxWidth()
+                .border(
+                    width = MailDimens.DefaultBorder,
+                    color = ProtonTheme.colors.borderNorm,
+                    // attention here, there is a bug in the Card and we cannot use shapes.conversations for now
+                    // This bug causes unreactive buttons on long messages (reply, reply all etc do not respond)
+                    shape = ProtonTheme.shapes.large
+                )
+                .shadow(
+                    elevation = if (isSystemInDarkTheme()) {
+                        ProtonDimens.ShadowElevation.Raised
+                    } else {
+                        ProtonDimens.ShadowElevation.Lifted
+                    },
+                    shape = ProtonTheme.shapes.large,
+                    ambientColor = ProtonTheme.colors.shadowSoft,
+                    spotColor = ProtonTheme.colors.shadowSoft
+                ),
+            shape = ProtonTheme.shapes.large,
+            colors = CardDefaults.elevatedCardColors(
+                containerColor = ProtonTheme.colors.backgroundNorm
             ),
-        shape = ProtonTheme.shapes.conversation,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = ProtonTheme.colors.backgroundNorm
-        ),
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = MailDimens.ConversationCollapseHeaderElevation
-        ),
-        content = content
-    )
+            elevation = CardDefaults.elevatedCardElevation(
+                defaultElevation = MailDimens.ConversationCollapseHeaderElevation
+            ),
+            content = content
+        )
+    }
 }
 
 @Composable

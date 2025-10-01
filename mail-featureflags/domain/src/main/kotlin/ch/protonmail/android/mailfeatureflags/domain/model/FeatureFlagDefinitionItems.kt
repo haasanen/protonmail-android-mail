@@ -29,9 +29,25 @@ data object DebugInspectDbEnabled : FeatureFlagDefinition(
 data object UpsellingEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7Upselling",
     name = "Enable Feature Upsell",
-    category = FeatureFlagCategory.Global,
+    category = FeatureFlagCategory.Upselling,
     description = "Makes the upsell flow available for all supported entry points",
-    defaultValue = true
+    defaultValue = false
+)
+
+data object OnboardingUpsellingEnabled : FeatureFlagDefinition(
+    key = "MailAndroidV7OnboardingUpselling",
+    name = "Enable Onboarding Upsell",
+    category = FeatureFlagCategory.Upselling,
+    description = "Makes the upsell flow available during the onboarding",
+    defaultValue = false
+)
+
+data object AndroidDnsMultithread : FeatureFlagDefinition(
+    key = "MailAndroidV7DnsMultithread",
+    name = "Enable concurrent DNS resolutions",
+    category = FeatureFlagCategory.Global,
+    description = "Allow parallel execution of DNS callbacks",
+    defaultValue = false
 )
 
 data object MessageExpirationEnabled : FeatureFlagDefinition(

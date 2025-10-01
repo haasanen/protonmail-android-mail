@@ -39,6 +39,8 @@ import uniffi.proton_mail_uniffi.MoveAction
 
 interface RustConversationDataSource {
 
+    suspend fun terminatePaginator(userId: UserId)
+
     suspend fun observeConversation(
         userId: UserId,
         conversationId: LocalConversationId,

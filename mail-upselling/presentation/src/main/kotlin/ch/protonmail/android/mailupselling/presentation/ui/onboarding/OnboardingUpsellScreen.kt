@@ -20,14 +20,24 @@ package ch.protonmail.android.mailupselling.presentation.ui.onboarding
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -42,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonHorizontallyCenteredProgress
@@ -74,15 +85,50 @@ fun OnboardingUpsellScreen(onDismiss: () -> Unit, onError: (String) -> Unit) {
                 onError = onError
             )
 
-            is OnboardingUpsellState.Loading -> Column {
-                ProtonHorizontallyCenteredProgress(
-                    modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large)
-                )
-                BottomNavigationBarSpacer()
-            }
+            is OnboardingUpsellState.Loading -> OnboardingUpsellLoadingScreen(onDismiss)
 
             is OnboardingUpsellState.Error -> onDismiss()
         }
+    }
+}
+
+@Composable
+private fun OnboardingUpsellLoadingScreen(onDismiss: () -> Unit) {
+    Column {
+        Box {
+            IconButton(
+                modifier = Modifier
+                    .padding(ProtonDimens.Spacing.Tiny)
+                    .align(alignment = Alignment.TopEnd)
+                    .zIndex(1f),
+                onClick = onDismiss
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(UpsellingLayoutValues.closeButtonSize)
+                        .background(
+                            color = if (isSystemInDarkTheme()) {
+                                UpsellingLayoutValues.closeButtonBackgroundColor
+                            } else {
+                                UpsellingLayoutValues.closeButtonLightBackgroundColor
+                            },
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        tint = ProtonTheme.colors.iconNorm,
+                        contentDescription = stringResource(R.string.upselling_close_button_content_description)
+                    )
+                }
+            }
+        }
+
+        ProtonHorizontallyCenteredProgress(
+            modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large)
+        )
+        BottomNavigationBarSpacer()
     }
 }
 
@@ -107,12 +153,34 @@ private fun OnboardingUpsellScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text(
-            modifier = Modifier.padding(ProtonDimens.Spacing.Large),
-            text = stringResource(R.string.upselling_onboarding_choose_plan),
-            style = ProtonTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = ProtonDimens.Spacing.Large),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                modifier = Modifier,
+                onClick = onDismiss
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    tint = ProtonTheme.colors.iconNorm,
+                    contentDescription = stringResource(R.string.upselling_close_button_content_description)
+                )
+            }
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(),
+                text = stringResource(R.string.upselling_onboarding_choose_plan),
+                style = ProtonTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Spacer(modifier = Modifier.padding(end = ProtonDimens.Spacing.Large))
+        }
 
         PrimaryTabRow(
             selectedTabIndex = selectedTabIndex,
@@ -197,6 +265,15 @@ fun OnboardingUpsellScreenPreview() {
             onDismiss = {},
             onError = {}
         )
+    }
+}
+
+@Composable
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = false)
+fun OnboardingUpsellLoadingScreenPreview() {
+    ProtonTheme {
+        OnboardingUpsellLoadingScreen { }
     }
 }
 

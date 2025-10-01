@@ -346,6 +346,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     ComposerForm(
                         modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
                         changeFocusToField = effectsState.changeFocusToField,
+                        initialFocusField = mainState.initialFocusedField,
                         actions = ComposerForm.Actions(
                             onBodyChanged = { newBody ->
                                 viewModel.bodyTextField.replaceText(newBody)

@@ -21,17 +21,28 @@ package ch.protonmail.android.mailcomposer.presentation.reducer.modifications
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import kotlinx.collections.immutable.toImmutableList
 
 internal sealed interface MainStateModification : ComposerStateModification<ComposerState.Main> {
 
-    data class OnDraftReady(val draftUiModel: DraftUiModel) : MainStateModification {
+    data class OnDraftReady(
+        val draftUiModel: DraftUiModel,
+        val bodyShouldTakeFocus: Boolean
+    ) : MainStateModification {
 
-        override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(
-            sender = SenderUiModel(draftUiModel.draftFields.sender.value),
-            draftType = draftUiModel.draftFields.mimeType
-        )
+        override fun apply(state: ComposerState.Main): ComposerState.Main {
+            val base = state.copy(
+                sender = SenderUiModel(draftUiModel.draftFields.sender.value),
+                draftType = draftUiModel.draftFields.mimeType
+            )
+            return if (bodyShouldTakeFocus) {
+                base.copy(initialFocusedField = FocusedFieldType.BODY)
+            } else {
+                base
+            }
+        }
     }
 
     data class UpdateLoading(val value: ComposerState.LoadingType) : MainStateModification {

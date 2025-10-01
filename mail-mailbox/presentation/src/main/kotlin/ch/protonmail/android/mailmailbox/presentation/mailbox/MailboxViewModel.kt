@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import java.util.Collections
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
@@ -34,6 +35,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
+import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -50,6 +52,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
+import ch.protonmail.android.mailconversation.domain.usecase.TerminateConversationPaginator
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -108,6 +111,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAc
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -115,6 +119,7 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPref
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -138,10 +143,12 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.DispatcherProvider
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.collections.map
 
 @HiltViewModel
 @SuppressWarnings("LongParameterList", "TooManyFunctions", "LargeClass")
 class MailboxViewModel @Inject constructor(
+    @AppScope private val appScope: CoroutineScope,
     private val mailboxPagerFactory: MailboxPagerFactory,
     private val getCurrentViewModeForLabel: GetCurrentViewModeForLabel,
     observePrimaryUserId: ObservePrimaryUserId,
@@ -181,7 +188,9 @@ class MailboxViewModel @Inject constructor(
     private val deleteAllMessagesInLocation: DeleteAllMessagesInLocation,
     private val observePageInvalidationEvents: ObservePageInvalidationEvents,
     private val observeViewModeChanged: ObserveViewModeChanged,
-    private val toolbarRefreshSignal: ToolbarActionsRefreshSignal
+    private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
+    private val terminateConversationPaginator: TerminateConversationPaginator,
+    private val eventLoopRepository: EventLoopRepository
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
@@ -270,6 +279,26 @@ class MailboxViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    override fun onCleared() {
+        Timber.d("MailboxViewModel onCleared")
+        cleanupOnCleared()
+        super.onCleared()
+    }
+
+    @VisibleForTesting
+    internal fun cleanupOnCleared() {
+        appScope.launch {
+            val userId = primaryUserId.first()
+            val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
+            when (viewMode) {
+                ViewMode.ConversationGrouping -> terminateConversationPaginator(userId)
+                ViewMode.NoConversationGrouping -> {
+                    Timber.d("Skip terminating message paginator (singleton scope)")
+                }
+            }
+        }
+    }
+
     private fun handleSwipeActionPreferences(userId: UserId, currentMailLabel: MailLabel): Flow<MailboxEvent> {
         return observeSwipeActionsPreference(userId)
             .map { swipeActionsPreference ->
@@ -296,7 +325,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.OnAvatarImageLoadRequested -> handleOnAvatarImageLoadRequested(viewAction.item)
                 is MailboxViewAction.OnAvatarImageLoadFailed -> handleOnAvatarImageLoadFailed(viewAction.item)
                 is MailboxViewAction.OnItemLongClicked -> handleItemLongClick(viewAction.item)
-                is MailboxViewAction.Refresh -> emitNewStateFrom(viewAction)
+                is MailboxViewAction.Refresh -> handlePullToRefresh(viewAction)
                 is MailboxViewAction.RefreshCompleted -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.ItemClicked -> handleItemClick(viewAction.item)
                 is MailboxViewAction.OnOfflineWithData -> emitNewStateFrom(viewAction)
@@ -343,6 +372,11 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SignalLabelAsCompleted -> handleLabelAsCompleted(viewAction)
             }
         }
+    }
+
+    private suspend fun handlePullToRefresh(viewAction: MailboxViewAction.Refresh) {
+        emitNewStateFrom(viewAction)
+        eventLoopRepository.trigger(primaryUserId.first())
     }
 
     private fun handleRequestAttachment(action: MailboxViewAction.RequestAttachment) {

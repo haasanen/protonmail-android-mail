@@ -28,7 +28,7 @@ import io.sentry.Hint
 import io.sentry.SentryEvent
 import javax.inject.Inject
 
-private const val MAX_BYTES = 16 * 1024
+private const val MAX_BYTES = 256 * 1024
 
 class RustLogsAttachmentProcessor @Inject constructor(
     @RustLogsFileHandler

@@ -22,8 +22,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import ch.protonmail.android.mailcommon.data.worker.CancelWorkManagerWork
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toJavaDuration
 
 class BackgroundExecutionWorkScheduler @Inject constructor(
     private val enqueuer: Enqueuer,
@@ -35,12 +33,11 @@ class BackgroundExecutionWorkScheduler @Inject constructor(
             workerId = WORKER_ID,
             tag = BACKGROUND_WORK_TAG,
             worker = BackgroundExecutionWorker::class.java,
-            existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE,
-            initialDelay = 30.seconds.toJavaDuration()
+            existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
         )
     }
 
-    fun cancelPendingWork() {
+    suspend fun cancelPendingWork() {
         cancelWorkManagerWork.cancelAllWorkByTag(BACKGROUND_WORK_TAG)
     }
 

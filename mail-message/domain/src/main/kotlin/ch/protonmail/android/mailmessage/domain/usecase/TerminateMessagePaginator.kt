@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.local
+package ch.protonmail.android.mailmessage.domain.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.mailpagination.domain.model.PaginationError
+import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.Message
+import javax.inject.Inject
 
-interface RustMessageListQuery {
-    suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>>
-    suspend fun terminatePaginator(userId: UserId)
+class TerminateMessagePaginator @Inject constructor(
+    private val messageRepository: MessageRepository
+) {
+    suspend operator fun invoke(userId: UserId) = messageRepository.terminatePaginator(userId)
 }
+

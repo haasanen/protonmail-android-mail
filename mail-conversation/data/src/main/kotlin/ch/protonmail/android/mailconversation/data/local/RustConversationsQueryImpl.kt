@@ -114,6 +114,16 @@ class RustConversationsQueryImpl @Inject constructor(
         }
     }
 
+    override suspend fun terminatePaginator(userId: UserId) {
+        if (paginatorState?.pageDescriptor?.userId == userId) {
+            paginatorMutex.withLock {
+                destroy()
+            }
+        } else {
+            Timber.d("rust-conversation-query: Not terminating paginator, userId does not match")
+        }
+    }
+
     private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {
 
         Timber.d("rust-conversation-query: [destroy and] initialize paginator instance...")
@@ -160,10 +170,9 @@ class RustConversationsQueryImpl @Inject constructor(
                             }
                         }
 
-                        if (paginatorState?.pendingRequest != null &&
-                            paginatorState?.pendingRequest?.isCompleted() == true
-                        ) {
-
+                        if (paginatorState?.pendingRequest == null) {
+                            Timber.d("rust-conversation-query: No pending request")
+                        } else if (paginatorState?.pendingRequest?.isCompleted() == true) {
                             Timber.d("rust-conversation-query: Clearing completed pending request")
                             paginatorState = paginatorState?.copy(pendingRequest = null)
                         } else {
@@ -180,9 +189,13 @@ class RustConversationsQueryImpl @Inject constructor(
             pageKey.pageToLoad == PageToLoad.First
 
     private fun destroy() {
-        Timber.d("rust-conversation-query: disconnecting and destroying watcher")
-        paginatorState?.paginatorWrapper?.disconnect()
-        paginatorState = null
+        if (paginatorState == null) {
+            Timber.d("rust-conversation-query: no paginator to destroy")
+        } else {
+            Timber.d("rust-conversation-query: disconnecting and destroying paginator")
+            paginatorState?.paginatorWrapper?.disconnect()
+            paginatorState = null
+        }
     }
 
     private fun invalidateLoadedItems() {

@@ -20,8 +20,10 @@ package ch.protonmail.android.initializer.background
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import ch.protonmail.android.mailsession.data.background.BackgroundExecutionWorkScheduler
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RustWorkLifecycleObserver @Inject constructor(
@@ -29,9 +31,11 @@ class RustWorkLifecycleObserver @Inject constructor(
     private val backgroundExecutionWorkScheduler: BackgroundExecutionWorkScheduler
 ) : DefaultLifecycleObserver {
 
-    override fun onResume(owner: LifecycleOwner) {
-        backgroundExecutionWorkScheduler.cancelPendingWork()
-        onRustEnterForeground()
+    override fun onStart(owner: LifecycleOwner) {
+        owner.lifecycleScope.launch {
+            backgroundExecutionWorkScheduler.cancelPendingWork()
+            onRustEnterForeground()
+        }
     }
 
     override fun onStop(owner: LifecycleOwner) {

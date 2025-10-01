@@ -60,7 +60,6 @@ internal class StartBackgroundExecutionTest {
         startBackgroundExecution().test {
             callback.captured.onExecutionCompleted(BackgroundExecutionResult(BackgroundExecutionStatus.Executed, false))
             assertEquals(BackgroundExecutionStatus.Executed, awaitItem())
-            awaitComplete()
         }
 
         // Then

@@ -30,4 +30,6 @@ interface RustConversationsQuery {
         userId: UserId,
         pageKey: PageKey.DefaultPageKey
     ): Either<PaginationError, List<LocalConversation>>
+
+    suspend fun terminatePaginator(userId: UserId)
 }

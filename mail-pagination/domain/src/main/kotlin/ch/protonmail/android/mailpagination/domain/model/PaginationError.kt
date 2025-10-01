@@ -21,7 +21,7 @@ package ch.protonmail.android.mailpagination.domain.model
 import ch.protonmail.android.mailcommon.domain.model.DataError
 
 sealed interface PaginationError {
-    data object DirtyPaginationData : PaginationError
+    data object PaginationDataNotSynced : PaginationError
     data object NonProcessableActions : PaginationError
     data object Offline : PaginationError
     data class Other(val error: DataError) : PaginationError

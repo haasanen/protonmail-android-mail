@@ -26,6 +26,14 @@ annotation class IsUpsellEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class IsOnboardingUpsellEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsMultithreadDnsDispatcherEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class IsDebugInspectDbEnabled
 
 @Qualifier

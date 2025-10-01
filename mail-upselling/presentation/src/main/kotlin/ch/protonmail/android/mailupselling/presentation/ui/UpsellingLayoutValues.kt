@@ -32,6 +32,7 @@ internal object UpsellingLayoutValues {
     val closeButtonSize = 32.dp
     val closeButtonColor = Color.White
     val closeButtonBackgroundColor = Color.White.copy(alpha = 0.08f)
+    val closeButtonLightBackgroundColor = Color.Black.copy(alpha = 0.08f)
 
     val imageHeight = 140.dp
 

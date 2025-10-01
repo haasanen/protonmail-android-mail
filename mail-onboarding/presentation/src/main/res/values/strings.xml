@@ -19,7 +19,7 @@
 <resources>
     <!--  New Onboarding 1  -->
     <string name="onboarding_welcome_title">Welcome to Proton Mail, where privacy is default</string>
-    <string name="onboarding_welcome_description">Enjoy encrypted messages, fewer spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
+    <string name="onboarding_welcome_description">Enjoy encrypted messages, less spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
     <!--  New Onboarding 2  -->
     <string name="onboarding_rebuilt_title">Focus at your fingertips</string>
     <string name="onboarding_rebuilt_description">Spend less time sorting and more time doing. Your inbox is designed to be easier to navigate, so you can get to what’s important faster.</string>

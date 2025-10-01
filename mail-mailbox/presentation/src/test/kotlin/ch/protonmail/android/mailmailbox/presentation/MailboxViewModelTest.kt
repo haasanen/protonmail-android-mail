@@ -46,6 +46,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
+import ch.protonmail.android.mailconversation.domain.usecase.TerminateConversationPaginator
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -108,6 +109,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
@@ -130,6 +132,7 @@ import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import ch.protonmail.android.testdata.user.UserIdTestData.userId1
 import io.mockk.Called
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -150,6 +153,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -287,9 +291,15 @@ internal class MailboxViewModelTest {
     private val toolbarRefreshSignal = mockk<ToolbarActionsRefreshSignal> {
         every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
     }
+    private val terminateConversationPaginator = mockk<TerminateConversationPaginator> {
+        coEvery { this@mockk(any()) } returns Unit
+    }
+    private val eventLoopRepository = mockk<EventLoopRepository>()
+    private val scope = TestScope(UnconfinedTestDispatcher())
 
     private val mailboxViewModel by lazy {
         MailboxViewModel(
+            appScope = scope,
             mailboxPagerFactory = pagerFactory,
             getCurrentViewModeForLabel = getCurrentViewModeForLabel,
             observePrimaryUserId = observePrimaryUserId,
@@ -329,7 +339,9 @@ internal class MailboxViewModelTest {
             getAttachmentIntentValues = getAttachmentIntentValues,
             observePageInvalidationEvents = observePageInvalidationEvents,
             observeViewModeChanged = observeViewModeChanged,
-            toolbarRefreshSignal = toolbarRefreshSignal
+            toolbarRefreshSignal = toolbarRefreshSignal,
+            terminateConversationPaginator = terminateConversationPaginator,
+            eventLoopRepository = eventLoopRepository
         )
     }
 
@@ -374,6 +386,21 @@ internal class MailboxViewModelTest {
 
             verify { pagerFactory wasNot Called }
         }
+    }
+
+    @Test
+    fun `onCleared terminates conversation paginator when ViewMode is ConversationGrouping`() = runTest {
+        // Given
+        val initialMailLabel = MailLabelTestData.inboxSystemLabel
+        coEvery { getSelectedMailLabelId.invoke() } returns initialMailLabel.id
+        expectViewModeForCurrentLocation(ConversationGrouping)
+
+        // When
+        mailboxViewModel.cleanupOnCleared()
+        advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 1) { terminateConversationPaginator.invoke(userId) }
     }
 
     @Test
@@ -1241,7 +1268,7 @@ internal class MailboxViewModelTest {
     }
 
     @Test
-    fun `when refresh action is submitted, new state is produced and emitted`() = runTest {
+    fun `when refresh action is submitted, event loop is triggered and new state is produced and emitted`() = runTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
@@ -1262,12 +1289,14 @@ internal class MailboxViewModelTest {
                 MailboxViewAction.Refresh
             )
         } returns expectedState
+        coEvery { eventLoopRepository.trigger(userId) } just Runs
 
         // When
         mailboxViewModel.submit(MailboxViewAction.Refresh)
         mailboxViewModel.state.test {
             // Then
             assertEquals(expectedState, awaitItem())
+            coVerify { eventLoopRepository.trigger(userId) }
         }
     }
 

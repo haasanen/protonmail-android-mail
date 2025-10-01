@@ -31,7 +31,7 @@ import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageByRemoteId
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -42,8 +42,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -58,7 +56,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val userSessionRepository: UserSessionRepository,
     private val setPrimaryAccount: SetPrimaryAccount,
-    private val observeMessage: ObserveMessage,
+    private val getMessage: GetMessageByRemoteId,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val isShowSingleMessageMode: IsShowSingleMessageMode
 ) : ViewModel() {
@@ -128,18 +126,14 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         userId: UserId,
         switchedAccountEmail: String? = null
     ) {
-        observeMessage(userId, remoteMessageId)
-            .distinctUntilChanged()
-            .collectLatest { messageResult ->
-                messageResult
-                    .onLeft {
-                        Timber.e("Unable to fetch message - Navigating to inbox. - $it")
-                        navigateToInbox(userId.id)
-                    }
-                    .onRight { message ->
-                        navigateToDetails(message, userId, switchedAccountEmail)
-                        coroutineContext.cancel()
-                    }
+        getMessage(userId, remoteMessageId)
+            .onLeft {
+                Timber.e("Unable to fetch message - Navigating to inbox. - $it")
+                navigateToInbox(userId.id)
+            }
+            .onRight { message ->
+                navigateToDetails(message, userId, switchedAccountEmail)
+                coroutineContext.cancel()
             }
     }
 

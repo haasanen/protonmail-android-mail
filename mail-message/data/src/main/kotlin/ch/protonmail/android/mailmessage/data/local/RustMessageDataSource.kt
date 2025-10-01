@@ -42,6 +42,8 @@ import uniffi.proton_mail_uniffi.ThemeOpts
 @Suppress("ComplexInterface", "TooManyFunctions")
 interface RustMessageDataSource {
 
+    suspend fun terminatePaginator(userId: UserId)
+
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalMessageMetadata>
     suspend fun getMessage(userId: UserId, messageId: RemoteMessageId): Either<DataError, LocalMessageMetadata>
 

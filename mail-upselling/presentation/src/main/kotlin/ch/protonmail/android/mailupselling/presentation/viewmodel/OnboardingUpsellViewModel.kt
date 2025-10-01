@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailsession.domain.model.hasSubscription
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUser
@@ -42,7 +42,7 @@ internal class OnboardingUpsellViewModel @Inject constructor(
     observePrimaryUser: ObservePrimaryUser,
     private val onboardingUpsellReducer: OnboardingUpsellingReducer,
     private val getOnboardingPlanUpgrades: GetOnboardingPlanUpgrades,
-    @IsUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
+    @IsOnboardingUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
 ) : ViewModel() {
 
     val state: StateFlow<OnboardingUpsellState> = observePrimaryUser()
@@ -52,10 +52,11 @@ internal class OnboardingUpsellViewModel @Inject constructor(
                     OnboardingUpsellEvent.LoadingError.NoUserId
                 )
 
-            if (!isUpsellEnabled.get())
+            if (!isUpsellEnabled.get()) {
                 return@mapLatest onboardingUpsellReducer.newStateFrom(
                     OnboardingUpsellEvent.UnsupportedFlow.NotEnabled
                 )
+            }
 
             if (user.hasSubscription()) {
                 return@mapLatest onboardingUpsellReducer.newStateFrom(

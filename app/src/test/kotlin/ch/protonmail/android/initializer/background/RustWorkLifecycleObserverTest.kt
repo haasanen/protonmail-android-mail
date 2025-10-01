@@ -18,9 +18,11 @@
 
 package ch.protonmail.android.initializer.background
 
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.testing.TestLifecycleOwner
 import ch.protonmail.android.mailsession.data.background.BackgroundExecutionWorkScheduler
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
@@ -28,40 +30,50 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import io.mockk.verify
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import me.proton.core.test.kotlin.TestDispatcherProvider
+import org.junit.Rule
 import kotlin.test.Test
 
 internal class RustWorkLifecycleObserverTest {
+
+    val dispatcher = TestDispatcherProvider().Main
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule(dispatcher)
 
     private val scheduler = mockk<BackgroundExecutionWorkScheduler>()
     private val mailSessionRepository = mockk<MailSessionRepository>()
     private val observer = RustWorkLifecycleObserver(mailSessionRepository, scheduler)
 
-    private val lifecycleOwner = mockk<LifecycleOwner>()
-
     @Test
-    fun `should cancel background execution and resume work when onResume is triggered`() {
+    fun `should cancel background execution and resume work when onStart is triggered`() = runTest {
         // Given
-        every { scheduler.cancelPendingWork() } just runs
+        coEvery { scheduler.cancelPendingWork() } just runs
         every { mailSessionRepository.getMailSession().onEnterForeground() } just runs
+        val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.CREATED, dispatcher)
 
         // When
-        observer.onResume(lifecycleOwner)
+        observer.onStart(lifecycleOwner)
+        advanceUntilIdle()
 
         // Then
-        verify(exactly = 1) { scheduler.cancelPendingWork() }
+        coVerify(exactly = 1) { scheduler.cancelPendingWork() }
         coVerify(exactly = 1) { mailSessionRepository.getMailSession().onEnterForeground() }
         confirmVerified(mailSessionRepository, scheduler)
     }
 
     @Test
-    fun `should schedule background execution and pause work when onStop is triggered`() {
+    fun `should schedule background execution and pause work when onStop is triggered`() = runTest {
         // Given
         coEvery { scheduler.scheduleWork() } just runs
         every { mailSessionRepository.getMailSession().onExitForeground() } just runs
+        val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.CREATED, dispatcher)
 
         // When
         observer.onStop(lifecycleOwner)
+        advanceUntilIdle()
 
         // Then
         coVerify(exactly = 1) { scheduler.scheduleWork() }

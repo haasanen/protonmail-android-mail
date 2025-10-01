@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageByRemoteId
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationDismissPendingIntentData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
@@ -36,7 +36,6 @@ import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNoti
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.deserialize
@@ -47,7 +46,7 @@ import javax.inject.Inject
 internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : BroadcastReceiver() {
 
     @Inject
-    lateinit var observeMessage: ObserveMessage
+    lateinit var getMessage: GetMessageByRemoteId
 
     @Inject
     lateinit var moveMessage: MoveMessage
@@ -87,9 +86,7 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
         val remoteMessageId = RemoteMessageId(actionData.messageId)
 
         coroutineScope.launch {
-            val message = observeMessage(userId, remoteMessageId)
-                .firstOrNull()
-                ?.getOrNull()
+            val message = getMessage(userId, remoteMessageId).getOrNull()
 
             if (message == null) {
                 Timber.e("Unable to fetch message for action ${actionData.action} - remoteId '$remoteMessageId'")
