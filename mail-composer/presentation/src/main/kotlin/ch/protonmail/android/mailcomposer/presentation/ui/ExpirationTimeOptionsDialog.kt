@@ -36,13 +36,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withLink
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
-import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.component.ProtonDialogTitle
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.ui.isLandscape
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
@@ -84,7 +90,7 @@ private fun ExpirationTimeTitle() {
         if (!isLandscape()) {
             Spacer(Modifier.size(ProtonDimens.Spacing.Large))
 
-            ProtonAlertDialogText(textResId = R.string.composer_expiration_time_bottom_sheet_description)
+            ExpirationTimeDialogText()
         }
     }
 }
@@ -145,6 +151,40 @@ private fun SelectableExpirationTimeItem(
             )
         }
     }
+}
+
+@Composable
+private fun ExpirationTimeDialogText(modifier: Modifier = Modifier) {
+    val text = stringResource(R.string.composer_expiration_time_bottom_sheet_description)
+    val linkText = stringResource(R.string.composer_expiration_time_learn_more)
+    val linkUrl = "https://proton.me/support/expiration/"
+    val linkColor = ProtonTheme.colors.interactionBrandDefaultNorm
+
+    val annotatedString = remember(text, linkText) {
+        buildAnnotatedString {
+            append(text)
+            append(" ")
+            withLink(
+                LinkAnnotation.Url(
+                    url = linkUrl,
+                    styles = TextLinkStyles(
+                        style = SpanStyle(
+                            color = linkColor,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    )
+                )
+            ) {
+                append(linkText)
+            }
+        }
+    }
+
+    Text(
+        text = annotatedString,
+        style = ProtonTheme.typography.bodyMediumWeak,
+        modifier = modifier
+    )
 }
 
 @Composable

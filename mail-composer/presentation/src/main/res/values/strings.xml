@@ -67,11 +67,11 @@
     <string name="composer_button_set_expiration">Set expiration time</string>
     <string name="composer_expiration_time_bottom_sheet_title">Message expiration</string>
     <string name="composer_expiration_time_bottom_sheet_done">Set</string>
-    <string name="composer_bottom_bar_expiration_time_none">None</string>
-    <string name="composer_bottom_bar_expiration_time_one_hour">1 hour</string>
-    <string name="composer_bottom_bar_expiration_time_one_day">1 day</string>
-    <string name="composer_bottom_bar_expiration_time_three_days">3 days</string>
-    <string name="composer_bottom_bar_expiration_time_one_week">1 week</string>
+    <string name="composer_bottom_bar_expiration_time_none">Never expires</string>
+    <string name="composer_bottom_bar_expiration_time_one_hour">After 1 hour</string>
+    <string name="composer_bottom_bar_expiration_time_one_day">After 1 day</string>
+    <string name="composer_bottom_bar_expiration_time_three_days">After 3 days</string>
+    <string name="composer_bottom_bar_expiration_time_one_week">After 1 week</string>
     <string name="composer_bottom_bar_expiration_time_custom">On specific date</string>
     <string name="composer_error_setting_expiration_time">Setting expiration time failed</string>
     <!-- Send expiring message to external recipients dialog -->
@@ -168,4 +168,5 @@
     <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
     <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
     <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
+    <string name="composer_expiration_time_learn_more">Learn more</string>
 </resources>
