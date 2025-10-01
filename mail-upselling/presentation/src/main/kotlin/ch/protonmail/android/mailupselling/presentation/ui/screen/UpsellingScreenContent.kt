@@ -244,10 +244,9 @@ internal fun UpsellingScreenContent(
                     modifier = Modifier
                         .padding(ProtonDimens.Spacing.Tiny)
                         .padding(
-                            top = WindowInsets.safeDrawing
-                                .only(WindowInsetsSides.Top)
+                            WindowInsets.safeDrawing
+                                .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                                 .asPaddingValues()
-                                .calculateTopPadding()
                         )
                         .align(alignment = Alignment.TopEnd)
                         .zIndex(1f),
