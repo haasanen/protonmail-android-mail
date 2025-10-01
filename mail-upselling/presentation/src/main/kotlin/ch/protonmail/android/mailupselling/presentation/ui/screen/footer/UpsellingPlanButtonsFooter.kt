@@ -35,6 +35,7 @@ import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanU
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingContentPreviewData
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 internal fun UpsellingPlanButtonsFooter(
@@ -60,6 +61,8 @@ internal fun UpsellingPlanButtonsFooter(
         } else {
             PaymentButtonsHorizontalLayout(plans, actions)
         }
+
+        BottomNavigationBarSpacer()
     }
 }
 
