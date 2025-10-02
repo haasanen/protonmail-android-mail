@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcommon.presentation.reducer
 import arrow.core.nonEmptyListOf
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.testdata.action.ActionUiModelTestData
 import kotlinx.collections.immutable.toImmutableList
 import org.junit.Test
@@ -47,17 +48,21 @@ internal class BottomBarReducerTest(
 
         private val actions = nonEmptyListOf(ActionUiModelTestData.markUnread).toImmutableList()
         private val updatedActions = listOf(ActionUiModelTestData.archive).toImmutableList()
+        private val mailboxTarget = BottomBarTarget.Mailbox
+        private val convoTarget = BottomBarTarget.Conversation
+        private val messageTarget = BottomBarTarget.Message(id = "messageId")
+
 
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = BottomBarState.Loading,
-                operation = BottomBarEvent.ActionsData(actions),
-                expectedState = BottomBarState.Data.Hidden(actions)
+                operation = BottomBarEvent.ActionsData(mailboxTarget, actions),
+                expectedState = BottomBarState.Data.Hidden(mailboxTarget, actions)
             ),
             TestInput(
                 currentState = BottomBarState.Loading,
-                operation = BottomBarEvent.ShowAndUpdateActionsData(actions),
-                expectedState = BottomBarState.Data.Shown(actions)
+                operation = BottomBarEvent.ShowAndUpdateActionsData(convoTarget, actions),
+                expectedState = BottomBarState.Data.Shown(convoTarget, actions)
             ),
             TestInput(
                 currentState = BottomBarState.Loading,
@@ -73,62 +78,62 @@ internal class BottomBarReducerTest(
 
         private val transitionsFromDataState = listOf(
             TestInput(
-                currentState = BottomBarState.Data.Hidden(actions),
-                operation = BottomBarEvent.ActionsData(updatedActions),
-                expectedState = BottomBarState.Data.Hidden(updatedActions)
+                currentState = BottomBarState.Data.Hidden(mailboxTarget, actions),
+                operation = BottomBarEvent.ActionsData(mailboxTarget, updatedActions),
+                expectedState = BottomBarState.Data.Hidden(mailboxTarget, updatedActions)
             ),
             TestInput(
-                currentState = BottomBarState.Data.Shown(actions),
-                operation = BottomBarEvent.ActionsData(updatedActions),
-                expectedState = BottomBarState.Data.Shown(updatedActions)
+                currentState = BottomBarState.Data.Shown(mailboxTarget, actions),
+                operation = BottomBarEvent.ActionsData(mailboxTarget, updatedActions),
+                expectedState = BottomBarState.Data.Shown(mailboxTarget, updatedActions)
             ),
             TestInput(
-                currentState = BottomBarState.Data.Hidden(actions),
+                currentState = BottomBarState.Data.Hidden(messageTarget, actions),
                 operation = BottomBarEvent.ErrorLoadingActions,
-                expectedState = BottomBarState.Data.Hidden(actions)
+                expectedState = BottomBarState.Data.Hidden(messageTarget, actions)
             ),
             TestInput(
-                currentState = BottomBarState.Data.Shown(actions),
+                currentState = BottomBarState.Data.Shown(messageTarget, actions),
                 operation = BottomBarEvent.ErrorLoadingActions,
-                expectedState = BottomBarState.Data.Shown(actions)
+                expectedState = BottomBarState.Data.Shown(messageTarget, actions)
             ),
             TestInput(
-                currentState = BottomBarState.Data.Hidden(actions),
+                currentState = BottomBarState.Data.Hidden(convoTarget, actions),
                 operation = BottomBarEvent.ShowBottomSheet,
-                expectedState = BottomBarState.Data.Shown(actions)
+                expectedState = BottomBarState.Data.Shown(convoTarget, actions)
             ),
             TestInput(
-                currentState = BottomBarState.Data.Shown(actions),
+                currentState = BottomBarState.Data.Shown(convoTarget, actions),
                 operation = BottomBarEvent.ShowBottomSheet,
-                expectedState = BottomBarState.Data.Shown(actions)
+                expectedState = BottomBarState.Data.Shown(convoTarget, actions)
             ),
             TestInput(
-                currentState = BottomBarState.Data.Shown(actions),
+                currentState = BottomBarState.Data.Shown(messageTarget, actions),
                 operation = BottomBarEvent.HideBottomSheet,
-                expectedState = BottomBarState.Data.Hidden(actions)
+                expectedState = BottomBarState.Data.Hidden(messageTarget, actions)
             ),
             TestInput(
-                currentState = BottomBarState.Data.Hidden(actions),
+                currentState = BottomBarState.Data.Hidden(messageTarget, actions),
                 operation = BottomBarEvent.HideBottomSheet,
-                expectedState = BottomBarState.Data.Hidden(actions)
+                expectedState = BottomBarState.Data.Hidden(messageTarget, actions)
             ),
             TestInput(
-                currentState = BottomBarState.Data.Hidden(actions),
+                currentState = BottomBarState.Data.Hidden(messageTarget, actions),
                 operation = BottomBarEvent.Offline,
-                expectedState = BottomBarState.Data.Hidden(actions)
+                expectedState = BottomBarState.Data.Hidden(messageTarget, actions)
             )
         )
 
         private val transitionsFromErrorState = listOf(
             TestInput(
                 currentState = BottomBarState.Error.FailedLoadingActions,
-                operation = BottomBarEvent.ActionsData(actions),
-                expectedState = BottomBarState.Data.Hidden(actions)
+                operation = BottomBarEvent.ActionsData(mailboxTarget, actions),
+                expectedState = BottomBarState.Data.Hidden(mailboxTarget, actions)
             ),
             TestInput(
                 currentState = BottomBarState.Error.FailedLoadingActions,
-                operation = BottomBarEvent.ShowAndUpdateActionsData(actions),
-                expectedState = BottomBarState.Data.Shown(actions)
+                operation = BottomBarEvent.ShowAndUpdateActionsData(messageTarget, actions),
+                expectedState = BottomBarState.Data.Shown(messageTarget, actions)
             ),
             TestInput(
                 currentState = BottomBarState.Error.FailedLoadingActions,

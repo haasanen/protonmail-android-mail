@@ -38,6 +38,7 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
@@ -374,7 +375,9 @@ internal class MailboxViewModelTest {
                 mailboxListState = MailboxListState.Loading,
                 topAppBarState = MailboxTopAppBarState.Loading,
                 unreadFilterState = UnreadFilterState.Loading,
-                bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
+                bottomAppBarState = BottomBarState.Data.Hidden(
+                    BottomBarTarget.Mailbox, emptyList<ActionUiModel>().toImmutableList()
+                ),
                 deleteDialogState = DeleteDialogState.Hidden,
                 clearAllDialogState = DeleteDialogState.Hidden,
                 bottomSheetState = null,
@@ -446,6 +449,7 @@ internal class MailboxViewModelTest {
         )
         val expectedState = intermediateState.copy(
             bottomAppBarState = BottomBarState.Data.Shown(
+                BottomBarTarget.Mailbox,
                 actions = listOf(
                     ActionUiModelSample.Archive,
                     ActionUiModelSample.Trash
@@ -484,7 +488,7 @@ internal class MailboxViewModelTest {
         val selectionState = MailboxStateSampleData.createSelectionMode(listOf(item))
         val expectedBottomBarActions = listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
         val expectedBottomBarState = selectionState.copy(
-            bottomAppBarState = BottomBarState.Data.Shown(expectedBottomBarActions)
+            bottomAppBarState = BottomBarState.Data.Shown(BottomBarTarget.Mailbox, expectedBottomBarActions)
         )
 
         expectedSelectedLabelCountStateChange(intermediateState)
@@ -730,6 +734,7 @@ internal class MailboxViewModelTest {
             val expectedSelectionState = MailboxStateSampleData.createSelectionMode(listOf(item))
             val expectedBottomBarState = expectedSelectionState.copy(
                 bottomAppBarState = BottomBarState.Data.Shown(
+                    BottomBarTarget.Mailbox,
                     listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
                 )
             )
@@ -760,6 +765,7 @@ internal class MailboxViewModelTest {
             val expectedSelectionState = MailboxStateSampleData.createSelectionMode(listOf(item))
             val expectedBottomBarState = expectedSelectionState.copy(
                 bottomAppBarState = BottomBarState.Data.Shown(
+                    BottomBarTarget.Mailbox,
                     listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
                 )
             )
@@ -803,7 +809,12 @@ internal class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 currentState = expectedState,
-                operation = MailboxEvent.MessageBottomBarEvent(BottomBarEvent.ActionsData(expectedBottomBarActions))
+                operation = MailboxEvent.MessageBottomBarEvent(
+                    BottomBarEvent.ActionsData(
+                        BottomBarTarget.Mailbox,
+                        expectedBottomBarActions
+                    )
+                )
             )
         } returns expectedBottomBarState
         expectPagerMock()
@@ -844,7 +855,11 @@ internal class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 currentState = intermediateSelectionState,
-                operation = MailboxEvent.MessageBottomBarEvent(BottomBarEvent.ActionsData(expectedBottomBarActions))
+                operation = MailboxEvent.MessageBottomBarEvent(
+                    BottomBarEvent.ActionsData(
+                        BottomBarTarget.Mailbox, expectedBottomBarActions
+                    )
+                )
             )
         } returns expectedBottomBarState
         every {
@@ -3200,6 +3215,7 @@ internal class MailboxViewModelTest {
         val expectedSelectionState = MailboxStateSampleData.createSelectionMode(listOf(item))
         val expectedBottomBarState = expectedSelectionState.copy(
             bottomAppBarState = BottomBarState.Data.Shown(
+                BottomBarTarget.Mailbox,
                 listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
             )
         )
@@ -3293,6 +3309,7 @@ internal class MailboxViewModelTest {
                 intermediateState ?: any(),
                 MailboxEvent.MessageBottomBarEvent(
                     BottomBarEvent.ActionsData(
+                        BottomBarTarget.Mailbox,
                         listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
                     )
                 )

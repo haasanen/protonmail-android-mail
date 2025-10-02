@@ -38,6 +38,7 @@ import ch.protonmail.android.mailcommon.domain.model.isOfflineError
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.isOfflineError
@@ -732,6 +733,7 @@ class ConversationDetailViewModel @Inject constructor(
         rsvpEvent
     )
 
+    @Suppress("LongMethod")
     private fun observeBottomBarActions(conversationId: ConversationId) = combine(
         primaryUserId,
         toolbarRefreshSignal.refreshEvents.onStart { emit(Unit) }
@@ -760,7 +762,10 @@ class ConversationDetailViewModel @Inject constructor(
                     ifRight = { actions ->
                         val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
                         ConversationDetailEvent.ConversationBottomBarEvent(
-                            BottomBarEvent.ShowAndUpdateActionsData(actionUiModels)
+                            BottomBarEvent.ShowAndUpdateActionsData(
+                                BottomBarTarget.Message(messageId.id),
+                                actionUiModels
+                            )
                         )
                     }
                 )
@@ -778,7 +783,9 @@ class ConversationDetailViewModel @Inject constructor(
                     ifRight = { actions ->
                         val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
                         ConversationDetailEvent.ConversationBottomBarEvent(
-                            BottomBarEvent.ShowAndUpdateActionsData(actionUiModels)
+                            BottomBarEvent.ShowAndUpdateActionsData(
+                                BottomBarTarget.Conversation, actionUiModels
+                            )
                         )
                     }
                 )

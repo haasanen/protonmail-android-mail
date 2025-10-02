@@ -46,6 +46,7 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
@@ -245,6 +246,7 @@ class MailboxViewModel @Inject constructor(
                 ifRight = { actions ->
                     MailboxEvent.MessageBottomBarEvent(
                         BottomBarEvent.ActionsData(
+                            BottomBarTarget.Mailbox,
                             actions.map { action -> actionUiModelMapper.toUiModel(action) }
                                 .toImmutableList()
                         )
@@ -1199,7 +1201,10 @@ class MailboxViewModel @Inject constructor(
             mailboxListState = MailboxListState.Loading,
             topAppBarState = MailboxTopAppBarState.Loading,
             unreadFilterState = UnreadFilterState.Loading,
-            bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
+            bottomAppBarState = BottomBarState.Data.Hidden(
+                BottomBarTarget.Mailbox,
+                emptyList<ActionUiModel>().toImmutableList()
+            ),
             deleteDialogState = DeleteDialogState.Hidden,
             clearAllDialogState = DeleteDialogState.Hidden,
             bottomSheetState = null,
