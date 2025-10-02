@@ -41,17 +41,50 @@ internal class BackgroundExecutionWorker @AssistedInject constructor(
     private suspend fun triggerBackgroundExecution(): Result {
         Timber.tag("BackgroundExecutionWorker").d("Triggering background execution...")
 
-        return when (val status = startBackgroundExecution().first()) {
+        val result = startBackgroundExecution().first()
+
+        return when (val status = result.status) {
             is BackgroundExecutionStatus.Failed -> {
-                Timber.tag("BackgroundExecutionWorker").d("Failed with error: ${status.v1}")
+                logger.d("Failed with error: ${status.v1}")
                 Result.failure()
             }
 
-            BackgroundExecutionStatus.AbortedInBackground,
+            // Consider as a success if aborted in foreground/no logged in accounts.
             BackgroundExecutionStatus.AbortedInForeground,
+            BackgroundExecutionStatus.SkippedNoActiveContexts -> Result.success()
+
+            // Resolve the result based on pending work/unsent messages.
+            // This is necessary as the worker might have never obtained proper connectivity,
+            // so we need to force a couple of retries to make sure that it actually got network access.
+            // See https://issuetracker.google.com/issues/445324855
+            BackgroundExecutionStatus.AbortedInBackground,
             BackgroundExecutionStatus.Executed,
-            BackgroundExecutionStatus.SkippedNoActiveContexts,
-            BackgroundExecutionStatus.TimedOut -> Result.success()
+            BackgroundExecutionStatus.TimedOut -> resolveResult(result.hasUnsentMessages, result.hasPendingActions)
         }
+    }
+
+
+    private fun resolveResult(hasUnsentMessages: Boolean, hasPendingActions: Boolean): Result {
+        val hasUncompletedWork = hasUnsentMessages || hasPendingActions
+
+        if (!hasUncompletedWork) {
+            return Result.success()
+        }
+
+        logger.d("Uncompleted work - unsentMessages: $hasUnsentMessages, pendingActions: $hasPendingActions")
+
+        return if (runAttemptCount < RETRY_LIMIT) {
+            logger.d("Work scheduled for retry - ${runAttemptCount + 1}/$RETRY_LIMIT")
+            Result.retry()
+        } else {
+            logger.d("Not scheduling for retry - attempts threshold reached")
+            Result.success()
+        }
+    }
+
+    private companion object {
+
+        const val RETRY_LIMIT = 3
+        private val logger = Timber.tag("BackgroundExecutionWorker")
     }
 }

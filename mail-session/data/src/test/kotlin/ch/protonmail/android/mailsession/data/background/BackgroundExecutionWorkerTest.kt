@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import uniffi.proton_mail_uniffi.BackgroundExecutionResult
 import uniffi.proton_mail_uniffi.BackgroundExecutionStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -34,8 +35,7 @@ import kotlin.test.assertEquals
 @RunWith(Parameterized::class)
 internal class BackgroundExecutionWorkerTest(
     @Suppress("unused") private val testName: String,
-    val status: BackgroundExecutionStatus,
-    val expected: ListenableWorker.Result
+    val inputs: TestInputs
 ) {
 
     private val startBackgroundExecution = mockk<StartBackgroundExecution>()
@@ -50,49 +50,214 @@ internal class BackgroundExecutionWorkerTest(
     @Test
     fun `should propagate the result correctly`() = runTest {
         // Given
-        every { startBackgroundExecution() } returns flowOf(status)
+        every { startBackgroundExecution() } returns flowOf(inputs.result)
+        every { worker.runAttemptCount } returns inputs.attemptsCount
 
         // When
         val result = worker.doWork()
 
         // Then
-        assertEquals(result, expected)
+        assertEquals(result, inputs.expected)
     }
 
     companion object {
+
+        data class TestInputs(
+            val attemptsCount: Int = 0,
+            val result: BackgroundExecutionResult,
+            val expected: ListenableWorker.Result
+        )
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
         fun data(): Collection<Array<Any>> = listOf(
             arrayOf(
                 "failed status from background state",
-                BackgroundExecutionStatus.Failed("failure"),
-                ListenableWorker.Result.failure()
+                TestInputs(
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.Failed("failure"),
+                        hasPendingActions = false,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.failure()
+                )
             ),
             arrayOf(
-                "aborted in background status from background state",
-                BackgroundExecutionStatus.AbortedInBackground,
-                ListenableWorker.Result.success()
+                "aborted in background status from background state (actions, below threshold)",
+                TestInputs(
+                    attemptsCount = 0,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.AbortedInBackground,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.retry()
+                )
+            ),
+            arrayOf(
+                "aborted in background status from background state (unsent, below threshold)",
+                TestInputs(
+                    attemptsCount = 0,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.AbortedInBackground,
+                        hasPendingActions = false,
+                        hasUnsentMessages = true
+                    ),
+                    expected = ListenableWorker.Result.retry()
+                )
+            ),
+            arrayOf(
+                "aborted in background status from background state (actions, matching threshold)",
+                TestInputs(
+                    attemptsCount = 3,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.AbortedInBackground,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
+            ),
+            arrayOf(
+                "aborted in background status from background state (unsent, matching threshold)",
+                TestInputs(
+                    attemptsCount = 3,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.AbortedInBackground,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
             ),
             arrayOf(
                 "aborted in foreground status from background state",
-                BackgroundExecutionStatus.AbortedInForeground,
-                ListenableWorker.Result.success()
-            ),
-            arrayOf(
-                "executed status from background state",
-                BackgroundExecutionStatus.Executed,
-                ListenableWorker.Result.success()
+                TestInputs(
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.AbortedInForeground,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
             ),
             arrayOf(
                 "skipped no active status from background state",
-                BackgroundExecutionStatus.SkippedNoActiveContexts,
-                ListenableWorker.Result.success()
+                TestInputs(
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.SkippedNoActiveContexts,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
             ),
             arrayOf(
-                "timed out from background state",
-                BackgroundExecutionStatus.TimedOut,
-                ListenableWorker.Result.success()
+                "executed status from background state (no pending actions)",
+                TestInputs(
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.Executed,
+                        hasPendingActions = false,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
+            ),
+            arrayOf(
+                "executed status from background state (pending actions, below threshold)",
+                TestInputs(
+                    attemptsCount = 0,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.Executed,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.retry()
+                )
+            ),
+            arrayOf(
+                "executed status from background state (pending actions, matching threshold)",
+                TestInputs(
+                    attemptsCount = 3,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.Executed,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
+            ),
+            arrayOf(
+                "executed status from background state (pending unsent, below threshold)",
+                TestInputs(
+                    attemptsCount = 0,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.Executed,
+                        hasPendingActions = false,
+                        hasUnsentMessages = true
+                    ),
+                    expected = ListenableWorker.Result.retry()
+                )
+            ),
+            arrayOf(
+                "executed status from background state (pending unsent, matching threshold)",
+                TestInputs(
+                    attemptsCount = 3,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.Executed,
+                        hasPendingActions = false,
+                        hasUnsentMessages = true
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
+            ),
+            arrayOf(
+                "timed out status from background state (pending actions, below threshold)",
+                TestInputs(
+                    attemptsCount = 0,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.TimedOut,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.retry()
+                )
+            ),
+            arrayOf(
+                "timed out status from background state (unsent actions, below threshold)",
+                TestInputs(
+                    attemptsCount = 0,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.TimedOut,
+                        hasPendingActions = false,
+                        hasUnsentMessages = true
+                    ),
+                    expected = ListenableWorker.Result.retry()
+                )
+            ),
+            arrayOf(
+                "timed out status from background state (pending actions, matching threshold)",
+                TestInputs(
+                    attemptsCount = 3,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.TimedOut,
+                        hasPendingActions = true,
+                        hasUnsentMessages = false
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
+            ),
+            arrayOf(
+                "timed out status from background state (unsent actions, matching threshold)",
+                TestInputs(
+                    attemptsCount = 3,
+                    result = BackgroundExecutionResult(
+                        status = BackgroundExecutionStatus.TimedOut,
+                        hasPendingActions = false,
+                        hasUnsentMessages = true
+                    ),
+                    expected = ListenableWorker.Result.success()
+                )
             )
         )
     }
