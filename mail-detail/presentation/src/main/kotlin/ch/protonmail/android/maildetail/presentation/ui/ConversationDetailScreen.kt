@@ -749,7 +749,10 @@ fun ConversationDetailScreen(
                     onMore = actions.onMoreActionsClick,
                     onCustomizeToolbar = { Timber.d("conversation onCustomizeToolbar clicked") },
                     onSnooze = actions.onSnooze,
-                    onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged
+                    onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged,
+                    onReply = { rawId -> actions.onReply(MessageId(rawId)) },
+                    onReplyAll = { rawId -> actions.onReplyAll(MessageId(rawId)) },
+                    onForward = { rawId -> actions.onForward(MessageId(rawId)) }
                 )
             )
         }

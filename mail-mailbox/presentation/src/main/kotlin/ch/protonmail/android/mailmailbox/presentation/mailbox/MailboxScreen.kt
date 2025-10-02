@@ -537,7 +537,10 @@ fun MailboxScreen(
                     onUnstar = actions.unStar,
                     onCustomizeToolbar = { Timber.d("mailbox onCustomizeToolbar clicked") },
                     onSnooze = actions.onSnooze,
-                    onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged
+                    onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged,
+                    onReply = { Timber.d("mailbox onReply clicked") },
+                    onReplyAll = { Timber.d("mailbox onReplyAll clicked") },
+                    onForward = { Timber.d("mailbox onForward clicked") }
                 )
             )
         }

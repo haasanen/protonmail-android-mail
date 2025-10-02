@@ -57,6 +57,7 @@ import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.previewdata.BottomActionBarPreviewProvider
@@ -123,7 +124,7 @@ fun BottomActionBar(
                                 modifier = Modifier.testTag("${BottomActionBarTestTags.Button}$index"),
                                 iconId = uiModel.icon,
                                 description = uiModel.contentDescription,
-                                onClick = callbackForAction(uiModel.action, viewActionCallbacks)
+                                onClick = callbackForAction(uiModel.action, viewActionCallbacks, state.target)
                             )
                         }
                     }
@@ -138,7 +139,11 @@ fun BottomActionBar(
 }
 
 @SuppressWarnings("ComplexMethod")
-fun callbackForAction(action: Action, viewActionCallbacks: BottomActionBar.Actions) = when (action) {
+fun callbackForAction(
+    action: Action,
+    viewActionCallbacks: BottomActionBar.Actions,
+    target: BottomBarTarget
+): () -> Unit = when (action) {
     Action.MarkRead -> viewActionCallbacks.onMarkRead
     Action.MarkUnread -> viewActionCallbacks.onMarkUnread
     Action.Star -> viewActionCallbacks.onStar
@@ -163,13 +168,23 @@ fun callbackForAction(action: Action, viewActionCallbacks: BottomActionBar.Actio
     Action.Inbox -> viewActionCallbacks.onMoveToInbox
     Action.CustomizeToolbar -> viewActionCallbacks.onCustomizeToolbar
     Action.Snooze -> viewActionCallbacks.onSnooze
-    Action.Pin,
-    Action.Unpin,
-    Action.Reply,
-    Action.ReplyAll,
-    Action.Forward -> {
-        { Timber.d("Action not handled for BottomActionBar - $action.") }
+
+    Action.Reply -> when (target) {
+        is BottomBarTarget.Message -> { { viewActionCallbacks.onReply(target.id) } }
+        else -> { { Timber.d("Reply not available for $target") } }
     }
+
+    Action.ReplyAll -> when (target) {
+        is BottomBarTarget.Message -> { { viewActionCallbacks.onReplyAll(target.id) } }
+        else -> { { Timber.d("Reply All not available for $target") } }
+    }
+
+    Action.Forward -> when (target) {
+        is BottomBarTarget.Message -> { { viewActionCallbacks.onForward(target.id) } }
+        else -> { { Timber.d("Forward not available for $target") } }
+    }
+
+    Action.Pin, Action.Unpin -> { { Timber.d("Action not handled for BottomActionBar - $action.") } }
 }
 
 @Composable
@@ -214,6 +229,9 @@ object BottomActionBar {
         val onViewInLightMode: () -> Unit,
         val onViewInDarkMode: () -> Unit,
         val onPrint: () -> Unit,
+        val onReply: (String) -> Unit,
+        val onReplyAll: (String) -> Unit,
+        val onForward: (String) -> Unit,
         val onViewHeaders: () -> Unit,
         val onViewHtml: () -> Unit,
         val onReportPhishing: () -> Unit,
@@ -244,6 +262,9 @@ object BottomActionBar {
                 onViewInLightMode = {},
                 onViewInDarkMode = {},
                 onPrint = {},
+                onReply = {},
+                onReplyAll = {},
+                onForward = {},
                 onViewHeaders = {},
                 onViewHtml = {},
                 onReportPhishing = {},
