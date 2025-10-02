@@ -110,7 +110,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSh
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
-import ch.protonmail.android.mailsession.domain.usecase.GetUserHasValidSession
+import ch.protonmail.android.mailsession.domain.usecase.HasValidUserSession
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserIdWithValidSession
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
@@ -245,7 +245,7 @@ internal class MailboxViewModelTest {
     private val deleteMessages = mockk<DeleteMessages>()
     private val starMessages = mockk<StarMessages>()
     private val starConversations = mockk<StarConversations>()
-    private val getUserHasValidSession = mockk<GetUserHasValidSession> {
+    private val getUserHasValidSession = mockk<HasValidUserSession> {
         coEvery { this@mockk.invoke() } returns true
     }
     private val unStarMessages = mockk<UnStarMessages>()

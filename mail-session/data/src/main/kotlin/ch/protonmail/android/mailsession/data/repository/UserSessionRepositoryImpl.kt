@@ -66,7 +66,7 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     // Cache to store MailUserSession per UserId
     private val userSessionCache = mutableMapOf<UserId, MailUserSessionWrapper>()
-    private val userSessionUpdatedTrigger = MutableSharedFlow<UserId>(replay = 1)
+    private val userSessionUpdatedFlow = MutableSharedFlow<UserId>(replay = 1)
 
     private suspend fun getStoredAccount(userId: UserId) = mailSession.getAccount(userId.toLocalUserId())
 
@@ -126,7 +126,7 @@ class UserSessionRepositoryImpl @Inject constructor(
         userSessionCache.remove(userId)
     }
 
-    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId> = userSessionUpdatedTrigger.filter {
+    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId> = userSessionUpdatedFlow.filter {
         it == userId
     }.distinctUntilChanged()
 
@@ -145,7 +145,7 @@ class UserSessionRepositoryImpl @Inject constructor(
         // throws network error
         val userContext = session?.let { mailSession.userContextFromSession(it) }
         userContext?.getOrNull()?.let {
-            userSessionUpdatedTrigger.emit(userId)
+            userSessionUpdatedFlow.emit(userId)
             userSessionCache[userId] = it
             return it
         }

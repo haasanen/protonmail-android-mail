@@ -34,7 +34,7 @@ class GetUserHasValidSessionTest {
     private val userSessionRepository = mockk<UserSessionRepository>()
 
     private val observePrimaryUserId = ObservePrimaryUserId(userSessionRepository)
-    private val getUserHasValidSession = GetUserHasValidSession(observePrimaryUserId, userSessionRepository)
+    private val getUserHasValidSession = HasValidUserSession(observePrimaryUserId, userSessionRepository)
 
     @Test
     fun `given no user session then false`() = runTest {

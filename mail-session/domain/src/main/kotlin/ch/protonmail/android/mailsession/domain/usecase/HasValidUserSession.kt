@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class GetUserHasValidSession @Inject constructor(
+class HasValidUserSession @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val userSessionRepository: UserSessionRepository
 ) {

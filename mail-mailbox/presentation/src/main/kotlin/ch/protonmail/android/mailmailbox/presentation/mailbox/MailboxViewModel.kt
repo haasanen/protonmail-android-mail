@@ -112,7 +112,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
-import ch.protonmail.android.mailsession.domain.usecase.GetUserHasValidSession
+import ch.protonmail.android.mailsession.domain.usecase.HasValidUserSession
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserIdWithValidSession
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -153,7 +153,7 @@ class MailboxViewModel @Inject constructor(
     private val getCurrentViewModeForLabel: GetCurrentViewModeForLabel,
     private val observePrimaryUserIdWithValidSession: ObservePrimaryUserIdWithValidSession,
     private val observeMailLabels: ObserveMailLabels,
-    private val getUserHasValidSession: GetUserHasValidSession,
+    private val getUserHasValidSession: HasValidUserSession,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
     private val observeSelectedMailLabelId: ObserveSelectedMailLabelId,
     private val observeLoadedMailLabelId: ObserveLoadedMailLabelId,
