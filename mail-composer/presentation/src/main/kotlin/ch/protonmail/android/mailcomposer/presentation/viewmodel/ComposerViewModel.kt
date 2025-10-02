@@ -198,7 +198,7 @@ class ComposerViewModel @AssistedInject constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-                initialValue = buildDraftDisplayBody(DraftBody(""))
+                initialValue = DraftDisplayBodyUiModel("")
             )
 
     private var pendingStoreDraftJob: Job? = null
@@ -524,7 +524,7 @@ class ComposerViewModel @AssistedInject constructor(
             .onLeft { emitNewStateFor(EffectsEvent.DraftEvent.OnDraftLoadingFailed) }
     }
 
-    private fun DraftFields.toDraftUiModel(): DraftUiModel {
+    private suspend fun DraftFields.toDraftUiModel(): DraftUiModel {
         val draftBody = DraftBody(this.body.value)
         val draftDisplayBody = buildDraftDisplayBody(draftBody)
 

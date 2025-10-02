@@ -3,19 +3,34 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 import android.content.Context
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.ui.JAVASCRIPT_CALLBACK_INTERFACE_NAME
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import kotlin.test.AfterTest
 import kotlin.test.assertEquals
 
-class GetCustomJsTest {
+internal class GetCustomJsTest {
 
     private val mockContext = mockk<Context>()
+    private val mockFeatureFlag = mockk<FeatureFlag<Boolean>> {
+        coEvery { this@mockk.get() } returns false
+    }
 
-    private val getCustomJs = GetCustomJs(mockContext)
+    private val getCustomJs = GetCustomJs(mockContext, mockFeatureFlag)
+
+    @AfterTest
+    fun teardown() {
+        clearAllMocks()
+    }
 
     @Test
-    fun `replace editor id constant with actual value`() {
+    fun `replace editor id constant with actual value`() = runTest {
         // Given
         every {
             mockContext.resources.openRawResource(R.raw.rich_text_editor)
@@ -30,7 +45,7 @@ class GetCustomJsTest {
     }
 
     @Test
-    fun `replace javascript callback constant with actual value`() {
+    fun `replace javascript callback constant with actual value`() = runTest {
         // Given
         every {
             mockContext.resources.openRawResource(R.raw.rich_text_editor)
@@ -42,5 +57,37 @@ class GetCustomJsTest {
 
         // Then
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `loads the correct resource based on the FF (true)`() = runTest {
+        // Given
+        coEvery { mockFeatureFlag.get() } returns true
+        every {
+            mockContext.resources.openRawResource(R.raw.rich_text_editor_autocollapse)
+        } returns "".byteInputStream()
+
+        // When
+        getCustomJs()
+
+        // Then
+        verify(exactly = 1) { mockContext.resources.openRawResource(R.raw.rich_text_editor_autocollapse) }
+        confirmVerified(mockContext.resources)
+    }
+
+    @Test
+    fun `loads the correct resource based on the FF (false)`() = runTest {
+        // Given
+        coEvery { mockFeatureFlag.get() } returns false
+        every {
+            mockContext.resources.openRawResource(R.raw.rich_text_editor)
+        } returns "".byteInputStream()
+
+        // When
+        getCustomJs()
+
+        // Then
+        verify(exactly = 1) { mockContext.resources.openRawResource(R.raw.rich_text_editor) }
+        confirmVerified(mockContext.resources)
     }
 }

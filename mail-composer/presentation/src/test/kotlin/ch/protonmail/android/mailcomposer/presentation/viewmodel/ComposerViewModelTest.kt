@@ -180,7 +180,7 @@ internal class ComposerViewModelTest {
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<DraftBody>()
-        every { this@mockk.invoke(capture(bodySlot)) } answers {
+        coEvery { this@mockk.invoke(capture(bodySlot)) } answers {
             DraftDisplayBodyUiModel("<html> ${bodySlot.captured.value} </html>")
         }
     }

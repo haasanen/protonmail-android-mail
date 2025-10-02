@@ -4,8 +4,10 @@ import ch.protonmail.android.mailcomposer.domain.model.CspNonce
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.usecase.GenerateCspNonce
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -18,11 +20,11 @@ class BuildDraftDisplayBodyTest {
     private val buildDraftDisplayBody = BuildDraftDisplayBody(getCustomCss, getCustomJs, generateCspNonce)
 
     @Test
-    fun `returns html template with injected css and javascript`() {
+    fun `returns html template with injected css and javascript`() = runTest {
         // Given
         val messageBodyWithType = DraftBody(messageBody)
-        every { getCustomCss() } returns rawCustomCss
-        every { getCustomJs() } returns rawCustomJs
+        coEvery { getCustomCss() } returns rawCustomCss
+        coEvery { getCustomJs() } returns rawCustomJs
         every { generateCspNonce() } returns CspNonce(rawCspNonce)
         val expected = buildHtmlTemplate(messageBody, rawCustomCss, rawCustomJs, rawCspNonce)
 
