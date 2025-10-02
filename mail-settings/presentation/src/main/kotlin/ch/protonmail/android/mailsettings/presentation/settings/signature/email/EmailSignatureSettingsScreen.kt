@@ -37,7 +37,6 @@ import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSett
 import me.proton.core.util.kotlin.exhaustive
 import timber.log.Timber
 
-
 @Composable
 fun EmailSignatureSettingScreen(
     actions: WebSettingsScreenActions,

@@ -58,7 +58,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
 import ch.protonmail.android.mailsettings.presentation.R
-import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureMenuState
 import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
@@ -79,7 +78,7 @@ private fun SignatureSettingsMenuScreenContent(
         modifier = modifier,
         topBar = {
             ProtonSettingsDetailsAppBar(
-                title = stringResource(id = string.mail_settings_app_customization_signature_header),
+                title = stringResource(id = R.string.mail_settings_app_customization_signature_header),
                 onBackClick = actions.onBackClick
             )
         },
@@ -104,7 +103,7 @@ private fun SignatureSettingsMenuScreenContent(
 }
 
 @Composable
-fun SignatureSettingsMenuScreenContent(
+private fun SignatureSettingsMenuScreenContent(
     modifier: Modifier = Modifier,
     mobileSignature: MobileSignatureUiModel,
     upsellingVisibility: UpsellingVisibility,
@@ -120,9 +119,9 @@ fun SignatureSettingsMenuScreenContent(
             )
         ) {
             ProtonSettingsHintNavigationItem(
-                name = stringResource(id = string.mail_settings_app_customization_email_signature_header),
+                name = stringResource(id = R.string.mail_settings_app_customization_email_signature_header),
                 onClick = actions.onNavigateToEmailSignatureSettings,
-                hint = stringResource(string.mail_settings_app_customization_email_signature_explanation)
+                hint = stringResource(R.string.mail_settings_app_customization_email_signature_explanation)
             )
         }
 
@@ -171,7 +170,7 @@ private fun MobileSignatureSettingsItemForFreePlan(
 
         val context = LocalContext.current
         val fallbackText =
-            stringResource(ch.protonmail.android.mailupselling.presentation.R.string.upselling_upgrade_plan_generic)
+            stringResource(R.string.upselling_upgrade_plan_generic)
 
         val onNavigateToUpsell: () -> Unit = {
             when (upsellingVisibility) {
@@ -187,7 +186,7 @@ private fun MobileSignatureSettingsItemForFreePlan(
             }
         }
         ProtonAppSettingsItemInvert(
-            name = stringResource(id = string.mail_settings_app_customization_mobile_signature_header),
+            name = stringResource(id = R.string.mail_settings_app_customization_mobile_signature_header),
             hint = mobileSignature.statusText.string(),
             onClick = onNavigateToUpsell,
             icon = {
@@ -197,7 +196,7 @@ private fun MobileSignatureSettingsItemForFreePlan(
                 ProtonDimens.IconSize.ExtraLarge, ProtonDimens.IconSize.MediumLarge
             ),
             content = {
-                SignatureFieldDescription(string.mail_settings_app_customization_mobile_signature_explanation)
+                SignatureFieldDescription(R.string.mail_settings_app_customization_mobile_signature_explanation)
             }
         )
     }
@@ -218,20 +217,20 @@ private fun MobileSignatureSettingsItemForPaidPlan(
         )
     ) {
         ProtonAppSettingsItemInvert(
-            name = stringResource(id = string.mail_settings_app_customization_mobile_signature_header),
+            name = stringResource(id = R.string.mail_settings_app_customization_mobile_signature_header),
             hint = mobileSignature.statusText.string(),
             onClick = onNavigateToMobileSignatureSettings,
             icon = {
                 ProtonMainSettingsIcon(
                     iconRes = R.drawable.ic_proton_chevron_right,
                     contentDescription = stringResource(
-                        id = string.mail_settings_app_customization_mobile_signature
+                        id = R.string.mail_settings_app_customization_mobile_signature
                     ),
                     tint = ProtonTheme.colors.iconHint
                 )
             },
             content = {
-                SignatureFieldDescription(string.mail_settings_app_customization_mobile_signature_explanation)
+                SignatureFieldDescription(R.string.mail_settings_app_customization_mobile_signature_explanation)
             },
             iconContainerSize = DpSize(
                 ProtonDimens.IconSize.Default, ProtonDimens.IconSize.Default
@@ -283,7 +282,7 @@ private fun PreviewMobileSignatureEnabled() {
             mobileSignature = MobileSignatureUiModel(
                 MobileSignatureStatus.Enabled,
                 "This is a mobile signature",
-                TextUiModel.TextRes(string.mail_settings_app_customization_mobile_signature_on)
+                TextUiModel.TextRes(R.string.mail_settings_app_customization_mobile_signature_on)
             ),
             upsellingVisibility = UpsellingVisibility.HIDDEN,
             actions = SignatureSettingsMenuScreen.Actions.Empty
@@ -299,7 +298,7 @@ private fun PreviewMobileSignatureDisabled() {
             mobileSignature = MobileSignatureUiModel(
                 MobileSignatureStatus.Disabled,
                 "This is a mobile signature",
-                TextUiModel.TextRes(string.mail_settings_app_customization_mobile_signature_off)
+                TextUiModel.TextRes(R.string.mail_settings_app_customization_mobile_signature_off)
             ),
             upsellingVisibility = UpsellingVisibility.HIDDEN,
             actions = SignatureSettingsMenuScreen.Actions.Empty
@@ -315,7 +314,7 @@ private fun PreviewMobileSignatureUpselling() {
             mobileSignature = MobileSignatureUiModel(
                 MobileSignatureStatus.Disabled,
                 "This is a mobile signature",
-                TextUiModel.TextRes(string.mail_settings_app_customization_mobile_signature_off)
+                TextUiModel.TextRes(R.string.mail_settings_app_customization_mobile_signature_off)
             ),
             upsellingVisibility = UpsellingVisibility.NORMAL,
             actions = SignatureSettingsMenuScreen.Actions.Empty

@@ -101,8 +101,8 @@ class SignatureSettingsViewModelTest {
     fun `state has signature preference disabled when get app settings use case returns valid data`() = runTest {
         viewModel.state.test {
             // Given
-
             awaitItem()
+
             // When
             signatureFlow.emit(signatureSettings)
             upsellingFlow.emit(UpsellingVisibility.NORMAL)
@@ -118,8 +118,8 @@ class SignatureSettingsViewModelTest {
     fun `state has signature preference when get app settings use case returns valid data`() = runTest {
         viewModel.state.test {
             // Given
-
             awaitItem()
+
             // When
             signatureFlow.emit(
                 signatureSettings.copy(
@@ -149,8 +149,8 @@ class SignatureSettingsViewModelTest {
         runTest {
             viewModel.state.test {
                 // Given
-
                 awaitItem()
+
                 // When
                 signatureFlow.emit(signatureSettings)
                 upsellingFlow.emit(UpsellingVisibility.HIDDEN)
