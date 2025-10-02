@@ -152,7 +152,7 @@
   <string name="composer_attachment_upload_error_retry">Przesyłanie niektórych załączników nie powiodło się. Spróbuj ponownie.</string>
   <string name="composer_external_encryption_unexpected_error">Wystąpił nieoczekiwany błąd %s. Spróbuj ponownie.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Adres nie może zostać użyty do wysłania wiadomość. Wiadomość zostanie wysłana z Twojego domyślnego adresu.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder.To expire messages for non-Proton users, add a password.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder. To expire messages for non-Proton users, add a password.</string>
   <string name="expiration_time_set_time_and_date">Set time and date</string>
   <string name="composer_expiration_set_expiration">Set expiration</string>
   <string name="composer_expiration_pick_time_title">Ustaw czas</string>

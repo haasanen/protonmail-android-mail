@@ -150,7 +150,7 @@
   <string name="composer_attachment_upload_error_retry">Algunos archivos adjuntos no se han podido cargar. Inténtalo de nuevo.</string>
   <string name="composer_external_encryption_unexpected_error">Error inesperado %s. Inténtalo de nuevo.</string>
   <string name="composer_sender_changed_original_address_cannot_send">La dirección seleccionada no se puede usar para realizar el envío. Tu mensaje se enviará desde tu dirección por defecto.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder.To expire messages for non-Proton users, add a password.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder. To expire messages for non-Proton users, add a password.</string>
   <string name="expiration_time_set_time_and_date">Set time and date</string>
   <string name="composer_expiration_set_expiration">Set expiration</string>
   <string name="composer_expiration_pick_time_title">Establecer hora</string>
