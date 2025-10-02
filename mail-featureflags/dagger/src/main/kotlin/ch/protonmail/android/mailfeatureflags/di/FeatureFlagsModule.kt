@@ -23,6 +23,7 @@ import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValue
 import ch.protonmail.android.mailfeatureflags.data.local.UnleashFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.data.local.factory.BooleanFeatureFlagFactory
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
+import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerAutoCollapseQuotedTextEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
@@ -33,6 +34,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDns
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
+import ch.protonmail.android.mailfeatureflags.domain.model.ComposerAutoCollapseQuotedText
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.LinkifyUrlEnabled
@@ -53,6 +55,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
+@Suppress("TooManyFunctions")
 object FeatureFlagsModule {
 
     @Provides
@@ -109,6 +112,17 @@ object FeatureFlagsModule {
     @IsMultithreadDnsDispatcherEnabled
     fun provideMultithreadedDnsDispatcher(factory: BooleanFeatureFlagFactory) =
         factory.create(key = AndroidDnsMultithread.key, false)
+
+    @Provides
+    @Singleton
+    @ComposerAutoCollapseQuotedTextEnabled
+    fun provideComposerAutoCollapseText(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = ComposerAutoCollapseQuotedText.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideComposerAutoCollapseTextDef(): FeatureFlagDefinition = ComposerAutoCollapseQuotedText
 
     @Provides
     @IntoSet
