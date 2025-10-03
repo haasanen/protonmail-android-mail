@@ -156,10 +156,8 @@ fun callbackForAction(
     Action.Spam -> viewActionCallbacks.onSpam
     Action.ViewInLightMode -> viewActionCallbacks.onViewInLightMode
     Action.ViewInDarkMode -> viewActionCallbacks.onViewInDarkMode
-    Action.Print -> viewActionCallbacks.onPrint
     Action.ViewHeaders -> viewActionCallbacks.onViewHeaders
     Action.ViewHtml -> viewActionCallbacks.onViewHtml
-    Action.ReportPhishing -> viewActionCallbacks.onReportPhishing
     Action.Remind -> viewActionCallbacks.onRemind
     Action.SavePdf -> viewActionCallbacks.onSavePdf
     Action.SenderEmails -> viewActionCallbacks.onSenderEmail
@@ -168,6 +166,16 @@ fun callbackForAction(
     Action.Inbox -> viewActionCallbacks.onMoveToInbox
     Action.CustomizeToolbar -> viewActionCallbacks.onCustomizeToolbar
     Action.Snooze -> viewActionCallbacks.onSnooze
+
+    Action.ReportPhishing -> when (target) {
+        is BottomBarTarget.Message -> { { viewActionCallbacks.onReportPhishing(target.id) } }
+        else -> { { Timber.d("ReportPhishing not available for $target") } }
+    }
+
+    Action.Print -> when (target) {
+        is BottomBarTarget.Message -> { { viewActionCallbacks.onPrint(target.id) } }
+        else -> { { Timber.d("Print not available for $target") } }
+    }
 
     Action.Reply -> when (target) {
         is BottomBarTarget.Message -> { { viewActionCallbacks.onReply(target.id) } }
@@ -228,13 +236,13 @@ object BottomActionBar {
         val onMoveToInbox: () -> Unit,
         val onViewInLightMode: () -> Unit,
         val onViewInDarkMode: () -> Unit,
-        val onPrint: () -> Unit,
+        val onPrint: (String) -> Unit,
         val onReply: (String) -> Unit,
         val onReplyAll: (String) -> Unit,
         val onForward: (String) -> Unit,
         val onViewHeaders: () -> Unit,
         val onViewHtml: () -> Unit,
-        val onReportPhishing: () -> Unit,
+        val onReportPhishing: (String) -> Unit,
         val onRemind: () -> Unit,
         val onSavePdf: () -> Unit,
         val onSenderEmail: () -> Unit,

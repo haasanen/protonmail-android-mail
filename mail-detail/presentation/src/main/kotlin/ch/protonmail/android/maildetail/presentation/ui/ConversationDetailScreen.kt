@@ -526,7 +526,7 @@ fun ConversationDetailScreen(
                 onOpenInProtonCalendar = {
                     viewModel.submit(ConversationDetailViewAction.OpenInProtonCalendar(MessageId(it.id)))
                 },
-                onPrint = { _ -> actions.showFeatureMissingSnackbar() },
+                onPrint = { viewModel.submit(ConversationDetailViewAction.PrintMessage(context, it)) },
                 onAvatarClicked = { participantUiModel, avatarUiModel ->
                     viewModel.submit(
                         ConversationDetailViewAction.RequestContactActionsBottomSheet(
@@ -578,6 +578,9 @@ fun ConversationDetailScreen(
                 onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged,
                 onUnsubscribeFromNewsletter = {
                     viewModel.submit(ConversationDetailViewAction.UnsubscribeFromNewsletter(MessageId(it.id)))
+                },
+                onReportPhishing = { messageId ->
+                    viewModel.submit(ConversationDetailViewAction.ReportPhishing(messageId))
                 }
             ),
             scrollToMessageId = state.scrollToMessage?.id,
@@ -738,10 +741,10 @@ fun ConversationDetailScreen(
                     onMoveToInbox = actions.onMoveToInboxClick,
                     onViewInLightMode = { Timber.d("conversation onViewInLightMode clicked") },
                     onViewInDarkMode = { Timber.d("conversation onViewInDarkMode clicked") },
-                    onPrint = { Timber.d("conversation onPrint clicked") },
+                    onPrint = { rawId -> actions.onPrint(MessageId(rawId)) },
                     onViewHeaders = { Timber.d("conversation onViewHeaders clicked") },
                     onViewHtml = { Timber.d("conversation onViewHtml clicked") },
-                    onReportPhishing = { Timber.d("conversation onReportPhishing clicked") },
+                    onReportPhishing = { rawId -> actions.onReportPhishing(MessageId(rawId)) },
                     onRemind = { Timber.d("conversation onRemind clicked") },
                     onSavePdf = { Timber.d("conversation onSavePdf clicked") },
                     onSenderEmail = { Timber.d("conversation onSenderEmail clicked") },
@@ -1165,7 +1168,8 @@ object ConversationDetailScreen {
         val onUnsnoozeMessage: () -> Unit,
         val onSnooze: () -> Unit,
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
-        val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit
+        val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
+        val onReportPhishing: (MessageId) -> Unit
     ) {
 
         companion object {
@@ -1224,7 +1228,8 @@ object ConversationDetailScreen {
                 onUnsnoozeMessage = {},
                 onSnooze = {},
                 onActionBarVisibilityChanged = {},
-                onUnsubscribeFromNewsletter = {}
+                onUnsubscribeFromNewsletter = {},
+                onReportPhishing = {}
             )
         }
     }
