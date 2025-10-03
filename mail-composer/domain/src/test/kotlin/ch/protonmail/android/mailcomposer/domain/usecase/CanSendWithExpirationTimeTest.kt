@@ -73,10 +73,10 @@ class CanSendWithExpirationTimeTest {
 
         private val unsupportedRecipients = listOf("unsupported")
         private val unknownRecipients = listOf("unknown")
-        val AllRecipientsSupportExpiration = RecipientsNotSupportingExpiration(emptyList(), emptyList())
-        val UnsupportedRecipients = RecipientsNotSupportingExpiration(unsupportedRecipients, emptyList())
-        val UnknownRecipients = RecipientsNotSupportingExpiration(emptyList(), unknownRecipients)
+        val AllRecipientsSupportExpiration = RecipientsNotSupportingExpiration(emptyList(), emptyList(), emptyList())
+        val UnsupportedRecipients = RecipientsNotSupportingExpiration(emptyList(), unsupportedRecipients, emptyList())
+        val UnknownRecipients = RecipientsNotSupportingExpiration(emptyList(), emptyList(), unknownRecipients)
         val UnsupportedAndUnknownRecipients =
-            RecipientsNotSupportingExpiration(unsupportedRecipients, unknownRecipients)
+            RecipientsNotSupportingExpiration(emptyList(), unsupportedRecipients, unknownRecipients)
     }
 }

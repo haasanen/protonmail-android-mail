@@ -54,6 +54,7 @@ fun DraftExpirationTime.toMessageExpiration() = when (this) {
 }
 
 fun DraftRecipientExpirationFeatureReport.toRecipientsNotSupportingExpiration() = RecipientsNotSupportingExpiration(
+    supported = this.supported,
     unsupported = this.unsupported,
     unknown = this.unknown
 )
