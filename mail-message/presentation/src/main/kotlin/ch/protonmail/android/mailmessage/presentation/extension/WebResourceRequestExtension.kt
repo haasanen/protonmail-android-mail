@@ -18,47 +18,14 @@
 
 package ch.protonmail.android.mailmessage.presentation.extension
 
-import java.io.IOException
-import java.net.URL
 import java.util.regex.Pattern
 import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import timber.log.Timber
 
 fun WebResourceRequest.isRemoteContent() = url.scheme?.let {
     Pattern.compile("proton-https?").matcher(it).matches()
-} ?: false
-
-fun WebResourceRequest.isRemoteUnsecuredContent() = url.scheme?.let {
-    Pattern.compile("http[^s]?").matcher(it).matches()
 } ?: false
 
 fun WebResourceRequest.isEmbeddedImage() = url.scheme?.let {
     Pattern.compile("cid").matcher(it).matches()
 } ?: false
 
-fun WebResourceRequest.getSecuredWebResourceResponse(): WebResourceResponse {
-    return try {
-        val httpsUrl = URL(this.url.toString().replaceFirst("http://", "https://"))
-        val connection = httpsUrl.openConnection()
-        return WebResourceResponse(
-            connection.contentType,
-            connection.contentEncoding,
-            connection.getInputStream()
-        )
-    } catch (e: IOException) {
-        Timber.d("Error in upgradeToSecuredWebResourceResponse", e)
-        WebResourceResponse(
-            "",
-            "",
-            null
-        )
-    } catch (e: IllegalArgumentException) {
-        Timber.d("Error in upgradeToSecuredWebResourceResponse", e)
-        WebResourceResponse(
-            "",
-            "",
-            null
-        )
-    }
-}
