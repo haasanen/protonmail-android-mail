@@ -26,7 +26,7 @@ import android.webkit.WebResourceResponse
 import timber.log.Timber
 
 fun WebResourceRequest.isRemoteContent() = url.scheme?.let {
-    Pattern.compile("https?").matcher(it).matches()
+    Pattern.compile("proton-https?").matcher(it).matches()
 } ?: false
 
 fun WebResourceRequest.isRemoteUnsecuredContent() = url.scheme?.let {
