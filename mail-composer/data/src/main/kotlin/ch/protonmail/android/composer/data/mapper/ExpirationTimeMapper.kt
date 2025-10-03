@@ -19,7 +19,7 @@
 package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
+import ch.protonmail.android.mailcomposer.domain.mod.RecipientsExpirationSupport
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import uniffi.proton_mail_uniffi.DraftExpirationError
@@ -53,7 +53,7 @@ fun DraftExpirationTime.toMessageExpiration() = when (this) {
     is DraftExpirationTime.ThreeDays -> MessageExpirationTime.ThreeDays
 }
 
-fun DraftRecipientExpirationFeatureReport.toRecipientsNotSupportingExpiration() = RecipientsNotSupportingExpiration(
+fun DraftRecipientExpirationFeatureReport.toRecipientsNotSupportingExpiration() = RecipientsExpirationSupport(
     supported = this.supported,
     unsupported = this.unsupported,
     unknown = this.unknown

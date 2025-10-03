@@ -1,7 +1,7 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.right
-import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
+import ch.protonmail.android.mailcomposer.domain.mod.RecipientsExpirationSupport
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.CanSend
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationSupportUnknown
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationUnsupportedForSome
@@ -73,10 +73,10 @@ class CanSendWithExpirationTimeTest {
 
         private val unsupportedRecipients = listOf("unsupported")
         private val unknownRecipients = listOf("unknown")
-        val AllRecipientsSupportExpiration = RecipientsNotSupportingExpiration(emptyList(), emptyList(), emptyList())
-        val UnsupportedRecipients = RecipientsNotSupportingExpiration(emptyList(), unsupportedRecipients, emptyList())
-        val UnknownRecipients = RecipientsNotSupportingExpiration(emptyList(), emptyList(), unknownRecipients)
+        val AllRecipientsSupportExpiration = RecipientsExpirationSupport(emptyList(), emptyList(), emptyList())
+        val UnsupportedRecipients = RecipientsExpirationSupport(emptyList(), unsupportedRecipients, emptyList())
+        val UnknownRecipients = RecipientsExpirationSupport(emptyList(), emptyList(), unknownRecipients)
         val UnsupportedAndUnknownRecipients =
-            RecipientsNotSupportingExpiration(emptyList(), unsupportedRecipients, unknownRecipients)
+            RecipientsExpirationSupport(emptyList(), unsupportedRecipients, unknownRecipients)
     }
 }

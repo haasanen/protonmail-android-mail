@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.domain.mod
 
-data class RecipientsNotSupportingExpiration(
+data class RecipientsExpirationSupport(
     val supported: List<String>,
     val unsupported: List<String>,
     val unknown: List<String>
