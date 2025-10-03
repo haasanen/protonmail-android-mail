@@ -37,6 +37,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.Mai
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationSupportUnknownConfirmationRequested
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationUnsupportedConfirmationRequested
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationUnsupportedForSomeConfirmationRequested
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications.DraftBodyChanged
@@ -107,6 +108,11 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
                 recipients
             )
         )
+
+        OnSendWithExpirationUnsupported -> ComposerStateModifications(
+            mainModification = UpdateLoading(ComposerState.LoadingType.None),
+            effectsModification = SendExpirationUnsupportedConfirmationRequested
+        )
     }
 
     data class DraftContentReady(
@@ -135,4 +141,6 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
     data class OnSendWithExpirationUnsupportedForSome(val recipients: List<String>) : CompositeEvent
 
     data object OnSendWithExpirationSupportUnknown : CompositeEvent
+
+    data object OnSendWithExpirationUnsupported : CompositeEvent
 }

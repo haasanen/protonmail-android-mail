@@ -65,6 +65,15 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
         }
     }
 
+    data object SendExpirationUnsupportedConfirmationRequested : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            confirmSendExpiringMessage = Effect.of(
+                event = TextUiModel.TextRes(R.string.composer_send_expiring_message_to_external_will_fail_for_all)
+            )
+        )
+    }
+
     data object CancelSendNoSubject : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(

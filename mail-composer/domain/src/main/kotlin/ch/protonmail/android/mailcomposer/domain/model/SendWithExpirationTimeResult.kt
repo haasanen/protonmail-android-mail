@@ -22,4 +22,5 @@ sealed interface SendWithExpirationTimeResult {
     data object CanSend : SendWithExpirationTimeResult
     data class ExpirationSupportUnknown(val recipients: List<String>) : SendWithExpirationTimeResult
     data class ExpirationUnsupportedForSome(val recipients: List<String>) : SendWithExpirationTimeResult
+    data object ExpirationUnsupportedForAll : SendWithExpirationTimeResult
 }

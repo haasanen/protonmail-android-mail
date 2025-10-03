@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
@@ -31,12 +30,17 @@ class CanSendWithExpirationTime @Inject constructor(
 
     suspend operator fun invoke(): Either<DataError, SendWithExpirationTimeResult> =
         messageExpirationTimeRepository.validateSendWithExpirationTime().map {
-            return when {
+            when {
+                it.unsupported.isNotEmpty() && it.supported.isEmpty() && it.unknown.isEmpty() ->
+                    SendWithExpirationTimeResult.ExpirationUnsupportedForAll
+
                 it.unsupported.isNotEmpty() ->
                     SendWithExpirationTimeResult.ExpirationUnsupportedForSome(it.unsupported)
+
                 it.unknown.isNotEmpty() ->
                     SendWithExpirationTimeResult.ExpirationSupportUnknown(it.unknown)
+
                 else -> SendWithExpirationTimeResult.CanSend
-            }.right()
+            }
         }
 }

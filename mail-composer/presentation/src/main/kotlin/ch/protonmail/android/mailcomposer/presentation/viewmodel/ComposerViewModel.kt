@@ -785,6 +785,9 @@ class ComposerViewModel @AssistedInject constructor(
             null -> {
                 emitNewStateFor(CompositeEvent.OnSendWithExpirationSupportUnknown)
             }
+
+            SendWithExpirationTimeResult.ExpirationUnsupportedForAll ->
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationUnsupported)
         }
 
     }
