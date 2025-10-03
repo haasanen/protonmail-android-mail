@@ -71,7 +71,7 @@ internal class EffectsStateModificationTest(
     companion object {
 
         private val initialState = ComposerState.Effects.initial()
-        private val expirationRecipients = listOf("external@foo.com")
+        private val expirationRecipients = listOf("external@foo.com", "other-external@foo.com")
         private val draftDisplayBody = DraftDisplayBodyUiModel("<html>draft display body</html>")
         private val draftFields = DraftFields(
             SenderEmail("author@proton.me"),
