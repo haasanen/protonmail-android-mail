@@ -45,7 +45,15 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
     ) : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects {
-            val formattedRecipients = recipients.joinToString { it }
+            val recipientsToShow = recipients
+                .take(NUM_RECIPIENTS_TO_SHOW)
+                .joinToString { it }
+            val recipientsHiddenCount = (recipients.size - NUM_RECIPIENTS_TO_SHOW)
+                .takeIf { it > 0 }
+
+            val formattedHiddenRecipientsCount = recipientsHiddenCount?.let { " +$it" } ?: ""
+            val formattedRecipients = recipientsToShow.plus(formattedHiddenRecipientsCount)
+
             return state.copy(
                 confirmSendExpiringMessage = Effect.of(
                     event = TextUiModel.TextResWithArgs(
@@ -71,3 +79,5 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
             state.copy(confirmDiscardDraft = Effect.of(Unit))
     }
 }
+
+private const val NUM_RECIPIENTS_TO_SHOW = 4
