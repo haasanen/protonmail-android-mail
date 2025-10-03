@@ -147,7 +147,7 @@ private fun SignatureFieldDescription(@StringRes stringRes: Int) {
     Text(
         modifier = Modifier.padding(top = ProtonDimens.Spacing.Compact),
         text = stringResource(stringRes),
-        color = ProtonTheme.colors.textHint,
+        color = ProtonTheme.colors.textWeak,
         style = ProtonTheme.typography.bodyMediumNorm
     )
 }
