@@ -200,7 +200,7 @@ internal fun ToolbarActions(
                         modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard)
                     )
 
-                    if (index != items.size - 1) {
+                    if (index != remainingItems.size - 1) {
                         MailDivider()
                     }
                 }
