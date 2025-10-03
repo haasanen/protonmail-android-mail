@@ -31,7 +31,7 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
             state.copy(confirmSendingWithoutSubject = Effect.of(Unit))
     }
 
-    data object SendExpirationMayNotApplyConfirmationRequested : EffectsStateModification {
+    data object SendExpirationSupportUnknownConfirmationRequested : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
             confirmSendExpiringMessage = Effect.of(
@@ -40,7 +40,7 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
         )
     }
 
-    data class SendExpirationWillNotApplyConfirmationRequested(
+    data class SendExpirationUnsupportedForSomeConfirmationRequested(
         val recipients: List<String>
     ) : EffectsStateModification {
 

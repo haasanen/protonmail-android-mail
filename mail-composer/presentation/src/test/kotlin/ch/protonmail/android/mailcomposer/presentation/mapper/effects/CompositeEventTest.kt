@@ -41,8 +41,8 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.Att
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationMayNotApplyConfirmationRequested
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationWillNotApplyConfirmationRequested
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationSupportUnknownConfirmationRequested
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationUnsupportedForSomeConfirmationRequested
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
@@ -167,18 +167,18 @@ internal class CompositeEventTest(
             ),
             arrayOf(
                 "On Send with expiration may fail to modification",
-                CompositeEvent.OnSendWithExpirationMayNotApply,
+                CompositeEvent.OnSendWithExpirationSupportUnknown,
                 ComposerStateModifications(
                     mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
-                    effectsModification = SendExpirationMayNotApplyConfirmationRequested
+                    effectsModification = SendExpirationSupportUnknownConfirmationRequested
                 )
             ),
             arrayOf(
                 "On Send with expiration will fail to modification",
-                CompositeEvent.OnSendWithExpirationWillNotApply(expirationRecipients),
+                CompositeEvent.OnSendWithExpirationUnsupportedForSome(expirationRecipients),
                 ComposerStateModifications(
                     mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
-                    effectsModification = SendExpirationWillNotApplyConfirmationRequested(expirationRecipients)
+                    effectsModification = SendExpirationUnsupportedForSomeConfirmationRequested(expirationRecipients)
                 )
             )
         )

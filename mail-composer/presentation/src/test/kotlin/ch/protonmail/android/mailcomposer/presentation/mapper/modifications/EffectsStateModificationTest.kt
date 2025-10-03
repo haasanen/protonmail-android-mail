@@ -381,7 +381,7 @@ internal class EffectsStateModificationTest(
             arrayOf(
                 "Show confirmation when send with expiration to externals may fail",
                 initialState,
-                ConfirmationsEffectsStateModification.SendExpirationMayNotApplyConfirmationRequested,
+                ConfirmationsEffectsStateModification.SendExpirationSupportUnknownConfirmationRequested,
                 initialState.copy(
                     confirmSendExpiringMessage = Effect.of(
                         event = TextUiModel.TextRes(R.string.composer_send_expiring_message_to_external_may_fail)
@@ -392,7 +392,7 @@ internal class EffectsStateModificationTest(
                 "Show confirmation when send with expiration to externals will fail",
                 initialState,
                 ConfirmationsEffectsStateModification
-                    .SendExpirationWillNotApplyConfirmationRequested(expirationRecipients),
+                    .SendExpirationUnsupportedForSomeConfirmationRequested(expirationRecipients),
                 initialState.copy(
                     confirmSendExpiringMessage = Effect.of(
                         event = TextUiModel.TextResWithArgs(
@@ -406,7 +406,7 @@ internal class EffectsStateModificationTest(
                 "Show confirmation when send with expiration to many external addresses will fail",
                 initialState,
                 ConfirmationsEffectsStateModification
-                    .SendExpirationWillNotApplyConfirmationRequested(manyExpirationRecipients),
+                    .SendExpirationUnsupportedForSomeConfirmationRequested(manyExpirationRecipients),
                 initialState.copy(
                     confirmSendExpiringMessage = Effect.of(
                         event = TextUiModel.TextResWithArgs(

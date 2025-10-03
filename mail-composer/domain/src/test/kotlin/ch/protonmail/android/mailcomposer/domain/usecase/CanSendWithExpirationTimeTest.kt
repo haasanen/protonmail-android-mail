@@ -3,8 +3,8 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.right
 import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.CanSend
-import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationMayNotApplyWarning
-import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationWillNotApplyWarning
+import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationSupportUnknown
+import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationUnsupportedForSome
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -34,7 +34,7 @@ class CanSendWithExpirationTimeTest {
     fun `returns expiration won't apply when any recipients are unsupported`() = runTest {
         // Given
         coEvery { repository.validateSendWithExpirationTime() } returns UnsupportedRecipients.right()
-        val expected = ExpirationWillNotApplyWarning(UnsupportedRecipients.unsupported)
+        val expected = ExpirationUnsupportedForSome(UnsupportedRecipients.unsupported)
 
         // When
         val actual = canSendWithExpirationTime()
@@ -47,7 +47,7 @@ class CanSendWithExpirationTimeTest {
     fun `returns expiration may not apply when any recipients are unknown`() = runTest {
         // Given
         coEvery { repository.validateSendWithExpirationTime() } returns UnknownRecipients.right()
-        val expected = ExpirationMayNotApplyWarning(UnknownRecipients.unknown)
+        val expected = ExpirationSupportUnknown(UnknownRecipients.unknown)
 
         // When
         val actual = canSendWithExpirationTime()
@@ -60,7 +60,7 @@ class CanSendWithExpirationTimeTest {
     fun `returns expiration won't apply when there are both unsupported and unknown recipients`() = runTest {
         // Given
         coEvery { repository.validateSendWithExpirationTime() } returns UnsupportedAndUnknownRecipients.right()
-        val expected = ExpirationWillNotApplyWarning(UnsupportedRecipients.unsupported)
+        val expected = ExpirationUnsupportedForSome(UnsupportedRecipients.unsupported)
 
         // When
         val actual = canSendWithExpirationTime()

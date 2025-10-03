@@ -33,9 +33,9 @@ class CanSendWithExpirationTime @Inject constructor(
         messageExpirationTimeRepository.validateSendWithExpirationTime().map {
             return when {
                 it.unsupported.isNotEmpty() ->
-                    SendWithExpirationTimeResult.ExpirationWillNotApplyWarning(it.unsupported)
+                    SendWithExpirationTimeResult.ExpirationUnsupportedForSome(it.unsupported)
                 it.unknown.isNotEmpty() ->
-                    SendWithExpirationTimeResult.ExpirationMayNotApplyWarning(it.unknown)
+                    SendWithExpirationTimeResult.ExpirationSupportUnknown(it.unknown)
                 else -> SendWithExpirationTimeResult.CanSend
             }.right()
         }
