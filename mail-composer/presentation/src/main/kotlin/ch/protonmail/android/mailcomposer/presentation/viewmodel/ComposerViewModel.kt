@@ -777,11 +777,13 @@ class ComposerViewModel @AssistedInject constructor(
             is SendWithExpirationTimeResult.ExpirationWillNotApplyWarning -> {
                 emitNewStateFor(CompositeEvent.OnSendWithExpirationWillNotApply(result.recipients))
             }
+
             is SendWithExpirationTimeResult.ExpirationMayNotApplyWarning -> {
-                emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(result.recipients))
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply)
             }
+
             null -> {
-                emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(emptyList()))
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply)
             }
         }
 

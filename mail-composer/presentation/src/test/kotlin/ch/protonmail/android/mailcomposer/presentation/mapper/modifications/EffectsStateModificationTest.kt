@@ -377,8 +377,7 @@ internal class EffectsStateModificationTest(
             arrayOf(
                 "Show confirmation when send with expiration to externals may fail",
                 initialState,
-                ConfirmationsEffectsStateModification
-                    .SendExpirationMayNotApplyConfirmationRequested(expirationRecipients),
+                ConfirmationsEffectsStateModification.SendExpirationMayNotApplyConfirmationRequested,
                 initialState.copy(
                     confirmSendExpiringMessage = Effect.of(
                         event = TextUiModel.TextRes(R.string.composer_send_expiring_message_to_external_may_fail)

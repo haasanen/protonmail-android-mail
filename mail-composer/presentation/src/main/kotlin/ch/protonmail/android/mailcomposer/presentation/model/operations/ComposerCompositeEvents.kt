@@ -96,9 +96,7 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
 
         is OnSendWithExpirationMayNotApply -> ComposerStateModifications(
             mainModification = UpdateLoading(ComposerState.LoadingType.None),
-            effectsModification = ConfirmationsEffectsStateModification.SendExpirationMayNotApplyConfirmationRequested(
-                recipients
-            )
+            effectsModification = ConfirmationsEffectsStateModification.SendExpirationMayNotApplyConfirmationRequested
         )
 
         is OnSendWithExpirationWillNotApply -> ComposerStateModifications(
@@ -134,5 +132,5 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
 
     data class OnSendWithExpirationWillNotApply(val recipients: List<String>) : CompositeEvent
 
-    data class OnSendWithExpirationMayNotApply(val recipients: List<String>) : CompositeEvent
+    data object OnSendWithExpirationMayNotApply : CompositeEvent
 }

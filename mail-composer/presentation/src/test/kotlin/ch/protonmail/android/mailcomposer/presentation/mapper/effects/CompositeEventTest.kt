@@ -167,10 +167,10 @@ internal class CompositeEventTest(
             ),
             arrayOf(
                 "On Send with expiration may fail to modification",
-                CompositeEvent.OnSendWithExpirationMayNotApply(expirationRecipients),
+                CompositeEvent.OnSendWithExpirationMayNotApply,
                 ComposerStateModifications(
                     mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
-                    effectsModification = SendExpirationMayNotApplyConfirmationRequested(expirationRecipients)
+                    effectsModification = SendExpirationMayNotApplyConfirmationRequested
                 )
             ),
             arrayOf(
