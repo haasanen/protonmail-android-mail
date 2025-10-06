@@ -85,7 +85,13 @@ class AndroidDnsResolver @Inject constructor(
 
                         override fun onAnswer(answer: List<InetAddress>, rcode: Int) {
                             Timber.tag("DnsResolution").d("DNS host for '$host' resolved to $answer - $executorType")
-                            continuation.resume(answer.mapNotNull { it.toRustIpAddress() })
+
+                            val addresses = answer.mapNotNull {
+                                @Suppress("UNNECESSARY_SAFE_CALL") // InetAddress is a platform type
+                                it?.toRustIpAddress(originalHost = host)
+                            }
+
+                            continuation.resume(addresses)
                         }
 
                         override fun onError(error: DnsResolver.DnsException) {
@@ -121,11 +127,11 @@ class AndroidDnsResolver @Inject constructor(
         }
     }
 
-    private fun InetAddress.toRustIpAddress(): IpAddr? {
-        val address = this.hostAddress
+    private fun InetAddress?.toRustIpAddress(originalHost: String): IpAddr? {
+        val address = this?.hostAddress
 
         if (address == null) {
-            Timber.tag("DnsResolution").d("Null address on DNS resolution: ${this::class.java} - ${this.hostAddress}")
+            Timber.tag("DnsResolution").d("Null address on DNS resolution for '$originalHost'")
             return null
         }
 
