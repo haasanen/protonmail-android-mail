@@ -21,7 +21,12 @@ package ch.protonmail.android.mailonboarding.presentation
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -47,7 +52,6 @@ import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingContent
 import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingIndexDots
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingViewModel
 import ch.protonmail.android.mailupselling.presentation.ui.onboarding.OnboardingUpsellScreen
-import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
@@ -134,6 +138,7 @@ private fun OnboardingScreen(
         modifier = Modifier
             .testTag(OnboardingScreenTestTags.RootItem)
             .background(ProtonTheme.colors.backgroundInvertedNorm)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
             .padding(ProtonDimens.Spacing.Large)
             .verticalScroll(rememberScrollState())
     ) {
@@ -149,8 +154,6 @@ private fun OnboardingScreen(
             OnboardingIndexDots(pagerState.currentPage, viewCount)
             OnboardingButton(onExitAction, pagerState, viewCount)
         }
-
-        BottomNavigationBarSpacer()
     }
 }
 
