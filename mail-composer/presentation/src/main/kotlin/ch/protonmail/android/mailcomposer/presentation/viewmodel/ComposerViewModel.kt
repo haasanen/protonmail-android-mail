@@ -203,7 +203,7 @@ class ComposerViewModel @AssistedInject constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-                initialValue = buildDraftDisplayBody(DraftBody(""))
+                initialValue = DraftDisplayBodyUiModel("")
             )
 
     private var pendingStoreDraftJob: Job? = null
@@ -521,7 +521,7 @@ class ComposerViewModel @AssistedInject constructor(
             .onLeft { emitNewStateFor(EffectsEvent.DraftEvent.OnDraftLoadingFailed) }
     }
 
-    private fun DraftFields.toDraftUiModel(): DraftUiModel {
+    private suspend fun DraftFields.toDraftUiModel(): DraftUiModel {
         val draftBody = DraftBody(this.body.value)
         val draftDisplayBody = buildDraftDisplayBody(draftBody)
 
@@ -611,8 +611,7 @@ class ComposerViewModel @AssistedInject constructor(
 
             }
             .onRight { bodyWithNewSignature ->
-                val formerSelection = bodyTextField.selection
-                bodyTextField.replaceText(bodyWithNewSignature.value, formerSelection)
+                bodyTextField.replaceText(bodyWithNewSignature.value)
 
                 // This needs to be created directly as we're emitting a state change.
                 val draftDisplayBody = buildDraftDisplayBody(
@@ -763,21 +762,14 @@ class ComposerViewModel @AssistedInject constructor(
             return
         }
 
-        if (!isMessageExpirationEnabled.value) {
-            onSendMessage()
-            return
-        }
-
         when (val result = canSendWithExpirationTime().getOrNull()) {
             SendWithExpirationTimeResult.CanSend -> onSendMessage()
             is SendWithExpirationTimeResult.ExpirationWillNotApplyWarning -> {
                 emitNewStateFor(CompositeEvent.OnSendWithExpirationWillNotApply(result.recipients))
             }
-
             is SendWithExpirationTimeResult.ExpirationMayNotApplyWarning -> {
                 emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(result.recipients))
             }
-
             null -> {
                 emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(emptyList()))
             }

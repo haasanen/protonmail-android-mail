@@ -58,6 +58,14 @@ data object MessageExpirationEnabled : FeatureFlagDefinition(
     defaultValue = false
 )
 
+data object ComposerAutoCollapseQuotedText : FeatureFlagDefinition(
+    key = "MailAndroidV7ComposerAutoCollapsedText",
+    name = "Auto collapse composer quoted text",
+    category = FeatureFlagCategory.Composer,
+    description = "Inject CSS to auto-collapse quoted text in Composer",
+    defaultValue = false
+)
+
 data object MessageDetailEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7MessageDetail",
     name = "View Single Message Detail",
@@ -65,4 +73,3 @@ data object MessageDetailEnabled : FeatureFlagDefinition(
     description = "Allow to view a single message in the detail screen",
     defaultValue = true
 )
-

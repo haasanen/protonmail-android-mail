@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.testdata
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureUiModel
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureUiModel
 import ch.protonmail.android.mailsettings.presentation.R
 
 object MobileSignatureTestData {

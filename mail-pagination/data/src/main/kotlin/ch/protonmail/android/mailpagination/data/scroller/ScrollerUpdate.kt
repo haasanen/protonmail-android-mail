@@ -28,3 +28,12 @@ sealed class ScrollerUpdate<out T> {
     data class ReplaceRange<T>(val fromIdx: Int, val toIdx: Int, val items: List<T>) : ScrollerUpdate<T>()
     data class Error(val error: MailScrollerError) : ScrollerUpdate<Nothing>()
 }
+
+fun <T> ScrollerUpdate<T>.itemCount(): Int = when (this) {
+    is ScrollerUpdate.None -> 0
+    is ScrollerUpdate.Append -> items.size
+    is ScrollerUpdate.ReplaceFrom -> items.size
+    is ScrollerUpdate.ReplaceBefore -> items.size
+    is ScrollerUpdate.ReplaceRange -> items.size
+    is ScrollerUpdate.Error -> 0
+}

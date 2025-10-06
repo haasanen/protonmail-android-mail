@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.contentDescription
 import ch.protonmail.android.mailcommon.presentation.model.description
 import ch.protonmail.android.mailcommon.presentation.model.iconDrawable
@@ -30,6 +31,7 @@ import kotlinx.collections.immutable.toImmutableList
 object BottomActionBarsPreviewData {
 
     val Data = BottomBarState.Data.Shown(
+        BottomBarTarget.Conversation,
         listOf(
             ActionUiModel(
                 Action.MarkUnread,

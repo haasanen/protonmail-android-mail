@@ -46,7 +46,6 @@ import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingContentPreviewData
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
 import ch.protonmail.android.mailupselling.presentation.ui.screen.footer.cyclebuttons.CycleOptions
-import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 internal fun PaymentButtonsHorizontalLayout(
@@ -105,8 +104,6 @@ internal fun PaymentButtonsHorizontalLayout(
         )
 
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
-
-        BottomNavigationBarSpacer()
     }
 }
 

@@ -456,6 +456,7 @@ class RustConversationsQueryImplTest {
 
         val session = mockk<MailUserSessionWrapper>()
         val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
+        coEvery { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) } just Runs
 
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { nextPage() } answers {
@@ -485,5 +486,46 @@ class RustConversationsQueryImplTest {
 
         // Then
         assertEquals(emptyList<LocalConversation>().right(), actual)
+    }
+
+    @Test
+    fun `Append None then late Append after grace period triggers invalidation`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = SystemLabelId.Inbox.labelId
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.First)
+
+        val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
+
+        coEvery { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) } just Runs
+
+        val lateItems = listOf(LocalConversationTestData.OctConversation)
+
+        val paginator = mockk<ConversationPaginatorWrapper> {
+            coEvery { nextPage() } answers {
+                CoroutineScope(mainDispatcherRule.testDispatcher).launch {
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.None)
+                    delay(NONE_FOLLOWUP_GRACE_MS + 100)
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(lateItems))
+                }
+                Unit.right()
+            }
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustConversationPaginator(session, labelId.toLocalLabelId(), false, capture(callbackSlot))
+        } returns paginator.right()
+
+        // When
+        val actual = rustConversationsQuery.getConversations(userId, pageKey)
+
+        // Then
+        assertEquals(emptyList<LocalConversation>().right(), actual)
+
+        // Late Append causes invalidation
+        testScheduler.advanceUntilIdle()
+        coVerify(exactly = 1) { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) }
     }
 }

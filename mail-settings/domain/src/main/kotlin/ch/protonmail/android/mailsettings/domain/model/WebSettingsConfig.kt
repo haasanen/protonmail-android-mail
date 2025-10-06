@@ -25,5 +25,6 @@ data class WebSettingsConfig(
     val labelSettingsAction: String,
     val spamFilterSettingsAction: String,
     val privacySecuritySettingsAction: String,
-    val subscriptionDetailsAction: String
+    val subscriptionDetailsAction: String,
+    val emailSignatureAction: String
 )

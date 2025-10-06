@@ -39,6 +39,7 @@ import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -729,7 +730,11 @@ class ConversationDetailViewModelTest {
         val actions = listOf(Action.Archive)
         val actionUiModels = listOf(ActionUiModelTestData.archive).toImmutableList()
         val labelId = LabelIdSample.Archive
-        val expected = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
+        val expected = initialState.copy(
+            bottomBarState = BottomBarState.Data.Shown(
+                BottomBarTarget.Conversation, actionUiModels
+            )
+        )
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any())
@@ -794,7 +799,11 @@ class ConversationDetailViewModelTest {
         val actions = listOf(Action.Archive, Action.MarkUnread)
         val actionUiModels = listOf(ActionUiModelTestData.archive, ActionUiModelTestData.markUnread).toImmutableList()
         val labelId = LabelIdSample.AllMail
-        val expectedState = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
+        val expectedState = initialState.copy(
+            bottomBarState = BottomBarState.Data.Shown(
+                BottomBarTarget.Conversation, actionUiModels
+            )
+        )
 
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
@@ -865,7 +874,7 @@ class ConversationDetailViewModelTest {
 
             // Then
             val bottomBarState = ConversationDetailState.Loading.copy(
-                bottomBarState = BottomBarState.Data.Shown(actionUiModels)
+                bottomBarState = BottomBarState.Data.Shown(BottomBarTarget.Conversation, actionUiModels)
             )
             assertEquals(bottomBarState, awaitItem())
 
@@ -2179,7 +2188,7 @@ class ConversationDetailViewModelTest {
                 operation = ofType<ConversationDetailEvent.ConversationBottomBarEvent>()
             )
         } returns ConversationDetailState.Loading.copy(
-            bottomBarState = BottomBarState.Data.Shown(actionUiModels)
+            bottomBarState = BottomBarState.Data.Shown(BottomBarTarget.Conversation, actionUiModels)
         )
     }
 

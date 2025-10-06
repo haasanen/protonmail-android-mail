@@ -22,7 +22,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.presentation.R
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.mapper.MobileSignatureUiModelMapper
 
 internal object AppSettingsUiModelMapper {
 
@@ -38,7 +37,6 @@ internal object AppSettingsUiModelMapper {
             theme = appSettings.theme.toTextUiModel(),
             deviceContactsEnabled = appSettings.hasCombinedContactsEnabled,
             notificationsEnabledStatus = getNotificationStatus(notificationsEnabled),
-            mobileSignature = MobileSignatureUiModelMapper.toUiModel(appSettings.mobileSignaturePreference),
             appIconName = appIconDescription
         )
     }

@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.BackgroundExecutionCallback
 import uniffi.proton_mail_uniffi.BackgroundExecutionResult
-import uniffi.proton_mail_uniffi.BackgroundExecutionStatus
 import uniffi.proton_mail_uniffi.MailSessionStartBackgroundExecutionResult
 import javax.inject.Inject
 
@@ -35,16 +34,16 @@ class StartBackgroundExecution @Inject constructor(
     private val mailSessionRepository: MailSessionRepository
 ) {
 
-    operator fun invoke(): Flow<BackgroundExecutionStatus> = callbackFlow {
+    operator fun invoke(): Flow<BackgroundExecutionResult> = callbackFlow {
         val callback = object : BackgroundExecutionCallback {
             override suspend fun onExecutionCompleted(result: BackgroundExecutionResult) {
                 Timber.tag("BackgroundExecution").d("Background execution result received: $result")
 
-                trySend(result.status)
-                    .onSuccess { Timber.tag("BackgroundExecution").d("Status sent to flow successfully.") }
-                    .onFailure { Timber.tag("BackgroundExecution").d("Failed to send status to flow.") }
+                trySend(result)
+                    .onSuccess { Timber.tag("BackgroundExecution").d("Result sent to flow successfully.") }
+                    .onFailure { Timber.tag("BackgroundExecution").d("Failed to send result to flow.") }
 
-                Timber.tag("BackgroundExecution").d("Flow closed after sending status.")
+                Timber.tag("BackgroundExecution").d("Flow closed after sending result.")
             }
 
         }

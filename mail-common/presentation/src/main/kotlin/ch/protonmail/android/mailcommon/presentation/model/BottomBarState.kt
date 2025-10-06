@@ -27,9 +27,17 @@ sealed interface BottomBarState {
     sealed interface Data : BottomBarState {
 
         val actions: ImmutableList<ActionUiModel>
+        val target: BottomBarTarget
 
-        data class Hidden(override val actions: ImmutableList<ActionUiModel>) : Data
-        data class Shown(override val actions: ImmutableList<ActionUiModel>) : Data
+        data class Hidden(
+            override val target: BottomBarTarget,
+            override val actions: ImmutableList<ActionUiModel>
+        ) : Data
+
+        data class Shown(
+            override val target: BottomBarTarget,
+            override val actions: ImmutableList<ActionUiModel>
+        ) : Data
     }
 
     object Loading : BottomBarState
@@ -40,11 +48,25 @@ sealed interface BottomBarState {
     }
 }
 
+@Immutable
+sealed interface BottomBarTarget {
+
+    data object Mailbox : BottomBarTarget
+    data object Conversation : BottomBarTarget
+    data class Message(val id: String) : BottomBarTarget
+}
+
 sealed interface BottomBarEvent {
 
-    data class ActionsData(val actionUiModels: ImmutableList<ActionUiModel>) : BottomBarEvent
+    data class ActionsData(
+        val target: BottomBarTarget,
+        val actionUiModels: ImmutableList<ActionUiModel>
+    ) : BottomBarEvent
 
-    data class ShowAndUpdateActionsData(val actionUiModels: ImmutableList<ActionUiModel>) : BottomBarEvent
+    data class ShowAndUpdateActionsData(
+        val target: BottomBarTarget,
+        val actionUiModels: ImmutableList<ActionUiModel>
+    ) : BottomBarEvent
 
     object ShowBottomSheet : BottomBarEvent
     object HideBottomSheet : BottomBarEvent

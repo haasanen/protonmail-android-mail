@@ -291,6 +291,9 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController, activ
                     onAccountStorageClicked = activityActions.openSubscription,
                     onBackClick = {
                         navController.navigateBack()
+                    },
+                    onSignatureClicked = {
+                        navController.navigate(Destination.Screen.SignatureSettingsMenu.route)
                     }
                 )
             )
@@ -318,8 +321,8 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                     onAppIconSettingsClick = {
                         navController.navigate(Destination.Screen.AppIconSettings.route)
                     },
-                    onNavigateToMobileSignatureSettings = {
-                        navController.navigate(Destination.Screen.MobileSignatureSettings.route)
+                    onNavigateToSignatureSettings = {
+                        navController.navigate(Destination.Screen.SignatureSettingsMenu.route)
                     },
                     onNavigateToUpselling = { entryPoint, type ->
                         navController.navigate(

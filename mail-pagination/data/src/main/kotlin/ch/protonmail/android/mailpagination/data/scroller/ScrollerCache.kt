@@ -25,6 +25,8 @@ class ScrollerCache<T> {
     private val items = mutableListOf<T>()
     val snapshot: List<T> get() = items.toList()
 
+    fun itemCount(): Int = items.size
+
     fun applyUpdate(update: ScrollerUpdate<T>): List<T> {
 
         when (update) {

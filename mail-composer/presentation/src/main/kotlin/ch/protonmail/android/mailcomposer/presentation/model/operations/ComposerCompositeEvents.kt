@@ -25,24 +25,28 @@ import ch.protonmail.android.mailcomposer.presentation.mapper.AttachmentListErro
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AttachmentsStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification.ScheduleSendOptionsUpdated
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AttachmentsStateModification.ListUpdated
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.OnDraftReady
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.SendersListReady
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.UpdateLoading
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.UpdateSender
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications.DraftBodyChanged
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications.DraftSenderChanged
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError.AttachmentsListChangedWithError
 
 internal sealed interface CompositeEvent : ComposerStateEvent {
 
     @Suppress("LongMethod")
     override fun toStateModifications(): ComposerStateModifications = when (this) {
         is DraftContentReady -> ComposerStateModifications(
-            mainModification = MainStateModification.OnDraftReady(draftUiModel, bodyShouldTakeFocus),
+            mainModification = OnDraftReady(draftUiModel, bodyShouldTakeFocus),
             effectsModification = ContentEffectsStateModifications.DraftContentReady(
                 fields = draftUiModel,
                 isDataRefresh = isDataRefreshed,
@@ -51,45 +55,40 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         )
 
         is DraftContentUpdated -> ComposerStateModifications(
-            mainModification = MainStateModification.OnDraftReady(draftUiModel, false),
-            effectsModification = ContentEffectsStateModifications.DraftBodyChanged(
+            mainModification = OnDraftReady(draftUiModel, false),
+            effectsModification = DraftBodyChanged(
                 refreshedBody = draftUiModel.draftDisplayBodyUiModel
             )
         )
 
         is SenderAddressesListReady -> ComposerStateModifications(
-            mainModification = MainStateModification.SendersListReady(sendersList),
+            mainModification = SendersListReady(sendersList),
             effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
         )
 
         is OnSendWithEmptySubject -> ComposerStateModifications(
-            mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
+            mainModification = UpdateLoading(ComposerState.LoadingType.None),
             effectsModification = ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
         )
 
-        is SetExpirationDismissed -> ComposerStateModifications(
-            effectsModification = BottomSheetEffectsStateModification.HideBottomSheet,
-            accessoriesModification = AccessoriesStateModification.MessageExpirationUpdated(expiration)
-        )
-
         is UserChangedSender -> ComposerStateModifications(
-            mainModification = MainStateModification.UpdateSender(newSender),
-            effectsModification = ContentEffectsStateModifications.DraftSenderChanged(refreshedBody)
+            mainModification = UpdateSender(newSender),
+            effectsModification = DraftSenderChanged(refreshedBody)
         )
 
         is ScheduleSendOptionsReady -> ComposerStateModifications(
-            accessoriesModification = AccessoriesStateModification.ScheduleSendOptionsUpdated(options),
+            accessoriesModification = ScheduleSendOptionsUpdated(options),
             effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
         )
 
         is AttachmentListChanged -> ComposerStateModifications(
-            attachmentsModification = AttachmentsStateModification.ListUpdated(list),
+            attachmentsModification = ListUpdated(list),
             effectsModification = list
                 .filter { it.attachmentState is AttachmentState.Error }
                 .takeIf { it.isNotEmpty() }
                 ?.let {
                     AttachmentListErrorMapper.toAttachmentAddErrorWithList(it)?.let { errorWithList ->
-                        RecoverableError.AttachmentsListChangedWithError(
+                        AttachmentsListChangedWithError(
                             attachmentAddErrorWithList = errorWithList
                         )
                     }
@@ -97,14 +96,14 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         )
 
         is OnSendWithExpirationMayNotApply -> ComposerStateModifications(
-            mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
+            mainModification = UpdateLoading(ComposerState.LoadingType.None),
             effectsModification = ConfirmationsEffectsStateModification.SendExpirationMayNotApplyConfirmationRequested(
                 recipients
             )
         )
 
         is OnSendWithExpirationWillNotApply -> ComposerStateModifications(
-            mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
+            mainModification = UpdateLoading(ComposerState.LoadingType.None),
             effectsModification = ConfirmationsEffectsStateModification.SendExpirationWillNotApplyConfirmationRequested(
                 recipients
             )
@@ -127,8 +126,6 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         val newSender: SenderEmail,
         val refreshedBody: DraftDisplayBodyUiModel
     ) : CompositeEvent
-
-    data class SetExpirationDismissed(val expiration: ExpirationTimeUiModel) : CompositeEvent
 
     data class ScheduleSendOptionsReady(val options: ScheduleSendOptionsUiModel) : CompositeEvent
 

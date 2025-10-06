@@ -16,13 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.reducer
+package ch.protonmail.android.mailsettings.presentation.settings.signature.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureEvent
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureOperation
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureState
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureViewAction
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureEvent
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureOperation
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureState
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureViewAction
 import javax.inject.Inject
 
 class MobileSignatureReducer @Inject constructor() {

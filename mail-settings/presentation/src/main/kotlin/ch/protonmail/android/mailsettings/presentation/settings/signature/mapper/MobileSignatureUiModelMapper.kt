@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.mapper
+package ch.protonmail.android.mailsettings.presentation.settings.signature.mapper
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -24,8 +24,8 @@ import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
 import ch.protonmail.android.mailsettings.domain.model.isEnabled
 import ch.protonmail.android.mailsettings.presentation.R
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureSettingsUiModel
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureUiModel
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureSettingsUiModel
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureUiModel
 
 internal object MobileSignatureUiModelMapper {
 
@@ -41,7 +41,8 @@ internal object MobileSignatureUiModelMapper {
         MobileSignatureSettingsUiModel(
             enabled = signaturePreference.status.isEnabled(),
             signatureValue = signaturePreference.value,
-            editSignatureEffect = Effect.empty()
+            editSignatureEffect = Effect.empty(),
+            signatureStatus = signaturePreference.status
         )
 
     private fun getStatusText(status: MobileSignatureStatus): TextUiModel = when (status) {

@@ -41,6 +41,11 @@ fun WebSettingsConfig.toAccountSettingsUrl(forkedSessionId: ForkedSessionId, the
         Timber.d("web-settings: Account settings URL: $it")
     }
 
+fun WebSettingsConfig.toEmailSignatureUrl(forkedSessionId: ForkedSessionId, theme: Theme): String =
+    toSettingsUrl(forkedSessionId, theme, emailSignatureAction).also {
+        Timber.d("web-settings: Email signature settings URL: $it")
+    }
+
 private fun Theme.getUriParam(): String = when (this) {
     Theme.SYSTEM_DEFAULT -> SYSTEM_DEFAULT_THEME_PLACEHOLDER
     Theme.LIGHT -> LIGHT_THEME_URI_PARAM

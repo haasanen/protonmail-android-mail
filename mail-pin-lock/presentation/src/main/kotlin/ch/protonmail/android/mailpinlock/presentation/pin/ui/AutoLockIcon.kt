@@ -22,9 +22,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,9 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.autolock.standalone.LocalLockScreenEntryPointIsStandalone
 
@@ -68,23 +66,15 @@ private fun AutoLockLockIcon() {
 private fun AutoLockMailIcon() {
     Box(
         modifier = Modifier
-            .size(ProtonDimens.IconSize.Huge)
             .padding(ProtonDimens.Spacing.Small),
         contentAlignment = Alignment.Center
     ) {
-        Surface(
-            modifier = Modifier,
-            shape = RoundedCornerShape(ProtonDimens.Spacing.ModeratelyLarge),
-            color = Color.White,
-            shadowElevation = 4.dp
-        ) {
-            Icon(
-                modifier = Modifier.padding(ProtonDimens.Spacing.Tiny),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_logo_mail_no_bg),
-                tint = Color.Unspecified,
-                contentDescription = null
-            )
-        }
+        Icon(
+            modifier = Modifier.size(width = MailDimens.AutolockIconWidth, height = MailDimens.AutolockIconHeight),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_logo_mail_no_bg),
+            tint = Color.Unspecified,
+            contentDescription = null
+        )
     }
 }
 

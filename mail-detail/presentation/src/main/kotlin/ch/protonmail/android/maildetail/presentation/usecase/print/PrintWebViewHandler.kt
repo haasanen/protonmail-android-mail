@@ -30,10 +30,8 @@ import android.widget.Toast
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.presentation.extension.getSecuredWebResourceResponse
 import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.extension.isRemoteContent
-import ch.protonmail.android.mailmessage.presentation.extension.isRemoteUnsecuredContent
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -83,27 +81,14 @@ class PrintWebViewHandler @Inject constructor() {
         }
 
         override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-            return when {
-                !resourceConfig.showRemoteContent && request?.isRemoteContent() == true -> {
-                    WebResourceResponse("", "", null)
-                }
-
-                resourceConfig.showEmbeddedImages && request?.isEmbeddedImage() == true -> {
-                    handleEmbeddedImageRequest(request)
-                }
-
-                request?.isRemoteUnsecuredContent() == true -> {
-                    request.getSecuredWebResourceResponse()
-                }
-
-                else -> super.shouldInterceptRequest(view, request)
-            }
-        }
-
-        private fun handleEmbeddedImageRequest(request: WebResourceRequest): WebResourceResponse? {
-            val imageId = "<${request.url.schemeSpecificPart}>"
-            return resourceConfig.loadEmbeddedImage(resourceConfig.messageId, imageId)?.let {
-                WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
+            return if (request?.isRemoteContent() == true || request?.isEmbeddedImage() == true) {
+                request.url?.toString()?.let { url ->
+                    resourceConfig.loadEmbeddedImage(resourceConfig.messageId, url)?.let {
+                        WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
+                    }
+                } ?: super.shouldInterceptRequest(view, request)
+            } else {
+                super.shouldInterceptRequest(view, request)
             }
         }
 

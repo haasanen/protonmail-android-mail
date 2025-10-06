@@ -44,14 +44,17 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
         val recipients: List<String>
     ) : EffectsStateModification {
 
-        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
-            confirmSendExpiringMessage = Effect.of(
-                event = TextUiModel.TextResWithArgs(
-                    value = R.string.composer_send_expiring_message_to_external_will_fail,
-                    formatArgs = recipients
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects {
+            val formattedRecipients = recipients.joinToString { it }
+            return state.copy(
+                confirmSendExpiringMessage = Effect.of(
+                    event = TextUiModel.TextResWithArgs(
+                        value = R.string.composer_send_expiring_message_to_external_will_fail,
+                        formatArgs = listOf(formattedRecipients)
+                    )
                 )
             )
-        )
+        }
     }
 
     data object CancelSendNoSubject : EffectsStateModification {

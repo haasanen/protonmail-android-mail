@@ -25,27 +25,13 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class WebResourceRequestExtensionTest {
-
-    @Test
-    fun `should return true when checking if http resource request is for remote content`() {
-        // Given
-        val webResourceRequest = mockk<WebResourceRequest> {
-            every { url.scheme } returns "http"
-        }
-
-        // When
-        val actual = webResourceRequest.isRemoteContent()
-
-        // Then
-        assertTrue(actual)
-    }
+internal class WebResourceRequestExtensionTest {
 
     @Test
     fun `should return true when checking if https resource request is for remote content`() {
         // Given
         val webResourceRequest = mockk<WebResourceRequest> {
-            every { url.scheme } returns "https"
+            every { url.scheme } returns "proton-https"
         }
 
         // When
@@ -78,34 +64,6 @@ class WebResourceRequestExtensionTest {
 
         // When
         val actual = webResourceRequest.isRemoteContent()
-
-        // Then
-        assertFalse(actual)
-    }
-
-    @Test
-    fun `isRemoteUnsecuredContent should return true for unsecured HTTP scheme`() {
-        // Given
-        val webResourceRequest = mockk<WebResourceRequest> {
-            every { url.scheme } returns "http"
-        }
-
-        // When
-        val actual = webResourceRequest.isRemoteUnsecuredContent()
-
-        // Then
-        assertTrue(actual)
-    }
-
-    @Test
-    fun `isRemoteUnsecuredContent should return false for secured HTTPS scheme`() {
-        // Given
-        val webResourceRequest = mockk<WebResourceRequest> {
-            every { url.scheme } returns "https"
-        }
-
-        // When
-        val actual = webResourceRequest.isRemoteUnsecuredContent()
 
         // Then
         assertFalse(actual)

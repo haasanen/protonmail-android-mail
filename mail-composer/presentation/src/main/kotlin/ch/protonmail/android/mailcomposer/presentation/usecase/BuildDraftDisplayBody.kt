@@ -31,12 +31,12 @@ class BuildDraftDisplayBody @Inject constructor(
     private val generateCspNonce: GenerateCspNonce
 ) {
 
-    private val css: String by lazy { getCustomCss() }
-    private val javascript: String by lazy { getCustomJs() }
-
-    operator fun invoke(draftBody: DraftBody): DraftDisplayBodyUiModel {
+    suspend operator fun invoke(draftBody: DraftBody): DraftDisplayBodyUiModel {
         val bodyContent = draftBody.value
         val cspNonce = generateCspNonce()
+        val css = getCustomCss()
+        val javascript = getCustomJs()
+
         return buildHtmlTemplate(bodyContent, css, javascript, cspNonce.value)
     }
 

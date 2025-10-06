@@ -50,6 +50,11 @@ internal class StartBackgroundExecutionTest {
         val mailSessionWrapper = mockk<MailSessionWrapper>()
         val callback = slot<BackgroundExecutionCallback>()
         val executionResult = mockk<MailSessionStartBackgroundExecutionResult.Ok>()
+        val expectedStatus = BackgroundExecutionResult(
+            BackgroundExecutionStatus.Executed,
+            hasUnsentMessages = false,
+            hasPendingActions = false
+        )
         every { mailSessionRepository.getMailSession() } returns mailSessionWrapper
         every {
             mailSessionWrapper.startBackgroundTask(capture(callback))
@@ -58,8 +63,8 @@ internal class StartBackgroundExecutionTest {
 
         // When
         startBackgroundExecution().test {
-            callback.captured.onExecutionCompleted(BackgroundExecutionResult(BackgroundExecutionStatus.Executed, false))
-            assertEquals(BackgroundExecutionStatus.Executed, awaitItem())
+            callback.captured.onExecutionCompleted(expectedStatus)
+            assertEquals(expectedStatus, awaitItem())
         }
 
         // Then

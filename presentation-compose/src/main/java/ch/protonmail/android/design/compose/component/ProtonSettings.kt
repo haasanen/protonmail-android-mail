@@ -56,6 +56,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import ch.protonmail.android.design.R
@@ -242,6 +243,52 @@ fun ProtonMainSettingsItem(
     }
 }
 
+@Composable
+fun ProtonSettingsHintNavigationItem(
+    modifier: Modifier = Modifier,
+    name: String,
+    hint: String? = null,
+    isClickable: Boolean = true,
+    onClick: () -> Unit = {}
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(ProtonDimens.Spacing.Large)
+            .clickable(isClickable, onClick = onClick)
+    ) {
+        ProtonRawListItem(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = name,
+                    color = ProtonTheme.colors.textNorm,
+                    style = ProtonTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal
+                )
+                VerticalSpacer(height = ProtonDimens.Spacing.Small)
+                hint?.let {
+                    Text(
+                        text = hint,
+                        color = ProtonTheme.colors.textWeak,
+                        style = ProtonTheme.typography.bodyMediumNorm
+                    )
+                }
+            }
+
+            Icon(
+                modifier = Modifier
+                    .padding(start = ProtonDimens.Spacing.Large),
+                painter = painterResource(id = R.drawable.ic_proton_chevron_right),
+                contentDescription = name,
+                tint = ProtonTheme.colors.iconDisabled
+            )
+        }
+    }
+}
+
 
 @Composable
 fun ProtonAppSettingsItemInvert(
@@ -252,6 +299,7 @@ fun ProtonAppSettingsItemInvert(
     enabled: Boolean = true,
     isClickable: Boolean = true,
     onClick: () -> Unit = {},
+    content: (@Composable () -> Unit)? = null,
     iconContainerSize: DpSize = DpSize(ProtonDimens.IconSize.Default, ProtonDimens.IconSize.Default)
 ) {
     val nameColor =
@@ -271,7 +319,8 @@ fun ProtonAppSettingsItemInvert(
         nameTextColor = nameColor,
         hintTextStyle = ProtonTheme.typography.bodyLargeNorm,
         hintTextColor = hintColor,
-        iconContainerSize = iconContainerSize
+        iconContainerSize = iconContainerSize,
+        content = content
     )
 }
 
@@ -318,6 +367,7 @@ private fun ProtonAppSettingsItem(
     nameTextColor: Color,
     hintTextStyle: TextStyle,
     hintTextColor: Color,
+    content: (@Composable () -> Unit)? = null,
     iconContainerSize: DpSize = DpSize(ProtonDimens.IconSize.Default, ProtonDimens.IconSize.Default)
 ) {
     Row(
@@ -351,7 +401,9 @@ private fun ProtonAppSettingsItem(
                     style = hintTextStyle
                 )
             }
-
+            content?.let {
+                it()
+            }
         }
 
         Box(

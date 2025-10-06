@@ -61,7 +61,8 @@ class WebAccountSettingsViewModelTest {
         labelSettingsAction = "label-settings",
         spamFilterSettingsAction = "spam-settings",
         privacySecuritySettingsAction = "privacy-settings",
-        subscriptionDetailsAction = "subscription"
+        subscriptionDetailsAction = "subscription",
+        emailSignatureAction = "email-signature"
     )
 
     private val primaryUserId = UserIdTestData.Primary

@@ -1,0 +1,269 @@
+
+/*******************************************************************************
+ * Event listeners
+ ******************************************************************************/
+/* Listen for changes to the body and dispatches them to KT */
+document.getElementById('$EDITOR_ID').addEventListener('input', function(){
+    var body = document.getElementById('$EDITOR_ID').innerHTML
+    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
+});
+
+/* Listen for changes to the webview size and dispatches them to KT */
+const observer = new ResizeObserver(entries => {
+for (const entry of entries) {
+    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
+}
+});
+observer.observe(document.querySelector('body'));
+
+/* Listen for changes to the body where images are removed and dispatches them to KT */
+const removeInlineImageObserver = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+        if (mutation.type === 'childList') {
+            mutation.removedNodes.forEach(node => {
+                if (node.nodeName === 'IMG') {
+                    const src = node.getAttribute('src');
+                    if (src && src.startsWith('cid:')) {
+                        const cid = src.substring(4);
+                        $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onInlineImageDeleted(cid)
+                    }
+                }
+            });
+        }
+    });
+});
+removeInlineImageObserver.observe(document.getElementById('$EDITOR_ID'), {childList: true, subtree: true});
+
+/* Listen for taps on images in the body that contains a "cid" (inline images) and dispatches the event to KT */
+document.getElementById('$EDITOR_ID').addEventListener('click', function(event) {
+    if (event.target.nodeName === 'IMG') {
+        const src = event.target.getAttribute('src');
+        if (src && src.startsWith('cid:')) {
+            const cid = src.substring(4);
+            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onInlineImageTapped(cid)
+        }
+    }
+});
+
+
+/* Observes the cursor position and notifies kotlin through js interface. Invoked at script init (bottom of this file).*/
+function trackCursorPosition() {
+    var editor = document.getElementById('$EDITOR_ID');
+
+    editor.addEventListener('keyup', updateCaretPosition);
+    editor.addEventListener('click', updateCaretPosition);
+
+    let touchStartTime = 0;
+
+    editor.addEventListener('touchstart', (e) => {
+        touchStartTime = Date.now();
+    });
+
+    editor.addEventListener('touchend', (e) => {
+        // This bit is required to allow the "native" long press to be triggered (for context menu in Android)
+        if (Date.now() - touchStartTime < 500) {
+            updateCaretPosition();
+        }
+    });
+
+    function updateCaretPosition() {
+        var editor = document.getElementById('$EDITOR_ID');
+        var selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            var range = selection.getRangeAt(0);
+
+            // Update the caret position only if the range is collapsed to prevent selection deletion.
+            if (!range.collapsed) {
+                // If the text is selected, we can't modify the DOM.
+                return;
+            }
+
+            // Create a temporary span element to measure the caret position
+            const span = document.createElement('span');
+            span.textContent = '\u200B'; // Zero-width space character
+
+            range.insertNode(span);
+
+            // Get the bounding client rect of the span
+            const rect = span.getBoundingClientRect();
+
+            // Get the line height of the span
+            const lineHeight = window.getComputedStyle(span).lineHeight;
+            let parsedLineHeight = 16; // Default fallback
+            let parsedLineHeightFactor = 1.2
+
+            // Check if lineHeight is not 'normal' before parsing
+            if (lineHeight && lineHeight !== 'normal') {
+                const lineHeightValue = lineHeight.replace(/[^\d.]/g, '');
+                // Add another check to ensure parsing is possible
+                if (lineHeightValue) {
+                     parsedLineHeight = parseFloat(lineHeightValue) * parsedLineHeightFactor;
+                }
+            } else {
+                // Handle 'normal' line height - still using 1.2 * font-size.
+                const fontSize = window.getComputedStyle(span).fontSize;
+                const fontSizeValue = fontSize.replace(/[^\d.]/g, '');
+                 if (fontSizeValue) {
+                     parsedLineHeight = parseFloat(fontSizeValue) * parsedLineHeightFactor;
+                 }
+            }
+
+            // Remove the temporary span element using its parent node
+            if (span.parentNode) {
+                 span.parentNode.removeChild(span);
+            }
+
+            // Restore the original selection (caret position)
+            selection.removeAllRanges();
+            selection.addRange(range); // Add the original range back
+
+            // Calculate the height of the caret position relative to the inputDiv
+            const caretPosition = rect.top - editor.getBoundingClientRect().top;
+            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition, parsedLineHeight);
+        }
+    }
+}
+
+trackCursorPosition();
+
+/*******************************************************************************
+ * Enhanced ProtonMail Quote Toggle Handler - START
+*******************************************************************************/
+document.addEventListener('click', function(e) {
+    const quote = e.target.closest('.protonmail_quote');
+    if (quote) {
+        const parentQuote = quote.parentElement?.closest('.protonmail_quote');
+        if (!parentQuote && !quote.hasAttribute('data-expanded')) {
+            quote.setAttribute('data-expanded', '');
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+});
+
+// Handle Enter key to keep quotes at the bottom
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const container = range.startContainer;
+            let currentElement = container.nodeType === Node.TEXT_NODE ? container.parentElement : container;
+
+            const allQuotes = document.querySelectorAll('.protonmail_quote');
+            let quoteToMove = null;
+
+            allQuotes.forEach(quote => {
+                const isTopLevel = !quote.parentElement?.closest('.protonmail_quote');
+                if (isTopLevel) {
+                    const position = currentElement.compareDocumentPosition(quote);
+                    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+                        if (!quoteToMove) {
+                            quoteToMove = quote;
+                        }
+                    }
+                }
+            });
+
+            if (quoteToMove) {
+                setTimeout(() => {
+                    const editor = document.getElementById('$EDITOR_ID') || document.body;
+                    const quote = quoteToMove;
+                    quote.parentNode.removeChild(quote);
+                    editor.appendChild(quote);
+
+                    const prevSibling = quote.previousElementSibling;
+                    if (prevSibling && prevSibling.tagName !== 'BR') {
+                        const br = document.createElement('br');
+                        editor.insertBefore(br, quote);
+                    }
+                }, 10);
+            }
+        }
+    }
+});
+
+// Handle selection changes (prevents from auto-expanding and glitching)
+document.addEventListener('selectionchange', function() {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const container = range.commonAncestorContainer;
+        let element = container.nodeType === Node.TEXT_NODE ? container.parentElement : container;
+        const collapsedQuote = element?.closest('.protonmail_quote:not([data-expanded])');
+
+        if (collapsedQuote) {
+            selection.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.setStartAfter(collapsedQuote);
+            newRange.collapse(true);
+            selection.addRange(newRange);
+        }
+    }
+});
+
+/*******************************************************************************
+ * Enhanced ProtonMail Quote Toggle Handler - END
+*******************************************************************************/
+
+/*******************************************************************************
+ * Public functions invoked by kotlin through webview evaluate javascript method
+ ******************************************************************************/
+
+function focusEditor() {
+    var editor = document.getElementById('$EDITOR_ID');
+    editor.focus();
+}
+
+function injectInlineImage(contentId) {
+    var editor = document.getElementById('$EDITOR_ID');
+
+    editor.focus();
+
+    var selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        var range = selection.getRangeAt(0);
+
+        const img = document.createElement('img');
+        img.src = "cid:" + contentId;
+        img.style = "max-width: 100%;";
+        range.insertNode(img);
+        range.setStartAfter(img);
+        range.collapse(true);
+
+        // Insert a blank line after the image
+        const br = document.createElement('br');
+        const br1 = document.createElement('br');
+        range.insertNode(br1);
+        range.insertNode(br);
+
+        // Move the cursor after the <br>
+        range.setStartAfter(br1);
+        range.collapse(true);
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+    // Dispatch an input updated event to ensure body is saved
+    editor.dispatchEvent(new Event('input'));
+}
+
+function stripInlineImage(contentId) {
+    var editor = document.getElementById('$EDITOR_ID');
+    const exactCidPattern = 'cid:' + contentId + '(?![0-9a-zA-Z])';
+    const cidMatcher = new RegExp(exactCidPattern);
+    const images = editor.getElementsByTagName('img');
+
+    for (const img of images) {
+        console.log("Checking image..." + img.src)
+        // Check src attribute for a match
+        if (cidMatcher.test(img.src)) {
+            console.log("Image was actually matched and removed ahaha")
+            img.remove();
+            break;
+        }
+    }
+    // Dispatch an input updated event to ensure body is saved
+    editor.dispatchEvent(new Event('input'));
+}
+

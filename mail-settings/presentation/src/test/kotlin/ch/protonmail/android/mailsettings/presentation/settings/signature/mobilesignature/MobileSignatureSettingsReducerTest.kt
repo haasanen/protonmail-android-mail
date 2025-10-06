@@ -16,26 +16,28 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature
+package ch.protonmail.android.mailsettings.presentation.settings.signature.mobilesignature
 
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureEvent
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureSettingsUiModel
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureState
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureViewAction
-import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.reducer.MobileSignatureReducer
+import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureEvent
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureSettingsUiModel
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureState
+import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureViewAction
+import ch.protonmail.android.mailsettings.presentation.settings.signature.reducer.MobileSignatureReducer
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
-class MobileSignatureReducerTest {
+class MobileSignatureSettingsReducerTest {
 
     private val reducer = MobileSignatureReducer()
 
     private val signatureSettings = MobileSignatureSettingsUiModel(
         enabled = true,
         signatureValue = "Test Signature",
-        editSignatureEffect = Effect.empty()
+        editSignatureEffect = Effect.empty(),
+        signatureStatus = MobileSignatureStatus.Disabled
     )
 
     @Test

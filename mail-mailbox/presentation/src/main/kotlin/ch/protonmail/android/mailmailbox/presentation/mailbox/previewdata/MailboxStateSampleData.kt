@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
@@ -97,6 +98,7 @@ object MailboxStateSampleData {
             numUnread = 1
         ),
         bottomAppBarState = BottomBarState.Data.Hidden(
+            target = BottomBarTarget.Mailbox,
             actions = listOf(ActionUiModelSample.Archive).toImmutableList()
         ),
         actionResult = Effect.empty(),
@@ -130,6 +132,7 @@ object MailboxStateSampleData {
             numUnread = 1
         ),
         bottomAppBarState = BottomBarState.Data.Hidden(
+            target = BottomBarTarget.Mailbox,
             actions = listOf(ActionUiModelSample.Archive).toImmutableList()
         ),
         actionResult = Effect.empty(),
@@ -176,6 +179,7 @@ object MailboxStateSampleData {
             numUnread = 1
         ),
         bottomAppBarState = BottomBarState.Data.Hidden(
+            target = BottomBarTarget.Mailbox,
             actions = bottomBarAction.toImmutableList()
         ),
         actionResult = Effect.empty(),

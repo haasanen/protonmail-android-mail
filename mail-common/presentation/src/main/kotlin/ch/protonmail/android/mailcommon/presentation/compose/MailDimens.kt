@@ -45,6 +45,8 @@ object MailDimens {
     val ProgressStrokeWidth = 2.dp
 
     val TinyIcon = 12.dp
+    val AutolockIconWidth = 180.dp
+    val AutolockIconHeight = 144.dp
 
     val ExtraLargeSpacing = 48.dp
 

@@ -21,8 +21,8 @@ package ch.protonmail.android.mailsettings.domain.usecase
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 import me.proton.core.configuration.EnvironmentConfiguration
+import javax.inject.Inject
 
 class ObserveWebSettingsConfig @Inject constructor(
     private val envConfig: EnvironmentConfiguration
@@ -37,7 +37,8 @@ class ObserveWebSettingsConfig @Inject constructor(
             labelSettingsAction = "labels-settings",
             spamFilterSettingsAction = "spam-filters-settings",
             privacySecuritySettingsAction = "privacy-security-settings",
-            subscriptionDetailsAction = "subscription-details"
+            subscriptionDetailsAction = "subscription-details",
+            emailSignatureAction = "email-signatures"
         )
 
         emit(webSettingsConfig)

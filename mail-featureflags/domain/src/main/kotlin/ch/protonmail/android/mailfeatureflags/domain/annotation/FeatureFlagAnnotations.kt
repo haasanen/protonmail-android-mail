@@ -34,6 +34,10 @@ annotation class IsMultithreadDnsDispatcherEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class ComposerAutoCollapseQuotedTextEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class IsDebugInspectDbEnabled
 
 @Qualifier
