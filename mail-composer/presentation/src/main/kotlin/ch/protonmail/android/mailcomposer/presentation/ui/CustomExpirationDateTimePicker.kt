@@ -70,7 +70,6 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -79,8 +78,8 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import timber.log.Timber
+import kotlin.time.Clock
 import kotlin.time.Instant
-import kotlinx.datetime.Instant as DateTimeInstant
 
 @Composable
 fun CustomExpirationDateTimePicker(
@@ -91,7 +90,7 @@ fun CustomExpirationDateTimePicker(
 
     val timeZone = remember { TimeZone.currentSystemDefault() }
     val localDateTime = remember(initialTime) {
-        val instant = DateTimeInstant.fromEpochMilliseconds(initialTime.toEpochMilliseconds())
+        val instant = Instant.fromEpochMilliseconds(initialTime.toEpochMilliseconds())
         val localDateTime = instant.toLocalDateTime(timeZone)
         Timber.d("customtime: RECEIVE to local date time $localDateTime // instant: $instant")
         localDateTime
@@ -104,7 +103,7 @@ fun CustomExpirationDateTimePicker(
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 val timeZone = TimeZone.currentSystemDefault()
-                val instant = DateTimeInstant.fromEpochMilliseconds(utcTimeMillis)
+                val instant = Instant.fromEpochMilliseconds(utcTimeMillis)
 
                 val today = Clock.System.now().toLocalDateTime(timeZone).date
                 val twentySixDaysFromNow = today.plus(26, DateTimeUnit.DAY)

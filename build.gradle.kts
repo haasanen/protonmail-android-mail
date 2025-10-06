@@ -85,13 +85,17 @@ kotlinCompilerArgs(
     // Enables experimental Coroutines API.
     "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
     // Enables experimental Time (Turbine).
-    "-opt-in=kotlin.time.ExperimentalTime"
+    "-opt-in=kotlin.time.ExperimentalTime",
+    // https://youtrack.jetbrains.com/issue/KT-73255
+    "-Xannotation-default-target=param-property"
 )
 
 fun Project.kotlinCompilerArgs(vararg extraCompilerArgs: String) {
     for (sub in subprojects) {
         sub.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions { freeCompilerArgs = freeCompilerArgs + extraCompilerArgs }
+            compilerOptions {
+                freeCompilerArgs.addAll(extraCompilerArgs.toList())
+            }
         }
     }
 }

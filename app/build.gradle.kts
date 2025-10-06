@@ -18,6 +18,7 @@
 
 import com.android.build.api.dsl.VariantDimension
 import configuration.extensions.protonEnvironment
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -162,7 +163,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = JvmTarget.fromTarget("17").target
     }
 
     buildFeatures {

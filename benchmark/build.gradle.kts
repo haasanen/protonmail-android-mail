@@ -1,5 +1,5 @@
 import java.util.Properties
-import ch.protonmail.android.mail.plugin.ApplicationConfigPlugin
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 /*
  * Copyright (c) 2022 Proton Technologies AG
@@ -46,8 +46,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.fromTarget("17")
+        }
     }
 
     defaultConfig {

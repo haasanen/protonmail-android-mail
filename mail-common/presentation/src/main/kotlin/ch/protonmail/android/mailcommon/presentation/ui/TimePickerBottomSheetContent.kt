@@ -84,15 +84,14 @@ import ch.protonmail.android.design.compose.theme.labelLargeInverted
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 import kotlin.time.Instant
-import kotlinx.datetime.Instant as DateTimeInstant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,7 +110,7 @@ fun TimePickerBottomSheetContent(
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 val timeZone = TimeZone.currentSystemDefault()
-                val instant = DateTimeInstant.fromEpochMilliseconds(utcTimeMillis)
+                val instant = Instant.fromEpochMilliseconds(utcTimeMillis)
 
                 val today = Clock.System.now().toLocalDateTime(timeZone).date
                 val eightyNineDaysFromNow = today.plus(89, DateTimeUnit.DAY)
