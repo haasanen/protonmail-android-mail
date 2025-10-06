@@ -137,7 +137,7 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         /**
          * Match any following chars (path) that is not an empty space
          */
-        private const val PATH = """(/[^\s]*)?"""
+        private const val PATH = """(/[^\s<>]*)?"""
 
         /**
          * Exclude links that are in the description of an <a> tag
