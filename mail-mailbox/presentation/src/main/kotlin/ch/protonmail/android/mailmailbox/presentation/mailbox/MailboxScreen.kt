@@ -1173,12 +1173,15 @@ private fun MailboxStaticContent(
     ) {
         Column(
             modifier = modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .align(Alignment.Center)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Wrap content in Spacers with 1f weight to keep it centered (while allowing PTR properly)
+            Spacer(modifier = Modifier.weight(1f))
             content()
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
