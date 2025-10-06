@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Establiu el temps de caducitat</string>
   <string name="composer_expiration_time_bottom_sheet_title">Caducitat del missatge</string>
   <string name="composer_expiration_time_bottom_sheet_done">Estableix</string>
-  <string name="composer_bottom_bar_expiration_time_none">Cap</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 hora</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 dia</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 dies</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 setmana</string>
+  <string name="composer_bottom_bar_expiration_time_none">No caduca mai</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Després d\'una hora</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Després d\'un dia</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Després de tres dies</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Després d\'una setmana</string>
   <string name="composer_bottom_bar_expiration_time_custom">En una data concreta</string>
   <string name="composer_error_setting_expiration_time">No s\'ha pogut establir el temps de caducitat.</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -133,9 +133,8 @@
   <string name="composer_schedule_send_tomorrow_title">Demà</string>
   <string name="composer_schedule_send_monday_title">Dilluns</string>
   <string name="composer_schedule_send_custom_title">Personalitza</string>
-  <string name="composer_schedule_send_custom_upsell_title">Escolliu dia i hora</string>
+  <string name="composer_schedule_send_custom_upsell_title">Data i hora personalitzades</string>
   <string name="composer_schedule_send_custom_description">Trieu l\'hora i la data</string>
-  <string name="composer_error_send_message">S\'ha produït un error en enviar el missatge</string>
   <string name="composer_schedule_send_previously_set">Configurat prèviament</string>
   <string name="composer_schedule_send_custom_time_label">Hora</string>
   <string name="composer_schedule_send_custom_date_label">Data</string>
@@ -150,9 +149,24 @@
   <string name="composer_attachment_upload_error_retry">Alguns adjunts no s\'han pogut carregar. Torneu-ho a provar.</string>
   <string name="composer_external_encryption_unexpected_error">Error inesperat %s. Torneu-ho a provar.</string>
   <string name="composer_sender_changed_original_address_cannot_send">L\'adreça seleccionada no es pot utilitzar per enviar. El vostre missatge s\'enviarà des de la vostra adreça per defecte.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Establiu quan el missatge serà eliminat de la safata d\'entrada del destinatari i de la vostra carpeta d\'elements enviats. Per a fer caducar missatges per a usuaris que no són de Proton, afegiu una contrasenya.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Establiu quan el missatge s\'hagi d\'eliminar de la safata d\'entrada del destinatari i de la vostra carpeta d\'elements enviats. Per fer caducar missatges per usuaris que no són de Proton, afegiu-hi una contrasenya.</string>
   <string name="expiration_time_set_time_and_date">Establiu l\'hora i la data</string>
   <string name="composer_expiration_set_expiration">Establiu la caducitat</string>
   <string name="composer_expiration_pick_time_title">Establiu l\'hora</string>
   <string name="composer_expiration_time_custom_time_on">El %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Aquesta adreça de correu electrònic està inhabilitada o no és vàlida. Comproveu que sigui vàlida i estigui activa.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">No s\'ha pogut desxifrar la contrasenya de xifratge extern</string>
+  <string name="composer_error_send_draft_already_sent">El missatge ja s\'ha enviat.</string>
+  <string name="composer_error_send_draft_message_does_not_exist">No s\'ha trobat l\'esborrany. Potser ja l\'heu enviat o l\'heu descartat.</string>
+  <string name="composer_error_send_draft_message_too_large">El missatge és massa gran per ser enviat. Reduïu-ne la mida dels adjunts.</string>
+  <string name="composer_error_send_draft_attachments_error">No s\'ha pogut trobar l\'adjunt. Torneu-lo a carregar.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Alguns destinataris no són vàlids. Comproveu-los i torneu-ho a provar.</string>
+  <string name="composer_error_send_draft_schedule_send_error">L\'hora d\'enviament programada ja ha passat. Aneu a Esborranys per a enviar-lo o reprogramar-lo.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">La data de caducitat del missatge és massa aviat.</string>
+  <string name="composer_error_send_draft_package_error">Hi ha hagut un problema en enviar el missatge. Torneu-ho a provar.</string>
+  <string name="composer_error_send_draft_attachment_too_large">No s\'ha pogut enviar l\'esborrany - Els adjunts superen el límit de mida</string>
+  <string name="composer_error_send_draft_too_many_attachments">No s\'ha pogut enviar l\'esborrany: s\'ha assolit el límit de fitxers adjunts</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">No s\'ha pogut enviar l\'esborrany: el xifratge dels fitxers adjunts ha fallat</string>
+  <string name="composer_expiration_time_learn_more">Per saber-ne més</string>
 </resources>

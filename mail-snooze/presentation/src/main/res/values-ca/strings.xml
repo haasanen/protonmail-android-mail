@@ -19,7 +19,7 @@
 <resources>
   <!-- Snooze Bottom Sheet -->
   <string name="snooze_sheet_option_next_week">La setmana següent</string>
-  <string name="snooze_sheet_option_later_this_week">Més endavant aquesta setmana</string>
+  <string name="snooze_sheet_option_later_this_week">Més tard aquesta setmana</string>
   <string name="snooze_sheet_option_tomorrow">Demà</string>
   <string name="snooze_sheet_option_this_weekend">Aquest cap de setmana</string>
   <string name="snooze_sheet_option_custom">Personalitza</string>
@@ -28,7 +28,7 @@
   <string name="snooze_sheet_snooze_title">Ajorna fins a</string>
   <string name="snooze_sheet_option_unsnooze">Deixa d\'ajornar</string>
   <string name="snooze_sheet_error_unable_to_snooze">S\'ha produït un error desconegut en ajornar aquesta conversa.</string>
-  <string name="snooze_sheet_error_unable_to_unsnooze">Hi ha hagut un error desconegut en desactivar la pausa de la conversa.</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">S\'ha produït un error desconegut en desfer l\'ajornament de la conversa.</string>
   <string name="snooze_sheet_error_in_the_past">L\'hora d\'ajornament és en el passat.</string>
   <string name="snooze_sheet_success">Ajornat fins %s</string>
   <string name="unsnooze_sheet_success">La conversa ha deixat d\'estar ajornada</string>
@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Data i hora personalitzades</string>
   <string name="snooze_custom_upsell_title_short">Personalitza</string>
   <string name="snooze_custom_upsell_hint_short">Milloreu el pla per a accedir-hi</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">S\'ha ajornat fins demà</item>
-    <item quantity="other">S\'ha ajornat %d dies</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">S\'ha ajornat %d hora</item>
-    <item quantity="other">S\'ha ajornat %d hores</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">S\'ha ajornat %d minut</item>
-    <item quantity="other">S\'ha ajornat %d minuts</item>
-  </plurals>
 </resources>

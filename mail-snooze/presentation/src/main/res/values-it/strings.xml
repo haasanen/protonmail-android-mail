@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Personalizza la data e l\'orario</string>
   <string name="snooze_custom_upsell_title_short">Personalizza</string>
   <string name="snooze_custom_upsell_hint_short">Effettua l\'upgrade</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Posticipato a domani</item>
-    <item quantity="other">Posticipato per %d giorni</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Posticipato per %d ora</item>
-    <item quantity="other">Posticipato per %d ore</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Posticipato per %d minuto</item>
-    <item quantity="other">Posticipato per %d minuti</item>
-  </plurals>
 </resources>

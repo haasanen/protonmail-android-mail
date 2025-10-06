@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Ласкаво просимо до Proton Mail, де приватність є типовою</string>
-  <string name="onboarding_welcome_description">Насолоджуйтесь зашифрованими повідомленнями, меншою кількістю спаму, захистом від шахрайства та заблокованими вистежувачами. Ласкаво просимо до приватності.</string>
+  <string name="onboarding_welcome_description">Enjoy encrypted messages, less spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Фокус у вас під рукою</string>
   <string name="onboarding_rebuilt_description">Витрачайте менше часу на сортування і більше часу на справи. Ваші вхідні створені для легшої навігації, щоб ви могли швидше дістатися до важливого.</string>

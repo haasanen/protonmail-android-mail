@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Вказати термін дії</string>
   <string name="composer_expiration_time_bottom_sheet_title">Термін дії повідомлення</string>
   <string name="composer_expiration_time_bottom_sheet_done">Встановити</string>
-  <string name="composer_bottom_bar_expiration_time_none">Немає</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 година</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 день</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 дні</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 тиждень</string>
+  <string name="composer_bottom_bar_expiration_time_none">Never expires</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">After 1 hour</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">After 1 day</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">After 3 days</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">After 1 week</string>
   <string name="composer_bottom_bar_expiration_time_custom">On specific date</string>
   <string name="composer_error_setting_expiration_time">Не вдалося встановити термін дії</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -137,7 +137,6 @@
   <string name="composer_schedule_send_custom_title">Власний</string>
   <string name="composer_schedule_send_custom_upsell_title">Власні дата й час</string>
   <string name="composer_schedule_send_custom_description">Виберіть час та дату</string>
-  <string name="composer_error_send_message">Помилка надсилання повідомлення</string>
   <string name="composer_schedule_send_previously_set">Раніше встановлено</string>
   <string name="composer_schedule_send_custom_time_label">Час</string>
   <string name="composer_schedule_send_custom_date_label">Дата</string>
@@ -157,4 +156,19 @@
   <string name="composer_expiration_set_expiration">Set expiration</string>
   <string name="composer_expiration_pick_time_title">Set time</string>
   <string name="composer_expiration_time_custom_time_on">On %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Disabled or invalid email address. Check that the address is valid and active.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
+  <string name="composer_error_send_draft_already_sent">Message was already sent</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
+  <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
+  <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>
+  <string name="composer_error_send_draft_package_error">Problem sending message. Please try again.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
+  <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
+  <string name="composer_expiration_time_learn_more">Learn more</string>
 </resources>

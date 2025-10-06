@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Proton Mailへようこそ、プライバシーがデフォルトです。</string>
-  <string name="onboarding_welcome_description">暗号化済みメッセージ、迷惑メールの減少、フィッシングからの保護、トラッカーのブロックをご利用いただけます。プライバシーへようこそ。</string>
+  <string name="onboarding_welcome_description">メッセージの暗号化、スパムメールの削減、フィッシング詐欺からの保護、トラッカーのブロックなど、プライバシーを守ります。</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">指先で集中を</string>
   <string name="onboarding_rebuilt_description">整理に時間をかけず、行動する時間を増やしましょう。受信トレイは、より操作しやすいように設計されており、重要なものにすばやくアクセスできます。</string>

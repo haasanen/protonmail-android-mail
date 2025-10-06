@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Προσαρμοσμένη ημερομηνία και ώρα</string>
   <string name="snooze_custom_upsell_title_short">Προσαρμοσμένο</string>
   <string name="snooze_custom_upsell_hint_short">Αναβαθμίστε για πρόσβαση</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Αναβολή έως αύριο</item>
-    <item quantity="other">Αναβλήθηκε για %d ημέρες</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Αναβλήθηκε για %d ώρα</item>
-    <item quantity="other">Αναβλήθηκε για %d ώρες</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Αναβλήθηκε για %d λεπτό</item>
-    <item quantity="other">Αναβλήθηκε για %d λεπτά</item>
-  </plurals>
 </resources>

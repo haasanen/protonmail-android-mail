@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Nastavit dobu platnosti</string>
   <string name="composer_expiration_time_bottom_sheet_title">Vypršení zprávy</string>
   <string name="composer_expiration_time_bottom_sheet_done">Nastavit</string>
-  <string name="composer_bottom_bar_expiration_time_none">Neomezeně</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 hodina</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 den</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 dny</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 týden</string>
+  <string name="composer_bottom_bar_expiration_time_none">Nikdy nevyprší</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Po 1 hodině</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Po 1 dnu</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Po 3 dnech</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Po 1 týdnu</string>
   <string name="composer_bottom_bar_expiration_time_custom">V konkrétní datum</string>
   <string name="composer_error_setting_expiration_time">Nastavení doby platnosti selhalo</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -137,7 +137,6 @@
   <string name="composer_schedule_send_custom_title">Vlastní</string>
   <string name="composer_schedule_send_custom_upsell_title">Vlastní datum a čas</string>
   <string name="composer_schedule_send_custom_description">Vyberte čas a datum</string>
-  <string name="composer_error_send_message">Chyba při odesílání zprávy</string>
   <string name="composer_schedule_send_previously_set">Dříve nastavené</string>
   <string name="composer_schedule_send_custom_time_label">Čas</string>
   <string name="composer_schedule_send_custom_date_label">Datum</string>
@@ -152,9 +151,24 @@
   <string name="composer_attachment_upload_error_retry">Některé přílohy se nepodařilo nahrát. Zkuste to prosím znovu.</string>
   <string name="composer_external_encryption_unexpected_error">Neočekávaná chyba %s. Zkuste to znovu.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Vybraná adresa nemůže být použita k odeslání. Vaše zpráva bude odeslána z vaší výchozí adresy.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Nastavte, kdy bude zpráva odebrána z doručené pošty příjemce a z vaší složky Odeslané. Chcete-li nastavit vypršení platnosti zpráv pro uživatele, kteří nepoužívají Proton, přidejte heslo.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Nastavte, kdy bude zpráva smazána z doručené pošty příjemce a z vaší složky Odeslané. Chcete-li nastavit vypršení platnosti zpráv pro uživatele, kteří nepoužívají Proton, přidejte heslo.</string>
   <string name="expiration_time_set_time_and_date">Nastavit čas a datum</string>
   <string name="composer_expiration_set_expiration">Nastavit vypršení platnosti</string>
   <string name="composer_expiration_pick_time_title">Nastavit čas</string>
   <string name="composer_expiration_time_custom_time_on">V(e) %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Deaktivovaná nebo neplatná e-mailová adresa. Zkontrolujte, zda je adresa platná a aktivní.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Nepodařilo se dešifrovat heslo pro externí šifrování.</string>
+  <string name="composer_error_send_draft_already_sent">Zpráva byla již odeslána</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Koncept nenalezen. Možná jste jej již odeslali nebo zahodili.</string>
+  <string name="composer_error_send_draft_message_too_large">Zpráva je příliš velká na odeslání. Prosím, zmenšete velikost svých příloh.</string>
+  <string name="composer_error_send_draft_attachments_error">Příloha chybí. Nahrajte ji prosím znovu.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Někteří příjemci jsou neplatní, zkontrolujte příjemce a zkuste to znovu.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Naplánovaný čas odeslání je v minulosti. Přejděte do Konceptů, kde zprávu můžete odeslat nebo přeplánovat.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Čas vypršení platnosti zprávy je příliš brzy.</string>
+  <string name="composer_error_send_draft_package_error">Problém s odesláním zprávy. Zkuste to prosím znovu.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Koncept nelze odeslat - Přílohy překračují limit velikosti</string>
+  <string name="composer_error_send_draft_too_many_attachments">Koncept nelze odeslat - Dosažen limit počtu příloh</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Koncept nelze odeslat - Šifrování přílohy selhalo.</string>
+  <string name="composer_expiration_time_learn_more">Více informací</string>
 </resources>

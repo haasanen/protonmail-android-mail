@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Setare timp expirare</string>
   <string name="composer_expiration_time_bottom_sheet_title">Expirare mesaj</string>
   <string name="composer_expiration_time_bottom_sheet_done">Setare</string>
-  <string name="composer_bottom_bar_expiration_time_none">Fără</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">o oră</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">o zi</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 zile</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">o săptămână</string>
+  <string name="composer_bottom_bar_expiration_time_none">Fără expirare</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">După o oră</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">După o zi</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">După 3 zile</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">După o săptămână</string>
   <string name="composer_bottom_bar_expiration_time_custom">La o anumită dată</string>
   <string name="composer_error_setting_expiration_time">Setarea timpului de expirare a eșuat.</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -136,7 +136,6 @@
   <string name="composer_schedule_send_custom_title">Personal</string>
   <string name="composer_schedule_send_custom_upsell_title">Dată și oră personalizată</string>
   <string name="composer_schedule_send_custom_description">Alegeți ora și data</string>
-  <string name="composer_error_send_message">Eroare trimitere mesaj.</string>
   <string name="composer_schedule_send_previously_set">Setat anterior</string>
   <string name="composer_schedule_send_custom_time_label">Ora</string>
   <string name="composer_schedule_send_custom_date_label">Data</string>
@@ -151,9 +150,24 @@
   <string name="composer_attachment_upload_error_retry">Câteva atașamente nu au putut fi încărcate. Mai încercați.</string>
   <string name="composer_external_encryption_unexpected_error">Eroare neașteptată %s. Reîncercați.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Adresa selectată nu poate fi folosită pentru trimitere. Mesajul va fi trimis de la adresa implicită.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Stabiliți când mesajul va fi șters din mesajele primite ale destinatarului și folderul de mesaje trimise personal. Pentru ca mesajele să expire pentru utilizatorii non-Proton, adăugați o parolă.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Stabiliți când va fi șters mesajul din mesajele primite ale destinatarului și din folderul „Trimise” din acestui cont. Pentru ca mesajele să expire pentru utilizatorii non-Proton, adăugați o parolă.</string>
   <string name="expiration_time_set_time_and_date">Setare oră și dată</string>
   <string name="composer_expiration_set_expiration">Setare expirare</string>
   <string name="composer_expiration_pick_time_title">Setare oră</string>
   <string name="composer_expiration_time_custom_time_on">La %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Adresă de e-mail dezactivată sau nevalidă. Verificați dacă adresa este validă și activă.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Nu s-a putut decripta parola de criptare externă.</string>
+  <string name="composer_error_send_draft_already_sent">Mesajul a fost deja trimis.</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Ciorna nu a fost găsită. Este posibil să o fi trimis sau să o fi înlăturat.</string>
+  <string name="composer_error_send_draft_message_too_large">Mesajul este prea mare pentru a fi trimis. Reduceți mărimea atașamentelor.</string>
+  <string name="composer_error_send_draft_attachments_error">Atașamentul lipsește. Reîncărcați-l.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Unii destinatari nu sunt valizi. Verificați destinatarii și reîncercați.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Ora de trimitere programată este în trecut. Accesați „Ciorne” pentru a-l trimite sau a-l reprograma.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Timpul de expirare a mesajului este prea apropiat.</string>
+  <string name="composer_error_send_draft_package_error">Problemă la trimiterea mesajului. Reîncercați.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Ciorna nu se poate trimite - Atașamentele depășesc limita de mărime.</string>
+  <string name="composer_error_send_draft_too_many_attachments">Ciorna nu se poate trimite - Limita de atașamente a fost atinsă.</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Ciorna nu se poate trimite - Criptarea atașamentului a eșuat.</string>
+  <string name="composer_expiration_time_learn_more">Detalii</string>
 </resources>

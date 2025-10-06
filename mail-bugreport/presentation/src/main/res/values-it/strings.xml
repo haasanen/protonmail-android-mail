@@ -18,22 +18,20 @@
   -->
 <resources>
   <!-- Report a problem flow -->
-  <string name="report_a_problem_title">Segnala un problema</string>
+  <string name="report_a_problem_title">Segnala un problema</string>
   <string name="report_a_problem_submit_button">Invia</string>
   <string name="report_a_problem_disclaimer_e2ee">Le segnalazioni non sono crittografate end-to-end.\nNon includere informazioni sensibili.</string>
-  <string name="report_a_problem_include_errors_title">Includi il registro degli eventi</string>
+  <string name="report_a_problem_include_errors_title">Includi il registro degli eventi</string>
   <string name="report_a_problem_include_errors_description">Questo registro include tutte le azioni che hanno portato a un errore.\nVerrà usato solamente per correggere i bug.</string>
   <string name="report_a_problem_summary_title">Breve descrizione (necessaria)</string>
-  <string name="report_a_problem_summary_description">Esempio: L\'app Proton Mail si blocca quando apro
-un\'email con allegati di grandi dimensioni.</string>
+  <string name="report_a_problem_summary_description">Esempio: L\'app di Proton Mail si blocca quando tocco un messaggio con allegati di grandi dimensioni.</string>
   <string name="report_a_problem_field_length_error">Inserisci almeno 10 caratteri</string>
   <string name="report_a_problem_expected_results_title">Risultato previsto</string>
-  <string name="report_a_problem_expected_results_description">Esempio: Quando apro l\'email dovrebbero apparire il messaggio e gli allegati.</string>
-  <string name="report_a_problem_repro_steps_title">Passaggi per riprodurre</string>
-  <string name="report_a_problem_repro_steps_description">Esempio:\n1. Trova un\'email con un allegato di grandi dimensioni (ad esempio un video)\n2. Apri l\'email\n3. Attendi che l\'email venga caricata</string>
+  <string name="report_a_problem_expected_results_description">Esempio: Quando tocco il messaggio dovrebbero apparire questo e gli allegati.</string>
+  <string name="report_a_problem_repro_steps_title">Passaggi eseguiti</string>
+  <string name="report_a_problem_repro_steps_description">Esempio:\n1. Trova un messaggio con un allegato di grandi dimensioni (ad esempio un video)\n2. Tocca il messaggio\n3. Attendi che il messaggio venga caricato</string>
   <string name="report_a_problem_actual_results_title">Risultato effettivo</string>
-  <string name="report_a_problem_actual_results_description">Esempio: L\'app Proton Mail si blocca quando apro
-un\'email con allegati di grandi dimensioni.</string>
+  <string name="report_a_problem_actual_results_description">Esempio: L\'app di Proton Mail si blocca quando tocco un messaggio con allegati di grandi dimensioni.</string>
   <string name="report_a_problem_leave_dialog_description_1">Sei sicuro di voler chiudere questa pagina?</string>
   <string name="report_a_problem_leave_dialog_description_2">Tutte le informazioni verranno rimosse.</string>
   <string name="report_a_problem_leave_dialog_cancel_btn">Annulla</string>

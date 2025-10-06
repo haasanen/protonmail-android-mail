@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Aangepaste datum en tijd</string>
   <string name="snooze_custom_upsell_title_short">Aangepast</string>
   <string name="snooze_custom_upsell_hint_short">Upgraden om toegang te krijgen</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Gesnoozed tot morgen</item>
-    <item quantity="other">Gesnoozed voor %d dagen</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Gesnoozed voor %d uur</item>
-    <item quantity="other">Gesnoozed voor %d uren</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Gesnoozed voor %d minuut</item>
-    <item quantity="other">Gesnoozed voor %d minuten</item>
-  </plurals>
 </resources>

@@ -16,12 +16,12 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="human_verification_help_title">Tarvitsetko apua ihmisen suorittaman varmistamisen kanssa?</string>
-  <string name="human_verification_title">Ihmisen suorittama vahvistus</string>
+  <string name="human_verification_help_title">Tarvitsetko apua ihmisvahvistukseen?</string>
+  <string name="human_verification_title">Ihmisvahvistus</string>
   <string name="human_verification_request_invite_title">Pyydä kutsua</string>
   <string name="human_verification_request_invite_description">Jos kohtaat tilin luonnissa ongelmia, pyydä kutsu niin vastaamme yhden työpäivän kuluessa.</string>
   <string name="human_verification_visit_help_center_title">Avaa Tukikeskus</string>
-  <string name="human_verification_visit_help_center_description">Lue lisää ihmisen suorittamasta vahvistuksesta, ja miksi pyydämme sitä.</string>
+  <string name="human_verification_visit_help_center_description">Lue lisää ihmisvahvistuksesta ja miksi sitä pyydetään.</string>
   <string name="human_verification_help">Tuki</string>
   <string name="human_verification_general_error">Tapahtui vahvistusvirhe.</string>
 </resources>

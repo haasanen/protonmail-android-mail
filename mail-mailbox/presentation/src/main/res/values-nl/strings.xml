@@ -34,6 +34,7 @@
   <string name="mailbox_default_sender">(Geen afzender)</string>
   <string name="mailbox_error_message_offline">U bent offline, u kunt geen items ophalen</string>
   <string name="mailbox_error_message_generic">Postvak IN laden mislukt</string>
+  <string name="mailbox_error_message_user_session">Kan sessie niet laden. Controleer uw verbinding en probeer het opnieuw.</string>
   <string name="mailbox_error_message_unexpected">Er is onverwacht iets fout gegaan</string>
   <string name="mailbox_is_empty_title">Geen berichten</string>
   <string name="trash_is_empty_title">Niets in Prullenbak</string>

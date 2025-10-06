@@ -33,6 +33,7 @@
   <string name="mailbox_default_sender">(差出人なし)</string>
   <string name="mailbox_error_message_offline">オフラインのため、アイテムを取得できません。</string>
   <string name="mailbox_error_message_generic">メールボックスの読み込みに失敗しました</string>
+  <string name="mailbox_error_message_user_session">Unable to load session.  Please check your connection and try again.</string>
   <string name="mailbox_error_message_unexpected">予期せぬ問題が発生しました</string>
   <string name="mailbox_is_empty_title">メッセージはありません</string>
   <string name="trash_is_empty_title">ゴミ箱には何もありません</string>

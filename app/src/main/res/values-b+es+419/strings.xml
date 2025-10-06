@@ -48,6 +48,7 @@
   <string name="mailbox_message_scheduling">Programando mensaje…</string>
   <string name="mailbox_message_scheduling_offline">Sin conexión: mensaje en cola para programar</string>
   <string name="mailbox_message_scheduled_for_sending_success">Este mensaje se enviará el %1$s</string>
+  <string name="launcher_alert_duplicate_account_description">El usuario ya ha iniciado sesión</string>
   <string name="settings_change_icon_title">Ícono de la aplicación</string>
   <string name="settings_change_icon_description">Disfrace la aplicación de Proton Mail con un ícono discreto. Las notificaciones seguirán mostrando el nombre e ícono por defecto de Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">¿Cambiar ícono de la aplicación?</string>

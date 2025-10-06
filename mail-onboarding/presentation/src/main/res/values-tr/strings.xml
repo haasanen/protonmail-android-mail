@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Gizlilik odaklı Proton Mail uygulamasına hoş geldiniz</string>
-  <string name="onboarding_welcome_description">Şifrelenmiş iletilerin, daha az istenmeyen epostanın, kimlik avına karşı korumanın ve engellenen etkinlik izleyicilerin tadını çıkarın. Gizliliğe hoş geldiniz.</string>
+  <string name="onboarding_welcome_description">Şifrelenmiş iletilerin, daha az istenmeyen e-postanın, kimlik avına karşı korunmanın ve etkinlik izleyicilerini engellemenin tadını çıkarın. Gizliliğe hoş geldiniz.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Odak parmaklarınızın ucunda</string>
   <string name="onboarding_rebuilt_description">Düzenlemeye daha az, yapmaya daha çok zaman harcayın. E-posta kutunuz daha kolay kullanılacak şekilde tasarlanmıştır. Böylece önemli şeylere daha hızlı ulaşabilirsiniz.</string>

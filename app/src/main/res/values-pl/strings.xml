@@ -48,6 +48,7 @@
   <string name="mailbox_message_scheduling">Planowanie wiadomości…</string>
   <string name="mailbox_message_scheduling_offline">Brak połączenia z siecią. Wiadomość została dodana do kolejki wysyłania</string>
   <string name="mailbox_message_scheduled_for_sending_success">Wiadomość zostanie wysłana w dniu: %1$s</string>
+  <string name="launcher_alert_duplicate_account_description">The user is already signed in</string>
   <string name="settings_change_icon_title">Ikona aplikacji</string>
   <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
   <string name="settings_change_icon_confirmation_title">Zmienić ikonę aplikacji?</string>

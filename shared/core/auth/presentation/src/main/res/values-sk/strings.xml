@@ -42,7 +42,7 @@
   <string name="auth_account_details">Zadajte podrobnosti o svojom Proton účte.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problém pri prihlasovaní. Skúste to znova, prosím.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Je potrebné overenie ľudským faktorom.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Nesprávne prihlasovacie údaje. Skúste to znova.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Nesprávne prihlasovacie údaje. Skúste to znova, prosím.</string>
   <string name="auth_login_error_invalid_action_unsupported_tfa">Nepodporované dvojfázové overenie.</string>
   <string name="auth_login_general_error">Vyskytla sa chyba.</string>
   <string name="auth_second_factor_title">Dvojstupňové overenie</string>

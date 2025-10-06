@@ -24,14 +24,14 @@
   <string name="retry">Riprova</string>
   <string name="toolbar_back_content_description">Torna alla schermata precedente</string>
   <string name="x_error_not_logged_in">Accesso non effettuato</string>
-  <string name="action_customize_toolbar">Barra degli strumenti</string>
-  <string name="action_customize_toolbar_description">Personalizza la barra degli strumenti</string>
+  <string name="action_customize_toolbar">Barra degli strumenti</string>
+  <string name="action_customize_toolbar_description">Personalizza la barra degli strumenti</string>
   <string name="action_customize_toolbar_content_description">Personalizza la barra degli strumenti</string>
   <string name="action_reply">Rispondi</string>
   <string name="action_reply_all">Rispondi a tutti</string>
   <string name="action_forward">Inoltra</string>
   <string name="action_reply_description">Rispondi</string>
-  <string name="action_reply_to_description">Rispondi a %s</string>
+  <string name="action_reply_to_description">Rispondi a %s</string>
   <string name="action_reply_all_description">Rispondi a tutti</string>
   <string name="action_forward_description">Inoltra</string>
   <string name="action_mark_read_description">Segna come letto</string>
@@ -40,7 +40,7 @@
   <string name="action_unstar_description">Segna come non importante</string>
   <string name="action_label_description">Etichetta l\'elemento</string>
   <string name="action_move_description">Sposta l\'elemento</string>
-  <string name="action_inbox_description">Sposta nella Posta in arrivo</string>
+  <string name="action_inbox_description">Sposta nella casella di posta</string>
   <string name="action_trash_description">Sposta nel cestino</string>
   <string name="action_delete_description">Elimina</string>
   <string name="action_archive_description">Sposta nell\'archivio</string>
@@ -72,7 +72,7 @@
   <string name="action_delete_content_description">Elimina</string>
   <string name="action_archive_content_description">Sposta nell\'archivio</string>
   <string name="action_spam_content_description">Sposta in spam</string>
-  <string name="action_inbox_content_description">Vai nella Posta in arrivo</string>
+  <string name="action_inbox_content_description">Sposta nella casella di posta</string>
   <string name="action_pin_content_description">Fissa l\'elemento</string>
   <string name="action_unpin_content_description">Non fissare l\'elemento</string>
   <string name="action_view_in_light_mode_content_description">Visualizza in modalità chiara</string>

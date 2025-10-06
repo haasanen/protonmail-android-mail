@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Date et heure personnalisées</string>
   <string name="snooze_custom_upsell_title_short">Personnalisé</string>
   <string name="snooze_custom_upsell_hint_short">Changer d\'abonnement pour y accéder</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">En attente jusqu\'à demain</item>
-    <item quantity="other">En attente pendant %d jours</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">En attente pendant %d heure</item>
-    <item quantity="other">En attente pendant %d heures</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">En attente pendant %d minute</item>
-    <item quantity="other">En attente pendant %d minutes</item>
-  </plurals>
 </resources>

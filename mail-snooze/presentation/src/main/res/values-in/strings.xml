@@ -37,13 +37,4 @@
   <string name="snooze_custom_upsell_title">Tanggal dan waktu kustom</string>
   <string name="snooze_custom_upsell_title_short">Sesuaikan</string>
   <string name="snooze_custom_upsell_hint_short">Tingkatkan untuk mengakses</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="other">Ditunda selama %d hari</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="other">Ditunda selama %d jam</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="other">Ditunda selama %d menit</item>
-  </plurals>
 </resources>

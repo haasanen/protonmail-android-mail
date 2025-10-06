@@ -37,13 +37,4 @@
   <string name="snooze_custom_upsell_title">自定义日期与时间</string>
   <string name="snooze_custom_upsell_title_short">自定义</string>
   <string name="snooze_custom_upsell_hint_short">Upgrade to access</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="other">Snoozed for %d days</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="other">Snoozed for %d hours</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="other">Snoozed for %d minutes</item>
-  </plurals>
 </resources>

@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Fecha y hora personalizadas</string>
   <string name="snooze_custom_upsell_title_short">Personalizado</string>
   <string name="snooze_custom_upsell_hint_short">Mejorar para acceder</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Pausado hasta mañana</item>
-    <item quantity="other">Pausado por %d días</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Pausado por %d hora</item>
-    <item quantity="other">Pausado por %d horas</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Pausado por %d minuto</item>
-    <item quantity="other">Pausado por %d minutos</item>
-  </plurals>
 </resources>

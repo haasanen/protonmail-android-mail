@@ -37,19 +37,4 @@
   <string name="snooze_custom_upsell_title">Dată și oră personală</string>
   <string name="snooze_custom_upsell_title_short">Personal</string>
   <string name="snooze_custom_upsell_hint_short">Modernizați contul pentru accesare</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Amânat până mâine</item>
-    <item quantity="few">Zile amânat: %d</item>
-    <item quantity="other">Zile amânat: %d</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Ore amânat: %d</item>
-    <item quantity="few">Ore amânat: %d</item>
-    <item quantity="other">Ore amânat: %d</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Minute amânat: %d</item>
-    <item quantity="few">Minute amânat: %d</item>
-    <item quantity="other">Minute amânat: %d</item>
-  </plurals>
 </resources>

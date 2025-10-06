@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Καλώς ήρθατε στο Proton Mail, όπου η ιδιωτικότητα είναι προεπιλογή</string>
-  <string name="onboarding_welcome_description">Απολαύστε κρυπτογραφημένα μηνύματα, λιγότερο ενοχλητικά, προστασία από phishing και αποκλεισμένους ιχνηλάτες. Καλωσορίσατε στην ιδιωτικότητα.</string>
+  <string name="onboarding_welcome_description">Απολαύστε κρυπτογραφημένα μηνύματα, λιγότερα ενοχλητικά, προστασία από phishing και αποκλεισμένους ιχνηλάτες. Καλωσορίσατε στην ιδιωτικότητα.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Εστίαση στα δάχτυλά σας</string>
   <string name="onboarding_rebuilt_description">Ξοδέψτε λιγότερο χρόνο στην οργάνωση και περισσότερο χρόνο στην εκτέλεση. Το εισερχόμενο ταχυδρομείο σας είναι σχεδιασμένο να είναι πιο εύκολο στην πλοήγηση, ώστε να μπορείτε να φτάσετε γρηγορότερα σε ότι είναι σημαντικό.</string>

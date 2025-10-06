@@ -34,6 +34,7 @@
   <string name="mailbox_default_sender">(Sem remetente)</string>
   <string name="mailbox_error_message_offline">Está offline. Não é possível recuperar itens.</string>
   <string name="mailbox_error_message_generic">Erro ao carregar a caixa de correio</string>
+  <string name="mailbox_error_message_user_session">Unable to load session.  Please check your connection and try again.</string>
   <string name="mailbox_error_message_unexpected">Ocorreu um erro inesperado.</string>
   <string name="mailbox_is_empty_title">Nenhuma mensagem</string>
   <string name="trash_is_empty_title">Nada no lixo</string>

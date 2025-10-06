@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Establecer tiempo de expiración</string>
   <string name="composer_expiration_time_bottom_sheet_title">Expiración del mensaje</string>
   <string name="composer_expiration_time_bottom_sheet_done">Establecer</string>
-  <string name="composer_bottom_bar_expiration_time_none">Ninguna</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 hora</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 día</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 días</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 semana</string>
+  <string name="composer_bottom_bar_expiration_time_none">Nunca expira</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Después de 1 hora</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Después de 1 día</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Después de 3 días</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Después de 1 semana</string>
   <string name="composer_bottom_bar_expiration_time_custom">En una fecha específica</string>
   <string name="composer_error_setting_expiration_time">Error al establecer la fecha de expiración</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Personalizar</string>
   <string name="composer_schedule_send_custom_upsell_title">Fecha y hora personalizadas</string>
   <string name="composer_schedule_send_custom_description">Seleccionar hora y fecha</string>
-  <string name="composer_error_send_message">Error al enviar el mensaje</string>
   <string name="composer_schedule_send_previously_set">Configurado previamente</string>
   <string name="composer_schedule_send_custom_time_label">Hora</string>
   <string name="composer_schedule_send_custom_date_label">Fecha</string>
@@ -150,9 +149,24 @@
   <string name="composer_attachment_upload_error_retry">No se pudieron cargar algunos archivos adjuntos. Inténtelo de nuevo.</string>
   <string name="composer_external_encryption_unexpected_error">Error inesperado %s. Intente de nuevo.</string>
   <string name="composer_sender_changed_original_address_cannot_send">La selección de dirección de envío está desactivada. El mensaje se enviará desde la dirección de correo por defecto.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Establezca cuándo se eliminará el mensaje del buzón del destinatario y de su carpeta de Enviados. Para eliminar mensajes a usuarios fuera de Proton, añada una contraseña.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Establezca cuándo se eliminará el mensaje de la bandeja de entrada del destinatario y de su carpeta de Enviados. Para expirar mensajes para usuarios que no son de Proton, añada una contraseña.</string>
   <string name="expiration_time_set_time_and_date">Establecer hora y fecha</string>
   <string name="composer_expiration_set_expiration">Establecer expiración</string>
   <string name="composer_expiration_pick_time_title">Establecer hora</string>
   <string name="composer_expiration_time_custom_time_on">El %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Dirección de correo electrónico desactivada o no válida. Compruebe que la dirección es válida y está activa.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Error al descifrar la contraseña de cifrado externo</string>
+  <string name="composer_error_send_draft_already_sent">Ya se ha enviado el mensaje</string>
+  <string name="composer_error_send_draft_message_does_not_exist">No se encontró el borrador. Puede que ya lo haya enviado o descartado.</string>
+  <string name="composer_error_send_draft_message_too_large">El mensaje es demasiado grande para ser enviado. Reduzca el tamaño de los archivos adjuntos.</string>
+  <string name="composer_error_send_draft_attachments_error">Falta el archivo adjunto. Vuelva a cargarlo.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Algunos destinatarios no son válidos, revise los destinatarios y vuelva a intentarlo.</string>
+  <string name="composer_error_send_draft_schedule_send_error">La hora de envío programada está en el pasado. Vaya a Borradores para enviarlo o reprogramarlo.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">El tiempo de expiración del mensaje es demasiado pronto.</string>
+  <string name="composer_error_send_draft_package_error">Hubo un problema al enviar el mensaje. Inténtelo de nuevo.</string>
+  <string name="composer_error_send_draft_attachment_too_large">No se puede enviar el borrador - Los archivos adjuntos superan el límite máximo de tamaño.</string>
+  <string name="composer_error_send_draft_too_many_attachments">No se puede enviar el borrador - Se ha alcanzado el límite de archivos adjuntos</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">No se puede enviar el borrador, falló el cifrado del archivo adjunto.</string>
+  <string name="composer_expiration_time_learn_more">Más información</string>
 </resources>

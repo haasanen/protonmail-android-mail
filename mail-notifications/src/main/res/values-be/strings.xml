@@ -26,7 +26,7 @@
   <string name="notification_actions_mark_as_read_description">Пазначыць прачытаным</string>
   <!-- Push notification permissions BS -->
   <string name="notification_permissions_bottomsheet_first_time_title">Не прапусціце ліст</string>
-  <string name="notification_permissions_bottomsheet_first_time_subtitle">Апавяшчэнні дапамагаюць быць у курсе, што адбываецца ў паштовай скрыні без праверкі праграмы.</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">Апавяшчэнні дапамагаюць быць у курсе, што адбываецца ў вашай паштовай скрыні без праверкі праграмы.</string>
   <string name="notification_permissions_bottomsheet_second_time_title">Хочаце заставацца ў курсе падзей?</string>
   <string name="notification_permissions_bottomsheet_second_time_subtitle">Уключыце апавяшчэнні, каб быць у курсе атрымання адказу на ваш ліст.</string>
   <string name="notification_permissions_bottomsheet_enable">Уключыць push-апавяшчэнні</string>

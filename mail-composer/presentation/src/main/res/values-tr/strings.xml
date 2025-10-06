@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Geçerlilik süresi ayarla</string>
   <string name="composer_expiration_time_bottom_sheet_title">İleti geçerlilik süresi</string>
   <string name="composer_expiration_time_bottom_sheet_done">Ayarla</string>
-  <string name="composer_bottom_bar_expiration_time_none">Yok</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 saat</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 gün</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 gün</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 hafta</string>
+  <string name="composer_bottom_bar_expiration_time_none">Süresi hiç dolmaz</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">1 saat sonra</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">1 gün sonra</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">3 gün sonra</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">1 hafta sonra</string>
   <string name="composer_bottom_bar_expiration_time_custom">Belirli bir tarihte</string>
   <string name="composer_error_setting_expiration_time">Geçerlilik süresi ayarlanamadı</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Özel</string>
   <string name="composer_schedule_send_custom_upsell_title">Özel tarih ve saat</string>
   <string name="composer_schedule_send_custom_description">Tarihi ve saati seçin</string>
-  <string name="composer_error_send_message">İleti gönderilirken sorun çıktı</string>
   <string name="composer_schedule_send_previously_set">Önceden ayarlanmış</string>
   <string name="composer_schedule_send_custom_time_label">Saat</string>
   <string name="composer_schedule_send_custom_date_label">Tarih</string>
@@ -155,4 +154,19 @@
   <string name="composer_expiration_set_expiration">Geçerlilik süresi ayarla</string>
   <string name="composer_expiration_pick_time_title">Saati ayarla</string>
   <string name="composer_expiration_time_custom_time_on">%1$s zamanında</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">E-posta adresi kullanımdan kaldırılmış veya geçersiz. Adresin geçerli ve etkin olduğunu denetleyin.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Dış şifreleme parolasının şifresi çözülemedi</string>
+  <string name="composer_error_send_draft_already_sent">İleti zaten gönderilmiş</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Taslak bulunamadı. Zaten göndermiş ya da yok saymış olabilirsiniz.</string>
+  <string name="composer_error_send_draft_message_too_large">İleti gönderilmek için çok büyük. Lütfen ek dosyalarınızın boyutunu azaltın.</string>
+  <string name="composer_error_send_draft_attachments_error">Ek dosya eksik. Lütfen yeniden yükleyin.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Bazı alıcılar geçersiz. Lütfen alıcıları denetleyip yeniden deneyin.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Zamanlanmış gönderim zamanı geçmişte. Göndermek ya da yeniden zamanlamak için Taslaklar kutusuna gidin.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">İletinin geçerlilik sonu süresi çok yakında.</string>
+  <string name="composer_error_send_draft_package_error">İleti gönderilirken sorun çıktı. Lütfen yeniden deneyin.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Taslak gönderilemedi. Ek dosyaların boyutu sınırı aşıyor</string>
+  <string name="composer_error_send_draft_too_many_attachments">Taslak gönderilemedi. Ek dosya sayısı sınırına ulaşıldı</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Taslak gönderilemedi. Ek dosya şifrelenemedi.</string>
+  <string name="composer_expiration_time_learn_more">Ayrıntılı bilgi alın</string>
 </resources>

@@ -38,7 +38,7 @@
     <item quantity="other">Удзельнікаў (%1$d)</item>
   </plurals>
   <string name="search_contacts_description">Пошук кантактаў</string>
-  <string name="contact_search_no_results">Вынікі не знойдзены.</string>
+  <string name="contact_search_no_results">Нічога не знойдзена</string>
   <string name="contact_search_placeholder">Пошук кантакту або групы</string>
   <string name="contact_search_content_description">Пошук кантакту або групы</string>
   <string name="contact_search_arrow_back_content_description">Вярнуцца ў кантакты</string>

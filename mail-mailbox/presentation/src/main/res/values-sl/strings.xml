@@ -36,6 +36,7 @@
   <string name="mailbox_default_sender">(brez pošiljatelja)</string>
   <string name="mailbox_error_message_offline">Ste brez povezave, predmetov ni mogoče naložiti</string>
   <string name="mailbox_error_message_generic">Nalaganje poštnega predala ni uspelo</string>
+  <string name="mailbox_error_message_user_session">Unable to load session.  Please check your connection and try again.</string>
   <string name="mailbox_error_message_unexpected">Prišlo je do nepričakovane napake</string>
   <string name="mailbox_is_empty_title">Ni sporočil</string>
   <string name="trash_is_empty_title">V košu ni ničesar</string>

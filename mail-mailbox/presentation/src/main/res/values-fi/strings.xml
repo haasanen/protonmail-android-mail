@@ -34,6 +34,7 @@
   <string name="mailbox_default_sender">(Ei lähettäjää)</string>
   <string name="mailbox_error_message_offline">Ei yhteyttä. Kohteita ei voida noutaa.</string>
   <string name="mailbox_error_message_generic">Postilaatikon lataus epäonnistui</string>
+  <string name="mailbox_error_message_user_session">Unable to load session.  Please check your connection and try again.</string>
   <string name="mailbox_error_message_unexpected">Jotain meni yllättäen pieleen</string>
   <string name="mailbox_is_empty_title">Viestejä ei ole</string>
   <string name="trash_is_empty_title">Roskakorissa ei ole mitään</string>

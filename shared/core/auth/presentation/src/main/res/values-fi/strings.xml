@@ -41,7 +41,7 @@
   <string name="auth_login_assistive_text">Syötä Proton-sähköpostiosoitteesi tai -käyttäjätunnuksesi.</string>
   <string name="auth_account_details">Syötä Proton-tilisi tiedot.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Ongelma sisäänkirjautumisessa. Yritä uudelleen.</string>
-  <string name="auth_login_error_invalid_action_human_verification_challenge">Ihmisen suorittama vahvistus tarvitaan.</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Ihmisvahvistus vaaidtaan.</string>
   <string name="auth_login_error_invalid_action_invalid_credentials">Virheelliset kirjautumistiedot. Yritä uudelleen.</string>
   <string name="auth_login_error_invalid_action_unsupported_tfa">Ei tuettu kaksivaiheinen tunnistautuminen.</string>
   <string name="auth_login_general_error">Tapahtui virhe.</string>

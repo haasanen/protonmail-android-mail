@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Definir a data de expiração</string>
   <string name="composer_expiration_time_bottom_sheet_title">Expiração de mensagem</string>
   <string name="composer_expiration_time_bottom_sheet_done">Definir</string>
-  <string name="composer_bottom_bar_expiration_time_none">Nenhuma</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 hora</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 dia</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 dias</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 semana</string>
+  <string name="composer_bottom_bar_expiration_time_none">Nunca expira</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Após 1 hora</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Após 1 dia</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Após 3 dias</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Após 1 semana</string>
   <string name="composer_bottom_bar_expiration_time_custom">Em uma data específica</string>
   <string name="composer_error_setting_expiration_time">Falha ao configurar o tempo de expiração</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Personalizado</string>
   <string name="composer_schedule_send_custom_upsell_title">Data e hora personalizadas</string>
   <string name="composer_schedule_send_custom_description">Selecionar hora e data</string>
-  <string name="composer_error_send_message">Erro no envio da mensagem</string>
   <string name="composer_schedule_send_previously_set">Definido anteriormente</string>
   <string name="composer_schedule_send_custom_time_label">Hora</string>
   <string name="composer_schedule_send_custom_date_label">Data</string>
@@ -155,4 +154,19 @@
   <string name="composer_expiration_set_expiration">Definir expiração</string>
   <string name="composer_expiration_pick_time_title">Definir hora</string>
   <string name="composer_expiration_time_custom_time_on">Em %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Endereço de e-mail desativado ou inválido. Verifique se o endereço é válido e está ativo.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Erro ao descriptografar a senha de criptografia externa</string>
+  <string name="composer_error_send_draft_already_sent">A mensagem já foi enviada</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Rascunho não encontrado. Pode já ter sido enviada ou descartada.</string>
+  <string name="composer_error_send_draft_message_too_large">A mensagem é grande demais para enviar. Reduza o tamanho de seus anexos.</string>
+  <string name="composer_error_send_draft_attachments_error">Anexo ausente. Carregue-o novamente.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Alguns destinatários são inválidos. Verifique os destinatários e tente novamente.</string>
+  <string name="composer_error_send_draft_schedule_send_error">O horário de envio agendado já passou. Acesse Rascunhos para enviar ou reagendar o envio.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">O tempo de expiração da mensagem esta perto demais.</string>
+  <string name="composer_error_send_draft_package_error">Problema ao enviar mensagem. Tente novamente.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Não foi possível enviar o rascunho - Os anexos excedem o limite de tamanho</string>
+  <string name="composer_error_send_draft_too_many_attachments">Não foi possível enviar o rascunho – Limite de anexos atingido</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Não foi possível enviar o rascunho – Falha na criptografia do anexo.</string>
+  <string name="composer_expiration_time_learn_more">Saiba mais</string>
 </resources>

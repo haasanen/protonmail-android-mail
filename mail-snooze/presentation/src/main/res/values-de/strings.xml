@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Benutzerdefiniertes Datum und Uhrzeit</string>
   <string name="snooze_custom_upsell_title_short">Benutzerdefiniert</string>
   <string name="snooze_custom_upsell_hint_short">Upgraden für Zugang</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Bis morgen zurückgestellt</item>
-    <item quantity="other">Für %d Tage zurückgestellt</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Für %d Stunde zurückgestellt</item>
-    <item quantity="other">Für %d Stunden zurückgestellt</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Für %d Minute zurückgestellt</item>
-    <item quantity="other">Für %d Minuten zurückgestellt</item>
-  </plurals>
 </resources>

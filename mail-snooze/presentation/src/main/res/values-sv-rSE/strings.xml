@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Anpassat datum och tid</string>
   <string name="snooze_custom_upsell_title_short">Anpassad</string>
   <string name="snooze_custom_upsell_hint_short">Uppgradera för åtkomst</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Snoozad till imorgon</item>
-    <item quantity="other">Snoozad i %d dagar</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Snoozad i %d timme</item>
-    <item quantity="other">Snoozad i %d timmar</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Snoozad i %d minut</item>
-    <item quantity="other">Snoozad i %d minuter</item>
-  </plurals>
 </resources>

@@ -33,6 +33,7 @@
   <string name="mailbox_default_sender">(無寄件者)</string>
   <string name="mailbox_error_message_offline">您目前為離線狀態，因此無法擷取項目</string>
   <string name="mailbox_error_message_generic">載入電子信箱失敗</string>
+  <string name="mailbox_error_message_user_session">Unable to load session.  Please check your connection and try again.</string>
   <string name="mailbox_error_message_unexpected">不明原因發生異常</string>
   <string name="mailbox_is_empty_title">沒有訊息</string>
   <string name="trash_is_empty_title">垃圾桶內沒東西</string>

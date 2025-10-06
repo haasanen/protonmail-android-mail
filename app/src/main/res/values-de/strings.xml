@@ -48,6 +48,7 @@
   <string name="mailbox_message_scheduling">Nachricht wird geplant …</string>
   <string name="mailbox_message_scheduling_offline">Offline: Nachricht in der Warteschlange für die Zeitplanung</string>
   <string name="mailbox_message_scheduled_for_sending_success">Diese Nachricht wird am %1$s gesendet</string>
+  <string name="launcher_alert_duplicate_account_description">Der Benutzer ist bereits angemeldet</string>
   <string name="settings_change_icon_title">App-Symbol</string>
   <string name="settings_change_icon_description">Tarne die Proton Mail-App mit einem diskreten Symbol. Benachrichtigungen zeigen weiterhin den Standardnamen und das Standardsymbol von Proton Mail an.</string>
   <string name="settings_change_icon_confirmation_title">App-Symbol ändern?</string>

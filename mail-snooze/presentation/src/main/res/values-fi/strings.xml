@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Mukautettu päivämäärä ja aika</string>
   <string name="snooze_custom_upsell_title_short">Mukautettu</string>
   <string name="snooze_custom_upsell_hint_short">Päivitä päästäksesi käyttämään</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Torkutettu huomiseen</item>
-    <item quantity="other">Torkutettu %d päiväksi</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Torkutettu %d tunniksi</item>
-    <item quantity="other">Torkutettu %d tunniksi</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Torkutettu %d minuutin ajaksi</item>
-    <item quantity="other">Torkutettu %d minuutin ajaksi</item>
-  </plurals>
 </resources>

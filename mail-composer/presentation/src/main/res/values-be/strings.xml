@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Задаць тэрмін дзеяння</string>
   <string name="composer_expiration_time_bottom_sheet_title">Тэрмін дзеяння паведамлення</string>
   <string name="composer_expiration_time_bottom_sheet_done">Задаць</string>
-  <string name="composer_bottom_bar_expiration_time_none">Няма</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 гадзіна</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 дзень</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 дні</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 тыдзень</string>
+  <string name="composer_bottom_bar_expiration_time_none">Без тэрміну дзеяння</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Праз 1 гадзіну</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Праз 1 дзень</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Праз 3 дні</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Праз 1 тыдзень</string>
   <string name="composer_bottom_bar_expiration_time_custom">На пэўную дату</string>
   <string name="composer_error_setting_expiration_time">Збой наладжвання тэрміну дзеяння</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -137,7 +137,6 @@
   <string name="composer_schedule_send_custom_title">Карыстальніцкае</string>
   <string name="composer_schedule_send_custom_upsell_title">Карыстальніцкія дата і час</string>
   <string name="composer_schedule_send_custom_description">Выберыце час і дату</string>
-  <string name="composer_error_send_message">Памылка адпраўкі паведамлення</string>
   <string name="composer_schedule_send_previously_set">Раней зададзеныя</string>
   <string name="composer_schedule_send_custom_time_label">Час</string>
   <string name="composer_schedule_send_custom_date_label">Дата</string>
@@ -157,4 +156,19 @@
   <string name="composer_expiration_set_expiration">Задаць тэрмін дзеяння</string>
   <string name="composer_expiration_pick_time_title">Задаць час</string>
   <string name="composer_expiration_time_custom_time_on">У %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Адключаны або памылковы адрас электроннай пошты. Праверце, што гэты адрас сапраўдны і актыўны.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Не ўдалося расшыфраваць знешні пароль шыфравання</string>
+  <string name="composer_error_send_draft_already_sent">Паведамленне ўжо было адпраўлена</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Чарнавік не знойдзены. Магчыма, што ён ужо адпраўлены або адхілены.</string>
+  <string name="composer_error_send_draft_message_too_large">Паведамленне занадта вялікае для адпраўкі. Скараціце памер сваіх далучэнняў.</string>
+  <string name="composer_error_send_draft_attachments_error">Далучэнне адсутнічае. Загрузіце яго яшчэ раз.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Некаторыя атрымальнікі з\'яўляюцца памылковымі. Праверце атрымальнікаў і паспрабуйце яшчэ раз.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Запланаваны час адпраўкі ўжо мінуў. Перайдзіце ў чарнавікі, каб адправіць або паўторна запланаваць адпраўку.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Тэрмін дзеяння паведамлення наступае занадта хутка.</string>
+  <string name="composer_error_send_draft_package_error">Праблема з адпраўкай паведамлення. Паспрабуйце яшчэ раз.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Немагчыма адправіць чарнавік - далучэнні перавышаюць максімальны памер</string>
+  <string name="composer_error_send_draft_too_many_attachments">Немагчыма адправіць чарнавік - дасягнута абмежаванне па колькасці далучэнняў</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Немагчыма адправіць чарнавік - адбыўся збой пры шыфраванні далучэння.</string>
+  <string name="composer_expiration_time_learn_more">Даведацца больш</string>
 </resources>

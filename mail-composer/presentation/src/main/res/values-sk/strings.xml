@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Nastaviť čas pre vypršanie platnosti</string>
   <string name="composer_expiration_time_bottom_sheet_title">Platnosť správy</string>
   <string name="composer_expiration_time_bottom_sheet_done">Nastaviť</string>
-  <string name="composer_bottom_bar_expiration_time_none">Neobmedzená</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 hodina</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 deň</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 dni</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 týždeň</string>
+  <string name="composer_bottom_bar_expiration_time_none">Neobmedzená platnosť</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Po 1 hodine</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Po 1 dni</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Po 3 dňoch</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Po 1 týždni</string>
   <string name="composer_bottom_bar_expiration_time_custom">V konkrétny dátum</string>
   <string name="composer_error_setting_expiration_time">Nastavenie doby platnosti zlyhalo</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -137,7 +137,6 @@
   <string name="composer_schedule_send_custom_title">Vlastné</string>
   <string name="composer_schedule_send_custom_upsell_title">Vlastný dátum a čas</string>
   <string name="composer_schedule_send_custom_description">Vyberte čas a dátum</string>
-  <string name="composer_error_send_message">Chyba pri odosielaní správy</string>
   <string name="composer_schedule_send_previously_set">Predtým nastavené</string>
   <string name="composer_schedule_send_custom_time_label">Čas</string>
   <string name="composer_schedule_send_custom_date_label">Dátum</string>
@@ -157,4 +156,19 @@
   <string name="composer_expiration_set_expiration">Nastaviť platnosť</string>
   <string name="composer_expiration_pick_time_title">Nastaviť čas</string>
   <string name="composer_expiration_time_custom_time_on">O %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Deaktivovaná alebo neplatná emailová adresa. Skontrolujte, či je adresa platná a aktívna.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Nepodarilo sa dešifrovať externé šifrovacie heslo</string>
+  <string name="composer_error_send_draft_already_sent">Správa už bola odoslaná</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Koncept nebol nájdený. Možno ste ho už odoslali alebo zahodili.</string>
+  <string name="composer_error_send_draft_message_too_large">Správa je príliš veľká na odoslanie. Zmenšite veľkosť príloh, prosím.</string>
+  <string name="composer_error_send_draft_attachments_error">Príloha chýba. Nahrajte ju znova, prosím.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Niektorí príjemcovia sú neplatní, skontrolujte príjemcov a skúste to znova, prosím.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Naplánovaný čas odoslania je v minulosti. Prejdite do Konceptov, aby ste správu odoslali alebo naplánovali jej odoslanie.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Čas vypršania platnosti správy je príliš krátky.</string>
+  <string name="composer_error_send_draft_package_error">Problém s odoslaním správy. Skúste to znova, prosím.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Koncept nie je možné odoslať – prílohy prekračujú limit veľkosti</string>
+  <string name="composer_error_send_draft_too_many_attachments">Koncept nie je možné odoslať – bol dosiahnutý limit príloh.</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Koncept nie je možné odoslať – šifrovanie prílohy zlyhalo.</string>
+  <string name="composer_expiration_time_learn_more">Zistiť viac</string>
 </resources>

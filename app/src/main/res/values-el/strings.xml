@@ -48,6 +48,7 @@
   <string name="mailbox_message_scheduling">Γίνεται προγραμματισμός μηνύματος…</string>
   <string name="mailbox_message_scheduling_offline">Εκτός σύνδεσης: το μήνυμα τέθηκε σε αναμονή για προγραμματισμό</string>
   <string name="mailbox_message_scheduled_for_sending_success">Αυτό το μήνυμα θα αποσταλεί στις %1$s</string>
+  <string name="launcher_alert_duplicate_account_description">Ο χρήστης έχει συνδεθεί ήδη</string>
   <string name="settings_change_icon_title">Εικονίδιο εφαρμογής</string>
   <string name="settings_change_icon_description">Μεταμφιέστε την εφαρμογή Proton Mail με ένα διακριτικό εικονίδιο. Οι ειδοποιήσεις θα εξακολουθούν να εμφανίζουν το προεπιλεγμένο όνομα και εικονίδιο Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">Αλλαγή εικονιδίου εφαρμογής;</string>

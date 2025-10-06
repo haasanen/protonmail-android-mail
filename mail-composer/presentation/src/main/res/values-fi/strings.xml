@@ -67,18 +67,18 @@
   <string name="composer_button_set_expiration">Aseta tuhoutumisaika</string>
   <string name="composer_expiration_time_bottom_sheet_title">Viestin tuhoutuminen</string>
   <string name="composer_expiration_time_bottom_sheet_done">Aseta</string>
-  <string name="composer_bottom_bar_expiration_time_none">Ei määritetty</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">Yksi tunti</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">Yksi päivä</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">Kolme päivää</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">Yksi viikko</string>
-  <string name="composer_bottom_bar_expiration_time_custom">On specific date</string>
+  <string name="composer_bottom_bar_expiration_time_none">Ei eräänny koskaan</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Tunnin kuluttua</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Päivän kuluttua</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Kolmen päivän kuluttua</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Viikon kuluttua</string>
+  <string name="composer_bottom_bar_expiration_time_custom">Tiettynä päivämääränä</string>
   <string name="composer_error_setting_expiration_time">Tuhoutumisajan asettaminen epäonnistui</string>
   <!-- Send expiring message to external recipients dialog -->
   <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Add Password to Use Expiration</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_cancel">Peruuta</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Lähetä silti</string>
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Add password protection</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Lisää salasanasuojaus</string>
   <string name="composer_send_expiring_message_to_external_may_fail">We could not confirm all recipients use Proton Mail. Only Proton addresses support message expiration. In this case, we suggest adding a password instead.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
   <!-- Sender changed dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Mukautettu</string>
   <string name="composer_schedule_send_custom_upsell_title">Mukautettu päivämäärä ja aika</string>
   <string name="composer_schedule_send_custom_description">Valitse aika ja päivämäärä</string>
-  <string name="composer_error_send_message">Virhe lähetettäessä viestiä</string>
   <string name="composer_schedule_send_previously_set">Aiemmin asetettu</string>
   <string name="composer_schedule_send_custom_time_label">Aika</string>
   <string name="composer_schedule_send_custom_date_label">Päiväys</string>
@@ -151,8 +150,23 @@
   <string name="composer_external_encryption_unexpected_error">Odottamaton virhe %s. Yritä uudelleen.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Valittua osoitetta ei voi käyttää lähettämiseen. Viestisi lähetetään oletusosoitteestasi.</string>
   <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder. To expire messages for non-Proton users, add a password.</string>
-  <string name="expiration_time_set_time_and_date">Set time and date</string>
-  <string name="composer_expiration_set_expiration">Set expiration</string>
-  <string name="composer_expiration_pick_time_title">Set time</string>
+  <string name="expiration_time_set_time_and_date">Aseta aika ja päivämäärä</string>
+  <string name="composer_expiration_set_expiration">Aseta erääntyminen</string>
+  <string name="composer_expiration_pick_time_title">Aseta aika</string>
   <string name="composer_expiration_time_custom_time_on">On %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Disabled or invalid email address. Check that the address is valid and active.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
+  <string name="composer_error_send_draft_already_sent">Viesti on jo lähetetty</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
+  <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
+  <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>
+  <string name="composer_error_send_draft_package_error">Problem sending message. Please try again.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
+  <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
+  <string name="composer_expiration_time_learn_more">Lue lisää</string>
 </resources>

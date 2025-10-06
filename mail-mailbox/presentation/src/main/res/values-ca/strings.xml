@@ -34,6 +34,7 @@
   <string name="mailbox_default_sender">(Cap remitent)</string>
   <string name="mailbox_error_message_offline">Esteu fora de línia. No s\'han pogut recuperar els elements.</string>
   <string name="mailbox_error_message_generic">No s\'ha pogut carregar la bústia de correu</string>
+  <string name="mailbox_error_message_user_session">No es pot carregar la sessió. Comproveu la connexió i torneu-ho a provar.</string>
   <string name="mailbox_error_message_unexpected">Alguna cosa ha anat malament</string>
   <string name="mailbox_is_empty_title">Cap missatge</string>
   <string name="trash_is_empty_title">No hi ha res a la paperera</string>
@@ -82,8 +83,8 @@
   <string name="mailbox_search_no_results_title">Sense coincidències</string>
   <string name="mailbox_search_no_results_explanation">Podeu actualitzar la consulta de cerca o esborrar-la.</string>
   <plurals name="mailbox_action_move_conversation">
-    <item quantity="one">La conversa s\'ha mogut a %s.</item>
-    <item quantity="other">Les converses s\'han mogut a %s</item>
+    <item quantity="one">S\'ha mogut la conversa a %s</item>
+    <item quantity="other">S\'han mogut les converses a %s</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
     <item quantity="one">El missatge s\'ha mogut a %s.</item>

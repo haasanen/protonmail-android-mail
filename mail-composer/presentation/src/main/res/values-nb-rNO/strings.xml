@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Angi utløpstid</string>
   <string name="composer_expiration_time_bottom_sheet_title">Utløpstid for melding</string>
   <string name="composer_expiration_time_bottom_sheet_done">Angi</string>
-  <string name="composer_bottom_bar_expiration_time_none">Ingen</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 time</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 dag</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 dager</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 uke</string>
+  <string name="composer_bottom_bar_expiration_time_none">Utløper aldri</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Etter 1 time</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Etter 1 dag</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Etter 3 dager</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Etter 1 uke</string>
   <string name="composer_bottom_bar_expiration_time_custom">På en bestemt dato</string>
   <string name="composer_error_setting_expiration_time">Innstilling av utløpstid mislyktes</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Tilpasset</string>
   <string name="composer_schedule_send_custom_upsell_title">Tilpasset dato og klokkeslett</string>
   <string name="composer_schedule_send_custom_description">Velg klokkeslett og dato</string>
-  <string name="composer_error_send_message">Feil ved sending av melding</string>
   <string name="composer_schedule_send_previously_set">Tidligere angitt</string>
   <string name="composer_schedule_send_custom_time_label">Tid</string>
   <string name="composer_schedule_send_custom_date_label">Dato</string>
@@ -150,9 +149,24 @@
   <string name="composer_attachment_upload_error_retry">Enkelte vedlegg kunne ikke lastes opp. Prøv igjen.</string>
   <string name="composer_external_encryption_unexpected_error">Uventet feil %s. Forsøk igjen.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Den valgte adressen kan ikke brukes til å sende. Meldingen vil bli sendt fra standardadressen din.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Angi når meldingen skal slettes fra mottakerens innboks og Sendt-mappen din. For å utløpe meldinger for ikke-Proton-brukere, legg til et passord.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Angi når meldingen skal slettes fra mottakerens innboks og sendt-mappen din. For å utløpe meldinger for ikke-Proton-brukere, legg til et passord.</string>
   <string name="expiration_time_set_time_and_date">Angi tid og dato</string>
   <string name="composer_expiration_set_expiration">Angi utløpstid</string>
   <string name="composer_expiration_pick_time_title">Angi tid</string>
   <string name="composer_expiration_time_custom_time_on">På %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Deaktivert eller ugyldig e-postadresse. Sjekk at adressen er gyldig og aktiv.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Kunne ikke dekryptere eksternt krypteringspassord</string>
+  <string name="composer_error_send_draft_already_sent">Meldingen er allerede sendt</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Utkast ikke funnet. Du kan allerede ha sendt eller forkastet det.</string>
+  <string name="composer_error_send_draft_message_too_large">Meldingen er for stor til å sendes. Reduser størrelsen på vedleggene dine.</string>
+  <string name="composer_error_send_draft_attachments_error">Vedlegg mangler. Last opp igjen.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Noen mottakere er ugyldige. Sjekk mottakerne og prøv igjen.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Planlagt sendetid er i fortiden. Gå til utkast for å sende eller omplanlegge den.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Meldingens utløpstid er for tidlig.</string>
+  <string name="composer_error_send_draft_package_error">Problem med å sende meldingen. Prøv igjen.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Kan ikke sende utkast – vedleggene overskrider størrelsesgrensen</string>
+  <string name="composer_error_send_draft_too_many_attachments">Kan ikke sende utkast – vedleggsgrensen er nådd</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Kan ikke sende utkast – vedleggskryptering mislyktes.</string>
+  <string name="composer_expiration_time_learn_more">Lær mer</string>
 </resources>

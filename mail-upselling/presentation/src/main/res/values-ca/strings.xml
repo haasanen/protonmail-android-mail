@@ -42,7 +42,7 @@
   <string name="upselling_folders_plus_title">Necessiteu més etiquetes o carpetes?</string>
   <!-- Upselling: Mobile Signature -->
   <string name="upselling_mobile_signature_plus_description_override">Personalitzeu la vostra signatura mòbil. Trobareu això i més a Mail Plus.</string>
-  <string name="upselling_mobile_signature_plus_title">Personalitzeu la vostra signatura</string>
+  <string name="upselling_mobile_signature_plus_title">Personalitzeu la signatura</string>
   <!-- Upselling: Auto Delete -->
   <string name="upselling_auto_delete_plus_description_override">Elimina el correu brossa i buida la paperera passats 30 dies. Trobareu això i més a Mail Plus.</string>
   <string name="upselling_auto_delete_plus_title">Buida la paperera automàticament</string>

@@ -36,6 +36,7 @@
   <string name="mailbox_default_sender">(Без адпраўніка)</string>
   <string name="mailbox_error_message_offline">Немагчыма атрымаць элементы, бо вы па-за сеткай</string>
   <string name="mailbox_error_message_generic">Збой загрузкі паштовай скрыні</string>
+  <string name="mailbox_error_message_user_session">Немагчыма загрузіць сеанс. Праверце падключэнне і паўтарыце спробу.</string>
   <string name="mailbox_error_message_unexpected">Нешта пайшло не так</string>
   <string name="mailbox_is_empty_title">Няма паведамленняў</string>
   <string name="trash_is_empty_title">Сметніца пустая</string>

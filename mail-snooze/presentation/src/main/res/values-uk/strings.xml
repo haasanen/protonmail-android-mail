@@ -37,22 +37,4 @@
   <string name="snooze_custom_upsell_title">Власні дата й час</string>
   <string name="snooze_custom_upsell_title_short">Власний</string>
   <string name="snooze_custom_upsell_hint_short">Покращте для доступу.</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Відкладено до завтра</item>
-    <item quantity="few">Відкладено на %d дні</item>
-    <item quantity="many">Відкладено на %d днів</item>
-    <item quantity="other">Відкладено на %d днів</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Відкладено на %d годину</item>
-    <item quantity="few">Відкладено на %d години</item>
-    <item quantity="many">Відкладено на %d годин</item>
-    <item quantity="other">Відкладено на %d годин</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Відкладено на %d хвилину</item>
-    <item quantity="few">Відкладено на %d хвилини</item>
-    <item quantity="many">Відкладено на %d хвилин</item>
-    <item quantity="other">Відкладено на %d хвилин</item>
-  </plurals>
 </resources>

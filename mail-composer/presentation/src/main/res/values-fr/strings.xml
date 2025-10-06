@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Définir la date d\'expiration</string>
   <string name="composer_expiration_time_bottom_sheet_title">Expiration du message</string>
   <string name="composer_expiration_time_bottom_sheet_done">Définir</string>
-  <string name="composer_bottom_bar_expiration_time_none">Aucun</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 heure</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 jour</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 jours</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 semaine</string>
+  <string name="composer_bottom_bar_expiration_time_none">N\'expire jamais</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Après 1 heure</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Après 1 jour</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Après 3 jours</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Après 1 semaine</string>
   <string name="composer_bottom_bar_expiration_time_custom">À une date précise</string>
   <string name="composer_error_setting_expiration_time">La définition du délai d\'expiration n\'a pas abouti.</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Personnaliser</string>
   <string name="composer_schedule_send_custom_upsell_title">Date et heure personnalisées</string>
   <string name="composer_schedule_send_custom_description">Choisir l\'heure et la date</string>
-  <string name="composer_error_send_message">Une erreur s\'est produite lors de l\'envoi du message.</string>
   <string name="composer_schedule_send_previously_set">Précédemment défini</string>
   <string name="composer_schedule_send_custom_time_label">Heure</string>
   <string name="composer_schedule_send_custom_date_label">Date</string>
@@ -155,4 +154,19 @@
   <string name="composer_expiration_set_expiration">Définir l\'expiration</string>
   <string name="composer_expiration_pick_time_title">Définir l\'heure</string>
   <string name="composer_expiration_time_custom_time_on">Le %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">L\'adresse e-mail est désactivée ou n\'est pas valide. Veuillez vérifier que l\'adresse est valide et active.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Échec du déchiffrement du mot de passe de chiffrement externe</string>
+  <string name="composer_error_send_draft_already_sent">Le message a déjà été envoyé</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Brouillon non trouvé. Il se peut que vous l\'avez déjà envoyé ou abandonner.</string>
+  <string name="composer_error_send_draft_message_too_large">Le message est trop volumineux pour être envoyé. Veuillez réduire la taille de vos pièces jointes.</string>
+  <string name="composer_error_send_draft_attachments_error">La pièce jointe est manquante. Veuillez l\'importer à nouveau.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Certains destinataires ne sont pas valides, veuillez les vérifier et réessayer.</string>
+  <string name="composer_error_send_draft_schedule_send_error">L\'heure d\'envoi programmé se situe dans le passé. Allez dans les Brouillons pour l\'envoyer ou le reprogrammer.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">La date d\'expiration du message est trop proche.</string>
+  <string name="composer_error_send_draft_package_error">Un problème est survenu lors de l\'envoi du message. Veuillez réessayer.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Impossible d\'envoyer le brouillon. Les pièces jointes excèdent la taille limite</string>
+  <string name="composer_error_send_draft_too_many_attachments">Impossible d\'envoyer le brouillon. La limite de pièces jointes est atteinte</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Impossible d\'envoyer le brouillon. Le chiffrement de la pièce jointe n\'a pas abouti.</string>
+  <string name="composer_expiration_time_learn_more">En savoir plus</string>
 </resources>

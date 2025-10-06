@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Özel tarih ve saat</string>
   <string name="snooze_custom_upsell_title_short">Özel</string>
   <string name="snooze_custom_upsell_hint_short">Erişmek için tarifenizi yükseltin</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Yarına ertelendi</item>
-    <item quantity="other">%d günlüğüne ertelendi</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">%d saat sonraya ertelendi</item>
-    <item quantity="other">%d saat sonraya ertelendi</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">%d dakika sonraya ertelendi</item>
-    <item quantity="other">%d dakika sonraya ertelendi</item>
-  </plurals>
 </resources>

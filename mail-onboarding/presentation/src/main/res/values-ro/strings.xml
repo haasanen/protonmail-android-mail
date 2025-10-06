@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Bun venit la Proton Mail, unde confidențialitatea este implicită</string>
-  <string name="onboarding_welcome_description">Bucurați-vă de mesaje criptate, mai puține mesaje nedorite, protecție împotriva înșelăciunii și urmăritori blocați. Bun venit la confidențialitate.</string>
+  <string name="onboarding_welcome_description">Bucurați-vă de mesaje criptate, mai puține mesaje nedorite, protecție împotriva înșelăciunii și uneltelor de urmărire blocate. Bun venit la confidențialitate.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Concentrare la dispoziție</string>
   <string name="onboarding_rebuilt_description">Petreceți mai puțin timp sortând și mai mult timp lucrând. Contul de e-mail este conceput pentru a fi mai ușor de navigat, astfel încât să puteți ajunge mai rapid la ceea ce este important.</string>

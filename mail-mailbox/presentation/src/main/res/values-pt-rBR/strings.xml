@@ -34,6 +34,7 @@
   <string name="mailbox_default_sender">(Nenhum remetente)</string>
   <string name="mailbox_error_message_offline">Você está desconectado, não é possível recuperar os itens</string>
   <string name="mailbox_error_message_generic">Erro ao carregar a caixa de correio</string>
+  <string name="mailbox_error_message_user_session">Não foi possível carregar a sessão. Verifique sua conexão e tente novamente.</string>
   <string name="mailbox_error_message_unexpected">Ocorreu um erro inesperado.</string>
   <string name="mailbox_is_empty_title">Nenhuma mensagem</string>
   <string name="trash_is_empty_title">Nada na Lixeira</string>

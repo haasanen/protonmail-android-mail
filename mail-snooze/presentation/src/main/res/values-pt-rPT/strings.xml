@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Data e hora personalizadas</string>
   <string name="snooze_custom_upsell_title_short">Personalizar</string>
   <string name="snooze_custom_upsell_hint_short">Atualize para aceder</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Adiado até amanhã</item>
-    <item quantity="other">Adiado por %d dias</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Adiado por %d hora</item>
-    <item quantity="other">Adiado por %d horas</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Adiado por %d minuto</item>
-    <item quantity="other">Adiado por %d minutos</item>
-  </plurals>
 </resources>

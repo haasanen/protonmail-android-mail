@@ -45,7 +45,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Salvataggio della bozza non riuscito. Destinatario non valido.</string>
   <string name="composer_error_store_draft_message_not_a_draft">Questo messaggio non è una bozza</string>
   <string name="composer_error_store_draft_generic">Salvataggio della bozza non riuscito. Si è verificato un errore.</string>
-  <string name="composer_error_loading_draft">Caricamento del contenuto della bozza non riuscito. Modifica della bozza non disponibile.</string>
+  <string name="composer_error_loading_draft">Caricamento del contenuto della bozza non riuscito. Modifica non disponibile.</string>
   <string name="composer_add_attachments_content_description">Aggiungi degli allegati</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importa da...</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Carica dal dispositivo</string>
@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Imposta la scadenza</string>
   <string name="composer_expiration_time_bottom_sheet_title">Scadenza</string>
   <string name="composer_expiration_time_bottom_sheet_done">Salva</string>
-  <string name="composer_bottom_bar_expiration_time_none">Nessuna</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 ora</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 giorno</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 giorni</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 settimana</string>
+  <string name="composer_bottom_bar_expiration_time_none">Senza scadenza</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Dopo 1 ora</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Dopo 1 giorno</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Dopo 3 giorni</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Dopo 1 settimana</string>
   <string name="composer_bottom_bar_expiration_time_custom">Data esatta</string>
   <string name="composer_error_setting_expiration_time">Impostazione della scadenza non riuscita</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Personalizzato</string>
   <string name="composer_schedule_send_custom_upsell_title">Data e orario personalizzato</string>
   <string name="composer_schedule_send_custom_description">Scegli la data e l\'orario</string>
-  <string name="composer_error_send_message">Invio del messaggio non riuscito</string>
   <string name="composer_schedule_send_previously_set">Impostato precedentemente</string>
   <string name="composer_schedule_send_custom_time_label">Orario</string>
   <string name="composer_schedule_send_custom_date_label">Data</string>
@@ -150,10 +149,24 @@
   <string name="composer_attachment_upload_error_retry">Caricamento di alcuni allegati non riuscito</string>
   <string name="composer_external_encryption_unexpected_error">Errore imprevisto %s</string>
   <string name="composer_sender_changed_original_address_cannot_send">Invio con l\'indirizzo email attuale non valido. Questo messaggio verrà inviato dall\'indirizzo email predefinito.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Imposta il tempo dopo il quale il messaggio verrà eliminato.
-Imposta una password per crittografare i messaggi e abilitare la scadenza per i destinatari che non usano Proton Mail.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Imposta quando il messaggio verrà eliminato dalla posta in arrivo del destinatario e dalla tua cartella Inviati. Per far scadere i messaggi destinati a utenti non Proton, aggiungi una password.</string>
   <string name="expiration_time_set_time_and_date">Seleziona la data e l\'orario</string>
   <string name="composer_expiration_set_expiration">Imposta la scadenza</string>
   <string name="composer_expiration_pick_time_title">Imposta l\'orario</string>
   <string name="composer_expiration_time_custom_time_on">Il %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Indirizzo email disattivato o non valido. Controlla che l\'indirizzo sia valido e attivo.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Decrittografia della crittografia esterna non riuscita</string>
+  <string name="composer_error_send_draft_already_sent">Messaggio inviato in precedenza</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Bozza non trovata e potenzialmente inviata o scartata</string>
+  <string name="composer_error_send_draft_message_too_large">Il messaggio è troppo grande per essere inviato. Riduci la dimensione dei tuoi allegati.</string>
+  <string name="composer_error_send_draft_attachments_error">Allegato mancante. Caricalo di nuovo.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Alcuni destinatari non sono validi, controlla i destinatari e riprova.</string>
+  <string name="composer_error_send_draft_schedule_send_error">L\'ora di invio programmata è nel passato. Vai in Bozze per inviare o riprogrammare.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">L\'orario di scadenza del messaggio è troppo vicina.</string>
+  <string name="composer_error_send_draft_package_error">Problema durante l\'invio del messaggio. Riprova.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Invio della bozza non riuscito - Limite di dimensione degli allegati superato.</string>
+  <string name="composer_error_send_draft_too_many_attachments">Invio della bozza non riuscito - Limite di allegati superato.</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Invio della bozza non riuscito - Crittografia dell\'allegato non riuscita.</string>
+  <string name="composer_expiration_time_learn_more">Scopri di più</string>
 </resources>

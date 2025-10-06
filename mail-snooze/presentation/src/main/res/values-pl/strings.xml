@@ -37,22 +37,4 @@
   <string name="snooze_custom_upsell_title">Niestandardowa data i godzina</string>
   <string name="snooze_custom_upsell_title_short">Niestandardowe</string>
   <string name="snooze_custom_upsell_hint_short">Ulepsz konto, aby uzyskać dostęp</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Odłożono do jutra</item>
-    <item quantity="few">Odłożono za %d dni</item>
-    <item quantity="many">Odłożono za %d dni</item>
-    <item quantity="other">Odłożono za %d dnia</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Odłożono za %d godzinę</item>
-    <item quantity="few">Odłożono za %d godziny</item>
-    <item quantity="many">Odłożono za %d godzin</item>
-    <item quantity="other">Odłożono za %d godziny</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Odłożono za %d minutę</item>
-    <item quantity="few">Odłożono za %d minuty</item>
-    <item quantity="many">Odłożono za %d minut</item>
-    <item quantity="other">Odłożono za %d minuty</item>
-  </plurals>
 </resources>

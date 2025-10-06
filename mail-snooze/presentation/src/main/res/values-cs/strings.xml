@@ -37,22 +37,4 @@
   <string name="snooze_custom_upsell_title">Vlastní datum a čas</string>
   <string name="snooze_custom_upsell_title_short">Vlastní</string>
   <string name="snooze_custom_upsell_hint_short">Pro přístup navyšte účet</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Odloženo do zítřka</item>
-    <item quantity="few">Odloženo na %d dny</item>
-    <item quantity="many">Odloženo na %d dnů</item>
-    <item quantity="other">Odloženo na %d dnů</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Odloženo na %d hodinu</item>
-    <item quantity="few">Odloženo na %d hodiny</item>
-    <item quantity="many">Odloženo na %d hodin</item>
-    <item quantity="other">Odloženo na %d hodin</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Odloženo na %d minutu</item>
-    <item quantity="few">Odloženo na %d minuty</item>
-    <item quantity="many">Odloženo na %d minut</item>
-    <item quantity="other">Odloženo na %d minut</item>
-  </plurals>
 </resources>

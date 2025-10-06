@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Tervetuloa Proton Mailiin, missä yksityisyys on oletusarvo</string>
-  <string name="onboarding_welcome_description">Nauti salatuista viesteistä, vähemmästä roskapostista, tietojenkalastelun torjunnasta ja seurannanestosta. Tervetuloa yksityisyyden pariin.</string>
+  <string name="onboarding_welcome_description">Enjoy encrypted messages, less spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Keskittyminen käden ulottuvilla</string>
   <string name="onboarding_rebuilt_description">Käytä vähemmän aikaa lajitteluun ja enemmän tekemiseen. Saapuneet-kansiosi on suunniteltu helpommin navigoitavaksi, jotta pääset tärkeiden asioiden kimppuun nopeammin.</string>

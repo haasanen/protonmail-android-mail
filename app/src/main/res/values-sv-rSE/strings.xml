@@ -48,10 +48,11 @@
   <string name="mailbox_message_scheduling">Schemalägger meddelande …</string>
   <string name="mailbox_message_scheduling_offline">Offline: meddelande köat för schemaläggning</string>
   <string name="mailbox_message_scheduled_for_sending_success">Detta meddelande kommer att skickas den %1$s</string>
+  <string name="launcher_alert_duplicate_account_description">Användaren är redan inloggad</string>
   <string name="settings_change_icon_title">Appikon</string>
-  <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
+  <string name="settings_change_icon_description">Maskera Proton Mail-appen med en diskret ikon. Aviseringar kommer fortfarande visa standardnamnet och ikonen för Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">Ändra appikon?</string>
-  <string name="settings_change_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
+  <string name="settings_change_icon_confirmation_details">Detta kommer göra att Proton Mail-appen stängs och alla aviseringar avfärdas.\n\nFör att starta om Proton Mail, tryck bara på din nya appikon.</string>
   <string name="settings_change_icon_action_cancel">Avbryt</string>
   <string name="settings_change_icon_change_icon">Ändra ikon</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>

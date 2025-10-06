@@ -40,7 +40,7 @@
   <string name="mail_settings_app_hint">Tilpasninger av mobilapp</string>
   <string name="mail_settings_theme">Tema</string>
   <string name="mail_settings_auto_lock">Autolås</string>
-  <string name="mail_settings_app_icon">App icon</string>
+  <string name="mail_settings_app_icon">Appikon</string>
   <string name="mail_settings_alternative_routing">Alternativ ruting</string>
   <string name="mail_settings_app_language">App-språk</string>
   <string name="mail_settings_app_language_sys_default">Systemstandard</string>

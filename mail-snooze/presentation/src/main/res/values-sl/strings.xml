@@ -37,22 +37,4 @@
   <string name="snooze_custom_upsell_title">Datum in čas po meri</string>
   <string name="snooze_custom_upsell_title_short">Po meri</string>
   <string name="snooze_custom_upsell_hint_short">Nadgradite za dostop</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">V dremežu do jutri</item>
-    <item quantity="two">V dremežu za %d dneva</item>
-    <item quantity="few">V dremežu za %d dni</item>
-    <item quantity="other">V dremežu za %d dni</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">V dremežu za %d uro</item>
-    <item quantity="two">V dremežu za %d uri</item>
-    <item quantity="few">V dremežu za %d ure</item>
-    <item quantity="other">V dremežu za %d ur</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">V dremežu za %d minuto</item>
-    <item quantity="two">V dremežu za %d minuti</item>
-    <item quantity="few">V dremežu za %d minute</item>
-    <item quantity="other">V dremežu za %d minut</item>
-  </plurals>
 </resources>

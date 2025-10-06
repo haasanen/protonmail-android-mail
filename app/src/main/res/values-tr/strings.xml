@@ -48,6 +48,7 @@
   <string name="mailbox_message_scheduling">İleti zamanlanıyor…</string>
   <string name="mailbox_message_scheduling_offline">Çevrim dışı: İleti zamanlanmak üzere sıraya alındı</string>
   <string name="mailbox_message_scheduled_for_sending_success">Bu ileti %1$s zamanında gönderilecek</string>
+  <string name="launcher_alert_duplicate_account_description">Kullanıcı zaten oturum açmış</string>
   <string name="settings_change_icon_title">Uygulama simgesi</string>
   <string name="settings_change_icon_description">Proton Mail uygulamasını farklı bir simge ile gizleyin. Bildirimlerde hala varsayılan Proton Mail adı ve simgesi görüntülenir.</string>
   <string name="settings_change_icon_confirmation_title">Uygulama simgesi değiştirilsin mi?</string>

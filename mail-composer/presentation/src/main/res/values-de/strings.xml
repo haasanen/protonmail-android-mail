@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Ablaufdatum festlegen</string>
   <string name="composer_expiration_time_bottom_sheet_title">Gültigkeitsdauer der Nachricht</string>
   <string name="composer_expiration_time_bottom_sheet_done">Festlegen</string>
-  <string name="composer_bottom_bar_expiration_time_none">Keine</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 Stunde</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 Tag</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 Tage</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 Woche</string>
+  <string name="composer_bottom_bar_expiration_time_none">Verfällt nie</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Nach 1 Stunde</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Nach 1 Tag</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Nach 3 Tagen</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Nach 1 Woche</string>
   <string name="composer_bottom_bar_expiration_time_custom">Zu einem bestimmten Termin</string>
   <string name="composer_error_setting_expiration_time">Fehler beim Festlegen der Ablaufzeit.</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Benutzerdefiniert</string>
   <string name="composer_schedule_send_custom_upsell_title">Benutzerdefiniertes Datum und Uhrzeit</string>
   <string name="composer_schedule_send_custom_description">Datum und Uhrzeit auswählen</string>
-  <string name="composer_error_send_message">Fehler beim Senden der Nachricht</string>
   <string name="composer_schedule_send_previously_set">Zuvor festgelegt</string>
   <string name="composer_schedule_send_custom_time_label">Zeit</string>
   <string name="composer_schedule_send_custom_date_label">Datum</string>
@@ -150,9 +149,24 @@
   <string name="composer_attachment_upload_error_retry">Einige Anhänge konnten nicht hochgeladen werden. Bitte versuche es erneut.</string>
   <string name="composer_external_encryption_unexpected_error">Unerwarteter Fehler %s. Bitte erneut versuchen.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Die ausgewählte E-Mail-Adresse kann nicht zum Senden verwendet werden. Deine Nachricht wird von deiner Standard-E-Mail-Adresse aus gesendet.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Lege fest, zu welchem Zeitpunkt die Nachricht aus dem Posteingang des Empfängers und deinem Ordner „Gesendet“ gelöscht werden soll. Um Nachrichten für Nicht-Proton-Benutzer zu löschen, füge ein Passwort hinzu.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Lege fest, wann die Nachricht aus dem Posteingang des Empfängers und deinem Ordner „Gesendet“ gelöscht werden soll. Um Nachrichten für Nicht-Proton-Benutzer zu löschen, füge ein Passwort hinzu.</string>
   <string name="expiration_time_set_time_and_date">Datum und Uhrzeit festlegen</string>
   <string name="composer_expiration_set_expiration">Ablaufdatum festlegen</string>
   <string name="composer_expiration_pick_time_title">Uhrzeit festlegen</string>
   <string name="composer_expiration_time_custom_time_on">Am %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Deaktivierte oder ungültige E-Mail-Adresse. Überprüfe, ob die Adresse gültig und aktiv ist.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Externes Verschlüsselungspasswort konnte nicht entschlüsselt werden</string>
+  <string name="composer_error_send_draft_already_sent">Nachricht wurde bereits gesendet</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Entwurf nicht gefunden. Möglicherweise wurde er bereits gesendet oder gelöscht.</string>
+  <string name="composer_error_send_draft_message_too_large">Die Nachricht ist zu groß, um sie versenden zu können. Bitte verkleinere deine Anhänge.</string>
+  <string name="composer_error_send_draft_attachments_error">Anhang fehlt. Bitte erneut hochladen.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Einige Empfänger sind ungültig. Bitte überprüfe die Empfänger und versuche es erneut.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Die geplante Sendezeit liegt in der Vergangenheit. Wechsle zu „Entwürfe“, um die Nachricht zu senden oder neu zu planen.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Die Ablaufzeit der Nachricht ist zu kurzfristig.</string>
+  <string name="composer_error_send_draft_package_error">Problem beim Senden der Nachricht. Bitte erneut versuchen.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Entwurf konnte nicht gespeichert werden – Anhänge überschreiten die Größenbeschränkung</string>
+  <string name="composer_error_send_draft_too_many_attachments">Entwurf konnte nicht gesendet werden – Anzahl Anlagen überschritten</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Entwurf konnte nicht gesendet werden – Verschlüsselung des Anhangs fehlgeschlagen.</string>
+  <string name="composer_expiration_time_learn_more">Mehr erfahren</string>
 </resources>

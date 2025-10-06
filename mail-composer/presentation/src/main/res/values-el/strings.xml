@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Ορισμός χρόνου λήξης</string>
   <string name="composer_expiration_time_bottom_sheet_title">Λήξη μηνύματος</string>
   <string name="composer_expiration_time_bottom_sheet_done">Ορισμός</string>
-  <string name="composer_bottom_bar_expiration_time_none">Κανένα</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 ώρα</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 ημέρα</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 ημέρες</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 εβδομάδα</string>
+  <string name="composer_bottom_bar_expiration_time_none">Δεν λήγει ποτέ</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Μετά από 1 ώρα</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Μετά από 1 ημέρα</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Μετά από 3 ημέρες</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Μετά από 1 εβδομάδα</string>
   <string name="composer_bottom_bar_expiration_time_custom">Σε συγκεκριμένη ημερομηνία</string>
   <string name="composer_error_setting_expiration_time">Η ρύθμιση του χρόνου λήξης απέτυχε</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Προσαρμοσμένο</string>
   <string name="composer_schedule_send_custom_upsell_title">Προσαρμοσμένη ημερομηνία και ώρα</string>
   <string name="composer_schedule_send_custom_description">Επιλέξτε ώρα και ημερομηνία</string>
-  <string name="composer_error_send_message">Σφάλμα κατά την αποστολή του μηνύματος</string>
   <string name="composer_schedule_send_previously_set">Προηγουμένως ορισμένο</string>
   <string name="composer_schedule_send_custom_time_label">Ώρα</string>
   <string name="composer_schedule_send_custom_date_label">Ημερομηνία</string>
@@ -155,4 +154,19 @@
   <string name="composer_expiration_set_expiration">Ορίστε λήξη</string>
   <string name="composer_expiration_pick_time_title">Ορίστε ώρα</string>
   <string name="composer_expiration_time_custom_time_on">Στις %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Απενεργοποιημένη ή μη έγκυρη ηλεκτρονική διεύθυνση. Ελέγξτε ότι η διεύθυνση είναι έγκυρη και ενεργή.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Αποτυχία αποκρυπτογράφησης εξωτερικού κωδικού κρυπτογράφησης</string>
+  <string name="composer_error_send_draft_already_sent">Το μήνυμα έχει ήδη αποσταλεί</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Το πρόχειρο δε βρέθηκε. Ίσως το έχετε ήδη στείλει ή απορρίψει.</string>
+  <string name="composer_error_send_draft_message_too_large">Το μήνυμα είναι πολύ μεγάλο για να αποστολή. Παρακαλούμε μειώστε το μέγεθος των συνημμένων αρχείων.</string>
+  <string name="composer_error_send_draft_attachments_error">Το συνημμένο λείπει. Παρακαλούμε ανεβάστε το ξανά.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Ορισμένοι παραλήπτες δεν είναι έγκυροι, παρακαλούμε ελέγξτε τους παραλήπτες και δοκιμάστε ξανά.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Η προγραμματισμένη ώρα αποστολής είναι στο παρελθόν. Μεταβείτε στα Πρόχειρα για να το στείλετε ή να το επαναπρογραμματίσετε.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Ο χρόνος λήξης μηνύματος είναι πολύ σύντομος.</string>
+  <string name="composer_error_send_draft_package_error">Πρόβλημα αποστολής μηνύματος. Παρακαλούμε δοκιμάστε ξανά.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Αδυναμία αποστολής πρόχειρου - Τα συνημμένα υπερβαίνουν το όριο μεγέθους</string>
+  <string name="composer_error_send_draft_too_many_attachments">Αδυναμία αποστολής πρόχειρου - Τα όριο συνημμένων έχει επιτευχθεί</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Αδυναμία αποστολής πρόχειρου - Η κρυπτογράφηση του συνημμένου απέτυχε.</string>
+  <string name="composer_expiration_time_learn_more">Μάθετε περισσότερα</string>
 </resources>

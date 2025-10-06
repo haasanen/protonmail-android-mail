@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Le damos la bienvenida a Proton Mail, donde la privacidad es la norma</string>
-  <string name="onboarding_welcome_description">Disfrute de mensajes cifrados, menos spam, protección contra suplantaciones y rastreadores bloqueados. Le damos la bienvenida a la privacidad.</string>
+  <string name="onboarding_welcome_description">Disfrute de mensajes cifrados, menos correo no deseado, protección contra la suplantación de identidad y bloquedor de rastreadores. Le damos la bienvenida a la privacidad.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Enfoque a su alcance</string>
   <string name="onboarding_rebuilt_description">Dedique menos tiempo a ordenar y más tiempo a hacer. Su buzón está diseñado para ser fácil de navegar y así acceder a lo importante más rápido.</string>

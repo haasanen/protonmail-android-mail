@@ -154,12 +154,12 @@
   <string name="rsvp_widget_event_ended">L\'esdeveniment ha <b>finalitzat</b></string>
   <string name="rsvp_widget_event_cancelled">Esdeveniment <b>cancel·lat</b></string>
   <string name="rsvp_widget_invite_outdated">Aquesta invitació ha caducat</string>
-  <string name="rsvp_widget_event_cancelled_invite_outdated">S\'ha cancel·lat l\'esdeveniment. Aquesta invitació està desfasada.</string>
-  <string name="rsvp_widget_offline_invite_outdated">Esteu desconnectats. La informació que es mostra podria no estar actualitzada.</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">S\'ha cancel·lat l\'esdeveniment. Aquesta invitació està caducada.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Esteu fora de línia. La informació mostrada pot estar desfasada.</string>
   <string name="rsvp_widget_address_is_incorrect">No es pot fer servir aquesta adreça per respondre. Si us plau, actualitzeu la informació del vostre compte.</string>
   <string name="rsvp_widget_user_is_organizer">Sou l\'organitzador.</string>
   <string name="rsvp_widget_user_is_not_invited">No podeu respondre a les invitacions d\'esdeveniments si no formeu part de la llista d\'assistents en aquell moment.</string>
-  <string name="rsvp_widget_event_does_not_exist">Aquest esdeveniment no és al vostre calendari, per tant, no hi podeu respondre.</string>
+  <string name="rsvp_widget_event_does_not_exist">Aquest esdeveniment no és al calendari, per tant, no hi podeu respondre.</string>
   <string name="rsvp_widget_today">Avui</string>
   <string name="rsvp_widget_tomorrow">Demà</string>
   <string name="rsvp_widget_invite_details_unavailable">Els detalls de la invitació no estan disponibles</string>

@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Ställ in utgångstid</string>
   <string name="composer_expiration_time_bottom_sheet_title">När meddelandet löper ut</string>
   <string name="composer_expiration_time_bottom_sheet_done">Ställ in</string>
-  <string name="composer_bottom_bar_expiration_time_none">Ingen</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">1 timme</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">1 dag</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">3 dagar</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">1 vecka</string>
+  <string name="composer_bottom_bar_expiration_time_none">Löper aldrig ut</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Efter 1 timme</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Efter 1 dag</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Efter 3 dagar</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Efter 1 vecka</string>
   <string name="composer_bottom_bar_expiration_time_custom">På specifikt datum</string>
   <string name="composer_error_setting_expiration_time">Misslyckades ställa in utgångstid</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -135,7 +135,6 @@
   <string name="composer_schedule_send_custom_title">Anpassad</string>
   <string name="composer_schedule_send_custom_upsell_title">Anpassat datum och tid</string>
   <string name="composer_schedule_send_custom_description">Välj tid och datum</string>
-  <string name="composer_error_send_message">Det gick inte att skicka meddelandet</string>
   <string name="composer_schedule_send_previously_set">Tidigare inställt</string>
   <string name="composer_schedule_send_custom_time_label">Tid</string>
   <string name="composer_schedule_send_custom_date_label">Datum</string>
@@ -155,4 +154,19 @@
   <string name="composer_expiration_set_expiration">Ställ in utgångstid</string>
   <string name="composer_expiration_pick_time_title">Ställ in tid</string>
   <string name="composer_expiration_time_custom_time_on">På %1$s</string>
+  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_invalid_sender">Inaktiverad eller ogiltig e-postadress. Kontrollera att adressen är giltig och aktiv.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
+  <string name="composer_error_send_draft_already_sent">Meddelande var redan skickat</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Utkast hittades inte. Du kan redan ha skickat eller kastat det.</string>
+  <string name="composer_error_send_draft_message_too_large">Meddelande är för stort för att skickas. Minska storleken på dina bilagor.</string>
+  <string name="composer_error_send_draft_attachments_error">Bilaga saknas. Ladda upp igen.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Några mottagare är ogiltiga, kontrollera mottagarna och försök igen.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Meddelandets utgångstid är för tidig.</string>
+  <string name="composer_error_send_draft_package_error">Problem att skicka meddelande. Försök igen.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
+  <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
+  <string name="composer_expiration_time_learn_more">Lär dig mer</string>
 </resources>

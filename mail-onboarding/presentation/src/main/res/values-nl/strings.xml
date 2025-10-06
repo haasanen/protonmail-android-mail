@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Welkom bij Proton Mail, waar privacy standaard is</string>
-  <string name="onboarding_welcome_description">Geniet van versleutelde berichten, minder spam, bescherming tegen phishing en geblokkeerde trackers. Welkom bij privacy.</string>
+  <string name="onboarding_welcome_description">Geniet van versleutelde berichten, minder spam, bescherming tegen phishing, en geblokkeerde trackers. Welkom bij privacy.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Focus binnen handbereik</string>
   <string name="onboarding_rebuilt_description">Besteed minder tijd aan sorteren en meer tijd aan doen. Uw inbox is ontworpen om gemakkelijker te navigeren, zodat u sneller bij wat belangrijk is kunt komen.</string>

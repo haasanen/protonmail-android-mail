@@ -37,22 +37,4 @@
   <string name="snooze_custom_upsell_title">Карыстальніцкія дата і час</string>
   <string name="snooze_custom_upsell_title_short">Карыстальніцкае</string>
   <string name="snooze_custom_upsell_hint_short">Палепшыць для доступу</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Адкладзена да заўтра</item>
-    <item quantity="few">Адкладзена на %d дні</item>
-    <item quantity="many">Адкладзена на %d дзён</item>
-    <item quantity="other">Адкладзена на %d дзён</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Адкладзена на %d гадзіну</item>
-    <item quantity="few">Адкладзена на %d гадзіны</item>
-    <item quantity="many">Адкладзена на %d гадзін</item>
-    <item quantity="other">Адкладзена на %d гадзін</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Адкладзена на %d хвіліну</item>
-    <item quantity="few">Адкладзена на %d хвіліны</item>
-    <item quantity="many">Адкладзена на %d хвілін</item>
-    <item quantity="other">Адкладзена на %d хвілін</item>
-  </plurals>
 </resources>

@@ -37,16 +37,4 @@
   <string name="snooze_custom_upsell_title">Egyéni dátum és idő</string>
   <string name="snooze_custom_upsell_title_short">Egyéni</string>
   <string name="snooze_custom_upsell_hint_short">Frissítsen a hozzáféréshez</string>
-  <plurals name="snoozed_in_days">
-    <item quantity="one">Holnapig halasztva</item>
-    <item quantity="other">Halasztva %d napra</item>
-  </plurals>
-  <plurals name="snooze_in_hours">
-    <item quantity="one">Halasztva %d órára</item>
-    <item quantity="other">Halasztva %d órára</item>
-  </plurals>
-  <plurals name="snooze_in_minutes">
-    <item quantity="one">Halasztva %d percre</item>
-    <item quantity="other">Halasztva %d percre</item>
-  </plurals>
 </resources>

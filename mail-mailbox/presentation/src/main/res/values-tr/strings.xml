@@ -34,6 +34,7 @@
   <string name="mailbox_default_sender">(Gönderici yok)</string>
   <string name="mailbox_error_message_offline">Çevrim dışı olduğunuzdan ögeler alınamadı</string>
   <string name="mailbox_error_message_generic">E-posta kutusu yüklenemedi</string>
+  <string name="mailbox_error_message_user_session">Oturum yüklenemedi. Lütfen bağlantınızı denetleyip yeniden deneyin.</string>
   <string name="mailbox_error_message_unexpected">Beklenmeyen bir sorun çıktı</string>
   <string name="mailbox_is_empty_title">Herhangi bir ileti yok</string>
   <string name="trash_is_empty_title">Çöp kutusunda bir şey yok</string>

@@ -48,6 +48,7 @@
   <string name="mailbox_message_scheduling">Se programează mesajul…</string>
   <string name="mailbox_message_scheduling_offline">Deconectat: mesaj pus în lista pentru programare</string>
   <string name="mailbox_message_scheduled_for_sending_success">Acest mesaj va fi trimis la data de %1$s</string>
+  <string name="launcher_alert_duplicate_account_description">Utilizatorul este deja conectat</string>
   <string name="settings_change_icon_title">Pictogramă aplicație</string>
   <string name="settings_change_icon_description">Deghizați aplicația Proton Mail cu o pictogramă discretă. Notificările vor afișa în continuare numele și pictograma implicite Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">Modificați pictograma aplicației?</string>

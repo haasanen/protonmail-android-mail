@@ -34,6 +34,7 @@
   <string name="mailbox_default_sender">(Κανένας αποστολέας)</string>
   <string name="mailbox_error_message_offline">Είστε αποσυνδεδεμένοι, δεν μπορείτε να ανακτήσετε στοιχεία</string>
   <string name="mailbox_error_message_generic">Η φόρτωση του γραμματοκιβωτίου απέτυχε</string>
+  <string name="mailbox_error_message_user_session">Δεν είναι δυνατή η φόρτωση της συνεδρίας. Παρακαλούμε ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά.</string>
   <string name="mailbox_error_message_unexpected">Κάτι πήγε απροσδόκητα στραβά</string>
   <string name="mailbox_is_empty_title">Κανένα μήνυμα</string>
   <string name="trash_is_empty_title">Τίποτα στα Διαγραμμένα</string>

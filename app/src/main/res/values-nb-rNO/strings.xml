@@ -48,12 +48,13 @@
   <string name="mailbox_message_scheduling">Planlegger melding…</string>
   <string name="mailbox_message_scheduling_offline">Frakoblet: melding satt i planleggingskø</string>
   <string name="mailbox_message_scheduled_for_sending_success">Denne meldingen vil bli sendt %1$s</string>
-  <string name="settings_change_icon_title">App Icon</string>
-  <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
-  <string name="settings_change_icon_confirmation_title">Change app icon?</string>
-  <string name="settings_change_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
-  <string name="settings_change_icon_action_cancel">Cancel</string>
-  <string name="settings_change_icon_change_icon">Change icon</string>
+  <string name="launcher_alert_duplicate_account_description">Brukeren er allerede logget på</string>
+  <string name="settings_change_icon_title">Appikon</string>
+  <string name="settings_change_icon_description">Skjul Proton Mail-appen med et diskret ikon. Varsler vil fortsatt vise standardnavnet og -ikonet for Proton Mail.</string>
+  <string name="settings_change_icon_confirmation_title">Endre appikon?</string>
+  <string name="settings_change_icon_confirmation_details">Dette vil føre til at Proton Mail-appen lukkes og alle varsler avvises.\n\nFor å starte Proton Mail på nytt, trykk på det nye appikonet.</string>
+  <string name="settings_change_icon_action_cancel">Avbryt</string>
+  <string name="settings_change_icon_change_icon">Endre ikon</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Discreet app icon</string>
+  <string name="settings_change_icon_header_discreet">Diskret appikon</string>
 </resources>

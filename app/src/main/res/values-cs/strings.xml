@@ -48,6 +48,7 @@
   <string name="mailbox_message_scheduling">Plánování zprávy…</string>
   <string name="mailbox_message_scheduling_offline">Offline: zpráva je ve frontě k naplánování</string>
   <string name="mailbox_message_scheduled_for_sending_success">Tato zpráva bude odeslána %1$s</string>
+  <string name="launcher_alert_duplicate_account_description">Uživatel je již přihlášen</string>
   <string name="settings_change_icon_title">Ikona aplikace</string>
   <string name="settings_change_icon_description">Maskuje ikonu aplikace Proton Mail pomocí diskrétní ikony. Upozornění stále zobrazí název a ikonu aplikace Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">Změnit ikonu aplikace?</string>
