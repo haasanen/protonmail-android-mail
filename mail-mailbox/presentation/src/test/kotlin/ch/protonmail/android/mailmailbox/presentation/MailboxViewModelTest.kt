@@ -957,7 +957,10 @@ internal class MailboxViewModelTest {
                 mailboxListState = MailboxListState.Loading,
                 topAppBarState = MailboxTopAppBarState.Loading,
                 unreadFilterState = UnreadFilterState.Loading,
-                bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
+                bottomAppBarState = BottomBarState.Data.Hidden(
+                    BottomBarTarget.Mailbox,
+                    emptyList<ActionUiModel>().toImmutableList()
+                ),
                 deleteDialogState = DeleteDialogState.Hidden,
                 clearAllDialogState = DeleteDialogState.Hidden,
                 bottomSheetState = null,
@@ -988,7 +991,10 @@ internal class MailboxViewModelTest {
                 mailboxListState = MailboxListState.Loading,
                 topAppBarState = MailboxTopAppBarState.Loading,
                 unreadFilterState = UnreadFilterState.Loading,
-                bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
+                bottomAppBarState = BottomBarState.Data.Hidden(
+                    target = BottomBarTarget.Mailbox,
+                    actions = emptyList<ActionUiModel>().toImmutableList()
+                ),
                 deleteDialogState = DeleteDialogState.Hidden,
                 clearAllDialogState = DeleteDialogState.Hidden,
                 bottomSheetState = null,
