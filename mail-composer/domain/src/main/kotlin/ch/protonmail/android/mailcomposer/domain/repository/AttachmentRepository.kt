@@ -20,10 +20,11 @@ package ch.protonmail.android.mailcomposer.domain.repository
 
 import android.net.Uri
 import arrow.core.Either
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailattachments.domain.model.ConvertAttachmentError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import kotlinx.coroutines.flow.Flow
 
 interface AttachmentRepository {
@@ -36,4 +37,6 @@ interface AttachmentRepository {
 
     suspend fun deleteInlineAttachment(contentId: String): Either<DataError, Unit>
     suspend fun addInlineAttachment(fileUri: Uri): Either<AddAttachmentError, String>
+
+    suspend fun convertToAttachment(cid: String): Either<ConvertAttachmentError, Unit>
 }

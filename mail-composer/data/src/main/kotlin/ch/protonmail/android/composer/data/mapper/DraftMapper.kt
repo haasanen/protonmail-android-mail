@@ -22,6 +22,8 @@ import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.composer.data.local.LocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
+import ch.protonmail.android.mailattachments.data.mapper.toConvertAttachmentError
+import ch.protonmail.android.mailattachments.domain.model.ConvertAttachmentError
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
@@ -46,6 +48,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.DraftAttachmentDispositionSwapError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
@@ -198,5 +201,12 @@ private fun LocalMimeType.toDraftMimeType() = when (this) {
     MimeType.MULTIPART_MIXED,
     MimeType.MULTIPART_RELATED,
     MimeType.TEXT_HTML -> DraftMimeType.Html
+
     MimeType.TEXT_PLAIN -> DraftMimeType.PlainText
 }
+
+fun DraftAttachmentDispositionSwapError.toConvertError() = when (val result = this) {
+    is DraftAttachmentDispositionSwapError.Other -> ConvertAttachmentError.Other(result.v1.toDataError())
+    is DraftAttachmentDispositionSwapError.Reason -> result.toConvertAttachmentError()
+}
+

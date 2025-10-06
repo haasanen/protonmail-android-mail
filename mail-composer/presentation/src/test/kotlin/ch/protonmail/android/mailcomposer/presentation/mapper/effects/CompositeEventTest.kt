@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.mapper.effects
 
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
@@ -96,7 +97,7 @@ internal class CompositeEventTest(
 
         private val errorAttachment = mockk<AttachmentMetadataWithState>().apply {
             every { attachmentState } returns AttachmentState.Error(
-                AddAttachmentError.TooManyAttachments
+                AttachmentError.AddAttachment(AddAttachmentError.TooManyAttachments)
             )
         }
         private val errorList = listOf(errorAttachment)

@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.mapper.modifications
 
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
@@ -291,7 +292,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.TooManyAttachments,
                         failedAttachments = listOf(
-                            errorAttachment(AddAttachmentError.TooManyAttachments)
+                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.TooManyAttachments))
                         )
                     )
                 ),
@@ -306,7 +307,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.AttachmentTooLarge,
                         failedAttachments = listOf(
-                            errorAttachment(AddAttachmentError.AttachmentTooLarge)
+                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.AttachmentTooLarge))
                         )
                     )
                 ),
@@ -321,7 +322,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.EncryptionError,
                         failedAttachments = listOf(
-                            errorAttachment(AddAttachmentError.EncryptionError)
+                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.EncryptionError))
                         )
                     )
                 ),
@@ -336,7 +337,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.InvalidDraftMessage,
                         failedAttachments = listOf(
-                            errorAttachment(AddAttachmentError.InvalidDraftMessage)
+                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.InvalidDraftMessage))
                         )
                     )
                 ),
@@ -351,9 +352,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.Unknown,
                         failedAttachments = listOf(
-                            errorAttachment(
-                                AddAttachmentError.AttachmentTooLarge
-                            )
+                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.AttachmentTooLarge))
                         )
                     )
                 ),
@@ -420,10 +419,9 @@ internal class EffectsStateModificationTest(
             )
         )
 
-        private fun errorAttachment(error: AddAttachmentError): AttachmentMetadataWithState =
-            AttachmentMetadataWithState(
-                attachmentMetadata = invoiceAttachment,
-                attachmentState = AttachmentState.Error(reason = error)
-            )
+        private fun errorAttachment(error: AttachmentError): AttachmentMetadataWithState = AttachmentMetadataWithState(
+            attachmentMetadata = invoiceAttachment,
+            attachmentState = AttachmentState.Error(reason = error)
+        )
     }
 }

@@ -48,6 +48,7 @@ private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(
 ): MessageSendingStatus = when (this.origin) {
     DraftSendResultOrigin.SAVE,
     DraftSendResultOrigin.SAVE_BEFORE_SEND,
+    DraftSendResultOrigin.ATTACHMENT_DISPOSITION_SWAP,
     DraftSendResultOrigin.ATTACHMENT_UPLOAD -> MessageSendingStatus.NoStatus(this.messageId.toMessageId())
 
     DraftSendResultOrigin.SEND -> {
@@ -96,6 +97,10 @@ private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSe
         is DraftSendFailure.Send -> MessageSendingStatus.SendMessageError(
             messageId = this.messageId.toMessageId(),
             reason = error.v1.toSendErrorReason()
+        )
+        is DraftSendFailure.AttachmentDispositionSwap -> MessageSendingStatus.SendMessageError(
+            messageId = this.messageId.toMessageId(),
+            reason = SendErrorReason.ErrorNoMessage.AttachmentConversionFailure
         )
     }
 }

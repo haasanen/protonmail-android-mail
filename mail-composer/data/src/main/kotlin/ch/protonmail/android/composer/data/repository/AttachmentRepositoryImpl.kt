@@ -24,6 +24,7 @@ import ch.protonmail.android.composer.data.local.RustAttachmentDataSource
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailattachments.domain.model.ConvertAttachmentError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import kotlinx.coroutines.flow.Flow
@@ -48,5 +49,8 @@ class AttachmentRepositoryImpl @Inject constructor(
 
     override suspend fun addInlineAttachment(fileUri: Uri): Either<AddAttachmentError, String> =
         rustAttachmentDataSource.addInlineAttachment(fileUri)
+
+    override suspend fun convertToAttachment(cid: String): Either<ConvertAttachmentError, Unit> =
+        rustAttachmentDataSource.convertToAttachment(cid)
 
 }

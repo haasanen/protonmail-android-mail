@@ -18,16 +18,17 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper
 
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
-import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 
 object AttachmentListErrorMapper {
 
     fun toAttachmentAddErrorWithList(attachments: List<AttachmentMetadataWithState>): AttachmentAddErrorWithList? {
-        val itemsWithError: List<Pair<AttachmentMetadataWithState, AddAttachmentError>> =
+        val itemsWithError: List<Pair<AttachmentMetadataWithState, AttachmentError>> =
             attachments.mapNotNull { item ->
                 val errorState = item.attachmentState as? AttachmentState.Error
                 errorState?.reason?.let { reason ->
@@ -39,21 +40,13 @@ object AttachmentListErrorMapper {
             return null
         }
 
-        val tooManyAttachmentItems = itemsWithError.filter {
-            it.second is AddAttachmentError.TooManyAttachments
-        }
+        val tooManyAttachmentItems = itemsWithError.filterTooManyAttachmentsError()
 
-        val attachmentTooLargeItems = itemsWithError.filter {
-            it.second is AddAttachmentError.AttachmentTooLarge
-        }
+        val attachmentTooLargeItems = itemsWithError.filterAttachmentsTooLargeError()
 
-        val invalidDraftMessageItems = itemsWithError.filter {
-            it.second is AddAttachmentError.InvalidDraftMessage
-        }
+        val invalidDraftMessageItems = itemsWithError.filterInvalidDraftError()
 
-        val encryptionErrorItems = itemsWithError.filter {
-            it.second is AddAttachmentError.EncryptionError
-        }
+        val encryptionErrorItems = itemsWithError.filterEncryptionErrorError()
 
         return if (tooManyAttachmentItems.isNotEmpty()) {
             AttachmentAddErrorWithList(
@@ -81,5 +74,33 @@ object AttachmentListErrorMapper {
                 itemsWithError.map { it.first }
             )
         }
+    }
+}
+
+private fun List<Pair<AttachmentMetadataWithState, AttachmentError>>.filterTooManyAttachmentsError() = this.filter {
+    when (val addAttachment = it.second) {
+        is AttachmentError.AddAttachment -> addAttachment.error is AddAttachmentError.TooManyAttachments
+        else -> false
+    }
+}
+
+private fun List<Pair<AttachmentMetadataWithState, AttachmentError>>.filterAttachmentsTooLargeError() = this.filter {
+    when (val addAttachment = it.second) {
+        is AttachmentError.AddAttachment -> addAttachment.error is AddAttachmentError.AttachmentTooLarge
+        else -> false
+    }
+}
+
+private fun List<Pair<AttachmentMetadataWithState, AttachmentError>>.filterInvalidDraftError() = this.filter {
+    when (val addAttachment = it.second) {
+        is AttachmentError.AddAttachment -> addAttachment.error is AddAttachmentError.InvalidDraftMessage
+        else -> false
+    }
+}
+
+private fun List<Pair<AttachmentMetadataWithState, AttachmentError>>.filterEncryptionErrorError() = this.filter {
+    when (val addAttachment = it.second) {
+        is AttachmentError.AddAttachment -> addAttachment.error is AddAttachmentError.EncryptionError
+        else -> false
     }
 }
