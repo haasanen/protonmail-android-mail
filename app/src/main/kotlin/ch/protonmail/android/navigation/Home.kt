@@ -404,6 +404,13 @@ fun Home(
         confirmValueChange = { !preventBottomSheetDismissal }
     )
 
+    LaunchedEffect(bottomSheetType) {
+        // a bug in material leaves a second dialog non-expanded, this makes double sure that our
+        // bottomsheet will be expanded
+        delay(timeMillis = 800)
+        bottomSheetState.expand()
+    }
+
     val onBottomSheetDismissed: () -> Unit = {
         scope.launch { bottomSheetState.hide() }
             .invokeOnCompletion {
