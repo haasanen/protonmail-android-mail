@@ -27,19 +27,26 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.DecryptedAttachment
 import ch.protonmail.android.mailcommon.data.mapper.LocalDecryptedAttachment
+import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class DecryptedAttachmentMapper @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
-    fun toDomainModel(localDecryptedAttachment: LocalDecryptedAttachment): Either<DataError, DecryptedAttachment> {
+    suspend fun toDomainModel(
+        localDecryptedAttachment: LocalDecryptedAttachment
+    ): Either<DataError, DecryptedAttachment> {
         val file = File(localDecryptedAttachment.dataPath)
+        val fileExists = withContext(ioDispatcher) { file.exists() }
 
-        if (!file.exists()) {
+        if (!fileExists) {
             Timber.e("Attachment file does not exist at path: ${file.path}")
             return DataError.Local.FailedToReadFile.left()
         }
@@ -53,6 +60,7 @@ class DecryptedAttachmentMapper @Inject constructor(
 
             DecryptedAttachment(
                 metadata = localDecryptedAttachment.attachmentMetadata.toAttachmentMetadata(),
+                fileName = localDecryptedAttachment.attachmentMetadata.name,
                 fileUri = fileUri
             ).right()
 
