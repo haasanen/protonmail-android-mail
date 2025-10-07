@@ -36,6 +36,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMimeType
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.MimeTypeCategory
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
@@ -1010,6 +1011,7 @@ internal class ConversationDetailViewModelIntegrationTest {
             defaultExpanded.messageId
         )
         val expandedMessageId = expectedExpanded.messageId
+        val openMode = AttachmentOpenMode.Open
         coEvery { observeConversationMessages(userId, any(), any(), any()) } returns flowOf(messages.right())
         coEvery { getDecryptedMessageBody.invoke(any(), expandedMessageId) } returns
             DecryptedMessageBody(
@@ -1031,7 +1033,7 @@ internal class ConversationDetailViewModelIntegrationTest {
             )
         } returns listOf()
         coEvery {
-            getAttachmentIntentValues.invoke(any(), any())
+            getAttachmentIntentValues.invoke(any(), any(), any())
         } returns DataError.Local.NoDataCached.left()
 
         val viewModel = buildConversationDetailViewModel()
@@ -1043,6 +1045,7 @@ internal class ConversationDetailViewModelIntegrationTest {
             // When
             viewModel.submit(
                 OnAttachmentClicked(
+                    openMode,
                     messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
                     AttachmentId(0.toString())
                 )
@@ -1050,7 +1053,7 @@ internal class ConversationDetailViewModelIntegrationTest {
             awaitItem()
 
             // Then
-            coVerify { getAttachmentIntentValues(userId, AttachmentId(0.toString())) }
+            coVerify { getAttachmentIntentValues(userId, openMode, AttachmentId(0.toString())) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1070,6 +1073,8 @@ internal class ConversationDetailViewModelIntegrationTest {
                 defaultExpanded.messageId
             )
             val expandedMessageId = expectedExpanded.messageId
+            val openMode = AttachmentOpenMode.Open
+
             coEvery { observeConversationMessages(userId, any(), any(), any()) } returns flowOf(messages.right())
             coEvery { getDecryptedMessageBody.invoke(any(), expandedMessageId) } returns
                 DecryptedMessageBody(
@@ -1100,6 +1105,7 @@ internal class ConversationDetailViewModelIntegrationTest {
                 // When
                 viewModel.submit(
                     OnAttachmentClicked(
+                        openMode,
                         messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
                         AttachmentId(0.toString())
                     )
@@ -1132,6 +1138,8 @@ internal class ConversationDetailViewModelIntegrationTest {
             expectedError = DataError.Local.NoDataCached
         )
 
+        val openMode = AttachmentOpenMode.Open
+
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.state.test {
@@ -1142,6 +1150,7 @@ internal class ConversationDetailViewModelIntegrationTest {
             // When
             viewModel.submit(
                 OnAttachmentClicked(
+                    openMode,
                     messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
                     AttachmentId(0.toString())
                 )
@@ -1149,7 +1158,7 @@ internal class ConversationDetailViewModelIntegrationTest {
             val actualState = awaitItem()
 
             // Then
-            coVerify { getAttachmentIntentValues(userId, AttachmentId(0.toString())) }
+            coVerify { getAttachmentIntentValues(userId, openMode, AttachmentId(0.toString())) }
             assertEquals(Effect.of(TextUiModel(R.string.error_get_attachment_failed)), actualState.error)
             cancelAndIgnoreRemainingEvents()
         }
@@ -1167,6 +1176,7 @@ internal class ConversationDetailViewModelIntegrationTest {
                 expectedExpanded
             )
             val expandedMessageId = expectedExpanded.messageId
+            val openMode = AttachmentOpenMode.Open
             mockAttachmentDownload(
                 messages = messages,
                 expandedMessageId = expandedMessageId,
@@ -1185,6 +1195,7 @@ internal class ConversationDetailViewModelIntegrationTest {
                 // When
                 viewModel.submit(
                     OnAttachmentClicked(
+                        openMode,
                         messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
                         AttachmentId(0.toString())
                     )
@@ -1192,7 +1203,7 @@ internal class ConversationDetailViewModelIntegrationTest {
                 val actualState = awaitItem()
 
                 // Then
-                coVerify { getAttachmentIntentValues(userId, AttachmentId(0.toString())) }
+                coVerify { getAttachmentIntentValues(userId, openMode, AttachmentId(0.toString())) }
                 assertEquals(Effect.of(TextUiModel(R.string.error_get_attachment_not_enough_memory)), actualState.error)
                 cancelAndIgnoreRemainingEvents()
             }
@@ -1315,7 +1326,7 @@ internal class ConversationDetailViewModelIntegrationTest {
             )
         } returns listOf()
         coEvery {
-            getAttachmentIntentValues(userId, AttachmentId(0.toString()))
+            getAttachmentIntentValues(userId, AttachmentOpenMode.Open, AttachmentId(0.toString()))
         } returns expectedError.left()
     }
 
@@ -1517,6 +1528,7 @@ internal class ConversationDetailViewModelIntegrationTest {
             val messages = ConversationMessages(nonEmptyListOf(message), message.messageId)
 
             val messageId = message.messageId
+            val openMode = AttachmentOpenMode.Open
             coEvery { observeConversationMessages(userId, any(), any(), any()) } returns flowOf(messages.right())
             coEvery { getDecryptedMessageBody.invoke(userId, messageId) } returns DecryptedMessageBody(
                 messageId = messageId,
@@ -1530,10 +1542,12 @@ internal class ConversationDetailViewModelIntegrationTest {
             ).right()
             coEvery { isProtonCalendarInstalled() } returns true
             coEvery {
-                getAttachmentIntentValues(userId, AttachmentId(AttachmentMetadataSamples.Ids.ID_CALENDAR))
+                getAttachmentIntentValues(userId, openMode, AttachmentId(AttachmentMetadataSamples.Ids.ID_CALENDAR))
             } returns OpenAttachmentIntentValues(
                 mimeType = " text/calendar",
-                uri = expectedUri
+                uri = expectedUri,
+                openMode = openMode,
+                name = "file.txt"
             ).right()
 
             val viewModel = buildConversationDetailViewModel()

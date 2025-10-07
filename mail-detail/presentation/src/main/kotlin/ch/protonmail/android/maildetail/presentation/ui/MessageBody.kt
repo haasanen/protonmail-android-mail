@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
@@ -166,7 +167,7 @@ object MessageBody {
         val onExpandCollapseButtonClicked: () -> Unit,
         val onMessageBodyLinkClicked: (uri: Uri) -> Unit,
         val onShowAllAttachments: () -> Unit,
-        val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
+        val onAttachmentClicked: (openMode: AttachmentOpenMode, attachmentId: AttachmentId) -> Unit,
         val onToggleAttachmentsExpandCollapseMode: () -> Unit,
         val loadImage: (messageId: MessageId, url: String) -> MessageBodyImage?,
         val onReply: (MessageId) -> Unit,

@@ -54,6 +54,7 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
@@ -309,7 +310,9 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                 actions = MessageBody.Actions(
                     onMessageBodyLinkClicked = { actions.onMessageBodyLinkClicked(uiModel.messageId, it) },
                     onShowAllAttachments = { actions.onShowAllAttachmentsForMessage(uiModel.messageId) },
-                    onAttachmentClicked = { actions.onAttachmentClicked(uiModel.messageId, it) },
+                    onAttachmentClicked = { openMode, attachmentId ->
+                        actions.onAttachmentClicked(openMode, uiModel.messageId, attachmentId)
+                    },
                     onToggleAttachmentsExpandCollapseMode = {
                         actions.onToggleAttachmentsExpandCollapseMode(uiModel.messageId)
                     },
@@ -381,7 +384,7 @@ object ConversationDetailItem {
         val onMessageBodyLinkClicked: (messageId: MessageIdUiModel, url: Uri) -> Unit,
         val onOpenMessageBodyLink: (url: Uri) -> Unit,
         val onShowAllAttachmentsForMessage: (MessageIdUiModel) -> Unit,
-        val onAttachmentClicked: (MessageIdUiModel, AttachmentId) -> Unit,
+        val onAttachmentClicked: (AttachmentOpenMode, MessageIdUiModel, AttachmentId) -> Unit,
         val onToggleAttachmentsExpandCollapseMode: (MessageIdUiModel) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit,
         val loadImage: (messageId: MessageId?, url: String) -> MessageBodyImage?,
@@ -416,7 +419,7 @@ object ConversationDetailItem {
         { model: MessageIdUiModel, uri: Uri -> },
         {},
         {},
-        { model: MessageIdUiModel, id: AttachmentId -> },
+        { openMode: AttachmentOpenMode, model: MessageIdUiModel, attachmentId: AttachmentId -> },
         {},
         {},
         { id1: MessageId?, string1: String -> null },

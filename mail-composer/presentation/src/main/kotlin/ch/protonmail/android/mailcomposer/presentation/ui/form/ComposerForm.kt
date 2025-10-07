@@ -178,7 +178,7 @@ internal fun ComposerForm(
                             messageAttachmentsUiModel = attachments,
                             actions = AttachmentList.Actions(
                                 onShowAllAttachments = { Timber.d("On show all attachments clicked") },
-                                onAttachmentClicked = { Timber.d("On attachment clicked: $it") },
+                                onAttachmentClicked = { _, id -> Timber.d("On attachment clicked: $id") },
                                 onAttachmentDeleteClicked = {
                                     actions.onAttachmentRemoveRequested(it)
                                 }

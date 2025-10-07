@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -18,11 +18,7 @@
 
 package ch.protonmail.android.mailattachments.domain.model
 
-import android.net.Uri
-
-data class OpenAttachmentIntentValues(
-    val openMode: AttachmentOpenMode,
-    val name: String,
-    val mimeType: String,
-    val uri: Uri
-)
+sealed interface AttachmentOpenMode {
+    data object Open : AttachmentOpenMode
+    data object Download : AttachmentOpenMode
+}

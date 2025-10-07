@@ -19,6 +19,7 @@ package ch.protonmail.android.maildetail.presentation.ui
 
 import android.net.Uri
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -67,6 +68,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -80,7 +82,12 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
-import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
+import ch.protonmail.android.mailattachments.presentation.IntentHelper
+import ch.protonmail.android.mailattachments.presentation.model.FileContent
+import ch.protonmail.android.mailattachments.presentation.ui.OpenAttachmentInput
+import ch.protonmail.android.mailattachments.presentation.ui.fileOpener
+import ch.protonmail.android.mailattachments.presentation.ui.fileSaver
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -477,15 +484,14 @@ fun ConversationDetailScreen(
                 onShowAllAttachmentsForMessage = {
                     viewModel.submit(ConversationDetailViewAction.ShowAllAttachmentsForMessage(it))
                 },
-                onAttachmentClicked = { messageId, attachmentId ->
+                onAttachmentClicked = { openMode, messageId, attachmentId ->
                     viewModel.submit(
-                        ConversationDetailViewAction.OnAttachmentClicked(messageId, attachmentId)
+                        ConversationDetailViewAction.OnAttachmentClicked(openMode, messageId, attachmentId)
                     )
                 },
                 onToggleAttachmentsExpandCollapseMode = {
                     viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseAttachmentList(it))
                 },
-                openAttachment = actions.openAttachment,
                 handleProtonCalendarRequest = actions.handleProtonCalendarRequest,
                 showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
                 loadImage = { messageId, url -> viewModel.loadImage(messageId, url) },
@@ -604,6 +610,14 @@ fun ConversationDetailScreen(
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
 
+    val context = LocalContext.current
+    val fileSavedString = stringResource(R.string.file_saved)
+    val fileSaver = fileSaver(
+        onFileSaved = { Toast.makeText(context, fileSavedString, Toast.LENGTH_SHORT).show() }
+    )
+
+    val openAttachment = fileOpener()
+
     state.loadingErrorEffect.consume()?.let { errorMessage ->
         actions.onExitWithError(errorMessage.string())
         return
@@ -640,7 +654,16 @@ fun ConversationDetailScreen(
         }
     }
     ConsumableLaunchedEffect(effect = state.openAttachmentEffect) {
-        actions.openAttachment(it)
+        when (it.openMode) {
+            AttachmentOpenMode.Download -> fileSaver(FileContent(it.name, it.uri, it.mimeType))
+            AttachmentOpenMode.Open -> {
+                if (IntentHelper.canOpenFile(context, OpenAttachmentInput(it.uri, it.mimeType))) {
+                    openAttachment(OpenAttachmentInput(it.uri, it.mimeType))
+                } else {
+                    fileSaver(FileContent(it.name, it.uri, it.mimeType))
+                }
+            }
+        }
     }
 
     ConsumableLaunchedEffect(effect = state.openProtonCalendarIntent) {
@@ -1083,7 +1106,6 @@ object ConversationDetail {
     data class Actions(
         val onExit: (notifyUserMessage: ActionResult?) -> Unit,
         val openMessageBodyLink: (uri: Uri) -> Unit,
-        val openAttachment: (values: OpenAttachmentIntentValues) -> Unit,
         val handleProtonCalendarRequest: (values: OpenProtonCalendarIntentValues) -> Unit,
         val onAddLabel: () -> Unit,
         val onAddFolder: () -> Unit,
@@ -1138,8 +1160,7 @@ object ConversationDetailScreen {
         val onScrollRequestCompleted: () -> Unit,
         val onShowAllAttachmentsForMessage: (MessageIdUiModel) -> Unit,
         val onToggleAttachmentsExpandCollapseMode: (MessageIdUiModel) -> Unit,
-        val onAttachmentClicked: (MessageIdUiModel, AttachmentId) -> Unit,
-        val openAttachment: (values: OpenAttachmentIntentValues) -> Unit,
+        val onAttachmentClicked: (AttachmentOpenMode, MessageIdUiModel, AttachmentId) -> Unit,
         val handleProtonCalendarRequest: (values: OpenProtonCalendarIntentValues) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit,
         val loadImage: (messageId: MessageId?, url: String) -> MessageBodyImage?,
@@ -1197,9 +1218,8 @@ object ConversationDetailScreen {
                 onRequestScrollTo = {},
                 onScrollRequestCompleted = {},
                 onShowAllAttachmentsForMessage = {},
-                onAttachmentClicked = { _, _ -> },
+                onAttachmentClicked = { _, _, _ -> },
                 onToggleAttachmentsExpandCollapseMode = {},
-                openAttachment = {},
                 handleProtonCalendarRequest = {},
                 showFeatureMissingSnackbar = {},
                 loadImage = { _, _ -> null },

@@ -21,6 +21,7 @@ package ch.protonmail.android.maildetail.presentation.model
 import android.content.Context
 import android.net.Uri
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -215,7 +216,11 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class RequestScrollTo(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     object ScrollRequestCompleted : ConversationDetailViewAction
     data class ShowAllAttachmentsForMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction
-    data class OnAttachmentClicked(val messageId: MessageIdUiModel, val attachmentId: AttachmentId) :
+    data class OnAttachmentClicked(
+        val openMode: AttachmentOpenMode,
+        val messageId: MessageIdUiModel,
+        val attachmentId: AttachmentId
+    ) :
         ConversationDetailViewAction
 
     data class ExpandOrCollapseAttachmentList(val messageId: MessageIdUiModel) :

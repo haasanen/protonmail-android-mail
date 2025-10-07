@@ -21,6 +21,7 @@ package ch.protonmail.android.mailattachments.domain.usecase
 import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailattachments.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -31,11 +32,14 @@ class GetAttachmentIntentValues @Inject constructor(private val attachmentReposi
 
     suspend operator fun invoke(
         userId: UserId,
+        openMode: AttachmentOpenMode,
         attachmentId: AttachmentId
     ): Either<DataError, OpenAttachmentIntentValues> = either {
         val attachment = attachmentRepository.getAttachment(userId, attachmentId).bind()
 
         OpenAttachmentIntentValues(
+            openMode = openMode,
+            name = attachment.metadata.name,
             mimeType = attachment.metadata.mimeType.mime,
             uri = attachment.fileUri
         )

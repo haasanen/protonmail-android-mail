@@ -38,7 +38,7 @@ internal class MessageDetailFooterActionsTest {
     fun `should map the conversation detail item actions correctly`() {
         val actions = ConversationDetailItem.Actions(
             onMessageBodyLinkClicked = { _, _ -> },
-            onAttachmentClicked = { _, _ -> },
+            onAttachmentClicked = { _, _, _ -> },
             loadImage = { _, _ -> null },
             onReply = replyLambda,
             onReplyAll = replyAllLambda,
