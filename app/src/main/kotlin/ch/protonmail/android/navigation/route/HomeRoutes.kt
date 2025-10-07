@@ -33,7 +33,6 @@ import ch.protonmail.android.design.compose.navigation.get
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.feature.account.RemoveAccountDialog
 import ch.protonmail.android.feature.account.SignOutAccountDialog
-import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.SnackbarType
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
@@ -117,7 +116,6 @@ internal fun NavGraphBuilder.addMailbox(
     openDrawerMenu: () -> Unit,
     setDrawerEnabled: (Boolean) -> Unit,
     onEvent: (AccountSwitchEvent) -> Unit,
-    onAttachmentReady: (OpenAttachmentIntentValues) -> Unit,
     showSnackbar: (type: SnackbarType) -> Unit,
     showFeatureMissingSnackbar: () -> Unit,
     onActionBarVisibilityChanged: (Boolean) -> Unit
@@ -164,7 +162,6 @@ internal fun NavGraphBuilder.addMailbox(
                 onExitSearchMode = {
                     setDrawerEnabled(true)
                 },
-                onAttachmentReady = onAttachmentReady,
                 onActionBarVisibilityChanged = onActionBarVisibilityChanged,
                 onCustomizeToolbar = {
                     navController.navigate(Destination.Screen.EditToolbarScreen(ToolbarType.List))

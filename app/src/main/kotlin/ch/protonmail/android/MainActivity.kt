@@ -33,7 +33,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.feature.lockscreen.LockScreenActivity
-import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.data.file.IntentExtraKeys
 import ch.protonmail.android.mailcommon.domain.system.DeviceCapabilities
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
@@ -97,7 +96,6 @@ class MainActivity : AppCompatActivity() {
                     Launcher(
                         Actions(
                             openInActivityInNewTask = { openInActivityInNewTask(it) },
-                            openIntentChooser = { openIntentChooser(it) },
                             openProtonCalendarIntentValues = { handleProtonCalendarRequest(it) },
                             openSecurityKeys = {
                                 launcherViewModel.submit(LauncherViewModel.Action.OpenSecurityKeys)
@@ -174,18 +172,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openIntentChooser(intentValues: OpenAttachmentIntentValues) {
-        val intent = Intent(Intent.ACTION_VIEW)
-            .setDataAndType(intentValues.uri, intentValues.mimeType)
-            .putExtra(Intent.EXTRA_STREAM, intentValues.uri)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        try {
-            startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            Timber.d(e, "Failed to open intent for file type")
-            startActivity(Intent.createChooser(intent, null))
-        }
-    }
 
     private fun handleProtonCalendarRequest(values: OpenProtonCalendarIntentValues) {
         val intent = when (values) {
@@ -204,7 +190,6 @@ class MainActivity : AppCompatActivity() {
 
     data class Actions(
         val openInActivityInNewTask: (uri: Uri) -> Unit,
-        val openIntentChooser: (values: OpenAttachmentIntentValues) -> Unit,
         val openProtonCalendarIntentValues: (values: OpenProtonCalendarIntentValues) -> Unit,
         val onNavigateToLockScreen: () -> Unit,
         val openSecurityKeys: () -> Unit,

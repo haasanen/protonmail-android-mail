@@ -570,7 +570,6 @@ fun Home(
                                 viewModel.recordViewOfMailboxScreen()
                             },
                             openMessageBodyLink = activityActions.openInActivityInNewTask,
-                            openAttachment = activityActions.openIntentChooser,
                             handleProtonCalendarRequest = activityActions.openProtonCalendarIntentValues,
                             onAddLabel = { navController.navigate(Screen.FolderAndLabelSettings.route) },
                             onAddFolder = { navController.navigate(Screen.FolderAndLabelSettings.route) },
@@ -644,7 +643,6 @@ fun Home(
                         showSnackbar = { showSnackbar(it) },
                         onEvent = eventHandler,
                         showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
-                        onAttachmentReady = activityActions.openIntentChooser,
                         onActionBarVisibilityChanged = updatePadding
                     )
                     addAccountsManager(
