@@ -25,6 +25,7 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
@@ -3040,9 +3041,15 @@ internal class MailboxViewModelTest {
         // Given
         val attachmentIdUiModel = AttachmentIdUiModel("attachment-id")
         val attachmentId = AttachmentId(attachmentIdUiModel.value)
+        val openMode = AttachmentOpenMode.Open
 
-        val attachmentIntentValues = OpenAttachmentIntentValues(mimeType = "mimeType", uri = mockk())
-        coEvery { getAttachmentIntentValues(userId, attachmentId) } returns attachmentIntentValues.right()
+        val attachmentIntentValues = OpenAttachmentIntentValues(
+            mimeType = "mimeType",
+            openMode = openMode,
+            uri = mockk(),
+            name = "file.pdf"
+        )
+        coEvery { getAttachmentIntentValues(userId, openMode, attachmentId) } returns attachmentIntentValues.right()
 
         val mailboxAction = MailboxViewAction.RequestAttachment(attachmentIdUiModel)
 
@@ -3052,7 +3059,7 @@ internal class MailboxViewModelTest {
 
         // Then
         coVerify(exactly = 1) {
-            getAttachmentIntentValues.invoke(userId, attachmentId)
+            getAttachmentIntentValues.invoke(userId, openMode, attachmentId)
             mailboxReducer.newStateFrom(
                 any(),
                 MailboxEvent.AttachmentReadyEvent(attachmentIntentValues)
@@ -3065,15 +3072,18 @@ internal class MailboxViewModelTest {
         // Given
         val attachmentIdUiModel = AttachmentIdUiModel("attachment-id")
         val attachmentId = AttachmentId(attachmentIdUiModel.value)
+        val openMode = AttachmentOpenMode.Open
 
         val mailboxAction = MailboxViewAction.RequestAttachment(attachmentIdUiModel)
-        coEvery { getAttachmentIntentValues(userId, attachmentId) } returns DataError.Local.NoDataCached.left()
+        coEvery {
+            getAttachmentIntentValues(userId, openMode, attachmentId)
+        } returns DataError.Local.NoDataCached.left()
         // When
         mailboxViewModel.submit(mailboxAction)
 
         // Then
         coVerify(exactly = 1) {
-            getAttachmentIntentValues.invoke(userId, attachmentId)
+            getAttachmentIntentValues.invoke(userId, openMode, attachmentId)
             mailboxReducer.newStateFrom(
                 any(),
                 MailboxEvent.AttachmentErrorEvent
@@ -3086,9 +3096,15 @@ internal class MailboxViewModelTest {
         // Given
         val attachmentIdUiModel = AttachmentIdUiModel("attachment-id")
         val attachmentId = AttachmentId(attachmentIdUiModel.value)
+        val openMode = AttachmentOpenMode.Open
 
-        val attachmentIntentValues = OpenAttachmentIntentValues(mimeType = "mimeType", uri = mockk())
-        coEvery { getAttachmentIntentValues(userId, attachmentId) } coAnswers {
+        val attachmentIntentValues = OpenAttachmentIntentValues(
+            mimeType = "mimeType",
+            openMode = openMode,
+            uri = mockk(),
+            name = "file.pdf"
+        )
+        coEvery { getAttachmentIntentValues(userId, openMode, attachmentId) } coAnswers {
             delay(1500)
             attachmentIntentValues.right()
         }
@@ -3102,7 +3118,7 @@ internal class MailboxViewModelTest {
 
         // Then
         coVerify(exactly = 1) {
-            getAttachmentIntentValues.invoke(userId, attachmentId)
+            getAttachmentIntentValues.invoke(userId, openMode, attachmentId)
             mailboxReducer.newStateFrom(
                 any(),
                 MailboxEvent.AttachmentDownloadOngoingEvent
@@ -3119,8 +3135,9 @@ internal class MailboxViewModelTest {
         // Given
         val attachmentIdUiModel = AttachmentIdUiModel("attachment-id")
         val attachmentId = AttachmentId(attachmentIdUiModel.value)
+        val openMode = AttachmentOpenMode.Open
 
-        coEvery { getAttachmentIntentValues(userId, attachmentId) } coAnswers {
+        coEvery { getAttachmentIntentValues(userId, openMode, attachmentId) } coAnswers {
             delay(1500)
             DataError.Local.NoDataCached.left()
         }
@@ -3134,7 +3151,7 @@ internal class MailboxViewModelTest {
 
         // Then
         coVerify(exactly = 1) {
-            getAttachmentIntentValues.invoke(userId, attachmentId)
+            getAttachmentIntentValues.invoke(userId, openMode, attachmentId)
             mailboxReducer.newStateFrom(
                 any(),
                 MailboxEvent.AttachmentDownloadOngoingEvent

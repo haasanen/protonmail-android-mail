@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -118,7 +119,12 @@ internal class MailboxListReducerTest(
 
         private const val UNREAD_COUNT = 42
 
-        private val attachmentIntentValues = OpenAttachmentIntentValues("mimeType", mockk())
+        private val attachmentIntentValues = OpenAttachmentIntentValues(
+            mimeType = "mimeType",
+            openMode = AttachmentOpenMode.Open,
+            uri = mockk(),
+            name = "file.pdf"
+        )
 
         private val transitionsFromLoadingState = listOf(
             TestInput(

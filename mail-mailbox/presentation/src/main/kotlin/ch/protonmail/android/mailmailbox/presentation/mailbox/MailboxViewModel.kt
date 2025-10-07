@@ -34,6 +34,7 @@ import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.model.Action
@@ -144,7 +145,6 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.DispatcherProvider
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.map
 
 @HiltViewModel
 @SuppressWarnings("LongParameterList", "TooManyFunctions", "LargeClass")
@@ -386,8 +386,9 @@ class MailboxViewModel @Inject constructor(
             onThresholdExceeded = { emitNewStateFrom(MailboxEvent.AttachmentDownloadOngoingEvent) }
         ) {
             val domainAttachmentId = AttachmentId(action.attachmentId.value)
-            val attachmentIntentValues = getAttachmentIntentValues(primaryUserId.first(), domainAttachmentId)
-                .getOrElse { return@launchWithDelayedCallback emitNewStateFrom(MailboxEvent.AttachmentErrorEvent) }
+            val attachmentIntentValues =
+                getAttachmentIntentValues(primaryUserId.first(), AttachmentOpenMode.Open, domainAttachmentId)
+                    .getOrElse { return@launchWithDelayedCallback emitNewStateFrom(MailboxEvent.AttachmentErrorEvent) }
 
             emitNewStateFrom(MailboxEvent.AttachmentReadyEvent(attachmentIntentValues))
         }
