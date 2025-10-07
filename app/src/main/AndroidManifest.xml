@@ -33,6 +33,11 @@
         <package android:name="com.android.webview" />
         <package android:name="com.google.android.webview" />
         <package android:name="me.proton.android.calendar" />
+
+        <!-- Intent action query to determine whether a file can be opened via quick previews. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+        </intent>
     </queries>
 
     <application
@@ -152,12 +157,12 @@
             <meta-data
                 android:name="me.proton.core.plan.presentation.PurchaseHandlerInitializer"
                 android:value="androidx.startup"
-                tools:node="remove"/>
+                tools:node="remove" />
 
             <meta-data
                 android:name="me.proton.core.paymentiap.presentation.GooglePurchaseHandlerInitializer"
                 android:value="androidx.startup"
-                tools:node="remove"/>
+                tools:node="remove" />
 
             <meta-data
                 android:name="me.proton.core.userrecovery.presentation.compose.DeviceRecoveryInitializer"
@@ -209,6 +214,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
@@ -236,13 +242,14 @@
 
         <activity
             android:name=".MainActivity"
+            android:documentLaunchMode="never"
             android:exported="true"
             android:launchMode="singleTop"
-            android:documentLaunchMode="never"
             android:theme="@style/ProtonTheme.Splash.MailET"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -283,7 +290,7 @@
 
         <activity
             android:name=".feature.lockscreen.LockScreenActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/ProtonTheme.Mail.Transparent" />
+            android:theme="@style/ProtonTheme.Mail.Transparent"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>
