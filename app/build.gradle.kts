@@ -279,6 +279,10 @@ sentry {
         autoUploadProguardMapping = isSentryAutoUploadEnabled()
         uploadNativeSymbols = isSentryAutoUploadEnabled()
     }
+
+    tracingInstrumentation {
+        enabled = false
+    }
 }
 
 fun String?.toBuildConfigValue() = if (this != null) "\"$this\"" else "null"

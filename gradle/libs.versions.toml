@@ -2,7 +2,7 @@
 android-gradle-plugin = "8.13.0"
 google-services-plugin = "4.4.2"
 proton-core-plugin = "1.3.0"
-sentry-gradle-plugin = "4.14.1"
+sentry-gradle-plugin = "5.12.1"
 
 accompanist-webview = "0.30.1"
 accompanist-permissions = "0.37.3"
@@ -74,7 +74,7 @@ kotlinpoet-ksp = "2.2.0"
 leakcanary = "2.14"
 okhttp = "4.12.0"
 play-services = "18.5.0"
-sentry = "7.21.0"
+sentry = "8.23.0"
 zxing-embedded = "4.3.0"
 
 [plugins]
