@@ -39,6 +39,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageAct
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustBlockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteAllMessagesInLabel
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
@@ -92,6 +93,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions,
     private val rustMarkMessageAsLegitimate: RustMarkMessageAsLegitimate,
     private val rustUnblockAddress: RustUnblockAddress,
+    private val rustBlockAddress: RustBlockAddress,
     private val rustReportPhishing: RustReportPhishing,
     private val rustDeleteAllMessagesInLabel: RustDeleteAllMessagesInLabel,
     private val cancelScheduleSendMessage: RustCancelScheduleSendMessage,
@@ -366,16 +368,27 @@ class RustMessageDataSourceImpl @Inject constructor(
             return@withContext rustMarkMessageAsLegitimate(mailbox, messageId)
         }
 
-    override suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit> =
-        withContext(ioDispatcher) {
-            val mailbox = rustMailboxFactory.create(userId).getOrNull()
-            if (mailbox == null) {
-                Timber.e("rust-message: trying to unblock sender with null Mailbox! failing")
-                return@withContext DataError.Local.NoDataCached.left()
-            }
-
-            return@withContext rustUnblockAddress(mailbox, email)
+    override suspend fun blockSender(userId: UserId, email: String): Either<DataError, Unit> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-message: trying to block sender with a null session")
+            return DataError.Local.NoUserSession.left()
         }
+
+        Timber.d("rust-message: Blocking address $email")
+        return rustBlockAddress(session, email)
+    }
+
+    override suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit> {
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to unblock sender with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        Timber.d("rust-message: Unblocking address $email")
+        return rustUnblockAddress(mailbox, email)
+    }
 
     override suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =
         withContext(ioDispatcher) {

@@ -36,6 +36,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageAct
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustBlockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteAllMessagesInLabel
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
@@ -106,6 +107,7 @@ internal class RustMessageDataSourceImplTest {
     private val getRustMessageLabelAsActions = mockk<GetRustMessageLabelAsActions>()
     private val rustMarkMessageAsLegitimate = mockk<RustMarkMessageAsLegitimate>()
     private val rustUnblockAddress = mockk<RustUnblockAddress>()
+    private val rustBlockAddress = mockk<RustBlockAddress>()
     private val rustReportPhishing = mockk<RustReportPhishing>()
     private val rustDeleteAllMessagesInLabel = mockk<RustDeleteAllMessagesInLabel>()
     private val rustCancelScheduleSend = mockk<RustCancelScheduleSendMessage>()
@@ -134,6 +136,7 @@ internal class RustMessageDataSourceImplTest {
         getRustMessageLabelAsActions,
         rustMarkMessageAsLegitimate,
         rustUnblockAddress,
+        rustBlockAddress,
         rustReportPhishing,
         rustDeleteAllMessagesInLabel,
         rustCancelScheduleSend,

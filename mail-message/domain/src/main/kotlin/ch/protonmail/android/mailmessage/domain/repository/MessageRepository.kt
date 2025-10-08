@@ -135,6 +135,7 @@ interface MessageRepository {
     suspend fun markMessageAsLegitimate(userId: UserId, messageId: MessageId): Either<DataError, Unit>
 
     suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
+    suspend fun blockSender(userId: UserId, email: String): Either<DataError, Unit>
 
     suspend fun cancelScheduleSend(userId: UserId, messageId: MessageId): Either<DataError, PreviousScheduleSendTime>
 }

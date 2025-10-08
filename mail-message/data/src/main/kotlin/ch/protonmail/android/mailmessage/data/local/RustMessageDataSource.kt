@@ -113,6 +113,8 @@ interface RustMessageDataSource {
 
     suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
 
+    suspend fun blockSender(userId: UserId, email: String): Either<DataError, Unit>
+
     suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
 
     suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
