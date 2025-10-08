@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.testdata.contact.ContactActionsGroupsSample
@@ -53,19 +54,25 @@ internal class ContactActionsBottomSheetReducerTest(
         private val sampleContact = ContactSample.Stefano
 
         private val sampleAvatar = ParticipantAvatarSample.ebay
+        private val sampleOrigin =
+            ContactActionsBottomSheetState.Origin.MessageDetails(MessageId("msg-1"))
+
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = BottomSheetState(ContactActionsBottomSheetState.Loading),
                 operation = ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
                     participant = sampleParticipant,
                     avatarUiModel = sampleAvatar,
-                    contactId = sampleContact.id
+                    contactId = sampleContact.id,
+                    origin = sampleOrigin,
+                    isSenderBlocked = false
                 ),
                 expectedState = BottomSheetState(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
-                        actions = ContactActionsGroupsSample.defaultForContact(sampleParticipant)
+                        actions = ContactActionsGroupsSample.defaultForContact(sampleParticipant, false),
+                        origin = sampleOrigin
                     )
                 )
             ),
@@ -74,13 +81,52 @@ internal class ContactActionsBottomSheetReducerTest(
                 operation = ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
                     participant = sampleParticipant,
                     avatarUiModel = sampleAvatar,
-                    contactId = null
+                    contactId = sampleContact.id,
+                    origin = sampleOrigin,
+                    isSenderBlocked = true
                 ),
                 expectedState = BottomSheetState(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
-                        actions = ContactActionsGroupsSample.defaultForNoContact(sampleParticipant)
+                        actions = ContactActionsGroupsSample.defaultForContact(sampleParticipant, true),
+                        origin = sampleOrigin
+                    )
+                )
+            ),
+            TestInput(
+                currentState = BottomSheetState(ContactActionsBottomSheetState.Loading),
+                operation = ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
+                    participant = sampleParticipant,
+                    avatarUiModel = sampleAvatar,
+                    contactId = null,
+                    origin = sampleOrigin,
+                    isSenderBlocked = true
+                ),
+                expectedState = BottomSheetState(
+                    contentState = ContactActionsBottomSheetState.Data(
+                        participant = sampleParticipant,
+                        avatarUiModel = sampleAvatar,
+                        actions = ContactActionsGroupsSample.defaultForNoContact(sampleParticipant, true),
+                        origin = sampleOrigin
+                    )
+                )
+            ),
+            TestInput(
+                currentState = BottomSheetState(ContactActionsBottomSheetState.Loading),
+                operation = ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
+                    participant = sampleParticipant,
+                    avatarUiModel = sampleAvatar,
+                    contactId = null,
+                    origin = sampleOrigin,
+                    isSenderBlocked = false
+                ),
+                expectedState = BottomSheetState(
+                    contentState = ContactActionsBottomSheetState.Data(
+                        participant = sampleParticipant,
+                        avatarUiModel = sampleAvatar,
+                        actions = ContactActionsGroupsSample.defaultForNoContact(sampleParticipant, false),
+                        origin = sampleOrigin
                     )
                 )
             )
