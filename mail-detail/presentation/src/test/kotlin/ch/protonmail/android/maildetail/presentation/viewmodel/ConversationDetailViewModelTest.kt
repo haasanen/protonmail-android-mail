@@ -56,6 +56,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
+import ch.protonmail.android.maildetail.domain.usecase.BlockSender
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -333,6 +334,7 @@ class ConversationDetailViewModelTest {
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
     private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
     private val unblockSender = mockk<UnblockSender>()
+    private val blockSender = mockk<BlockSender>()
     private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>()
 
     private val printMessage = mockk<PrintMessage>()
@@ -400,6 +402,7 @@ class ConversationDetailViewModelTest {
             getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
             markMessageAsLegitimate = markMessageAsLegitimate,
             unblockSender = unblockSender,
+            blockSender = blockSender,
             cancelScheduleSendMessage = cancelScheduleSendMessage,
             printMessage = printMessage,
             getRsvpEvent = getRsvpEvent,
@@ -1573,6 +1576,8 @@ class ConversationDetailViewModelTest {
     fun `verify contact actions bottom sheet data is build correctly`() = runTest {
         // Given
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
+        val messageIdUiModel = ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.messageId
+        val sheetOrigin = ContactActionsBottomSheetState.Origin.MessageDetails(MessageId(messageIdUiModel.id))
         coEvery {
             conversationMessageMapper.toUiModel(
                 message = any(),
@@ -1599,7 +1604,9 @@ class ConversationDetailViewModelTest {
         val event = ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
             participant = participant,
             avatarUiModel = avatar,
-            contactId = ContactSample.Stefano.id
+            contactId = ContactSample.Stefano.id,
+            origin = sheetOrigin,
+            isSenderBlocked = false
         )
 
         val expectedResult = ConversationDetailState.Loading.copy(
@@ -1607,7 +1614,8 @@ class ConversationDetailViewModelTest {
                 ContactActionsBottomSheetState.Data(
                     participant = participant,
                     avatarUiModel = avatar,
-                    actions = ContactActionsGroupsSample.defaultForContact(participant)
+                    actions = ContactActionsGroupsSample.defaultForContact(participant),
+                    origin = sheetOrigin
                 )
             )
         )
@@ -1636,7 +1644,8 @@ class ConversationDetailViewModelTest {
             viewModel.submit(
                 ConversationDetailViewAction.RequestContactActionsBottomSheet(
                     participant = participantUiModel,
-                    avatarUiModel = avatar
+                    avatarUiModel = avatar,
+                    messageId = messageIdUiModel
                 )
             )
             // Request bottom Sheet call, we can ignore that
@@ -1981,6 +1990,46 @@ class ConversationDetailViewModelTest {
             // Then
             val lastItem = awaitItem()
             assertEquals(expectedResult, lastItem)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `unblock sender successfully`() = runTest {
+        // Given
+        val messageIdUiModel = ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.messageId
+        val email = "test@proton.me"
+        coEvery { unblockSender(userId, email) } returns Unit.right()
+
+        // When
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.UnblockSender(messageIdUiModel, email))
+
+            advanceUntilIdle()
+
+            // Then
+            coVerify { unblockSender(userId, email) }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `block sender successfully`() = runTest {
+        // Given
+        val messageIdUiModel = ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.messageId
+        val email = "test@proton.me"
+        coEvery { blockSender(userId, email) } returns Unit.right()
+
+        // When
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.BlockSender(messageIdUiModel, email))
+
+            advanceUntilIdle()
+
+            // Then
+            coVerify { blockSender(userId, email) }
             cancelAndIgnoreRemainingEvents()
         }
     }
