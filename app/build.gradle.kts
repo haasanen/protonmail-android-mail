@@ -96,24 +96,14 @@ android {
         debug {
             isDebuggable = true
             enableUnitTestCoverage = false
-            postprocessing {
-                isObfuscate = false
-                isOptimizeCode = false
-                isRemoveUnusedCode = false
-                isRemoveUnusedResources = false
-            }
+            isMinifyEnabled = false
             manifestPlaceholders["isFcmServiceEnabled"] = isFcmServiceEnabled
         }
         release {
             isDebuggable = false
             enableUnitTestCoverage = false
-            postprocessing {
-                isObfuscate = false
-                isOptimizeCode = true
-                isRemoveUnusedCode = true
-                isRemoveUnusedResources = true
-                file("proguard").listFiles()?.forEach { proguardFile(it) }
-            }
+            isMinifyEnabled = true
+            proguardFiles.addAll(file("proguard").listFiles())
             manifestPlaceholders["isFcmServiceEnabled"] = isFcmServiceEnabled
             signingConfig = signingConfigs["debug"]
         }
@@ -121,9 +111,6 @@ android {
             initWith(getByName("release"))
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
-            postprocessing {
-                isObfuscate = false
-            }
             manifestPlaceholders["isFcmServiceEnabled"] = false
             defaultConfig {
                 testInstrumentationRunnerArguments["androidx.benchmark.fullTracing.enable"] = "true"
