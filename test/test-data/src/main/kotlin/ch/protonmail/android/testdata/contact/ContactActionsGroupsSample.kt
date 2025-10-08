@@ -25,7 +25,11 @@ import kotlinx.collections.immutable.toImmutableList
 
 object ContactActionsGroupsSample {
 
-    fun defaultForContact(participant: Participant, isContactBlocked: Boolean = false): ContactActionsGroups {
+    fun defaultForContact(
+        participant: Participant,
+        isContactBlocked: Boolean = false,
+        isPrimaryUserAddress: Boolean = false
+    ): ContactActionsGroups {
         val firstActionGroup = buildList {
             add(ContactActionUiModel.NewMessage(participant))
         }.toImmutableList()
@@ -35,7 +39,9 @@ object ContactActionsGroupsSample {
             add(ContactActionUiModel.CopyName(participant.name))
         }.toImmutableList()
 
-        val thirdActionGroup = buildList {
+        val thirdActionGroup = if (isPrimaryUserAddress) {
+            emptyList<ContactActionUiModel>().toImmutableList()
+        } else buildList {
             if (isContactBlocked) {
                 add(ContactActionUiModel.UnblockContact(participant))
             } else {
@@ -46,7 +52,11 @@ object ContactActionsGroupsSample {
         return ContactActionsGroups(firstActionGroup, secondActionGroup, thirdActionGroup)
     }
 
-    fun defaultForNoContact(participant: Participant, isAddressBlocked: Boolean = false): ContactActionsGroups {
+    fun defaultForNoContact(
+        participant: Participant,
+        isAddressBlocked: Boolean = false,
+        isPrimaryUserAddress: Boolean = false
+    ): ContactActionsGroups {
         val firstActionGroup = buildList {
             add(ContactActionUiModel.NewMessage(participant))
         }.toImmutableList()
@@ -56,11 +66,15 @@ object ContactActionsGroupsSample {
             add(ContactActionUiModel.CopyName(participant.name))
         }.toImmutableList()
 
-        val thirdActionGroup = buildList {
-            if (isAddressBlocked) {
-                add(ContactActionUiModel.UnblockAddress(participant))
-            } else {
-                add(ContactActionUiModel.BlockAddress(participant))
+        val thirdActionGroup = if (isPrimaryUserAddress) {
+            emptyList()
+        } else {
+            buildList {
+                if (isAddressBlocked) {
+                    add(ContactActionUiModel.UnblockAddress(participant))
+                } else {
+                    add(ContactActionUiModel.BlockAddress(participant))
+                }
             }
         }.toImmutableList()
 

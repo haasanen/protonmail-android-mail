@@ -171,7 +171,8 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
             val avatarUiModel: AvatarUiModel?,
             val contactId: ContactId?,
             val origin: Origin,
-            val isSenderBlocked: Boolean
+            val isSenderBlocked: Boolean,
+            val isPrimaryUserAddress: Boolean
         ) : ContactActionsBottomSheetEvent
     }
 }

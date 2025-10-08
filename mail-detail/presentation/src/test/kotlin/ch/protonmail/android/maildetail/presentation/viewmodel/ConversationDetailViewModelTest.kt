@@ -1606,7 +1606,8 @@ class ConversationDetailViewModelTest {
             avatarUiModel = avatar,
             contactId = ContactSample.Stefano.id,
             origin = sheetOrigin,
-            isSenderBlocked = false
+            isSenderBlocked = false,
+            isPrimaryUserAddress = false
         )
 
         val expectedResult = ConversationDetailState.Loading.copy(

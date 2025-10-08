@@ -51,6 +51,10 @@ internal class ContactActionsBottomSheetReducerTest(
             name = "Test User"
         )
 
+        private val primaryUserParticipant = Participant(
+            address = "primary@proton.me",
+            name = "Primary User"
+        )
         private val sampleContact = ContactSample.Stefano
 
         private val sampleAvatar = ParticipantAvatarSample.ebay
@@ -65,7 +69,8 @@ internal class ContactActionsBottomSheetReducerTest(
                     avatarUiModel = sampleAvatar,
                     contactId = sampleContact.id,
                     origin = sampleOrigin,
-                    isSenderBlocked = false
+                    isSenderBlocked = false,
+                    isPrimaryUserAddress = false
                 ),
                 expectedState = BottomSheetState(
                     contentState = ContactActionsBottomSheetState.Data(
@@ -83,7 +88,8 @@ internal class ContactActionsBottomSheetReducerTest(
                     avatarUiModel = sampleAvatar,
                     contactId = sampleContact.id,
                     origin = sampleOrigin,
-                    isSenderBlocked = true
+                    isSenderBlocked = true,
+                    isPrimaryUserAddress = false
                 ),
                 expectedState = BottomSheetState(
                     contentState = ContactActionsBottomSheetState.Data(
@@ -101,7 +107,8 @@ internal class ContactActionsBottomSheetReducerTest(
                     avatarUiModel = sampleAvatar,
                     contactId = null,
                     origin = sampleOrigin,
-                    isSenderBlocked = true
+                    isSenderBlocked = true,
+                    isPrimaryUserAddress = false
                 ),
                 expectedState = BottomSheetState(
                     contentState = ContactActionsBottomSheetState.Data(
@@ -119,13 +126,35 @@ internal class ContactActionsBottomSheetReducerTest(
                     avatarUiModel = sampleAvatar,
                     contactId = null,
                     origin = sampleOrigin,
-                    isSenderBlocked = false
+                    isSenderBlocked = false,
+                    isPrimaryUserAddress = false
                 ),
                 expectedState = BottomSheetState(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
                         actions = ContactActionsGroupsSample.defaultForNoContact(sampleParticipant, false),
+                        origin = sampleOrigin
+                    )
+                )
+            ),
+            TestInput(
+                currentState = BottomSheetState(ContactActionsBottomSheetState.Loading),
+                operation = ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
+                    participant = primaryUserParticipant,
+                    avatarUiModel = sampleAvatar,
+                    contactId = null,
+                    origin = sampleOrigin,
+                    isSenderBlocked = false,
+                    isPrimaryUserAddress = true
+                ),
+                expectedState = BottomSheetState(
+                    contentState = ContactActionsBottomSheetState.Data(
+                        participant = primaryUserParticipant,
+                        avatarUiModel = sampleAvatar,
+                        actions = ContactActionsGroupsSample.defaultForNoContact(
+                            primaryUserParticipant, isAddressBlocked = false, isPrimaryUserAddress = true
+                        ),
                         origin = sampleOrigin
                     )
                 )

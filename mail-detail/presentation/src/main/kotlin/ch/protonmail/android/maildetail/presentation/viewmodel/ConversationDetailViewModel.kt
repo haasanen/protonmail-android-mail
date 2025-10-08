@@ -812,6 +812,9 @@ class ConversationDetailViewModel @Inject constructor(
             val userId = primaryUserId.first()
             val contact = findContactByEmail(userId, action.participant.participantAddress)
 
+            val primaryUserAddress = observePrimaryUserAddress().first()
+            val isPrimaryUserAddress = primaryUserAddress == action.participant.participantAddress
+
             // Rust does not provide an API to check if a sender is blocked. Therefore,
             // we get this data from message banners temporarily
             val senderBlocked = action.messageId?.let { isSenderBlockedForMessage(MessageId(it.id)) } ?: false
@@ -829,7 +832,8 @@ class ConversationDetailViewModel @Inject constructor(
                             MessageId(action.messageId.id)
                         )
                     } ?: ContactActionsBottomSheetState.Origin.Unknown,
-                    isSenderBlocked = senderBlocked
+                    isSenderBlocked = senderBlocked,
+                    isPrimaryUserAddress = isPrimaryUserAddress
                 )
             )
             emitNewStateFrom(event)
