@@ -434,9 +434,20 @@ fun ConversationDetailScreen(
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.onComposeNewMessage(it.address)
                         },
-                        onBlockClicked = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
+                        onBlockClicked = { participant, messageId ->
+                            viewModel.submit(
+                                ConversationDetailViewAction.BlockSender(
+                                    messageId?.let { MessageIdUiModel(it.id) }, participant.address
+                                )
+                            )
+
+                        },
+                        onUnblockClicked = { participant, messageId ->
+                            viewModel.submit(
+                                ConversationDetailViewAction.UnblockSender(
+                                    messageId?.let { MessageIdUiModel(it.id) }, participant.address
+                                )
+                            )
                         }
                     )
                 )
@@ -533,11 +544,12 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.OpenInProtonCalendar(MessageId(it.id)))
                 },
                 onPrint = { viewModel.submit(ConversationDetailViewAction.PrintMessage(context, it)) },
-                onAvatarClicked = { participantUiModel, avatarUiModel ->
+                onAvatarClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
                     viewModel.submit(
                         ConversationDetailViewAction.RequestContactActionsBottomSheet(
                             participantUiModel,
-                            avatarUiModel
+                            avatarUiModel,
+                            messageIdUiModel
                         )
                     )
                 },
@@ -545,11 +557,12 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.OnAvatarImageLoadRequested(avatarUiModel))
                 },
                 onOpenComposer = { actions.openComposerForDraftMessage(MessageId(it.id)) },
-                onParticipantClicked = { participantUiModel, avatarUiModel ->
+                onParticipantClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
                     viewModel.submit(
                         ConversationDetailViewAction.RequestContactActionsBottomSheet(
                             participantUiModel,
-                            avatarUiModel
+                            avatarUiModel,
+                            messageIdUiModel
                         )
                     )
                 },
@@ -1175,9 +1188,9 @@ object ConversationDetailScreen {
         val onOpenInProtonCalendar: (MessageIdUiModel) -> Unit,
         val onOpenComposer: (MessageIdUiModel) -> Unit,
         val onPrint: (MessageId) -> Unit,
-        val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onAvatarClicked: (ParticipantUiModel, AvatarUiModel, MessageIdUiModel?) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
-        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
+        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel?) -> Unit,
         val onTrashedMessagesBannerClick: () -> Unit,
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
@@ -1234,9 +1247,9 @@ object ConversationDetailScreen {
                 onOpenInProtonCalendar = {},
                 onOpenComposer = {},
                 onPrint = { _ -> },
-                onAvatarClicked = { _, _ -> },
+                onAvatarClicked = { _, _, _ -> },
                 onAvatarImageLoadRequested = {},
-                onParticipantClicked = { _, _ -> },
+                onParticipantClicked = { _, _, _ -> },
                 onTrashedMessagesBannerClick = {},
                 onMarkMessageAsLegitimate = { _, _ -> },
                 onUnblockSender = { _, _ -> },
