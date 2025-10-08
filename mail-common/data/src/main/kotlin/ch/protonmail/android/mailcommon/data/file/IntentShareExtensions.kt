@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.mailcommon.data.file
 
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -98,8 +96,8 @@ private fun Intent.getShareInfoForViewAction(): IntentShareInfo {
             ?.split(",")
             ?: getRecipientBcc()
 
-        val subject = mailTo.subject?.decode() ?: getSubject()
-        val body = mailTo.body?.decode() ?: getEmailBody()
+        val subject = mailTo.subject ?: getSubject()
+        val body = mailTo.body ?: getEmailBody()
 
         IntentShareInfo(
             attachmentUris = emptyList(),
@@ -171,7 +169,7 @@ private fun Intent.getFileUrisForActionSendMultiple(): List<Uri> {
     return fileUris
 }
 
-private fun Intent.getSubject(): String? = getStringExtra(Intent.EXTRA_SUBJECT)?.decode()
+private fun Intent.getSubject(): String? = getStringExtra(Intent.EXTRA_SUBJECT)
 
 private fun Intent.getRecipientTo(): List<String> = getStringArrayExtra(Intent.EXTRA_EMAIL)?.toList() ?: emptyList()
 
@@ -179,9 +177,7 @@ private fun Intent.getRecipientCc(): List<String> = getStringArrayExtra(Intent.E
 
 private fun Intent.getRecipientBcc(): List<String> = getStringArrayExtra(Intent.EXTRA_BCC)?.toList() ?: emptyList()
 
-private fun Intent.getEmailBody(): String? = getStringExtra(Intent.EXTRA_TEXT)?.decode()
-
-private fun String.decode(): String = URLDecoder.decode(this, StandardCharsets.UTF_8.toString())
+private fun Intent.getEmailBody(): String? = getStringExtra(Intent.EXTRA_TEXT)
 
 /**
  * Intent data can be a [Uri] with a mailto scheme instead of a shared file.
