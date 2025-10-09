@@ -40,6 +40,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.mailpagination.domain.model.ShowTrashSpam
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -128,6 +129,8 @@ class RustConversationsQueryImpl @Inject constructor(
         return response
     }
 
+    override fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter == true
+
     override suspend fun terminatePaginator(userId: UserId) {
         if (paginatorState?.pageDescriptor?.userId == userId) {
             paginatorMutex.withLock {
@@ -152,6 +155,7 @@ class RustConversationsQueryImpl @Inject constructor(
             session,
             pageDescriptor.labelId.toLocalLabelId(),
             pageDescriptor.unread,
+            pageDescriptor.showTrashSpam,
             conversationsUpdatedCallback(scrollerOnUpdateHandler)
         )
             .onRight {
@@ -262,14 +266,16 @@ class RustConversationsQueryImpl @Inject constructor(
     private data class PageDescriptor(
         val userId: UserId,
         val labelId: LabelId,
-        val unread: Boolean
+        val unread: Boolean,
+        val showTrashSpam: Boolean
     )
 
     private fun PageKey.DefaultPageKey.toPageDescriptor(userId: UserId): PageDescriptor {
         return PageDescriptor(
             userId = userId,
             labelId = this.labelId,
-            unread = this.readStatus == ReadStatus.Unread
+            unread = this.readStatus == ReadStatus.Unread,
+            showTrashSpam = this.showTrashSpam == ShowTrashSpam.Show
         )
     }
 

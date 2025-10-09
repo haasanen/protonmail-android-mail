@@ -40,22 +40,31 @@ class CreateRustSearchPaginator @Inject constructor() {
     suspend operator fun invoke(
         session: MailUserSessionWrapper,
         keyword: String,
+        includeSpamAndTrash: Boolean,
         callback: MessageScrollerLiveQueryCallback
-    ): Either<DataError, MessagePaginatorWrapper> = when (
+    ): Either<DataError, MessagePaginatorWrapper> {
+        val includeSwitch = if (includeSpamAndTrash) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
+
         val result = scrollerSearch(
-            session.getRustUserSession(),
-            PaginatorSearchOptions(keyword),
-            IncludeSwitch.DEFAULT, // ET-4997
+            session = session.getRustUserSession(),
+            options = PaginatorSearchOptions(keyword),
+            include = includeSwitch,
             callback
         )
-    ) {
-        is ScrollerSearchResult.Error -> result.v1.toDataError().left()
-        is ScrollerSearchResult.Ok -> {
-            when (val userIdResult = session.getRustUserSession().userId()) {
-                is MailUserSessionUserIdResult.Error -> userIdResult.v1.toDataError().left()
-                is MailUserSessionUserIdResult.Ok -> {
-                    val params = PaginatorParams(userIdResult.v1, keyword = keyword)
-                    SearchMessagePaginatorWrapper(result.v1, params).right()
+
+        return when (result) {
+            is ScrollerSearchResult.Error -> result.v1.toDataError().left()
+            is ScrollerSearchResult.Ok -> {
+                when (val userIdResult = session.getRustUserSession().userId()) {
+                    is MailUserSessionUserIdResult.Error -> userIdResult.v1.toDataError().left()
+                    is MailUserSessionUserIdResult.Ok -> {
+                        val params = PaginatorParams(
+                            userIdResult.v1,
+                            supportsIncludeFilter = result.v1.supportsIncludeFilter(),
+                            keyword = keyword
+                        )
+                        SearchMessagePaginatorWrapper(result.v1, params).right()
+                    }
                 }
             }
         }

@@ -15,6 +15,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.mailpagination.domain.model.ShowTrashSpam
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -90,7 +91,13 @@ class RustConversationsQueryImplTest {
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            createRustConversationPaginator(session, labelId.toLocalLabelId(), false, capture(callbackSlot))
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
+            )
         } returns paginator.right()
 
         // When
@@ -121,9 +128,10 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session,
-                labelId.toLocalLabelId(),
-                false,
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
                 capture(callbackSlot)
             )
         } returns paginator.right()
@@ -155,10 +163,11 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session,
-                labelId.toLocalLabelId(),
-                false,
-                capture(callbackSlot)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -198,10 +207,11 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session,
-                labelId.toLocalLabelId(),
-                false,
-                capture(callbackSlot)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -210,7 +220,15 @@ class RustConversationsQueryImplTest {
         rustConversationsQuery.getConversations(userId, nextPageKey)
 
         // Then
-        coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any()) }
+        coVerify(exactly = 1) {
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = any()
+            )
+        }
     }
 
     @Test
@@ -237,14 +255,20 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session, labelId.toLocalLabelId(),
-                false, capture(callbackSlot)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
         coEvery {
             createRustConversationPaginator(
-                session, newLabelId.toLocalLabelId(),
-                false, capture(callbackSlot)
+                session = session,
+                labelId = newLabelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -255,8 +279,11 @@ class RustConversationsQueryImplTest {
         // Then
         coVerify(exactly = 1) {
             createRustConversationPaginator(
-                session, labelId.toLocalLabelId(),
-                false, any()
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = any()
             )
         }
 
@@ -264,8 +291,11 @@ class RustConversationsQueryImplTest {
 
         coVerify(exactly = 1) {
             createRustConversationPaginator(
-                session, newLabelId.toLocalLabelId(),
-                false, any()
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = any()
             )
         }
     }
@@ -295,18 +325,20 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session,
-                labelId.toLocalLabelId(),
-                false,
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
                 capture(callbackSlot)
             )
         } returns paginator.right()
         coEvery {
             createRustConversationPaginator(
-                session,
-                labelId.toLocalLabelId(),
-                true,
-                capture(callbackSlot)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = true,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -315,12 +347,97 @@ class RustConversationsQueryImplTest {
         rustConversationsQuery.getConversations(userId, newPageKey)
 
         // Then
-        coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any()) }
+        coVerify(exactly = 1) {
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = any()
+            )
+        }
 
         coVerify { paginator.disconnect() }
 
-        coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), true, any()) }
+        coVerify(exactly = 1) {
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = true,
+                showSpamTrash = false,
+                callback = any()
+            )
+        }
+    }
 
+    @Test
+    fun `re initialises paginator when show trash and spam status changes`() = runTest {
+        // Given
+        val firstPage = listOf(LocalConversationTestData.AugConversation)
+        val userId = UserIdSample.Primary
+        val labelId = SystemLabelId.Inbox.labelId
+        val showTrashSpam = ShowTrashSpam.Hide
+        val newShowTrashSpam = ShowTrashSpam.Show
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, showTrashSpam = showTrashSpam)
+        val newPageKey = pageKey.copy(showTrashSpam = newShowTrashSpam)
+        val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
+        val paginator = mockk<ConversationPaginatorWrapper> {
+            coEvery { this@mockk.nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                }
+                Unit.right()
+            }
+            coEvery { this@mockk.disconnect() } just Runs
+        }
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                capture(callbackSlot)
+            )
+        } returns paginator.right()
+        coEvery {
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = true,
+                callback = capture(callbackSlot)
+            )
+        } returns paginator.right()
+
+        // When
+        rustConversationsQuery.getConversations(userId, pageKey)
+        rustConversationsQuery.getConversations(userId, newPageKey)
+
+        // Then
+        coVerify(exactly = 1) {
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = any()
+            )
+        }
+
+        coVerify { paginator.disconnect() }
+
+        coVerify(exactly = 1) {
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = true,
+                callback = any()
+            )
+        }
     }
 
     @Test
@@ -346,10 +463,11 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session,
-                labelId.toLocalLabelId(),
-                false,
-                capture(callbackSlot)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -388,10 +506,11 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session,
-                labelId.toLocalLabelId(),
-                false,
-                capture(callbackSlot)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -436,7 +555,11 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session, labelId.toLocalLabelId(), false, capture(callbackSlot)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -477,7 +600,11 @@ class RustConversationsQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
-                session, labelId.toLocalLabelId(), false, capture(callbackSlot)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -515,7 +642,13 @@ class RustConversationsQueryImplTest {
 
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            createRustConversationPaginator(session, labelId.toLocalLabelId(), false, capture(callbackSlot))
+            createRustConversationPaginator(
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                showSpamTrash = false,
+                callback = capture(callbackSlot)
+            )
         } returns paginator.right()
 
         // When

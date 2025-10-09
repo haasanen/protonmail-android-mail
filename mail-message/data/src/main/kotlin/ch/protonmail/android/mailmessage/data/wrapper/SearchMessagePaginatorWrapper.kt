@@ -33,6 +33,8 @@ class SearchMessagePaginatorWrapper(
     override val params: PaginatorParams
 ) : MessagePaginatorWrapper {
 
+    override val supportsIncludeFilter = rustPaginator.supportsIncludeFilter()
+
     override suspend fun nextPage(): Either<PaginationError, Unit> = when (val result = rustPaginator.fetchMore()) {
         is SearchScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
         is SearchScrollerFetchMoreResult.Ok -> Unit.right()

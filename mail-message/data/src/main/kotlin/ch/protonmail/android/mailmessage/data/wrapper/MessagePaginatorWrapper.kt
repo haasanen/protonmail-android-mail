@@ -26,6 +26,8 @@ interface MessagePaginatorWrapper {
 
     val params: PaginatorParams
 
+    val supportsIncludeFilter: Boolean
+
     suspend fun nextPage(): Either<PaginationError, Unit>
 
     suspend fun reload(): Either<PaginationError, Unit>

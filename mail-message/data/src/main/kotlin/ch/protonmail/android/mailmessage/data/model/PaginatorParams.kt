@@ -25,5 +25,6 @@ data class PaginatorParams(
     val userId: LocalUserId,
     val labelId: LocalLabelId? = null,
     val unread: Boolean? = null,
+    val supportsIncludeFilter: Boolean? = null,
     val keyword: String? = null
 )

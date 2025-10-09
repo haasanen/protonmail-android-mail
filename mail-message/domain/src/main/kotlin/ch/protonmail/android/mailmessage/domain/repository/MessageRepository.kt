@@ -36,6 +36,8 @@ interface MessageRepository {
 
     suspend fun terminatePaginator(userId: UserId)
 
+    fun supportsIncludeFilter(): Boolean
+
     suspend fun getSenderImage(
         userId: UserId,
         address: String,

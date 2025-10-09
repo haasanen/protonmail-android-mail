@@ -29,6 +29,8 @@ import uniffi.proton_mail_uniffi.ConversationScrollerGetItemsResult
 
 class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroller) {
 
+    val supportsIncludeFilter = rustPaginator.supportsIncludeFilter()
+
     suspend fun nextPage(): Either<PaginationError, Unit> = when (val result = rustPaginator.fetchMore()) {
         is ConversationScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
         is ConversationScrollerFetchMoreResult.Ok -> Unit.right()

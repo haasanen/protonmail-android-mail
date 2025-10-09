@@ -76,6 +76,8 @@ class RustConversationDataSourceImpl @Inject constructor(
 
     override suspend fun terminatePaginator(userId: UserId) = rustConversationsQuery.terminatePaginator(userId)
 
+    override fun supportsIncludeFilter() = rustConversationsQuery.supportsIncludeFilter()
+
     /**
      * Gets the first x conversations for this labelId.
      * Adds in an Invalidation Observer on the label that will be fired when any conversation

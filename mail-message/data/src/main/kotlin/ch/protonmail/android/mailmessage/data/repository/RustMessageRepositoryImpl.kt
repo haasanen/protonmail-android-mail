@@ -54,6 +54,8 @@ class RustMessageRepositoryImpl @Inject constructor(
         rustMessageDataSource.terminatePaginator(userId)
     }
 
+    override fun supportsIncludeFilter() = rustMessageDataSource.supportsIncludeFilter()
+
     override suspend fun getSenderImage(
         userId: UserId,
         address: String,

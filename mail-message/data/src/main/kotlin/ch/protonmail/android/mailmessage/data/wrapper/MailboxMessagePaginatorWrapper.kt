@@ -33,6 +33,8 @@ class MailboxMessagePaginatorWrapper(
     override val params: PaginatorParams
 ) : MessagePaginatorWrapper {
 
+    override val supportsIncludeFilter = rustPaginator.supportsIncludeFilter()
+
     override suspend fun nextPage(): Either<PaginationError, Unit> = when (val result = rustPaginator.fetchMore()) {
         is MessageScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
         is MessageScrollerFetchMoreResult.Ok -> Unit.right()
