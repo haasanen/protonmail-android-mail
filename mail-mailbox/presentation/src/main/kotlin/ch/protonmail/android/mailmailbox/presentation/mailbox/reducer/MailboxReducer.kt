@@ -34,6 +34,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import javax.inject.Inject
@@ -42,6 +43,7 @@ class MailboxReducer @Inject constructor(
     private val mailboxListReducer: MailboxListReducer,
     private val topAppBarReducer: MailboxTopAppBarReducer,
     private val unreadFilterReducer: MailboxUnreadFilterReducer,
+    private val showTrashSpamFilterReducer: MailboxShowTrashSpamFilterReducer,
     private val bottomAppBarReducer: BottomBarReducer,
     private val actionMessageReducer: MailboxActionMessageReducer,
     private val deleteDialogReducer: MailboxDeleteDialogReducer,
@@ -54,6 +56,7 @@ class MailboxReducer @Inject constructor(
             mailboxListState = currentState.toNewMailboxListStateFrom(operation),
             topAppBarState = currentState.toNewTopAppBarStateFrom(operation),
             unreadFilterState = currentState.toNewUnreadFilterStateFrom(operation),
+            showTrashSpamIncludeFilterState = currentState.toNewShowTrashSpamFilterStateFrom(operation),
             bottomAppBarState = currentState.toNewBottomAppBarStateFrom(operation),
             deleteDialogState = currentState.toNewDeleteActionStateFrom(operation),
             clearAllDialogState = currentState.toNewClearAllDialogStateFrom(operation),
@@ -83,6 +86,16 @@ class MailboxReducer @Inject constructor(
             unreadFilterReducer.newStateFrom(unreadFilterState, operation)
         } else {
             unreadFilterState
+        }
+    }
+
+    private fun MailboxState.toNewShowTrashSpamFilterStateFrom(
+        operation: MailboxOperation
+    ): ShowTrashSpamIncludeFilterState {
+        return if (operation is MailboxOperation.AffectingShowTrashSpamFilter) {
+            showTrashSpamFilterReducer.newStateFrom(showTrashSpamIncludeFilterState, operation)
+        } else {
+            showTrashSpamIncludeFilterState
         }
     }
 

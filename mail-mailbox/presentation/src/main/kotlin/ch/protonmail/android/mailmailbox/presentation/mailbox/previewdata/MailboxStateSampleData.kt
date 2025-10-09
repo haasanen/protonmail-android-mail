@@ -37,6 +37,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListS
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
@@ -66,6 +67,7 @@ object MailboxStateSampleData {
         mailboxListState = MailboxListState.Loading,
         topAppBarState = MailboxTopAppBarState.Loading,
         unreadFilterState = UnreadFilterState.Loading,
+        showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Loading,
         bottomAppBarState = BottomBarState.Loading,
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
@@ -96,6 +98,9 @@ object MailboxStateSampleData {
         unreadFilterState = UnreadFilterState.Data(
             isFilterEnabled = false,
             numUnread = 1
+        ),
+        showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Data.Shown(
+            enabled = false
         ),
         bottomAppBarState = BottomBarState.Data.Hidden(
             target = BottomBarTarget.Mailbox,
@@ -130,6 +135,9 @@ object MailboxStateSampleData {
         unreadFilterState = UnreadFilterState.Data(
             isFilterEnabled = false,
             numUnread = 1
+        ),
+        showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Data.Shown(
+            enabled = false
         ),
         bottomAppBarState = BottomBarState.Data.Hidden(
             target = BottomBarTarget.Mailbox,
@@ -178,6 +186,7 @@ object MailboxStateSampleData {
             isFilterEnabled = false,
             numUnread = 1
         ),
+        showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Data.Hidden,
         bottomAppBarState = BottomBarState.Data.Hidden(
             target = BottomBarTarget.Mailbox,
             actions = bottomBarAction.toImmutableList()

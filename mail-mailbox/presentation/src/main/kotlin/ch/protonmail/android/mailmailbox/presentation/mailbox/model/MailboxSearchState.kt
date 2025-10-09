@@ -25,6 +25,8 @@ data class MailboxSearchState(
 
     fun isInSearch() = searchMode.isInSearch()
 
+    fun hasData() = searchMode.hasData()
+
     companion object {
 
         val NotSearching = MailboxSearchState("", MailboxSearchMode.None)

@@ -36,6 +36,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
@@ -67,6 +68,9 @@ internal class MailboxReducerTest(
     private val unreadFilterReducer: MailboxUnreadFilterReducer = mockk {
         every { newStateFrom(any(), any()) } returns reducedState.unreadFilterState
     }
+    private val showTrashSpamFilterReducer: MailboxShowTrashSpamFilterReducer = mockk {
+        every { newStateFrom(any(), any()) } returns reducedState.showTrashSpamIncludeFilterState
+    }
     private val bottomAppBarReducer: BottomBarReducer = mockk {
         every { newStateFrom(any(), any()) } returns reducedState.bottomAppBarState
     }
@@ -86,6 +90,7 @@ internal class MailboxReducerTest(
         mailboxListReducer,
         topAppBarReducer,
         unreadFilterReducer,
+        showTrashSpamFilterReducer,
         bottomAppBarReducer,
         actionMessageReducer,
         deleteDialogReducer,
@@ -130,6 +135,21 @@ internal class MailboxReducerTest(
             }
         } else {
             assertEquals(currentState.unreadFilterState, nextState.unreadFilterState, testName)
+        }
+
+        if (shouldReduceSpamTrashFilterState) {
+            verify {
+                showTrashSpamFilterReducer.newStateFrom(
+                    currentState.showTrashSpamIncludeFilterState,
+                    operation as MailboxOperation.AffectingShowTrashSpamFilter
+                )
+            }
+        } else {
+            assertEquals(
+                expected = currentState.showTrashSpamIncludeFilterState,
+                actual = nextState.showTrashSpamIncludeFilterState,
+                message = testName
+            )
         }
 
         if (shouldReduceActionMessage) {
@@ -189,6 +209,7 @@ internal class MailboxReducerTest(
                 numUnread = 42,
                 isFilterEnabled = false
             ),
+            showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Data.Hidden,
             bottomAppBarState = BottomBarState.Loading,
             actionResult = Effect.empty(),
             deleteDialogState = DeleteDialogState.Hidden,
@@ -203,6 +224,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -214,6 +236,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -225,6 +248,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -236,6 +260,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -247,6 +272,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -258,6 +284,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = true,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -269,6 +296,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = true,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -280,6 +308,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -291,6 +320,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -302,6 +332,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -313,6 +344,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -324,6 +356,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -335,6 +368,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -346,6 +380,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -357,6 +392,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -368,6 +404,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -379,6 +416,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -390,6 +428,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -401,6 +440,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -412,6 +452,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -423,6 +464,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -434,6 +476,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -451,6 +494,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -464,6 +508,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -477,6 +522,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -491,6 +537,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = true,
+                shouldReduceSpamTrashFilterState = true,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -502,6 +549,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -513,6 +561,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = true,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -524,6 +573,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -535,6 +585,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = true,
@@ -546,6 +597,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = true,
@@ -557,6 +609,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -568,6 +621,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -579,6 +633,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = true,
@@ -590,6 +645,7 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
@@ -602,11 +658,60 @@ internal class MailboxReducerTest(
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
                 shouldReduceBottomSheetState = false,
                 shouldReduceClearAllDialog = true
+            ),
+            TestInput(
+                MailboxEvent.HideTrashSpamFilter,
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = true,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = false,
+                shouldReduceClearAllDialog = false
+            ),
+            TestInput(
+                MailboxEvent.ShowTrashSpamFilter,
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = true,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = false,
+                shouldReduceClearAllDialog = false
+            ),
+            TestInput(
+                MailboxViewAction.EnableShowTrashSpamFilter,
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = true,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = false,
+                shouldReduceClearAllDialog = false
+            ),
+            TestInput(
+                MailboxViewAction.DisableShowTrashSpamFilter,
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = true,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = false,
+                shouldReduceClearAllDialog = false
             )
         )
 
@@ -629,6 +734,7 @@ internal class MailboxReducerTest(
         val shouldReduceMailboxListState: Boolean,
         val shouldReduceTopAppBarState: Boolean,
         val shouldReduceUnreadFilterState: Boolean,
+        val shouldReduceSpamTrashFilterState: Boolean,
         val shouldReduceBottomAppBarState: Boolean,
         val shouldReduceActionMessage: Boolean,
         val shouldReduceDeleteDialog: Boolean,

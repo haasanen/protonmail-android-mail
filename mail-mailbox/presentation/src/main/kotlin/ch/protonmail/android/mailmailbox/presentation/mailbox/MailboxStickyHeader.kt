@@ -18,11 +18,16 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,6 +35,9 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 
 @Composable
 fun MailboxStickyHeader(
@@ -45,7 +53,8 @@ fun MailboxStickyHeader(
                 end = ProtonDimens.Spacing.Large,
                 bottom = ProtonDimens.Spacing.Standard,
                 top = 0.dp
-            ),
+            )
+            .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.Start
     ) {
         if (state.mailboxListState is MailboxListState.Data.SelectionMode) {
@@ -58,22 +67,89 @@ fun MailboxStickyHeader(
                 )
             )
 
-        } else {
-            UnreadItemsFilter(
-                modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
-                state = state.unreadFilterState,
-                onFilterEnabled = actions.onUnreadFilterEnabled,
-                onFilterDisabled = actions.onUnreadFilterDisabled
-            )
-        }
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
 
+            ShowTrashSpamIncludeFilter(
+                modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
+                state = state.showTrashSpamIncludeFilterState,
+                onFilterEnabled = actions.onSpamTrashFilterEnabled,
+                onFilterDisabled = actions.onSpamTrashFilterDisabled
+            )
+        } else {
+            Row {
+                if (state.topAppBarState is MailboxTopAppBarState.Data.SearchMode) {
+                    SearchModeStickyHeader(
+                        searchState = state.topAppBarState,
+                        showSpamTrashFilterState = state.showTrashSpamIncludeFilterState,
+                        onEnabled = actions.onSpamTrashFilterEnabled,
+                        onDisabled = actions.onSpamTrashFilterDisabled
+                    )
+                } else {
+                    DefaultModeStickyHeader(
+                        unreadFilterState = state.unreadFilterState,
+                        spamTrashFilterState = state.showTrashSpamIncludeFilterState,
+                        onReadEnabled = actions.onUnreadFilterEnabled,
+                        onReadDisabled = actions.onUnreadFilterDisabled,
+                        onSpamTrashEnabled = actions.onSpamTrashFilterEnabled,
+                        onSpamTrashDisabled = actions.onSpamTrashFilterDisabled
+                    )
+                }
+            }
+        }
     }
+}
+
+@Suppress("UnusedReceiverParameter")
+@Composable
+private fun RowScope.SearchModeStickyHeader(
+    searchState: MailboxTopAppBarState.Data.SearchMode,
+    showSpamTrashFilterState: ShowTrashSpamIncludeFilterState,
+    onEnabled: () -> Unit,
+    onDisabled: () -> Unit
+) {
+    if (searchState.searchQuery.isNotEmpty()) {
+        ShowTrashSpamIncludeFilter(
+            modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
+            state = showSpamTrashFilterState,
+            onFilterEnabled = onEnabled,
+            onFilterDisabled = onDisabled
+        )
+    }
+}
+
+@Suppress("UnusedReceiverParameter", "UseComposableActions")
+@Composable
+private fun RowScope.DefaultModeStickyHeader(
+    unreadFilterState: UnreadFilterState,
+    spamTrashFilterState: ShowTrashSpamIncludeFilterState,
+    onReadEnabled: () -> Unit,
+    onReadDisabled: () -> Unit,
+    onSpamTrashEnabled: () -> Unit,
+    onSpamTrashDisabled: () -> Unit
+) {
+    UnreadItemsFilter(
+        modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
+        state = unreadFilterState,
+        onFilterEnabled = onReadEnabled,
+        onFilterDisabled = onReadDisabled
+    )
+
+    Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
+
+    ShowTrashSpamIncludeFilter(
+        modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
+        state = spamTrashFilterState,
+        onFilterEnabled = onSpamTrashEnabled,
+        onFilterDisabled = onSpamTrashDisabled
+    )
 }
 
 object MailboxStickyHeader {
     data class Actions(
         val onUnreadFilterEnabled: () -> Unit,
         val onUnreadFilterDisabled: () -> Unit,
+        val onSpamTrashFilterEnabled: () -> Unit,
+        val onSpamTrashFilterDisabled: () -> Unit,
         val onSelectAllClicked: () -> Unit,
         val onDeselectAllClicked: () -> Unit
     ) {
@@ -83,6 +159,8 @@ object MailboxStickyHeader {
             val Empty = Actions(
                 onUnreadFilterEnabled = {},
                 onUnreadFilterDisabled = {},
+                onSpamTrashFilterEnabled = {},
+                onSpamTrashFilterDisabled = {},
                 onSelectAllClicked = {},
                 onDeselectAllClicked = {}
             )

@@ -44,6 +44,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.IsExpandableLocation
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
@@ -87,6 +88,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
@@ -297,6 +299,10 @@ internal class MailboxViewModelTest {
         coEvery { this@mockk(any()) } returns Unit
     }
     private val eventLoopRepository = mockk<EventLoopRepository>()
+
+    private val isExpandableLocation = mockk<IsExpandableLocation> {
+        every { this@mockk.invoke(any()) } returns false
+    }
     private val scope = TestScope(UnconfinedTestDispatcher())
 
     private val mailboxViewModel by lazy {
@@ -343,6 +349,7 @@ internal class MailboxViewModelTest {
             observeViewModeChanged = observeViewModeChanged,
             toolbarRefreshSignal = toolbarRefreshSignal,
             terminateConversationPaginator = terminateConversationPaginator,
+            isExpandableLocation = isExpandableLocation,
             eventLoopRepository = eventLoopRepository
         )
     }
@@ -376,6 +383,7 @@ internal class MailboxViewModelTest {
                 mailboxListState = MailboxListState.Loading,
                 topAppBarState = MailboxTopAppBarState.Loading,
                 unreadFilterState = UnreadFilterState.Loading,
+                showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Loading,
                 bottomAppBarState = BottomBarState.Data.Hidden(
                     BottomBarTarget.Mailbox, emptyList<ActionUiModel>().toImmutableList()
                 ),
@@ -492,6 +500,7 @@ internal class MailboxViewModelTest {
             bottomAppBarState = BottomBarState.Data.Shown(BottomBarTarget.Mailbox, expectedBottomBarActions)
         )
 
+        expectedTrashSpamFilterStateChange(intermediateState)
         expectedSelectedLabelCountStateChange(intermediateState)
         returnExpectedStateWhenEnterSelectionMode(intermediateState, item, selectionState)
         returnExpectedStateForBottomBarEvent(selectionState, expectedBottomBarState)
@@ -642,6 +651,7 @@ internal class MailboxViewModelTest {
         every { observeMailLabels(userId) } returns mailLabelsFlow
         every { observeMailLabels(userId1) } returns mailLabelsFlow
         every { observePrimaryUserId() } returns currentUserIdFlow
+        expectedTrashSpamFilterStateChange(expectedState)
 
         every {
             mailboxReducer.newStateFrom(any(), MailboxEvent.NewLabelSelected(initialMailLabel, null))
@@ -739,6 +749,7 @@ internal class MailboxViewModelTest {
                     listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
                 )
             )
+            expectedTrashSpamFilterStateChange(intermediateState)
             expectedSelectedLabelCountStateChange(intermediateState)
             returnExpectedStateWhenEnterSelectionMode(intermediateState, item, expectedSelectionState)
             returnExpectedStateForBottomBarEvent(expectedSelectionState, expectedBottomBarState)
@@ -770,6 +781,7 @@ internal class MailboxViewModelTest {
                     listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
                 )
             )
+            expectedTrashSpamFilterStateChange(intermediateState)
             expectedSelectedLabelCountStateChange(intermediateState)
             returnExpectedStateWhenEnterSelectionMode(intermediateState, item, expectedSelectionState)
             returnExpectedStateForBottomBarEvent(expectedSelectionState, expectedBottomBarState)
@@ -805,8 +817,10 @@ internal class MailboxViewModelTest {
             selectedMailboxItemUiModels = listOf(item),
             bottomBarAction = expectedBottomBarActions
         )
+        expectedTrashSpamFilterStateChange(intermediateState)
         expectedSelectedLabelCountStateChange(intermediateState)
         returnExpectedStateWhenEnterSelectionMode(intermediateState, item, expectedState)
+
         every {
             mailboxReducer.newStateFrom(
                 currentState = expectedState,
@@ -826,6 +840,7 @@ internal class MailboxViewModelTest {
 
             // When
             mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
+            advanceUntilIdle()
 
             // Then
             assertEquals(expectedState, awaitItem())
@@ -851,6 +866,7 @@ internal class MailboxViewModelTest {
             selectedMailboxItemUiModels = listOf(item),
             bottomBarAction = expectedBottomBarActions
         )
+        expectedTrashSpamFilterStateChange(dataState)
         expectedSelectedLabelCountStateChange(dataState)
         returnExpectedStateWhenEnterSelectionMode(dataState, item, intermediateSelectionState)
         every {
@@ -900,6 +916,7 @@ internal class MailboxViewModelTest {
             val item = readMailboxItemUiModel
             val initialState = createMailboxDataState()
             val intermediateState = MailboxStateSampleData.createSelectionMode(listOf(item))
+            expectedTrashSpamFilterStateChange(initialState)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -947,6 +964,7 @@ internal class MailboxViewModelTest {
             val initialState = createMailboxDataState()
             val intermediateState = MailboxStateSampleData.createSelectionMode(listOf(item, secondItem))
             val expectedState = MailboxStateSampleData.createSelectionMode(listOf(secondItem))
+            expectedTrashSpamFilterStateChange(initialState)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1038,14 +1056,32 @@ internal class MailboxViewModelTest {
         mailboxViewModel.items.test {
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any()) }
+            verify {
+                pagerFactory.create(
+                    userId,
+                    initialLocationMailLabelId,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
+            }
 
             // When
             currentLocationFlow.emit(MailLabelTestData.spamSystemLabel.id)
 
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, MailLabelTestData.spamSystemLabel.id, false, Message, any()) }
+            verify {
+                pagerFactory.create(
+                    userId,
+                    MailLabelTestData.spamSystemLabel.id,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
+            }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1171,6 +1207,7 @@ internal class MailboxViewModelTest {
             )
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(intermediateState)
         expectedSelectedLabelCountStateChange(intermediateState)
         every {
             mailboxReducer.newStateFrom(
@@ -1204,6 +1241,7 @@ internal class MailboxViewModelTest {
             )
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(intermediateState)
         expectedSelectedLabelCountStateChange(intermediateState)
         every {
             mailboxReducer.newStateFrom(
@@ -1332,6 +1370,7 @@ internal class MailboxViewModelTest {
 
         coEvery { getCurrentViewModeForLabel(userId = any(), any()) } returns ConversationGrouping
 
+        expectedTrashSpamFilterStateChange(intermediateState)
         expectedSelectedLabelCountStateChange(intermediateState)
         every {
             mailboxReducer.newStateFrom(
@@ -1406,7 +1445,14 @@ internal class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                pagerFactory.create(
+                    userId,
+                    MailLabelTestData.archiveSystemLabel.id,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
             }
 
             // When
@@ -1415,7 +1461,14 @@ internal class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, true, Message, any())
+                pagerFactory.create(
+                    userId,
+                    MailLabelTestData.archiveSystemLabel.id,
+                    filterUnread = true,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
             }
             cancelAndIgnoreRemainingEvents()
         }
@@ -1450,7 +1503,14 @@ internal class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                pagerFactory.create(
+                    userId,
+                    MailLabelTestData.archiveSystemLabel.id,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
             }
 
             // When
@@ -1459,7 +1519,16 @@ internal class MailboxViewModelTest {
             // Then
             awaitItem()
             // mailbox pager is recreated only once when view mode for the newly selected location does not change
-            verify(exactly = 1) { pagerFactory.create(userId, inboxLabel.id, false, Message, any()) }
+            verify(exactly = 1) {
+                pagerFactory.create(
+                    userId,
+                    inboxLabel.id,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
+            }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1490,7 +1559,14 @@ internal class MailboxViewModelTest {
             // Then
             awaitItem()
             verify {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                pagerFactory.create(
+                    userId,
+                    MailLabelTestData.archiveSystemLabel.id,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
             }
 
             // When
@@ -1500,7 +1576,14 @@ internal class MailboxViewModelTest {
             // Then
             awaitItem()
             verify {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Conversation, any())
+                pagerFactory.create(
+                    userId,
+                    MailLabelTestData.archiveSystemLabel.id,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Conversation,
+                    any()
+                )
             }
             cancelAndIgnoreRemainingEvents()
         }
@@ -1537,7 +1620,14 @@ internal class MailboxViewModelTest {
                 // When
                 awaitItem()
                 verify(exactly = 1) {
-                    pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                    pagerFactory.create(
+                        userId,
+                        MailLabelTestData.archiveSystemLabel.id,
+                        filterUnread = false,
+                        showSpamTrash = false,
+                        Message,
+                        any()
+                    )
                 }
 
                 mailboxViewModel.submit(MailboxViewAction.ItemClicked(unreadMailboxItemUiModel))
@@ -1559,7 +1649,14 @@ internal class MailboxViewModelTest {
             awaitItem()
             // Then
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                pagerFactory.create(
+                    userId,
+                    MailLabelTestData.archiveSystemLabel.id,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
             }
         }
 
@@ -1584,6 +1681,7 @@ internal class MailboxViewModelTest {
             )
             val labelId = initialLocationMailLabelId.labelId
             expectViewModeForCurrentLocation(ConversationGrouping)
+            expectedTrashSpamFilterStateChange(initialState)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1633,6 +1731,7 @@ internal class MailboxViewModelTest {
             )
             val labelId = initialLocationMailLabelId.labelId
             expectViewModeForCurrentLocation(ConversationGrouping)
+            expectedTrashSpamFilterStateChange(initialState)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1681,6 +1780,7 @@ internal class MailboxViewModelTest {
                 listOf(item.copy(isRead = true), secondItem.copy(isRead = true))
             )
             expectViewModeForCurrentLocation(NoConversationGrouping)
+            expectedTrashSpamFilterStateChange(initialState)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1725,6 +1825,7 @@ internal class MailboxViewModelTest {
                 listOf(item.copy(isRead = true), secondItem.copy(isRead = true))
             )
             expectViewModeForCurrentLocation(NoConversationGrouping)
+            expectedTrashSpamFilterStateChange(initialState)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1769,6 +1870,7 @@ internal class MailboxViewModelTest {
             itemCount = 2
         )
         expectViewModeForCurrentLocation(ConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1816,6 +1918,7 @@ internal class MailboxViewModelTest {
             itemCount = 2
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1859,6 +1962,7 @@ internal class MailboxViewModelTest {
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(ConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1903,6 +2007,7 @@ internal class MailboxViewModelTest {
             listOf(item, secondItem),
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1949,6 +2054,7 @@ internal class MailboxViewModelTest {
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -1991,6 +2097,7 @@ internal class MailboxViewModelTest {
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
@@ -2045,6 +2152,7 @@ internal class MailboxViewModelTest {
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
@@ -2089,6 +2197,7 @@ internal class MailboxViewModelTest {
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
@@ -2135,6 +2244,7 @@ internal class MailboxViewModelTest {
         )
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectViewModeForCurrentLocation(ConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
@@ -2183,6 +2293,7 @@ internal class MailboxViewModelTest {
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
@@ -2229,7 +2340,7 @@ internal class MailboxViewModelTest {
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(ConversationGrouping)
-        expectViewModeForCurrentLocation(ConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
@@ -2269,6 +2380,7 @@ internal class MailboxViewModelTest {
         // Given
         val initialState = createMailboxDataState()
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateForDeleteDismissed(initialState, initialState)
         expectPagerMock()
@@ -2292,6 +2404,7 @@ internal class MailboxViewModelTest {
         // Given
         val initialState = createMailboxDataState()
         expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateForDeleteDismissed(initialState, initialState)
         expectPagerMock()
@@ -2333,14 +2446,30 @@ internal class MailboxViewModelTest {
         mailboxViewModel.items.test {
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Conversation, any()) }
+            verify {
+                pagerFactory.create(
+                    userId,
+                    initialLocationMailLabelId,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Conversation,
+                    any()
+                )
+            }
 
             // When
             primaryUserFlow.emit(null)
 
             // Then
             verify(exactly = 0) {
-                pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any())
+                pagerFactory.create(
+                    userId,
+                    initialLocationMailLabelId,
+                    filterUnread = false,
+                    showSpamTrash = false,
+                    Message,
+                    any()
+                )
             }
             cancelAndIgnoreRemainingEvents()
         }
@@ -2804,7 +2933,8 @@ internal class MailboxViewModelTest {
             unreadFilterState = UnreadFilterState.Data(
                 numUnread = UnreadCountersTestData.labelToCounterMap[initialLocationMailLabelId.labelId]!!,
                 isFilterEnabled = unreadFilterState
-            )
+            ),
+            showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Data.Hidden
         )
     }
 
@@ -3251,7 +3381,7 @@ internal class MailboxViewModelTest {
                 bottomSheetState = expectedBottomSheetState
             )
         )
-
+        expectedTrashSpamFilterStateChange(intermediateState)
         expectedSelectedLabelCountStateChange(intermediateState)
         returnExpectedStateWhenEnterSelectionMode(intermediateState, item, expectedSelectionState)
         returnExpectedStateForBottomBarEvent(expectedSelectionState, expectedBottomBarState)
@@ -3284,6 +3414,7 @@ internal class MailboxViewModelTest {
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(listOfSelectedItems)
         val expectedState = MailboxStateSampleData.createSelectionMode(listOf(secondItem))
+        expectedTrashSpamFilterStateChange(initialState)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
@@ -3354,6 +3485,15 @@ internal class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(any(), MailboxEvent.SelectedLabelCountChanged(5))
         } returns initialState
+    }
+
+    private fun expectedTrashSpamFilterStateChange(state: MailboxState) {
+        every {
+            mailboxReducer.newStateFrom(
+                currentState = any(),
+                operation = MailboxEvent.HideTrashSpamFilter
+            )
+        } returns state
     }
 
     private fun expectedMoreActionBottomSheetRequestedStateChange(
@@ -3556,6 +3696,7 @@ internal class MailboxViewModelTest {
     private fun expectPagerMock(
         selectedLabelId: MailLabelId? = null,
         filterUnread: Boolean? = null,
+        showSpamTrash: Boolean? = null,
         itemType: MailboxItemType? = null,
         searchQuery: String? = null,
         pagingDataFlow: Flow<PagingData<MailboxItem>> = flowOf()
@@ -3563,11 +3704,12 @@ internal class MailboxViewModelTest {
 
         every {
             pagerFactory.create(
-                userId,
-                selectedLabelId ?: any(),
-                filterUnread ?: any(),
-                itemType ?: any(),
-                searchQuery ?: any()
+                userId = userId,
+                selectedMailLabelId = selectedLabelId ?: any(),
+                filterUnread = filterUnread ?: any(),
+                showSpamTrash = showSpamTrash ?: any(),
+                type = itemType ?: any(),
+                searchQuery = searchQuery ?: any()
             )
         } returns mockk mockPager@{ every { this@mockPager.flow } returns pagingDataFlow }
     }
