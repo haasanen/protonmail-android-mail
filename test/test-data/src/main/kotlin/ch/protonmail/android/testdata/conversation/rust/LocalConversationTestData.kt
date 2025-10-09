@@ -29,6 +29,7 @@ import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
 
 object LocalConversationTestData {
+
     const val RAW_SUBJECT = "Conversation Subject"
     const val RAW_CONVERSATION_ID = 1000uL
 
@@ -203,6 +204,7 @@ object LocalConversationTestData {
         attachmentsMetadata = attachments,
         totalMessages = numMessages,
         totalUnread = numUnread,
+        hiddenMessagesBanner = null, // ET-4980
         snoozedUntil = 0uL
     )
 }

@@ -28,6 +28,7 @@ import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.MailUserSessionUserIdResult
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.ReadFilter
@@ -49,6 +50,7 @@ class CreateRustMessagesPaginator @Inject constructor() {
                 session.getRustUserSession(),
                 labelId,
                 filterParam,
+                IncludeSwitch.DEFAULT, // ET-4997
                 callback
             )
         ) {
