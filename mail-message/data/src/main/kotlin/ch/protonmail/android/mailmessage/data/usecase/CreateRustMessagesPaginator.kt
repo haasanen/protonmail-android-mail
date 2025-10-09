@@ -24,7 +24,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -60,15 +59,7 @@ class CreateRustMessagesPaginator @Inject constructor() {
             is ScrollMessagesForLabelResult.Ok -> {
                 when (val userIdResult = session.getRustUserSession().userId()) {
                     is MailUserSessionUserIdResult.Error -> userIdResult.v1.toDataError().left()
-                    is MailUserSessionUserIdResult.Ok -> {
-                        val params = PaginatorParams(
-                            userId = userIdResult.v1,
-                            labelId = labelId,
-                            unread = unread,
-                            supportsIncludeFilter = result.v1.supportsIncludeFilter()
-                        )
-                        MailboxMessagePaginatorWrapper(result.v1, params).right()
-                    }
+                    is MailUserSessionUserIdResult.Ok -> MailboxMessagePaginatorWrapper(result.v1).right()
                 }
             }
         }

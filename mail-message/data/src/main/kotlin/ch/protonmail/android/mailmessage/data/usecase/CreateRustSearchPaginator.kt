@@ -23,7 +23,6 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.SearchMessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -57,14 +56,7 @@ class CreateRustSearchPaginator @Inject constructor() {
             is ScrollerSearchResult.Ok -> {
                 when (val userIdResult = session.getRustUserSession().userId()) {
                     is MailUserSessionUserIdResult.Error -> userIdResult.v1.toDataError().left()
-                    is MailUserSessionUserIdResult.Ok -> {
-                        val params = PaginatorParams(
-                            userIdResult.v1,
-                            supportsIncludeFilter = result.v1.supportsIncludeFilter(),
-                            keyword = keyword
-                        )
-                        SearchMessagePaginatorWrapper(result.v1, params).right()
-                    }
+                    is MailUserSessionUserIdResult.Ok -> SearchMessagePaginatorWrapper(result.v1).right()
                 }
             }
         }

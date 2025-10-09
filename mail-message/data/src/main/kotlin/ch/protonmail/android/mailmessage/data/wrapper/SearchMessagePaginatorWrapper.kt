@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.SearchScroller
@@ -29,8 +28,7 @@ import uniffi.proton_mail_uniffi.SearchScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.SearchScrollerGetItemsResult
 
 class SearchMessagePaginatorWrapper(
-    private val rustPaginator: SearchScroller,
-    override val params: PaginatorParams
+    private val rustPaginator: SearchScroller
 ) : MessagePaginatorWrapper {
 
     override val supportsIncludeFilter = rustPaginator.supportsIncludeFilter()
