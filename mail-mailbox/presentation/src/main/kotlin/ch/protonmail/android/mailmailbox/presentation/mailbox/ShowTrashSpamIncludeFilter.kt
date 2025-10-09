@@ -1,0 +1,145 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.mailmailbox.presentation.mailbox
+
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring.DampingRatioLowBouncy
+import androidx.compose.animation.core.Spring.StiffnessHigh
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
+
+@Composable
+fun ShowTrashSpamIncludeFilter(
+    modifier: Modifier = Modifier,
+    state: ShowTrashSpamIncludeFilterState,
+    onFilterEnabled: () -> Unit,
+    onFilterDisabled: () -> Unit
+) {
+    when (state) {
+        is ShowTrashSpamIncludeFilterState.Loading,
+        is ShowTrashSpamIncludeFilterState.Data.Hidden -> Unit
+
+        is ShowTrashSpamIncludeFilterState.Data.Shown -> {
+            FilterChip(
+                modifier = modifier
+                    .animateContentSize(
+                        animationSpec = spring(
+                            stiffness = StiffnessHigh,
+                            dampingRatio = DampingRatioLowBouncy,
+                            visibilityThreshold = IntSize.VisibilityThreshold
+                        )
+                    ),
+                colors = chipColors().copy(
+                    containerColor = ProtonTheme.colors.backgroundNorm,
+                    selectedContainerColor = ProtonTheme.colors.interactionBrandWeakNorm
+                ),
+                shape = ProtonTheme.shapes.huge,
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = state.enabled,
+                    borderWidth = ProtonDimens.OutlinedBorderSize,
+                    borderColor = ProtonTheme.colors.borderNorm
+                ),
+                selected = state.enabled,
+                onClick = {
+                    if (state.enabled) {
+                        onFilterDisabled()
+                    } else {
+                        onFilterEnabled()
+                    }
+                },
+                trailingIcon = addCloseIconForEnabledState(state),
+                elevation = null,
+                leadingIcon = {},
+                label = {
+                    Text(
+                        stringResource(R.string.include_spam_trash_text),
+                        style = if (state.enabled) {
+                            ProtonTheme.typography.bodyMediumNorm.copy(
+                                color = ProtonTheme.colors.brandPlus30
+                            )
+                        } else {
+                            ProtonTheme.typography.bodyMediumNorm
+                        }
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun addCloseIconForEnabledState(state: ShowTrashSpamIncludeFilterState.Data.Shown): @Composable (() -> Unit)? {
+    return if (state.enabled) {
+        {
+            Icon(
+                modifier = Modifier.size(ProtonDimens.IconSize.Medium),
+                painter = painterResource(R.drawable.ic_proton_cross_small),
+                contentDescription = null,
+                tint = ProtonTheme.colors.brandPlus30
+            )
+        }
+    } else {
+        null
+    }
+}
+
+@Composable
+private fun chipColors() = FilterChipDefaults.filterChipColors(
+    selectedContainerColor = ProtonTheme.colors.iconAccent,
+    selectedLabelColor = ProtonTheme.colors.textInverted,
+    containerColor = ProtonTheme.colors.backgroundSecondary,
+    labelColor = ProtonTheme.colors.textAccent
+)
+
+@Preview(showBackground = true)
+@Composable
+fun InactiveShowSpamTrashFilterButtonPreview() {
+    ShowTrashSpamIncludeFilter(
+        state = ShowTrashSpamIncludeFilterState.Data.Shown(false),
+        onFilterEnabled = {},
+        onFilterDisabled = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ActiveShowSpamTrashFilterPreview() {
+    ShowTrashSpamIncludeFilter(
+        state = ShowTrashSpamIncludeFilterState.Data.Shown(true),
+        onFilterEnabled = {},
+        onFilterDisabled = {}
+    )
+}
