@@ -33,7 +33,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowTrashSpam
+import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -354,9 +354,9 @@ class RustMessageListQueryImplTest {
         val firstKey = PageKey.DefaultPageKey(
             labelId = inboxLabelId,
             readStatus = ReadStatus.All,
-            showTrashSpam = ShowTrashSpam.Hide
+            showSpamTrash = ShowSpamTrash.Hide
         )
-        val secondKey = firstKey.copy(showTrashSpam = ShowTrashSpam.Show)
+        val secondKey = firstKey.copy(showSpamTrash = ShowSpamTrash.Show)
 
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)

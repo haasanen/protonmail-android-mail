@@ -15,7 +15,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowTrashSpam
+import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -376,10 +376,10 @@ class RustConversationsQueryImplTest {
         val firstPage = listOf(LocalConversationTestData.AugConversation)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val showTrashSpam = ShowTrashSpam.Hide
-        val newShowTrashSpam = ShowTrashSpam.Show
-        val pageKey = PageKey.DefaultPageKey(labelId = labelId, showTrashSpam = showTrashSpam)
-        val newPageKey = pageKey.copy(showTrashSpam = newShowTrashSpam)
+        val showSpamTrash = ShowSpamTrash.Hide
+        val newShowSpamTrash = ShowSpamTrash.Show
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, showSpamTrash = showSpamTrash)
+        val newPageKey = pageKey.copy(showSpamTrash = newShowSpamTrash)
         val session = mockk<MailUserSessionWrapper>()
         val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {

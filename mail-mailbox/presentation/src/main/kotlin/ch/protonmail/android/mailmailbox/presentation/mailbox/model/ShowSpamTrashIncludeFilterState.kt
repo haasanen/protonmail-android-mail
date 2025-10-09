@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
-sealed interface ShowTrashSpamIncludeFilterState {
-    sealed interface Data : ShowTrashSpamIncludeFilterState {
+sealed interface ShowSpamTrashIncludeFilterState {
+    sealed interface Data : ShowSpamTrashIncludeFilterState {
         data class Shown(val enabled: Boolean) : Data
         data object Hidden : Data
     }
 
-    data object Loading : ShowTrashSpamIncludeFilterState
+    data object Loading : ShowSpamTrashIncludeFilterState
 }

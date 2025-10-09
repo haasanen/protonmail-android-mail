@@ -26,7 +26,7 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowTrashSpam
+import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -62,13 +62,13 @@ class MailboxPagerFactory @Inject constructor(
         val pageKey: PageKey = if (searchQuery.isNotEmpty()) {
             PageKey.PageKeyForSearch(
                 keyword = searchQuery,
-                showTrashSpam = if (showSpamTrash) ShowTrashSpam.Show else ShowTrashSpam.Hide
+                showSpamTrash = if (showSpamTrash) ShowSpamTrash.Show else ShowSpamTrash.Hide
             )
         } else {
             PageKey.DefaultPageKey(
                 labelId = selectedMailLabelId.labelId,
                 readStatus = if (filterUnread) ReadStatus.Unread else ReadStatus.All,
-                showTrashSpam = if (showSpamTrash) ShowTrashSpam.Show else ShowTrashSpam.Hide
+                showSpamTrash = if (showSpamTrash) ShowSpamTrash.Show else ShowSpamTrash.Hide
             )
         }
 

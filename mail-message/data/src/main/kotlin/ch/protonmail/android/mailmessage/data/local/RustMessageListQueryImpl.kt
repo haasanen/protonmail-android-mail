@@ -39,7 +39,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowTrashSpam
+import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -138,14 +138,14 @@ class RustMessageListQueryImpl @Inject constructor(
                 session = session,
                 labelId = pageDescriptor.labelId.toLocalLabelId(),
                 unread = pageDescriptor.unread,
-                includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowTrashSpam.Show,
+                includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowSpamTrash.Show,
                 callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
             )
 
             is PageDescriptor.Search -> createRustSearchPaginator(
                 session = session,
                 keyword = pageDescriptor.keyword,
-                includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowTrashSpam.Show,
+                includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowSpamTrash.Show,
                 callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
             )
         }.onRight { wrapper ->
@@ -248,13 +248,13 @@ class RustMessageListQueryImpl @Inject constructor(
             override val userId: UserId,
             val labelId: LabelId,
             val unread: Boolean,
-            val showSpamTrash: ShowTrashSpam = ShowTrashSpam.Hide
+            val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide
         ) : PageDescriptor
 
         data class Search(
             override val userId: UserId,
             val keyword: String,
-            val showSpamTrash: ShowTrashSpam = ShowTrashSpam.Hide
+            val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide
         ) : PageDescriptor
     }
 
@@ -263,13 +263,13 @@ class RustMessageListQueryImpl @Inject constructor(
             userId = userId,
             labelId = this.labelId,
             unread = this.readStatus == ReadStatus.Unread,
-            showSpamTrash = this.showTrashSpam
+            showSpamTrash = this.showSpamTrash
         )
 
         is PageKey.PageKeyForSearch -> PageDescriptor.Search(
             userId = userId,
             keyword = keyword,
-            showSpamTrash = this.showTrashSpam
+            showSpamTrash = this.showSpamTrash
         )
     }
 

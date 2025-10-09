@@ -36,7 +36,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 
 @Composable
@@ -69,9 +69,9 @@ fun MailboxStickyHeader(
 
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
 
-            ShowTrashSpamIncludeFilter(
+            ShowSpamTrashIncludeFilter(
                 modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
-                state = state.showTrashSpamIncludeFilterState,
+                state = state.showSpamTrashIncludeFilterState,
                 onFilterEnabled = actions.onSpamTrashFilterEnabled,
                 onFilterDisabled = actions.onSpamTrashFilterDisabled
             )
@@ -80,14 +80,14 @@ fun MailboxStickyHeader(
                 if (state.topAppBarState is MailboxTopAppBarState.Data.SearchMode) {
                     SearchModeStickyHeader(
                         searchState = state.topAppBarState,
-                        showSpamTrashFilterState = state.showTrashSpamIncludeFilterState,
+                        showSpamTrashFilterState = state.showSpamTrashIncludeFilterState,
                         onEnabled = actions.onSpamTrashFilterEnabled,
                         onDisabled = actions.onSpamTrashFilterDisabled
                     )
                 } else {
                     DefaultModeStickyHeader(
                         unreadFilterState = state.unreadFilterState,
-                        spamTrashFilterState = state.showTrashSpamIncludeFilterState,
+                        spamTrashFilterState = state.showSpamTrashIncludeFilterState,
                         onReadEnabled = actions.onUnreadFilterEnabled,
                         onReadDisabled = actions.onUnreadFilterDisabled,
                         onSpamTrashEnabled = actions.onSpamTrashFilterEnabled,
@@ -103,12 +103,12 @@ fun MailboxStickyHeader(
 @Composable
 private fun RowScope.SearchModeStickyHeader(
     searchState: MailboxTopAppBarState.Data.SearchMode,
-    showSpamTrashFilterState: ShowTrashSpamIncludeFilterState,
+    showSpamTrashFilterState: ShowSpamTrashIncludeFilterState,
     onEnabled: () -> Unit,
     onDisabled: () -> Unit
 ) {
     if (searchState.searchQuery.isNotEmpty()) {
-        ShowTrashSpamIncludeFilter(
+        ShowSpamTrashIncludeFilter(
             modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
             state = showSpamTrashFilterState,
             onFilterEnabled = onEnabled,
@@ -121,7 +121,7 @@ private fun RowScope.SearchModeStickyHeader(
 @Composable
 private fun RowScope.DefaultModeStickyHeader(
     unreadFilterState: UnreadFilterState,
-    spamTrashFilterState: ShowTrashSpamIncludeFilterState,
+    spamTrashFilterState: ShowSpamTrashIncludeFilterState,
     onReadEnabled: () -> Unit,
     onReadDisabled: () -> Unit,
     onSpamTrashEnabled: () -> Unit,
@@ -136,7 +136,7 @@ private fun RowScope.DefaultModeStickyHeader(
 
     Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
 
-    ShowTrashSpamIncludeFilter(
+    ShowSpamTrashIncludeFilter(
         modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
         state = spamTrashFilterState,
         onFilterEnabled = onSpamTrashEnabled,

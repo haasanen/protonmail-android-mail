@@ -40,7 +40,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowTrashSpam
+import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -155,7 +155,7 @@ class RustConversationsQueryImpl @Inject constructor(
             session,
             pageDescriptor.labelId.toLocalLabelId(),
             pageDescriptor.unread,
-            pageDescriptor.showTrashSpam,
+            pageDescriptor.showSpamTrash,
             conversationsUpdatedCallback(scrollerOnUpdateHandler)
         )
             .onRight {
@@ -267,7 +267,7 @@ class RustConversationsQueryImpl @Inject constructor(
         val userId: UserId,
         val labelId: LabelId,
         val unread: Boolean,
-        val showTrashSpam: Boolean
+        val showSpamTrash: Boolean
     )
 
     private fun PageKey.DefaultPageKey.toPageDescriptor(userId: UserId): PageDescriptor {
@@ -275,7 +275,7 @@ class RustConversationsQueryImpl @Inject constructor(
             userId = userId,
             labelId = this.labelId,
             unread = this.readStatus == ReadStatus.Unread,
-            showTrashSpam = this.showTrashSpam == ShowTrashSpam.Show
+            showSpamTrash = this.showSpamTrash == ShowSpamTrash.Show
         )
     }
 

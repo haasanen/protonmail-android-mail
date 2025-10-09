@@ -88,7 +88,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
@@ -383,7 +383,7 @@ internal class MailboxViewModelTest {
                 mailboxListState = MailboxListState.Loading,
                 topAppBarState = MailboxTopAppBarState.Loading,
                 unreadFilterState = UnreadFilterState.Loading,
-                showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Loading,
+                showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Loading,
                 bottomAppBarState = BottomBarState.Data.Hidden(
                     BottomBarTarget.Mailbox, emptyList<ActionUiModel>().toImmutableList()
                 ),
@@ -2934,7 +2934,7 @@ internal class MailboxViewModelTest {
                 numUnread = UnreadCountersTestData.labelToCounterMap[initialLocationMailLabelId.labelId]!!,
                 isFilterEnabled = unreadFilterState
             ),
-            showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Data.Hidden
+            showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden
         )
     }
 
@@ -3491,7 +3491,7 @@ internal class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 currentState = any(),
-                operation = MailboxEvent.HideTrashSpamFilter
+                operation = MailboxEvent.HideSpamTrashFilter
             )
         } returns state
     }

@@ -39,7 +39,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingDeleteDialog
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingErrorBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingMailboxList
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingShowTrashSpamFilter
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
@@ -49,7 +49,7 @@ import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 internal sealed interface MailboxOperation {
     sealed interface AffectingTopAppBar
     sealed interface AffectingUnreadFilter
-    sealed interface AffectingShowTrashSpamFilter
+    sealed interface AffectingShowSpamTrashFilter
     sealed interface AffectingMailboxList
     sealed interface AffectingBottomAppBar
     sealed interface AffectingActionMessage
@@ -94,8 +94,8 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     object EnableUnreadFilter : MailboxViewAction, AffectingUnreadFilter
     object DisableUnreadFilter : MailboxViewAction, AffectingUnreadFilter
 
-    object EnableShowTrashSpamFilter : MailboxViewAction, AffectingShowTrashSpamFilter
-    object DisableShowTrashSpamFilter : MailboxViewAction, AffectingShowTrashSpamFilter
+    object EnableShowSpamTrashFilter : MailboxViewAction, AffectingShowSpamTrashFilter
+    object DisableShowSpamTrashFilter : MailboxViewAction, AffectingShowSpamTrashFilter
 
     object MarkAsRead : MailboxViewAction, AffectingMailboxList, AffectingBottomSheet
     object MarkAsUnread : MailboxViewAction, AffectingMailboxList, AffectingBottomSheet
@@ -251,7 +251,7 @@ internal sealed interface MailboxEvent : MailboxOperation {
     data class NewLabelSelected(
         val selectedLabel: MailLabel,
         val selectedLabelCount: Int?
-    ) : MailboxEvent, AffectingTopAppBar, AffectingUnreadFilter, AffectingMailboxList, AffectingShowTrashSpamFilter
+    ) : MailboxEvent, AffectingTopAppBar, AffectingUnreadFilter, AffectingMailboxList, AffectingShowSpamTrashFilter
 
     data class SelectedLabelChanged(
         val selectedLabel: MailLabel
@@ -341,8 +341,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
 
     object MaxSelectionLimitReached : MailboxEvent, AffectingActionMessage
 
-    object ShowTrashSpamFilter : MailboxEvent, AffectingShowTrashSpamFilter
-    object HideTrashSpamFilter : MailboxEvent, AffectingShowTrashSpamFilter
+    object ShowSpamTrashFilter : MailboxEvent, AffectingShowSpamTrashFilter
+    object HideSpamTrashFilter : MailboxEvent, AffectingShowSpamTrashFilter
 }
 
 

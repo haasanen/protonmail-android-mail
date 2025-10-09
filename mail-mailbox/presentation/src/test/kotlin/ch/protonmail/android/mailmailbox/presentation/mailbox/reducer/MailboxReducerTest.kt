@@ -36,7 +36,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
@@ -68,8 +68,8 @@ internal class MailboxReducerTest(
     private val unreadFilterReducer: MailboxUnreadFilterReducer = mockk {
         every { newStateFrom(any(), any()) } returns reducedState.unreadFilterState
     }
-    private val showTrashSpamFilterReducer: MailboxShowTrashSpamFilterReducer = mockk {
-        every { newStateFrom(any(), any()) } returns reducedState.showTrashSpamIncludeFilterState
+    private val showSpamTrashFilterReducer: MailboxShowSpamTrashFilterReducer = mockk {
+        every { newStateFrom(any(), any()) } returns reducedState.showSpamTrashIncludeFilterState
     }
     private val bottomAppBarReducer: BottomBarReducer = mockk {
         every { newStateFrom(any(), any()) } returns reducedState.bottomAppBarState
@@ -90,7 +90,7 @@ internal class MailboxReducerTest(
         mailboxListReducer,
         topAppBarReducer,
         unreadFilterReducer,
-        showTrashSpamFilterReducer,
+        showSpamTrashFilterReducer,
         bottomAppBarReducer,
         actionMessageReducer,
         deleteDialogReducer,
@@ -139,15 +139,15 @@ internal class MailboxReducerTest(
 
         if (shouldReduceSpamTrashFilterState) {
             verify {
-                showTrashSpamFilterReducer.newStateFrom(
-                    currentState.showTrashSpamIncludeFilterState,
-                    operation as MailboxOperation.AffectingShowTrashSpamFilter
+                showSpamTrashFilterReducer.newStateFrom(
+                    currentState.showSpamTrashIncludeFilterState,
+                    operation as MailboxOperation.AffectingShowSpamTrashFilter
                 )
             }
         } else {
             assertEquals(
-                expected = currentState.showTrashSpamIncludeFilterState,
-                actual = nextState.showTrashSpamIncludeFilterState,
+                expected = currentState.showSpamTrashIncludeFilterState,
+                actual = nextState.showSpamTrashIncludeFilterState,
                 message = testName
             )
         }
@@ -209,7 +209,7 @@ internal class MailboxReducerTest(
                 numUnread = 42,
                 isFilterEnabled = false
             ),
-            showTrashSpamIncludeFilterState = ShowTrashSpamIncludeFilterState.Data.Hidden,
+            showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden,
             bottomAppBarState = BottomBarState.Loading,
             actionResult = Effect.empty(),
             deleteDialogState = DeleteDialogState.Hidden,
@@ -666,7 +666,7 @@ internal class MailboxReducerTest(
                 shouldReduceClearAllDialog = true
             ),
             TestInput(
-                MailboxEvent.HideTrashSpamFilter,
+                MailboxEvent.HideSpamTrashFilter,
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
@@ -678,7 +678,7 @@ internal class MailboxReducerTest(
                 shouldReduceClearAllDialog = false
             ),
             TestInput(
-                MailboxEvent.ShowTrashSpamFilter,
+                MailboxEvent.ShowSpamTrashFilter,
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
@@ -690,7 +690,7 @@ internal class MailboxReducerTest(
                 shouldReduceClearAllDialog = false
             ),
             TestInput(
-                MailboxViewAction.EnableShowTrashSpamFilter,
+                MailboxViewAction.EnableShowSpamTrashFilter,
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
@@ -702,7 +702,7 @@ internal class MailboxReducerTest(
                 shouldReduceClearAllDialog = false
             ),
             TestInput(
-                MailboxViewAction.DisableShowTrashSpamFilter,
+                MailboxViewAction.DisableShowSpamTrashFilter,
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,

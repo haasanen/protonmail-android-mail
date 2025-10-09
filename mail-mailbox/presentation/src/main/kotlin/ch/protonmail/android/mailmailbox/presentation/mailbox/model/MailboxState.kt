@@ -31,7 +31,7 @@ data class MailboxState(
     val mailboxListState: MailboxListState,
     val topAppBarState: MailboxTopAppBarState,
     val unreadFilterState: UnreadFilterState,
-    val showTrashSpamIncludeFilterState: ShowTrashSpamIncludeFilterState,
+    val showSpamTrashIncludeFilterState: ShowSpamTrashIncludeFilterState,
     val bottomAppBarState: BottomBarState,
     val deleteDialogState: DeleteDialogState,
     val clearAllDialogState: DeleteDialogState,

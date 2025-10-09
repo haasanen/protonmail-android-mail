@@ -221,8 +221,8 @@ fun MailboxScreen(
         navigateToComposer = { actions.navigateToComposer() },
         onDisableUnreadFilter = { viewModel.submit(MailboxViewAction.DisableUnreadFilter) },
         onEnableUnreadFilter = { viewModel.submit(MailboxViewAction.EnableUnreadFilter) },
-        onEnableSpamTrashFilter = { viewModel.submit(MailboxViewAction.EnableShowTrashSpamFilter) },
-        onDisableSpamTrashFilter = { viewModel.submit(MailboxViewAction.DisableShowTrashSpamFilter) },
+        onEnableSpamTrashFilter = { viewModel.submit(MailboxViewAction.EnableShowSpamTrashFilter) },
+        onDisableSpamTrashFilter = { viewModel.submit(MailboxViewAction.DisableShowSpamTrashFilter) },
         onSelectAllClicked = {
             viewModel.submit(MailboxViewAction.SelectAll(mailboxListItems.itemSnapshotList.items))
         },

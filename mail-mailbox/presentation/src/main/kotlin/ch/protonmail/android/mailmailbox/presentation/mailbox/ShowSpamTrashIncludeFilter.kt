@@ -38,20 +38,20 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.mailmailbox.presentation.R
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowTrashSpamIncludeFilterState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 
 @Composable
-fun ShowTrashSpamIncludeFilter(
+fun ShowSpamTrashIncludeFilter(
     modifier: Modifier = Modifier,
-    state: ShowTrashSpamIncludeFilterState,
+    state: ShowSpamTrashIncludeFilterState,
     onFilterEnabled: () -> Unit,
     onFilterDisabled: () -> Unit
 ) {
     when (state) {
-        is ShowTrashSpamIncludeFilterState.Loading,
-        is ShowTrashSpamIncludeFilterState.Data.Hidden -> Unit
+        is ShowSpamTrashIncludeFilterState.Loading,
+        is ShowSpamTrashIncludeFilterState.Data.Hidden -> Unit
 
-        is ShowTrashSpamIncludeFilterState.Data.Shown -> {
+        is ShowSpamTrashIncludeFilterState.Data.Shown -> {
             FilterChip(
                 modifier = modifier
                     .animateContentSize(
@@ -101,7 +101,7 @@ fun ShowTrashSpamIncludeFilter(
 }
 
 @Composable
-private fun addCloseIconForEnabledState(state: ShowTrashSpamIncludeFilterState.Data.Shown): @Composable (() -> Unit)? {
+private fun addCloseIconForEnabledState(state: ShowSpamTrashIncludeFilterState.Data.Shown): @Composable (() -> Unit)? {
     return if (state.enabled) {
         {
             Icon(
@@ -127,8 +127,8 @@ private fun chipColors() = FilterChipDefaults.filterChipColors(
 @Preview(showBackground = true)
 @Composable
 fun InactiveShowSpamTrashFilterButtonPreview() {
-    ShowTrashSpamIncludeFilter(
-        state = ShowTrashSpamIncludeFilterState.Data.Shown(false),
+    ShowSpamTrashIncludeFilter(
+        state = ShowSpamTrashIncludeFilterState.Data.Shown(false),
         onFilterEnabled = {},
         onFilterDisabled = {}
     )
@@ -137,8 +137,8 @@ fun InactiveShowSpamTrashFilterButtonPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ActiveShowSpamTrashFilterPreview() {
-    ShowTrashSpamIncludeFilter(
-        state = ShowTrashSpamIncludeFilterState.Data.Shown(true),
+    ShowSpamTrashIncludeFilter(
+        state = ShowSpamTrashIncludeFilterState.Data.Shown(true),
         onFilterEnabled = {},
         onFilterDisabled = {}
     )
