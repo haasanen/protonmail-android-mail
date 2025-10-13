@@ -156,7 +156,7 @@
   <string name="composer_expiration_set_expiration">Задаць тэрмін дзеяння</string>
   <string name="composer_expiration_pick_time_title">Задаць час</string>
   <string name="composer_expiration_time_custom_time_on">У %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Адбылася нечаканая памылка пры адпраўцы гэтага паведамлення. Паспрабуйце яшчэ раз.</string>
   <string name="composer_error_send_draft_invalid_sender">Адключаны або памылковы адрас электроннай пошты. Праверце, што гэты адрас сапраўдны і актыўны.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Не ўдалося расшыфраваць знешні пароль шыфравання</string>
   <string name="composer_error_send_draft_already_sent">Паведамленне ўжо было адпраўлена</string>

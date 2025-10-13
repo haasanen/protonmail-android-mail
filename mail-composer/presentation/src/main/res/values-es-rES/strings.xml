@@ -154,7 +154,7 @@
   <string name="composer_expiration_set_expiration">Set expiration</string>
   <string name="composer_expiration_pick_time_title">Establecer hora</string>
   <string name="composer_expiration_time_custom_time_on">On %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Ha ocurrido un error inesperado al enviar este mensaje. Inténtalo de nuevo.</string>
   <string name="composer_error_send_draft_invalid_sender">Dirección de correo electrónico desactivada o inválida. Comprueba que la dirección es válida y está activa.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Error al descifrar la contraseña de cifrado externa</string>
   <string name="composer_error_send_draft_already_sent">El mensaje ya ha sido enviado</string>

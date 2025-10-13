@@ -156,7 +156,7 @@
   <string name="composer_expiration_set_expiration">Nastaviť platnosť</string>
   <string name="composer_expiration_pick_time_title">Nastaviť čas</string>
   <string name="composer_expiration_time_custom_time_on">O %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Pri odosielaní tejto správy došlo k neočakávanej chybe. Skúste to znova, prosím.</string>
   <string name="composer_error_send_draft_invalid_sender">Deaktivovaná alebo neplatná emailová adresa. Skontrolujte, či je adresa platná a aktívna.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Nepodarilo sa dešifrovať externé šifrovacie heslo</string>
   <string name="composer_error_send_draft_already_sent">Správa už bola odoslaná</string>

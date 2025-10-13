@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">帳號設定</string>
   <string name="mail_settings_email_settings">電子郵件設定</string>
+  <string name="mail_settings_email_signature_settings">Email signature</string>
   <string name="mail_settings_folder_and_label_settings">資料夾與標籤設定</string>
   <string name="mail_settings_privacy_and_security_settings">隱私與安全性設定</string>
   <string name="mail_settings_preferences">偏好設定</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">隱私與安全性</string>
   <string name="mail_settings_fido_keys">安全性密鑰</string>
   <string name="mail_settings_change_password">密碼管理</string>
+  <string name="mail_settings_signature">Signature</string>
   <string name="mail_settings_storage_quota">%1$d%% of %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">電子郵件追蹤保護</string>
   <string name="mail_settings_app_hint">行動裝置應用程式自訂</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">外觀</string>
   <string name="mail_settings_app_customization_protection">應用程式鎖</string>
   <string name="mail_settings_app_customization_mobile_signature">Mobile signature</string>
+  <string name="mail_settings_app_customization_email_signature">Email signature</string>
   <string name="mail_settings_app_customization_protection_enabled_description">已啟用自動鎖定</string>
   <string name="mail_settings_app_customization_protection_disabled_description">已停用自動鎖定</string>
   <string name="mail_settings_app_customization_use_device_contacts">使用裝置通訊錄</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">檢視應用程式紀錄檔</string>
   <string name="mail_settings_app_customization_mail_experience_header">Mail 體驗</string>
   <string name="mail_settings_app_customization_advanced_header">進階</string>
+  <string name="mail_settings_app_customization_signature_header">Signatures</string>
+  <string name="mail_settings_app_customization_email_signature_header">Email signature</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Mobile signature</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Your email signature, that is automatically added to all emails you send.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Additional signature added to emails sent from this device.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">On</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Off</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Enable signature</string>

@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Kontoinställningar</string>
   <string name="mail_settings_email_settings">E-postinställningar</string>
+  <string name="mail_settings_email_signature_settings">E-postsignatur</string>
   <string name="mail_settings_folder_and_label_settings">Inställningar för mappar och etiketter</string>
   <string name="mail_settings_privacy_and_security_settings">Inställningar för integritet och säkerhet</string>
   <string name="mail_settings_preferences">Preferenser</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Integritet och säkerhet</string>
   <string name="mail_settings_fido_keys">Säkerhetsnycklar</string>
   <string name="mail_settings_change_password">Lösenordshantering</string>
+  <string name="mail_settings_signature">Signatur</string>
   <string name="mail_settings_storage_quota">%1$d%% av %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">E-postspårningsskydd</string>
   <string name="mail_settings_app_hint">Anpassning av mobilapp</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Utseende</string>
   <string name="mail_settings_app_customization_protection">Applås</string>
   <string name="mail_settings_app_customization_mobile_signature">Mobilsignatur</string>
+  <string name="mail_settings_app_customization_email_signature">E-postsignatur</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatiskt lås aktiverat</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatiskt lås inaktiverat</string>
   <string name="mail_settings_app_customization_use_device_contacts">Använd enhetens kontakter</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Visa applikationsloggar</string>
   <string name="mail_settings_app_customization_mail_experience_header">Mail-upplevelse</string>
   <string name="mail_settings_app_customization_advanced_header">Avancerat</string>
+  <string name="mail_settings_app_customization_signature_header">Signaturer</string>
+  <string name="mail_settings_app_customization_email_signature_header">E-postsignatur</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Mobilsignatur</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Din e-postsignatur som automatiskt läggs till i all e-post du skickar.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Ytterligare signatur tillagd till e-post skickade från denna enhet.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">På</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Av</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Aktivera signatur</string>

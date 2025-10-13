@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">Imposta la scadenza</string>
   <string name="composer_expiration_time_bottom_sheet_title">Scadenza</string>
   <string name="composer_expiration_time_bottom_sheet_done">Salva</string>
-  <string name="composer_bottom_bar_expiration_time_none">Senza scadenza</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">Dopo 1 ora</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">Dopo 1 giorno</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">Dopo 3 giorni</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">Dopo 1 settimana</string>
+  <string name="composer_bottom_bar_expiration_time_none">Nessuna scadenza</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">1 ora</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">1 giorno</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">3 giorni</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">1 settimana</string>
   <string name="composer_bottom_bar_expiration_time_custom">Data esatta</string>
   <string name="composer_error_setting_expiration_time">Impostazione della scadenza non riuscita</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -154,7 +154,7 @@
   <string name="composer_expiration_set_expiration">Imposta la scadenza</string>
   <string name="composer_expiration_pick_time_title">Imposta l\'orario</string>
   <string name="composer_expiration_time_custom_time_on">Il %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Si è verificato un errore imprevisto durante l\'invio di questo messaggio. Riprova.</string>
   <string name="composer_error_send_draft_invalid_sender">Indirizzo email disattivato o non valido. Controlla che l\'indirizzo sia valido e attivo.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Decrittografia della crittografia esterna non riuscita</string>
   <string name="composer_error_send_draft_already_sent">Messaggio inviato in precedenza</string>
@@ -165,8 +165,8 @@
   <string name="composer_error_send_draft_schedule_send_error">L\'ora di invio programmata è nel passato. Vai in Bozze per inviare o riprogrammare.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">L\'orario di scadenza del messaggio è troppo vicina.</string>
   <string name="composer_error_send_draft_package_error">Problema durante l\'invio del messaggio. Riprova.</string>
-  <string name="composer_error_send_draft_attachment_too_large">Invio della bozza non riuscito - Limite di dimensione degli allegati superato.</string>
-  <string name="composer_error_send_draft_too_many_attachments">Invio della bozza non riuscito - Limite di allegati superato.</string>
-  <string name="composer_error_send_draft_attachments_crypto_error">Invio della bozza non riuscito - Crittografia dell\'allegato non riuscita.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Invio della bozza non riuscito - Limite di dimensione degli allegati superato.</string>
+  <string name="composer_error_send_draft_too_many_attachments">Invio della bozza non riuscito. Limite di allegati superato.</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Invio della bozza non riuscito. Crittografia dell\'allegato non riuscita.</string>
   <string name="composer_expiration_time_learn_more">Scopri di più</string>
 </resources>

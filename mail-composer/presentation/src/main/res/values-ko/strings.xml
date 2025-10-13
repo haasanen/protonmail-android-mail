@@ -153,7 +153,7 @@
   <string name="composer_expiration_set_expiration">만료 설정</string>
   <string name="composer_expiration_pick_time_title">시간 설정</string>
   <string name="composer_expiration_time_custom_time_on">%1$s에</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">An unexpected error happened sending this message. Please retry.</string>
   <string name="composer_error_send_draft_invalid_sender">Disabled or invalid email address. Check that the address is valid and active.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
   <string name="composer_error_send_draft_already_sent">Message was already sent</string>

@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Setări cont</string>
   <string name="mail_settings_email_settings">Setări e-mail</string>
+  <string name="mail_settings_email_signature_settings">Semnătură e-mail</string>
   <string name="mail_settings_folder_and_label_settings">Setări foldere și etichete</string>
   <string name="mail_settings_privacy_and_security_settings">Setări intimitate și securitate</string>
   <string name="mail_settings_preferences">Preferințe</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Intimitate și securitate</string>
   <string name="mail_settings_fido_keys">Chei de securitate</string>
   <string name="mail_settings_change_password">Gestionare parole</string>
+  <string name="mail_settings_signature">Semnătură</string>
   <string name="mail_settings_storage_quota">%1$d%% din %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Protejare e-mail împotriva urmăririi</string>
   <string name="mail_settings_app_hint">Personalizare aplicație mobilă</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Aspect</string>
   <string name="mail_settings_app_customization_protection">Blocare aplicație</string>
   <string name="mail_settings_app_customization_mobile_signature">Semnătură mobil</string>
+  <string name="mail_settings_app_customization_email_signature">Semnătură e-mail</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Autoblocare activată</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Autoblocare dezactivată</string>
   <string name="mail_settings_app_customization_use_device_contacts">Folosire contacte din dispozitiv</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Afișare jurnale aplicație</string>
   <string name="mail_settings_app_customization_mail_experience_header">Experiență Mail</string>
   <string name="mail_settings_app_customization_advanced_header">Avansat</string>
+  <string name="mail_settings_app_customization_signature_header">Semnături</string>
+  <string name="mail_settings_app_customization_email_signature_header">Semnătură e-mail</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Semnătură mobil</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Semnătura personală de e-mail, care este adăugată automat tuturor mesajelor pe care le trimiteți.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Semnătură suplimentară adăugată mesajelor trimise de pe acest dispozitiv.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Activată</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Dezactivată</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Activare semnătură</string>

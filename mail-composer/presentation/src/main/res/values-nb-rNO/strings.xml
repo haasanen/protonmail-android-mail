@@ -154,7 +154,7 @@
   <string name="composer_expiration_set_expiration">Angi utløpstid</string>
   <string name="composer_expiration_pick_time_title">Angi tid</string>
   <string name="composer_expiration_time_custom_time_on">På %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Det oppstod en uventet feil ved sending av denne meldingen. Forsøk igjen.</string>
   <string name="composer_error_send_draft_invalid_sender">Deaktivert eller ugyldig e-postadresse. Sjekk at adressen er gyldig og aktiv.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Kunne ikke dekryptere eksternt krypteringspassord</string>
   <string name="composer_error_send_draft_already_sent">Meldingen er allerede sendt</string>

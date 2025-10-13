@@ -80,7 +80,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Yine de gönder</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Parola koruması ekle</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Tüm alıcıların Proton Mail kullandığı doğrulanamadı. İleti geçerlilik süresi yalnızca Proton adreslerinde desteklenir. Bu durumda, geçerlilik süresi yerine kullanılacak bir parola ayarlamanız önerilir.</string>
-  <string name="composer_send_expiring_message_to_external_will_fail">Bazı alıcılarda (%1$s) varsayılan olarak geçerlilik süresi desteklenmez. Proton Mail kullanmayan alıcılarda geçerlilik süresini kullanabilmek için bir parola ekleyin.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail">Bazı alıcılarda (%1$s) varsayılan olarak geçerlilik süresi desteklenmiyor. Proton Mail kullanmayan alıcılarda geçerlilik süresini kullanabilmek için bir parola ekleyin.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Bildirim gönderimi</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">\@pm.me adresinden ileti göndermek ücretli bir özelliktir. İletiniz varsayılan adresinizden gönderilecek</string>
@@ -154,7 +154,7 @@
   <string name="composer_expiration_set_expiration">Geçerlilik süresi ayarla</string>
   <string name="composer_expiration_pick_time_title">Saati ayarla</string>
   <string name="composer_expiration_time_custom_time_on">%1$s zamanında</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Bu ileti gönderilirken beklenmeyen bir sorun çıktı. Lütfen yeniden deneyin.</string>
   <string name="composer_error_send_draft_invalid_sender">E-posta adresi kullanımdan kaldırılmış veya geçersiz. Adresin geçerli ve etkin olduğunu denetleyin.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Dış şifreleme parolasının şifresi çözülemedi</string>
   <string name="composer_error_send_draft_already_sent">İleti zaten gönderilmiş</string>

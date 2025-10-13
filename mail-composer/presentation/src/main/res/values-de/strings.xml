@@ -154,7 +154,7 @@
   <string name="composer_expiration_set_expiration">Ablaufdatum festlegen</string>
   <string name="composer_expiration_pick_time_title">Uhrzeit festlegen</string>
   <string name="composer_expiration_time_custom_time_on">Am %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Beim Senden dieser Nachricht ist ein unerwarteter Fehler aufgetreten. Bitte erneut versuchen.</string>
   <string name="composer_error_send_draft_invalid_sender">Deaktivierte oder ungültige E-Mail-Adresse. Überprüfe, ob die Adresse gültig und aktiv ist.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Externes Verschlüsselungspasswort konnte nicht entschlüsselt werden</string>
   <string name="composer_error_send_draft_already_sent">Nachricht wurde bereits gesendet</string>

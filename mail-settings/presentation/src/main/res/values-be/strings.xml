@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Налады ўліковага запісу</string>
   <string name="mail_settings_email_settings">Налады ліста</string>
+  <string name="mail_settings_email_signature_settings">Подпіс электроннай пошты</string>
   <string name="mail_settings_folder_and_label_settings">Налады папкі і меткі</string>
   <string name="mail_settings_privacy_and_security_settings">Налады прыватнасці і бяспека</string>
   <string name="mail_settings_preferences">Параметры</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Прыватнасць і бяспека</string>
   <string name="mail_settings_fido_keys">Ключы бяспекі</string>
   <string name="mail_settings_change_password">Кіраванне паролямі</string>
+  <string name="mail_settings_signature">Подпіс</string>
   <string name="mail_settings_storage_quota">%1$d%% з %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Абарона ад праграм сачэння электроннай пошты</string>
   <string name="mail_settings_app_hint">Наладжванне мабільнай праграмы</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Вонкавы выгляд</string>
   <string name="mail_settings_app_customization_protection">Блакіроўка праграмы</string>
   <string name="mail_settings_app_customization_mobile_signature">Мабільны подпіс</string>
+  <string name="mail_settings_app_customization_email_signature">Подпіс электроннай пошты</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Аўтаблакіроўка ўключана</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Аўтаблакіроўка адключана</string>
   <string name="mail_settings_app_customization_use_device_contacts">Выкарыстоўваць кантакты прылады</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Паглядзець журналы праграмы</string>
   <string name="mail_settings_app_customization_mail_experience_header">Досвед працы з электроннай поштай</string>
   <string name="mail_settings_app_customization_advanced_header">Дадатковыя</string>
+  <string name="mail_settings_app_customization_signature_header">Подпісы</string>
+  <string name="mail_settings_app_customization_email_signature_header">Подпіс электроннай пошты</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Мабільны подпіс</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Ваш подпіс электроннай пошты, які аўтаматычна дадаецца да ўсіх лістоў, якія вы адпраўляеце.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Дадатковы подпіс дадаецца да лістоў, якія адпраўляюцца з гэтай прылады.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Уключана</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Выключана</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Уключыць подпіс</string>

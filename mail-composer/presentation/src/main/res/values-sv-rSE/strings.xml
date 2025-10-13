@@ -154,7 +154,7 @@
   <string name="composer_expiration_set_expiration">Ställ in utgångstid</string>
   <string name="composer_expiration_pick_time_title">Ställ in tid</string>
   <string name="composer_expiration_time_custom_time_on">På %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">An unexpected error happened sending this message. Please retry.</string>
   <string name="composer_error_send_draft_invalid_sender">Inaktiverad eller ogiltig e-postadress. Kontrollera att adressen är giltig och aktiv.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
   <string name="composer_error_send_draft_already_sent">Meddelande var redan skickat</string>

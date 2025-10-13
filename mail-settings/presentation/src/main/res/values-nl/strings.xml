@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Accountinstellingen</string>
   <string name="mail_settings_email_settings">E-mailinstellingen</string>
+  <string name="mail_settings_email_signature_settings">E-mailhandtekening</string>
   <string name="mail_settings_folder_and_label_settings">Map- en labelinstellingen</string>
   <string name="mail_settings_privacy_and_security_settings">Privacy- en beveiligingsinstellingen</string>
   <string name="mail_settings_preferences">Voorkeuren</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Privacy en beveiliging</string>
   <string name="mail_settings_fido_keys">Beveiligingssleutels</string>
   <string name="mail_settings_change_password">Wachtwoordbeheer</string>
+  <string name="mail_settings_signature">Handtekening</string>
   <string name="mail_settings_storage_quota">%1$d%% van %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Bescherming tegen e-mailtracking</string>
   <string name="mail_settings_app_hint">Mobiele app-aanpassingen</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Uiterlijk</string>
   <string name="mail_settings_app_customization_protection">Appvergrendeling</string>
   <string name="mail_settings_app_customization_mobile_signature">Mobiele handtekening</string>
+  <string name="mail_settings_app_customization_email_signature">E-mailhandtekening</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatisch vergrendelen ingeschakeld</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatisch vergrendelen uitgeschakeld</string>
   <string name="mail_settings_app_customization_use_device_contacts">Apparaat contacten gebruiken</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Bekijk toepassingslogboeken</string>
   <string name="mail_settings_app_customization_mail_experience_header">Mailervaring</string>
   <string name="mail_settings_app_customization_advanced_header">Geavanceerd</string>
+  <string name="mail_settings_app_customization_signature_header">Handtekeningen</string>
+  <string name="mail_settings_app_customization_email_signature_header">E-mailhandtekening</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Mobiele handtekening</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Uw e-mailhandtekening, die automatisch wordt toegevoegd aan alle e-mails die u verzendt.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Aanvullende handtekening toegevoegd aan e-mails verzonden vanaf dit apparaat.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Aan</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Uit</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Handtekening inschakelen</string>

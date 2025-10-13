@@ -155,7 +155,7 @@
   <string name="composer_expiration_set_expiration">Setare expirare</string>
   <string name="composer_expiration_pick_time_title">Setare oră</string>
   <string name="composer_expiration_time_custom_time_on">La %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">S-a produs o eroare neașteptată la trimiterea acestui mesaj. Mai încercați.</string>
   <string name="composer_error_send_draft_invalid_sender">Adresă de e-mail dezactivată sau nevalidă. Verificați dacă adresa este validă și activă.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Nu s-a putut decripta parola de criptare externă.</string>
   <string name="composer_error_send_draft_already_sent">Mesajul a fost deja trimis.</string>

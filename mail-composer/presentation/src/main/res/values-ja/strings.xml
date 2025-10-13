@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">有効期限を設定</string>
   <string name="composer_expiration_time_bottom_sheet_title">メッセージの有効期限</string>
   <string name="composer_expiration_time_bottom_sheet_done">設定する</string>
-  <string name="composer_bottom_bar_expiration_time_none">Never expires</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">After 1 hour</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">After 1 day</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">After 3 days</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">After 1 week</string>
+  <string name="composer_bottom_bar_expiration_time_none">有効期限なし</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">1 時間後</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">1日後</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">3日後</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">1週間後</string>
   <string name="composer_bottom_bar_expiration_time_custom">特定の日付</string>
   <string name="composer_error_setting_expiration_time">有効期限の設定に失敗しました</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -148,12 +148,12 @@
   <string name="composer_attachment_upload_error_retry">いくつかの添付ファイルのアップロードに失敗しました。再度お試しください。</string>
   <string name="composer_external_encryption_unexpected_error">予期しないエラーが発生しました%s。再度お試しください。</string>
   <string name="composer_sender_changed_original_address_cannot_send">選択されたアドレスは送信に使用できません。お客様のメッセージはデフォルトのアドレスから送信されます。</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder. To expire messages for non-Proton users, add a password.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">メッセージが宛先の受信トレイとお客様の送信済みフォルダから削除されるタイミングを設定します。Proton 以外のユーザーのメッセージを有効期限切れにするには、パスワードを追加してください。</string>
   <string name="expiration_time_set_time_and_date">時間と日付を設定</string>
   <string name="composer_expiration_set_expiration">有効期限を設定</string>
   <string name="composer_expiration_pick_time_title">時刻を設定</string>
   <string name="composer_expiration_time_custom_time_on">%1$s に</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">このメッセージを送信中に予期せぬエラーが発生しました。再試行してください。</string>
   <string name="composer_error_send_draft_invalid_sender">無効なメールアドレスです。アドレスが有効でアクティブであることを確認してください。</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">外部暗号化パスワードの復号に失敗しました</string>
   <string name="composer_error_send_draft_already_sent">メッセージはすでに送信済みです</string>
@@ -167,5 +167,5 @@
   <string name="composer_error_send_draft_attachment_too_large">下書きを送信できません - 添付ファイルがサイズ制限を超過しています</string>
   <string name="composer_error_send_draft_too_many_attachments">下書きを送信できません - 添付ファイル数の上限に達しました</string>
   <string name="composer_error_send_draft_attachments_crypto_error">下書きを送信できません - 添付ファイルの暗号化に失敗しました。</string>
-  <string name="composer_expiration_time_learn_more">Learn more</string>
+  <string name="composer_expiration_time_learn_more">より詳しく</string>
 </resources>

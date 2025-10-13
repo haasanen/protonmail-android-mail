@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Paramètres du compte</string>
   <string name="mail_settings_email_settings">Paramètres de messagerie</string>
+  <string name="mail_settings_email_signature_settings">Signature de message</string>
   <string name="mail_settings_folder_and_label_settings">Paramètres des labels et des dossiers</string>
   <string name="mail_settings_privacy_and_security_settings">Paramètres de sécurité et de confidentialité</string>
   <string name="mail_settings_preferences">Préférences</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Vie privée et sécurité</string>
   <string name="mail_settings_fido_keys">Clés de sécurité</string>
   <string name="mail_settings_change_password">Gestion des mots de passe</string>
+  <string name="mail_settings_signature">Signature</string>
   <string name="mail_settings_storage_quota">%1$d%% sur %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Protection contre le suivi des e-mails</string>
   <string name="mail_settings_app_hint">Personnalisations de l\'application mobile</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Apparence</string>
   <string name="mail_settings_app_customization_protection">Verrouillage de l\'application</string>
   <string name="mail_settings_app_customization_mobile_signature">Signature mobile</string>
+  <string name="mail_settings_app_customization_email_signature">Signature de message</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Le verrouillage automatique a été activé.</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Le verrouillage automatique a été désactivé.</string>
   <string name="mail_settings_app_customization_use_device_contacts">Utiliser les contacts de l\'appareil</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Afficher les journaux de l\'application</string>
   <string name="mail_settings_app_customization_mail_experience_header">Expérience de messagerie</string>
   <string name="mail_settings_app_customization_advanced_header">Avancés</string>
+  <string name="mail_settings_app_customization_signature_header">Signatures</string>
+  <string name="mail_settings_app_customization_email_signature_header">Signature de message</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Signature mobile</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Votre signature de message, qui est automatiquement ajoutée à tous les messages que vous envoyez.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Signature additionnelle ajoutée aux messages envoyés depuis cet appareil.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Activé</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Désactivé</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Activer la signature</string>

@@ -154,7 +154,7 @@
   <string name="composer_expiration_set_expiration">Establiu la caducitat</string>
   <string name="composer_expiration_pick_time_title">Establiu l\'hora</string>
   <string name="composer_expiration_time_custom_time_on">El %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Hi ha hagut un error inesperat en enviar aquest missatge. Torneu-ho a provar.</string>
   <string name="composer_error_send_draft_invalid_sender">Aquesta adreça de correu electrònic està inhabilitada o no és vàlida. Comproveu que sigui vàlida i estigui activa.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">No s\'ha pogut desxifrar la contrasenya de xifratge extern</string>
   <string name="composer_error_send_draft_already_sent">El missatge ja s\'ha enviat.</string>

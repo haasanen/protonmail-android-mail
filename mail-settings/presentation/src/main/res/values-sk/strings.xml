@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Nastavenia účtu</string>
   <string name="mail_settings_email_settings">Nastavenia emailu</string>
+  <string name="mail_settings_email_signature_settings">Podpis v emailoch</string>
   <string name="mail_settings_folder_and_label_settings">Nastavenia priečinkov a štítkov</string>
   <string name="mail_settings_privacy_and_security_settings">Nastavenia súkromia a zabezpečenia</string>
   <string name="mail_settings_preferences">Preferencie</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Súkromie a bezpečnosť</string>
   <string name="mail_settings_fido_keys">Bezpečnostné kľúče</string>
   <string name="mail_settings_change_password">Správa hesiel</string>
+  <string name="mail_settings_signature">Podpis</string>
   <string name="mail_settings_storage_quota">%1$d%% z %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Ochrana pred emailovými sledovačmi</string>
   <string name="mail_settings_app_hint">Prispôsobenie mobilnej aplikácie</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Vzhľad</string>
   <string name="mail_settings_app_customization_protection">Zámok aplikácie</string>
   <string name="mail_settings_app_customization_mobile_signature">Podpis v mobile</string>
+  <string name="mail_settings_app_customization_email_signature">Podpis v emailoch</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatické uzamknutie povolené</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatické uzamknutie vypnuté</string>
   <string name="mail_settings_app_customization_use_device_contacts">Použiť kontakty zo zariadenia</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Zobraziť záznamy aplikácie</string>
   <string name="mail_settings_app_customization_mail_experience_header">Skúsenosti s emailom</string>
   <string name="mail_settings_app_customization_advanced_header">Pokročilé</string>
+  <string name="mail_settings_app_customization_signature_header">Podpisy</string>
+  <string name="mail_settings_app_customization_email_signature_header">Podpis v emailoch</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Podpis v mobile</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Váš podpis v emailoch, ktorý sa automaticky pridáva do všetkých odosielaných emailov.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Dodatočný podpis pridaný k emailom odoslaným z tohto zariadenia.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Zap.</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Vyp.</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Povoliť podpis</string>

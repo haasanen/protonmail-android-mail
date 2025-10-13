@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">アカウント設定</string>
   <string name="mail_settings_email_settings">メール設定</string>
+  <string name="mail_settings_email_signature_settings">メール署名</string>
   <string name="mail_settings_folder_and_label_settings">フォルダとラベルの設定</string>
   <string name="mail_settings_privacy_and_security_settings">プライバシーとセキュリティの設定</string>
   <string name="mail_settings_preferences">設定</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">プライバシーとセキュリティ</string>
   <string name="mail_settings_fido_keys">セキュリティキー</string>
   <string name="mail_settings_change_password">パスワード管理</string>
+  <string name="mail_settings_signature">署名</string>
   <string name="mail_settings_storage_quota">%2$s の中の%1$d%%</string>
   <string name="mail_settings_privacy_and_security_hint">メールトラッキング防止</string>
   <string name="mail_settings_app_hint">モバイルアプリのカスタマイズ</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">外観</string>
   <string name="mail_settings_app_customization_protection">アプリロック</string>
   <string name="mail_settings_app_customization_mobile_signature">モバイル署名</string>
+  <string name="mail_settings_app_customization_email_signature">メール署名</string>
   <string name="mail_settings_app_customization_protection_enabled_description">自動ロック有効化</string>
   <string name="mail_settings_app_customization_protection_disabled_description">自動ロック無効</string>
   <string name="mail_settings_app_customization_use_device_contacts">デバイスの連絡先を使用する</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">アプリのログを表示</string>
   <string name="mail_settings_app_customization_mail_experience_header">メール体験</string>
   <string name="mail_settings_app_customization_advanced_header">高度</string>
+  <string name="mail_settings_app_customization_signature_header">署名</string>
+  <string name="mail_settings_app_customization_email_signature_header">メール署名</string>
   <string name="mail_settings_app_customization_mobile_signature_header">モバイル署名</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">お客様が送信するすべてのメールに自動的に追加される、メールの署名です。</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">このデバイスから送信されるメールに、追加の署名が付けられます。</string>
   <string name="mail_settings_app_customization_mobile_signature_on">オン</string>
   <string name="mail_settings_app_customization_mobile_signature_off">オフ</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">署名の有効化</string>

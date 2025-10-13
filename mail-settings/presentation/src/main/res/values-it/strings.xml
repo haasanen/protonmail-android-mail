@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Impostazioni dell\'account</string>
   <string name="mail_settings_email_settings">Messaggi</string>
+  <string name="mail_settings_email_signature_settings">Firma messaggio</string>
   <string name="mail_settings_folder_and_label_settings">Cartelle ed etichette</string>
   <string name="mail_settings_privacy_and_security_settings">Privacy e sicurezza</string>
   <string name="mail_settings_preferences">Personalizzazione</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Privacy e sicurezza</string>
   <string name="mail_settings_fido_keys">Chiavi di sicurezza</string>
   <string name="mail_settings_change_password">Gestione delle password</string>
+  <string name="mail_settings_signature">Firme personali</string>
   <string name="mail_settings_storage_quota">%1$d%% / %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Protezione dal tracciamento email</string>
   <string name="mail_settings_app_hint">Personalizzazione dell\'applicazione</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Aspetto</string>
   <string name="mail_settings_app_customization_protection">Blocco automatico</string>
   <string name="mail_settings_app_customization_mobile_signature">Firma mobile</string>
+  <string name="mail_settings_app_customization_email_signature">Firma messaggio</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Blocco automatico abilitato</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Blocco automatico disabilitato</string>
   <string name="mail_settings_app_customization_use_device_contacts">Caricamento dei contatti dal dispositivo</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Registro degli eventi</string>
   <string name="mail_settings_app_customization_mail_experience_header">Esperienza Mail</string>
   <string name="mail_settings_app_customization_advanced_header">Opzioni avanzate</string>
+  <string name="mail_settings_app_customization_signature_header">Firme personali</string>
+  <string name="mail_settings_app_customization_email_signature_header">Firma messaggio</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Firma mobile</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">La tua firma email, che viene automaticamente aggiunta a tutte le email che invii.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Firma aggiuntiva applicata alle email inviate da questo dispositivo.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Abilitato</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Disabilitato</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Abilita</string>

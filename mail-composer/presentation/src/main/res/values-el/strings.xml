@@ -154,7 +154,7 @@
   <string name="composer_expiration_set_expiration">Ορίστε λήξη</string>
   <string name="composer_expiration_pick_time_title">Ορίστε ώρα</string>
   <string name="composer_expiration_time_custom_time_on">Στις %1$s</string>
-  <string name="composer_error_send_draft_generic"/>
+  <string name="composer_error_send_draft_generic">Παρουσιάστηκε ένα απροσδόκητο σφάλμα κατά την αποστολή αυτού του μηνύματος. Παρακαλούμε, δοκιμάστε ξανά</string>
   <string name="composer_error_send_draft_invalid_sender">Απενεργοποιημένη ή μη έγκυρη ηλεκτρονική διεύθυνση. Ελέγξτε ότι η διεύθυνση είναι έγκυρη και ενεργή.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Αποτυχία αποκρυπτογράφησης εξωτερικού κωδικού κρυπτογράφησης</string>
   <string name="composer_error_send_draft_already_sent">Το μήνυμα έχει ήδη αποσταλεί</string>

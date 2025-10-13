@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Pengaturan akun</string>
   <string name="mail_settings_email_settings">Pengaturan email</string>
+  <string name="mail_settings_email_signature_settings">Email signature</string>
   <string name="mail_settings_folder_and_label_settings">Pengaturan folder dan label</string>
   <string name="mail_settings_privacy_and_security_settings">Pengaturan privasi dan keamanan</string>
   <string name="mail_settings_preferences">Preferensi</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Privasi dan keamanan</string>
   <string name="mail_settings_fido_keys">Kunci keamanan</string>
   <string name="mail_settings_change_password">Pengelolaan kata sandi</string>
+  <string name="mail_settings_signature">Signature</string>
   <string name="mail_settings_storage_quota">%1$d%% dari %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Perlindungan pelacakan email</string>
   <string name="mail_settings_app_hint">Kustomisasi aplikasi seluler</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Tampilan</string>
   <string name="mail_settings_app_customization_protection">Kunci aplikasi</string>
   <string name="mail_settings_app_customization_mobile_signature">Mobile signature</string>
+  <string name="mail_settings_app_customization_email_signature">Email signature</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Kunci otomatis diaktifkan</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Kunci otomatis dinonaktifkan</string>
   <string name="mail_settings_app_customization_use_device_contacts">Gunakan kontak perangkat</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Lihat catatan aplikasi</string>
   <string name="mail_settings_app_customization_mail_experience_header">Pengalaman Mail</string>
   <string name="mail_settings_app_customization_advanced_header">Lanjutan</string>
+  <string name="mail_settings_app_customization_signature_header">Signatures</string>
+  <string name="mail_settings_app_customization_email_signature_header">Email signature</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Tanda tangan seluler</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Your email signature, that is automatically added to all emails you send.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Additional signature added to emails sent from this device.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">On</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Off</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Enable signature</string>

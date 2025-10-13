@@ -22,6 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Ρυθμίσεις λογαριασμού</string>
   <string name="mail_settings_email_settings">Ρυθμίσεις Email</string>
+  <string name="mail_settings_email_signature_settings">Υπογραφή email</string>
   <string name="mail_settings_folder_and_label_settings">Ρυθμίσεις φακέλων και ετικετών</string>
   <string name="mail_settings_privacy_and_security_settings">Ρυθμίσεις απορρήτου και ασφάλειας</string>
   <string name="mail_settings_preferences">Προτιμήσεις</string>
@@ -35,6 +36,7 @@
   <string name="mail_settings_privacy_and_security">Απόρρητο και ασφάλεια</string>
   <string name="mail_settings_fido_keys">Κλειδιά ασφαλείας</string>
   <string name="mail_settings_change_password">Διαχείριση κωδικών πρόσβασης</string>
+  <string name="mail_settings_signature">Υπογραφή</string>
   <string name="mail_settings_storage_quota">%1$d%% από %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Προστασία ιχνηλασίας μηνυμάτων</string>
   <string name="mail_settings_app_hint">Προσαρμογές εφαρμογής για κινητά</string>
@@ -55,6 +57,7 @@
   <string name="mail_settings_app_customization_appearance">Εμφάνιση</string>
   <string name="mail_settings_app_customization_protection">Κλείδωμα εφαρμογής</string>
   <string name="mail_settings_app_customization_mobile_signature">Υπογραφή κινητού</string>
+  <string name="mail_settings_app_customization_email_signature">Υπογραφή email</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Αυτόματο κλείδωμα ενεργοποιημένο</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Αυτόματο κλείδωμα απενεργοποιημένο</string>
   <string name="mail_settings_app_customization_use_device_contacts">Χρήση επαφών συσκευής</string>
@@ -69,7 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">Προβολή καταγραφών εφαρμογών</string>
   <string name="mail_settings_app_customization_mail_experience_header">Εμπειρία Mail</string>
   <string name="mail_settings_app_customization_advanced_header">Προχωρημένα</string>
+  <string name="mail_settings_app_customization_signature_header">Υπογραφές</string>
+  <string name="mail_settings_app_customization_email_signature_header">Υπογραφή email</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Υπογραφή κινητού</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Η υπογραφή του email σας, η οποία προστίθεται αυτόματα σε όλα τα email που στέλνετε.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Πρόσθετη υπογραφή που προστίθεται σε email που στέλνονται από αυτήν τη συσκευή.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Ενεργό</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Ανενεργό</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Ενεργοποίηση υπογραφής</string>
