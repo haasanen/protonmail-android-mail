@@ -292,7 +292,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.TooManyAttachments,
                         failedAttachments = listOf(
-                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.TooManyAttachments))
+                            errorAttachment(AddAttachmentError.TooManyAttachments)
                         )
                     )
                 ),
@@ -307,7 +307,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.AttachmentTooLarge,
                         failedAttachments = listOf(
-                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.AttachmentTooLarge))
+                            errorAttachment(AddAttachmentError.AttachmentTooLarge)
                         )
                     )
                 ),
@@ -322,7 +322,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.EncryptionError,
                         failedAttachments = listOf(
-                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.EncryptionError))
+                            errorAttachment(AddAttachmentError.EncryptionError)
                         )
                     )
                 ),
@@ -337,7 +337,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.InvalidDraftMessage,
                         failedAttachments = listOf(
-                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.InvalidDraftMessage))
+                            errorAttachment(AddAttachmentError.InvalidDraftMessage)
                         )
                     )
                 ),
@@ -352,7 +352,7 @@ internal class EffectsStateModificationTest(
                     AttachmentAddErrorWithList(
                         error = AttachmentAddError.Unknown,
                         failedAttachments = listOf(
-                            errorAttachment(AttachmentError.AddAttachment(AddAttachmentError.AttachmentTooLarge))
+                            errorAttachment(AddAttachmentError.AttachmentTooLarge)
                         )
                     )
                 ),
@@ -419,9 +419,10 @@ internal class EffectsStateModificationTest(
             )
         )
 
-        private fun errorAttachment(error: AttachmentError): AttachmentMetadataWithState = AttachmentMetadataWithState(
-            attachmentMetadata = invoiceAttachment,
-            attachmentState = AttachmentState.Error(reason = error)
-        )
+        private fun errorAttachment(error: AddAttachmentError): AttachmentMetadataWithState =
+            AttachmentMetadataWithState(
+                attachmentMetadata = invoiceAttachment,
+                attachmentState = AttachmentState.Error(reason = AttachmentError.AddAttachment(error))
+            )
     }
 }

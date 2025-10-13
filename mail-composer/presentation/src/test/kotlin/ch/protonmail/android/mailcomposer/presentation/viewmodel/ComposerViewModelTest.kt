@@ -52,6 +52,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.CanSendWithExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
+import ch.protonmail.android.mailcomposer.domain.usecase.ConvertInlineImageToAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -185,6 +186,7 @@ internal class ComposerViewModelTest {
     private val canSendWithExpirationTime = mockk<CanSendWithExpirationTime> {
         coEvery { this@mockk.invoke() } returns SendWithExpirationTimeResult.CanSend.right()
     }
+    private val convertInlineImageToAttachment = mockk<ConvertInlineImageToAttachment>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<DraftBody>()
@@ -245,6 +247,7 @@ internal class ComposerViewModelTest {
         preloadContactSuggestions,
         saveMessageExpirationTime,
         canSendWithExpirationTime,
+        convertInlineImageToAttachment,
         observePrimaryUserIdMock
     )
 
