@@ -46,6 +46,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -60,6 +61,8 @@ fun ContactActionsBottomSheetContent(
 
         else -> ProtonCenteredProgress()
     }
+
+    BottomNavigationBarSpacer()
 }
 
 @Composable
