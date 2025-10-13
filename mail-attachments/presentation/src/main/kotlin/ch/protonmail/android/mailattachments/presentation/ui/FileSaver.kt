@@ -18,16 +18,20 @@
 
 package ch.protonmail.android.mailattachments.presentation.ui
 
+import android.content.ActivityNotFoundException
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.mailattachments.presentation.R
 import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.model.FileSaveState
 import ch.protonmail.android.mailattachments.presentation.viewmodel.FileSaverViewModel
+import timber.log.Timber
 
 /**
  * A Composable that abstracts the save of file contents to an external location.
@@ -36,8 +40,8 @@ import ch.protonmail.android.mailattachments.presentation.viewmodel.FileSaverVie
 @Suppress("UseComposableActions")
 fun fileSaver(
     onFileSaving: (() -> Unit)? = null,
-    onFileSaved: (() -> Unit)? = null,
-    onError: ((Exception) -> Unit)? = null
+    onFileSaved: ((String) -> Unit),
+    onError: ((String) -> Unit)
 ): (FileContent) -> Unit {
     val viewModel = hiltViewModel<FileSaverViewModel>()
     val saveState by viewModel.saveState.collectAsStateWithLifecycle()
@@ -53,24 +57,44 @@ fun fileSaver(
         }
     }
 
+    val fileSavedString = stringResource(R.string.file_saved)
+    val fileSavedFallbackString = stringResource(R.string.file_saved_fallback)
+    val fileSavedError = stringResource(R.string.error_saving_file)
+
     LaunchedEffect(saveState) {
         when (val state = saveState) {
             is FileSaveState.RequestingSave -> {
-                fileSaveLauncher.launch(SaveAttachmentInput(state.content.name, state.content.mimeType))
-                viewModel.markLaunchAsConsumed()
+                val attachmentInput = SaveAttachmentInput(
+                    state.content.name,
+                    state.content.uri,
+                    state.content.mimeType
+                )
+
+                try {
+                    fileSaveLauncher.launch(attachmentInput)
+                    viewModel.markLaunchAsConsumed()
+                } catch (_: ActivityNotFoundException) {
+                    Timber.d("Unable to find a suitable target for saving - fallback to Downloads folder")
+                    viewModel.performSaveToDownloadFolder(attachmentInput)
+                }
             }
 
             is FileSaveState.Saving -> {
                 onFileSaving?.invoke()
             }
 
-            is FileSaveState.Saved -> {
-                onFileSaved?.invoke()
+            is FileSaveState.Saved.UserPicked -> {
+                onFileSaved.invoke(fileSavedString)
+                viewModel.resetState()
+            }
+
+            is FileSaveState.Saved.FallbackLocation -> {
+                onFileSaved.invoke(fileSavedFallbackString)
                 viewModel.resetState()
             }
 
             is FileSaveState.Error -> {
-                onError?.invoke(state.exception)
+                onError.invoke(fileSavedError)
                 viewModel.resetState()
             }
 

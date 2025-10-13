@@ -16,24 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailattachments.presentation
+package ch.protonmail.android.mailattachments.presentation.viewmodel
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.InputStream
-import android.content.ContentResolver
-import android.content.Context
 import android.net.Uri
 import app.cash.turbine.test
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentErrorResult
+import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentsHandler
 import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.model.FileSaveState
-import ch.protonmail.android.mailattachments.presentation.viewmodel.FileSaverViewModel
+import ch.protonmail.android.mailattachments.presentation.ui.SaveAttachmentInput
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
@@ -43,16 +41,12 @@ import kotlin.test.assertEquals
 
 internal class FileSaverViewModelTest {
 
-    private val context = mockk<Context>()
-    private lateinit var contentResolver: ContentResolver
-
     private lateinit var viewModel: FileSaverViewModel
+    private val attachmentsHandler = mockk<ExternalAttachmentsHandler>()
 
     @BeforeTest
     fun setup() {
-        viewModel = FileSaverViewModel(context)
-        contentResolver = mockk(relaxed = true)
-        every { context.contentResolver } returns contentResolver
+        viewModel = FileSaverViewModel(attachmentsHandler)
     }
 
     @AfterTest
@@ -122,11 +116,8 @@ internal class FileSaverViewModelTest {
         // Given
         val sourceUri = mockk<Uri>()
         val destinationUri = mockk<Uri>()
-        val inputStream = ByteArrayInputStream("test content".toByteArray())
-        val outputStream = ByteArrayOutputStream()
 
-        every { contentResolver.openInputStream(sourceUri) } returns inputStream
-        every { contentResolver.openOutputStream(destinationUri) } returns outputStream
+        coEvery { attachmentsHandler.copyUriToDestination(sourceUri, destinationUri) } returns Unit.right()
 
         // When + Then
         viewModel.saveState.test {
@@ -135,21 +126,44 @@ internal class FileSaverViewModelTest {
             viewModel.performSave(destinationUri, sourceUri)
 
             assertEquals(FileSaveState.Saving, awaitItem())
-            assertEquals(FileSaveState.Saved, awaitItem())
+            assertEquals(FileSaveState.Saved.UserPicked, awaitItem())
         }
 
-        verify(exactly = 1) { contentResolver.openInputStream(sourceUri) }
-        verify(exactly = 1) { contentResolver.openOutputStream(destinationUri) }
-        confirmVerified(contentResolver)
+        coVerify(exactly = 1) { attachmentsHandler.copyUriToDestination(sourceUri, destinationUri) }
+        confirmVerified(attachmentsHandler)
     }
 
     @Test
-    fun `performSave should emit Error state when input stream is null`() = runTest {
+    fun `performSave should emit Error state when unable to create uri`() = runTest {
         // Given
         val sourceUri = mockk<Uri>()
         val destinationUri = mockk<Uri>()
 
-        every { contentResolver.openInputStream(sourceUri) } returns null
+        coEvery {
+            attachmentsHandler.copyUriToDestination(sourceUri, destinationUri)
+        } returns ExternalAttachmentErrorResult.UnableToCreateUri.left()
+
+        // When + Then
+        viewModel.saveState.test {
+            assertEquals(FileSaveState.Idle, awaitItem())
+
+            viewModel.performSave(destinationUri, sourceUri)
+            assertEquals(FileSaveState.Saving, awaitItem())
+
+            val errorState = awaitItem()
+            assertEquals(errorState, FileSaveState.Error(ExternalAttachmentErrorResult.UnableToCreateUri))
+        }
+    }
+
+    @Test
+    fun `performSave should emit Error state when an error occurs during copy`() = runTest {
+        // Given
+        val sourceUri = mockk<Uri>()
+        val destinationUri = mockk<Uri>()
+
+        coEvery {
+            attachmentsHandler.copyUriToDestination(sourceUri, destinationUri)
+        } returns ExternalAttachmentErrorResult.UnableToCopy.left()
 
         // When + Then
         viewModel.saveState.test {
@@ -161,65 +175,30 @@ internal class FileSaverViewModelTest {
 
             val errorState = awaitItem()
             assertTrue(errorState is FileSaveState.Error)
-            assertTrue((errorState as FileSaveState.Error).exception is IOException)
-            assertEquals("Failed to open streams for file copy", errorState.exception.message)
+            assertEquals(errorState, FileSaveState.Error(ExternalAttachmentErrorResult.UnableToCopy))
         }
     }
 
     @Test
-    fun `performSave should emit Error state when output stream is null`() = runTest {
+    fun `performSaveToDownloadFolder should successfully save file and emit Saved state`() = runTest {
         // Given
         val sourceUri = mockk<Uri>()
-        val destinationUri = mockk<Uri>()
-        val inputStream = ByteArrayInputStream("test content".toByteArray())
+        val attachmentInput = SaveAttachmentInput("fileName.pdf", sourceUri, "image/png")
 
-        every { contentResolver.openInputStream(sourceUri) } returns inputStream
-        every { contentResolver.openOutputStream(destinationUri) } returns null
+        coEvery { attachmentsHandler.saveFileToDownloadsFolder(attachmentInput) } returns Unit.right()
 
         // When + Then
         viewModel.saveState.test {
             assertEquals(FileSaveState.Idle, awaitItem())
 
-            viewModel.performSave(destinationUri, sourceUri)
+            viewModel.performSaveToDownloadFolder(attachmentInput)
 
             assertEquals(FileSaveState.Saving, awaitItem())
-
-            val errorState = awaitItem()
-            assertTrue(errorState is FileSaveState.Error)
-            assertTrue((errorState as FileSaveState.Error).exception is IOException)
+            assertEquals(FileSaveState.Saved.FallbackLocation, awaitItem())
         }
-    }
 
-    @Test
-    fun `performSave should emit Error state when IOException occurs during copy`() = runTest {
-        // Given
-        val sourceUri = mockk<Uri>()
-        val destinationUri = mockk<Uri>()
-        val exception = IOException("Copy failed")
-
-        // Create a real InputStream that throws an exception when read
-        val inputStream = object : InputStream() {
-            override fun read(): Int {
-                throw exception
-            }
-        }
-        val outputStream = ByteArrayOutputStream()
-
-        every { contentResolver.openInputStream(sourceUri) } returns inputStream
-        every { contentResolver.openOutputStream(destinationUri) } returns outputStream
-
-        // When + Then
-        viewModel.saveState.test {
-            assertEquals(FileSaveState.Idle, awaitItem())
-
-            viewModel.performSave(destinationUri, sourceUri)
-
-            assertEquals(FileSaveState.Saving, awaitItem())
-
-            val errorState = awaitItem()
-            assertTrue(errorState is FileSaveState.Error)
-            assertTrue((errorState as FileSaveState.Error).exception is IOException)
-        }
+        coVerify(exactly = 1) { attachmentsHandler.saveFileToDownloadsFolder(attachmentInput) }
+        confirmVerified(attachmentsHandler)
     }
 
     @Test

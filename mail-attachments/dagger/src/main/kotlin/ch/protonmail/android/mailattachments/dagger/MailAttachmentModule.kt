@@ -22,8 +22,11 @@ import ch.protonmail.android.mailattachments.data.local.RustAttachmentDataSource
 import ch.protonmail.android.mailattachments.data.local.RustAttachmentDataSourceImpl
 import ch.protonmail.android.mailattachments.data.repository.AttachmentRepositoryImpl
 import ch.protonmail.android.mailattachments.domain.repository.AttachmentRepository
+import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentsHandler
+import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentsHandlerImpl
 import dagger.Binds
 import dagger.Module
+import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -39,4 +42,8 @@ abstract class MailAttachmentsModule {
     @Binds
     @Singleton
     abstract fun bindRustAttachmentDataSource(impl: RustAttachmentDataSourceImpl): RustAttachmentDataSource
+
+    @Binds
+    @Reusable
+    abstract fun provideExternalAttachmentsHandler(impl: ExternalAttachmentsHandlerImpl): ExternalAttachmentsHandler
 }

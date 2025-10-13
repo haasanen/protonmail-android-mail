@@ -451,9 +451,9 @@ fun MailboxScreen(
         onDeselectAllClicked = actions.onDeselectAllClicked
     )
 
-    val fileSavedString = stringResource(R.string.file_saved)
     val fileSaver = fileSaver(
-        onFileSaved = { Toast.makeText(context, fileSavedString, Toast.LENGTH_SHORT).show() }
+        onFileSaved = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() },
+        onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
     )
 
     val openAttachment = fileOpener()

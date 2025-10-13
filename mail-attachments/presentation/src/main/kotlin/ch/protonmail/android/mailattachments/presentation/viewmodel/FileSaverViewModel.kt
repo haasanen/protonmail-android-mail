@@ -18,25 +18,22 @@
 
 package ch.protonmail.android.mailattachments.presentation.viewmodel
 
-import java.io.IOException
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentsHandler
 import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.model.FileSaveState
+import ch.protonmail.android.mailattachments.presentation.ui.SaveAttachmentInput
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class FileSaverViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val externalAttachmentsHandler: ExternalAttachmentsHandler
 ) : ViewModel() {
 
     private val mutableSaveState = MutableStateFlow<FileSaveState>(FileSaveState.Idle)
@@ -49,12 +46,20 @@ class FileSaverViewModel @Inject constructor(
     fun performSave(destinationUri: Uri, sourceUri: Uri) {
         viewModelScope.launch {
             mutableSaveState.value = FileSaveState.Saving
-            try {
-                copyUriToExternal(context, sourceUri = sourceUri, destinationUri = destinationUri)
-                mutableSaveState.value = FileSaveState.Saved
-            } catch (e: IOException) {
-                mutableSaveState.value = FileSaveState.Error(e)
-            }
+
+            externalAttachmentsHandler.copyUriToDestination(sourceUri = sourceUri, destinationUri = destinationUri)
+                .onLeft { mutableSaveState.value = FileSaveState.Error(it) }
+                .onRight { mutableSaveState.value = FileSaveState.Saved.UserPicked }
+        }
+    }
+
+    fun performSaveToDownloadFolder(attachmentInput: SaveAttachmentInput) {
+        viewModelScope.launch {
+            mutableSaveState.value = FileSaveState.Saving
+
+            externalAttachmentsHandler.saveFileToDownloadsFolder(attachmentInput)
+                .onLeft { mutableSaveState.value = FileSaveState.Error(it) }
+                .onRight { mutableSaveState.value = FileSaveState.Saved.FallbackLocation }
         }
     }
 
@@ -67,17 +72,5 @@ class FileSaverViewModel @Inject constructor(
         if (current is FileSaveState.RequestingSave) {
             mutableSaveState.value = FileSaveState.WaitingForUser(current.content)
         }
-    }
-
-    private suspend fun copyUriToExternal(
-        context: Context,
-        sourceUri: Uri,
-        destinationUri: Uri
-    ) = withContext(Dispatchers.IO) {
-        context.contentResolver.openInputStream(sourceUri)?.use { inputStream ->
-            context.contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
-                inputStream.copyTo(outputStream, bufferSize = 8 * 1024)
-            }
-        } ?: throw IOException("Failed to open streams for file copy")
     }
 }

@@ -68,7 +68,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -624,9 +623,10 @@ fun ConversationDetailScreen(
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
 
     val context = LocalContext.current
-    val fileSavedString = stringResource(R.string.file_saved)
+
     val fileSaver = fileSaver(
-        onFileSaved = { Toast.makeText(context, fileSavedString, Toast.LENGTH_SHORT).show() }
+        onFileSaved = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() },
+        onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
     )
 
     val openAttachment = fileOpener()

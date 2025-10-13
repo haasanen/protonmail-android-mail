@@ -16,20 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailattachments.presentation.model
+package ch.protonmail.android.mailattachments.presentation
 
-import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentErrorResult
+import android.net.Uri
+import arrow.core.Either
+import ch.protonmail.android.mailattachments.presentation.ui.SaveAttachmentInput
 
-sealed interface FileSaveState {
-    data object Idle : FileSaveState
-    data class RequestingSave(val content: FileContent) : FileSaveState
-    data class WaitingForUser(val content: FileContent) : FileSaveState
-    data object Saving : FileSaveState
+interface ExternalAttachmentsHandler {
 
-    sealed interface Saved : FileSaveState {
-        data object UserPicked : Saved
-        data object FallbackLocation : Saved
-    }
+    suspend fun copyUriToDestination(sourceUri: Uri, destinationUri: Uri): Either<ExternalAttachmentErrorResult, Unit>
+    suspend fun saveFileToDownloadsFolder(
+        attachmentInput: SaveAttachmentInput
+    ): Either<ExternalAttachmentErrorResult, Unit>
+}
 
-    data class Error(val error: ExternalAttachmentErrorResult) : FileSaveState
+sealed interface ExternalAttachmentErrorResult {
+    data object UnableToCreateUri : ExternalAttachmentErrorResult
+    data object UnableToCopy : ExternalAttachmentErrorResult
 }
