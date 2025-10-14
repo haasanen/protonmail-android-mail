@@ -20,7 +20,7 @@ package ch.protonmail.android.mailfeatureflags.presentation.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailfeatureflags.presentation.model.FeatureFlagOverridesState
 import ch.protonmail.android.mailfeatureflags.presentation.viewmodel.FeatureFlagOverridesViewModel

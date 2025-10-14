@@ -20,7 +20,7 @@ package ch.protonmail.android.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ch.protonmail.android.MainActivity
 
 @Composable

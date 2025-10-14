@@ -69,6 +69,7 @@ dependencies {
 
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
     implementation(libs.dagger.hilt.android)
     implementation(libs.proton.core.biometric)
     implementation(libs.proton.core.domain)

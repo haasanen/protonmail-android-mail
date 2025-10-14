@@ -51,13 +51,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.signup.CreateRecoveryAction
-import me.proton.android.core.auth.presentation.signup.CreateRecoveryState.WantCountryPicker
 import me.proton.android.core.auth.presentation.signup.CreateRecoveryState.CountryPickerFailed
 import me.proton.android.core.auth.presentation.signup.CreateRecoveryState.OnCountryPicked
+import me.proton.android.core.auth.presentation.signup.CreateRecoveryState.WantCountryPicker
 import me.proton.android.core.auth.presentation.signup.viewmodel.SignUpViewModel
 import me.proton.core.compose.component.ProtonCloseButton
 import me.proton.core.compose.theme.ProtonDimens

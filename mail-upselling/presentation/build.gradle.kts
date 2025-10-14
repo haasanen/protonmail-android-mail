@@ -78,7 +78,7 @@ dependencies {
 
     implementation(libs.proton.core.user.domain)
     implementation(libs.bundles.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
     implementation(libs.arrow.core)
     implementation(libs.coil.compose)
     implementation(libs.haze)

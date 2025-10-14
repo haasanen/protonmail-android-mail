@@ -60,7 +60,7 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.bundles.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
     implementation(libs.arrow.core)
     implementation(libs.timber)
     implementation(libs.dagger.hilt.android)
