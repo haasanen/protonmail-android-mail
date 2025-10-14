@@ -19,6 +19,8 @@
 package ch.protonmail.android
 
 import android.app.Application
+import androidx.compose.runtime.Composer
+import androidx.compose.runtime.ExperimentalComposeRuntimeApi
 import androidx.lifecycle.ProcessLifecycleOwner
 import ch.protonmail.android.callbacks.SecureActivityLifecycleCallbacks
 import ch.protonmail.android.initializer.MainInitializer
@@ -51,8 +53,12 @@ internal class App : Application() {
     @Inject
     lateinit var firebaseLifecycleObserver: Provider<FirebaseMessagingTokenLifecycleObserver>
 
+    @OptIn(ExperimentalComposeRuntimeApi::class)
     override fun onCreate() {
         super.onCreate()
+
+        // Richer Compose-related stack traces. Does not work on prod builds nor it is recommended to do so there.
+        Composer.setDiagnosticStackTraceEnabled(BuildConfig.DEBUG)
 
         benchmarkTracer.begin("proton-app-init")
 
