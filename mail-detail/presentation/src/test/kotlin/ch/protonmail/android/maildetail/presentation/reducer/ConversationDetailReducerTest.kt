@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
+import ch.protonmail.android.mailconversation.domain.entity.HiddenMessagesBanner
 import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
@@ -77,7 +78,7 @@ class ConversationDetailReducerTest(
     private val bottomSheetReducer = mockk<BottomSheetReducer>(relaxed = true)
     private val deleteDialogReducer = mockk<ConversationDeleteDialogReducer>(relaxed = true)
     private val reportPhishingDialogReducer = mockk<ConversationReportPhishingDialogReducer>(relaxed = true)
-    private val trashedMessagesBannerReducer = mockk<TrashedMessagesBannerReducer>(relaxed = true)
+    private val trashedMessagesBannerReducer = mockk<HiddenMessagesBannerReducer>(relaxed = true)
     private val markAsLegitimateDialogReducer = mockk<MarkAsLegitimateDialogReducer>(relaxed = true)
     private val editScheduledMessageDialogReducer = mockk<EditScheduledMessageDialogReducer>(relaxed = true)
     private val reducer = ConversationDetailReducer(
@@ -87,7 +88,7 @@ class ConversationDetailReducerTest(
         bottomSheetReducer = bottomSheetReducer,
         deleteDialogReducer = deleteDialogReducer,
         reportPhishingDialogReducer = reportPhishingDialogReducer,
-        trashedMessagesBannerReducer = trashedMessagesBannerReducer,
+        hiddenMessagesBannerReducer = trashedMessagesBannerReducer,
         markAsLegitimateDialogReducer = markAsLegitimateDialogReducer,
         editScheduledMessageDialogReducer = editScheduledMessageDialogReducer,
         actionResultMapper = actionResultMapper
@@ -295,8 +296,12 @@ class ConversationDetailReducerTest(
 
         val events = listOf(
             ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions) affects BottomBar,
-            ConversationDetailEvent.ConversationData(ConversationDetailMetadataUiModelSample.WeatherForecast)
-                affects Conversation,
+            ConversationDetailEvent.ConversationData(
+                ConversationDetailMetadataUiModelSample.WeatherForecast,
+                HiddenMessagesBanner.ContainsTrashedMessages,
+                showAllMessages = false
+            )
+                affects listOf(Conversation, HiddenMessagesBanner),
             ConversationDetailEvent.ErrorAddStar affects listOf(ErrorBar, BottomSheet),
             ConversationDetailEvent.ErrorRemoveStar affects listOf(ErrorBar, BottomSheet),
             ConversationDetailEvent.ErrorLoadingConversation affects LoadingError,
@@ -310,15 +315,13 @@ class ConversationDetailReducerTest(
             ConversationDetailEvent.MessagesData(
                 emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
                 null,
-                null,
-                false
-            ) affects listOf(Messages, TrashedMessagesBanner),
+                null
+            ) affects listOf(Messages),
             ConversationDetailEvent.MessagesData(
                 allMessagesFirstExpanded,
                 allMessagesFirstExpanded.first().messageId,
-                null,
-                false
-            ) affects listOf(Messages, MessageScroll, TrashedMessagesBanner),
+                null
+            ) affects listOf(Messages, MessageScroll),
             ConversationDetailEvent.ExpandDecryptedMessage(
                 MessageIdUiModel(UUID.randomUUID().toString()),
                 ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded
@@ -396,7 +399,7 @@ private infix fun ConversationDetailOperation.affects(entities: List<Entity>) = 
     reducesLinkClick = entities.contains(LinkClick),
     reducesMessageScroll = entities.contains(MessageScroll),
     reducesDeleteDialog = entities.contains(DeleteDialog),
-    reducesTrashedMessagesBanner = entities.contains(TrashedMessagesBanner),
+    reducesTrashedMessagesBanner = entities.contains(HiddenMessagesBanner),
     reducesReportPhishingDialog = entities.contains(ReportPhishingDialog),
     reducesMarkAsLegitimateDialog = entities.contains(MarkAsLegitimateDialog),
     reducesEditScheduleSendDialog = entities.contains(EditScheduleSendDialog)
@@ -417,7 +420,7 @@ private data object BottomSheet : Entity
 private data object LinkClick : Entity
 private data object MessageScroll : Entity
 private data object DeleteDialog : Entity
-private data object TrashedMessagesBanner : Entity
+private data object HiddenMessagesBanner : Entity
 private data object ReportPhishingDialog : Entity
 private data object MarkAsLegitimateDialog : Entity
 private data object EditScheduleSendDialog : Entity

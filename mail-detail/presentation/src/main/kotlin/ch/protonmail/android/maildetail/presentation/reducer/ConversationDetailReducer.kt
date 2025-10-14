@@ -74,7 +74,7 @@ import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialo
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyLink
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
-import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
+import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import javax.inject.Inject
 
@@ -85,7 +85,7 @@ class ConversationDetailReducer @Inject constructor(
     private val bottomSheetReducer: BottomSheetReducer,
     private val deleteDialogReducer: ConversationDeleteDialogReducer,
     private val reportPhishingDialogReducer: ConversationReportPhishingDialogReducer,
-    private val trashedMessagesBannerReducer: TrashedMessagesBannerReducer,
+    private val hiddenMessagesBannerReducer: HiddenMessagesBannerReducer,
     private val markAsLegitimateDialogReducer: MarkAsLegitimateDialogReducer,
     private val editScheduledMessageDialogReducer: EditScheduledMessageDialogReducer,
     private val actionResultMapper: ActionResultMapper
@@ -112,7 +112,7 @@ class ConversationDetailReducer @Inject constructor(
             scrollToMessage = currentState.toScrollToMessageState(operation),
             conversationDeleteState = currentState.toNewDeleteDialogState(operation),
             reportPhishingDialogState = currentState.toNewReportPhishingDialogState(operation),
-            trashedMessagesBannerState = currentState.toNewTrashedMessagesBannerState(operation),
+            hiddenMessagesBannerState = currentState.toNewHiddenMessagesBannerState(operation),
             markAsLegitimateDialogState = currentState.toNewMarkAsLegitimateDialogState(operation),
             editScheduledMessageDialogState = currentState.toNewEditScheduleMessageDialogState(operation)
         )
@@ -380,13 +380,13 @@ class ConversationDetailReducer @Inject constructor(
         }
     }
 
-    private fun ConversationDetailState.toNewTrashedMessagesBannerState(
+    private fun ConversationDetailState.toNewHiddenMessagesBannerState(
         operation: ConversationDetailOperation
-    ): TrashedMessagesBannerState {
-        return if (operation is ConversationDetailOperation.AffectingTrashedMessagesBanner) {
-            trashedMessagesBannerReducer.newStateFrom(operation)
+    ): HiddenMessagesBannerState {
+        return if (operation is ConversationDetailOperation.AffectingHiddenMessagesBanner) {
+            hiddenMessagesBannerReducer.newStateFrom(operation)
         } else {
-            trashedMessagesBannerState
+            hiddenMessagesBannerState
         }
     }
 

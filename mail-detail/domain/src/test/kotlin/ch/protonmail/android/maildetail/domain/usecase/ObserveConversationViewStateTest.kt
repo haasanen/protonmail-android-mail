@@ -43,7 +43,6 @@ class ObserveConversationViewStateTest {
             messagesState = (0 until Random().nextInt(100)).associate {
                 Pair(MessageId(it.toString()), Collapsed)
             },
-            shouldHideMessagesBasedOnTrashFilter = true,
             attachmentsListExpandCollapseMode = emptyMap(),
             rsvpEvents = emptyMap()
         )

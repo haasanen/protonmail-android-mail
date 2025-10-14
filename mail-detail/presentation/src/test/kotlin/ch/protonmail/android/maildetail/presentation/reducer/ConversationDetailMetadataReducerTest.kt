@@ -61,7 +61,11 @@ class ConversationDetailMetadataReducerTest(
                 "from loading to conversation data",
                 TestParams.TestInput(
                     currentState = ConversationDetailMetadataState.Loading,
-                    event = ConversationDetailEvent.ConversationData(conversationUiModel),
+                    event = ConversationDetailEvent.ConversationData(
+                        conversationUiModel,
+                        hiddenMessagesBanner = null,
+                        showAllMessages = false
+                    ),
                     expectedState = ConversationDetailMetadataState.Data(conversationUiModel)
                 )
             )
@@ -90,7 +94,11 @@ class ConversationDetailMetadataReducerTest(
                 testName = "from data to updated data state on new data",
                 TestParams.TestInput(
                     currentState = ConversationDetailMetadataState.Data(conversationUiModel),
-                    event = ConversationDetailEvent.ConversationData(updatedConversationUiModel),
+                    event = ConversationDetailEvent.ConversationData(
+                        updatedConversationUiModel,
+                        hiddenMessagesBanner = null,
+                        showAllMessages = false
+                    ),
                     expectedState = ConversationDetailMetadataState.Data(updatedConversationUiModel)
                 )
             )
@@ -101,7 +109,11 @@ class ConversationDetailMetadataReducerTest(
                 "from error to conversation data",
                 TestParams.TestInput(
                     currentState = ConversationDetailMetadataState.Error(TextUiModel("any error")),
-                    event = ConversationDetailEvent.ConversationData(conversationUiModel),
+                    event = ConversationDetailEvent.ConversationData(
+                        conversationUiModel,
+                        hiddenMessagesBanner = null,
+                        showAllMessages = false
+                    ),
                     expectedState = ConversationDetailMetadataState.Data(conversationUiModel)
                 )
             )

@@ -114,7 +114,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMe
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
-import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
+import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
 import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
@@ -558,7 +558,7 @@ fun ConversationDetailScreen(
                         )
                     )
                 },
-                onTrashedMessagesBannerClick = {
+                onHiddenMessagesBannerClick = {
                     viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
                 },
                 onMarkMessageAsLegitimate = { messageId, isPhishing ->
@@ -827,11 +827,11 @@ fun ConversationDetailScreen(
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
-                    trashedMessagesBannerState = state.trashedMessagesBannerState,
+                    hiddenMessagesBannerState = state.hiddenMessagesBannerState,
                     padding = innerPadding,
                     scrollToMessageId = scrollToMessageId,
                     actions = conversationDetailItemActions,
-                    onTrashedMessagesBannerClick = actions.onTrashedMessagesBannerClick,
+                    onHiddenMessagesBannerClick = actions.onHiddenMessagesBannerClick,
                     paddingOffsetDp = scrollBehavior.state.heightOffset.pxToDp(),
                     conversationKey = state.conversationId()
                 )
@@ -853,12 +853,12 @@ fun ConversationDetailScreen(
 @Composable
 fun MessagesContentWithHiddenEdges(
     uiModels: ImmutableList<ConversationDetailMessageUiModel>,
-    trashedMessagesBannerState: TrashedMessagesBannerState,
+    hiddenMessagesBannerState: HiddenMessagesBannerState,
     padding: PaddingValues,
     scrollToMessageId: String?,
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
-    onTrashedMessagesBannerClick: () -> Unit,
+    onHiddenMessagesBannerClick: () -> Unit,
     paddingOffsetDp: Dp = 0f.dp,
     conversationKey: String
 ) {
@@ -867,11 +867,11 @@ fun MessagesContentWithHiddenEdges(
         MessagesContent(
             modifier = modifier,
             uiModels = uiModels,
-            trashedMessagesBannerState = trashedMessagesBannerState,
+            hiddenMessagesBannerState = hiddenMessagesBannerState,
             padding = padding,
             scrollToMessageId = scrollToMessageId,
             actions = actions,
-            onTrashedMessagesBannerClick = onTrashedMessagesBannerClick,
+            onHiddenMessagesBannerClick = onHiddenMessagesBannerClick,
             paddingOffsetDp = paddingOffsetDp,
             conversationId = conversationKey
         )
@@ -902,12 +902,12 @@ fun MessagesContentWithHiddenEdges(
 @Suppress("LongParameterList", "ComplexMethod")
 private fun MessagesContent(
     uiModels: ImmutableList<ConversationDetailMessageUiModel>,
-    trashedMessagesBannerState: TrashedMessagesBannerState,
+    hiddenMessagesBannerState: HiddenMessagesBannerState,
     padding: PaddingValues,
     scrollToMessageId: String?,
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
-    onTrashedMessagesBannerClick: () -> Unit,
+    onHiddenMessagesBannerClick: () -> Unit,
     paddingOffsetDp: Dp = 0f.dp,
     conversationId: String
 ) {
@@ -1048,17 +1048,20 @@ private fun MessagesContent(
         state = listState
     ) {
 
-        when (trashedMessagesBannerState) {
-            is TrashedMessagesBannerState.Shown -> {
+        when (hiddenMessagesBannerState) {
+            is HiddenMessagesBannerState.Shown -> {
                 item {
-                    TrashedMessagesBanner(
-                        uiModel = trashedMessagesBannerState.trashedMessagesBannerUiModel,
-                        onActionClick = onTrashedMessagesBannerClick
+                    HiddenMessagesBanner(
+                        modifier = Modifier.onSizeChanged {
+                            itemsHeight[-1] = it.height
+                        },
+                        state = hiddenMessagesBannerState,
+                        onCheckedChange = onHiddenMessagesBannerClick
                     )
                 }
             }
 
-            is TrashedMessagesBannerState.Hidden -> Unit
+            is HiddenMessagesBannerState.Hidden -> Unit
         }
 
         itemsIndexed(uiModels) { index, uiModel ->
@@ -1183,7 +1186,7 @@ object ConversationDetailScreen {
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel, MessageIdUiModel?) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel?) -> Unit,
-        val onTrashedMessagesBannerClick: () -> Unit,
+        val onHiddenMessagesBannerClick: () -> Unit,
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
         val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit,
@@ -1242,7 +1245,7 @@ object ConversationDetailScreen {
                 onAvatarClicked = { _, _, _ -> },
                 onAvatarImageLoadRequested = {},
                 onParticipantClicked = { _, _, _ -> },
-                onTrashedMessagesBannerClick = {},
+                onHiddenMessagesBannerClick = {},
                 onMarkMessageAsLegitimate = { _, _ -> },
                 onUnblockSender = { _, _ -> },
                 onEditScheduleSendMessage = {},

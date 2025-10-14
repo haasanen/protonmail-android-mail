@@ -18,11 +18,13 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
-sealed interface TrashedMessagesBannerState {
+import androidx.annotation.StringRes
 
-    data object Hidden : TrashedMessagesBannerState
+sealed interface HiddenMessagesBannerState {
 
+    data object Hidden : HiddenMessagesBannerState
     data class Shown(
-        val trashedMessagesBannerUiModel: TrashedMessagesBannerUiModel
-    ) : TrashedMessagesBannerState
+        @StringRes val message: Int,
+        val isSwitchTurnedOn: Boolean
+    ) : HiddenMessagesBannerState
 }

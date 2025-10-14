@@ -76,8 +76,7 @@ class ConversationDetailMessagesReducerTest(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessages,
                     requestScrollToMessageId = null,
-                    filterByLocation = null,
-                    shouldHideMessagesBasedOnTrashFilter = false
+                    filterByLocation = null
                 ),
                 expectedState = ConversationDetailsMessagesState.Data(messages = allMessages)
             ),
@@ -93,8 +92,7 @@ class ConversationDetailMessagesReducerTest(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessagesFirstExpanded,
                     requestScrollToMessageId = allMessagesFirstExpanded.first().messageId,
-                    filterByLocation = null,
-                    shouldHideMessagesBasedOnTrashFilter = false
+                    filterByLocation = null
                 ),
                 expectedState = ConversationDetailsMessagesState.Data(messages = allMessagesFirstExpanded)
             )
@@ -109,8 +107,7 @@ class ConversationDetailMessagesReducerTest(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessages,
                     requestScrollToMessageId = null,
-                    filterByLocation = null,
-                    shouldHideMessagesBasedOnTrashFilter = false
+                    filterByLocation = null
                 ),
                 expectedState = ConversationDetailsMessagesState.Data(messages = allMessages)
             )
@@ -125,8 +122,7 @@ class ConversationDetailMessagesReducerTest(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessages,
                     requestScrollToMessageId = null,
-                    filterByLocation = null,
-                    shouldHideMessagesBasedOnTrashFilter = false
+                    filterByLocation = null
                 ),
                 expectedState = ConversationDetailsMessagesState.Data(messages = allMessages)
             ),

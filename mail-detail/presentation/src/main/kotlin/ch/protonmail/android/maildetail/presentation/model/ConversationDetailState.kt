@@ -44,7 +44,7 @@ data class ConversationDetailState(
     val requestLinkConfirmation: Boolean,
     val conversationDeleteState: ConversationDeleteState,
     val reportPhishingDialogState: ReportPhishingDialogState,
-    val trashedMessagesBannerState: TrashedMessagesBannerState,
+    val hiddenMessagesBannerState: HiddenMessagesBannerState,
     val markAsLegitimateDialogState: MarkAsLegitimateDialogState,
     val editScheduledMessageDialogState: EditScheduledMessageDialogState
 ) {
@@ -69,7 +69,7 @@ data class ConversationDetailState(
             requestLinkConfirmation = false,
             conversationDeleteState = ConversationDeleteState.Hidden,
             reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-            trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+            hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
             markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
             editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
         )

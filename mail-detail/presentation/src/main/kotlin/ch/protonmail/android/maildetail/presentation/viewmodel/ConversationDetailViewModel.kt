@@ -566,7 +566,9 @@ class ConversationDetailViewModel @Inject constructor(
                     },
                     ifRight = {
                         ConversationDetailEvent.ConversationData(
-                            conversationMetadataMapper.toUiModel(it)
+                            conversationMetadataMapper.toUiModel(it),
+                            it.hiddenMessagesBanner,
+                            showAllMessages
                         )
                     }
                 )
@@ -631,16 +633,14 @@ class ConversationDetailViewModel @Inject constructor(
                     ConversationDetailEvent.MessagesData(
                         messagesUiModels,
                         initialScrollTo,
-                        openedFromLocation,
-                        showAllMessages.not()
+                        openedFromLocation
                     )
                 } else {
                     val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
                     ConversationDetailEvent.MessagesData(
                         messagesUiModels,
                         requestScrollTo,
-                        openedFromLocation,
-                        showAllMessages.not()
+                        openedFromLocation
                     )
                 }
             }

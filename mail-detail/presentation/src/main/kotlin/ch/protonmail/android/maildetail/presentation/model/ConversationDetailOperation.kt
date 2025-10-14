@@ -27,6 +27,7 @@ import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentVa
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
+import ch.protonmail.android.mailconversation.domain.entity.HiddenMessagesBanner
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingBottomSheet
@@ -38,7 +39,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessageBar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessages
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingReportPhishingDialog
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingTrashedMessagesBanner
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingHiddenMessagesBanner
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
@@ -59,7 +60,7 @@ sealed interface ConversationDetailOperation {
     sealed interface AffectingBottomSheet
     sealed interface AffectingDeleteDialog
     sealed interface AffectingReportPhishingDialog
-    sealed interface AffectingTrashedMessagesBanner
+    sealed interface AffectingHiddenMessagesBanner
     sealed interface AffectingMarkAsLegitimateDialog
     sealed interface AffectingEditScheduleMessageDialog
 }
@@ -69,8 +70,10 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     data class ConversationBottomBarEvent(val bottomBarEvent: BottomBarEvent) : ConversationDetailEvent
 
     data class ConversationData(
-        val conversationUiModel: ConversationDetailMetadataUiModel
-    ) : ConversationDetailEvent, AffectingConversation
+        val conversationUiModel: ConversationDetailMetadataUiModel,
+        val hiddenMessagesBanner: HiddenMessagesBanner?,
+        val showAllMessages: Boolean
+    ) : ConversationDetailEvent, AffectingConversation, AffectingHiddenMessagesBanner
 
     object ErrorLoadingConversation : ConversationDetailEvent
     object ErrorLoadingMessages : ConversationDetailEvent
@@ -80,9 +83,8 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     data class MessagesData(
         val messagesUiModels: ImmutableList<ConversationDetailMessageUiModel>,
         val requestScrollToMessageId: MessageIdUiModel?,
-        val filterByLocation: LabelId?,
-        val shouldHideMessagesBasedOnTrashFilter: Boolean
-    ) : ConversationDetailEvent, AffectingMessages, AffectingTrashedMessagesBanner
+        val filterByLocation: LabelId?
+    ) : ConversationDetailEvent, AffectingMessages
 
     data class ConversationBottomSheetEvent(
         val bottomSheetOperation: BottomSheetOperation

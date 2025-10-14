@@ -38,7 +38,7 @@ import ch.protonmail.android.maildetail.presentation.model.EditScheduledMessageD
 import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
-import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
+import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -95,7 +95,7 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
         markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
         editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
@@ -152,7 +152,7 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
         markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
         editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
@@ -175,7 +175,7 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
         markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
         editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
@@ -198,7 +198,7 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
         markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
         editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
@@ -221,7 +221,7 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
         markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
         editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
@@ -244,7 +244,7 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
         markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
         editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
@@ -267,7 +267,7 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
         markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
         editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
