@@ -376,7 +376,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                             },
                             loadImage = { viewModel.loadImage(it) },
                             onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
-                            onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineAttachment(it)) },
+                            onInlineImageRemoved = {
+                                viewModel.submit(ComposerAction.InlineAttachmentDeletedFromBody(it))
+                            },
                             onInlineImageClicked = { contentId ->
                                 bottomSheetType.value = BottomSheetType.InlineImageActions(contentId)
                                 viewModel.submit(ComposerAction.InlineImageActionsRequested)

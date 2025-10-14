@@ -52,6 +52,7 @@ internal sealed interface ComposerAction : ComposerStateOperation {
     data class AddFileAttachments(val uriList: List<Uri>) : ComposerAction
     data class RemoveAttachment(val attachmentId: AttachmentId) : ComposerAction
     data class RemoveInlineAttachment(val contentId: String) : ComposerAction
+    data class InlineAttachmentDeletedFromBody(val contentId: String) : ComposerAction
 
     data object DiscardDraftRequested : ComposerAction
     data object DiscardDraftConfirmed : ComposerAction

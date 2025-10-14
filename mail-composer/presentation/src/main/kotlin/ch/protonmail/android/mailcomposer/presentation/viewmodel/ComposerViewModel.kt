@@ -568,7 +568,8 @@ class ComposerViewModel @AssistedInject constructor(
                 is ComposerAction.AddFileAttachments -> onFileAttachmentsAdded(action.uriList)
                 is ComposerAction.AddAttachments -> onAttachmentsAdded(action.uriList)
                 is ComposerAction.RemoveAttachment -> onAttachmentsRemoved(action.attachmentId)
-                is ComposerAction.RemoveInlineAttachment -> onInlineImageRemoved(action.contentId)
+                is ComposerAction.RemoveInlineAttachment -> onRemoveInlineImage(action.contentId, true)
+                is ComposerAction.InlineAttachmentDeletedFromBody -> onRemoveInlineImage(action.contentId, false)
                 is ComposerAction.InlineImageActionsRequested ->
                     emitNewStateFor(EffectsEvent.AttachmentEvent.OnInlineImageActionsRequested)
 
@@ -734,12 +735,14 @@ class ComposerViewModel @AssistedInject constructor(
             }
     }
 
-    private suspend fun onInlineImageRemoved(contentId: String) {
+    private suspend fun onRemoveInlineImage(contentId: String, stripFromBody: Boolean) {
         deleteInlineAttachment(contentId)
             .onLeft { Timber.w("Failed to delete inline attachment: $contentId reason: $it") }
             .onRight {
                 Timber.d("Inline attachment $contentId removed!")
-                emitNewStateFor(EffectsEvent.AttachmentEvent.InlineAttachmentRemoved(contentId))
+                if (stripFromBody) {
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.StripInlineAttachmentFromBody(contentId))
+                }
             }
     }
 

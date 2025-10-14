@@ -169,6 +169,9 @@ function injectInlineImage(contentId) {
 }
 
 function stripInlineImage(contentId) {
+    // Disable remove image observer as we don't want this strip to trigger a delete
+    removeInlineImageObserver.disconnect();
+
     var editor = document.getElementById('$EDITOR_ID');
     const exactCidPattern = 'cid:' + contentId + '(?![0-9a-zA-Z])';
     const cidMatcher = new RegExp(exactCidPattern);
@@ -178,12 +181,14 @@ function stripInlineImage(contentId) {
         console.log("Checking image..." + img.src)
         // Check src attribute for a match
         if (cidMatcher.test(img.src)) {
-            console.log("Image was actually matched and removed ahaha")
+            console.log("Image was actually matched and removed")
             img.remove();
             break;
         }
     }
     // Dispatch an input updated event to ensure body is saved
     editor.dispatchEvent(new Event('input'));
+    // Re-enable remove image observer to react to DOM events again
+    removeInlineImageObserver.observe(document.getElementById('$EDITOR_ID'), {childList: true, subtree: true});
 }
 

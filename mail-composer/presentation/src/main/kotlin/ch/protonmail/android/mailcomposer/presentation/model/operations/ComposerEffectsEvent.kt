@@ -72,7 +72,8 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 OnAddFromCameraRequest -> ContentEffectsStateModifications.OnAddAttachmentCameraRequested
                 OnAddMediaRequest -> ContentEffectsStateModifications.OnAddAttachmentPhotosRequested
                 is InlineAttachmentsAdded -> ContentEffectsStateModifications.OnInlineAttachmentsAdded(contentIds)
-                is InlineAttachmentRemoved -> ContentEffectsStateModifications.OnInlineAttachmentRemoved(contentId)
+                is StripInlineAttachmentFromBody ->
+                    ContentEffectsStateModifications.OnInlineAttachmentRemoved(contentId)
                 is OnAttachFromOptionsRequest -> BottomSheetEffectsStateModification.ShowBottomSheet
                 is OnInlineImageActionsRequested -> BottomSheetEffectsStateModification.ShowBottomSheet
                 is RemoveAttachmentError -> RecoverableError.AttachmentRemove(error)
@@ -83,7 +84,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         data class RemoveAttachmentError(val error: AttachmentDeleteError) : AttachmentEvent
         data class AddAttachmentError(val error: AttachmentAddError) : AttachmentEvent
         data class InlineAttachmentsAdded(val contentIds: List<String>) : AttachmentEvent
-        data class InlineAttachmentRemoved(val contentId: String) : AttachmentEvent
+        data class StripInlineAttachmentFromBody(val contentId: String) : AttachmentEvent
 
         data object OnInlineImageActionsRequested : AttachmentEvent
         data object OnAttachFromOptionsRequest : AttachmentEvent
@@ -101,6 +102,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 is OnComposerRestored -> CompletionEffectsStateModification.CloseComposer.CloseComposerNoDraft
                 is OnCloseRequestWithDraft ->
                     CompletionEffectsStateModification.CloseComposer.CloseComposerDraftSaved(this.draftId)
+
                 is OnCloseRequestWithDraftDiscarded ->
                     CompletionEffectsStateModification.CloseComposer.CloseComposerDraftDiscarded
             }
