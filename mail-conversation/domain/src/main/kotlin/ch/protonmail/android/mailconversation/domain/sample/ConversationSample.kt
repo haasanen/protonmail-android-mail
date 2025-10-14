@@ -106,6 +106,7 @@ object ConversationSample {
         customLabels = emptyList(),
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        snoozeInformation = NoSnooze
+        snoozeInformation = NoSnooze,
+        hiddenMessagesBanner = null
     )
 }

@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalExclusiveLocationSystem
+import ch.protonmail.android.mailcommon.data.mapper.LocalHiddenMessagesBanner
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
@@ -36,6 +37,7 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AvatarInformation
+import uniffi.proton_mail_uniffi.HiddenMessagesBanner
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageRecipient
@@ -188,6 +190,19 @@ class ConversationMapperTest {
         assertEquals(expected, conversation.snoozeInformation)
     }
 
+    @Test
+    fun `conversation with hiddenMessagesBanner should convert correctly`() {
+        // Given
+        val expected = ch.protonmail.android.mailconversation.domain.entity.HiddenMessagesBanner.ContainsTrashedMessages
+
+        val conversation = createLocalConversation(
+            hiddenMessagesBanner = HiddenMessagesBanner.CONTAINS_TRASHED_MESSAGES
+        ).toConversation()
+
+        // Then
+        assertEquals(expected, conversation.hiddenMessagesBanner)
+    }
+
     private fun createLocalConversation(
         id: LocalConversationId = LocalConversationId(123uL),
         displayOrder: ULong = 1uL,
@@ -217,7 +232,8 @@ class ConversationMapperTest {
         ),
         avatar: AvatarInformation = AvatarInformation("A", "blue"),
         totalMessages: ULong = 8uL,
-        totalUnread: ULong = 3uL
+        totalUnread: ULong = 3uL,
+        hiddenMessagesBanner: LocalHiddenMessagesBanner? = null
     ): LocalConversation {
         return LocalConversation(
             id = id,
@@ -239,8 +255,8 @@ class ConversationMapperTest {
             avatar = avatar,
             totalMessages = totalMessages,
             totalUnread = totalUnread,
-            hiddenMessagesBanner = null, // ET-4980
-            snoozedUntil = null
+            snoozedUntil = null,
+            hiddenMessagesBanner = hiddenMessagesBanner
         )
     }
 

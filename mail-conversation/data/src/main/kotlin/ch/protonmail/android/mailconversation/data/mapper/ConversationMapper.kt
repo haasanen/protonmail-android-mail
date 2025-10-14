@@ -28,10 +28,12 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDisposition
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalHiddenMessagesBanner
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
+import ch.protonmail.android.mailconversation.domain.entity.HiddenMessagesBanner
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAvatarInformation
@@ -65,7 +67,8 @@ fun LocalConversation.toConversation() = Conversation(
     customLabels = this.customLabels.map { it.toLabel() },
     avatarInformation = this.avatar.toAvatarInformation(),
     exclusiveLocation = this.exclusiveLocation.toExclusiveLocation(),
-    snoozeInformation = this.toSnoozeInformation()
+    snoozeInformation = this.toSnoozeInformation(),
+    hiddenMessagesBanner = this.hiddenMessagesBanner?.toHiddenMessagesBanner()
 )
 
 private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())
@@ -84,4 +87,9 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen():
 fun ConversationDetailEntryPoint.toOrigin() = when (this) {
     ConversationDetailEntryPoint.PushNotification -> OpenConversationOrigin.PUSH_NOTIFICATION
     ConversationDetailEntryPoint.Mailbox -> OpenConversationOrigin.DEFAULT
+}
+
+fun LocalHiddenMessagesBanner.toHiddenMessagesBanner() = when (this) {
+    LocalHiddenMessagesBanner.CONTAINS_TRASHED_MESSAGES -> HiddenMessagesBanner.ContainsTrashedMessages
+    LocalHiddenMessagesBanner.CONTAINS_NON_TRASHED_MESSAGES -> HiddenMessagesBanner.ContainsNonTrashedMessages
 }

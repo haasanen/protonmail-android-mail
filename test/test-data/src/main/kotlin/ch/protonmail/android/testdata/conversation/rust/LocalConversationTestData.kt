@@ -204,7 +204,7 @@ object LocalConversationTestData {
         attachmentsMetadata = attachments,
         totalMessages = numMessages,
         totalUnread = numUnread,
-        hiddenMessagesBanner = null, // ET-4980
-        snoozedUntil = 0uL
+        snoozedUntil = 0uL,
+        hiddenMessagesBanner = null
     )
 }

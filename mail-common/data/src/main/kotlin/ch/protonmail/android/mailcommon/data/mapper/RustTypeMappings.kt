@@ -51,6 +51,7 @@ import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.ExtendedName
 import uniffi.proton_mail_uniffi.GenderKind
 import uniffi.proton_mail_uniffi.GroupedContacts
+import uniffi.proton_mail_uniffi.HiddenMessagesBanner
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IssueReport
 import uniffi.proton_mail_uniffi.LabelAsAction
@@ -235,4 +236,5 @@ typealias LocalRsvpUnanswerableReason = RsvpUnanswerableReason
 typealias LocalRsvpAnswer = RsvpAnswer
 typealias LocalMobileSignatureStatus = MobileSignatureStatus
 typealias LocalMobileSignature = MobileSignature
+typealias LocalHiddenMessagesBanner = HiddenMessagesBanner
 

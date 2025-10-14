@@ -142,7 +142,8 @@ object ConversationTestData {
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
         attachments = listOf(AttachmentMetadataSamples.Pdf),
-        snoozeInformation = NoSnooze
+        snoozeInformation = NoSnooze,
+        hiddenMessagesBanner = null
     )
 
     private fun buildConversationWithConversationLabels(
@@ -173,7 +174,8 @@ object ConversationTestData {
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
         attachments = listOf(AttachmentMetadataSamples.Pdf),
-        snoozeInformation = NoSnooze
+        snoozeInformation = NoSnooze,
+        hiddenMessagesBanner = null
     )
 
     private fun buildLabel(labelId: String) = Label(

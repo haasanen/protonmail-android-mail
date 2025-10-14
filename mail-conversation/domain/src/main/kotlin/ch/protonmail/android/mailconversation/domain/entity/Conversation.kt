@@ -46,5 +46,6 @@ data class Conversation(
     val customLabels: List<Label>,
     val avatarInformation: AvatarInformation,
     val exclusiveLocation: ExclusiveLocation,
-    val snoozeInformation: ConversationSnoozeStatus
+    val snoozeInformation: ConversationSnoozeStatus,
+    val hiddenMessagesBanner: HiddenMessagesBanner?
 )
