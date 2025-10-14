@@ -45,15 +45,17 @@ class GetMessagesInSameExclusiveLocation @Inject constructor(
      * @param messageId the reference message id.
      * @param labelId a valid label id to allow the message list to be resolved.
      */
+    @Suppress("LongParameterList")
     suspend operator fun invoke(
         userId: UserId,
         conversationId: ConversationId,
         messageId: MessageId,
         labelId: LabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Either<DataError, List<Message>> = either {
         val messages = observeConversationMessages
-            .invoke(userId, conversationId, labelId, entryPoint)
+            .invoke(userId, conversationId, labelId, entryPoint, showAllMessages)
             .firstOrNull()
             ?.getOrNull()
             ?.messages

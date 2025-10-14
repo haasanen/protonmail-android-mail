@@ -39,12 +39,13 @@ class ObserveAllConversationBottomBarActionsTest {
             ).right()
         )
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
-            actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint)
+            actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
         } returns expected
 
         // When
-        val actual = observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint)
+        val actual = observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
 
         // Then
         assertEquals(expected, actual)
@@ -58,6 +59,7 @@ class ObserveAllConversationBottomBarActionsTest {
         val conversationId = ConversationIdSample.Newsletter
         val sharedFlow = MutableSharedFlow<Either<DataError, AllBottomBarActions>>()
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
 
         val expectedFirst =
             AllBottomBarActions(listOf(Action.MarkRead, Action.MarkUnread), listOf(Action.Star, Action.Label)).right()
@@ -69,11 +71,11 @@ class ObserveAllConversationBottomBarActionsTest {
             ).right()
 
         coEvery {
-            actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint)
+            actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
         } returns sharedFlow
 
         // When + Then
-        observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint).test {
+        observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint, showAll).test {
             sharedFlow.emit(expectedFirst)
             assertEquals(expectedFirst, awaitItem())
             sharedFlow.emit(expectedSecond)
@@ -89,17 +91,19 @@ class ObserveAllConversationBottomBarActionsTest {
         val conversationId = ConversationIdSample.Newsletter
         val expected = flowOf(DataError.Local.CryptoError.left())
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
             actionRepository.observeAllBottomBarActions(
                 userId,
                 labelId,
                 conversationId,
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns expected
 
         // When
-        val actual = observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint)
+        val actual = observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
 
         // Then
         assertEquals(expected, actual)

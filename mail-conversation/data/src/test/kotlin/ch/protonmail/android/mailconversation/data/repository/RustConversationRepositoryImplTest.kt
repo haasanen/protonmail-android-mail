@@ -99,17 +99,19 @@ class RustConversationRepositoryImplTest {
         val expected = localConversation.toConversation()
         val labelId = LabelId("2")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
             rustConversationDataSource.observeConversation(
                 userId,
                 any(),
                 labelId.toLocalLabelId(),
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns flowOf(localConversation.right())
 
         // When
-        rustConversationRepository.observeConversation(userId, conversationId, labelId, entryPoint).test {
+        rustConversationRepository.observeConversation(userId, conversationId, labelId, entryPoint, showAll).test {
             val result = awaitItem().getOrNull()
 
             // Then
@@ -119,7 +121,8 @@ class RustConversationRepositoryImplTest {
                     userId,
                     any(),
                     labelId.toLocalLabelId(),
-                    entryPoint
+                    entryPoint,
+                    showAll
                 )
             }
 
@@ -134,19 +137,21 @@ class RustConversationRepositoryImplTest {
         val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val labelId = LabelId("2")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
 
         coEvery {
             rustConversationDataSource.observeConversation(
                 userId,
                 any(),
                 labelId.toLocalLabelId(),
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns
             flowOf(ConversationError.NullValueReturned.left())
 
         // When
-        rustConversationRepository.observeConversation(userId, conversationId, labelId, entryPoint).test {
+        rustConversationRepository.observeConversation(userId, conversationId, labelId, entryPoint, showAll).test {
             val result = awaitItem().getOrNull()
 
             // Then
@@ -156,7 +161,8 @@ class RustConversationRepositoryImplTest {
                     userId,
                     any(),
                     labelId.toLocalLabelId(),
-                    entryPoint
+                    entryPoint,
+                    showAll
                 )
             }
 
@@ -181,32 +187,36 @@ class RustConversationRepositoryImplTest {
         val expectedConversationMessages = localConversationMessages.toConversationMessagesWithMessageToOpen()
         val labelId = LabelId("2")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
 
         coEvery {
             rustConversationDataSource.observeConversationMessages(
                 userId,
                 conversationId.toLocalConversationId(),
                 labelId.toLocalLabelId(),
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns flowOf(localConversationMessages.right())
 
         // When
-        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint).test {
-            val result = awaitItem()
+        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint, showAll)
+            .test {
+                val result = awaitItem()
 
-            // Then
-            assertEquals(expectedConversationMessages, result)
-            coVerify {
-                rustConversationDataSource.observeConversationMessages(
-                    userId,
-                    conversationId.toLocalConversationId(),
-                    labelId.toLocalLabelId(),
-                    entryPoint
-                )
+                // Then
+                assertEquals(expectedConversationMessages, result)
+                coVerify {
+                    rustConversationDataSource.observeConversationMessages(
+                        userId,
+                        conversationId.toLocalConversationId(),
+                        labelId.toLocalLabelId(),
+                        entryPoint,
+                        showAll
+                    )
+                }
+                awaitComplete()
             }
-            awaitComplete()
-        }
     }
 
     @Test
@@ -217,32 +227,36 @@ class RustConversationRepositoryImplTest {
         val expectedError = ConversationError.ConvoWithNoMessages.left()
         val labelId = LabelId("2")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
 
         coEvery {
             rustConversationDataSource.observeConversationMessages(
                 userId,
                 conversationId.toLocalConversationId(),
                 labelId.toLocalLabelId(),
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns flowOf(LocalConversationMessages(LocalMessageIdSample.AugWeatherForecast, emptyList()).right())
 
         // When
-        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint).test {
-            val result = awaitItem()
+        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint, showAll)
+            .test {
+                val result = awaitItem()
 
-            // Then
-            assertEquals(expectedError, result)
-            coVerify {
-                rustConversationDataSource.observeConversationMessages(
-                    userId,
-                    conversationId.toLocalConversationId(),
-                    labelId.toLocalLabelId(),
-                    entryPoint
-                )
+                // Then
+                assertEquals(expectedError, result)
+                coVerify {
+                    rustConversationDataSource.observeConversationMessages(
+                        userId,
+                        conversationId.toLocalConversationId(),
+                        labelId.toLocalLabelId(),
+                        entryPoint,
+                        showAll
+                    )
+                }
+                awaitComplete()
             }
-            awaitComplete()
-        }
     }
 
     @Test

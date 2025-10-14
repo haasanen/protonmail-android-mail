@@ -135,12 +135,13 @@ internal class RustConversationDataSourceImplTest {
         val conversationId = LocalConversationIdSample.AugConversation
         val localLabelId = LocalLabelId(3uL)
         val entryPoint = ConversationDetailEntryPoint.PushNotification
+        val showAll = false
         coEvery {
-            rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId, entryPoint)
+            rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId, entryPoint, showAll)
         } returns flowOf(LocalConversationTestData.AugConversation.right())
 
         // When
-        val result = dataSource.observeConversation(userId, conversationId, localLabelId, entryPoint).first()
+        val result = dataSource.observeConversation(userId, conversationId, localLabelId, entryPoint, showAll).first()
 
         // Then
         assertEquals(LocalConversationTestData.AugConversation.right(), result)
@@ -162,14 +163,15 @@ internal class RustConversationDataSourceImplTest {
         )
         val localLabelId = LocalLabelId(3uL)
         val entryPoint = ConversationDetailEntryPoint.PushNotification
+        val showAll = false
         coEvery {
             rustConversationDetailQuery.observeConversationMessages(
-                userId, conversationId, localLabelId, entryPoint
+                userId, conversationId, localLabelId, entryPoint, showAll
             )
         } returns flowOf(localConversationMessages.right())
 
         // When
-        dataSource.observeConversationMessages(userId, conversationId, localLabelId, entryPoint).test {
+        dataSource.observeConversationMessages(userId, conversationId, localLabelId, entryPoint, showAll).test {
 
             // Then
             val result = awaitItem()
@@ -179,7 +181,8 @@ internal class RustConversationDataSourceImplTest {
                     userId,
                     conversationId,
                     localLabelId,
-                    entryPoint
+                    entryPoint,
+                    showAll
                 )
             }
 

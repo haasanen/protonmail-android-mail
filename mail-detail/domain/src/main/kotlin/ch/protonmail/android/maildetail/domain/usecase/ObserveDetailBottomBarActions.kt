@@ -42,12 +42,14 @@ class ObserveDetailBottomBarActions @Inject constructor(
         userId: UserId,
         labelId: LabelId,
         conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<DataError, List<Action>>> = observeAllConversationBottomBarActions(
         userId,
         labelId,
         conversationId,
-        entryPoint
+        entryPoint,
+        showAllMessages
     )
         .map { eitherResult ->
             eitherResult.map { allBottomBarActions ->

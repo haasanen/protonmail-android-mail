@@ -326,22 +326,25 @@ internal class RustConversationActionRepositoryTest {
         val conversationId = ConversationId("1")
         val expected = DataError.Local.IllegalStateError.left()
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
 
         coEvery {
             rustConversationDataSource.observeConversation(
                 userId,
                 any(),
                 labelId.toLocalLabelId(),
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns
             flowOf(ConversationError.UnknownLabel.left())
 
         // When + Then
-        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint).test {
-            assertEquals(expected, awaitItem())
-            awaitComplete()
-        }
+        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
+            .test {
+                assertEquals(expected, awaitItem())
+                awaitComplete()
+            }
     }
 
     @Test
@@ -361,6 +364,7 @@ internal class RustConversationActionRepositoryTest {
             listOf(ConversationAction.MarkRead)
         )
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
 
         coEvery {
             rustConversationDataSource.getAllAvailableBottomBarActions(
@@ -375,15 +379,17 @@ internal class RustConversationActionRepositoryTest {
                 userId,
                 any(),
                 labelId.toLocalLabelId(),
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns
             flowOf(mockk<LocalConversation>().right())
 
         // When + Then
-        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint).test {
-            assertEquals(expectedActions, awaitItem())
-            awaitComplete()
-        }
+        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
+            .test {
+                assertEquals(expectedActions, awaitItem())
+                awaitComplete()
+            }
     }
 }

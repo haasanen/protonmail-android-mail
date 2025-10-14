@@ -33,13 +33,15 @@ interface RustConversationDetailQuery {
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, LocalConversation>>
 
     suspend fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, LocalConversationMessages>>
 }

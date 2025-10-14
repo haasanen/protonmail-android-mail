@@ -72,13 +72,15 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId: UserId,
         id: ConversationId,
         labelId: LabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, Conversation>> = rustConversationDataSource
         .observeConversation(
             userId = userId,
             conversationId = id.toLocalConversationId(),
             labelId = labelId.toLocalLabelId(),
-            entryPoint = entryPoint
+            entryPoint = entryPoint,
+            showAllMessages = showAllMessages
         )
         .map { eitherFlow -> eitherFlow.map { it.toConversation() } }
 
@@ -87,12 +89,14 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId: UserId,
         conversationId: ConversationId,
         labelId: LabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, ConversationMessages>> = rustConversationDataSource.observeConversationMessages(
         userId = userId,
         conversationId = conversationId.toLocalConversationId(),
         labelId = labelId.toLocalLabelId(),
-        entryPoint = entryPoint
+        entryPoint = entryPoint,
+        showAllMessages = showAllMessages
     ).map { eitherConversationMessages ->
         eitherConversationMessages.flatMap { it.toConversationMessagesWithMessageToOpen() }
     }

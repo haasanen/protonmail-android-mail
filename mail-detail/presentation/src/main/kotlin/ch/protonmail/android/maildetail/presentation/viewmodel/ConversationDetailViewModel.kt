@@ -261,6 +261,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val openedFromLocation = getOpenedFromLocation()
     private val conversationEntryPoint = getEntryPoint()
     private val attachmentsState = MutableStateFlow<Map<MessageId, List<AttachmentMetadata>>>(emptyMap())
+    private val showAllMessages = MutableStateFlow(false)
     val isSingleMessageModeEnabled = getIsSingleMessageMode()
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
@@ -546,8 +547,14 @@ class ConversationDetailViewModel @Inject constructor(
         .launchIn(viewModelScope)
 
     private fun observeConversationMetadata(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
-        observeConversation(userId, conversationId, openedFromLocation, conversationEntryPoint)
-            .mapLatest { either ->
+        showAllMessages.flatMapLatest { showAllMessages ->
+            observeConversation(
+                userId,
+                conversationId,
+                openedFromLocation,
+                conversationEntryPoint,
+                showAllMessages
+            ).mapLatest { either ->
                 either.fold(
                     ifLeft = {
                         if (it.isOfflineError()) {
@@ -557,9 +564,14 @@ class ConversationDetailViewModel @Inject constructor(
                             ConversationDetailEvent.ErrorLoadingConversation
                         }
                     },
-                    ifRight = { ConversationDetailEvent.ConversationData(conversationMetadataMapper.toUiModel(it)) }
+                    ifRight = {
+                        ConversationDetailEvent.ConversationData(
+                            conversationMetadataMapper.toUiModel(it)
+                        )
+                    }
                 )
             }
+        }
     }
         .restartableOn(reloadSignal)
         .onEach { event ->
@@ -569,60 +581,68 @@ class ConversationDetailViewModel @Inject constructor(
 
     @Suppress("LongMethod")
     private fun observeConversationMessages(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
-        combine(
-            observeConversationMessages(userId, conversationId, openedFromLocation, conversationEntryPoint),
-            observeConversationViewState(),
-            observePrimaryUserAddress(),
-            observeAvatarImageStates()
-        ) { messagesEither, conversationViewState, primaryUserAddress, avatarImageStates ->
-            val conversationMessages = messagesEither.getOrElse {
-                return@combine if (it.isOfflineError()) {
-                    signalOfflineError()
-                    ConversationDetailEvent.NoNetworkError
-                } else {
-                    ConversationDetailEvent.ErrorLoadingMessages
-                }
-            }
-
-            val displayMessages = when {
-                isSingleMessageModeEnabled -> {
-                    val message = conversationMessages.filterMessage(initialScrollToMessageId)
-                    if (message == null) {
-                        Timber.tag("SingleMessageMode")
-                            .w("single message requested, message is not in convo $initialScrollToMessageId")
-                        return@combine ConversationDetailEvent.ErrorLoadingSingleMessage
+        showAllMessages.flatMapLatest { showAllMessages ->
+            combine(
+                observeConversationMessages(
+                    userId,
+                    conversationId,
+                    openedFromLocation,
+                    conversationEntryPoint,
+                    showAllMessages
+                ),
+                observeConversationViewState(),
+                observePrimaryUserAddress(),
+                observeAvatarImageStates()
+            ) { messagesEither, conversationViewState, primaryUserAddress, avatarImageStates ->
+                val conversationMessages = messagesEither.getOrElse {
+                    return@combine if (it.isOfflineError()) {
+                        signalOfflineError()
+                        ConversationDetailEvent.NoNetworkError
+                    } else {
+                        ConversationDetailEvent.ErrorLoadingMessages
                     }
-                    message
                 }
 
-                else -> conversationMessages.messages
-            }
+                val displayMessages = when {
+                    isSingleMessageModeEnabled -> {
+                        val message = conversationMessages.filterMessage(initialScrollToMessageId)
+                        if (message == null) {
+                            Timber.tag("SingleMessageMode")
+                                .w("single message requested, message is not in convo $initialScrollToMessageId")
+                            return@combine ConversationDetailEvent.ErrorLoadingSingleMessage
+                        }
+                        message
+                    }
 
-            val messagesUiModels = buildMessagesUiModels(
-                messages = displayMessages,
-                primaryUserAddress = primaryUserAddress,
-                currentViewState = conversationViewState,
-                avatarImageStates = avatarImageStates
-            ).toImmutableList()
+                    else -> conversationMessages.messages
+                }
 
-            val initialScrollTo = initialScrollToMessageId
-                ?: conversationMessages.messageIdToOpen
-                    .let { messageIdUiModelMapper.toUiModel(it) }
-            if (stateIsLoadingOrOffline() && allCollapsed(conversationViewState.messagesState)) {
-                ConversationDetailEvent.MessagesData(
-                    messagesUiModels,
-                    initialScrollTo,
-                    openedFromLocation,
-                    conversationViewState.shouldHideMessagesBasedOnTrashFilter
-                )
-            } else {
-                val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
-                ConversationDetailEvent.MessagesData(
-                    messagesUiModels,
-                    requestScrollTo,
-                    openedFromLocation,
-                    conversationViewState.shouldHideMessagesBasedOnTrashFilter
-                )
+                val messagesUiModels = buildMessagesUiModels(
+                    messages = displayMessages,
+                    primaryUserAddress = primaryUserAddress,
+                    currentViewState = conversationViewState,
+                    avatarImageStates = avatarImageStates
+                ).toImmutableList()
+
+                val initialScrollTo = initialScrollToMessageId
+                    ?: conversationMessages.messageIdToOpen
+                        .let { messageIdUiModelMapper.toUiModel(it) }
+                if (stateIsLoadingOrOffline() && allCollapsed(conversationViewState.messagesState)) {
+                    ConversationDetailEvent.MessagesData(
+                        messagesUiModels,
+                        initialScrollTo,
+                        openedFromLocation,
+                        showAllMessages.not()
+                    )
+                } else {
+                    val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
+                    ConversationDetailEvent.MessagesData(
+                        messagesUiModels,
+                        requestScrollTo,
+                        openedFromLocation,
+                        showAllMessages.not()
+                    )
+                }
             }
         }
     }
@@ -775,25 +795,26 @@ class ConversationDetailViewModel @Inject constructor(
                 )
             }
         } else {
-            observeDetailActions(userId, labelId, conversationId, conversationEntryPoint).mapLatest { either ->
-                either.fold(
-                    ifLeft = {
-                        if (it.isOfflineError()) {
-                            offlineEvent
-                        } else {
-                            errorEvent
-                        }
-                    },
-                    ifRight = { actions ->
-                        val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
-                        ConversationDetailEvent.ConversationBottomBarEvent(
-                            BottomBarEvent.ShowAndUpdateActionsData(
-                                BottomBarTarget.Conversation, actionUiModels
+            observeDetailActions(userId, labelId, conversationId, conversationEntryPoint, showAllMessages.value)
+                .mapLatest { either ->
+                    either.fold(
+                        ifLeft = {
+                            if (it.isOfflineError()) {
+                                offlineEvent
+                            } else {
+                                errorEvent
+                            }
+                        },
+                        ifRight = { actions ->
+                            val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
+                            ConversationDetailEvent.ConversationBottomBarEvent(
+                                BottomBarEvent.ShowAndUpdateActionsData(
+                                    BottomBarTarget.Conversation, actionUiModels
+                                )
                             )
-                        )
-                    }
-                )
-            }
+                        }
+                    )
+                }
         }
     }
         .restartableOn(reloadSignal)
@@ -1024,7 +1045,8 @@ class ConversationDetailViewModel @Inject constructor(
                 userId,
                 labelId,
                 conversationId,
-                conversationEntryPoint
+                conversationEntryPoint,
+                showAllMessages.value
             ) ?: return@launch
 
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
@@ -1346,11 +1368,7 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleChangeVisibilityOfMessages() {
-        viewModelScope.launch {
-            messageViewStateCache.switchTrashedMessagesFilter()
-        }
-    }
+    private fun handleChangeVisibilityOfMessages() = showAllMessages.update { showAllMessages.value.not() }
 
     private fun onDoNotAskLinkConfirmationChecked() {
         viewModelScope.launch { updateLinkConfirmationSetting(false) }
@@ -1610,7 +1628,8 @@ class ConversationDetailViewModel @Inject constructor(
             conversationId,
             messageId,
             labelId,
-            conversationEntryPoint
+            conversationEntryPoint,
+            showAllMessages.value
         ).getOrElse {
             Timber.d("Unable to determine the number of messages in the current location - $labelId")
             return true

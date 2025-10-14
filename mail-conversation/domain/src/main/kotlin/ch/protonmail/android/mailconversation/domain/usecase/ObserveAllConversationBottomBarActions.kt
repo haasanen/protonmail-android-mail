@@ -33,6 +33,7 @@ class ObserveAllConversationBottomBarActions @Inject constructor(
         userId: UserId,
         labelId: LabelId,
         conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint
-    ) = actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint)
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
+    ) = actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAllMessages)
 }

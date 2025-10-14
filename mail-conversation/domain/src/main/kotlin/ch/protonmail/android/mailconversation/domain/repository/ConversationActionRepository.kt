@@ -60,6 +60,7 @@ interface ConversationActionRepository {
         userId: UserId,
         labelId: LabelId,
         conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<DataError, AllBottomBarActions>>
 }

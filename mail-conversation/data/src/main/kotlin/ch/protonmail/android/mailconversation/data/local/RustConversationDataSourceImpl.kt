@@ -92,18 +92,20 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, LocalConversation>> =
-        rustConversationDetailQuery.observeConversation(userId, conversationId, labelId, entryPoint)
+        rustConversationDetailQuery.observeConversation(userId, conversationId, labelId, entryPoint, showAllMessages)
             .flowOn(ioDispatcher)
 
     override suspend fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, LocalConversationMessages>> = rustConversationDetailQuery
-        .observeConversationMessages(userId, conversationId, labelId, entryPoint)
+        .observeConversationMessages(userId, conversationId, labelId, entryPoint, showAllMessages)
         .flowOn(ioDispatcher)
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) =

@@ -37,7 +37,8 @@ class ObserveConversationMessages @Inject constructor(
         userId: UserId,
         conversationId: ConversationId,
         labelId: LabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, ConversationMessages>> =
-        conversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint)
+        conversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint, showAllMessages)
 }

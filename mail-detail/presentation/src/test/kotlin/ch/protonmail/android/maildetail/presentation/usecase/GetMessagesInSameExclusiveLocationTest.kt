@@ -67,12 +67,15 @@ internal class GetMessagesInSameExclusiveLocationTest {
         fun `should return error when messages can not be fetched`() = runTest {
             // Given
             val entryPoint = ConversationDetailEntryPoint.Mailbox
+            val showAll = false
             coEvery {
-                observeConversationMessages.invoke(userId, conversationId, localLabelId, entryPoint)
+                observeConversationMessages.invoke(userId, conversationId, localLabelId, entryPoint, showAll)
             } returns flowOf(ConversationError.UnknownLabel.left())
 
             // When
-            val result = getMessagesInSameExclusiveLocation(userId, conversationId, messageId, localLabelId, entryPoint)
+            val result = getMessagesInSameExclusiveLocation(
+                userId, conversationId, messageId, localLabelId, entryPoint, showAll
+            )
 
             // Then
             assertEquals(DataError.Local.NotFound.left(), result)
@@ -96,8 +99,9 @@ internal class GetMessagesInSameExclusiveLocationTest {
         fun `should return the correct count of messages in the location`() = runTest {
             // Given
             val entryPoint = ConversationDetailEntryPoint.Mailbox
+            val showAll = false
             coEvery {
-                observeConversationMessages.invoke(userId, conversationId, localLabelId, entryPoint)
+                observeConversationMessages.invoke(userId, conversationId, localLabelId, entryPoint, showAll)
             } returns flowOf(ConversationMessages(testInput.messagesList, testInput.messageId).right())
 
             // When
@@ -106,7 +110,8 @@ internal class GetMessagesInSameExclusiveLocationTest {
                 conversationId,
                 testInput.messageId,
                 localLabelId,
-                entryPoint
+                entryPoint,
+                showAll
             )
                 .getOrNull()
 

@@ -143,6 +143,7 @@ class GetMoreActionsBottomSheetDataTest {
         val conversation = ConversationSample.WeatherForecast
         val availableActions = AvailableActionsTestData.replyActionsOnly
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
             getConversationAvailableActions(userId, labelId, conversationId)
         } returns availableActions.right()
@@ -151,12 +152,13 @@ class GetMoreActionsBottomSheetDataTest {
                 userId,
                 conversationId,
                 labelId,
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns flowOf(conversation.right())
 
         // When
-        val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId, entryPoint)
+        val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId, entryPoint, showAll)
 
         // Then
         val expected = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
@@ -176,6 +178,7 @@ class GetMoreActionsBottomSheetDataTest {
         val labelId = SystemLabelId.Archive.labelId
         val conversationId = ConversationIdSample.WeatherForecast
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
             getConversationAvailableActions(userId, labelId, conversationId)
         } returns DataError.Local.NoDataCached.left()
@@ -184,12 +187,13 @@ class GetMoreActionsBottomSheetDataTest {
                 userId,
                 conversationId,
                 labelId,
-                entryPoint
+                entryPoint,
+                showAll
             )
         } returns flowOf(conversation.right())
 
         // When
-        val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId, entryPoint)
+        val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId, entryPoint, showAll)
 
         // Then
         assertNull(actual)

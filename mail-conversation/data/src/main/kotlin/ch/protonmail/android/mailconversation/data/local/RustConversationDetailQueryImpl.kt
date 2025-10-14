@@ -58,6 +58,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     private var currentConversationId: LocalConversationId? = null
     private var currentUserId: UserId? = null
     private var currentLabelId: LocalLabelId? = null
+    private var currentShowAllMessages: Boolean = false
 
     private val mutex = Mutex()
     private val conversationMutableStatusFlow = MutableStateFlow<Either<ConversationError, LocalConversation>?>(null)
@@ -75,9 +76,10 @@ class RustConversationDetailQueryImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, LocalConversation>> = callbackFlow {
-        initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint)
+        initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint, showAllMessages)
 
         val job = coroutineScope.launch {
             conversationStatusFlow.collect { value ->
@@ -103,9 +105,10 @@ class RustConversationDetailQueryImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, LocalConversationMessages>> = callbackFlow {
-        initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint)
+        initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint, showAllMessages)
 
         val job = coroutineScope.launch {
             conversationMessagesStatusFlow.collect { value ->
@@ -126,14 +129,19 @@ class RustConversationDetailQueryImpl @Inject constructor(
         }
     }
 
+    @Suppress("ComplexCondition")
     private suspend fun initialiseOrUpdateWatcher(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ) {
         mutex.withLock {
-            if (currentConversationId != conversationId || conversationWatcher == null || userId != currentUserId) {
+            if (
+                currentConversationId != conversationId || conversationWatcher == null ||
+                userId != currentUserId || showAllMessages != currentShowAllMessages
+            ) {
                 // If the conversationId is different or there's no active watcher, destroy and create a new one
                 destroy()
 
@@ -145,7 +153,8 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
                 currentUserId = userId
                 currentLabelId = labelId
-                val convoWatcherEither = createRustConversationWatcher(
+                currentShowAllMessages = showAllMessages
+                createRustConversationWatcher(
                     mailbox, conversationId, conversationUpdatedCallback(), entryPoint.toOrigin()
                 ).onLeft {
                     Timber.w("Failed to create watcher for conversation: $it")
@@ -153,8 +162,9 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     conversationWatcher = it
                 }
 
-                conversationMutableStatusFlow.value = convoWatcherEither.map { it.conversation }
-                conversationMessagesMutableStatusFlow.value = convoWatcherEither.map {
+                val conversationEither = getRustConversation(mailbox, conversationId, showAllMessages)
+                conversationMutableStatusFlow.value = conversationEither.map { it.conversation }
+                conversationMessagesMutableStatusFlow.value = conversationEither.map {
                     LocalConversationMessages(it.messageIdToOpen, it.messages)
                 }
                 currentConversationId = conversationId
@@ -186,10 +196,11 @@ class RustConversationDetailQueryImpl @Inject constructor(
                         return@withLock
                     }
 
-                    val conversationEither = getRustConversation(mailbox, currentConversationId!!)
-                        .onLeft {
-                            Timber.w("Failed to update conversation messages, $it")
-                        }
+                    val conversationEither = getRustConversation(
+                        mailbox, currentConversationId!!, currentShowAllMessages
+                    ).onLeft {
+                        Timber.w("Failed to update conversation messages, $it")
+                    }
 
                     conversationMutableStatusFlow.value = conversationEither.map { it.conversation }
                     conversationMessagesMutableStatusFlow.value = conversationEither.map {

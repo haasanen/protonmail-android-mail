@@ -58,9 +58,10 @@ internal class ObserveConversationMessagesTest {
         ).right()
         val labelId = LabelId("1")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
             conversationRepository.observeConversationMessages(
-                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, entryPoint
+                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, entryPoint, showAll
             )
         } returns flowOf(conversationMessages.right())
 
@@ -69,7 +70,8 @@ internal class ObserveConversationMessagesTest {
             UserIdSample.Primary,
             ConversationIdSample.WeatherForecast,
             labelId,
-            entryPoint
+            entryPoint,
+            showAll
         ).test {
 
             // then
@@ -88,9 +90,10 @@ internal class ObserveConversationMessagesTest {
         ).right()
         val labelId = LabelId("1")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
             conversationRepository.observeConversationMessages(
-                UserIdSample.Primary, ConversationIdSample.Invoices, labelId, entryPoint
+                UserIdSample.Primary, ConversationIdSample.Invoices, labelId, entryPoint, showAll
             )
         } returns
             flowOf(ConversationMessages(nonEmptyListOf(message), MessageSample.Invoice.messageId).right())
@@ -100,7 +103,8 @@ internal class ObserveConversationMessagesTest {
             UserIdSample.Primary,
             ConversationIdSample.Invoices,
             labelId,
-            entryPoint
+            entryPoint,
+            showAll
         ).test {
 
             // then
@@ -115,9 +119,10 @@ internal class ObserveConversationMessagesTest {
         val error = ConversationError.NullValueReturned.left()
         val labelId = LabelId("1")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
             conversationRepository.observeConversationMessages(
-                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, entryPoint
+                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, entryPoint, showAll
             )
         } returns flowOf(error)
 
@@ -126,7 +131,8 @@ internal class ObserveConversationMessagesTest {
             UserIdSample.Primary,
             ConversationIdSample.WeatherForecast,
             labelId,
-            entryPoint
+            entryPoint,
+            showAll
         ).test {
 
             // then

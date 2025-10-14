@@ -56,7 +56,8 @@ interface ConversationRepository {
         userId: UserId,
         id: ConversationId,
         labelId: LabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, Conversation>>
 
     /**
@@ -66,7 +67,8 @@ interface ConversationRepository {
         userId: UserId,
         conversationId: ConversationId,
         labelId: LabelId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<ConversationError, ConversationMessages>>
 
     suspend fun move(

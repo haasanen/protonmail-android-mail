@@ -67,12 +67,13 @@ internal class ObserveDetailBottomBarActionsTest {
             visibleActions = listOf(Action.Spam, Action.Archive)
         )
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
         coEvery {
-            observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint)
+            observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
         } returns flowOf(allActions.right())
 
         // When
-        observeDetailActions(userId, labelId, conversationId, entryPoint).test {
+        observeDetailActions(userId, labelId, conversationId, entryPoint, showAll).test {
             // Then
             val expected = listOf(Action.Spam, Action.Archive)
             assertEquals(expected.right(), awaitItem())
@@ -112,9 +113,12 @@ internal class ObserveDetailBottomBarActionsTest {
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationIdSample.Invoices
         val entryPoint = ConversationDetailEntryPoint.Mailbox
+        val showAll = false
 
         val flow = MutableSharedFlow<Either<DataError, AllBottomBarActions>>()
-        coEvery { observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint) } returns flow
+        coEvery {
+            observeAllConversationBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
+        } returns flow
 
         val actionsSet = AllBottomBarActions(
             visibleActions = listOf(Action.Spam, Action.Archive),
@@ -131,7 +135,7 @@ internal class ObserveDetailBottomBarActionsTest {
         val finalExpectedSet = listOf(Action.Star, Action.Label)
 
         // When + Then
-        observeDetailActions(userId, labelId, conversationId, entryPoint).test {
+        observeDetailActions(userId, labelId, conversationId, entryPoint, showAll).test {
             flow.emit(actionsSet.right())
             assertEquals(firstExpectedSet.right(), awaitItem())
 
@@ -148,10 +152,11 @@ internal class ObserveDetailBottomBarActionsTest {
         val conversationId = ConversationIdSample.Invoices
         val error = DataError.Local.CryptoError.left()
         val entryPoint = ConversationDetailEntryPoint.Mailbox
-        coEvery { observeDetailActions(userId, labelId, conversationId, entryPoint) } returns flowOf(error)
+        val showAll = false
+        coEvery { observeDetailActions(userId, labelId, conversationId, entryPoint, showAll) } returns flowOf(error)
 
         // When
-        observeDetailActions(userId, labelId, conversationId, entryPoint).test {
+        observeDetailActions(userId, labelId, conversationId, entryPoint, showAll).test {
             // Then
             assertEquals(error, awaitItem())
             awaitComplete()

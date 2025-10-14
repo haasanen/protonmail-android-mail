@@ -108,13 +108,15 @@ class RustConversationActionRepository @Inject constructor(
         userId: UserId,
         labelId: LabelId,
         conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
     ): Flow<Either<DataError, AllBottomBarActions>> {
         return rustConversationDataSource.observeConversation(
             userId = userId,
             conversationId = conversationId.toLocalConversationId(),
             labelId = labelId.toLocalLabelId(),
-            entryPoint = entryPoint
+            entryPoint = entryPoint,
+            showAllMessages = showAllMessages
         ).mapLatest { conversationResult ->
             conversationResult.fold(
                 ifLeft = { error ->
