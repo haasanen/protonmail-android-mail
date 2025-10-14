@@ -30,12 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.startActivity
-import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.mailsettings.presentation.R
 
 @Composable
 fun NotificationSettingsItemButton(modifier: Modifier = Modifier) {
@@ -44,7 +43,7 @@ fun NotificationSettingsItemButton(modifier: Modifier = Modifier) {
     fun launchNotificationSettingsIntent() {
         val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-        startActivity(context, intent, null)
+        context.startActivity(intent, null)
     }
 
     ProtonRawListItem(

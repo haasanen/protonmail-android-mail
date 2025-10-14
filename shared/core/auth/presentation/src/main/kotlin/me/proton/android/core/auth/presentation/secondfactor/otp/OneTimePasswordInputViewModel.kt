@@ -111,8 +111,6 @@ class OneTimePasswordInputViewModel @Inject constructor(
                     is LoginFlowSubmitTotpResult.Ok -> emitAll(onSuccess(twoFaFlow.flow))
                 }
             }
-
-            null -> emitAll(onClose())
         }
     }
 

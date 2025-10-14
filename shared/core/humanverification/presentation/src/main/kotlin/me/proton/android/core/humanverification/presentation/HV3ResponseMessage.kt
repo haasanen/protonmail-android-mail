@@ -21,7 +21,6 @@ package me.proton.android.core.humanverification.presentation
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -53,7 +52,7 @@ data class HV3ResponseMessage(
 
         companion object {
 
-            val map = values().associateBy { it.value }
+            val map = entries.associateBy { it.value }
         }
     }
 
@@ -65,11 +64,10 @@ data class HV3ResponseMessage(
 
         companion object {
 
-            val map = values().associateBy { it.value }
+            val map = entries.associateBy { it.value }
         }
     }
 
-    @Serializer(forClass = Type::class)
     object VerificationMessageTypeSerializer : KSerializer<Type> {
 
         override val descriptor = PrimitiveSerialDescriptor(

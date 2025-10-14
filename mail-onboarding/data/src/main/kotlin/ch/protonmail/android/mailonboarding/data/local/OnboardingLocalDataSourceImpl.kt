@@ -48,7 +48,7 @@ class OnboardingLocalDataSourceImpl @Inject constructor(
     override suspend fun save(onboardingPreference: OnboardingPreference): Either<PreferencesError, Unit> =
         dataStoreProvider.onboardingDataStore.safeEdit { mutablePreferences ->
             mutablePreferences[shouldDisplayOnboardingPrefKey] = onboardingPreference.display
-        }.void()
+        }.map { }
 }
 
 private const val DEFAULT_VALUE = true

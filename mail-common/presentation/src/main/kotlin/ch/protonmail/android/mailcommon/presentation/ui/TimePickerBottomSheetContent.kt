@@ -89,6 +89,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toKotlinMonth
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.Instant
@@ -139,11 +140,13 @@ fun TimePickerBottomSheetContent(
             onSendClicked = {
                 datePickerState.getSelectedDate()?.let { date ->
                     val dateTime = LocalDateTime(
-                        date.year,
-                        date.month,
-                        date.dayOfMonth,
-                        timePickerState.hour,
-                        timePickerState.minute
+                        year = date.year,
+                        month = date.month.toKotlinMonth(),
+                        day = date.dayOfMonth,
+                        hour = timePickerState.hour,
+                        minute = timePickerState.minute,
+                        second = 0,
+                        nanosecond = 0
                     )
                     val timeZone = TimeZone.currentSystemDefault()
                     val timestamp = Instant.fromEpochSeconds(dateTime.toInstant(timeZone).epochSeconds)

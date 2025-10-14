@@ -20,6 +20,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.combinedcontact
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveCombinedContactsSetting
 import ch.protonmail.android.mailsettings.domain.usecase.SaveCombinedContactsSetting
@@ -30,7 +31,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,6 +67,6 @@ class CombinedContactsSettingViewModel @Inject constructor(
 
     fun saveCombinedContactsPreference(combinedContactsPreference: Boolean) = viewModelScope.launch {
         saveCombinedContactsSetting(combinedContactsPreference)
-            .tapLeft { combinedContactsSettingErrorFlow.emit(Effect.of(Unit)) }
+            .onLeft { combinedContactsSettingErrorFlow.emit(Effect.of(Unit)) }
     }
 }

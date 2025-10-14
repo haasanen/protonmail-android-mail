@@ -31,6 +31,7 @@ import me.proton.core.featureflag.domain.repository.FeatureFlagRepository
  */
 internal object FeatureFlagRepositoryNoOp : FeatureFlagRepository, LegacyDeprecated {
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override suspend fun awaitNotEmptyScope(userId: UserId?, scope: Scope) = throwUnsupported()
 
     override fun getValue(userId: UserId?, featureId: FeatureId): Boolean? = throwUnsupported()

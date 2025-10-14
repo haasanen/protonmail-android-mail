@@ -20,8 +20,8 @@ package me.proton.android.core.auth.presentation.signup.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.savedstate.compose.LocalSavedStateRegistryOwner
 import me.proton.core.presentation.utils.launchOnScreenView
 import uniffi.proton_mail_uniffi.SignupScreenId
 

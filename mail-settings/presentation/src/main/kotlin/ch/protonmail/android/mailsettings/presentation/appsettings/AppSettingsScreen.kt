@@ -44,7 +44,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonAppSettingsItemInvert
@@ -192,7 +191,7 @@ private fun AppSettingsScreenContent(
 private fun launchNotificationSettingsIntent(context: Context) {
     val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
     intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-    startActivity(context, intent, null)
+    context.startActivity(intent, null)
 }
 
 private const val APP_LOGS_ENTRY_TAP_THRESHOLD = 5

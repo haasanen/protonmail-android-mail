@@ -76,6 +76,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toKotlinMonth
 import kotlinx.datetime.toLocalDateTime
 import timber.log.Timber
 import kotlin.time.Clock
@@ -138,10 +139,12 @@ fun CustomExpirationDateTimePicker(
                 datePickerState.getSelectedDate()?.let { date ->
                     val dateTime = LocalDateTime(
                         year = date.year,
-                        month = date.month,
-                        dayOfMonth = date.dayOfMonth,
+                        month = date.month.toKotlinMonth(),
+                        day = date.dayOfMonth,
                         hour = timePickerState.hour,
-                        minute = timePickerState.minute
+                        minute = timePickerState.minute,
+                        second = 0,
+                        nanosecond = 0
                     )
                     val timeZone = TimeZone.currentSystemDefault()
                     val timestamp = Instant.fromEpochSeconds(dateTime.toInstant(timeZone).epochSeconds)

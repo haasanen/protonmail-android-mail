@@ -32,17 +32,17 @@ import javax.inject.Inject
 
 class RustAppSettingsDataSource @Inject constructor() : AppSettingsDataSource {
 
-    override suspend fun getAppSettings(mailSessionWrapper: MailSessionWrapper): Either<DataError, LocalAppSettings> =
-        when (val result = mailSessionWrapper.getRustMailSession().getAppSettings()) {
+    override suspend fun getAppSettings(mailSession: MailSessionWrapper): Either<DataError, LocalAppSettings> =
+        when (val result = mailSession.getRustMailSession().getAppSettings()) {
             is MailSessionGetAppSettingsResult.Error -> result.v1.toDataError().left()
             is MailSessionGetAppSettingsResult.Ok -> result.v1.right()
         }
 
     override suspend fun updateAppSettings(
-        mailSessionWrapper: MailSessionWrapper,
+        mailSession: MailSessionWrapper,
         appSettingsDiff: LocalAppSettingsDiff
     ): Either<DataError, Unit> =
-        when (val result = mailSessionWrapper.getRustMailSession().changeAppSettings(appSettingsDiff)) {
+        when (val result = mailSession.getRustMailSession().changeAppSettings(appSettingsDiff)) {
             is MailSessionChangeAppSettingsResult.Error -> result.v1.toDataError().left()
             is MailSessionChangeAppSettingsResult.Ok -> Unit.right()
         }

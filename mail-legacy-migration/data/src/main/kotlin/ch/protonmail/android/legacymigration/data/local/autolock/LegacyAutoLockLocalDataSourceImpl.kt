@@ -16,6 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("DEPRECATION")
+
 package ch.protonmail.android.legacymigration.data.local.autolock
 
 import androidx.datastore.preferences.core.stringPreferencesKey

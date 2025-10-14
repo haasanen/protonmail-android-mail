@@ -41,7 +41,6 @@ fun LabelDescription.toLabelType(): LabelType {
         is LabelDescription.System -> LabelType.SystemFolder
         is LabelDescription.ContactGroup -> LabelType.ContactGroup
         is LabelDescription.Folder -> LabelType.MessageFolder
-        else -> LabelType.MessageLabel
     }
 }
 
