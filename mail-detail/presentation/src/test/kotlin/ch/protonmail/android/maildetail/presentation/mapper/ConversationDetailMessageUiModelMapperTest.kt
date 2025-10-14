@@ -30,7 +30,6 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.presentation.mapper.rsvp.RsvpEventUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
-import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
@@ -220,21 +219,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
         coVerify {
             messageBodyUiModelMapper.toUiModel(decryptedMessageBody, AttachmentListExpandCollapseMode.Collapsed)
         }
-    }
-
-    @Test
-    fun `map to ui model returns hidden model`() = runTest {
-        // Given
-        val message = MessageSample.AugWeatherForecast
-        val expectedResult = ConversationDetailMessageUiModel.Hidden(
-            MessageIdUiModel(message.messageId.id), message.isUnread
-        )
-
-        // When
-        val result = mapper.toUiModel(message)
-
-        // Then
-        assertEquals(expectedResult, result)
     }
 
     @Test

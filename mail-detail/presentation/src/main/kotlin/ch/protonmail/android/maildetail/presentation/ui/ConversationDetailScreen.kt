@@ -931,10 +931,9 @@ private fun MessagesContent(
     val itemsHeight = remember(conversationId) { mutableStateMapOf<Int, Int>() }
     var scrollCount by remember(conversationId) { mutableIntStateOf(0) }
 
-    val visibleUiModels = uiModels.filter { it !is ConversationDetailMessageUiModel.Hidden }
-    var scrollToIndex = remember(scrollToMessageId, visibleUiModels) {
+    var scrollToIndex = remember(scrollToMessageId, uiModels) {
         if (scrollToMessageId == null) return@remember null
-        else visibleUiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
+        else uiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
     }
 
     LaunchedEffect(key1 = scrollToIndex, key2 = webContentLoaded) {
@@ -1062,8 +1061,8 @@ private fun MessagesContent(
             is TrashedMessagesBannerState.Hidden -> Unit
         }
 
-        itemsIndexed(visibleUiModels) { index, uiModel ->
-            val isLastItem = index == visibleUiModels.size - 1
+        itemsIndexed(uiModels) { index, uiModel ->
+            val isLastItem = index == uiModels.size - 1
             val rememberCachedHeight = remember { loadedItemsHeight[uiModel.messageId.id] }
             val itemFinishedResizing = finishedResizingOperations && loadedItemsHeight.contains(uiModel.messageId.id)
 
@@ -1086,8 +1085,6 @@ private fun MessagesContent(
                             Modifier.padding(bottom = MailDimens.ConversationItemBottomPadding)
                         }
                     }
-
-                    else -> Modifier
                 }.onSizeChanged {
                     itemsHeight[index] = it.height
                 },

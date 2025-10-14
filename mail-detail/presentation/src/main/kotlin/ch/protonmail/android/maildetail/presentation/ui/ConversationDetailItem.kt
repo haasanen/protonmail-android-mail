@@ -61,7 +61,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMes
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
@@ -98,7 +97,6 @@ fun ConversationDetailItem(
     )
 
     when (uiModel) {
-        is Hidden -> Unit
         is Collapsed -> {
             ConversationDetailCard(modifier = modifier) {
                 ConversationDetailCollapsedMessageHeader(

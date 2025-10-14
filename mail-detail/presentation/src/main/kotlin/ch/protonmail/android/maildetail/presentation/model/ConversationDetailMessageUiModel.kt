@@ -30,11 +30,6 @@ sealed interface ConversationDetailMessageUiModel {
     val messageId: MessageIdUiModel
     val isUnread: Boolean
 
-    data class Hidden(
-        override val messageId: MessageIdUiModel,
-        override val isUnread: Boolean
-    ) : ConversationDetailMessageUiModel
-
     data class Collapsed(
         override val messageId: MessageIdUiModel,
         val avatar: AvatarUiModel,

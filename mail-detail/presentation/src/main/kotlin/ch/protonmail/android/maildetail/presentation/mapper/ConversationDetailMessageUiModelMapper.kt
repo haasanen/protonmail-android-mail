@@ -137,13 +137,6 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         )
     }
 
-    fun toUiModel(message: Message): ConversationDetailMessageUiModel.Hidden {
-        return ConversationDetailMessageUiModel.Hidden(
-            messageId = messageIdUiModelMapper.toUiModel(message.messageId),
-            isUnread = message.isUnread
-        )
-    }
-
     private fun toRsvpWidgetUiModel(
         rsvpEventState: InMemoryConversationStateRepository.RsvpEventState?,
         hasCalendarInvite: Boolean
