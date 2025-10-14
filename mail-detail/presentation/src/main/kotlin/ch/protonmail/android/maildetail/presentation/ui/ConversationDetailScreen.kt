@@ -832,7 +832,8 @@ fun ConversationDetailScreen(
                     scrollToMessageId = scrollToMessageId,
                     actions = conversationDetailItemActions,
                     onTrashedMessagesBannerClick = actions.onTrashedMessagesBannerClick,
-                    paddingOffsetDp = scrollBehavior.state.heightOffset.pxToDp()
+                    paddingOffsetDp = scrollBehavior.state.heightOffset.pxToDp(),
+                    conversationKey = state.conversationId()
                 )
             }
 
@@ -858,7 +859,8 @@ fun MessagesContentWithHiddenEdges(
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
     onTrashedMessagesBannerClick: () -> Unit,
-    paddingOffsetDp: Dp = 0f.dp
+    paddingOffsetDp: Dp = 0f.dp,
+    conversationKey: String
 ) {
 
     Box(modifier = Modifier.fillMaxWidth()) {
@@ -870,7 +872,8 @@ fun MessagesContentWithHiddenEdges(
             scrollToMessageId = scrollToMessageId,
             actions = actions,
             onTrashedMessagesBannerClick = onTrashedMessagesBannerClick,
-            paddingOffsetDp = paddingOffsetDp
+            paddingOffsetDp = paddingOffsetDp,
+            conversationId = conversationKey
         )
 
         // Cover left and right edges
@@ -905,11 +908,12 @@ private fun MessagesContent(
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
     onTrashedMessagesBannerClick: () -> Unit,
-    paddingOffsetDp: Dp = 0f.dp
+    paddingOffsetDp: Dp = 0f.dp,
+    conversationId: String
 ) {
     val listState = rememberLazyListState()
-    var webContentLoaded by remember { mutableIntStateOf(0) }
-    val loadedItemsHeight = remember { mutableStateMapOf<String, Int>() }
+    var webContentLoaded by remember(conversationId) { mutableIntStateOf(0) }
+    val loadedItemsHeight = remember(conversationId) { mutableStateMapOf<String, Int>() }
 
     val layoutDirection = LocalLayoutDirection.current
     val contentPadding =
@@ -924,8 +928,8 @@ private fun MessagesContent(
 
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
-    val itemsHeight = remember { mutableStateMapOf<Int, Int>() }
-    var scrollCount by remember { mutableIntStateOf(0) }
+    val itemsHeight = remember(conversationId) { mutableStateMapOf<Int, Int>() }
+    var scrollCount by remember(conversationId) { mutableIntStateOf(0) }
 
     val visibleUiModels = uiModels.filter { it !is ConversationDetailMessageUiModel.Hidden }
     var scrollToIndex = remember(scrollToMessageId, visibleUiModels) {
@@ -964,22 +968,22 @@ private fun MessagesContent(
     var scrollToMessageMinimumHeightPx by remember { mutableIntStateOf(0) }
 
     // Detect if user manually scrolled the list
-    var userScrolled by remember { mutableStateOf(false) }
-    var userTapped by remember { mutableStateOf(false) }
+    var userScrolled by remember(conversationId) { mutableStateOf(false) }
+    var userTapped by remember(conversationId) { mutableStateOf(false) }
     LaunchedEffect(key1 = listState.isScrollInProgress) {
         if (!userScrolled && userTapped && listState.isScrollInProgress) {
             userScrolled = true
         }
     }
 
-    val isAllItemsMeasured = remember {
+    val isAllItemsMeasured = remember(conversationId) {
         derivedStateOf { itemsHeight.size >= listState.layoutInfo.visibleItemsInfo.size }
     }
 
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
-    var isScrollToMessageWebViewLoaded by rememberSaveable { mutableStateOf(false) }
-    val viewHasFinishedScrollingAndMeasuring = remember {
+    var isScrollToMessageWebViewLoaded by rememberSaveable(conversationId) { mutableStateOf(false) }
+    val viewHasFinishedScrollingAndMeasuring = remember(conversationId) {
         derivedStateOf {
             itemsHeight.isNotEmpty() &&
                 isScrollToMessageWebViewLoaded &&
@@ -987,8 +991,8 @@ private fun MessagesContent(
         }
     }
     val headerOverlapHeightPx = MailDimens.ConversationCollapseHeaderOverlapHeight.dpToPx()
-    var finishedResizingOperations by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(listState) {
+    var finishedResizingOperations by rememberSaveable(conversationId) { mutableStateOf(false) }
+    LaunchedEffect(listState, conversationId) {
         snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
             .filter { it }
             .collectLatest {
@@ -1013,7 +1017,7 @@ private fun MessagesContent(
 
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
-    LaunchedEffect(Unit) {
+    LaunchedEffect(conversationId) {
         scrollToIndex?.let { listState.scrollToItem(it) }
         // wait for the final height of our target expanded message before scrolling
         snapshotFlow { finishedResizingOperations }
@@ -1061,12 +1065,7 @@ private fun MessagesContent(
         itemsIndexed(visibleUiModels) { index, uiModel ->
             val isLastItem = index == visibleUiModels.size - 1
             val rememberCachedHeight = remember { loadedItemsHeight[uiModel.messageId.id] }
-            val itemFinishedResizing =
-                remember {
-                    derivedStateOf {
-                        finishedResizingOperations && loadedItemsHeight.contains(uiModel.messageId.id)
-                    }
-                }
+            val itemFinishedResizing = finishedResizingOperations && loadedItemsHeight.contains(uiModel.messageId.id)
 
             ConversationDetailItem(
                 uiModel = uiModel,
@@ -1094,13 +1093,13 @@ private fun MessagesContent(
                 },
                 onMessageBodyLoadFinished = { messageId, height ->
                     loadedItemsHeight[messageId.id] = height
-                    if (messageId.id == scrollToMessageId) {
+                    if (messageId.id == scrollToMessageId || scrollToMessageId == null) {
                         isScrollToMessageWebViewLoaded = true
                     }
                     webContentLoaded++
                 },
                 previouslyLoadedHeight = rememberCachedHeight,
-                finishedResizing = itemFinishedResizing.value
+                finishedResizing = itemFinishedResizing
 
             )
         }
@@ -1132,6 +1131,9 @@ object ConversationDetail {
         val onActionBarVisibilityChanged: (Boolean) -> Unit
     )
 }
+
+private fun ConversationDetailState.conversationId() =
+    (conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel?.conversationId?.id.orEmpty()
 
 
 object ConversationDetailScreen {

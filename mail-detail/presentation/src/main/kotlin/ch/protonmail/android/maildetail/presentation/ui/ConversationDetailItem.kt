@@ -206,11 +206,12 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     // have calculated all the heights
     finishedResizing: Boolean
 ) {
+    val id = uiModel.messageId
     // we are likely scrolling back to the view in the list
-    val viewPreviouslyLoaded = remember { cachedWebContentHeight != null }
-    val isExpanding = rememberSaveable { mutableStateOf(!viewPreviouslyLoaded) }
-    val isWebViewLoading = remember { mutableStateOf(true) }
-    val columnHeight = rememberSaveable { mutableIntStateOf(0) }
+    val viewPreviouslyLoaded = remember(id) { cachedWebContentHeight != null }
+    val isExpanding = rememberSaveable(id) { mutableStateOf(!viewPreviouslyLoaded) }
+    val isWebViewLoading = remember(id) { mutableStateOf(true) }
+    val columnHeight = rememberSaveable(id) { mutableIntStateOf(0) }
 
     // play reveal animation on first load, do not play if we are expanding content or if we are scrolling back to
     // the content.
@@ -259,6 +260,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             // only reveal the content of this card once the webview content has loaded and resizing has finished
             modifier = Modifier
                 .reveal(
+                    id = id.id,
                     itemState = {
                         if (isWebViewLoading.value && viewPreviouslyLoaded) ItemState.ReLoading(
                             cachedHeight = cachedWebContentHeight ?: 0
@@ -461,8 +463,12 @@ fun Modifier.show(isVisible: Boolean, shouldAnimate: Boolean): Modifier {
 }
 
 @Composable
-fun Modifier.reveal(itemState: () -> ItemState, snap: Boolean): Modifier {
-    var lastHeight by rememberSaveable { mutableIntStateOf(0) }
+fun Modifier.reveal(
+    id: String,
+    itemState: () -> ItemState,
+    snap: Boolean
+): Modifier {
+    var lastHeight by rememberSaveable(id) { mutableIntStateOf(0) }
     return this
         .clipToBounds()
         .let {

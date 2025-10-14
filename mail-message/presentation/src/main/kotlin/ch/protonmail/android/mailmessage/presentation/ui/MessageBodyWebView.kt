@@ -112,11 +112,12 @@ fun MessageBodyWebView(
 
     val webViewInteractionState = viewModel.state.collectAsStateWithLifecycle().value
     val longClickDialogState = remember { mutableStateOf(false) }
+    val messageId = messageBodyUiModel.messageId
 
     // During loading phase, WebView size can change multiple times. It may both
     // increase and decrease in size. We will track measured heights and loading state to decide
     // on the final height when it's loaded.
-    var lastMeasuredWebViewHeight by remember { mutableIntStateOf(0) }
+    var lastMeasuredWebViewHeight by remember(messageId) { mutableIntStateOf(0) }
 
     val actions = webViewActions.copy(
         onMessageBodyLinkLongClicked = {
@@ -139,15 +140,14 @@ fun MessageBodyWebView(
         onDismissed = { longClickDialogState.value = false }
     )
 
-    val messageId = messageBodyUiModel.messageId
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
     var webView by remember { mutableStateOf<ZoomableWebView?>(null) }
-    val contentLoaded = remember { mutableStateOf(false) }
+    val contentLoaded = remember(messageId) { mutableStateOf(false) }
 
     webView?.let {
-        LaunchedEffect(it) {
+        LaunchedEffect(it, messageId) {
             Timber.d("message-webview: setting initial value on webview (should happen only once!)")
             it.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
         }
@@ -160,7 +160,7 @@ fun MessageBodyWebView(
         }
     }
 
-    val client = remember(messageBodyUiModel.messageId) {
+    val client = remember(messageId) {
         object : WebViewClient() {
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -190,7 +190,7 @@ fun MessageBodyWebView(
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(messageId) {
         combine(
             snapshotFlow { lastMeasuredWebViewHeight }
                 // allow measuring passes and webview to settle
