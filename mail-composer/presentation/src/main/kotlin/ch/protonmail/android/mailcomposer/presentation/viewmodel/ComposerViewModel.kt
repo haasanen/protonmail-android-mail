@@ -56,6 +56,7 @@ import ch.protonmail.android.mailcomposer.domain.model.haveBlankRecipients
 import ch.protonmail.android.mailcomposer.domain.model.haveBlankSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.CanSendWithExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
+import ch.protonmail.android.mailcomposer.domain.usecase.ConvertInlineImageToAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -187,6 +188,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val preloadContactSuggestions: PreloadContactSuggestions,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
     private val canSendWithExpirationTime: CanSendWithExpirationTime,
+    private val convertInlineToAttachment: ConvertInlineImageToAttachment,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -594,6 +596,7 @@ class ComposerViewModel @AssistedInject constructor(
                 is ComposerAction.OnScheduleSendRequested -> onScheduleSendRequested()
                 is ComposerAction.OnScheduleSend -> handleOnScheduleSendMessage(action.time)
                 is ComposerAction.AcknowledgeAttachmentErrors -> handleConfirmAttachmentErrors(action)
+                is ComposerAction.ConvertInlineToAttachment -> handleConvertInlineToAttachment(action)
             }
             logViewModelAction(action, "Completed.")
         }
@@ -644,6 +647,14 @@ class ComposerViewModel @AssistedInject constructor(
             }
     }
 
+    private suspend fun handleConvertInlineToAttachment(action: ComposerAction.ConvertInlineToAttachment) {
+        convertInlineToAttachment(action.contentId)
+            .onLeft { Timber.e("composer: failed to convert inline to attachment") }
+            .onRight {
+                Timber.d("composer: inline attachment ${action.contentId} converted to standard")
+                emitNewStateFor(EffectsEvent.AttachmentEvent.StripInlineAttachmentFromBody(action.contentId))
+            }
+    }
 
     private suspend fun handleConfirmAttachmentErrors(action: ComposerAction.AcknowledgeAttachmentErrors) {
         val attachmentsWithError = action.attachmentsWithError

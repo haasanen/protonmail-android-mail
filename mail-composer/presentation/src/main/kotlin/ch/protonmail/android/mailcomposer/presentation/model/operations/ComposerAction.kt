@@ -53,6 +53,7 @@ internal sealed interface ComposerAction : ComposerStateOperation {
     data class RemoveAttachment(val attachmentId: AttachmentId) : ComposerAction
     data class RemoveInlineAttachment(val contentId: String) : ComposerAction
     data class InlineAttachmentDeletedFromBody(val contentId: String) : ComposerAction
+    data class ConvertInlineToAttachment(val contentId: String) : ComposerAction
 
     data object DiscardDraftRequested : ComposerAction
     data object DiscardDraftConfirmed : ComposerAction
