@@ -39,7 +39,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
 
     private val conversationCache = ConcurrentHashMap<MessageId, MessageState>()
     private val transformationCache = ConcurrentHashMap<MessageId, MessageBodyTransformations>()
-    private var shouldHideMessagesBasedOnTrashFilter = true
     private val conversationStateFlow = MutableSharedFlow<MessagesState>(1)
     private val attachmentsListExpandCollapseMode = ConcurrentHashMap<MessageId, AttachmentListExpandCollapseMode>()
     private val rsvpCache = ConcurrentHashMap<MessageId, InMemoryConversationStateRepository.RsvpEventState>()
@@ -50,7 +49,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpCache
             )
         )
@@ -66,7 +64,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpCache
             )
         )
@@ -79,7 +76,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpCache
             )
         )
@@ -93,7 +89,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpCache
             )
         )
@@ -109,7 +104,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpCache
             )
         )
@@ -122,7 +116,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpCache
             )
         )
@@ -139,7 +132,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpCache
             )
         )
@@ -153,7 +145,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                     transformationCache,
                     attachmentsListExpandCollapseMode,
                     conversationCache,
-                    shouldHideMessagesBasedOnTrashFilter,
                     rsvpCache
                 )
             )
@@ -167,20 +158,6 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
-                rsvpCache
-            )
-        )
-    }
-
-    override suspend fun switchTrashedMessagesFilter() {
-        shouldHideMessagesBasedOnTrashFilter = shouldHideMessagesBasedOnTrashFilter.not()
-        conversationStateFlow.emit(
-            MessagesState(
-                transformationCache,
-                attachmentsListExpandCollapseMode,
-                conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpCache
             )
         )

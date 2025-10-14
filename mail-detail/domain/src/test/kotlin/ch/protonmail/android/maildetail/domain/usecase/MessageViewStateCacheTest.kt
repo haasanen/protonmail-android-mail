@@ -87,18 +87,6 @@ class MessageViewStateCacheTest {
     }
 
     @Test
-    fun `should switch filter on switch filter`() = runTest {
-        // Given
-        val useCase = buildUseCase()
-
-        // When
-        useCase.switchTrashedMessagesFilter()
-
-        // Then
-        coVerify { repo.switchTrashedMessagesFilter() }
-    }
-
-    @Test
     fun `should update rsvp event shown`() = runTest {
         // Given
         val messageId = MessageIdSample.CalendarInvite

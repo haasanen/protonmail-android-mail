@@ -49,10 +49,6 @@ class MessageViewStateCache @Inject constructor(
         inMemoryConversationStateRepository.collapseMessage(messageId)
     }
 
-    suspend fun switchTrashedMessagesFilter() {
-        inMemoryConversationStateRepository.switchTrashedMessagesFilter()
-    }
-
     suspend fun updateAttachmentsExpandCollapseMode(
         messageId: MessageId,
         attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode

@@ -35,7 +35,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
 
     private val transformationCache = ConcurrentHashMap<MessageId, MessageBodyTransformations>()
     private val conversationCache = ConcurrentHashMap<MessageId, MessageState>()
-    private var shouldHideMessagesBasedOnTrashFilter = true
     private val conversationStateFlow = MutableSharedFlow<MessagesState>(1)
     private val attachmentsListExpandCollapseMode = ConcurrentHashMap<MessageId, AttachmentListExpandCollapseMode>()
     private val rsvpEventCache = ConcurrentHashMap<MessageId, InMemoryConversationStateRepository.RsvpEventState>()
@@ -46,7 +45,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpEventCache
             )
         )
@@ -62,7 +60,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpEventCache
             )
         )
@@ -75,7 +72,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpEventCache
             )
         )
@@ -88,7 +84,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpEventCache
             )
         )
@@ -104,7 +99,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpEventCache
             )
         )
@@ -117,7 +111,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpEventCache
             )
         )
@@ -134,7 +127,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpEventCache
             )
         )
@@ -148,7 +140,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                     transformationCache,
                     attachmentsListExpandCollapseMode,
                     conversationCache,
-                    shouldHideMessagesBasedOnTrashFilter,
                     rsvpEventCache
                 )
             )
@@ -162,20 +153,6 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
-                rsvpEventCache
-            )
-        )
-    }
-
-    override suspend fun switchTrashedMessagesFilter() {
-        shouldHideMessagesBasedOnTrashFilter = shouldHideMessagesBasedOnTrashFilter.not()
-        conversationStateFlow.emit(
-            MessagesState(
-                transformationCache,
-                attachmentsListExpandCollapseMode,
-                conversationCache,
-                shouldHideMessagesBasedOnTrashFilter,
                 rsvpEventCache
             )
         )

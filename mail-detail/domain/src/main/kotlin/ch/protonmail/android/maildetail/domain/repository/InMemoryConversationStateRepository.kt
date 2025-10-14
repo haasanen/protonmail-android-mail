@@ -46,8 +46,6 @@ interface InMemoryConversationStateRepository {
     suspend fun updateRsvpEventLoading(messageId: MessageId, refresh: Boolean)
     suspend fun updateRsvpEventError(messageId: MessageId)
 
-    suspend fun switchTrashedMessagesFilter()
-
     fun getTransformationsForMessage(messageId: MessageId): MessageBodyTransformations?
     fun setTransformationsForMessage(messageId: MessageId, transformations: MessageBodyTransformations)
 
@@ -55,7 +53,6 @@ interface InMemoryConversationStateRepository {
         val messagesTransformations: Map<MessageId, MessageBodyTransformations>,
         val attachmentsListExpandCollapseMode: Map<MessageId, AttachmentListExpandCollapseMode>,
         val messagesState: Map<MessageId, MessageState>,
-        val shouldHideMessagesBasedOnTrashFilter: Boolean,
         val rsvpEvents: Map<MessageId, RsvpEventState>
     )
 
