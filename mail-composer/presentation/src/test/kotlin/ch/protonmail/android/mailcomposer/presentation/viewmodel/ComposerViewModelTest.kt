@@ -60,6 +60,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftSenderValidationError
+import ch.protonmail.android.mailcomposer.domain.usecase.GetMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
@@ -182,6 +183,7 @@ internal class ComposerViewModelTest {
         coEvery { this@mockk.invoke(UserIdSample.Primary) } returns Unit.right()
     }
     private val saveMessageExpirationTime = mockk<SaveMessageExpirationTime>()
+    private val getMessageExpirationTime = mockk<GetMessageExpirationTime>()
 
     private val canSendWithExpirationTime = mockk<CanSendWithExpirationTime> {
         coEvery { this@mockk.invoke() } returns SendWithExpirationTimeResult.CanSend.right()
@@ -246,6 +248,7 @@ internal class ComposerViewModelTest {
         getDraftSenderValidationError,
         preloadContactSuggestions,
         saveMessageExpirationTime,
+        getMessageExpirationTime,
         canSendWithExpirationTime,
         convertInlineImageToAttachment,
         observePrimaryUserIdMock

@@ -64,6 +64,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftSenderValidationError
+import ch.protonmail.android.mailcomposer.domain.usecase.GetMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
@@ -80,6 +81,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.mapper.toDomainModel
 import ch.protonmail.android.mailcomposer.presentation.mapper.toDraftRecipient
+import ch.protonmail.android.mailcomposer.presentation.mapper.toUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerStates
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
@@ -187,6 +189,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val getDraftSenderValidationError: GetDraftSenderValidationError,
     private val preloadContactSuggestions: PreloadContactSuggestions,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
+    private val getMessageExpirationTime: GetMessageExpirationTime,
     private val canSendWithExpirationTime: CanSendWithExpirationTime,
     private val convertInlineToAttachment: ConvertInlineImageToAttachment,
     observePrimaryUserId: ObservePrimaryUserId
@@ -374,6 +377,11 @@ class ComposerViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+    private suspend fun initMessageExpiration() {
+        getMessageExpirationTime()
+            .onRight { emitNewStateFor(AccessoriesEvent.OnExpirationChanged(it.toUiModel())) }
+    }
+
     private suspend fun observeSenderValidationError() {
         getDraftSenderValidationError()?.let {
             emitNewStateFor(EffectsEvent.DraftEvent.OnSenderValidationError(it))
@@ -433,7 +441,7 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun prefillDraftFieldsFromShareInfo(intentShareInfo: IntentShareInfo): DraftFields {
+    private fun prefillDraftFieldsFromShareInfo(intentShareInfo: IntentShareInfo): DraftFields {
         val emailBody = when (composerStates.value.main.draftType) {
             DraftMimeType.PlainText -> intentShareInfo.emailBody
             DraftMimeType.Html -> intentShareInfo.emailBody?.replace("\n", "<br>")
@@ -495,6 +503,7 @@ class ComposerViewModel @AssistedInject constructor(
             is ReplyAll -> createDraftForAction(primaryUserId(), draftAction)
                 .onRight { draftFields ->
                     initComposerFields(draftFields)
+                    initMessageExpiration()
                     emitNewStateFor(
                         CompositeEvent.DraftContentReady(
                             draftUiModel = draftFields.toDraftUiModel(),
