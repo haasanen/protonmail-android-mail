@@ -583,8 +583,6 @@ class ComposerViewModel @AssistedInject constructor(
 
                 is ComposerAction.ConfirmSendWithNoSubject -> onSendMessage()
 
-                is ComposerAction.CancelSendExpirationSetToExternal -> TODO()
-
                 is ComposerAction.ConfirmSendExpirationSetToExternal -> onSendMessage()
 
                 is ComposerAction.ClearSendingError -> TODO()

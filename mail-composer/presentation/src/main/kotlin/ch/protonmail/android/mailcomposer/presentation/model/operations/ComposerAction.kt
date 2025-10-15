@@ -38,7 +38,6 @@ internal sealed interface ComposerAction : ComposerStateOperation {
     data object CancelSendWithNoSubject : ComposerAction
 
     data object ConfirmSendExpirationSetToExternal : ComposerAction
-    data object CancelSendExpirationSetToExternal : ComposerAction
 
     data object ClearSendingError : ComposerAction
 
