@@ -24,7 +24,6 @@ const val JAVASCRIPT_CALLBACK_INTERFACE_NAME = "MessageBodyInterface"
 
 class JavascriptCallback(
     private val onMessageBodyChanged: (String) -> Unit,
-    private val onEditorSizeChanged: () -> Unit,
     private val onCursorPositionChanged: (Float, Float) -> Unit,
     private val onInlineImageRemoved: (String) -> Unit,
     private val onInlineImageClicked: (String) -> Unit
@@ -33,11 +32,6 @@ class JavascriptCallback(
     @JavascriptInterface
     fun onBodyUpdated(body: String) {
         onMessageBodyChanged(body)
-    }
-
-    @JavascriptInterface
-    fun onWebViewSizeChanged() {
-        onEditorSizeChanged()
     }
 
     @JavascriptInterface

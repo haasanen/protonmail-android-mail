@@ -48,7 +48,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
-import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.util.ComposerFocusUtils
@@ -82,14 +81,6 @@ fun EditableMessageBodyWebView(
     var currentCursorPosition = remember { 0.dp }
     var currentLineHeight = remember { 0.dp }
 
-    fun onWebViewResize() {
-        val height = webView?.height ?: 0
-        Timber.d("editor-webview: webview params change height: $height")
-        webViewActions.onWebViewParamsChanged(
-            WebViewMeasures(height.toDp(localDensity), currentCursorPosition, currentLineHeight)
-        )
-    }
-
     fun onCursorPositionChanged(position: Float, lineHeight: Float) {
         // For unclear reasons, the data exposed we get form the webview (through running custom js)
         // which one would expect being is px, is actually already in DP. Hence, no conversion here.
@@ -100,7 +91,6 @@ fun EditableMessageBodyWebView(
     val javascriptCallback = remember {
         JavascriptCallback(
             webViewActions.onMessageBodyChanged,
-            ::onWebViewResize,
             ::onCursorPositionChanged,
             webViewActions.onInlineImageRemoved,
             webViewActions.onInlineImageClicked

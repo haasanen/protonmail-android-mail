@@ -8,14 +8,6 @@ document.getElementById('$EDITOR_ID').addEventListener('input', function(){
     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
 });
 
-/* Listen for changes to the webview size and dispatches them to KT */
-const observer = new ResizeObserver(entries => {
-for (const entry of entries) {
-    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
-}
-});
-observer.observe(document.querySelector('body'));
-
 /* Listen for changes to the body where images are removed and dispatches them to KT */
 const removeInlineImageObserver = new MutationObserver(mutations => {
     mutations.forEach(mutation => {
