@@ -1,7 +1,7 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.right
-import ch.protonmail.android.mailcomposer.domain.mod.RecipientsExpirationSupport
+import ch.protonmail.android.mailcomposer.domain.model.RecipientsExpirationSupport
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.CanSend
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationSupportUnknown
