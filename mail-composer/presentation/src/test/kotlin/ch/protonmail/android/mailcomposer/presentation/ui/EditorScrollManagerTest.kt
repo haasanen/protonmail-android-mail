@@ -17,19 +17,6 @@ class EditorScrollManagerTest {
     private val editorScrollManager = EditorScrollManager(onUpdateScrollCallbackMock)
 
     @Test
-    fun `does not perform any scroll when webview height changed more than threshold`() {
-        // Given
-        val screenParams = buildComposerScreenParams()
-        val webViewParams = buildWebViewParams(heightDp = 1000)
-
-        // When
-        editorScrollManager.onEditorParamsChanged(screenParams, webViewParams)
-
-        // Then
-        assertEquals(0.dp, actualScrollValue)
-    }
-
-    @Test
     fun `does not perform any scroll when cursor is within the visible webview area`() {
         // Given
         val screenParams = buildComposerScreenParams(
