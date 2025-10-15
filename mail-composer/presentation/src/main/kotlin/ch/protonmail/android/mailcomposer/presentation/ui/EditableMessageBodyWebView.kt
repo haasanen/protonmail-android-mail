@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -48,6 +50,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
+import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.util.ComposerFocusUtils
@@ -78,14 +81,25 @@ fun EditableMessageBodyWebView(
     val localDensity = LocalDensity.current
 
     var webView by remember { mutableStateOf<WebView?>(null) }
-    var currentCursorPosition = remember { 0.dp }
-    var currentLineHeight = remember { 0.dp }
+    var currentCursorPosition by remember { mutableStateOf(0.dp) }
+    var currentLineHeight by remember { mutableStateOf(0.dp) }
+    var webViewHeightPx by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(webViewHeightPx) {
+        webViewActions.onWebViewParamsChanged(
+            WebViewMeasures(webViewHeightPx.toDp(localDensity), currentCursorPosition, currentLineHeight)
+        )
+    }
 
     fun onCursorPositionChanged(position: Float, lineHeight: Float) {
         // For unclear reasons, the data exposed we get form the webview (through running custom js)
         // which one would expect being is px, is actually already in DP. Hence, no conversion here.
         currentCursorPosition = Dp(position)
         currentLineHeight = Dp(lineHeight)
+
+        webViewActions.onWebViewParamsChanged(
+            WebViewMeasures(webViewHeightPx.toDp(localDensity), currentCursorPosition, currentLineHeight)
+        )
     }
 
     val javascriptCallback = remember {
@@ -189,6 +203,11 @@ fun EditableMessageBodyWebView(
                 }
             },
             modifier = Modifier
+                .onSizeChanged(
+                    onSizeChanged = { size ->
+                        webViewHeightPx = size.height
+                    }
+                )
                 .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
                 .focusRequester(focusRequester)
                 .onFocusEvent { event ->
