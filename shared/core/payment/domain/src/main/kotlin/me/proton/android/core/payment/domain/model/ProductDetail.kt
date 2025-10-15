@@ -38,7 +38,7 @@ data class ProductPrice(
     val productId: String,
     val customerId: String?,
     val cycle: Int,
-    val amount: Int,
+    val amount: Long,
     val currency: String,
     val formatted: String?
 )

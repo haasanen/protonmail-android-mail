@@ -18,11 +18,13 @@
 
 package ch.protonmail.android.mailupselling.domain.extensions
 
+import java.math.BigDecimal
+import java.math.RoundingMode
 import ch.protonmail.android.mailupselling.domain.model.ProductPriceWithCurrency
 import me.proton.android.core.payment.domain.model.ProductPrice
 
-fun ProductPrice.normalizedPrice(cycle: Int): Float = this.amount.normalized(cycle)
-fun ProductPrice.totalPrice(): Float = this.amount.toActualPrice()
+fun ProductPrice.normalizedPrice(cycle: Int) = this.amount.normalized(cycle)
+fun ProductPrice.totalPrice(): BigDecimal = this.amount.toActualPrice()
 
 fun ProductPrice.normalizedPriceWithCurrency(currency: String, cycle: Int): ProductPriceWithCurrency {
     val actualPrice = this.amount.normalized(cycle)
@@ -35,11 +37,12 @@ fun ProductPrice.totalPriceWithCurrency(currency: String): ProductPriceWithCurre
 }
 
 @Suppress("MagicNumber")
-internal fun Int.toActualPrice() = (this / (1000 * 1000f)).takeIf {
-    it != Float.POSITIVE_INFINITY && it != Float.NEGATIVE_INFINITY
-} ?: 0f
+internal fun Long.toActualPrice(): BigDecimal =
+    this.toBigDecimal().divide(BigDecimal(1_000_000), 2, RoundingMode.HALF_UP)
 
 @Suppress("MagicNumber")
-internal fun Int.normalized(cycle: Int) = (this / (1000 * 1000f) / cycle).takeIf {
-    it != Float.POSITIVE_INFINITY && it != Float.NEGATIVE_INFINITY
-} ?: 0f
+internal fun Long.normalized(cycle: Int): BigDecimal {
+    return this.toBigDecimal()
+        .divide(BigDecimal(1_000_000), 2, RoundingMode.HALF_UP)
+        .divide(BigDecimal(cycle), 2, RoundingMode.HALF_UP)
+}

@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailupselling.domain
 
+import java.math.BigDecimal
 import ch.protonmail.android.mailupselling.domain.model.YearlySaving
 import ch.protonmail.android.mailupselling.domain.usecase.GetYearlySaving
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
@@ -32,7 +33,7 @@ internal class GetYearlySavingTest {
     @Test
     fun `should return the expected yearly saving (standard)`() {
         // Given
-        val expected = YearlySaving("EUR", 36f)
+        val expected = YearlySaving("EUR", BigDecimal("36.00"))
 
         // When
         val actual = getYearlySaving(
@@ -52,7 +53,7 @@ internal class GetYearlySavingTest {
             price = monthlyPlan.price.copy(amount = 1),
             renew = monthlyPlan.renew.copy(amount = 12 * 1000 * 1000)
         )
-        val expected = YearlySaving("EUR", 36f)
+        val expected = YearlySaving("EUR", BigDecimal("36.00"))
 
         // When
         val actual = getYearlySaving(

@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailupselling.presentation.mapper
 
+import java.math.BigDecimal
 import android.content.Context
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.domain.model.YearlySaving
@@ -55,8 +56,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = monthlyPlan.header.title,
-            pricePerCycle = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
-            totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("12.00"), currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("12.00"), currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Monthly,
             product = monthlyPlan.toProduct(context),
@@ -65,12 +66,12 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = yearlyPlan.header.title,
-            pricePerCycle = PlanUpgradePriceUiModel(amount = 9f, currencyCode = "EUR"),
-            totalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("9.00"), currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("108.00"), currencyCode = "EUR"),
             discountRate = 25,
             cycle = PlanUpgradeCycle.Yearly,
             product = yearlyPlan.toProduct(context),
-            yearlySaving = YearlySaving("EUR", 36.0f)
+            yearlySaving = YearlySaving("EUR", BigDecimal("36.00"))
         )
 
         // When
@@ -91,9 +92,9 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Promotional(
             name = monthlyPlan.header.title,
-            pricePerCycle = PlanUpgradePriceUiModel(amount = 9f, currencyCode = "EUR"),
-            promotionalPrice = PlanUpgradePriceUiModel(amount = 9f, currencyCode = "EUR"),
-            renewalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("9.00"), currencyCode = "EUR"),
+            promotionalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("9.00"), currencyCode = "EUR"),
+            renewalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("12.00"), currencyCode = "EUR"),
             discountRate = 25,
             cycle = PlanUpgradeCycle.Monthly,
             product = monthlyPlan.toProduct(context),
@@ -102,12 +103,12 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = yearlyPlan.header.title,
-            pricePerCycle = PlanUpgradePriceUiModel(amount = 9f, currencyCode = "EUR"),
-            totalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("9.00"), currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("108.00"), currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Yearly,
             product = yearlyPlan.toProduct(context),
-            yearlySaving = YearlySaving("EUR", 36.0f)
+            yearlySaving = YearlySaving("EUR", BigDecimal("36.00"))
         )
 
         // When
@@ -128,8 +129,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = monthlyPlan.header.title,
-            pricePerCycle = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
-            totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("12.00"), currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("12.00"), currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Monthly,
             product = monthlyPlan.toProduct(context),
@@ -138,13 +139,13 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Promotional(
             name = yearlyPlan.header.title,
-            pricePerCycle = PlanUpgradePriceUiModel(amount = 4.5f, currencyCode = "EUR"),
-            promotionalPrice = PlanUpgradePriceUiModel(amount = 54f, currencyCode = "EUR"),
-            renewalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("4.50"), currencyCode = "EUR"),
+            promotionalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("54.00"), currencyCode = "EUR"),
+            renewalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("108.00"), currencyCode = "EUR"),
             discountRate = 50,
             cycle = PlanUpgradeCycle.Yearly,
             product = yearlyPlan.toProduct(context),
-            yearlySaving = YearlySaving("EUR", 90.0f)
+            yearlySaving = YearlySaving("EUR", BigDecimal("90.00"))
         )
 
         // When

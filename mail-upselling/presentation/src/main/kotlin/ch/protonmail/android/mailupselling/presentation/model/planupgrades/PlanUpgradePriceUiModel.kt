@@ -18,10 +18,13 @@
 
 package ch.protonmail.android.mailupselling.presentation.model.planupgrades
 
+import java.math.BigDecimal
+import java.text.NumberFormat
 import java.util.Currency
+import java.util.Locale
 
 data class PlanUpgradePriceUiModel(
-    private val amount: Float,
+    private val amount: BigDecimal,
     private val currencyCode: String
 ) {
 
@@ -40,12 +43,12 @@ data class PlanUpgradePriceUiModel(
 
     fun getFullFormat(): String = "$currencyCode ${formatAmount(amount)}"
 
-    private fun formatAmount(amount: Float): String {
-        return if (amount == amount.toInt().toFloat()) {
-            amount.toInt().toString()
-        } else {
-            "%.2f".format(amount)
-        }
+    private fun formatAmount(amount: BigDecimal): String {
+        val format = NumberFormat.getNumberInstance(Locale.getDefault())
+        format.minimumFractionDigits = 0
+        format.maximumFractionDigits = 2
+
+        return format.format(amount)
     }
 
     private fun getCurrencySymbol(): String? {

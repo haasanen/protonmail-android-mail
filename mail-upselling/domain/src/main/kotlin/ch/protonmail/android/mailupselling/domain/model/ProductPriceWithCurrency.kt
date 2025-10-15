@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.mailupselling.domain.model
 
+import java.math.BigDecimal
+
 data class ProductPriceWithCurrency(
-    val amount: Float,
+    val amount: BigDecimal,
     val currencyCode: String
 )

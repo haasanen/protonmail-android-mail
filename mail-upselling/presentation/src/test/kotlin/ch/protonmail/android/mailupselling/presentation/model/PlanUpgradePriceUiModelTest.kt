@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailupselling.presentation.model
 
+import java.math.BigDecimal
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,83 +27,76 @@ class PlanUpgradePriceUiModelTest {
 
     @Test
     fun `getShorthandFormat with currency shows symbol for whole numbers`() {
-        val model = PlanUpgradePriceUiModel(54.0f, "USD")
+        val model = PlanUpgradePriceUiModel(BigDecimal(54.0), "USD")
         assertEquals("$54", model.getShorthandFormat())
     }
 
     @Test
     fun `getShorthandFormat with currency shows symbol for decimal numbers`() {
-        val model = PlanUpgradePriceUiModel(54.99f, "USD")
+        val model = PlanUpgradePriceUiModel(BigDecimal(54.99), "USD")
         assertEquals("$54.99", model.getShorthandFormat())
     }
 
     @Test
     fun `getShorthandFormat with currency shows symbol for single decimal`() {
-        val model = PlanUpgradePriceUiModel(54.1f, "USD")
-        assertEquals("$54.10", model.getShorthandFormat())
+        val model = PlanUpgradePriceUiModel(BigDecimal(54.1), "USD")
+        assertEquals("$54.1", model.getShorthandFormat())
     }
 
     @Test
     fun `getShorthandFormat with unknown currency code falls back to code format`() {
-        val model = PlanUpgradePriceUiModel(42.0f, "XYZ")
+        val model = PlanUpgradePriceUiModel(BigDecimal(42.0), "XYZ")
         assertEquals("XYZ 42", model.getShorthandFormat())
     }
 
     @Test
     fun `getShorthandFormat with unknown currency code shows decimals when needed`() {
-        val model = PlanUpgradePriceUiModel(42.75f, "XYZ")
+        val model = PlanUpgradePriceUiModel(BigDecimal(42.75), "XYZ")
         assertEquals("XYZ 42.75", model.getShorthandFormat())
     }
 
     @Test
     fun `getShorthandFormat with currency that has same symbol as code uses code format`() {
-        val model = PlanUpgradePriceUiModel(1000.0f, "JPY")
-        assertEquals("¥1000", model.getShorthandFormat())
+        val model = PlanUpgradePriceUiModel(BigDecimal(1000.0), "JPY")
+        assertEquals("¥1,000", model.getShorthandFormat())
     }
 
     @Test
     fun `getFullFormat with currency shows code format for whole numbers`() {
-        val model = PlanUpgradePriceUiModel(54.0f, "USD")
+        val model = PlanUpgradePriceUiModel(BigDecimal(54.0), "USD")
         assertEquals("USD 54", model.getFullFormat())
     }
 
     @Test
     fun `getFullFormat with currency shows code format for decimal numbers`() {
-        val model = PlanUpgradePriceUiModel(54.99f, "USD")
+        val model = PlanUpgradePriceUiModel(BigDecimal(54.99), "USD")
         assertEquals("USD 54.99", model.getFullFormat())
     }
 
     @Test
     fun `getFullFormat with unknown currency code works correctly`() {
-        val model = PlanUpgradePriceUiModel(42.75f, "XYZ")
+        val model = PlanUpgradePriceUiModel(BigDecimal(42.75), "XYZ")
         assertEquals("XYZ 42.75", model.getFullFormat())
     }
 
     @Test
     fun `formatting works correctly for zero amount`() {
-        val model = PlanUpgradePriceUiModel(0.0f, "USD")
+        val model = PlanUpgradePriceUiModel(BigDecimal(0.0), "USD")
         assertEquals("$0", model.getShorthandFormat())
         assertEquals("USD 0", model.getFullFormat())
     }
 
     @Test
     fun `formatting works correctly for large whole numbers`() {
-        val model = PlanUpgradePriceUiModel(1000.0f, "USD")
-        assertEquals("$1000", model.getShorthandFormat())
-        assertEquals("USD 1000", model.getFullFormat())
+        val model = PlanUpgradePriceUiModel(BigDecimal(1000.0), "USD")
+        assertEquals("$1,000", model.getShorthandFormat())
+        assertEquals("USD 1,000", model.getFullFormat())
     }
 
     @Test
     fun `formatting works correctly for small decimal numbers`() {
-        val model = PlanUpgradePriceUiModel(0.99f, "USD")
+        val model = PlanUpgradePriceUiModel(BigDecimal(0.99), "USD")
         assertEquals("$0.99", model.getShorthandFormat())
         assertEquals("USD 0.99", model.getFullFormat())
-    }
-
-    @Test
-    fun `formatting shows exactly 2 decimal places for non-whole numbers`() {
-        val model = PlanUpgradePriceUiModel(9.1f, "USD")
-        assertEquals("$9.10", model.getShorthandFormat())
-        assertEquals("USD 9.10", model.getFullFormat())
     }
 }
