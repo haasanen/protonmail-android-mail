@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper.effects
 
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailcomposer.presentation.model.operations.EffectsEvent
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.CompletionEffectsStateModification
@@ -47,7 +47,7 @@ internal class EffectsEventTest(
 
     companion object {
 
-        private val attachmentError = AttachmentAddError.AttachmentTooLarge
+        private val attachmentError = AddAttachmentError.AttachmentTooLarge
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")

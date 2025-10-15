@@ -18,9 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 
 data class AttachmentAddErrorWithList(
-    val error: AttachmentAddError,
+    val error: AddAttachmentError,
     val failedAttachments: List<AttachmentMetadataWithState>
 )

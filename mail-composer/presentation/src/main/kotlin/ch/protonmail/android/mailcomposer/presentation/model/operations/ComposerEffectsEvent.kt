@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model.operations
 
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
@@ -29,6 +28,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError as DomainAddAttachmentError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 
 internal sealed interface EffectsEvent : ComposerStateEvent {
@@ -82,7 +82,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         )
 
         data class RemoveAttachmentError(val error: AttachmentDeleteError) : AttachmentEvent
-        data class AddAttachmentError(val error: AttachmentAddError) : AttachmentEvent
+        data class AddAttachmentError(val error: DomainAddAttachmentError) : AttachmentEvent
         data class InlineAttachmentsAdded(val contentIds: List<String>) : AttachmentEvent
         data class StripInlineAttachmentFromBody(val contentId: String) : AttachmentEvent
 

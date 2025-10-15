@@ -22,7 +22,6 @@ import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
@@ -59,7 +58,7 @@ class AttachmentListErrorMapperTest {
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
 
         // Then
-        assertEquals(AttachmentAddError.TooManyAttachments, result?.error)
+        assertEquals(AddAttachmentError.TooManyAttachments, result?.error)
         assertEquals(listOf(attachment), result?.failedAttachments)
     }
 
@@ -72,7 +71,7 @@ class AttachmentListErrorMapperTest {
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
 
         // Then
-        assertEquals(AttachmentAddError.AttachmentTooLarge, result?.error)
+        assertEquals(AddAttachmentError.AttachmentTooLarge, result?.error)
         assertEquals(listOf(attachment), result?.failedAttachments)
     }
 
@@ -86,7 +85,7 @@ class AttachmentListErrorMapperTest {
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
 
         // Then
-        assertEquals(AttachmentAddError.InvalidDraftMessage, result?.error)
+        assertEquals(AddAttachmentError.InvalidDraftMessage, result?.error)
         assertEquals(listOf(attachment), result?.failedAttachments)
     }
 
@@ -99,7 +98,7 @@ class AttachmentListErrorMapperTest {
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
 
         // Then
-        assertEquals(AttachmentAddError.EncryptionError, result?.error)
+        assertEquals(AddAttachmentError.EncryptionError, result?.error)
         assertEquals(listOf(attachment), result?.failedAttachments)
     }
 
@@ -115,7 +114,7 @@ class AttachmentListErrorMapperTest {
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(tooManyAttachment, encryptionError))
 
         // Then
-        assertEquals(AttachmentAddError.TooManyAttachments, result?.error)
+        assertEquals(AddAttachmentError.TooManyAttachments, result?.error)
         assertEquals(listOf(tooManyAttachment), result?.failedAttachments)
     }
 }

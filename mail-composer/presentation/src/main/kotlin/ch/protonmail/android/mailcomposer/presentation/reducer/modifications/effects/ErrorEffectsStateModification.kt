@@ -19,9 +19,9 @@
 package ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects
 
 import androidx.annotation.StringRes
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
@@ -69,40 +69,40 @@ internal sealed interface RecoverableError : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
             when (attachmentAddErrorWithList.error) {
-                AttachmentAddError.AttachmentTooLarge,
-                AttachmentAddError.TooManyAttachments -> state.copy(
+                AddAttachmentError.AttachmentTooLarge,
+                AddAttachmentError.TooManyAttachments -> state.copy(
                     attachmentsFileSizeExceeded = Effect.of(
                         attachmentAddErrorWithList.failedAttachments.map {
                             it.attachmentMetadata.attachmentId
                         }
                     )
                 )
-                AttachmentAddError.RetryUpload -> state.copy(
+                AddAttachmentError.UploadTimeout,
+                AddAttachmentError.InvalidState -> state.copy(
                     warning = Effect.of(TextUiModel(R.string.composer_attachment_upload_error_retry))
                 )
 
-                AttachmentAddError.EncryptionError,
-                AttachmentAddError.Unknown,
-                AttachmentAddError.InvalidDraftMessage ->
+                AddAttachmentError.EncryptionError,
+                is AddAttachmentError.Other,
+                AddAttachmentError.InvalidDraftMessage ->
                     state.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
-
             }
     }
 
-    data class AttachmentsStore(val error: AttachmentAddError) : RecoverableError {
+    data class AttachmentsStore(val error: AddAttachmentError) : RecoverableError {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = when (error) {
-            AttachmentAddError.AttachmentTooLarge -> state.copy(attachmentsFileSizeExceeded = Effect.of(emptyList()))
-            AttachmentAddError.EncryptionError -> state.copy(attachmentsEncryptionFailed = Effect.of(Unit))
-            AttachmentAddError.TooManyAttachments ->
+            AddAttachmentError.AttachmentTooLarge -> state.copy(attachmentsFileSizeExceeded = Effect.of(emptyList()))
+            AddAttachmentError.EncryptionError -> state.copy(attachmentsEncryptionFailed = Effect.of(Unit))
+            AddAttachmentError.TooManyAttachments ->
                 state.copy(error = Effect.of(TextUiModel(R.string.composer_too_many_attachments_error)))
 
-
-            AttachmentAddError.RetryUpload ->
+            AddAttachmentError.UploadTimeout,
+            AddAttachmentError.InvalidState ->
                 state.copy(error = Effect.of(TextUiModel(R.string.composer_attachment_upload_error_retry)))
 
-            AttachmentAddError.Unknown,
-            AttachmentAddError.InvalidDraftMessage ->
+            is AddAttachmentError.Other,
+            AddAttachmentError.InvalidDraftMessage ->
                 state.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
         }
     }

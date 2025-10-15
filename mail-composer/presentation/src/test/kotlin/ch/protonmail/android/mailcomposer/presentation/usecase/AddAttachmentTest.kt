@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
@@ -61,7 +61,7 @@ class AddAttachmentTest {
     fun `returns error when adding attachment fails`() = runTest {
         // Given
         val fileUri = mockk<Uri>()
-        val expected = AttachmentAddError.AttachmentTooLarge
+        val expected = AddAttachmentError.AttachmentTooLarge
         coEvery { context.contentResolver.getType(fileUri) } returns "application/pdf"
         coEvery { addStandardAttachment(fileUri) } returns expected.left()
 
@@ -76,7 +76,7 @@ class AddAttachmentTest {
     fun `returns error when adding inline attachment fails`() = runTest {
         // Given
         val fileUri = mockk<Uri>()
-        val expected = AttachmentAddError.TooManyAttachments
+        val expected = AddAttachmentError.TooManyAttachments
         coEvery { context.contentResolver.getType(fileUri) } returns "image/png"
         coEvery { addInlineAttachment(fileUri) } returns expected.left()
 

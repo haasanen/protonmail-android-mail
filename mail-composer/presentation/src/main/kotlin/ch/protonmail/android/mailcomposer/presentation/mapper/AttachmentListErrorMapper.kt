@@ -22,7 +22,7 @@ import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 
 object AttachmentListErrorMapper {
@@ -50,27 +50,27 @@ object AttachmentListErrorMapper {
 
         return if (tooManyAttachmentItems.isNotEmpty()) {
             AttachmentAddErrorWithList(
-                AttachmentAddError.TooManyAttachments,
+                AddAttachmentError.TooManyAttachments,
                 tooManyAttachmentItems.map { it.first }
             )
         } else if (attachmentTooLargeItems.isNotEmpty()) {
             AttachmentAddErrorWithList(
-                AttachmentAddError.AttachmentTooLarge,
+                AddAttachmentError.AttachmentTooLarge,
                 attachmentTooLargeItems.map { it.first }
             )
         } else if (invalidDraftMessageItems.isNotEmpty()) {
             AttachmentAddErrorWithList(
-                AttachmentAddError.InvalidDraftMessage,
+                AddAttachmentError.InvalidDraftMessage,
                 invalidDraftMessageItems.map { it.first }
             )
         } else if (encryptionErrorItems.isNotEmpty()) {
             AttachmentAddErrorWithList(
-                AttachmentAddError.EncryptionError,
+                AddAttachmentError.EncryptionError,
                 encryptionErrorItems.map { it.first }
             )
         } else {
             AttachmentAddErrorWithList(
-                AttachmentAddError.Unknown,
+                AddAttachmentError.Other(DataError.Local.Unknown),
                 itemsWithError.map { it.first }
             )
         }

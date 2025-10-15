@@ -22,7 +22,6 @@ import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -152,7 +151,7 @@ internal class CompositeEventTest(
                     attachmentsModification = AttachmentsStateModification.ListUpdated(errorList),
                     effectsModification = RecoverableError.AttachmentsListChangedWithError(
                         attachmentAddErrorWithList = AttachmentAddErrorWithList(
-                            AttachmentAddError.TooManyAttachments,
+                            AddAttachmentError.TooManyAttachments,
                             errorList
                         )
                     )

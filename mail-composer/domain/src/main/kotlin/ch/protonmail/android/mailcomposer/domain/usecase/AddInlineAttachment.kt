@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import android.net.Uri
 import arrow.core.Either
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import javax.inject.Inject
@@ -29,17 +28,7 @@ class AddInlineAttachment @Inject constructor(
     private val attachmentRepository: AttachmentRepository
 ) {
 
-    suspend operator fun invoke(fileUri: Uri): Either<AttachmentAddError, String> =
-        attachmentRepository.addInlineAttachment(fileUri).mapLeft {
-            when (it) {
-                AddAttachmentError.AttachmentTooLarge -> AttachmentAddError.AttachmentTooLarge
-                AddAttachmentError.EncryptionError -> AttachmentAddError.EncryptionError
-                AddAttachmentError.InvalidDraftMessage -> AttachmentAddError.InvalidDraftMessage
-                AddAttachmentError.TooManyAttachments -> AttachmentAddError.TooManyAttachments
-                AddAttachmentError.UploadTimeout,
-                AddAttachmentError.InvalidState -> AttachmentAddError.RetryUpload
-                is AddAttachmentError.Other -> AttachmentAddError.Unknown
-            }
-        }
+    suspend operator fun invoke(fileUri: Uri): Either<AddAttachmentError, String> =
+        attachmentRepository.addInlineAttachment(fileUri)
 
 }
