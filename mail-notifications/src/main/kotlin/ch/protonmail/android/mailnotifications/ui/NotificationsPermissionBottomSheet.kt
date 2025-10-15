@@ -22,9 +22,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -42,7 +47,6 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailnotifications.R
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionRequestUiModel
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionStateType
-import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 fun NotificationsPermissionBottomSheet(
@@ -55,6 +59,7 @@ fun NotificationsPermissionBottomSheet(
         modifier = modifier
             .background(ProtonTheme.colors.backgroundInvertedNorm)
             .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
             .padding(horizontal = ProtonDimens.Spacing.Standard)
             .verticalScroll(rememberScrollState())
     ) {
@@ -92,8 +97,6 @@ fun NotificationsPermissionBottomSheet(
         )
 
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
-
-        BottomNavigationBarSpacer()
     }
 }
 

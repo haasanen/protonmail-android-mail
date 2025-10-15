@@ -16,9 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.model
+package ch.protonmail.android.mailnotifications.data.model
 
-data class RecipientsNotSupportingExpiration(
-    val unsupported: List<String>,
-    val unknown: List<String>
+import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
+import me.proton.core.domain.entity.UserId
+
+internal data class QuickActionPayloadData(
+    val userId: UserId,
+    val remoteId: String,
+    val action: LocalNotificationAction
 )

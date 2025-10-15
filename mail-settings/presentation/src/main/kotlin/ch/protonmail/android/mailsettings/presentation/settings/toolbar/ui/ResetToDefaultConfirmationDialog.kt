@@ -24,10 +24,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.mailsettings.presentation.R
-import me.proton.core.compose.component.ProtonAlertDialog
-import me.proton.core.compose.component.ProtonAlertDialogButton
-import me.proton.core.compose.component.ProtonAlertDialogText
 import me.proton.core.compose.theme.ProtonDimens
 
 @Composable

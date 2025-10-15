@@ -23,7 +23,7 @@ import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.mapper.toMessageExpiration
 import ch.protonmail.android.composer.data.mapper.toRecipientsNotSupportingExpiration
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.RecipientsNotSupportingExpiration
+import ch.protonmail.android.mailcomposer.domain.model.RecipientsExpirationSupport
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
@@ -39,7 +39,7 @@ class MessageExpirationTimeRepositoryImpl @Inject constructor(
     override suspend fun saveMessageExpirationTime(time: MessageExpirationTime): Either<MessageExpirationError, Unit> =
         draftDataSource.setMessageExpiration(time)
 
-    override suspend fun validateSendWithExpirationTime(): Either<DataError, RecipientsNotSupportingExpiration> =
+    override suspend fun validateSendWithExpirationTime(): Either<DataError, RecipientsExpirationSupport> =
         draftDataSource.validateSendWithExpiration().map { it.toRecipientsNotSupportingExpiration() }
 
 }

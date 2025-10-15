@@ -34,7 +34,7 @@ internal fun ActionDragHandle(modifier: Modifier = Modifier) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.icon_double_vert),
-            tint = ProtonTheme.colors.textNorm,
+            tint = ProtonTheme.colors.textWeak,
             contentDescription = NO_CONTENT_DESCRIPTION
         )
     }

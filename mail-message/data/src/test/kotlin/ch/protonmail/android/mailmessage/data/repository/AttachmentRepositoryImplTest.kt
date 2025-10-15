@@ -34,7 +34,6 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -61,10 +60,10 @@ class AttachmentRepositoryImplTest {
         )
         val expectedDecryptedAttachment = DecryptedAttachment(
             metadata = localAttachment.attachmentMetadata.toAttachmentMetadata(),
-            fileUri = mockUri
-
+            fileUri = mockUri,
+            fileName = localAttachment.attachmentMetadata.name
         )
-        every { decryptedAttachmentMapper.toDomainModel(localAttachment) } returns expectedDecryptedAttachment.right()
+        coEvery { decryptedAttachmentMapper.toDomainModel(localAttachment) } returns expectedDecryptedAttachment.right()
         coEvery {
             rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId())
         } returns localAttachment.right()

@@ -32,11 +32,13 @@ private object ProtonPalette {
     // Dark Gray Tones
     val Charade = Color(0xFF0F0F0F)
     val EerieBlack = Color(0xFF191927)
+    val Shark = Color(0xFF31343A)
     val Trout = Color(0xFF535964)
     val OsloGray = Color(0xFF848993)
     val Manatee = Color(0xFF989BA2)
     val Aluminium = Color(0xFFA7AAB0)
     val Ghost = Color(0xFFC8CBD0)
+    val FrenchGrey = Color(0xFFC8C8CC)
     val AthensGray = Color(0xFFE9EAEC)
     val FrostGray = Color(0xFFEFEEF2)
     val Porcelain = Color(0xFFF4F5F8)
@@ -156,6 +158,7 @@ class ProtonColors(
     isDark: Boolean,
 
     shade100: Color,
+    shade90: Color,
     shade80: Color,
     shade60: Color,
     shade50: Color,
@@ -269,6 +272,8 @@ class ProtonColors(
         internal set
 
     var shade100: Color by mutableStateOf(shade100, structuralEqualityPolicy())
+        internal set
+    var shade90: Color by mutableStateOf(shade90, structuralEqualityPolicy())
         internal set
     var shade80: Color by mutableStateOf(shade80, structuralEqualityPolicy())
         internal set
@@ -474,6 +479,7 @@ class ProtonColors(
     fun copy(
         isDark: Boolean = this.isDark,
         shade100: Color = this.shade100,
+        shade90: Color = this.shade90,
         shade80: Color = this.shade80,
         shade60: Color = this.shade60,
         shade50: Color = this.shade50,
@@ -564,6 +570,7 @@ class ProtonColors(
         isDark = isDark,
 
         shade100 = shade100,
+        shade90 = shade90,
         shade80 = shade80,
         shade60 = shade60,
         shade50 = shade50,
@@ -707,6 +714,7 @@ class ProtonColors(
             notificationSuccess = ProtonPalette.Gossamer,
             notificationSuccess900 = ProtonPalette.TePapaGreen,
             shade100 = ProtonPalette.Charade,
+            shade90 = ProtonPalette.Shark,
             shade80 = ProtonPalette.Trout,
             shade60 = ProtonPalette.OsloGray,
             shade50 = ProtonPalette.Manatee,
@@ -765,6 +773,7 @@ class ProtonColors(
             notificationSuccess = ProtonPalette.Gossamer,
             notificationSuccess900 = ProtonPalette.Iceberg,
             shade100 = ProtonPalette.Platinum,
+            shade90 = ProtonPalette.FrenchGrey,
             shade80 = ProtonPalette.SantasGray,
             shade60 = ProtonPalette.SonicSilver,
             shade50 = ProtonPalette.SonicSilver,
@@ -809,7 +818,9 @@ class ProtonColors(
                 backgroundInvertedSecondary = it.shade40,
                 backgroundInvertedDeep = it.shade45,
                 iconDisabled = it.shade50,
-                textDisabled = it.shade50
+                textDisabled = it.shade50,
+                textWeak = it.shade90,
+                iconWeak = it.shade90
             )
         }
 
@@ -893,6 +904,7 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     isDark = other.isDark
 
     shade100 = other.shade100
+    shade90 = other.shade90
     shade80 = other.shade80
     shade60 = other.shade60
     shade50 = other.shade50

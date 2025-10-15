@@ -134,6 +134,14 @@ class GetMessageBodyWithClickableLinksTest(
                 """
                     |Link 1 <a href="https://www.proton.me">www.proton.me</a> and link 2 <a href="https://mail.proton.me">mail.proton.me</a>
                 """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |https://www.proton.me/test/<br><br><div class="protonmail_signature_block-user"><br></div><br><br>Sent from <a target="_blank" href="https://proton.me/mail/home" rel="noreferrer">Proton Mail</a> for Android.
+                """.trimMargin(),
+                """
+                    |<a href="https://www.proton.me/test/">https://www.proton.me/test/</a><br><br><div class="protonmail_signature_block-user"><br></div><br><br>Sent from <a target="_blank" href="https://proton.me/mail/home" rel="noreferrer">Proton Mail</a> for Android.
+                """.trimMargin()
             )
         )
 

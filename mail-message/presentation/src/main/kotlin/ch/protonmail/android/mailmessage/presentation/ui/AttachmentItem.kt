@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -48,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetadataUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -58,7 +60,7 @@ import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataU
 fun AttachmentItem(
     modifier: Modifier = Modifier,
     attachmentUiModel: AttachmentMetadataUiModel,
-    onAttachmentItemClicked: (attachmentId: AttachmentId) -> Unit,
+    onAttachmentItemClicked: (mode: AttachmentOpenMode, attachmentId: AttachmentId) -> Unit,
     onAttachmentItemDeleteClicked: (attachmentId: AttachmentId) -> Unit
 ) {
     val context = LocalContext.current
@@ -85,7 +87,10 @@ fun AttachmentItem(
             .clip(ProtonTheme.shapes.huge)
             .clickable {
                 if (!attachmentUiModel.deletable) {
-                    onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.value))
+                    onAttachmentItemClicked(
+                        AttachmentOpenMode.Open,
+                        AttachmentId(attachmentUiModel.id.value)
+                    )
                 }
             }
             .padding(
@@ -94,6 +99,7 @@ fun AttachmentItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
+
         Image(
             modifier = Modifier
                 .size(ProtonDimens.IconSize.Medium)
@@ -131,8 +137,9 @@ fun AttachmentItem(
             )
         }
 
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
+
         if (attachmentUiModel.deletable) {
-            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
             Box(
                 modifier = Modifier
                     .size(MailDimens.Attachment.UploadingSpinnerSize),
@@ -158,7 +165,25 @@ fun AttachmentItem(
                     contentDescription = null
                 )
             }
-
+        } else {
+            Box(
+                modifier = Modifier.size(MailDimens.Attachment.UploadingSpinnerSize)
+                    .clip(CircleShape)
+                    .clickable {
+                        onAttachmentItemClicked(
+                            AttachmentOpenMode.Download,
+                            AttachmentId(attachmentUiModel.id.value)
+                        )
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(ProtonDimens.IconSize.Medium),
+                    painter = painterResource(id = R.drawable.ic_proton_arrow_down_line),
+                    contentDescription = null
+                )
+            }
         }
     }
 }
@@ -169,7 +194,7 @@ fun AttachmentItemPreview() {
     ProtonTheme {
         AttachmentItem(
             attachmentUiModel = AttachmentMetadataUiModelSamples.Invoice,
-            onAttachmentItemClicked = {},
+            onAttachmentItemClicked = { _, _ -> },
             onAttachmentItemDeleteClicked = {}
         )
     }
@@ -186,7 +211,7 @@ fun DeletableAttachmentItemPreview() {
         ) {
             AttachmentItem(
                 attachmentUiModel = AttachmentMetadataUiModelSamples.DeletableInvoice,
-                onAttachmentItemClicked = {},
+                onAttachmentItemClicked = { _, _ -> },
                 onAttachmentItemDeleteClicked = {}
             )
         }
@@ -206,7 +231,7 @@ fun AttachmentItemUploadingStatePreview() {
                 attachmentUiModel = AttachmentMetadataUiModelSamples.DeletableInvoice.copy(
                     status = AttachmentState.Uploading
                 ),
-                onAttachmentItemClicked = {},
+                onAttachmentItemClicked = { _, _ -> },
                 onAttachmentItemDeleteClicked = {}
             )
         }
@@ -224,7 +249,7 @@ fun AttachmentItemTruncationPreview() {
         ) {
             AttachmentItem(
                 attachmentUiModel = AttachmentMetadataUiModelSamples.DocumentWithReallyLongFileName,
-                onAttachmentItemClicked = {},
+                onAttachmentItemClicked = { _, _ -> },
                 onAttachmentItemDeleteClicked = {}
             )
         }

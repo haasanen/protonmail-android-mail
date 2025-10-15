@@ -36,6 +36,9 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.Mai
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.UpdateSender
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationSupportUnknownConfirmationRequested
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationUnsupportedConfirmationRequested
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendExpirationUnsupportedForSomeConfirmationRequested
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications.DraftBodyChanged
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications.DraftSenderChanged
@@ -95,18 +98,21 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
                 }
         )
 
-        is OnSendWithExpirationMayNotApply -> ComposerStateModifications(
+        is OnSendWithExpirationSupportUnknown -> ComposerStateModifications(
             mainModification = UpdateLoading(ComposerState.LoadingType.None),
-            effectsModification = ConfirmationsEffectsStateModification.SendExpirationMayNotApplyConfirmationRequested(
+            effectsModification = SendExpirationSupportUnknownConfirmationRequested
+        )
+
+        is OnSendWithExpirationUnsupportedForSome -> ComposerStateModifications(
+            mainModification = UpdateLoading(ComposerState.LoadingType.None),
+            effectsModification = SendExpirationUnsupportedForSomeConfirmationRequested(
                 recipients
             )
         )
 
-        is OnSendWithExpirationWillNotApply -> ComposerStateModifications(
+        OnSendWithExpirationUnsupported -> ComposerStateModifications(
             mainModification = UpdateLoading(ComposerState.LoadingType.None),
-            effectsModification = ConfirmationsEffectsStateModification.SendExpirationWillNotApplyConfirmationRequested(
-                recipients
-            )
+            effectsModification = SendExpirationUnsupportedConfirmationRequested
         )
     }
 
@@ -133,7 +139,9 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
 
     data class AttachmentListChanged(val list: List<AttachmentMetadataWithState>) : CompositeEvent
 
-    data class OnSendWithExpirationWillNotApply(val recipients: List<String>) : CompositeEvent
+    data class OnSendWithExpirationUnsupportedForSome(val recipients: List<String>) : CompositeEvent
 
-    data class OnSendWithExpirationMayNotApply(val recipients: List<String>) : CompositeEvent
+    data object OnSendWithExpirationSupportUnknown : CompositeEvent
+
+    data object OnSendWithExpirationUnsupported : CompositeEvent
 }

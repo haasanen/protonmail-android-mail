@@ -80,9 +80,6 @@ dependencies {
     }
 
     implementation(project(":mail-common"))
-    implementation(project(":mail-label:domain"))
-    implementation(project(":mail-detail:domain"))
-    implementation(project(":mail-message:domain"))
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-session:data"))
     implementation(project(":mail-session:domain"))

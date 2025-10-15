@@ -1,10 +1,11 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.right
-import ch.protonmail.android.mailcomposer.domain.model.RecipientsNotSupportingExpiration
+import ch.protonmail.android.mailcomposer.domain.model.RecipientsExpirationSupport
+import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult
 import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.CanSend
-import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationMayNotApplyWarning
-import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationWillNotApplyWarning
+import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationSupportUnknown
+import ch.protonmail.android.mailcomposer.domain.model.SendWithExpirationTimeResult.ExpirationUnsupportedForSome
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -31,10 +32,10 @@ class CanSendWithExpirationTimeTest {
     }
 
     @Test
-    fun `returns expiration won't apply when any recipients are unsupported`() = runTest {
+    fun `returns expiration unsupported for some when some recipients are unsupported and some supported`() = runTest {
         // Given
-        coEvery { repository.validateSendWithExpirationTime() } returns UnsupportedRecipients.right()
-        val expected = ExpirationWillNotApplyWarning(UnsupportedRecipients.unsupported)
+        coEvery { repository.validateSendWithExpirationTime() } returns SupportedAndUnsupportedRecipients.right()
+        val expected = ExpirationUnsupportedForSome(SupportedAndUnsupportedRecipients.unsupported)
 
         // When
         val actual = canSendWithExpirationTime()
@@ -44,10 +45,10 @@ class CanSendWithExpirationTimeTest {
     }
 
     @Test
-    fun `returns expiration may not apply when any recipients are unknown`() = runTest {
+    fun `returns expiration support unknown when there are no supported or unsupported and some unknown`() = runTest {
         // Given
         coEvery { repository.validateSendWithExpirationTime() } returns UnknownRecipients.right()
-        val expected = ExpirationMayNotApplyWarning(UnknownRecipients.unknown)
+        val expected = ExpirationSupportUnknown(UnknownRecipients.unknown)
 
         // When
         val actual = canSendWithExpirationTime()
@@ -57,10 +58,23 @@ class CanSendWithExpirationTimeTest {
     }
 
     @Test
-    fun `returns expiration won't apply when there are both unsupported and unknown recipients`() = runTest {
+    fun `returns expiration unsupported for some there are both unsupported and unknown recipients`() = runTest {
         // Given
         coEvery { repository.validateSendWithExpirationTime() } returns UnsupportedAndUnknownRecipients.right()
-        val expected = ExpirationWillNotApplyWarning(UnsupportedRecipients.unsupported)
+        val expected = ExpirationUnsupportedForSome(SupportedAndUnsupportedRecipients.unsupported)
+
+        // When
+        val actual = canSendWithExpirationTime()
+
+        // Then
+        assertEquals(expected.right(), actual)
+    }
+
+    @Test
+    fun `returns expiration unsupported for all when there are only unsupported`() = runTest {
+        // Given
+        coEvery { repository.validateSendWithExpirationTime() } returns UnsupportedRecipients.right()
+        val expected = SendWithExpirationTimeResult.ExpirationUnsupportedForAll
 
         // When
         val actual = canSendWithExpirationTime()
@@ -71,12 +85,34 @@ class CanSendWithExpirationTimeTest {
 
     companion object {
 
+        private val supportedRecipients = listOf("supported")
         private val unsupportedRecipients = listOf("unsupported")
         private val unknownRecipients = listOf("unknown")
-        val AllRecipientsSupportExpiration = RecipientsNotSupportingExpiration(emptyList(), emptyList())
-        val UnsupportedRecipients = RecipientsNotSupportingExpiration(unsupportedRecipients, emptyList())
-        val UnknownRecipients = RecipientsNotSupportingExpiration(emptyList(), unknownRecipients)
-        val UnsupportedAndUnknownRecipients =
-            RecipientsNotSupportingExpiration(unsupportedRecipients, unknownRecipients)
+
+        val AllRecipientsSupportExpiration = RecipientsExpirationSupport(
+            supportedRecipients,
+            emptyList(),
+            emptyList()
+        )
+        val SupportedAndUnsupportedRecipients = RecipientsExpirationSupport(
+            supportedRecipients,
+            unsupportedRecipients,
+            emptyList()
+        )
+        val UnknownRecipients = RecipientsExpirationSupport(
+            emptyList(),
+            emptyList(),
+            unknownRecipients
+        )
+        val UnsupportedAndUnknownRecipients = RecipientsExpirationSupport(
+            emptyList(),
+            unsupportedRecipients,
+            unknownRecipients
+        )
+        val UnsupportedRecipients = RecipientsExpirationSupport(
+            emptyList(),
+            unsupportedRecipients,
+            emptyList()
+        )
     }
 }

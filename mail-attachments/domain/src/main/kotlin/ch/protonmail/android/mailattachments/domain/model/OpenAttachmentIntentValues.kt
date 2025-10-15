@@ -21,6 +21,8 @@ package ch.protonmail.android.mailattachments.domain.model
 import android.net.Uri
 
 data class OpenAttachmentIntentValues(
+    val openMode: AttachmentOpenMode,
+    val name: String,
     val mimeType: String,
     val uri: Uri
 )

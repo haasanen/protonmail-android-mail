@@ -65,7 +65,11 @@ internal fun SubjectTextField(
 ) {
 
     val keyboardOptions = remember {
-        KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Next)
+        KeyboardOptions.Default.copy(
+            capitalization = KeyboardCapitalization.Sentences,
+            imeAction = ImeAction.Next,
+            autoCorrectEnabled = true
+        )
     }
 
     Row(

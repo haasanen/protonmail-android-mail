@@ -115,7 +115,12 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
+import ch.protonmail.android.mailattachments.presentation.IntentHelper
 import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
+import ch.protonmail.android.mailattachments.presentation.model.FileContent
+import ch.protonmail.android.mailattachments.presentation.ui.OpenAttachmentInput
+import ch.protonmail.android.mailattachments.presentation.ui.fileOpener
+import ch.protonmail.android.mailattachments.presentation.ui.fileSaver
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -454,6 +459,13 @@ fun MailboxScreen(
         onDeselectAllClicked = actions.onDeselectAllClicked
     )
 
+    val fileSavedString = stringResource(R.string.file_saved)
+    val fileSaver = fileSaver(
+        onFileSaved = { Toast.makeText(context, fileSavedString, Toast.LENGTH_SHORT).show() }
+    )
+
+    val openAttachment = fileOpener()
+
     ConsumableTextEffect(effect = mailboxState.error) {
         actions.showSnackbar(SnackbarError(it))
     }
@@ -578,7 +590,14 @@ fun MailboxScreen(
             }
 
             ConsumableLaunchedEffect(mailboxListState.displayAttachment) {
-                actions.onAttachmentReady(it)
+                val fileContent = FileContent(it.name, it.uri, it.mimeType)
+
+                // Check on OpenMode here is always skipped - we don't have a download button in the preview.
+                if (IntentHelper.canOpenFile(context, OpenAttachmentInput(it.uri, it.mimeType))) {
+                    openAttachment(OpenAttachmentInput(it.uri, it.mimeType))
+                } else {
+                    fileSaver(fileContent)
+                }
             }
 
             ConsumableTextEffect(mailboxListState.displayAttachmentError) {
@@ -1191,12 +1210,15 @@ private fun MailboxStaticContent(
     ) {
         Column(
             modifier = modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .align(Alignment.Center)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Wrap content in Spacers with 1f weight to keep it centered (while allowing PTR properly)
+            Spacer(modifier = Modifier.weight(1f))
             content()
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

@@ -29,6 +29,7 @@ import arrow.core.getOrElse
 import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
@@ -348,7 +349,7 @@ class ConversationDetailViewModel @Inject constructor(
             is DoNotAskLinkConfirmationAgain -> onDoNotAskLinkConfirmationChecked()
             is ShowAllAttachmentsForMessage -> showAllAttachmentsForMessage(action.messageId)
             is ConversationDetailViewAction.OnAttachmentClicked -> {
-                onOpenAttachmentClicked(action.attachmentId)
+                onOpenAttachmentClicked(action.openMode, action.attachmentId)
             }
 
             is ConversationDetailViewAction.ExpandOrCollapseAttachmentList -> {
@@ -1421,11 +1422,11 @@ class ConversationDetailViewModel @Inject constructor(
         .restartableOn(reloadSignal)
         .launchIn(viewModelScope)
 
-    private fun onOpenAttachmentClicked(attachmentId: AttachmentId) {
+    private fun onOpenAttachmentClicked(openMode: AttachmentOpenMode, attachmentId: AttachmentId) {
         viewModelScope.launch {
             if (isAttachmentDownloadInProgress().not()) {
                 val userId = primaryUserId.first()
-                getAttachmentIntentValues(userId, attachmentId).fold(
+                getAttachmentIntentValues(userId, openMode, attachmentId).fold(
                     ifLeft = {
                         Timber.d("Failed to download attachment: $it")
                         emitNewStateFrom(ConversationDetailEvent.ErrorGettingAttachment)
@@ -1496,6 +1497,7 @@ class ConversationDetailViewModel @Inject constructor(
 
         getAttachmentIntentValues(
             userId = primaryUserId.first(),
+            openMode = AttachmentOpenMode.Open,
             attachmentId = AttachmentId(firstCalendarAttachment.id.value)
         ).fold(
             ifLeft = { Timber.d("Failed to download attachment: $it") },

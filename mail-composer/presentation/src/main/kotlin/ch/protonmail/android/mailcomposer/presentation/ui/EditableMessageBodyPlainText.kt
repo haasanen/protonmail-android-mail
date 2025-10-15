@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -34,6 +35,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
@@ -62,6 +65,11 @@ fun EditableMessageBodyPlainText(
             }
             .focusRequester(focusRequester),
         textStyle = ProtonTheme.typography.bodyMediumNorm,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            KeyboardCapitalization.Sentences,
+            keyboardType = KeyboardType.Text,
+            autoCorrectEnabled = true
+        ),
         cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor),
         state = bodyTextFieldState,
         decorator = @Composable { innerTextField ->

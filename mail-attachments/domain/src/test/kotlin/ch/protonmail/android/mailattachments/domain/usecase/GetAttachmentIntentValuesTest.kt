@@ -22,6 +22,7 @@ import android.net.Uri
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.DecryptedAttachment
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailattachments.domain.repository.AttachmentRepository
@@ -44,7 +45,8 @@ class GetAttachmentIntentValuesTest {
     private val decryptedAttachment by lazy {
         DecryptedAttachment(
             metadata = AttachmentMetadataSamples.Pdf,
-            fileUri = uri
+            fileUri = uri,
+            fileName = "file.pdf"
         )
     }
 
@@ -64,10 +66,18 @@ class GetAttachmentIntentValuesTest {
         } returns decryptedAttachment.right()
 
         // When
-        val result = getAttachmentIntentValues(userId, id)
+        val result = getAttachmentIntentValues(userId, AttachmentOpenMode.Open, id)
 
         // Then
-        assertEquals(OpenAttachmentIntentValues("application/pdf", uri).right(), result)
+        assertEquals(
+            OpenAttachmentIntentValues(
+                openMode = AttachmentOpenMode.Open,
+                name = "ebook.pdf",
+                mimeType = "application/pdf",
+                uri = uri
+            ).right(),
+            result
+        )
     }
 
     @Test
@@ -81,7 +91,7 @@ class GetAttachmentIntentValuesTest {
         } returns DataError.Local.NoDataCached.left()
 
         // When
-        val result = getAttachmentIntentValues(userId, attachmentId)
+        val result = getAttachmentIntentValues(userId, AttachmentOpenMode.Open, attachmentId)
 
         // Then
         assertEquals(DataError.Local.NoDataCached.left(), result)
@@ -98,7 +108,7 @@ class GetAttachmentIntentValuesTest {
         } returns DataError.Local.CryptoError.left()
 
         // When
-        val result = getAttachmentIntentValues(userId, attachmentId)
+        val result = getAttachmentIntentValues(userId, AttachmentOpenMode.Open, attachmentId)
 
         // Then
         assertEquals(DataError.Local.CryptoError.left(), result)

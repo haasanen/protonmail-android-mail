@@ -72,6 +72,10 @@ internal class EffectsStateModificationTest(
 
         private val initialState = ComposerState.Effects.initial()
         private val expirationRecipients = listOf("external@foo.com", "other-external@foo.com")
+        private val manyExpirationRecipients = listOf(
+            "external@foo.com", "external1@foo.com", "external2@foo.com", "external3@foo.com", "external4@foo.com",
+            "external5@foo.com", "external6@foo.com", "external7@foo.com", "external8@foo.com", "external9@foo.com"
+        )
         private val draftDisplayBody = DraftDisplayBodyUiModel("<html>draft display body</html>")
         private val draftFields = DraftFields(
             SenderEmail("author@proton.me"),
@@ -377,8 +381,7 @@ internal class EffectsStateModificationTest(
             arrayOf(
                 "Show confirmation when send with expiration to externals may fail",
                 initialState,
-                ConfirmationsEffectsStateModification
-                    .SendExpirationMayNotApplyConfirmationRequested(expirationRecipients),
+                ConfirmationsEffectsStateModification.SendExpirationSupportUnknownConfirmationRequested,
                 initialState.copy(
                     confirmSendExpiringMessage = Effect.of(
                         event = TextUiModel.TextRes(R.string.composer_send_expiring_message_to_external_may_fail)
@@ -389,12 +392,28 @@ internal class EffectsStateModificationTest(
                 "Show confirmation when send with expiration to externals will fail",
                 initialState,
                 ConfirmationsEffectsStateModification
-                    .SendExpirationWillNotApplyConfirmationRequested(expirationRecipients),
+                    .SendExpirationUnsupportedForSomeConfirmationRequested(expirationRecipients),
                 initialState.copy(
                     confirmSendExpiringMessage = Effect.of(
                         event = TextUiModel.TextResWithArgs(
                             value = R.string.composer_send_expiring_message_to_external_will_fail,
                             formatArgs = expirationRecipients
+                        )
+                    )
+                )
+            ),
+            arrayOf(
+                "Show confirmation when send with expiration to many external addresses will fail",
+                initialState,
+                ConfirmationsEffectsStateModification
+                    .SendExpirationUnsupportedForSomeConfirmationRequested(manyExpirationRecipients),
+                initialState.copy(
+                    confirmSendExpiringMessage = Effect.of(
+                        event = TextUiModel.TextResWithArgs(
+                            value = R.string.composer_send_expiring_message_to_external_will_fail,
+                            formatArgs = listOf(
+                                manyExpirationRecipients.take(4).joinToString { it }.plus(" +6")
+                            )
                         )
                     )
                 )

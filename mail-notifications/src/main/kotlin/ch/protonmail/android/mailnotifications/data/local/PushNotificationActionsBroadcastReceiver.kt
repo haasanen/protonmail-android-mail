@@ -21,13 +21,9 @@ package ch.protonmail.android.mailnotifications.data.local
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
-import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
-import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetMessageByRemoteId
-import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
+import ch.protonmail.android.mailnotifications.data.model.QuickActionPayloadData
+import ch.protonmail.android.mailnotifications.data.usecase.ExecutePushNotificationAction
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationDismissPendingIntentData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
 import ch.protonmail.android.mailnotifications.domain.usecase.DismissEmailNotificationsForUser
@@ -46,13 +42,7 @@ import javax.inject.Inject
 internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : BroadcastReceiver() {
 
     @Inject
-    lateinit var getMessage: GetMessageByRemoteId
-
-    @Inject
-    lateinit var moveMessage: MoveMessage
-
-    @Inject
-    lateinit var markAsRead: MarkMessageAsRead
+    lateinit var executePushNotificationAction: ExecutePushNotificationAction
 
     @Inject
     lateinit var dismissEmailNotificationsForUser: DismissEmailNotificationsForUser
@@ -83,46 +73,19 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
 
     private fun handleNotificationAction(actionData: PushNotificationPendingIntentPayloadData) {
         val userId = UserId(actionData.userId)
-        val remoteMessageId = RemoteMessageId(actionData.messageId)
+        val quickActionData = QuickActionPayloadData(userId, actionData.messageId, actionData.action)
 
         coroutineScope.launch {
-            val message = getMessage(userId, remoteMessageId).getOrNull()
-
-            if (message == null) {
-                Timber.e("Unable to fetch message for action ${actionData.action} - remoteId '$remoteMessageId'")
-                return@launch
-            }
-
-            when (val action = actionData.action) {
-                is LocalNotificationAction.MoveTo -> {
-                    val result = moveMessage.invoke(
-                        userId = userId,
-                        messageId = message.messageId,
-                        systemLabelId = action.destinationLabel
-                    )
-
-                    result.onLeft {
-                        Timber.e("Error moving message from notification action: $it")
-                    }.onRight {
-                        Timber.d("Message moved successfully from notification action: ${message.messageId}")
-                    }
-                }
-
-                is LocalNotificationAction.MarkAsRead -> {
-                    markAsRead(userId, message.messageId).getOrElse {
-                        return@launch Timber.e("Unable to find message with id $remoteMessageId.")
-                    }
-
-                    Timber.d("Message marked as read.")
-                }
-            }
-
-            dismissEmailNotificationsForUser(
-                userId = userId,
-                notificationId = actionData.notificationId,
-                checkIfNotificationExists = false
-            )
+            executePushNotificationAction(quickActionData)
+                .onLeft { Timber.e("Error performing quick action $actionData - $it") }
+                .onRight { Timber.d("Quick action executed with success - '${actionData.action}'") }
         }
+
+        dismissEmailNotificationsForUser(
+            userId = userId,
+            notificationId = actionData.notificationId,
+            checkIfNotificationExists = false
+        )
     }
 
     private fun handleNotificationDismissal(actionData: PushNotificationDismissPendingIntentData) {

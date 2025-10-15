@@ -764,15 +764,20 @@ class ComposerViewModel @AssistedInject constructor(
 
         when (val result = canSendWithExpirationTime().getOrNull()) {
             SendWithExpirationTimeResult.CanSend -> onSendMessage()
-            is SendWithExpirationTimeResult.ExpirationWillNotApplyWarning -> {
-                emitNewStateFor(CompositeEvent.OnSendWithExpirationWillNotApply(result.recipients))
+            is SendWithExpirationTimeResult.ExpirationUnsupportedForSome -> {
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationUnsupportedForSome(result.recipients))
             }
-            is SendWithExpirationTimeResult.ExpirationMayNotApplyWarning -> {
-                emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(result.recipients))
+
+            is SendWithExpirationTimeResult.ExpirationSupportUnknown -> {
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationSupportUnknown)
             }
+
             null -> {
-                emitNewStateFor(CompositeEvent.OnSendWithExpirationMayNotApply(emptyList()))
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationSupportUnknown)
             }
+
+            SendWithExpirationTimeResult.ExpirationUnsupportedForAll ->
+                emitNewStateFor(CompositeEvent.OnSendWithExpirationUnsupported)
         }
 
     }

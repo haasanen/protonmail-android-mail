@@ -45,11 +45,12 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.titleSmallNorm
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.extension.getTotalAttachmentByteSizeReadable
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import me.proton.core.presentation.R.drawable
 
@@ -57,22 +58,20 @@ import me.proton.core.presentation.R.drawable
 fun AttachmentList(
     modifier: Modifier = Modifier,
     messageAttachmentsUiModel: AttachmentGroupUiModel,
-    actions: AttachmentList.Actions,
-    isPreview: Boolean = false
+    actions: AttachmentList.Actions
 ) {
     when (messageAttachmentsUiModel.expandCollapseMode) {
 
         AttachmentListExpandCollapseMode.NotApplicable -> DefaultAttachmentList(
             modifier = modifier,
             messageAttachmentsUiModel = messageAttachmentsUiModel,
-            actions = actions,
-            isPreview = isPreview
+            actions = actions
         )
+
         else -> ExpandableAttachmentList(
             modifier = modifier,
             messageAttachmentsUiModel = messageAttachmentsUiModel,
-            actions = actions,
-            isPreview = isPreview
+            actions = actions
         )
     }
 }
@@ -81,8 +80,7 @@ fun AttachmentList(
 fun ExpandableAttachmentList(
     modifier: Modifier = Modifier,
     messageAttachmentsUiModel: AttachmentGroupUiModel,
-    actions: AttachmentList.Actions,
-    isPreview: Boolean = false
+    actions: AttachmentList.Actions
 ) {
     Column(
         modifier = modifier
@@ -124,8 +122,7 @@ fun ExpandableAttachmentList(
 fun DefaultAttachmentList(
     modifier: Modifier = Modifier,
     messageAttachmentsUiModel: AttachmentGroupUiModel,
-    actions: AttachmentList.Actions,
-    isPreview: Boolean = false
+    actions: AttachmentList.Actions
 ) {
     Column(
         modifier = modifier
@@ -225,10 +222,11 @@ fun AttachmentListHeader(
         )
     }
 }
+
 object AttachmentList {
     data class Actions(
         val onShowAllAttachments: () -> Unit,
-        val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
+        val onAttachmentClicked: (mode: AttachmentOpenMode, attachmentId: AttachmentId) -> Unit,
         val onToggleExpandCollapseMode: () -> Unit = {},
         val onAttachmentDeleteClicked: (attachmentId: AttachmentId) -> Unit = {}
     ) {
@@ -237,7 +235,7 @@ object AttachmentList {
 
             val Empty = Actions(
                 onShowAllAttachments = {},
-                onAttachmentClicked = {},
+                onAttachmentClicked = { _, _ -> },
                 onToggleExpandCollapseMode = {},
                 onAttachmentDeleteClicked = {}
             )
@@ -258,8 +256,7 @@ fun AttachmentListMultiAttachmentsPreview() {
                     AttachmentMetadataUiModelSamples.Document
                 )
             ),
-            actions = AttachmentList.Actions.Empty,
-            isPreview = true
+            actions = AttachmentList.Actions.Empty
         )
 
     }
@@ -277,8 +274,7 @@ fun AttachmentListSingleAttachmentPreview() {
                     AttachmentMetadataUiModelSamples.Invoice
                 )
             ),
-            actions = AttachmentList.Actions.Empty,
-            isPreview = true
+            actions = AttachmentList.Actions.Empty
         )
 
     }
@@ -301,8 +297,7 @@ fun AttachmentListExpandedPreview() {
                 ),
                 expandCollapseMode = AttachmentListExpandCollapseMode.Expanded
             ),
-            actions = AttachmentList.Actions.Empty,
-            isPreview = true
+            actions = AttachmentList.Actions.Empty
         )
 
     }

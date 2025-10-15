@@ -1093,7 +1093,7 @@ internal class ComposerViewModelTest {
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
         expectCanSendMessageWithExpiration(
-            SendWithExpirationTimeResult.ExpirationWillNotApplyWarning(externalAddresses)
+            SendWithExpirationTimeResult.ExpirationUnsupportedForSome(externalAddresses)
         )
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
             DraftFields(

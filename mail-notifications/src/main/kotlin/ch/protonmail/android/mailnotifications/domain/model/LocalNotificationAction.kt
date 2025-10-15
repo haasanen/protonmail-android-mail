@@ -18,20 +18,19 @@
 
 package ch.protonmail.android.mailnotifications.domain.model
 
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import kotlinx.serialization.Serializable
 
 @Serializable
 internal sealed class LocalNotificationAction {
 
     @Serializable
-    sealed class MoveTo(val destinationLabel: SystemLabelId) : LocalNotificationAction() {
+    sealed class MoveTo : LocalNotificationAction() {
 
         @Serializable
-        data object Archive : MoveTo(destinationLabel = SystemLabelId.Archive)
+        data object Archive : MoveTo()
 
         @Serializable
-        data object Trash : MoveTo(destinationLabel = SystemLabelId.Trash)
+        data object Trash : MoveTo()
     }
 
     @Serializable

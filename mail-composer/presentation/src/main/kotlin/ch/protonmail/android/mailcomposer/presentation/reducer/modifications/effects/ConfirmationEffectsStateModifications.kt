@@ -31,7 +31,7 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
             state.copy(confirmSendingWithoutSubject = Effect.of(Unit))
     }
 
-    data class SendExpirationMayNotApplyConfirmationRequested(val recipients: List<String>) : EffectsStateModification {
+    data object SendExpirationSupportUnknownConfirmationRequested : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
             confirmSendExpiringMessage = Effect.of(
@@ -40,12 +40,20 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
         )
     }
 
-    data class SendExpirationWillNotApplyConfirmationRequested(
+    data class SendExpirationUnsupportedForSomeConfirmationRequested(
         val recipients: List<String>
     ) : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects {
-            val formattedRecipients = recipients.joinToString { it }
+            val recipientsToShow = recipients
+                .take(NUM_RECIPIENTS_TO_SHOW)
+                .joinToString { it }
+            val recipientsHiddenCount = (recipients.size - NUM_RECIPIENTS_TO_SHOW)
+                .takeIf { it > 0 }
+
+            val formattedHiddenRecipientsCount = recipientsHiddenCount?.let { " +$it" } ?: ""
+            val formattedRecipients = recipientsToShow.plus(formattedHiddenRecipientsCount)
+
             return state.copy(
                 confirmSendExpiringMessage = Effect.of(
                     event = TextUiModel.TextResWithArgs(
@@ -55,6 +63,15 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
                 )
             )
         }
+    }
+
+    data object SendExpirationUnsupportedConfirmationRequested : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            confirmSendExpiringMessage = Effect.of(
+                event = TextUiModel.TextRes(R.string.composer_send_expiring_message_to_external_will_fail_for_all)
+            )
+        )
     }
 
     data object CancelSendNoSubject : EffectsStateModification {
@@ -71,3 +88,5 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
             state.copy(confirmDiscardDraft = Effect.of(Unit))
     }
 }
+
+private const val NUM_RECIPIENTS_TO_SHOW = 4
