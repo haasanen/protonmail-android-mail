@@ -23,7 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -101,10 +100,8 @@ fun ApplicationLogsScreen(
                 title = { Text(text = stringResource(R.string.application_events_title)) },
                 navigationIcon = {
                     IconButton(onClick = actions.onBackClick) {
-                        val imageVector = if (isStandalone) Icons.Filled.Close else Icons.AutoMirrored.Filled.ArrowBack
-
                         Icon(
-                            imageVector = imageVector,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(id = R.string.presentation_back)
                         )
                     }

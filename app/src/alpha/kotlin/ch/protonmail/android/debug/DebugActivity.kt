@@ -26,17 +26,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.LocalAppLogsEntryPointIsStandalone
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
+import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.navigation.model.Destination.Screen
 import dagger.hilt.android.AndroidEntryPoint
 import io.sentry.compose.withSentryObservableEffect
 
 @AndroidEntryPoint
-internal class LogsActivity : AppCompatActivity() {
+internal class DebugActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +47,32 @@ internal class LogsActivity : AppCompatActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.ApplicationLogs.route
+                    startDestination = Screen.ApplicationDebug.route
                 ) {
+
+                    composable(route = Screen.ApplicationDebug.route) {
+                        ApplicationDebugScreen(
+                            actions = ApplicationDebugScreen.Actions(
+                                onBackClick = { finish() },
+                                onLogsNavigation = { navController.navigate(Screen.ApplicationLogs.route) },
+                                onDangerZoneNavigation = {
+                                    navController.navigate(Screen.ApplicationDebugDangerZone.route)
+                                }
+                            )
+                        )
+                    }
+
+                    composable(route = Screen.ApplicationDebugDangerZone.route) {
+                        DangerZoneScreen(
+                            onBackClick = { navController.navigateBack() }
+                        )
+                    }
+
                     composable(route = Screen.ApplicationLogs.route) {
                         CompositionLocalProvider(LocalAppLogsEntryPointIsStandalone provides true) {
                             ApplicationLogsScreen(
                                 actions = ApplicationLogsScreen.Actions(
-                                    onBackClick = { finish() },
+                                    onBackClick = { navController.navigateBack() },
                                     onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) },
                                     onFeatureFlagsNavigation = {
                                         navController.navigate(Screen.FeatureFlagsOverrides.route)

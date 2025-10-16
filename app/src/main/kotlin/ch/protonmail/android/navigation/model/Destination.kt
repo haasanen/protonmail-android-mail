@@ -168,6 +168,8 @@ sealed class Destination(val route: String) {
                 route.replace(CustomizeToolbarEditScreen.OpenMode.wrap(), item.serialize())
         }
 
+        object ApplicationDebug : Destination("settings/appDebug")
+        object ApplicationDebugDangerZone : Destination("settings/appDebug/dangerZone")
         object ApplicationLogs : Destination("settings/applicationLogs")
         object ApplicationLogsView : Destination("settings/applicationLogs/view/${ApplicationLogsViewMode.wrap()}") {
 

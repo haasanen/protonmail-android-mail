@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<!--
+    These strings refer to a screen that is accessible only on dev/alpha builds to QAs. No need to translate.
+    See LogsExportFeatureSetting.kt for more details.
+-->
+<resources>
+    <string name="app_debug_screen" translatable="false">Debug Menu</string>
+    <string name="app_debug_screen_logs_title" translatable="false">Application logs</string>
+    <string name="app_debug_screen_logs_subtitle" translatable="false">View and share logs</string>
+    <string name="app_debug_screen_danger_title" translatable="false">Danger Zone</string>
+    <string name="app_debug_screen_danger_subtitle" translatable="false">Crash test and miscellaneous</string>
+    <string name="app_debug_screen_danger_crash_title" translatable="false">Crash the app</string>
+    <string name="app_debug_screen_danger_crash_description" translatable="false">Trigger a Rust-level crash to test Sentry integration</string>
+</resources>
