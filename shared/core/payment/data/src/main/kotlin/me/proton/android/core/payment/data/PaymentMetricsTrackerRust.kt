@@ -37,6 +37,7 @@ class PaymentMetricsTrackerRust @Inject constructor() : PaymentMetricsTracker {
             PaymentObservabilityMetric.CREATE_SUBSCRIPTION -> MetricRust.CreateSubscription(value.toExternal())
             PaymentObservabilityMetric.GET_SUBSCRIPTION -> MetricRust.GetSubscription(value.toExternal())
             PaymentObservabilityMetric.GET_PLANS -> MetricRust.GetPlans(value.toExternal())
+            PaymentObservabilityMetric.GET_PAYMENTS_STATUS -> MetricRust.GetPlans(value.toExternal())
         }
 
         sendPaymentObservabilityMetric(metricWithValue)

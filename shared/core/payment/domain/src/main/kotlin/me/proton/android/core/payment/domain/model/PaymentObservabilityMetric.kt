@@ -24,5 +24,6 @@ enum class PaymentObservabilityMetric {
     SEND_PAYMENT_TOKEN,
     CREATE_SUBSCRIPTION,
     GET_SUBSCRIPTION,
-    GET_PLANS
+    GET_PLANS,
+    GET_PAYMENTS_STATUS
 }

@@ -31,6 +31,10 @@ class GetAvailableUpgrades @Inject constructor(
 ) {
 
     suspend operator fun invoke(): List<ProductDetail> {
+        if (!subscriptionManager.areInAppPurchasesEnabled()) {
+            return emptyList()
+        }
+
         val upgrades = subscriptionManager.getAvailable()
         if (upgrades.isEmpty()) return upgrades
 

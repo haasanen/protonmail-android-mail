@@ -32,6 +32,7 @@ import me.proton.android.core.payment.domain.PaymentException.Companion.ErrorCod
 import me.proton.android.core.payment.domain.PaymentMetricsTracker
 import me.proton.android.core.payment.domain.SubscriptionManager
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.CREATE_SUBSCRIPTION
+import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.GET_PAYMENTS_STATUS
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.GET_PLANS
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.GET_SUBSCRIPTION
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.SEND_PAYMENT_TOKEN
@@ -42,6 +43,7 @@ import uniffi.proton_mail_uniffi.GetPaymentsPlansOptions
 import uniffi.proton_mail_uniffi.GoogleRecurringReceiptDetails
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionGetPaymentsPlansResult
+import uniffi.proton_mail_uniffi.MailUserSessionGetPaymentsStatusResult
 import uniffi.proton_mail_uniffi.MailUserSessionGetPaymentsSubscriptionResult
 import uniffi.proton_mail_uniffi.MailUserSessionPostPaymentsSubscriptionResult
 import uniffi.proton_mail_uniffi.MailUserSessionPostPaymentsTokensResult
@@ -49,10 +51,16 @@ import uniffi.proton_mail_uniffi.NewSubscription
 import uniffi.proton_mail_uniffi.NewSubscriptionValues
 import uniffi.proton_mail_uniffi.PaymentReceipt
 import uniffi.proton_mail_uniffi.PaymentToken
+import uniffi.proton_mail_uniffi.PaymentVendorState
 import uniffi.proton_mail_uniffi.UserSessionError
 
+//region Constants
+
+private const val VENDOR_ANDROID_GOOGLE: String = "google"
+
+//endregion
+
 @Singleton
-@Suppress("MagicNumber")
 class SubscriptionManagerRust @Inject constructor(
     @ApplicationContext private val context: Context,
     private val metricsTracker: PaymentMetricsTracker,
@@ -135,7 +143,7 @@ class SubscriptionManagerRust @Inject constructor(
     override suspend fun getAvailable(): List<ProductDetail> {
         val session = sessionRepository.getPrimarySession() ?: return emptyList()
         val options = GetPaymentsPlansOptions(
-            vendor = "google",
+            vendor = VENDOR_ANDROID_GOOGLE,
             currency = null,
             state = null,
             timestamp = null,
@@ -158,5 +166,20 @@ class SubscriptionManagerRust @Inject constructor(
         val session = checkNotNull(sessionRepository.getPrimarySession())
         val protonToken = getProtonToken(product, purchase, session)
         createOrUpdateSubscription(session, product, protonToken)
+    }
+
+    override suspend fun areInAppPurchasesEnabled(): Boolean {
+        val session = checkNotNull(sessionRepository.getPrimarySession())
+        val result = session.getPaymentsStatus(VENDOR_ANDROID_GOOGLE)
+
+        metricsTracker.track(GET_PAYMENTS_STATUS, result.toObservabilityValue())
+        when (result) {
+            is MailUserSessionGetPaymentsStatusResult.Error -> {
+                result.v1.throwException()
+            }
+            is MailUserSessionGetPaymentsStatusResult.Ok -> {
+                return result.v1.paymentMethods.inApp.state == PaymentVendorState.ENABLED
+            }
+        }
     }
 }

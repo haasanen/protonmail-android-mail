@@ -45,4 +45,9 @@ interface SubscriptionManager {
      * @throws PaymentException
      */
     suspend fun subscribe(product: ProductDetail, purchase: Purchase)
+
+    /**
+     * Check if In App Purchases are enabled for this user session.
+     */
+    suspend fun areInAppPurchasesEnabled(): Boolean
 }
