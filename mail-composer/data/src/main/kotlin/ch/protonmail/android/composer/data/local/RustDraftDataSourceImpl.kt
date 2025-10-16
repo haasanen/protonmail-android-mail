@@ -117,9 +117,15 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     private val recipientsUpdatedCallback = object : ComposerRecipientValidationCallback {
         override fun onUpdate() {
-            val toRecipients = draftCache.get().recipientsTo().recipients().toComposerRecipients()
-            val ccRecipients = draftCache.get().recipientsCc().recipients().toComposerRecipients()
-            val bccRecipients = draftCache.get().recipientsBcc().recipients().toComposerRecipients()
+            val draft = try {
+                draftCache.get()
+            } catch (e: IllegalStateException) {
+                Timber.w("Recipient update received after draft was closed. $e")
+                return
+            }
+            val toRecipients = draft.recipientsTo().recipients().toComposerRecipients()
+            val ccRecipients = draft.recipientsCc().recipients().toComposerRecipients()
+            val bccRecipients = draft.recipientsBcc().recipients().toComposerRecipients()
             val updatedRecipients = ValidatedRecipients(toRecipients, ccRecipients, bccRecipients)
 
             mutableRecipientsUpdatedFlow.tryEmit(updatedRecipients)

@@ -70,7 +70,13 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             val updateCallback = object : AsyncLiveQueryCallback {
                 override suspend fun onUpdate() {
                     Timber.d("rust-draft-attachments: Attachment list updated")
-                    rustDraftDataSource.attachmentList().onLeft { error ->
+                    val attachmentList = try {
+                        rustDraftDataSource.attachmentList()
+                    } catch (e: IllegalStateException) {
+                        Timber.w("Received attachments update while draft was already closed. $e")
+                        return
+                    }
+                    attachmentList.onLeft { error ->
                         send(error.left())
                     }.onRight { attachmentListWrapper ->
                         send(attachmentListWrapper.getAttachments())
