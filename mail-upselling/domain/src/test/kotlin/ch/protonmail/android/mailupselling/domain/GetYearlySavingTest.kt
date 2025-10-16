@@ -18,9 +18,11 @@
 
 package ch.protonmail.android.mailupselling.domain
 
+import java.math.BigDecimal
 import ch.protonmail.android.mailupselling.domain.model.YearlySaving
 import ch.protonmail.android.mailupselling.domain.usecase.GetYearlySaving
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
+import me.proton.android.core.payment.domain.model.ProductPrice
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -32,12 +34,51 @@ internal class GetYearlySavingTest {
     @Test
     fun `should return the expected yearly saving (standard)`() {
         // Given
-        val expected = YearlySaving("EUR", 36f)
+        val expected = YearlySaving("EUR", BigDecimal("36.00"))
 
         // When
         val actual = getYearlySaving(
             monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
             yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+        )
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `should return the expected yearly saving (fractional)`() {
+        // Given
+        val expected = YearlySaving("EUR", BigDecimal("37.20"))
+
+        val monthlyPrice = ProductPrice(
+            productId = "productId",
+            customerId = "customerId",
+            cycle = 1,
+            amount = (15.49f * 1000 * 1000).toLong(),
+            currency = "EUR",
+            formatted = "EUR 108.00"
+        )
+
+        val yearlyPrice = ProductPrice(
+            productId = "productId",
+            customerId = "customerId",
+            cycle = 12,
+            amount = (148.68f * 1000 * 1000).toLong(),
+            currency = "EUR",
+            formatted = "EUR 108.00"
+        )
+
+        // When
+        val actual = getYearlySaving(
+            monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail.copy(
+                price = monthlyPrice,
+                renew = monthlyPrice
+            ),
+            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail.copy(
+                price = yearlyPrice,
+                renew = yearlyPrice
+            )
         )
 
         // Then
@@ -52,7 +93,7 @@ internal class GetYearlySavingTest {
             price = monthlyPlan.price.copy(amount = 1),
             renew = monthlyPlan.renew.copy(amount = 12 * 1000 * 1000)
         )
-        val expected = YearlySaving("EUR", 36f)
+        val expected = YearlySaving("EUR", BigDecimal("36.00"))
 
         // When
         val actual = getYearlySaving(

@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.mailupselling.domain.model
 
+import java.math.BigDecimal
+
 data class YearlySaving(
     val currency: String,
-    val value: Float
+    val value: BigDecimal
 )

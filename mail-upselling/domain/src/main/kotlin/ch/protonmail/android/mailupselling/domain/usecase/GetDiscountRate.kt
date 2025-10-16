@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailupselling.domain.usecase
 
+import java.math.BigDecimal
+import java.math.RoundingMode
 import me.proton.android.core.payment.domain.model.ProductDetail
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -25,26 +27,29 @@ import kotlin.math.roundToInt
 class GetDiscountRate @Inject constructor() {
 
     operator fun invoke(shorterInstance: ProductDetail, longerInstance: ProductDetail): Int? {
-        val longerInstancePrice = longerInstance.currentPrice
-        val shorterInstancePrice = shorterInstance.currentPrice
+        val longerInstancePrice = BigDecimal(longerInstance.currentPrice)
+        val shorterInstancePrice = BigDecimal(shorterInstance.currentPrice)
+        val longerInstanceCycle = BigDecimal(longerInstance.cycle)
+        val shorterInstanceCycle = BigDecimal(shorterInstance.cycle)
 
         val ratio = runCatching {
-            @Suppress("UnnecessaryParentheses")
-            (longerInstancePrice / longerInstance.cycle) /
-                (shorterInstancePrice / shorterInstance.cycle)
+            val longerInstanceRate = longerInstancePrice.divide(longerInstanceCycle, 2, RoundingMode.HALF_UP)
+            val shorterInstanceRate = shorterInstancePrice.divide(shorterInstanceCycle, 2, RoundingMode.HALF_UP)
+
+            longerInstanceRate.divide(shorterInstanceRate, 2, RoundingMode.HALF_UP)
         }.getOrNull() ?: return null
 
-        return calculateDiscountFromRatio(ratio)
+        return calculateDiscountFromRatio(ratio.toFloat())
     }
 
-    operator fun invoke(promotionalPrice: Float, renewalPrice: Float): Int? {
+    operator fun invoke(promotionalPrice: BigDecimal, renewalPrice: BigDecimal): Int? {
         if (promotionalPrice == renewalPrice) return null
 
-        val ratio = runCatching { promotionalPrice / renewalPrice }
+        val ratio = runCatching { promotionalPrice.divide(renewalPrice, 2, RoundingMode.HALF_UP) }
             .getOrNull()
             ?: return null
 
-        return calculateDiscountFromRatio(ratio)
+        return calculateDiscountFromRatio(ratio.toFloat())
     }
 
     private fun calculateDiscountFromRatio(ratio: Float): Int? {
@@ -55,8 +60,8 @@ class GetDiscountRate @Inject constructor() {
     }
 }
 
-private val ProductDetail.currentPrice: Float
-    get() = price.amount.toFloat()
+private val ProductDetail.currentPrice: Long
+    get() = price.amount
 
 private val ProductDetail.cycle: Int
     get() = price.cycle

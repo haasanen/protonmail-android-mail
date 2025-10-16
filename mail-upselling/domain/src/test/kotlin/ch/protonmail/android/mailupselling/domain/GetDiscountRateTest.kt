@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailupselling.domain
 
+import java.math.BigDecimal
 import ch.protonmail.android.mailupselling.domain.usecase.GetDiscountRate
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
 import org.junit.Test
@@ -73,7 +74,7 @@ internal class GetDiscountRateTest {
         val expected = 90
 
         // When
-        val actual = getDiscountRate(promotionalPrice = 10f, renewalPrice = 100f)
+        val actual = getDiscountRate(promotionalPrice = BigDecimal(10), renewalPrice = BigDecimal(100))
 
         // Then
         assertEquals(expected, actual)
@@ -82,7 +83,7 @@ internal class GetDiscountRateTest {
     @Test
     fun `should return null if the discount rate is 0 (promo prices)`() {
         // When
-        val actual = getDiscountRate(promotionalPrice = 100f, renewalPrice = 100f)
+        val actual = getDiscountRate(promotionalPrice = BigDecimal(100), renewalPrice = BigDecimal(100))
 
         // Then
         assertNull(actual)
@@ -91,7 +92,7 @@ internal class GetDiscountRateTest {
     @Test
     fun `should return null if promotional price is higher than renewal price (promo prices)`() {
         // When
-        val actual = getDiscountRate(promotionalPrice = 500f, renewalPrice = 1f)
+        val actual = getDiscountRate(promotionalPrice = BigDecimal(500), renewalPrice = BigDecimal(1))
 
         // Then
         assertNull(actual)
@@ -100,7 +101,7 @@ internal class GetDiscountRateTest {
     @Test
     fun `should return null if the discount rate would exceed 100 percent`() {
         // When
-        val actual = getDiscountRate(promotionalPrice = -1f, renewalPrice = 1f)
+        val actual = getDiscountRate(promotionalPrice = BigDecimal(-1), renewalPrice = BigDecimal(1))
 
         // Then
         assertNull(actual)

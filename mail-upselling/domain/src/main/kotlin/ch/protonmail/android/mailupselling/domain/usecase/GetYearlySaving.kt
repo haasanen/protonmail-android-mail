@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailupselling.domain.usecase
 
+import java.math.BigDecimal
+import java.math.RoundingMode
 import ch.protonmail.android.mailupselling.domain.extensions.totalPrice
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.domain.model.YearlySaving
@@ -33,8 +35,11 @@ class GetYearlySaving @Inject constructor() {
         val currency = monthlyPlan.price.currency
 
         // Check on monthly renewal price since it's unaffected by promo/offers
-        val rawValue = monthlyPlan.renew.totalPrice() * PlanUpgradeCycle.Yearly.months - yearlyPlan.price.totalPrice()
+        val rawValue = monthlyPlan.renew.totalPrice()
+            .multiply(BigDecimal(PlanUpgradeCycle.Yearly.months))
+            .minus(yearlyPlan.price.totalPrice())
+            .setScale(2, RoundingMode.HALF_UP)
 
-        return YearlySaving(currency, rawValue).takeIf { rawValue > 0 }
+        return YearlySaving(currency, rawValue).takeIf { rawValue.signum() > 0 }
     }
 }

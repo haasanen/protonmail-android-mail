@@ -18,16 +18,17 @@
 
 package ch.protonmail.android.mailupselling.presentation.extension
 
+import java.text.NumberFormat
+import java.util.Locale
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.model.YearlySaving
 
 fun YearlySaving.formatted(): TextUiModel {
-    val formatted = "%.2f".format(value)
-    val amount = if (formatted.endsWith(".00")) {
-        value.toInt().toString()
-    } else {
-        formatted
-    }
+    val format = NumberFormat.getNumberInstance(Locale.getDefault())
+    format.minimumFractionDigits = 0
+    format.maximumFractionDigits = 2
 
-    return TextUiModel.Text("$currency $amount")
+    val formatted = format.format(value)
+
+    return TextUiModel.Text("$currency $formatted")
 }

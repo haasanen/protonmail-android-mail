@@ -53,7 +53,7 @@ fun Subscription.toSubscriptionDetail() = SubscriptionDetail(
             productId = "unknown",
             customerId = "unknown",
             cycle = requireNotNull(cycle).toInt(),
-            amount = requireNotNull(amount).toInt(),
+            amount = requireNotNull(amount).toLong(),
             currency = requireNotNull(currency),
             formatted = getFormattedPrice(amount, currency)
         )
@@ -63,7 +63,7 @@ fun Subscription.toSubscriptionDetail() = SubscriptionDetail(
             productId = "unknown",
             customerId = "unknown",
             cycle = requireNotNull(cycle).toInt(),
-            amount = requireNotNull(renewAmount).toInt(),
+            amount = requireNotNull(renewAmount).toLong(),
             currency = requireNotNull(currency),
             formatted = getFormattedPrice(renewAmount, currency)
         )
@@ -93,7 +93,7 @@ fun PlanInstance.toProductPrice() = ProductPrice(
     productId = requireNotNull(vendors[PlanVendorName.GOOGLE]?.productId),
     customerId = requireNotNull(vendors[PlanVendorName.GOOGLE]?.customerId),
     cycle = cycle.toInt(),
-    amount = price.first().current.toInt(),
+    amount = price.first().current.toLong(),
     currency = price.first().currency,
     formatted = price.first().let { getFormattedPrice(it.current, it.currency) }
 )
