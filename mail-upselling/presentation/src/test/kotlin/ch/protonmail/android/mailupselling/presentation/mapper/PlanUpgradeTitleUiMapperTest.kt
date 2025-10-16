@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailupselling.presentation.mapper
 
+import java.math.BigDecimal
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
@@ -126,9 +127,9 @@ internal class PlanUpgradeTitleUiMapperTest {
     private companion object {
 
         val initialPrice = PlanUpgradePriceDisplayUiModel(
-            pricePerCycle = PlanUpgradePriceUiModel(amount = 4.5f, currencyCode = "EUR"),
-            highlightedPrice = PlanUpgradePriceUiModel(amount = 54f, currencyCode = "EUR"),
-            secondaryPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR")
+            pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal(4.5), currencyCode = "EUR"),
+            highlightedPrice = PlanUpgradePriceUiModel(amount = BigDecimal(54), currencyCode = "EUR"),
+            secondaryPrice = PlanUpgradePriceUiModel(amount = BigDecimal(108), currencyCode = "EUR")
         )
     }
 }
