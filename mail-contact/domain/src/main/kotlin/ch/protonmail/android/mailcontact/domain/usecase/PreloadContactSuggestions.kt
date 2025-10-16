@@ -18,18 +18,17 @@
 
 package ch.protonmail.android.mailcontact.domain.usecase
 
-import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
-import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
-import javax.inject.Inject
 import arrow.core.Either
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.domain.model.DeviceContactsWithSignature
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
+import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
+import javax.inject.Inject
 
 class PreloadContactSuggestions @Inject constructor(
     private val contactsRepository: ContactRepository,
@@ -39,7 +38,6 @@ class PreloadContactSuggestions @Inject constructor(
     suspend operator fun invoke(userId: UserId): Either<DataError, Unit> = withContext(ioDispatcher) {
         val deviceContacts = deviceContactsRepository
             .getAllContacts(useCacheIfAvailable = false)
-            .onLeft { Timber.w("contact-suggestions: Failed to get device contacts: $it") }
             .getOrElse { DeviceContactsWithSignature.Empty }
 
         contactsRepository.preloadContactSuggestions(userId, deviceContacts)

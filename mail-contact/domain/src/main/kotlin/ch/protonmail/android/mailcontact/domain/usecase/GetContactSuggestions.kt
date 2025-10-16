@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcontact.domain.model.DeviceContactsWithSignatur
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class GetContactSuggestions @Inject constructor(
@@ -40,7 +39,6 @@ class GetContactSuggestions @Inject constructor(
         query: ContactSuggestionQuery
     ): Either<DataError, List<ContactMetadata>> {
         val deviceContacts = deviceContactsRepository.getAllContacts(useCacheIfAvailable = true)
-            .onLeft { Timber.w("contact-suggestions: Failed to get device contacts: $it") }
             .getOrElse { DeviceContactsWithSignature.Empty }
 
         return contactsRepository.getContactSuggestions(userId, deviceContacts, query)

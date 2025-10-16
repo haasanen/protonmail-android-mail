@@ -423,7 +423,6 @@ class ComposerViewModel @AssistedInject constructor(
         val fileShareInfo = shareDraftAction.intentShareInfo.decode()
 
         fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { rawUri ->
-            Timber.w("composer: storing attachment not implemented")
             val uriList = rawUri.map { it.toUri() }
             onAttachmentsAdded(uriList)
         }
