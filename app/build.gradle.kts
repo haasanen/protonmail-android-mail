@@ -16,7 +16,6 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import java.util.Properties
 import com.android.build.api.dsl.VariantDimension
 import configuration.extensions.protonEnvironment
 
@@ -54,6 +53,7 @@ android {
         applicationId = AppConfiguration.applicationId.get()
         minSdk = AppConfiguration.minSdk.get()
         targetSdk = AppConfiguration.targetSdk.get()
+        ndkVersion = AppConfiguration.ndkVersion.get()
         versionCode = AppConfiguration.versionCode.get()
         versionName = AppConfiguration.versionName.get()
 
