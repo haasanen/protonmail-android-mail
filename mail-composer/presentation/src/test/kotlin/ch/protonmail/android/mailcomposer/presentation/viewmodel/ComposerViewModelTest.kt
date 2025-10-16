@@ -642,7 +642,7 @@ internal class ComposerViewModelTest {
     }
 
     @Test
-    fun `emits state with initialization error when creating new empty draft fails`() = runTest {
+    fun `stop init and emits state with initialization error when creating new empty draft fails`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         ignoreRecipientsUpdates()
@@ -660,6 +660,8 @@ internal class ComposerViewModelTest {
 
         // Then
         assertEquals(TextUiModel(R.string.composer_error_invalid_sender), actual.effects.exitError.consume())
+        verify { observeMessageAttachments wasNot Called }
+        verify { updateRecipients wasNot Called }
     }
 
     @Test
@@ -1358,6 +1360,26 @@ internal class ComposerViewModelTest {
         // Then
         coVerify { deleteAttachment(id1) }
         coVerify { deleteAttachment(id2) }
+    }
+
+    @Test
+    fun `should stop initialization and not start observers when prefillForDraftAction fails`() = runTest {
+        // Given
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val replyAction = DraftAction.Reply(MessageIdSample.Invoice)
+        expectNoInputDraftMessageId()
+        expectInputDraftAction { replyAction }
+        expectNoRestoredState(savedStateHandle)
+        coEvery { createDraftForAction(expectedUserId, replyAction) } returns OpenDraftError.OpenDraftFailed.left()
+
+        // When
+        viewModel()
+
+        // Then
+        verify { observeMessageAttachments wasNot Called }
+        verify { observeRecipientsValidation wasNot Called }
+        verify { updateRecipients wasNot Called }
+        coVerify { preloadContactSuggestions wasNot Called }
     }
 
     // This is both used to mock the result of the "composer init" in the cases where we

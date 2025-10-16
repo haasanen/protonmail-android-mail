@@ -30,7 +30,6 @@ import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
@@ -339,6 +338,7 @@ class ComposerViewModel @AssistedInject constructor(
         }.launchIn(viewModelScope)
     }
 
+    @Suppress("ReturnCount")
     private suspend fun setupInitialState(savedStateHandle: SavedStateHandle): Boolean {
         val inputDraftId = savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey)
         val draftAction = savedStateHandle.get<String>(ComposerScreen.SerializedDraftActionKey)
@@ -356,8 +356,12 @@ class ComposerViewModel @AssistedInject constructor(
                 return false
             }
 
-            draftAction != null -> prefillForDraftAction(draftAction)
-            else -> prefillForNewDraft()
+            draftAction != null -> prefillForDraftAction(draftAction).onLeft {
+                return false
+            }
+            else -> prefillForNewDraft().onLeft {
+                return false
+            }
         }
         return true
     }
@@ -400,10 +404,10 @@ class ComposerViewModel @AssistedInject constructor(
         recipientsStateManager.updateRecipients(recipients, ContactSuggestionsField.TO)
     }
 
-    private suspend fun prefillForNewDraft() {
+    private suspend fun prefillForNewDraft(): Either<OpenDraftError, DraftFields> {
         // Emitting also for "empty draft" as now signature is returned with the init body, effectively
         // making this the same as other prefill cases (eg. "reply" or "fw")
-        createEmptyDraft(primaryUserId())
+        return createEmptyDraft(primaryUserId())
             .onRight { draftFields ->
                 // ensure the displayBody prop that the UI uses to set initial value is up-to-date with the signature
                 bodyTextField.replaceText(draftFields.body.value, resetRange = true)
@@ -483,18 +487,17 @@ class ComposerViewModel @AssistedInject constructor(
         )
     }
 
-    @MissingRustApi
-    // hardcoding values for isBlockedSendingFromPmAddress / isBlockedSendingFromDisabledAddress
-    private suspend fun prefillForDraftAction(draftAction: DraftAction) {
+    private suspend fun prefillForDraftAction(draftAction: DraftAction): Either<OpenDraftError, DraftFields> {
         Timber.d("Opening composer for draft action $draftAction")
         emitNewStateFor(MainEvent.InitialLoadingToggled)
         val focusDraftBody = draftAction is Reply || draftAction is ReplyAll
-        when (draftAction) {
+        return when (draftAction) {
             Compose -> prefillForNewDraft()
             is ComposeToAddresses -> {
                 Timber.d("composer: prefilling for compose To")
-                prefillForNewDraft()
-                prefillForComposeToAction(draftAction.extractRecipients())
+                prefillForNewDraft().onRight {
+                    prefillForComposeToAction(draftAction.extractRecipients())
+                }
             }
 
             is Forward,
@@ -514,8 +517,9 @@ class ComposerViewModel @AssistedInject constructor(
                 .onLeft { emitNewStateFor(EffectsEvent.LoadingEvent.OnParentLoadingFailed) }
 
             is PrefillForShare -> {
-                prefillForNewDraft()
-                prefillForShareDraftAction(draftAction)
+                prefillForNewDraft().onRight {
+                    prefillForShareDraftAction(draftAction)
+                }
             }
         }
     }
