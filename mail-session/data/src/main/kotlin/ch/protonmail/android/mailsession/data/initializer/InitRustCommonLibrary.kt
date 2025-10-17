@@ -78,8 +78,7 @@ class InitRustCommonLibrary @Inject constructor(
                 product = rustApiConfig.product,
                 version = rustApiConfig.appVersion
             ),
-            origin = Origin.APP,
-            eventPollDurationSeconds = null
+            origin = Origin.APP
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
