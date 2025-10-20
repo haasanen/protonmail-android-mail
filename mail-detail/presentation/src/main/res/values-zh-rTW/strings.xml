@@ -164,6 +164,7 @@
   <string name="rsvp_widget_button_retry">重試</string>
   <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
   <string name="rsvp_widget_open_in_proton_calendar">在 Proton 行事曆開啟</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">複製郵件位址</string>
   <string name="rsvp_widget_message">郵件訊息</string>
   <string name="snooze_message_snoozed_until_banner_title">Snoozed until</string>

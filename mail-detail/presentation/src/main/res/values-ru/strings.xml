@@ -173,6 +173,7 @@
   <string name="rsvp_widget_button_retry">Повторить</string>
   <string name="rsvp_widget_error_answering">Произошла ошибка при ответе на это событие.</string>
   <string name="rsvp_widget_open_in_proton_calendar">Открыть в Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Копировать адрес</string>
   <string name="rsvp_widget_message">Сообщение</string>
   <string name="snooze_message_snoozed_until_banner_title">Отложено до</string>

@@ -167,6 +167,7 @@
   <string name="rsvp_widget_button_retry">Yeniden dene</string>
   <string name="rsvp_widget_error_answering">Bu etkinlik yanıtlanırken bir sorun çıktı.</string>
   <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar ile aç</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Proton Calendar içinde açılamadı</string>
   <string name="rsvp_widget_copy_address">Adresi kopyala</string>
   <string name="rsvp_widget_message">İleti</string>
   <string name="snooze_message_snoozed_until_banner_title">Şu zamana ertelendi</string>

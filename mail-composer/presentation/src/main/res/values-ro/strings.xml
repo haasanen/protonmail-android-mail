@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Adăugare protecție cu parolă</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Nu s-a putut confirma dacă toți destinatarii folosesc Proton Mail. Doar adresele Proton acceptă expirarea mesajelor. În acest caz, vă sugerăm să adăugați o parolă.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Unii destinatari (%1$s) nu acceptă expirarea în mod implicit. Adăugați o parolă pentru a activa expirarea pentru destinatarii care nu folosesc Proton Mail.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Niciunul dintre destinatari nu acceptă expirarea în mod implicit. Adăugați o parolă pentru a activa expirarea pentru destinatarii care nu folosesc Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Notificare trimitere</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Trimiterea de mesaje de la adrese cu domeniul @pm.me este o funcție cu plată. Mesajul vă va fi trimis de pe adresa implicită.</string>

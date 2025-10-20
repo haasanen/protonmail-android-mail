@@ -46,5 +46,5 @@
   <string name="payment_subscription_managed_by_google">Vašo naročnino upravlja Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Vašo naročnino upravlja Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Naročnine ni mogoče upravljati v mobilni aplikaciji.</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Enega ali več dejanj ni bilo mogoče obdelati. Odjavite se in se ponovno prijavite v račun.</string>
 </resources>

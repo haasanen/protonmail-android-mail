@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">パスワード保護を追加する</string>
   <string name="composer_send_expiring_message_to_external_may_fail">すべての受信者がProton Mailを使用していることを確認できませんでした。メッセージの有効期限をサポートしているのはProtonのアドレスのみです。この場合は、代わりにパスワードを追加することをお勧めします。</string>
   <string name="composer_send_expiring_message_to_external_will_fail">一部の受信者 (%1$s) は、デフォルトでは有効期限をサポートしていません。Proton Mail以外の受信者の有効期限を有効にするには、パスワードを追加してください。</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">None of the recipients support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">通知の送信</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">\@pm.me からのメッセージ送信は有料の機能です。あなたのメッセージはデフォルトのアドレスから送信されます。</string>

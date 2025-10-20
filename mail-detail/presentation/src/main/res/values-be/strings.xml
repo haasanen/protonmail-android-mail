@@ -173,6 +173,7 @@
   <string name="rsvp_widget_button_retry">Паўтарыць</string>
   <string name="rsvp_widget_error_answering">Адбылася памылка пры адказе на гэтую падзею</string>
   <string name="rsvp_widget_open_in_proton_calendar">Адкрыць у Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Не атрымалася адкрыць у Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Скапіяваць адрас</string>
   <string name="rsvp_widget_message">Паведамленне</string>
   <string name="snooze_message_snoozed_until_banner_title">Адкладзена да</string>

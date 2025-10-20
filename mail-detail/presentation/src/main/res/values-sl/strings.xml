@@ -164,7 +164,7 @@
   <string name="rsvp_widget_offline_invite_outdated">Ste brez povezave. Prikazani podatki so morda zastareli.</string>
   <string name="rsvp_widget_address_is_incorrect">Vašega naslova ni mogoče uporabiti za odgovor. Posodobite podatke o svojem računu.</string>
   <string name="rsvp_widget_user_is_organizer">Vi ste organizator.</string>
-  <string name="rsvp_widget_user_is_not_invited">You cannot respond to event invites if you\'re not on the participants list at the moment.</string>
+  <string name="rsvp_widget_user_is_not_invited">Na povabila na dogodke se ne morete odzvati, če vas ni na seznamu udeležencev.</string>
   <string name="rsvp_widget_event_does_not_exist">Tega dogodka ni v vašem koledarju, zato nanj ne morete odgovoriti.</string>
   <string name="rsvp_widget_today">Danes</string>
   <string name="rsvp_widget_tomorrow">Jutri</string>
@@ -173,16 +173,17 @@
   <string name="rsvp_widget_button_retry">Poskusite znova</string>
   <string name="rsvp_widget_error_answering">Pri odgovarjanju na ta dogodek je prišlo do napake</string>
   <string name="rsvp_widget_open_in_proton_calendar">Odpri v Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Odpiranje v Koledarju Proton ni uspelo</string>
   <string name="rsvp_widget_copy_address">Kopiraj naslov</string>
   <string name="rsvp_widget_message">Piši</string>
   <string name="snooze_message_snoozed_until_banner_title">Dremež do</string>
   <string name="snooze_message_unsnooze_banner_button">Prekliči dremež</string>
-  <string name="unsubscribe_newsletter_banner_message">This message is from a mailing list.</string>
-  <string name="unsubscribe_newsletter_banner_button">Unsubscribe</string>
+  <string name="unsubscribe_newsletter_banner_message">To sporočilo je s poštnega seznama.</string>
+  <string name="unsubscribe_newsletter_banner_button">Odjavi se</string>
   <string name="unsubscribe_newsletter_dialog_text">Are you sure you want to unsubscribe? You’ll no longer receive emails from this mailing list.</string>
-  <string name="unsubscribe_newsletter_dialog_cancel">Cancel</string>
-  <string name="unsubscribe_newsletter_dialog_confirm">Unsubscribe</string>
-  <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
+  <string name="unsubscribe_newsletter_dialog_cancel">Prekliči</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Odjavi se</string>
+  <string name="already_unsubscribed_banner_message">Odjavili ste se s tega e-poštnega seznama.</string>
   <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
-  <string name="detail_error_loading_single_message">Failed loading message</string>
+  <string name="detail_error_loading_single_message">Nalaganje sporočila ni uspelo</string>
 </resources>

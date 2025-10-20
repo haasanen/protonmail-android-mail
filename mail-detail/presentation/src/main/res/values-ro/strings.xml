@@ -170,6 +170,7 @@
   <string name="rsvp_widget_button_retry">Reîncercare</string>
   <string name="rsvp_widget_error_answering">A apărut o eroare la răspunsul pentru acest eveniment.</string>
   <string name="rsvp_widget_open_in_proton_calendar">Deschidere în Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Nu s-a putut deschide în Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Copiere adresă</string>
   <string name="rsvp_widget_message">Mesaj</string>
   <string name="snooze_message_snoozed_until_banner_title">Amânat până</string>

@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Přidat ochranu heslem</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Nemohli jsme potvrdit, že všichni příjemci používají Proton Mail. Vypršení platnosti zprávy podporují pouze adresy Proton. V tomto případě doporučujeme místo toho přidat heslo.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Někteří příjemci (%1$s) ve výchozím nastavení nepodporují vypršení platnosti. Přidejte heslo, abyste povolili vypršení platnosti pro příjemce, kteří nepoužívají Proton Mail.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Žádný z příjemců ve výchozím nastavení nepodporuje vypršení platnosti. Přidejte heslo, abyste povolili vypršení platnosti pro příjemce, kteří nepoužívají Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Zaslání upozornění</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Odesílání zpráv z @pm.me je placená funkce. Vaše zpráva bude odeslána z vaší výchozí adresy.</string>

@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Jelszóvédelem hozzáadása</string>
   <string name="composer_send_expiring_message_to_external_may_fail">We could not confirm all recipients use Proton Mail. Only Proton addresses support message expiration. In this case, we suggest adding a password instead.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">None of the recipients support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Küldési tudnivaló</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Üzenetek küldése a @pm.me címről előfizetéshez kötött. Az üzenet az alapértelmezett címről kerül elküldésre.</string>

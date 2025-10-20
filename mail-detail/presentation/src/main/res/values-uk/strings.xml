@@ -173,6 +173,7 @@
   <string name="rsvp_widget_button_retry">Повторити</string>
   <string name="rsvp_widget_error_answering">Виникла помилка під час відповіді на цю подію</string>
   <string name="rsvp_widget_open_in_proton_calendar">Відкрити в Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Скопіювати адресу</string>
   <string name="rsvp_widget_message">Повідомлення</string>
   <string name="snooze_message_snoozed_until_banner_title">Відкладено до</string>

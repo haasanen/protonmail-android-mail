@@ -167,6 +167,7 @@
   <string name="rsvp_widget_button_retry">Wiederholen</string>
   <string name="rsvp_widget_error_answering">Bei Antworten auf diesen Termin ist ein Fehler aufgetreten.</string>
   <string name="rsvp_widget_open_in_proton_calendar">In Proton Calendar öffnen</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Öffnen in Proton Calendar fehlgeschlagen</string>
   <string name="rsvp_widget_copy_address">Adresse kopieren</string>
   <string name="rsvp_widget_message">Nachricht</string>
   <string name="snooze_message_snoozed_until_banner_title">Zurückgestellt bis</string>

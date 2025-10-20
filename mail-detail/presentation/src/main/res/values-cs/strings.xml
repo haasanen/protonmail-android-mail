@@ -173,6 +173,7 @@
   <string name="rsvp_widget_button_retry">Zkusit znovu</string>
   <string name="rsvp_widget_error_answering">Při odpovědi na tuto událost došlo k chybě</string>
   <string name="rsvp_widget_open_in_proton_calendar">Otevřít v Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Otevření v Proton Calendar selhalo</string>
   <string name="rsvp_widget_copy_address">Kopírovat adresu</string>
   <string name="rsvp_widget_message">Zpráva</string>
   <string name="snooze_message_snoozed_until_banner_title">Odloženo až do</string>

@@ -55,5 +55,5 @@
   <string name="target_sign_in_error_new_qr">Ustvari QR kodo</string>
   <string name="target_sign_in_error_back_to_signin">Nazaj na prijavo</string>
   <string name="target_sign_in_learn_more">Več o tem</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Enega ali več dejanj ni bilo mogoče obdelati. Odjavite se in se ponovno prijavite v račun.</string>
 </resources>

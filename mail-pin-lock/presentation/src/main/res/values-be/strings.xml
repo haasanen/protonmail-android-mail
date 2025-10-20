@@ -28,7 +28,7 @@
   <string name="mail_pinlock_settings_new_pin_title">Новы PIN</string>
   <string name="mail_pinlock_settings_new_pin_description">Увядзіце PIN даўжынёй ад 4 да 21 лічбы</string>
   <string name="mail_pinlock_settings_confirm_pin_topbar">Пацвердзіць PIN</string>
-  <string name="mail_pinlock_settings_confirm_pin_title">Паўтарыць PIN</string>
+  <string name="mail_pinlock_settings_confirm_pin_title">Паўтарыце PIN</string>
   <string name="mail_pinlock_settings_confirm_pin_description">Паўторна ўвядзіце PIN, каб пераканацца ў яго правільнасці</string>
   <string name="mail_pinlock_settings_verify_pin_topbar">Увядзіце свой PIN</string>
   <string name="mail_pinlock_settings_verify_pin_title">Увядзіце свой PIN</string>

@@ -33,7 +33,7 @@
   <string name="auth_login_close">Закрыть</string>
   <string name="auth_login_help">Справка</string>
   <string name="auth_sign_in">Войти</string>
-  <string name="auth_login_username">Username or email</string>
+  <string name="auth_login_username">Имя пользователя или эл. почта</string>
   <string name="auth_email">Электронная почта</string>
   <string name="auth_password">Пароль</string>
   <string name="auth_username_placeholder">Имя пользователя или эл. почта</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Имя пользователя не должно быть пустым.</string>
   <string name="auth_signup_email_assistive_text">Адрес электронной почты не должен быть пустым.</string>
   <string name="auth_signup_next">Далее</string>
-  <string name="auth_signup_username">Username</string>
+  <string name="auth_signup_username">Имя пользователя</string>
   <string name="auth_signup_create_password">Создайте свой пароль</string>
   <string name="auth_signup_password">Пароль</string>
   <string name="auth_signup_repeat_password">Повторите пароль</string>
@@ -109,7 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Ошибка проверки адреса электронной почты.</string>
   <string name="auth_signup_recovery_phone_validation_error">Ошибка проверки номера телефона.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Пароли не совпадают. Попробуйте ещё раз.</string>
-  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_general_error">Что-то пошло не так. Повторите попытку.</string>
   <string name="auth_signup_countries_search">Поиск страны</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Не удалось настроить пользователя.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Не удалось настроить адрес.</string>
@@ -174,5 +174,5 @@
   <string name="settings_password_error_invalid_recovery">Неправильный код двухфакторной аутентификации. Попробуйте ещё раз.</string>
   <string name="settings_password_error_2fa_reused">Код уже был использован. Попробуйте использовать другой код.</string>
   <string name="settings_password_general_error">Произошла ошибка.</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Одно или несколько действий не могут быть обработаны. Выйдите из своего аккаунта и войдите в него снова.</string>
 </resources>

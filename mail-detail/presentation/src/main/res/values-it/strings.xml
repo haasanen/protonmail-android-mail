@@ -167,6 +167,7 @@
   <string name="rsvp_widget_button_retry">Riprova</string>
   <string name="rsvp_widget_error_answering">Risposta all\'evento non riuscita</string>
   <string name="rsvp_widget_open_in_proton_calendar">Apri in Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Impossibile aprire in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Copia l’indirizzo email</string>
   <string name="rsvp_widget_message">Scrivi</string>
   <string name="snooze_message_snoozed_until_banner_title">Posticipato a</string>

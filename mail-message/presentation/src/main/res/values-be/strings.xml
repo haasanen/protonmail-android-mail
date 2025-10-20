@@ -35,14 +35,14 @@
   <!-- Attachment Types -->
   <string name="attachment_type_archive">Архіў</string>
   <string name="attachment_type_image">Відарыс</string>
-  <string name="attachment_type_video">з відэа</string>
+  <string name="attachment_type_video">Відэа</string>
   <string name="attachment_type_audio">Аўдыя</string>
   <string name="attachment_type_unknown">Невядома</string>
   <string name="attachment_type_pdf">PDF</string>
-  <string name="attachment_type_text">з тэкстам</string>
+  <string name="attachment_type_text">Тэкст</string>
   <string name="attachment_type_document">Дакумент</string>
-  <string name="attachment_type_spreadsheet">з электроннай табліцай</string>
-  <string name="attachment_type_presentation">з прэзентацыяй</string>
+  <string name="attachment_type_spreadsheet">Электронная табліца</string>
+  <string name="attachment_type_presentation">Прэзентацыя</string>
   <string name="attachment_type_calendar">Каляндар</string>
   <string name="attachment_type_code">Код</string>
   <string name="attachment_type_font">Шрыфт</string>

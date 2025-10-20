@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Προσθήκη προστασίας με κωδικό πρόσβασης</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Δεν μπορέσαμε να επιβεβαιώσουμε ότι όλοι οι παραλήπτες χρησιμοποιούν Proton Mail. Μόνο οι διευθύνσεις Proton υποστηρίζουν τη λήξη μηνυμάτων. Σε αυτήν την περίπτωση, προτείνουμε να προσθέσετε έναν κωδικό αντ\' αυτού.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Κάποιοι παραλήπτες (%1$s) δεν υποστηρίζουν τη λήξη από προεπιλογή. Προσθέστε έναν κωδικό για να ενεργοποιήσετε τη λήξη για μη-Proton Mail παραλήπτες.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Κανένας από τους παραλήπτες δεν υποστηρίζει τη λήξη ως προεπιλογή. Προσθέστε έναν κωδικό πρόσβασης για να ενεργοποιήσετε τη λήξη για παραλήπτες που δε χρησιμοποιούν το Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Αποστολή ειδοποίησης</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Η αποστολή μηνυμάτων από διεύθυνση @pm.me είναι μια λειτουργία επί πληρωμή. Το μήνυμά σας θα σταλεί από την προεπιλεγμένη σας διεύθυνση.</string>

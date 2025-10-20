@@ -67,11 +67,11 @@
   <string name="composer_button_set_expiration">만료 시간 설정</string>
   <string name="composer_expiration_time_bottom_sheet_title">메시지 유효기간</string>
   <string name="composer_expiration_time_bottom_sheet_done">설정하기</string>
-  <string name="composer_bottom_bar_expiration_time_none">Never expires</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">After 1 hour</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">After 1 day</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">After 3 days</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">After 1 week</string>
+  <string name="composer_bottom_bar_expiration_time_none">만료 안함</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">1시간 후</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">1일 후</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">3일 후</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">1주 후</string>
   <string name="composer_bottom_bar_expiration_time_custom">특정 날짜에</string>
   <string name="composer_error_setting_expiration_time">만료 시간 설정 실패</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">비밀번호 보호 추가</string>
   <string name="composer_send_expiring_message_to_external_may_fail">모든 수신인이 Proton Mail을 사용하는지 확인할 수 없었습니다. Proton 주소만 메시지 유효기간을 지원합니다. 이 경우, 대신 비밀번호를 추가하는 것을 권장합니다.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">일부 수신인(%1$s)은 기본적으로 유효기간을 지원하지 않습니다. Proton Mail 외부 수신인의 유효기간 활성화를 위해 비밀번호를 추가하십시오.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">어떤 수신인도 기본적으로 유효기간을 지원하지 않습니다. Proton Mail 외부 수신인의 유효기간 활성화를 위해 비밀번호를 추가하십시오.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">전송 알림</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">\@pm.me 주소에서 메시지를 보내는 것은 유료 기능입니다. 사용자의 메시지는 기본주소에서 발송됩니다</string>
@@ -148,24 +149,24 @@
   <string name="composer_attachment_upload_error_retry">일부 첨부 파일이 업로드에 실패했습니다. 다시 시도하십시오.</string>
   <string name="composer_external_encryption_unexpected_error">예기치 않은 오류, %s. 다시 시도하십시오.</string>
   <string name="composer_sender_changed_original_address_cannot_send">선택한 발신 주소는 메시지를 보내는 데 사용할 수 없습니다. 메시지가 기본 주소에서 발송됩니다.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder. To expire messages for non-Proton users, add a password.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">메시지가 수신인의 받은 편지함과 사용자의 보낸 편지함 폴더에서 언제 삭제될지 설정합니다. 비(非)Proton 사용자에게 메시지가 만료되도록 하려면 비밀번호를 추가하세요.</string>
   <string name="expiration_time_set_time_and_date">시간 및 날짜 설정</string>
   <string name="composer_expiration_set_expiration">만료 설정</string>
   <string name="composer_expiration_pick_time_title">시간 설정</string>
   <string name="composer_expiration_time_custom_time_on">%1$s에</string>
-  <string name="composer_error_send_draft_generic">An unexpected error happened sending this message. Please retry.</string>
-  <string name="composer_error_send_draft_invalid_sender">Disabled or invalid email address. Check that the address is valid and active.</string>
-  <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
-  <string name="composer_error_send_draft_already_sent">Message was already sent</string>
-  <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
-  <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
-  <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
-  <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
-  <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
-  <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>
-  <string name="composer_error_send_draft_package_error">Problem sending message. Please try again.</string>
-  <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
-  <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
-  <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
-  <string name="composer_expiration_time_learn_more">Learn more</string>
+  <string name="composer_error_send_draft_generic">이 메시지를 보내는 중 알 수 없는 오류가 발생했습니다. 다시 시도해 주십시오.</string>
+  <string name="composer_error_send_draft_invalid_sender">비활성화되었거나 유효하지 않은 이메일 주소입니다. 주소가 유효하고 활성 상태인지 확인하십시오.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">외부 암호화 비밀번호를 복호화할 수 없음</string>
+  <string name="composer_error_send_draft_already_sent">메시지가 이미 전송되었습니다</string>
+  <string name="composer_error_send_draft_message_does_not_exist">초안을 찾을 수 없습니다. 이미 보냈거나 제거했을 수 있습니다.</string>
+  <string name="composer_error_send_draft_message_too_large">메시지가 너무 커 보낼 수 없습니다. 첨부 파일 크기를 줄여주세요.</string>
+  <string name="composer_error_send_draft_attachments_error">첨부 파일이 없습니다. 다시 업로드해 주세요.</string>
+  <string name="composer_error_send_draft_invalid_recipient">일부 수신인이 유효하지 않습니다. 수신인을 확인하고 다시 시도해 주십시오.</string>
+  <string name="composer_error_send_draft_schedule_send_error">예약된 보내기 시간이 지났습니다. 임시 보관함으로 이동하여 보내거나 다시 예약하십시오.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">메시지 유효기간이 너무 짧습니다.</string>
+  <string name="composer_error_send_draft_package_error">메시지 보내기에 문제가 발생했습니다. 다시 시도하세요.</string>
+  <string name="composer_error_send_draft_attachment_too_large">초안을 보낼 수 없음 - 첨부 파일이 크기 제한을 초과했습니다.</string>
+  <string name="composer_error_send_draft_too_many_attachments">초안을 보낼 수 없습니다 - 첨부 파일 제한에 도달했습니다</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">초안을 보낼 수 없음 - 첨부 파일 암호화에 실패했습니다.</string>
+  <string name="composer_expiration_time_learn_more">자세히 알아보기</string>
 </resources>

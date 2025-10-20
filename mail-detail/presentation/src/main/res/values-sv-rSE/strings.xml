@@ -167,6 +167,7 @@
   <string name="rsvp_widget_button_retry">Försök igen</string>
   <string name="rsvp_widget_error_answering">Ett fel uppstod vid besvarande av denna händelse</string>
   <string name="rsvp_widget_open_in_proton_calendar">Öppna i Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Misslyckades att öppna i Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Kopiera adress</string>
   <string name="rsvp_widget_message">Meddelande</string>
   <string name="snooze_message_snoozed_until_banner_title">Snoozad till</string>

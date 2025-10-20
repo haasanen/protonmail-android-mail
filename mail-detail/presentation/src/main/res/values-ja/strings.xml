@@ -164,6 +164,7 @@
   <string name="rsvp_widget_button_retry">再試行</string>
   <string name="rsvp_widget_error_answering">この予定への返信中にエラーが発生しました</string>
   <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar で開く</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">アドレスをコピー</string>
   <string name="rsvp_widget_message">メッセージ</string>
   <string name="snooze_message_snoozed_until_banner_title">までスヌーズ</string>

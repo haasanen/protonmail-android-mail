@@ -33,7 +33,7 @@
   <string name="auth_login_close">Zapri</string>
   <string name="auth_login_help">Pomoč</string>
   <string name="auth_sign_in">Prijava</string>
-  <string name="auth_login_username">Username or email</string>
+  <string name="auth_login_username">Uporabniško ime ali e-pošta</string>
   <string name="auth_email">E-pošta</string>
   <string name="auth_password">Geslo</string>
   <string name="auth_username_placeholder">Uporabniško ime ali e-pošta</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Uporabniško ime ne sme biti prazno.</string>
   <string name="auth_signup_email_assistive_text">E-pošta ne sme biti prazna.</string>
   <string name="auth_signup_next">Naprej</string>
-  <string name="auth_signup_username">Username</string>
+  <string name="auth_signup_username">Uporabniško ime</string>
   <string name="auth_signup_create_password">Ustvarite geslo</string>
   <string name="auth_signup_password">Geslo</string>
   <string name="auth_signup_repeat_password">Ponovite geslo</string>
@@ -109,7 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Preverjanje e-pošte ni uspelo.</string>
   <string name="auth_signup_recovery_phone_validation_error">Preverjanje telefonske številke ni uspelo.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Gesli se ne ujemata. Poskusite znova.</string>
-  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_general_error">Nekaj je šlo narobe. Poskusite znova.</string>
   <string name="auth_signup_countries_search">Iskanje po državah</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Ni bilo mogoče nastaviti uporabnika.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Ni bilo mogoče nastaviti naslova.</string>
@@ -174,5 +174,5 @@
   <string name="settings_password_error_invalid_recovery">Napačna koda 2FA. Poskusite znova.</string>
   <string name="settings_password_error_2fa_reused">Koda je bila že uporabljena. Poskusite z drugo kodo.</string>
   <string name="settings_password_general_error">Prišlo je do napake.</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Enega ali več dejanj ni bilo mogoče obdelati. Odjavite se in se ponovno prijavite v račun.</string>
 </resources>

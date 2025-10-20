@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Passwortschutz hinzufügen</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Es konnte nicht bestätigt werden, dass alle Empfänger Proton Mail verwenden. Nur Proton-Adressen unterstützen das Ablaufen von Nachrichten. In diesem Fall empfehlen wir, stattdessen ein Passwort hinzuzufügen.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Einige Empfänger (%1$s) unterstützen standardmäßig keine Ablaufzeit. Füge ein Passwort hinzu, um die Ablaufzeit für Empfänger, die Proton Mail nicht verwenden, zu aktivieren.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Keiner der Empfänger unterstützt standardmäßig das Verfallen von E-Mails. Füge ein Passwort hinzu, um das Verfallen für Empfänger, die Proton Mail nicht nutzen, zu aktivieren.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Mitteilung wird gesendet</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Das Senden von Nachrichten von einer @pm.me-Adresse ist eine kostenpflichtige Funktion. Deine Nachricht wird von deiner Standardadresse gesendet</string>

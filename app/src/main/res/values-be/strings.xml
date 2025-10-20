@@ -23,7 +23,7 @@
   <string name="app_icon_name_weather">Надвор\'е</string>
   <string name="app_icon_name_notes">Нататкі</string>
   <string name="app_icon_name_calculator">Калькулятар</string>
-  <string name="dialog_sign_out_account_title">Выхад</string>
+  <string name="dialog_sign_out_account_title">Выйсці</string>
   <string name="dialog_sign_out_account_description">Даныя, якія звязаны з вашым уліковым запісам застануцца на гэтай прыладзе, пакуль вы не вырашыце выдаліць іх.</string>
   <string name="dialog_sign_out_account_confirm">Выйсці</string>
   <string name="dialog_sign_out_account_cancel">Скасаваць</string>

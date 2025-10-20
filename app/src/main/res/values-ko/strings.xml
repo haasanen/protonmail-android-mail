@@ -17,12 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Classic</string>
-  <string name="app_icon_name_dark">Dark</string>
-  <string name="app_icon_name_retro">Retro</string>
-  <string name="app_icon_name_weather">Weather</string>
-  <string name="app_icon_name_notes">Notes</string>
-  <string name="app_icon_name_calculator">Calculator</string>
+  <string name="app_icon_name_classic">클래식</string>
+  <string name="app_icon_name_dark">다크</string>
+  <string name="app_icon_name_retro">레트로</string>
+  <string name="app_icon_name_weather">날씨</string>
+  <string name="app_icon_name_notes">메모</string>
+  <string name="app_icon_name_calculator">계산기</string>
   <string name="dialog_sign_out_account_title">로그아웃</string>
   <string name="dialog_sign_out_account_description">사용자 계정과 연관되어 있는 데이터가 삭제하도록 설정하지 않는 한 이 장치에 유지됩니다.</string>
   <string name="dialog_sign_out_account_confirm">로그아웃</string>
@@ -48,13 +48,13 @@
   <string name="mailbox_message_scheduling">메시지 예약 중…</string>
   <string name="mailbox_message_scheduling_offline">오프라인: 메시지 예약 대기 중</string>
   <string name="mailbox_message_scheduled_for_sending_success">이 메시지는 %1$s에 전송됩니다</string>
-  <string name="launcher_alert_duplicate_account_description">The user is already signed in</string>
-  <string name="settings_change_icon_title">App Icon</string>
-  <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
-  <string name="settings_change_icon_confirmation_title">Change app icon?</string>
-  <string name="settings_change_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
-  <string name="settings_change_icon_action_cancel">Cancel</string>
-  <string name="settings_change_icon_change_icon">Change icon</string>
+  <string name="launcher_alert_duplicate_account_description">이미 로그인된 사용자입니다.</string>
+  <string name="settings_change_icon_title">앱 아이콘</string>
+  <string name="settings_change_icon_description">비밀 아이콘으로 Proton Mail 앱을 위장하세요. 알림은 여전히 기본 Proton Mail 이름 및 아이콘으로 표시됩니다.</string>
+  <string name="settings_change_icon_confirmation_title">앱 아이콘을 변경하시겠어요?</string>
+  <string name="settings_change_icon_confirmation_details">이 작업은 Proton Mail 앱을 종료시키고, 모든 알림이 무시됩니다.\n\nProton Mail을 재시작하려면, 새 앱 아이콘을 누르십시오.</string>
+  <string name="settings_change_icon_action_cancel">취소</string>
+  <string name="settings_change_icon_change_icon">아이콘 변경</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Discreet app icon</string>
+  <string name="settings_change_icon_header_discreet">위장 앱 아이콘</string>
 </resources>

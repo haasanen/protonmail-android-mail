@@ -167,6 +167,7 @@
   <string name="rsvp_widget_button_retry">Újra</string>
   <string name="rsvp_widget_error_answering">Hiba történt az eseményre való válaszadás közben.</string>
   <string name="rsvp_widget_open_in_proton_calendar">Megnyitás a Proton Calendarban</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Cím másolása</string>
   <string name="rsvp_widget_message">Üzenet</string>
   <string name="snooze_message_snoozed_until_banner_title">Halasztva eddig</string>

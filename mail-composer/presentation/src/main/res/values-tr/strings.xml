@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Parola koruması ekle</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Tüm alıcıların Proton Mail kullandığı doğrulanamadı. İleti geçerlilik süresi yalnızca Proton adreslerinde desteklenir. Bu durumda, geçerlilik süresi yerine kullanılacak bir parola ayarlamanız önerilir.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Bazı alıcılarda (%1$s) varsayılan olarak geçerlilik süresi desteklenmiyor. Proton Mail kullanmayan alıcılarda geçerlilik süresini kullanabilmek için bir parola ekleyin.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Alıcıların hiçbirinde varsayılan olarak geçerlilik süresi desteklenmiyor. Proton Mail kullanmayan alıcılarda geçerlilik süresini kullanabilmek için bir parola ekleyin.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Bildirim gönderimi</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">\@pm.me adresinden ileti göndermek ücretli bir özelliktir. İletiniz varsayılan adresinizden gönderilecek</string>

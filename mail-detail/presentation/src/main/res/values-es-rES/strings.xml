@@ -167,6 +167,7 @@
   <string name="rsvp_widget_button_retry">Reintentar</string>
   <string name="rsvp_widget_error_answering">Se ha producido un error al responder a este evento</string>
   <string name="rsvp_widget_open_in_proton_calendar">Abrir en Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">No se pudo abrir en Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Copiar la dirección</string>
   <string name="rsvp_widget_message">Mensaje</string>
   <string name="snooze_message_snoozed_until_banner_title">Pospuesto hasta</string>

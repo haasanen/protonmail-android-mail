@@ -38,7 +38,7 @@
   <string name="auth_password">Пароль</string>
   <string name="auth_username_placeholder">Імя карыстальніка або адрас электроннай пошты</string>
   <string name="auth_password_placeholder">Пароль</string>
-  <string name="auth_login_assistive_text">Увядзіце вашу электронную пошту Proton або імя карыстальніка.</string>
+  <string name="auth_login_assistive_text">Увядзіце сваю электронную пошту Proton або імя карыстальніка.</string>
   <string name="auth_account_details">Увядзіце падрабязнасці свайго ўліковага запісу Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Праблема з уваходам. Паспрабуйце яшчэ раз.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Патрэбна антыспамавая праверка.</string>

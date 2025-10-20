@@ -52,7 +52,7 @@
   <string name="composer_add_attachments_bottom_sheet_from_camera">Зрабіць новую фатаграфію</string>
   <string name="composer_error_loading_parent_message">Немагчыма загрузіць інфармацыю паведамлення</string>
   <string name="composer_original_message_quote">Арыгінальнае паведамленне</string>
-  <string name="composer_sender_quote">%s, %s &lt;%s&gt; напісаў(-ла):</string>
+  <string name="composer_sender_quote">%s, %s &lt;%s&gt; напісаў:</string>
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Перавышана абмежаванне па колькасці далучэнняў</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Максімальны памер далучэння складае: %1$s</string>
@@ -61,7 +61,7 @@
   <string name="composer_delete_attachment_error">Узнікла нечаканая памылка пры выдаленні далучэння.</string>
   <string name="composer_unexpected_attachments_error">Узнікла нечаканая памылка, якая звязана з далучэннямі.</string>
   <string name="composer_attach_capture_from_camera_error">Захоп далучэння з камеры ў цяперашні час немагчымы</string>
-  <string name="composer_warning_local_data_shown">Збой загрузкі апошняй версіі гэтага чарнавіка. Любыя змены перавызначаць яго змесцівам.</string>
+  <string name="composer_warning_local_data_shown">Збой загрузкі апошняй версіі гэтага чарнавіка. Любыя змены перавызначаць яго змесціва.</string>
   <string name="composer_button_add_password">Дадаць пароль</string>
   <string name="composer_button_discard_draft">Адхіліць чарнавік</string>
   <string name="composer_button_set_expiration">Задаць тэрмін дзеяння</string>
@@ -72,7 +72,7 @@
   <string name="composer_bottom_bar_expiration_time_one_day">Праз 1 дзень</string>
   <string name="composer_bottom_bar_expiration_time_three_days">Праз 3 дні</string>
   <string name="composer_bottom_bar_expiration_time_one_week">Праз 1 тыдзень</string>
-  <string name="composer_bottom_bar_expiration_time_custom">На пэўную дату</string>
+  <string name="composer_bottom_bar_expiration_time_custom">У пэўную дату</string>
   <string name="composer_error_setting_expiration_time">Збой наладжвання тэрміну дзеяння</string>
   <!-- Send expiring message to external recipients dialog -->
   <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Дадайце пароль, каб выкарыстоўваць тэрмін дзеяння</string>
@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Дадайце абарону паролем</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Адсутнічае пацверджанне таго, што ўсе атрымальнікі выкарыстоўваюць Proton Mail. Толькі адрасы Proton падтрымліваюць паведамленні з тэрмінам дзеяння. У якасці альтэрнатыўнага варыянту вы можаце абараніць свой ліст паролем.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Некаторыя атрымальнікі (%1$s) не падтрымліваюць прадвызначаны тэрмін дзеяння. Дадайце пароль, каб уключыць тэрмін дзеяння для атрымальнікаў, якія не карыстаюцца Proton Mail.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Ніводны атрымальнік не падтрымлівае прадвызначаны тэрмін дзеяння. Дадайце пароль, каб уключыць тэрмін дзеяння для атрымальнікаў, якія не карыстаюцца Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Адпраўка апавяшчэння</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Адпраўка паведамленняў з адраса @pm.me з\'яўляецца платнай функцыяй. Ваша паведамленне будзе адпраўлена з вашага прадвызначанага адраса.</string>
@@ -98,10 +99,10 @@
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Адсутнічаюць давераныя ключы: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Адрас не існуе: %s</string>
   <string name="set_message_password_title">Задаць пароль</string>
-  <string name="set_message_password_info_message">Задаць пароль, каб зашыфраваць гэта паведамленне для тых, хто не карыстаецца Proton Mail.</string>
+  <string name="set_message_password_info_message">Задайце пароль, каб зашыфраваць гэта паведамленне для атрымальнікаў, якія не належаць да Proton Mail.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Даведацца больш</a></string>
   <string name="set_message_password_label">Пароль паведамлення</string>
-  <string name="set_message_password_label_hint">Падказка да пароля (неабавязкова)</string>
+  <string name="set_message_password_label_hint">Падказка для пароля (неабавязкова)</string>
   <string name="set_message_password_supporting_text">Патрабуецца мінімум 8 сімвалаў</string>
   <string name="set_message_password_supporting_error_text">Ваш пароль павінен мець даўжыню ад 8 да 21 сімвала</string>
   <string name="set_message_password_supporting_text_repeat">Паролі павінны супадаць</string>

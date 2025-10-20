@@ -164,6 +164,7 @@
   <string name="rsvp_widget_button_retry">Coba lagi</string>
   <string name="rsvp_widget_error_answering">Terjadi kesalahan saat menjawab acara ini</string>
   <string name="rsvp_widget_open_in_proton_calendar">Buka di Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Salin alamat</string>
   <string name="rsvp_widget_message">Kirim pesan</string>
   <string name="snooze_message_snoozed_until_banner_title">Ditunda hingga</string>

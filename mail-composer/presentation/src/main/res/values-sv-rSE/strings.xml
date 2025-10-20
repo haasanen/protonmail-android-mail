@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Lägg till lösenordsskydd</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Vi kunde inte bekräfta att alla mottagare använder Proton Mail. Endast Proton-adresser stöder meddelandens utgångstid. I detta fall föreslår vi att du lägger till ett lösenord istället.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Vissa mottagare (%1$s) stöder inte utgångstid som standard. Lägg till ett lösenord för att aktivera utgångstid för användare som inte använder Proton Mail.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">None of the recipients support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Skickar avisering</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Att skicka meddelanden från @pm.me är en betald funktion. Ditt meddelande kommer att skickas från din standardadress.</string>

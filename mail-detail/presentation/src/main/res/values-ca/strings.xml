@@ -167,6 +167,7 @@
   <string name="rsvp_widget_button_retry">Torna-ho a provar</string>
   <string name="rsvp_widget_error_answering">S\'ha produït un error en respondre a aquest esdeveniment</string>
   <string name="rsvp_widget_open_in_proton_calendar">Obre al Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">No s\'ha pogut obrir a Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Copia l\'adreça</string>
   <string name="rsvp_widget_message">Missatge</string>
   <string name="snooze_message_snoozed_until_banner_title">Ajornat fins a</string>

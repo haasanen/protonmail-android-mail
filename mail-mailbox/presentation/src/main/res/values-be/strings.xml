@@ -40,7 +40,7 @@
   <string name="mailbox_error_message_unexpected">Нешта пайшло не так</string>
   <string name="mailbox_is_empty_title">Няма паведамленняў</string>
   <string name="trash_is_empty_title">Сметніца пустая</string>
-  <string name="mailbox_is_empty_description">У вас пакуль няма лістоў</string>
+  <string name="mailbox_is_empty_description">Здаецца, што ў вас пакуль няма непрачытаных лістоў</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Няма непрачытаных паведамленняў</string>
   <string name="mailbox_is_empty_folder_description">Гэта папка пустая</string>
   <string name="mailbox_is_empty_spam_description">Ваша папка са спамам пустая</string>
@@ -163,7 +163,7 @@
   <string name="schedule_send_today">Сёння ў %1$s</string>
   <!--    Snooze messages-->
   <plurals name="snoozed_in_days">
-    <item quantity="one">Адкладзена да заўтра</item>
+    <item quantity="one">Адкладзена на заўтра</item>
     <item quantity="few">Адкладзена на %d дні</item>
     <item quantity="many">Адкладзена на %d дзён</item>
     <item quantity="other">Адкладзена на %d дзён</item>

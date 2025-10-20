@@ -22,7 +22,7 @@
   <!-- Settings items -->
   <string name="mail_settings_account_settings">계정 설정</string>
   <string name="mail_settings_email_settings">이메일 설정</string>
-  <string name="mail_settings_email_signature_settings">Email signature</string>
+  <string name="mail_settings_email_signature_settings">이메일 서명</string>
   <string name="mail_settings_folder_and_label_settings">폴더 및 라벨 설정</string>
   <string name="mail_settings_privacy_and_security_settings">개인정보 보호 및 보안 설정</string>
   <string name="mail_settings_preferences">환경 설정</string>
@@ -36,13 +36,13 @@
   <string name="mail_settings_privacy_and_security">개인정보 및 보안</string>
   <string name="mail_settings_fido_keys">보안 키</string>
   <string name="mail_settings_change_password">비밀번호 관리</string>
-  <string name="mail_settings_signature">Signature</string>
+  <string name="mail_settings_signature">서명</string>
   <string name="mail_settings_storage_quota">%2$s 중 %1$d%%</string>
   <string name="mail_settings_privacy_and_security_hint">이메일 트래킹 보호</string>
   <string name="mail_settings_app_hint">모바일 앱 사용자화</string>
   <string name="mail_settings_theme">테마</string>
   <string name="mail_settings_auto_lock">자동 잠금</string>
-  <string name="mail_settings_app_icon">App icon</string>
+  <string name="mail_settings_app_icon">앱 아이콘</string>
   <string name="mail_settings_alternative_routing">대체 라우팅</string>
   <string name="mail_settings_app_language">앱 언어</string>
   <string name="mail_settings_app_language_sys_default">시스템 기본값</string>
@@ -57,7 +57,7 @@
   <string name="mail_settings_app_customization_appearance">외관</string>
   <string name="mail_settings_app_customization_protection">앱 잠금</string>
   <string name="mail_settings_app_customization_mobile_signature">모바일 서명</string>
-  <string name="mail_settings_app_customization_email_signature">Email signature</string>
+  <string name="mail_settings_app_customization_email_signature">이메일 서명</string>
   <string name="mail_settings_app_customization_protection_enabled_description">자동 잠금 켬</string>
   <string name="mail_settings_app_customization_protection_disabled_description">자동 잠금 끔</string>
   <string name="mail_settings_app_customization_use_device_contacts">기기 연락처 사용</string>
@@ -72,11 +72,11 @@
   <string name="mail_settings_app_customization_view_application_logs">어플리케이션 로그 보기</string>
   <string name="mail_settings_app_customization_mail_experience_header">메일 경험</string>
   <string name="mail_settings_app_customization_advanced_header">고급</string>
-  <string name="mail_settings_app_customization_signature_header">Signatures</string>
-  <string name="mail_settings_app_customization_email_signature_header">Email signature</string>
+  <string name="mail_settings_app_customization_signature_header">서명</string>
+  <string name="mail_settings_app_customization_email_signature_header">이메일 서명</string>
   <string name="mail_settings_app_customization_mobile_signature_header">모바일 서명</string>
-  <string name="mail_settings_app_customization_email_signature_explanation">Your email signature, that is automatically added to all emails you send.</string>
-  <string name="mail_settings_app_customization_mobile_signature_explanation">Additional signature added to emails sent from this device.</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">보내는 모든 이메일에 자동으로 추가되는 이메일 서명입니다.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">이 기기에서 보낸 이메일에 추가 서명이 추가됩니다.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">켬</string>
   <string name="mail_settings_app_customization_mobile_signature_off">끔</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">서명 활성화</string>

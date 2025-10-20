@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Adicionar proteção por senha</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Não conseguimos confirmar se todos os destinatários usam o Proton Mail. Somente endereços do Proton são compatíveis com a expiração de mensagens. Em vez disso, sugerimos adicionar uma senha.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">A expiração fica desativada para alguns destinatários (%1$s) por padrão. Adicione uma senha para ativar a expiração para destinatários que não usam o Proton Mail.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Nenhum dos destinatários suporta expiração por padrão. Adicione uma senha para ativar a expiração para destinatários que não usam o Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Aviso de envio</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">O envio de mensagens do @pm.me é um recurso pago. A sua mensagem será enviada do seu endereço padrão.</string>

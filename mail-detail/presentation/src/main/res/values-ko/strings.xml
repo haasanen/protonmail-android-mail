@@ -164,6 +164,7 @@
   <string name="rsvp_widget_button_retry">다시 시도</string>
   <string name="rsvp_widget_error_answering">해당 이벤트에 회신하는 도중 오류가 발생했습니다.</string>
   <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar에서 열기</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">주소 복사하기</string>
   <string name="rsvp_widget_message">메시지</string>
   <string name="snooze_message_snoozed_until_banner_title">방해금지 종료</string>

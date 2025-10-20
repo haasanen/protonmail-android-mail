@@ -81,6 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Add password protection</string>
   <string name="composer_send_expiring_message_to_external_may_fail">We could not confirm all recipients use Proton Mail. Only Proton addresses support message expiration. In this case, we suggest adding a password instead.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Geen van de ontvangers ondersteunt standaard een verloopdatum. Voeg een wachtwoord toe om een verloopdatum in te schakelen voor niet-Proton Mail-ontvangers.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Melding versturen</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Berichten versturen vanaf een @pm.me-adres is enkel beschikbaar voor betalende gebruikers. Uw bericht wordt verzonden vanaf.</string>
@@ -154,7 +155,7 @@
   <string name="composer_expiration_set_expiration">Set expiration</string>
   <string name="composer_expiration_pick_time_title">Set time</string>
   <string name="composer_expiration_time_custom_time_on">On %1$s</string>
-  <string name="composer_error_send_draft_generic">Er deed zich een onverwachte fout voor bij het verzenden van dit bericht. Probeer het alstublieft opnieuw.</string>
+  <string name="composer_error_send_draft_generic">Er deed zich een onverwachte fout voor bij het verzenden van dit bericht. Probeer het opnieuw.</string>
   <string name="composer_error_send_draft_invalid_sender">Uitgeschakeld of ongeldig e-mailadres. Controleer of het adres geldig en actief is.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
   <string name="composer_error_send_draft_already_sent">Message was already sent</string>

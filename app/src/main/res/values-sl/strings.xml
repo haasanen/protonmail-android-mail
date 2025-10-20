@@ -56,5 +56,5 @@
   <string name="settings_change_icon_action_cancel">Prekliči</string>
   <string name="settings_change_icon_change_icon">Zamenjaj ikono</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Discreet app icon</string>
+  <string name="settings_change_icon_header_discreet">Diskretna ikona aplikacije</string>
 </resources>
