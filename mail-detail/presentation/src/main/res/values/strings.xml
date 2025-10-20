@@ -178,4 +178,6 @@
     <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
     <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
     <string name="detail_error_loading_single_message">Failed loading message</string>
+    <string name="error_downloading_image">Failed to download image</string>
+    <string name="image_downloaded_successfully">Image downloaded</string>
 </resources>

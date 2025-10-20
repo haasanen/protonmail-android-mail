@@ -92,12 +92,14 @@ fun MessageBody(
             webViewActions = MessageBodyWebView.Actions(
                 onMessageBodyLinkClicked = actions.onMessageBodyLinkClicked,
                 onMessageBodyLinkLongClicked = {}, // Deferred init to MessageBodyWebView.
+                onMessageBodyImageLongClicked = {}, // Deferred init to MessageBodyWebView.
                 onShowAllAttachments = actions.onShowAllAttachments,
                 onToggleAttachmentsExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode,
                 onExpandCollapseButtonCLicked = actions.onExpandCollapseButtonClicked,
                 onAttachmentClicked = actions.onAttachmentClicked,
                 loadImage = actions.loadImage,
-                onPrint = actions.onPrint
+                onPrint = actions.onPrint,
+                onDownloadImage = actions.onDownloadImage
             ),
             onBuildWebView = onBuildWebView(webViewCache),
             onMessageBodyLoaded = onMessageBodyLoaded
@@ -176,7 +178,8 @@ object MessageBody {
         val onLoadRemoteContent: (MessageId) -> Unit,
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
-        val onPrint: (MessageId) -> Unit
+        val onPrint: (MessageId) -> Unit,
+        val onDownloadImage: (messageId: MessageId, imageUrl: String) -> Unit
     )
 }
 

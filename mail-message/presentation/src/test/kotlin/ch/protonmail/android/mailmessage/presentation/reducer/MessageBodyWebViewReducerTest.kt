@@ -46,11 +46,33 @@ internal class MessageBodyWebViewReducerTest {
     }
 
     @Test
-    fun `should reduce the correct state`() {
+    fun `should reduce the correct state for link click`() {
         // Given
         val initialState = MessageBodyWebViewState.Initial
         val operation = MessageBodyWebViewOperation.MessageBodyWebViewEvent.LinkLongClicked(mockUri)
-        val finalState = MessageBodyWebViewState(lastFocusedUri = mockUri, longClickLinkEffect = Effect.of(Unit))
+        val finalState = MessageBodyWebViewState(
+            lastFocusedUri = mockUri,
+            longClickLinkEffect = Effect.of(Unit),
+            longClickImageEffect = Effect.empty()
+        )
+
+        // When
+        val actual = reducer.newStateFrom(initialState, operation)
+
+        // Then
+        assertEquals(finalState, actual)
+    }
+
+    @Test
+    fun `should reduce the correct state for image click`() {
+        // Given
+        val initialState = MessageBodyWebViewState.Initial
+        val operation = MessageBodyWebViewOperation.MessageBodyWebViewEvent.ImageLongClicked(mockUri)
+        val finalState = MessageBodyWebViewState(
+            lastFocusedUri = mockUri,
+            longClickLinkEffect = Effect.empty(),
+            longClickImageEffect = Effect.of(Unit)
+        )
 
         // When
         val actual = reducer.newStateFrom(initialState, operation)

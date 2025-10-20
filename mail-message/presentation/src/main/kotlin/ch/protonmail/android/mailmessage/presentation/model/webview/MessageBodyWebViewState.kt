@@ -23,11 +23,16 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 
 data class MessageBodyWebViewState(
     val lastFocusedUri: Uri?,
-    val longClickLinkEffect: Effect<Unit>
+    val longClickLinkEffect: Effect<Unit>,
+    val longClickImageEffect: Effect<Unit>
 ) {
 
     companion object {
 
-        val Initial = MessageBodyWebViewState(null, Effect.empty())
+        val Initial = MessageBodyWebViewState(
+            lastFocusedUri = null,
+            longClickLinkEffect = Effect.empty(),
+            longClickImageEffect = Effect.empty()
+        )
     }
 }

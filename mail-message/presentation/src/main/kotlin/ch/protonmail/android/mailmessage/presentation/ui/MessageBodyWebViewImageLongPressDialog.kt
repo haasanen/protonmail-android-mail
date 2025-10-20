@@ -35,77 +35,50 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
-import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.mailmessage.presentation.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessageWebViewLongPressDialog(actions: MessageWebViewLongPressDialog.Actions, linkUri: Uri) {
-    BasicAlertDialog(onDismissRequest = actions.onDismissed) {
+fun MessageWebViewImageLongPressDialog(
+    imageUri: Uri,
+    onDownloadClicked: (Uri) -> Unit,
+    onDismissed: () -> Unit
+) {
+    BasicAlertDialog(onDismissRequest = onDismissed) {
         Box(
             modifier = Modifier
                 .background(ProtonTheme.colors.backgroundNorm)
                 .clip(ProtonTheme.shapes.medium)
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                DialogLinkRow(
-                    text = stringResource(id = R.string.message_link_long_click_copy),
-                    uriAction = actions.onCopyClicked,
-                    linkUri = linkUri
-                )
-
-                MailDivider()
-
-                DialogLinkRow(
-                    text = stringResource(id = R.string.message_link_long_click_share),
-                    uriAction = actions.onShareClicked,
-                    linkUri = linkUri
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onDownloadClicked(imageUri) }
+                        .padding(ProtonDimens.Spacing.Large)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.message_image_long_click_download),
+                        style = ProtonTheme.typography.bodyLargeNorm
+                    )
+                }
             }
         }
     }
 }
 
-object MessageWebViewLongPressDialog {
-    data class Actions(
-        val onCopyClicked: (Uri) -> Unit,
-        val onShareClicked: (Uri) -> Unit,
-        val onDismissed: () -> Unit
-    )
-}
-
-@Composable
-private fun DialogLinkRow(
-    text: String,
-    uriAction: (Uri) -> Unit,
-    linkUri: Uri
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { uriAction(linkUri) }
-            .padding(ProtonDimens.Spacing.Large)
-    ) {
-        Text(text = text, style = ProtonTheme.typography.bodyLargeNorm)
-    }
-}
-
-
 @Composable
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-fun PreviewMessageBodyLongPressDialog() {
+fun PreviewImageLongPressDialog() {
     ProtonTheme {
-        MessageWebViewLongPressDialog(
-            MessageWebViewLongPressDialog.Actions(
-                onCopyClicked = {},
-                onShareClicked = {},
-                onDismissed = {}
-            ),
-            linkUri = Uri.EMPTY
+        MessageWebViewImageLongPressDialog(
+            imageUri = Uri.EMPTY,
+            onDownloadClicked = {},
+            onDismissed = {}
         )
     }
 }

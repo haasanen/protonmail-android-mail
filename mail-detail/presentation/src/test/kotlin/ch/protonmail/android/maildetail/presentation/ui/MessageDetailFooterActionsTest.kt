@@ -68,7 +68,8 @@ internal class MessageDetailFooterActionsTest {
             onAnswerRsvpEvent = { _, _ -> },
             onMessage = {},
             onUnsnoozeMessage = {},
-            onUnsubscribeFromNewsletter = {}
+            onUnsubscribeFromNewsletter = {},
+            onDownloadImage = { _, _ -> }
         )
 
         // When

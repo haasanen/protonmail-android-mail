@@ -113,6 +113,7 @@ fun MessageBodyWebView(
     val webViewInteractionState = viewModel.state.collectAsStateWithLifecycle().value
     val longClickDialogState = remember { mutableStateOf(false) }
     val messageId = messageBodyUiModel.messageId
+    val longClickImageDialogState = remember { mutableStateOf(false) }
 
     // During loading phase, WebView size can change multiple times. It may both
     // increase and decrease in size. We will track measured heights and loading state to decide
@@ -122,6 +123,9 @@ fun MessageBodyWebView(
     val actions = webViewActions.copy(
         onMessageBodyLinkLongClicked = {
             viewModel.submit(MessageBodyWebViewOperation.MessageBodyWebViewAction.LongClickLink(it))
+        },
+        onMessageBodyImageLongClicked = {
+            viewModel.submit(MessageBodyWebViewOperation.MessageBodyWebViewAction.LongClickImage(it))
         }
     )
 
@@ -247,7 +251,11 @@ fun MessageBodyWebView(
                     this.webViewClient = client
 
                     configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
-                    configureLongClick(this, actions.onMessageBodyLinkLongClicked)
+                    configureLongClick(
+                        this,
+                        actions.onMessageBodyLinkLongClicked,
+                        actions.onMessageBodyImageLongClicked
+                    )
                     configureOnTouchListener(this)
 
                     webView = this
@@ -283,19 +291,45 @@ fun MessageBodyWebView(
         )
     }
 
+    if (longClickImageDialogState.value && webViewInteractionState.lastFocusedUri != null) {
+        MessageWebViewImageLongPressDialog(
+            imageUri = webViewInteractionState.lastFocusedUri,
+            onDownloadClicked = { uri ->
+                val imageUrl = uri.toString()
+                actions.onDownloadImage(messageId, imageUrl)
+                longClickImageDialogState.value = false
+            },
+            onDismissed = { longClickImageDialogState.value = false }
+        )
+    }
+
     ConsumableLaunchedEffect(webViewInteractionState.longClickLinkEffect) {
         longClickDialogState.value = true
     }
+
+    ConsumableLaunchedEffect(webViewInteractionState.longClickImageEffect) {
+        longClickImageDialogState.value = true
+    }
 }
 
-private fun configureLongClick(view: WebView, onLongClick: (uri: Uri) -> Unit) {
+private fun configureLongClick(
+    view: WebView,
+    onLinkLongClick: (uri: Uri) -> Unit,
+    onImageLongClick: (uri: Uri) -> Unit
+) {
     view.setOnLongClickListener {
         val result = (it as WebView).hitTestResult
         val type = result.type
 
         if (listOf(WebView.HitTestResult.EMAIL_TYPE, WebView.HitTestResult.SRC_ANCHOR_TYPE).contains(type)) {
             val uri = runCatching { Uri.parse(result.extra) }.getOrNull() ?: return@setOnLongClickListener false
-            onLongClick(uri)
+            onLinkLongClick(uri)
+            return@setOnLongClickListener true
+        }
+
+        if (listOf(WebView.HitTestResult.IMAGE_TYPE, WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE).contains(type)) {
+            val uri = runCatching { Uri.parse(result.extra) }.getOrNull() ?: return@setOnLongClickListener false
+            onImageLongClick(uri)
             return@setOnLongClickListener true
         }
 
@@ -389,12 +423,14 @@ object MessageBodyWebView {
     data class Actions(
         val onMessageBodyLinkClicked: (uri: Uri) -> Unit,
         val onMessageBodyLinkLongClicked: (uri: Uri) -> Unit,
+        val onMessageBodyImageLongClicked: (uri: Uri) -> Unit,
         val onShowAllAttachments: () -> Unit,
         val onExpandCollapseButtonCLicked: () -> Unit,
         val onAttachmentClicked: (openMode: AttachmentOpenMode, attachmentId: AttachmentId) -> Unit,
         val onToggleAttachmentsExpandCollapseMode: () -> Unit,
         val loadImage: (messageId: MessageId, url: String) -> MessageBodyImage?,
-        val onPrint: (MessageId) -> Unit
+        val onPrint: (MessageId) -> Unit,
+        val onDownloadImage: (messageId: MessageId, imageUrl: String) -> Unit
     )
 }
 

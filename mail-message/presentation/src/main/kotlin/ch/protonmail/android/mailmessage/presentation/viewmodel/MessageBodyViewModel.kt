@@ -43,6 +43,8 @@ class MessageBodyWebViewViewModel @Inject constructor(
             when (action) {
                 is MessageBodyWebViewAction.LongClickLink ->
                     emitNewStateFrom(MessageBodyWebViewEvent.LinkLongClicked(action.uri))
+                is MessageBodyWebViewAction.LongClickImage ->
+                    emitNewStateFrom(MessageBodyWebViewEvent.ImageLongClicked(action.uri))
             }
         }
     }

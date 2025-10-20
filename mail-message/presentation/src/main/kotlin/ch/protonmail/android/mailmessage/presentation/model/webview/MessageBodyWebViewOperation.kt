@@ -23,9 +23,11 @@ import android.net.Uri
 sealed interface MessageBodyWebViewOperation {
     sealed interface MessageBodyWebViewAction : MessageBodyWebViewOperation {
         data class LongClickLink(val uri: Uri) : MessageBodyWebViewAction
+        data class LongClickImage(val uri: Uri) : MessageBodyWebViewAction
     }
 
     sealed interface MessageBodyWebViewEvent : MessageBodyWebViewOperation {
         data class LinkLongClicked(val uri: Uri) : MessageBodyWebViewEvent
+        data class ImageLongClicked(val uri: Uri) : MessageBodyWebViewEvent
     }
 }

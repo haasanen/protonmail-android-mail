@@ -592,6 +592,9 @@ fun ConversationDetailScreen(
                 },
                 onReportPhishing = { messageId ->
                     viewModel.submit(ConversationDetailViewAction.ReportPhishing(messageId))
+                },
+                onDownloadImage = { messageId, imageUrl ->
+                    Toast.makeText(context, context.getString(R.string.feature_coming_soon), Toast.LENGTH_SHORT).show()
                 }
             ),
             scrollToMessageId = state.scrollToMessage?.id,
@@ -823,7 +826,8 @@ fun ConversationDetailScreen(
                     onAnswerRsvpEvent = actions.onAnswerRsvpEvent,
                     onMessage = actions.onMessage,
                     onUnsnoozeMessage = actions.onUnsnoozeMessage,
-                    onUnsubscribeFromNewsletter = actions.onUnsubscribeFromNewsletter
+                    onUnsubscribeFromNewsletter = actions.onUnsubscribeFromNewsletter,
+                    onDownloadImage = actions.onDownloadImage
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
@@ -1198,7 +1202,8 @@ object ConversationDetailScreen {
         val onSnooze: () -> Unit,
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
-        val onReportPhishing: (MessageId) -> Unit
+        val onReportPhishing: (MessageId) -> Unit,
+        val onDownloadImage: (MessageId, String) -> Unit
     ) {
 
         companion object {
@@ -1257,7 +1262,8 @@ object ConversationDetailScreen {
                 onSnooze = {},
                 onActionBarVisibilityChanged = {},
                 onUnsubscribeFromNewsletter = {},
-                onReportPhishing = {}
+                onReportPhishing = {},
+                onDownloadImage = { _, _ -> }
             )
         }
     }

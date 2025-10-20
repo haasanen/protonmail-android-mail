@@ -36,9 +36,14 @@ class MessageBodyWebViewReducer @Inject constructor() {
     ): MessageBodyWebViewState {
         return when (event) {
             is MessageBodyWebViewOperation.MessageBodyWebViewEvent.LinkLongClicked -> handleLongClick(uri = event.uri)
+            is MessageBodyWebViewOperation.MessageBodyWebViewEvent.ImageLongClicked ->
+                handleImageLongClick(uri = event.uri)
         }
     }
 
     private fun MessageBodyWebViewState.handleLongClick(uri: Uri) =
         copy(lastFocusedUri = uri, longClickLinkEffect = Effect.of(Unit))
+
+    private fun MessageBodyWebViewState.handleImageLongClick(uri: Uri) =
+        copy(lastFocusedUri = uri, longClickImageEffect = Effect.of(Unit))
 }
