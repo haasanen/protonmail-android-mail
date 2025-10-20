@@ -78,7 +78,6 @@ import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentVal
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
-import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
@@ -200,7 +199,6 @@ import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactSample
-import ch.protonmail.android.testdata.message.MessageAttachmentMetadataTestData
 import ch.protonmail.android.testdata.message.MessageThemeOptionsTestData
 import io.mockk.Called
 import io.mockk.clearMocks
@@ -322,7 +320,6 @@ internal class ConversationDetailViewModelIntegrationTest {
     }
     private val updateLinkConfirmationSetting = mockk<UpdateLinkConfirmationSetting>()
 
-    private val getDownloadingAttachmentsForMessages = mockk<GetDownloadingAttachmentsForMessages>()
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
     private val loadImageAvoidDuplicatedExecution = mockk<LoadImageAvoidDuplicatedExecution>()
     private val findContactByEmail: FindContactByEmail = mockk<FindContactByEmail> {
@@ -1029,12 +1026,6 @@ internal class ConversationDetailViewModelIntegrationTest {
                 }
             ).right()
         coEvery {
-            getDownloadingAttachmentsForMessages(
-                userId,
-                listOf(defaultExpanded.messageId, expandedMessageId)
-            )
-        } returns listOf()
-        coEvery {
             getAttachmentIntentValues.invoke(any(), any(), any())
         } returns DataError.Local.NoDataCached.left()
 
@@ -1061,67 +1052,6 @@ internal class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    fun `verify get attachment is not called and error is shown when other attachment is currently downloaded`() =
-        runTest {
-            // given
-            val expectedAttachmentCount = 5
-            val defaultExpanded = MessageSample.AugWeatherForecast
-            val expectedExpanded = MessageSample.Invoice
-            val messages = ConversationMessages(
-                nonEmptyListOf(
-                    defaultExpanded,
-                    expectedExpanded
-                ),
-                defaultExpanded.messageId
-            )
-            val expandedMessageId = expectedExpanded.messageId
-            val openMode = AttachmentOpenMode.Open
-
-            coEvery { observeConversationMessages(userId, any(), any(), any()) } returns flowOf(messages.right())
-            coEvery { getDecryptedMessageBody.invoke(any(), expandedMessageId) } returns
-                DecryptedMessageBody(
-                    messageId = expandedMessageId,
-                    value = "",
-                    mimeType = MimeType.Html,
-                    isUnread = false,
-                    hasQuotedText = false,
-                    hasCalendarInvite = false,
-                    banners = emptyList(),
-                    attachments = (0 until expectedAttachmentCount).map {
-                        aMessageAttachment(id = it.toString())
-                    }
-                ).right()
-            coEvery {
-                getDownloadingAttachmentsForMessages(
-                    userId,
-                    listOf(defaultExpanded.messageId, expandedMessageId)
-                )
-            } returns listOf(MessageAttachmentMetadataTestData.buildMessageAttachmentMetadata())
-
-            val viewModel = buildConversationDetailViewModel()
-
-            viewModel.state.test {
-                skipItems(4)
-                viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.messageId)))
-                skipItems(1)
-                // When
-                viewModel.submit(
-                    OnAttachmentClicked(
-                        openMode,
-                        messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
-                        AttachmentId(0.toString())
-                    )
-                )
-                val actualState = awaitItem()
-
-                // Then
-                assertEquals(Effect.of(TextUiModel(R.string.error_attachment_download_in_progress)), actualState.error)
-                coVerify { getAttachmentIntentValues wasNot Called }
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
     fun `verify error is shown when getting attachment failed`() = runTest {
         // given
         val expectedAttachmentCount = Random().nextInt(100)
@@ -1136,7 +1066,6 @@ internal class ConversationDetailViewModelIntegrationTest {
             messages = messages,
             expandedMessageId = expandedMessageId,
             expectedAttachmentCount = expectedAttachmentCount,
-            defaultExpanded = defaultExpanded,
             expectedError = DataError.Local.NoDataCached
         )
 
@@ -1257,7 +1186,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         messages: NonEmptyList<Message>,
         expandedMessageId: MessageId,
         expectedAttachmentCount: Int,
-        defaultExpanded: Message,
         expectedError: DataError.Local
     ) {
         coEvery { observeConversationMessages(userId, any(), any(), any()) } returns flowOf(
@@ -1276,12 +1204,6 @@ internal class ConversationDetailViewModelIntegrationTest {
                     aMessageAttachment(id = it.toString())
                 }
             ).right()
-        coEvery {
-            getDownloadingAttachmentsForMessages(
-                userId,
-                listOf(defaultExpanded.messageId, expandedMessageId)
-            )
-        } returns listOf()
         coEvery {
             getAttachmentIntentValues(userId, AttachmentOpenMode.Open, AttachmentId(0.toString()))
         } returns expectedError.left()
@@ -2556,7 +2478,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         observeConversation: ObserveConversation = observeConversationUseCase,
         observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveDetailBottomBarActions = observeDetailBottomBarActions,
-        getAttachmentStatus: GetDownloadingAttachmentsForMessages = getDownloadingAttachmentsForMessages,
         detailReducer: ConversationDetailReducer = reducer,
         savedState: SavedStateHandle = savedStateHandle,
         starMsg: StarMessages = starMessages,
@@ -2585,7 +2506,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         observeConversation = observeConversation,
         observeConversationMessages = observeConversationMessages,
         observeDetailActions = observeDetailActions,
-        getDownloadingAttachmentsForMessages = getAttachmentStatus,
         reducer = detailReducer,
         starConversations = star,
         unStarConversations = unStar,

@@ -56,7 +56,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
-import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
@@ -254,7 +253,6 @@ class ConversationDetailViewModelTest {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
     }
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
-    private val getAttachmentDownloadStatus = mockk<GetDownloadingAttachmentsForMessages>()
     private val loadImageAvoidDuplicatedExecution = mockk<LoadImageAvoidDuplicatedExecution>()
     private val reducer: ConversationDetailReducer = mockk {
         coEvery { newStateFrom(currentState = any(), operation = any()) } returns ConversationDetailState.Loading
@@ -372,7 +370,6 @@ class ConversationDetailViewModelTest {
             observeConversation = observeConversation,
             observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeDetailBottomBarActions,
-            getDownloadingAttachmentsForMessages = getAttachmentDownloadStatus,
             reducer = reducer,
             starConversations = starConversations,
             unStarConversations = unStarConversations,

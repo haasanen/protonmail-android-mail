@@ -52,7 +52,6 @@ import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentVal
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
-import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
@@ -191,7 +190,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeConversation: ObserveConversation,
     private val observeConversationMessages: ObserveConversationMessages,
     private val observeDetailActions: ObserveDetailBottomBarActions,
-    private val getDownloadingAttachmentsForMessages: GetDownloadingAttachmentsForMessages,
     private val reducer: ConversationDetailReducer,
     private val starConversations: StarConversations,
     private val unStarConversations: UnStarConversations,
@@ -1444,30 +1442,15 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun onOpenAttachmentClicked(openMode: AttachmentOpenMode, attachmentId: AttachmentId) {
         viewModelScope.launch {
-            if (isAttachmentDownloadInProgress().not()) {
-                val userId = primaryUserId.first()
-                getAttachmentIntentValues(userId, openMode, attachmentId).fold(
-                    ifLeft = {
-                        Timber.d("Failed to download attachment: $it")
-                        emitNewStateFrom(ConversationDetailEvent.ErrorGettingAttachment)
-                    },
-                    ifRight = { emitNewStateFrom(ConversationDetailEvent.OpenAttachmentEvent(it)) }
-                )
-            } else {
-                emitNewStateFrom(ConversationDetailEvent.ErrorAttachmentDownloadInProgress)
-            }
+            val userId = primaryUserId.first()
+            getAttachmentIntentValues(userId, openMode, attachmentId).fold(
+                ifLeft = {
+                    Timber.d("Failed to download attachment: $it")
+                    emitNewStateFrom(ConversationDetailEvent.ErrorGettingAttachment)
+                },
+                ifRight = { emitNewStateFrom(ConversationDetailEvent.OpenAttachmentEvent(it)) }
+            )
         }
-    }
-
-    private suspend fun isAttachmentDownloadInProgress(): Boolean {
-        val userId = primaryUserId.first()
-        val messagesState = mutableDetailState.value.messagesState
-        return if (messagesState is ConversationDetailsMessagesState.Data) {
-            getDownloadingAttachmentsForMessages(
-                userId,
-                messagesState.messages.map { MessageId(it.messageId.id) }
-            ).isNotEmpty()
-        } else false
     }
 
     private fun updateObservedAttachments(attachments: Map<MessageId, List<AttachmentMetadata>>) {
