@@ -436,12 +436,19 @@ fun ConversationDetailScreen(
                             actions.onComposeNewMessage(it.address)
                         },
                         onBlockClicked = { participant, messageId ->
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar() // ET-5092
+                            viewModel.submit(
+                                ConversationDetailViewAction.BlockSender(
+                                    messageId?.let { MessageIdUiModel(it.id) }, participant.address
+                                )
+                            )
+
                         },
                         onUnblockClicked = { participant, messageId ->
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar() // ET-5092
+                            viewModel.submit(
+                                ConversationDetailViewAction.UnblockSender(
+                                    messageId?.let { MessageIdUiModel(it.id) }, participant.address
+                                )
+                            )
                         }
                     )
                 )
