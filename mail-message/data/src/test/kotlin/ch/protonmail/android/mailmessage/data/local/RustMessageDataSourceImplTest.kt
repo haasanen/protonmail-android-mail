@@ -40,6 +40,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustBlockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteAllMessagesInLabel
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustIsMessageSenderBlocked
 import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessageAsLegitimate
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
@@ -109,6 +110,7 @@ internal class RustMessageDataSourceImplTest {
     private val rustMarkMessageAsLegitimate = mockk<RustMarkMessageAsLegitimate>()
     private val rustUnblockAddress = mockk<RustUnblockAddress>()
     private val rustBlockAddress = mockk<RustBlockAddress>()
+    private val rustIsMessageSenderBlocked = mockk<RustIsMessageSenderBlocked>()
     private val rustReportPhishing = mockk<RustReportPhishing>()
     private val rustDeleteAllMessagesInLabel = mockk<RustDeleteAllMessagesInLabel>()
     private val rustCancelScheduleSend = mockk<RustCancelScheduleSendMessage>()
@@ -138,6 +140,7 @@ internal class RustMessageDataSourceImplTest {
         rustMarkMessageAsLegitimate,
         rustUnblockAddress,
         rustBlockAddress,
+        rustIsMessageSenderBlocked,
         rustReportPhishing,
         rustDeleteAllMessagesInLabel,
         rustCancelScheduleSend,
@@ -961,4 +964,21 @@ internal class RustMessageDataSourceImplTest {
         assertEquals(lastScheduleTime.right(), actual)
     }
 
+    @Test
+    fun `isMessageSenderBlocked returns result when mailbox is available`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailbox = mockk<MailboxWrapper>()
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustIsMessageSenderBlocked(mailbox, messageId) } returns true.right()
+
+        // When
+        val result = dataSource.isMessageSenderBlocked(userId, messageId)
+
+        // Then
+        assertEquals(true.right(), result)
+        coVerify { rustIsMessageSenderBlocked(mailbox, messageId) }
+    }
 }

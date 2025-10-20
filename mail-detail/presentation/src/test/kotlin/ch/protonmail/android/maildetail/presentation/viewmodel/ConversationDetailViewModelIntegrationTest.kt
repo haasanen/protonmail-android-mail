@@ -79,6 +79,7 @@ import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentVal
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
+import ch.protonmail.android.maildetail.domain.usecase.IsMessageSenderBlocked
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
@@ -384,6 +385,7 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
     private val unblockSender = mockk<UnblockSender>()
     private val blockSender = mockk<BlockSender>()
+    private val isMessageSenderBlocked = mockk<IsMessageSenderBlocked>()
 
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val attachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
@@ -2556,6 +2558,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         markMessageAsLegitimate = markMessageAsLegitimate,
         unblockSender = unblockSender,
         blockSender = blockSender,
+        isMessageSenderBlocked = isMessageSenderBlocked,
         cancelScheduleSendMessage = cancelScheduleSendMessage,
         printMessage = printMessage,
         getRsvpEvent = getRsvpEvent,

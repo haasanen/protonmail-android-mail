@@ -43,6 +43,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustBlockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteAllMessagesInLabel
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustIsMessageSenderBlocked
 import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessageAsLegitimate
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
@@ -95,6 +96,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMarkMessageAsLegitimate: RustMarkMessageAsLegitimate,
     private val rustUnblockAddress: RustUnblockAddress,
     private val rustBlockAddress: RustBlockAddress,
+    private val rustIsMessageSenderBlocked: RustIsMessageSenderBlocked,
     private val rustReportPhishing: RustReportPhishing,
     private val rustDeleteAllMessagesInLabel: RustDeleteAllMessagesInLabel,
     private val cancelScheduleSendMessage: RustCancelScheduleSendMessage,
@@ -398,6 +400,17 @@ class RustMessageDataSourceImpl @Inject constructor(
         Timber.d("rust-message: Unblocking address $email")
         return rustUnblockAddress(mailbox, email)
     }
+
+    override suspend fun isMessageSenderBlocked(userId: UserId, messageId: LocalMessageId): Either<DataError, Boolean> {
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to check if sender is blocked with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return rustIsMessageSenderBlocked(mailbox, messageId)
+    }
+
 
     override suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =
         withContext(ioDispatcher) {

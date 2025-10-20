@@ -53,6 +53,7 @@ import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationSt
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
+import ch.protonmail.android.maildetail.domain.usecase.IsMessageSenderBlocked
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
@@ -220,6 +221,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val markMessageAsLegitimate: MarkMessageAsLegitimate,
     private val unblockSender: UnblockSender,
     private val blockSender: BlockSender,
+    private val isMessageSenderBlocked: IsMessageSenderBlocked,
     private val cancelScheduleSendMessage: CancelScheduleSendMessage,
     private val printMessage: PrintMessage,
     private val getRsvpEvent: GetRsvpEvent,
@@ -844,7 +846,7 @@ class ConversationDetailViewModel @Inject constructor(
 
             // Rust does not provide an API to check if a sender is blocked. Therefore,
             // we get this data from message banners temporarily
-            val senderBlocked = action.messageId?.let { isSenderBlockedForMessage(MessageId(it.id)) } ?: false
+            val senderBlocked = action.messageId?.let { isMessageSenderBlocked(userId, MessageId(it.id)) } ?: false
 
             val event = ConversationDetailEvent.ConversationBottomSheetEvent(
                 ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
@@ -1755,15 +1757,6 @@ class ConversationDetailViewModel @Inject constructor(
                 ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
             )
         }
-    }
-
-    private fun isSenderBlockedForMessage(messageId: MessageId): Boolean {
-        val messagesState = mutableDetailState.value.messagesState
-        return if (messagesState is ConversationDetailsMessagesState.Data) {
-            messagesState.messages.firstOrNull { it.messageId.id == messageId.id }?.let {
-                (it as? ConversationDetailMessageUiModel.Expanded)?.messageBannersUiModel?.shouldShowBlockedSenderBanner
-            } ?: false
-        } else false
     }
 
     /**

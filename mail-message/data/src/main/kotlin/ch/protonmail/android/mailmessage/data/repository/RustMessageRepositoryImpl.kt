@@ -169,4 +169,6 @@ class RustMessageRepositoryImpl @Inject constructor(
     override suspend fun blockSender(userId: UserId, email: String): Either<DataError, Unit> =
         rustMessageDataSource.blockSender(userId, email)
 
+    override suspend fun isMessageSenderBlocked(userId: UserId, messageId: MessageId): Either<DataError, Boolean> =
+        rustMessageDataSource.isMessageSenderBlocked(userId, messageId.toLocalMessageId())
 }

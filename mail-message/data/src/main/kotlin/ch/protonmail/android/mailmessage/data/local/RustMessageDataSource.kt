@@ -124,6 +124,8 @@ interface RustMessageDataSource {
 
     suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
 
+    suspend fun isMessageSenderBlocked(userId: UserId, messageId: LocalMessageId): Either<DataError, Boolean>
+
     suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
 
     suspend fun deleteAllMessagesInLocation(userId: UserId, labelId: LocalLabelId): Either<DataError, Unit>

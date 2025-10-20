@@ -57,6 +57,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
+import ch.protonmail.android.maildetail.domain.usecase.IsMessageSenderBlocked
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
@@ -334,6 +335,7 @@ class ConversationDetailViewModelTest {
     private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
     private val unblockSender = mockk<UnblockSender>()
     private val blockSender = mockk<BlockSender>()
+    private val isMessageSenderBlocked = mockk<IsMessageSenderBlocked>()
     private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>()
 
     private val printMessage = mockk<PrintMessage>()
@@ -405,6 +407,7 @@ class ConversationDetailViewModelTest {
             markMessageAsLegitimate = markMessageAsLegitimate,
             unblockSender = unblockSender,
             blockSender = blockSender,
+            isMessageSenderBlocked = isMessageSenderBlocked,
             cancelScheduleSendMessage = cancelScheduleSendMessage,
             printMessage = printMessage,
             getRsvpEvent = getRsvpEvent,
@@ -1653,6 +1656,7 @@ class ConversationDetailViewModelTest {
                 ConversationDetailEvent.ConversationBottomSheetEvent(event)
             )
         } returns expectedResult
+        coEvery { isMessageSenderBlocked.invoke(userId, any()) } returns false
 
         // When
         viewModel.state.test {
