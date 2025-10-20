@@ -161,6 +161,7 @@ class InMemoryConversationStateRepositoryImplTest {
         val itemCount = Random().nextInt(100)
 
         // When
+        @Suppress("ForEachOnRange")
         (0 until itemCount).forEach {
             repo.collapseMessage(MessageId(it.toString()))
         }

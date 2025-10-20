@@ -39,7 +39,7 @@ internal fun JvmCompilationResult.getGeneratedSourceFile(path: String): File {
 @OptIn(ExperimentalCompilerApi::class)
 internal fun getKotlinCompilation(kotlinSources: List<SourceFile>): KotlinCompilation {
     return KotlinCompilation().apply {
-        configureKsp(useKsp2 = true) {
+        configureKsp {
             symbolProcessorProviders += UITestSymbolProcessorProvider()
         }
         sources = kotlinSources
