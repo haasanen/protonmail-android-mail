@@ -25,4 +25,6 @@ enum class MailboxSearchMode {
     SearchData;
 
     fun isInSearch() = this != None
+
+    fun hasData() = this == SearchData
 }

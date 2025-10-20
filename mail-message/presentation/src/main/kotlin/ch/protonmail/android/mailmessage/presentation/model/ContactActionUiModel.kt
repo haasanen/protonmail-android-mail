@@ -53,9 +53,28 @@ sealed class ContactActionUiModel(
         descriptionRes = R.string.contact_actions_add_contact_description
     )
 
-    data class Block(val participant: Participant) : ContactActionUiModel(
+    data class BlockContact(val participant: Participant) : ContactActionUiModel(
         iconRes = R.drawable.ic_proton_circle_slash,
         textRes = R.string.contact_actions_block_contact,
         descriptionRes = R.string.contact_actions_block_contact_description
+    )
+
+    data class UnblockContact(val participant: Participant) : ContactActionUiModel(
+        iconRes = R.drawable.ic_proton_circle_slash,
+        textRes = R.string.contact_actions_unblock_contact,
+        descriptionRes = R.string.contact_actions_unblock_contact_description
+    )
+
+
+    data class BlockAddress(val participant: Participant) : ContactActionUiModel(
+        iconRes = R.drawable.ic_proton_circle_slash,
+        textRes = R.string.contact_actions_block_address,
+        descriptionRes = R.string.contact_actions_block_address_description
+    )
+
+    data class UnblockAddress(val participant: Participant) : ContactActionUiModel(
+        iconRes = R.drawable.ic_proton_circle_slash,
+        textRes = R.string.contact_actions_unblock_address,
+        descriptionRes = R.string.contact_actions_unblock_address_description
     )
 }

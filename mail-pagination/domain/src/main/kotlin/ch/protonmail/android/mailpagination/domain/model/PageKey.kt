@@ -33,11 +33,13 @@ sealed interface PageKey {
     data class DefaultPageKey(
         val labelId: LabelId = LabelId("0"),
         val readStatus: ReadStatus = ReadStatus.All,
+        val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide,
         override val pageToLoad: PageToLoad = PageToLoad.First
     ) : PageKey
 
     data class PageKeyForSearch(
         val keyword: String,
+        val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide,
         override val pageToLoad: PageToLoad = PageToLoad.First
     ) : PageKey
 }
@@ -58,6 +60,16 @@ enum class ReadStatus {
     All,
     Read,
     Unread
+}
+
+/**
+ * Filters whether Spam/Trash elements should be included in the results.
+ *
+ * It only applies to AlmostAllMail label and Search mode.
+ */
+enum class ShowSpamTrash {
+    Hide,
+    Show
 }
 
 /**

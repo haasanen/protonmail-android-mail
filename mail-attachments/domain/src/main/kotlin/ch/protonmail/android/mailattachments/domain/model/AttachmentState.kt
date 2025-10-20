@@ -22,5 +22,5 @@ sealed interface AttachmentState {
     data object Pending : AttachmentState
     data object Uploading : AttachmentState
     data object Uploaded : AttachmentState
-    data class Error(val reason: AddAttachmentError) : AttachmentState
+    data class Error(val reason: AttachmentError) : AttachmentState
 }

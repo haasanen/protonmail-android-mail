@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailpinlock.presentation.pin.ui
 
+import android.app.Activity
+import android.view.View
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
@@ -43,6 +45,7 @@ import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentDataType
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDataType
 import androidx.compose.ui.semantics.semantics
@@ -68,7 +72,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.autolock.standalone.LocalLockScreenEntryPointIsStandalone
-import me.proton.core.compose.autofill.autofill
 
 @Composable
 internal fun PinInputSection(
@@ -133,15 +136,26 @@ internal fun PinSecureInputField(
     supportingText: @Composable () -> Unit
 ) {
     val isStandalone = LocalLockScreenEntryPointIsStandalone.current
+    val view = LocalView.current
+
+    DisposableEffect(Unit) {
+        val window = (view.context as? Activity)?.window
+        val decorView = window?.decorView
+        val originalImportance = decorView?.importantForAutofill
+
+        decorView?.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
+
+        onDispose {
+            if (originalImportance != null) {
+                decorView.importantForAutofill = originalImportance
+            }
+        }
+    }
 
     val pinInputFieldModifier = modifier
         .semantics {
             contentDataType = ContentDataType.None
         }
-        .autofill(
-            autofillTypes = emptyList(),
-            onFill = {}
-        )
 
     if (!isStandalone) {
         PinInsertionSecureField(

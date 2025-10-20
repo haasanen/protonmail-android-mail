@@ -30,7 +30,6 @@ import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
@@ -56,6 +55,7 @@ import ch.protonmail.android.mailcomposer.domain.model.haveBlankRecipients
 import ch.protonmail.android.mailcomposer.domain.model.haveBlankSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.CanSendWithExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
+import ch.protonmail.android.mailcomposer.domain.usecase.ConvertInlineImageToAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -63,6 +63,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftSenderValidationError
+import ch.protonmail.android.mailcomposer.domain.usecase.GetMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
@@ -79,6 +80,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.mapper.toDomainModel
 import ch.protonmail.android.mailcomposer.presentation.mapper.toDraftRecipient
+import ch.protonmail.android.mailcomposer.presentation.mapper.toUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerStates
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
@@ -184,7 +186,9 @@ class ComposerViewModel @AssistedInject constructor(
     private val getDraftSenderValidationError: GetDraftSenderValidationError,
     private val preloadContactSuggestions: PreloadContactSuggestions,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
+    private val getMessageExpirationTime: GetMessageExpirationTime,
     private val canSendWithExpirationTime: CanSendWithExpirationTime,
+    private val convertInlineToAttachment: ConvertInlineImageToAttachment,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -324,6 +328,7 @@ class ComposerViewModel @AssistedInject constructor(
         }.launchIn(viewModelScope)
     }
 
+    @Suppress("ReturnCount")
     private suspend fun setupInitialState(savedStateHandle: SavedStateHandle): Boolean {
         val inputDraftId = savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey)
         val draftAction = savedStateHandle.get<String>(ComposerScreen.SerializedDraftActionKey)
@@ -341,8 +346,12 @@ class ComposerViewModel @AssistedInject constructor(
                 return false
             }
 
-            draftAction != null -> prefillForDraftAction(draftAction)
-            else -> prefillForNewDraft()
+            draftAction != null -> prefillForDraftAction(draftAction).onLeft {
+                return false
+            }
+            else -> prefillForNewDraft().onLeft {
+                return false
+            }
         }
         return true
     }
@@ -360,6 +369,11 @@ class ComposerViewModel @AssistedInject constructor(
             .mapLatest { isMessagePasswordSet() }
             .onEach { emitNewStateFor(AccessoriesEvent.OnPasswordChanged(it)) }
             .launchIn(viewModelScope)
+    }
+
+    private suspend fun initMessageExpiration() {
+        getMessageExpirationTime()
+            .onRight { emitNewStateFor(AccessoriesEvent.OnExpirationChanged(it.toUiModel())) }
     }
 
     private suspend fun observeSenderValidationError() {
@@ -380,10 +394,10 @@ class ComposerViewModel @AssistedInject constructor(
         recipientsStateManager.updateRecipients(recipients, ContactSuggestionsField.TO)
     }
 
-    private suspend fun prefillForNewDraft() {
+    private suspend fun prefillForNewDraft(): Either<OpenDraftError, DraftFields> {
         // Emitting also for "empty draft" as now signature is returned with the init body, effectively
         // making this the same as other prefill cases (eg. "reply" or "fw")
-        createEmptyDraft(primaryUserId())
+        return createEmptyDraft(primaryUserId())
             .onRight { draftFields ->
                 // ensure the displayBody prop that the UI uses to set initial value is up-to-date with the signature
                 bodyTextField.replaceText(draftFields.body.value, resetRange = true)
@@ -403,7 +417,6 @@ class ComposerViewModel @AssistedInject constructor(
         val fileShareInfo = shareDraftAction.intentShareInfo.decode()
 
         fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { rawUri ->
-            Timber.w("composer: storing attachment not implemented")
             val uriList = rawUri.map { it.toUri() }
             onAttachmentsAdded(uriList)
         }
@@ -421,7 +434,7 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun prefillDraftFieldsFromShareInfo(intentShareInfo: IntentShareInfo): DraftFields {
+    private fun prefillDraftFieldsFromShareInfo(intentShareInfo: IntentShareInfo): DraftFields {
         val emailBody = when (composerStates.value.main.draftType) {
             DraftMimeType.PlainText -> intentShareInfo.emailBody
             DraftMimeType.Html -> intentShareInfo.emailBody?.replace("\n", "<br>")
@@ -464,18 +477,17 @@ class ComposerViewModel @AssistedInject constructor(
         )
     }
 
-    @MissingRustApi
-    // hardcoding values for isBlockedSendingFromPmAddress / isBlockedSendingFromDisabledAddress
-    private suspend fun prefillForDraftAction(draftAction: DraftAction) {
+    private suspend fun prefillForDraftAction(draftAction: DraftAction): Either<OpenDraftError, DraftFields> {
         Timber.d("Opening composer for draft action $draftAction")
         emitNewStateFor(MainEvent.InitialLoadingToggled)
         val focusDraftBody = draftAction is Reply || draftAction is ReplyAll
-        when (draftAction) {
+        return when (draftAction) {
             Compose -> prefillForNewDraft()
             is ComposeToAddresses -> {
                 Timber.d("composer: prefilling for compose To")
-                prefillForNewDraft()
-                prefillForComposeToAction(draftAction.extractRecipients())
+                prefillForNewDraft().onRight {
+                    prefillForComposeToAction(draftAction.extractRecipients())
+                }
             }
 
             is Forward,
@@ -483,6 +495,7 @@ class ComposerViewModel @AssistedInject constructor(
             is ReplyAll -> createDraftForAction(primaryUserId(), draftAction)
                 .onRight { draftFields ->
                     initComposerFields(draftFields)
+                    initMessageExpiration()
                     emitNewStateFor(
                         CompositeEvent.DraftContentReady(
                             draftUiModel = draftFields.toDraftUiModel(),
@@ -494,8 +507,9 @@ class ComposerViewModel @AssistedInject constructor(
                 .onLeft { emitNewStateFor(EffectsEvent.LoadingEvent.OnParentLoadingFailed) }
 
             is PrefillForShare -> {
-                prefillForNewDraft()
-                prefillForShareDraftAction(draftAction)
+                prefillForNewDraft().onRight {
+                    prefillForShareDraftAction(draftAction)
+                }
             }
         }
     }
@@ -558,7 +572,8 @@ class ComposerViewModel @AssistedInject constructor(
                 is ComposerAction.AddFileAttachments -> onFileAttachmentsAdded(action.uriList)
                 is ComposerAction.AddAttachments -> onAttachmentsAdded(action.uriList)
                 is ComposerAction.RemoveAttachment -> onAttachmentsRemoved(action.attachmentId)
-                is ComposerAction.RemoveInlineAttachment -> onInlineImageRemoved(action.contentId)
+                is ComposerAction.RemoveInlineAttachment -> onRemoveInlineImage(action.contentId, true)
+                is ComposerAction.InlineAttachmentDeletedFromBody -> onRemoveInlineImage(action.contentId, false)
                 is ComposerAction.InlineImageActionsRequested ->
                     emitNewStateFor(EffectsEvent.AttachmentEvent.OnInlineImageActionsRequested)
 
@@ -569,8 +584,6 @@ class ComposerViewModel @AssistedInject constructor(
                     emitNewStateFor(EffectsEvent.SendEvent.OnCancelSendNoSubject)
 
                 is ComposerAction.ConfirmSendWithNoSubject -> onSendMessage()
-
-                is ComposerAction.CancelSendExpirationSetToExternal -> TODO()
 
                 is ComposerAction.ConfirmSendExpirationSetToExternal -> onSendMessage()
 
@@ -583,6 +596,7 @@ class ComposerViewModel @AssistedInject constructor(
                 is ComposerAction.OnScheduleSendRequested -> onScheduleSendRequested()
                 is ComposerAction.OnScheduleSend -> handleOnScheduleSendMessage(action.time)
                 is ComposerAction.AcknowledgeAttachmentErrors -> handleConfirmAttachmentErrors(action)
+                is ComposerAction.ConvertInlineToAttachment -> handleConvertInlineToAttachment(action)
             }
             logViewModelAction(action, "Completed.")
         }
@@ -633,6 +647,14 @@ class ComposerViewModel @AssistedInject constructor(
             }
     }
 
+    private suspend fun handleConvertInlineToAttachment(action: ComposerAction.ConvertInlineToAttachment) {
+        convertInlineToAttachment(action.contentId)
+            .onLeft { Timber.e("composer: failed to convert inline to attachment") }
+            .onRight {
+                Timber.d("composer: inline attachment ${action.contentId} converted to standard")
+                emitNewStateFor(EffectsEvent.AttachmentEvent.StripInlineAttachmentFromBody(action.contentId))
+            }
+    }
 
     private suspend fun handleConfirmAttachmentErrors(action: ComposerAction.AcknowledgeAttachmentErrors) {
         val attachmentsWithError = action.attachmentsWithError
@@ -724,12 +746,14 @@ class ComposerViewModel @AssistedInject constructor(
             }
     }
 
-    private suspend fun onInlineImageRemoved(contentId: String) {
+    private suspend fun onRemoveInlineImage(contentId: String, stripFromBody: Boolean) {
         deleteInlineAttachment(contentId)
             .onLeft { Timber.w("Failed to delete inline attachment: $contentId reason: $it") }
             .onRight {
                 Timber.d("Inline attachment $contentId removed!")
-                emitNewStateFor(EffectsEvent.AttachmentEvent.InlineAttachmentRemoved(contentId))
+                if (stripFromBody) {
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.StripInlineAttachmentFromBody(contentId))
+                }
             }
     }
 

@@ -27,6 +27,7 @@ import ch.protonmail.android.mailattachments.presentation.R
 
 data class SaveAttachmentInput(
     val fileName: String,
+    val uri: Uri,
     val mimeType: String
 )
 
@@ -36,7 +37,7 @@ data class SaveAttachmentInput(
 class CreateDocumentWithMimeType : ActivityResultContract<SaveAttachmentInput, Uri?>() {
 
     override fun createIntent(context: Context, input: SaveAttachmentInput): Intent {
-        val (fileName, mimeType) = input
+        val (fileName, _, mimeType) = input
         return Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = mimeType

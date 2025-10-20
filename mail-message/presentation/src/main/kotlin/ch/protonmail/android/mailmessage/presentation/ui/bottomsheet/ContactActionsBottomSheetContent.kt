@@ -42,9 +42,11 @@ import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -59,6 +61,8 @@ fun ContactActionsBottomSheetContent(
 
         else -> ProtonCenteredProgress()
     }
+
+    BottomNavigationBarSpacer()
 }
 
 @Composable
@@ -77,7 +81,7 @@ fun ContactActionsBottomSheetContent(
 
         ActionGroup(
             items = dataState.actions.firstGroup,
-            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions) }
+            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions, dataState.origin) }
         ) { item, onClick ->
             ActionGroupItem(
                 icon = item.iconRes,
@@ -90,7 +94,7 @@ fun ContactActionsBottomSheetContent(
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
         ActionGroup(
             items = dataState.actions.secondGroup,
-            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions) }
+            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions, dataState.origin) }
         ) { item, onClick ->
             ActionGroupItem(
                 icon = item.iconRes,
@@ -103,7 +107,7 @@ fun ContactActionsBottomSheetContent(
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
         ActionGroup(
             items = dataState.actions.thirdGroup,
-            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions) }
+            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions, dataState.origin) }
         ) { item, onClick ->
             ActionGroupItem(
                 icon = item.iconRes,
@@ -115,14 +119,25 @@ fun ContactActionsBottomSheetContent(
     }
 }
 
-private fun callbackForActions(action: ContactActionUiModel, actions: ContactActionsBottomSheetContent.Actions) =
-    when (action) {
-        is ContactActionUiModel.AddContactUiModel -> actions.onAddContactClicked(action.participant)
-        is ContactActionUiModel.CopyAddress -> actions.onCopyAddressClicked(action.address)
-        is ContactActionUiModel.CopyName -> actions.onCopyNameClicked(action.name)
-        is ContactActionUiModel.NewMessage -> actions.onNewMessageClicked(action.participant)
-        is ContactActionUiModel.Block -> actions.onBlockClicked(action.participant)
-    }
+private fun ContactActionsBottomSheetState.Origin.getMessageId(): MessageId? = when (this) {
+    is ContactActionsBottomSheetState.Origin.MessageDetails -> this.messageId
+    is ContactActionsBottomSheetState.Origin.Unknown -> null
+}
+
+private fun callbackForActions(
+    action: ContactActionUiModel,
+    actions: ContactActionsBottomSheetContent.Actions,
+    sheetOrigin: ContactActionsBottomSheetState.Origin
+) = when (action) {
+    is ContactActionUiModel.AddContactUiModel -> actions.onAddContactClicked(action.participant)
+    is ContactActionUiModel.CopyAddress -> actions.onCopyAddressClicked(action.address)
+    is ContactActionUiModel.CopyName -> actions.onCopyNameClicked(action.name)
+    is ContactActionUiModel.NewMessage -> actions.onNewMessageClicked(action.participant)
+    is ContactActionUiModel.BlockContact -> actions.onBlockClicked(action.participant, sheetOrigin.getMessageId())
+    is ContactActionUiModel.UnblockContact -> actions.onUnblockClicked(action.participant, sheetOrigin.getMessageId())
+    is ContactActionUiModel.BlockAddress -> actions.onBlockClicked(action.participant, sheetOrigin.getMessageId())
+    is ContactActionUiModel.UnblockAddress -> actions.onUnblockClicked(action.participant, sheetOrigin.getMessageId())
+}
 
 @Composable
 fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: AvatarUiModel?) {
@@ -179,7 +194,8 @@ object ContactActionsBottomSheetContent {
         val onCopyNameClicked: (name: String) -> Unit,
         val onNewMessageClicked: (participant: Participant) -> Unit,
         val onAddContactClicked: (participant: Participant) -> Unit,
-        val onBlockClicked: (participant: Participant) -> Unit
+        val onBlockClicked: (participant: Participant, messageId: MessageId?) -> Unit,
+        val onUnblockClicked: (participant: Participant, messageId: MessageId?) -> Unit
     )
 }
 
@@ -202,16 +218,18 @@ fun ContactActionsBottomSheetContentPreview() {
                         ContactActionUiModel.NewMessage(participant)
                     ).toImmutableList(),
                     thirdGroup = listOf(
-                        ContactActionUiModel.Block(participant)
+                        ContactActionUiModel.BlockAddress(participant)
                     ).toImmutableList()
-                )
+                ),
+                origin = ContactActionsBottomSheetState.Origin.Unknown
             ),
             actions = ContactActionsBottomSheetContent.Actions(
                 onCopyAddressClicked = {},
                 onCopyNameClicked = {},
                 onNewMessageClicked = {},
                 onAddContactClicked = {},
-                onBlockClicked = {}
+                onBlockClicked = { _, _ -> },
+                onUnblockClicked = { _, _ -> }
             )
         )
     }

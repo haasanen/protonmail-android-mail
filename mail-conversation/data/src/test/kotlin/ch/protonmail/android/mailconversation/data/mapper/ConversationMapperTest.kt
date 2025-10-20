@@ -239,6 +239,7 @@ class ConversationMapperTest {
             avatar = avatar,
             totalMessages = totalMessages,
             totalUnread = totalUnread,
+            hiddenMessagesBanner = null, // ET-4980
             snoozedUntil = null
         )
     }

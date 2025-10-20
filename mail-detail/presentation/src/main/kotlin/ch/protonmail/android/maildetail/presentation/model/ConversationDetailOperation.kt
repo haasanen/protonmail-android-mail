@@ -255,7 +255,8 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class RequestContactActionsBottomSheet(
         val participant: ParticipantUiModel,
-        val avatarUiModel: AvatarUiModel?
+        val avatarUiModel: AvatarUiModel?,
+        val messageId: MessageIdUiModel?
     ) : ConversationDetailViewAction,
         AffectingBottomSheet
 
@@ -345,7 +346,10 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data object MarkMessageAsLegitimateDismissed : ConversationDetailViewAction, AffectingMarkAsLegitimateDialog
 
-    data class UnblockSender(val messageId: MessageIdUiModel, val email: String) : ConversationDetailViewAction
+    data class UnblockSender(val messageId: MessageIdUiModel?, val email: String) :
+        ConversationDetailViewAction, AffectingBottomSheet
+    data class BlockSender(val messageId: MessageIdUiModel?, val email: String) :
+        ConversationDetailViewAction, AffectingBottomSheet
 
     data object EditScheduleSendMessageDismissed :
         ConversationDetailViewAction, AffectingEditScheduleMessageDialog

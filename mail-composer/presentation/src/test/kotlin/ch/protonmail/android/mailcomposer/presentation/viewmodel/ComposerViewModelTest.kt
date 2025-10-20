@@ -52,6 +52,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.CanSendWithExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
+import ch.protonmail.android.mailcomposer.domain.usecase.ConvertInlineImageToAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -59,6 +60,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftSenderValidationError
+import ch.protonmail.android.mailcomposer.domain.usecase.GetMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
@@ -181,10 +183,12 @@ internal class ComposerViewModelTest {
         coEvery { this@mockk.invoke(UserIdSample.Primary) } returns Unit.right()
     }
     private val saveMessageExpirationTime = mockk<SaveMessageExpirationTime>()
+    private val getMessageExpirationTime = mockk<GetMessageExpirationTime>()
 
     private val canSendWithExpirationTime = mockk<CanSendWithExpirationTime> {
         coEvery { this@mockk.invoke() } returns SendWithExpirationTimeResult.CanSend.right()
     }
+    private val convertInlineImageToAttachment = mockk<ConvertInlineImageToAttachment>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<DraftBody>()
@@ -240,7 +244,9 @@ internal class ComposerViewModelTest {
         getDraftSenderValidationError,
         preloadContactSuggestions,
         saveMessageExpirationTime,
+        getMessageExpirationTime,
         canSendWithExpirationTime,
+        convertInlineImageToAttachment,
         observePrimaryUserIdMock
     )
 
@@ -632,7 +638,7 @@ internal class ComposerViewModelTest {
     }
 
     @Test
-    fun `emits state with initialization error when creating new empty draft fails`() = runTest {
+    fun `stop init and emits state with initialization error when creating new empty draft fails`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         ignoreRecipientsUpdates()
@@ -650,6 +656,8 @@ internal class ComposerViewModelTest {
 
         // Then
         assertEquals(TextUiModel(R.string.composer_error_invalid_sender), actual.effects.exitError.consume())
+        verify { observeMessageAttachments wasNot Called }
+        verify { updateRecipients wasNot Called }
     }
 
     @Test
@@ -1348,6 +1356,26 @@ internal class ComposerViewModelTest {
         // Then
         coVerify { deleteAttachment(id1) }
         coVerify { deleteAttachment(id2) }
+    }
+
+    @Test
+    fun `should stop initialization and not start observers when prefillForDraftAction fails`() = runTest {
+        // Given
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val replyAction = DraftAction.Reply(MessageIdSample.Invoice)
+        expectNoInputDraftMessageId()
+        expectInputDraftAction { replyAction }
+        expectNoRestoredState(savedStateHandle)
+        coEvery { createDraftForAction(expectedUserId, replyAction) } returns OpenDraftError.OpenDraftFailed.left()
+
+        // When
+        viewModel()
+
+        // Then
+        verify { observeMessageAttachments wasNot Called }
+        verify { observeRecipientsValidation wasNot Called }
+        verify { updateRecipients wasNot Called }
+        coVerify { preloadContactSuggestions wasNot Called }
     }
 
     // This is both used to mock the result of the "composer init" in the cases where we

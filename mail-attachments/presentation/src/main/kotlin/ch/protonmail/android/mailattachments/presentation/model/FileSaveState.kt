@@ -18,11 +18,18 @@
 
 package ch.protonmail.android.mailattachments.presentation.model
 
+import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentErrorResult
+
 sealed interface FileSaveState {
     data object Idle : FileSaveState
     data class RequestingSave(val content: FileContent) : FileSaveState
     data class WaitingForUser(val content: FileContent) : FileSaveState
     data object Saving : FileSaveState
-    data object Saved : FileSaveState
-    data class Error(val exception: Exception) : FileSaveState
+
+    sealed interface Saved : FileSaveState {
+        data object UserPicked : Saved
+        data object FallbackLocation : Saved
+    }
+
+    data class Error(val error: ExternalAttachmentErrorResult) : FileSaveState
 }

@@ -162,6 +162,7 @@
     <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
     <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
     <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
+    <string name="composer_error_send_draft_attachments_conversion_error">Unable to convert attachment. Please upload again.</string>
     <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
     <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
     <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>

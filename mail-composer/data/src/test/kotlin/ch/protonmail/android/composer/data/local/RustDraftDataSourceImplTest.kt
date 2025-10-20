@@ -48,11 +48,13 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.AttachmentDataResult
+import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftExpirationError
@@ -1019,6 +1021,35 @@ class RustDraftDataSourceImplTest {
 
         // Then
         assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `ignore recipients updates when callback is fired after rust draft was already closed`() = runTest {
+        // Given
+        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>(relaxed = true)
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            toRecipientsWrapper = toRecipientsWrapperMock
+        )
+
+        // Setup: initially cache returns a valid draft
+        val callbackSlot = slot<ComposerRecipientValidationCallback>()
+        every { draftCache.get() } returns expectedDraftWrapper
+        coEvery { toRecipientsWrapperMock.registerCallback(capture(callbackSlot)) } just Runs
+        coEvery { toRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { toRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
+        coEvery { toRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
+
+        dataSource.updateToRecipients(emptyList())
+
+        every { draftCache.get() } answers { throw IllegalStateException("No draft cached") }
+
+        // When
+        callbackSlot.captured.onUpdate()
+
+        // Then
+        dataSource.observeRecipientsValidationEvents().test {
+            expectNoEvents()
+        }
     }
 
     private fun expectDraftWrapperReturns(

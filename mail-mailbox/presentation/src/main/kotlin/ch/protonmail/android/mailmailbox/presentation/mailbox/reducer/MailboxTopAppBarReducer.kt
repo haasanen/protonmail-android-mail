@@ -52,6 +52,7 @@ class MailboxTopAppBarReducer @Inject constructor() {
             MailboxViewAction.SnoozeDismissed -> currentState.toNewStateForExitSelectionMode()
 
             is MailboxViewAction.ExitSearchMode -> currentState.toNewStateForExitSearchMode()
+            is MailboxViewAction.SearchQuery -> currentState.toSearchModeQuery(operation)
             is MailboxViewAction.EnterSearchMode -> currentState.toNewStateForEnterSearchMode()
             is MailboxEvent.PrimaryAccountAvatarChanged -> currentState.toNewStateForAccountAvatarChanged(operation)
             is MailboxEvent.AllItemsDeselected -> currentState.toNewStateForAllItemsDeselected()
@@ -87,6 +88,11 @@ class MailboxTopAppBarReducer @Inject constructor() {
         is MailboxTopAppBarState.Data.DefaultMode ->
             MailboxTopAppBarState.Data.SearchMode(currentLabelName, primaryAvatarItem, "")
 
+        else -> this
+    }
+
+    private fun MailboxTopAppBarState.toSearchModeQuery(operation: MailboxViewAction.SearchQuery) = when (this) {
+        is MailboxTopAppBarState.Data.SearchMode -> this.copy(searchQuery = operation.query)
         else -> this
     }
 

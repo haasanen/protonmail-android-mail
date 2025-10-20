@@ -18,46 +18,47 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.mailmessage.data.local.RustMessageListQueryImpl.Companion.NONE_FOLLOWUP_GRACE_MS
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
+import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
+import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
+import io.mockk.Called
+import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Rule
+import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import kotlin.test.Test
-import arrow.core.left
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.mailmessage.data.local.RustMessageListQueryImpl.Companion.NONE_FOLLOWUP_GRACE_MS
-import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
-import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
-import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
-import ch.protonmail.android.mailpagination.domain.model.PaginationError
-import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import io.mockk.Called
-import io.mockk.CapturingSlot
-import io.mockk.verify
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.junit.Assert.assertEquals
-import uniffi.proton_mail_uniffi.Message
 
 class RustMessageListQueryImplTest {
 
@@ -140,6 +141,7 @@ class RustMessageListQueryImplTest {
                 session = session,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
+                includeSpamAndTrash = false,
                 callback = capture(callback)
             )
         } returns paginator.right()
@@ -160,7 +162,13 @@ class RustMessageListQueryImplTest {
 
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            createRustMessagesPaginator(session, inboxLabelId.toLocalLabelId(), false, capture(callback))
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
+            )
         } returns paginator.right()
 
         // When
@@ -179,7 +187,13 @@ class RustMessageListQueryImplTest {
 
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            createRustMessagesPaginator(session, inboxLabelId.toLocalLabelId(), false, capture(callback))
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
+            )
         } returns paginator.right()
 
         // When
@@ -199,7 +213,13 @@ class RustMessageListQueryImplTest {
 
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            createRustMessagesPaginator(session, inboxLabelId.toLocalLabelId(), false, capture(callback))
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
+            )
         } returns paginator.right()
 
         // When
@@ -208,7 +228,12 @@ class RustMessageListQueryImplTest {
 
         // Then
         coVerify(exactly = 1) {
-            createRustMessagesPaginator(session, inboxLabelId.toLocalLabelId(), false, any())
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false, callback = any()
+            )
         }
     }
 
@@ -225,14 +250,20 @@ class RustMessageListQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustMessagesPaginator(
-                session,
-                inboxLabelId.toLocalLabelId(), false, capture(callback)
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
             )
         } returns paginator.right()
         coEvery {
             createRustMessagesPaginator(
-                session,
-                archive.toLocalLabelId(), false, capture(callback)
+                session = session,
+                labelId = archive.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
             )
         } returns paginator.right()
 
@@ -243,15 +274,21 @@ class RustMessageListQueryImplTest {
         // Then
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session,
-                inboxLabelId.toLocalLabelId(), false, any()
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = any()
             )
         }
         coVerify { paginator.destroy() }
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session,
-                archive.toLocalLabelId(), false, any()
+                session = session,
+                labelId = archive.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = any()
             )
         }
     }
@@ -268,14 +305,20 @@ class RustMessageListQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustMessagesPaginator(
-                session,
-                inboxLabelId.toLocalLabelId(), false, capture(callback)
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
             )
         } returns paginator.right()
         coEvery {
             createRustMessagesPaginator(
-                session,
-                inboxLabelId.toLocalLabelId(), true, capture(callback)
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = true,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
             )
         } returns paginator.right()
 
@@ -286,12 +329,81 @@ class RustMessageListQueryImplTest {
         // Then
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session, inboxLabelId.toLocalLabelId(), false, any()
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = any()
             )
         }
         coVerify { paginator.destroy() }
         coVerify(exactly = 1) {
-            createRustMessagesPaginator(session, inboxLabelId.toLocalLabelId(), true, any())
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = true,
+                includeSpamAndTrash = false,
+                callback = any()
+            )
+        }
+    }
+
+    @Test
+    fun `reinitialises paginator when includeSpamTrash changes`() = runTest {
+        // Given
+        val firstKey = PageKey.DefaultPageKey(
+            labelId = inboxLabelId,
+            readStatus = ReadStatus.All,
+            showSpamTrash = ShowSpamTrash.Hide
+        )
+        val secondKey = firstKey.copy(showSpamTrash = ShowSpamTrash.Show)
+
+        val callback = slot<MessageScrollerLiveQueryCallback>()
+        val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
+            )
+        } returns paginator.right()
+        coEvery {
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = true,
+                callback = capture(callback)
+            )
+        } returns paginator.right()
+
+        // When
+        rustMessageListQuery.getMessages(userId, firstKey)
+        rustMessageListQuery.getMessages(userId, secondKey)
+
+        // Then
+        coVerify(exactly = 1) {
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = any()
+            )
+        }
+        coVerify { paginator.destroy() }
+        coVerify(exactly = 1) {
+            createRustMessagesPaginator(
+                session = session,
+                labelId = inboxLabelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = true,
+                callback = any()
+            )
         }
     }
 
@@ -304,7 +416,12 @@ class RustMessageListQueryImplTest {
 
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            createRustSearchPaginator(session = session, keyword = "invoice", callback = capture(callback))
+            createRustSearchPaginator(
+                session = session,
+                keyword = "invoice",
+                includeSpamAndTrash = false,
+                callback = capture(callback)
+            )
         } returns paginator.right()
 
         // When
@@ -326,11 +443,11 @@ class RustMessageListQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustSearchPaginator(
-                session, "invoice", capture(callback)
+                session, "invoice", includeSpamAndTrash = false, capture(callback)
             )
         } returns paginator.right()
         coEvery {
-            createRustSearchPaginator(session, "report", capture(callback))
+            createRustSearchPaginator(session, "report", includeSpamAndTrash = false, capture(callback))
         } returns paginator.right()
 
         // When
@@ -338,9 +455,9 @@ class RustMessageListQueryImplTest {
         rustMessageListQuery.getMessages(userId, key2)
 
         // Then
-        coVerify(exactly = 1) { createRustSearchPaginator(session, "invoice", any()) }
+        coVerify(exactly = 1) { createRustSearchPaginator(session, "invoice", includeSpamAndTrash = false, any()) }
         coVerify { paginator.destroy() }
-        coVerify(exactly = 1) { createRustSearchPaginator(session, "report", any()) }
+        coVerify(exactly = 1) { createRustSearchPaginator(session, "report", includeSpamAndTrash = false, any()) }
     }
 
     @Test
@@ -355,7 +472,11 @@ class RustMessageListQueryImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustMessagesPaginator(
-                session, labelId.toLocalLabelId(), false, capture(callback)
+                session = session,
+                labelId = labelId.toLocalLabelId(),
+                unread = false,
+                includeSpamAndTrash = false,
+                callback = capture(callback)
             )
         } returns paginator.right()
         coEvery { invalidationRepository.submit(PageInvalidationEvent.MessagesInvalidated) } just Runs
@@ -397,6 +518,7 @@ class RustMessageListQueryImplTest {
                 session = session,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
+                includeSpamAndTrash = false,
                 callback = capture(callback)
             )
         } returns paginator.right()
@@ -434,6 +556,7 @@ class RustMessageListQueryImplTest {
                 session = session,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
+                includeSpamAndTrash = false,
                 callback = capture(callback)
             )
         } returns paginator.right()

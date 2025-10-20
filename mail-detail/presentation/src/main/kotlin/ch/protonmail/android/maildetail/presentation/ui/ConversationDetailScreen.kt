@@ -68,7 +68,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -434,9 +433,13 @@ fun ConversationDetailScreen(
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.onComposeNewMessage(it.address)
                         },
-                        onBlockClicked = {
+                        onBlockClicked = { participant, messageId ->
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
+                            actions.showFeatureMissingSnackbar() // ET-5092
+                        },
+                        onUnblockClicked = { participant, messageId ->
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                            actions.showFeatureMissingSnackbar() // ET-5092
                         }
                     )
                 )
@@ -533,11 +536,12 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.OpenInProtonCalendar(MessageId(it.id)))
                 },
                 onPrint = { viewModel.submit(ConversationDetailViewAction.PrintMessage(context, it)) },
-                onAvatarClicked = { participantUiModel, avatarUiModel ->
+                onAvatarClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
                     viewModel.submit(
                         ConversationDetailViewAction.RequestContactActionsBottomSheet(
                             participantUiModel,
-                            avatarUiModel
+                            avatarUiModel,
+                            messageIdUiModel
                         )
                     )
                 },
@@ -545,11 +549,12 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.OnAvatarImageLoadRequested(avatarUiModel))
                 },
                 onOpenComposer = { actions.openComposerForDraftMessage(MessageId(it.id)) },
-                onParticipantClicked = { participantUiModel, avatarUiModel ->
+                onParticipantClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
                     viewModel.submit(
                         ConversationDetailViewAction.RequestContactActionsBottomSheet(
                             participantUiModel,
-                            avatarUiModel
+                            avatarUiModel,
+                            messageIdUiModel
                         )
                     )
                 },
@@ -611,9 +616,10 @@ fun ConversationDetailScreen(
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
 
     val context = LocalContext.current
-    val fileSavedString = stringResource(R.string.file_saved)
+
     val fileSaver = fileSaver(
-        onFileSaved = { Toast.makeText(context, fileSavedString, Toast.LENGTH_SHORT).show() }
+        onFileSaved = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() },
+        onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
     )
 
     val openAttachment = fileOpener()
@@ -1175,9 +1181,9 @@ object ConversationDetailScreen {
         val onOpenInProtonCalendar: (MessageIdUiModel) -> Unit,
         val onOpenComposer: (MessageIdUiModel) -> Unit,
         val onPrint: (MessageId) -> Unit,
-        val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onAvatarClicked: (ParticipantUiModel, AvatarUiModel, MessageIdUiModel?) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
-        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
+        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel?) -> Unit,
         val onTrashedMessagesBannerClick: () -> Unit,
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
@@ -1234,9 +1240,9 @@ object ConversationDetailScreen {
                 onOpenInProtonCalendar = {},
                 onOpenComposer = {},
                 onPrint = { _ -> },
-                onAvatarClicked = { _, _ -> },
+                onAvatarClicked = { _, _, _ -> },
                 onAvatarImageLoadRequested = {},
-                onParticipantClicked = { _, _ -> },
+                onParticipantClicked = { _, _, _ -> },
                 onTrashedMessagesBannerClick = {},
                 onMarkMessageAsLegitimate = { _, _ -> },
                 onUnblockSender = { _, _ -> },

@@ -19,12 +19,11 @@
 package ch.protonmail.android.mailmessage.data.wrapper
 
 import arrow.core.Either
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 
 interface MessagePaginatorWrapper {
 
-    val params: PaginatorParams
+    val supportsIncludeFilter: Boolean
 
     suspend fun nextPage(): Either<PaginationError, Unit>
 

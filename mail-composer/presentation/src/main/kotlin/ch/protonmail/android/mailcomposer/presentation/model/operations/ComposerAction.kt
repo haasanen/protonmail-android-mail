@@ -38,7 +38,6 @@ internal sealed interface ComposerAction : ComposerStateOperation {
     data object CancelSendWithNoSubject : ComposerAction
 
     data object ConfirmSendExpirationSetToExternal : ComposerAction
-    data object CancelSendExpirationSetToExternal : ComposerAction
 
     data object ClearSendingError : ComposerAction
 
@@ -52,6 +51,8 @@ internal sealed interface ComposerAction : ComposerStateOperation {
     data class AddFileAttachments(val uriList: List<Uri>) : ComposerAction
     data class RemoveAttachment(val attachmentId: AttachmentId) : ComposerAction
     data class RemoveInlineAttachment(val contentId: String) : ComposerAction
+    data class InlineAttachmentDeletedFromBody(val contentId: String) : ComposerAction
+    data class ConvertInlineToAttachment(val contentId: String) : ComposerAction
 
     data object DiscardDraftRequested : ComposerAction
     data object DiscardDraftConfirmed : ComposerAction

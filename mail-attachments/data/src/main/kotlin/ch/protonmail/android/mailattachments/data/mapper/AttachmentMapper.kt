@@ -20,10 +20,12 @@ package ch.protonmail.android.mailattachments.data.mapper
 
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMimeType
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
+import ch.protonmail.android.mailattachments.domain.model.ConvertAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.MimeTypeCategory
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDisposition
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
@@ -31,6 +33,9 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMimeType
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeTypeCategory
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
+import uniffi.proton_mail_uniffi.DraftAttachmentDispositionSwapError
+import uniffi.proton_mail_uniffi.DraftAttachmentDispositionSwapErrorReason
+import uniffi.proton_mail_uniffi.DraftAttachmentError
 import uniffi.proton_mail_uniffi.DraftAttachmentState
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
@@ -92,7 +97,19 @@ fun DraftAttachmentState.toAttachmentState(): AttachmentState = when (this) {
     DraftAttachmentState.Uploading -> AttachmentState.Uploading
     DraftAttachmentState.Pending -> AttachmentState.Pending
     DraftAttachmentState.Offline -> AttachmentState.Pending
-    is DraftAttachmentState.Error -> AttachmentState.Error(this.v1.toAttachmentError())
+    is DraftAttachmentState.Error -> AttachmentState.Error(this.v1.toDraftAttachmentError())
+}
+
+fun DraftAttachmentError.toDraftAttachmentError(): AttachmentError = when (val result = this) {
+    is DraftAttachmentError.DispositionSwap -> when (val result = this.v1) {
+        is DraftAttachmentDispositionSwapError.Other ->
+            AttachmentError.AddAttachment(AddAttachmentError.Other(result.v1.toDataError()))
+
+        is DraftAttachmentDispositionSwapError.Reason ->
+            AttachmentError.ConvertInlineToAttachment(result.toConvertAttachmentError())
+    }
+
+    is DraftAttachmentError.Upload -> AttachmentError.AddAttachment(result.v1.toAttachmentError())
 }
 
 fun DraftAttachmentUploadError.toAttachmentError(): AddAttachmentError = when (this) {
@@ -101,6 +118,7 @@ fun DraftAttachmentUploadError.toAttachmentError(): AddAttachmentError = when (t
         DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
         DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
         DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> AddAttachmentError.InvalidDraftMessage
+
         DraftAttachmentUploadErrorReason.CRYPTO -> AddAttachmentError.EncryptionError
         DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> AddAttachmentError.AttachmentTooLarge
         DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> AddAttachmentError.TooManyAttachments
@@ -110,3 +128,16 @@ fun DraftAttachmentUploadError.toAttachmentError(): AddAttachmentError = when (t
     }
 }
 
+fun DraftAttachmentDispositionSwapError.Reason.toConvertAttachmentError() = when (this.v1) {
+    DraftAttachmentDispositionSwapErrorReason.INVALID_STATE -> ConvertAttachmentError.InvalidState
+
+    DraftAttachmentDispositionSwapErrorReason.NOOP -> ConvertAttachmentError.Noop
+
+    DraftAttachmentDispositionSwapErrorReason.ATTACHMENT_DOES_NOT_EXIST -> ConvertAttachmentError.AttachmentNotExisting
+
+    DraftAttachmentDispositionSwapErrorReason.ATTACHMENT_MESSAGE_DOES_NOT_EXIST ->
+        ConvertAttachmentError.MessageNotExisting
+
+    DraftAttachmentDispositionSwapErrorReason.ATTACHMENT_MESSAGE_IS_NOT_A_DRAFT ->
+        ConvertAttachmentError.AttachmentMessageIsNotADraft
+}

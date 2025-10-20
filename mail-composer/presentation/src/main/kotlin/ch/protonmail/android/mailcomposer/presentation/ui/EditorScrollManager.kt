@@ -25,8 +25,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasur
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import timber.log.Timber
 
-private val MIN_SCROLL_CHANGE = 100.dp
-
 class EditorScrollManager(
     val onUpdateScroll: (Dp) -> Unit
 ) {
@@ -38,11 +36,6 @@ class EditorScrollManager(
         Timber.tag("composer-scroll").d("WebView measures: $webViewMeasures")
 
         val sizeDeltaDp = calculateWebViewSizeDelta(webViewMeasures)
-
-        if (sizeDeltaDp > MIN_SCROLL_CHANGE) {
-            Timber.tag("composer-scroll").d("WebView height update is more than threshold (assuming init ongoing)")
-            return
-        }
 
         if (cursorIsNotInFocus(screenMeasure, webViewMeasures)) {
             val scrollToCursor = calculateScrollToCursor(webViewMeasures, screenMeasure)

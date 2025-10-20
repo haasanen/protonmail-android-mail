@@ -54,6 +54,7 @@ android {
         applicationId = AppConfiguration.applicationId.get()
         minSdk = AppConfiguration.minSdk.get()
         targetSdk = AppConfiguration.targetSdk.get()
+        ndkVersion = AppConfiguration.ndkVersion.get()
         versionCode = AppConfiguration.versionCode.get()
         versionName = AppConfiguration.versionName.get()
 

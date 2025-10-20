@@ -39,6 +39,9 @@ object SendErrorReasonMapper {
         SendErrorReason.ErrorNoMessage.AttachmentUploadFailureRetriable ->
             context.getString(R.string.composer_error_send_draft_attachments_error)
 
+        SendErrorReason.ErrorNoMessage.AttachmentConversionFailure ->
+            context.getString(R.string.composer_error_send_draft_attachments_conversion_error)
+
         SendErrorReason.ErrorNoMessage.ExpirationTimeTooSoon ->
             context.getString(R.string.composer_error_send_draft_expiration_time_too_soon)
 

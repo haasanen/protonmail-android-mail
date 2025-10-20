@@ -32,6 +32,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomShe
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
@@ -141,6 +142,12 @@ sealed interface ManageAccountSheetState : BottomSheetContentState {
 sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
 
     @Stable
+    sealed interface Origin {
+        data class MessageDetails(val messageId: MessageId) : Origin
+        data object Unknown : Origin
+    }
+
+    @Stable
     data class ContactActionsGroups(
         val firstGroup: ImmutableList<ContactActionUiModel>,
         val secondGroup: ImmutableList<ContactActionUiModel>,
@@ -150,7 +157,8 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
     data class Data(
         val participant: Participant,
         val avatarUiModel: AvatarUiModel?,
-        val actions: ContactActionsGroups
+        val actions: ContactActionsGroups,
+        val origin: Origin
     ) : ContactActionsBottomSheetState
 
     data object Loading : ContactActionsBottomSheetState
@@ -161,7 +169,10 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
         data class ActionData(
             val participant: Participant,
             val avatarUiModel: AvatarUiModel?,
-            val contactId: ContactId?
+            val contactId: ContactId?,
+            val origin: Origin,
+            val isSenderBlocked: Boolean,
+            val isPrimaryUserAddress: Boolean
         ) : ContactActionsBottomSheetEvent
     }
 }

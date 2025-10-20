@@ -16,14 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.model
+package ch.protonmail.android.maildetail.domain.usecase
 
-import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.data.mapper.LocalUserId
+import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-data class PaginatorParams(
-    val userId: LocalUserId,
-    val labelId: LocalLabelId? = null,
-    val unread: Boolean? = null,
-    val keyword: String? = null
-)
+class BlockSender @Inject constructor(
+    private val messageRepository: MessageRepository
+) {
+
+    suspend operator fun invoke(userId: UserId, email: String) = messageRepository.blockSender(userId, email)
+}

@@ -242,7 +242,9 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.Star affects listOf(Conversation, BottomSheet),
             ConversationDetailViewAction.UnStar affects listOf(Conversation, BottomSheet),
             ConversationDetailViewAction.RequestConversationLabelAsBottomSheet affects BottomSheet,
-            ConversationDetailViewAction.RequestContactActionsBottomSheet(participant, avatar) affects BottomSheet,
+            ConversationDetailViewAction.RequestContactActionsBottomSheet(
+                participant, avatar, null
+            ) affects BottomSheet,
             ConversationDetailViewAction.LabelAsCompleted(
                 wasArchived = false,
                 entryPoint = LabelAsBottomSheetEntryPoint.Conversation

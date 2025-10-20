@@ -51,6 +51,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
+import ch.protonmail.android.maildetail.domain.usecase.BlockSender
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -219,6 +220,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation,
     private val markMessageAsLegitimate: MarkMessageAsLegitimate,
     private val unblockSender: UnblockSender,
+    private val blockSender: BlockSender,
     private val cancelScheduleSendMessage: CancelScheduleSendMessage,
     private val printMessage: PrintMessage,
     private val getRsvpEvent: GetRsvpEvent,
@@ -419,7 +421,8 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed ->
                 handleMarkMessageAsLegitimateConfirmed(action)
 
-            is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action.messageId, action.email)
+            is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action)
+            is ConversationDetailViewAction.BlockSender -> handleBlockSender(action)
             is ConversationDetailViewAction.EditScheduleSendMessageConfirmed -> handleEditScheduleSendMessage(action)
             is ConversationDetailViewAction.PrintMessage -> handlePrintMessage(action.context, action.messageId)
             is ConversationDetailViewAction.RetryRsvpEventLoading ->
@@ -811,6 +814,13 @@ class ConversationDetailViewModel @Inject constructor(
             val userId = primaryUserId.first()
             val contact = findContactByEmail(userId, action.participant.participantAddress)
 
+            val primaryUserAddress = observePrimaryUserAddress().first()
+            val isPrimaryUserAddress = primaryUserAddress == action.participant.participantAddress
+
+            // Rust does not provide an API to check if a sender is blocked. Therefore,
+            // we get this data from message banners temporarily
+            val senderBlocked = action.messageId?.let { isSenderBlockedForMessage(MessageId(it.id)) } ?: false
+
             val event = ConversationDetailEvent.ConversationBottomSheetEvent(
                 ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
                     participant = Participant(
@@ -818,7 +828,14 @@ class ConversationDetailViewModel @Inject constructor(
                         name = action.participant.participantName
                     ),
                     avatarUiModel = action.avatarUiModel,
-                    contactId = contact?.id
+                    contactId = contact?.id,
+                    origin = action.messageId?.let {
+                        ContactActionsBottomSheetState.Origin.MessageDetails(
+                            MessageId(action.messageId.id)
+                        )
+                    } ?: ContactActionsBottomSheetState.Origin.Unknown,
+                    isSenderBlocked = senderBlocked,
+                    isPrimaryUserAddress = isPrimaryUserAddress
                 )
             )
             emitNewStateFrom(event)
@@ -1652,15 +1669,31 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleUnblockSender(messageId: MessageIdUiModel, email: String) = viewModelScope.launch {
+    private fun handleUnblockSender(action: ConversationDetailViewAction.UnblockSender) = viewModelScope.launch {
         viewModelScope.launch {
             unblockSender(
                 userId = primaryUserId.first(),
-                email = email
+                email = action.email
             ).fold(
-                ifLeft = { Timber.e("Failed to unblock sender in message ${messageId.id}") },
-                ifRight = { setOrRefreshMessageBody(messageId) }
+                ifLeft = { Timber.e("Failed to unblock sender in message ${action.messageId?.id}") },
+                ifRight = { action.messageId?.let { setOrRefreshMessageBody(it) } }
             )
+
+            emitNewStateFrom(action)
+        }
+    }
+
+    private fun handleBlockSender(action: ConversationDetailViewAction.BlockSender) = viewModelScope.launch {
+        viewModelScope.launch {
+            blockSender(
+                userId = primaryUserId.first(),
+                email = action.email
+            ).fold(
+                ifLeft = { Timber.e("Failed to block sender in message ${action.messageId?.id}") },
+                ifRight = { action.messageId?.let { setOrRefreshMessageBody(it) } }
+            )
+
+            emitNewStateFrom(action)
         }
     }
 
@@ -1714,6 +1747,15 @@ class ConversationDetailViewModel @Inject constructor(
                 ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
             )
         }
+    }
+
+    private fun isSenderBlockedForMessage(messageId: MessageId): Boolean {
+        val messagesState = mutableDetailState.value.messagesState
+        return if (messagesState is ConversationDetailsMessagesState.Data) {
+            messagesState.messages.firstOrNull { it.messageId.id == messageId.id }?.let {
+                (it as? ConversationDetailMessageUiModel.Expanded)?.messageBannersUiModel?.shouldShowBlockedSenderBanner
+            } ?: false
+        } else false
     }
 
     /**

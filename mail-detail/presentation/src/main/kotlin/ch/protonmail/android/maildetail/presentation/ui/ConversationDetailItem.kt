@@ -226,8 +226,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
         onMore = actions.onMoreMessageActionsClick,
         onAvatarClicked = actions.onAvatarClicked,
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
-        onParticipantClicked = { participantUiModel, avatarUiModel ->
-            actions.onParticipantClicked(participantUiModel, avatarUiModel)
+        onParticipantClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
+            actions.onParticipantClicked(participantUiModel, avatarUiModel, messageIdUiModel)
         },
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
         onCollapseMessage = actions.onCollapse
@@ -399,9 +399,9 @@ object ConversationDetailItem {
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
         val onOpenInProtonCalendar: (MessageIdUiModel) -> Unit,
         val onPrint: (MessageId) -> Unit,
-        val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onAvatarClicked: (ParticipantUiModel, AvatarUiModel, MessageIdUiModel?) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
-        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
+        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel?) -> Unit,
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
         val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit,
@@ -434,9 +434,9 @@ object ConversationDetailItem {
         {},
         {},
         {},
-        { model: ParticipantUiModel, model1: AvatarUiModel -> },
+        { model: ParticipantUiModel, model1: AvatarUiModel, message: MessageIdUiModel? -> },
         {},
-        { model: ParticipantUiModel, model1: AvatarUiModel? -> },
+        { participant: ParticipantUiModel, avatar: AvatarUiModel?, message: MessageIdUiModel? -> },
         { model: MessageIdUiModel, bool: Boolean -> },
         { model: MessageIdUiModel, string: String -> },
         { model: MessageIdUiModel -> },

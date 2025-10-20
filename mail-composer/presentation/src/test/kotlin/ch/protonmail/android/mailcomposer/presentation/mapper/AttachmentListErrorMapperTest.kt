@@ -19,9 +19,9 @@
 package ch.protonmail.android.mailcomposer.presentation.mapper
 
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
@@ -30,7 +30,7 @@ import kotlin.test.assertEquals
 
 class AttachmentListErrorMapperTest {
 
-    private fun createAttachmentWithError(reason: AddAttachmentError): AttachmentMetadataWithState {
+    private fun createAttachmentWithError(reason: AttachmentError): AttachmentMetadataWithState {
         val item = mockk<AttachmentMetadataWithState>()
         every { item.attachmentState } returns AttachmentState.Error(reason)
         return item
@@ -52,66 +52,69 @@ class AttachmentListErrorMapperTest {
     @Test
     fun `returns TooManyAttachments error when present`() {
         // Given
-        val attachment = createAttachmentWithError(AddAttachmentError.TooManyAttachments)
+        val attachment = createAttachmentWithError(AttachmentError.AddAttachment(AddAttachmentError.TooManyAttachments))
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
 
         // Then
-        assertEquals(AttachmentAddError.TooManyAttachments, result?.error)
+        assertEquals(AddAttachmentError.TooManyAttachments, result?.error)
         assertEquals(listOf(attachment), result?.failedAttachments)
     }
 
     @Test
     fun `returns AttachmentTooLarge when no higher-priority error exists`() {
         // Given
-        val attachment = createAttachmentWithError(AddAttachmentError.AttachmentTooLarge)
+        val attachment = createAttachmentWithError(AttachmentError.AddAttachment(AddAttachmentError.AttachmentTooLarge))
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
 
         // Then
-        assertEquals(AttachmentAddError.AttachmentTooLarge, result?.error)
+        assertEquals(AddAttachmentError.AttachmentTooLarge, result?.error)
         assertEquals(listOf(attachment), result?.failedAttachments)
     }
 
     @Test
     fun `returns InvalidDraftMessage when no higher-priority error exists`() {
         // Given
-        val attachment = createAttachmentWithError(AddAttachmentError.InvalidDraftMessage)
+        val attachment =
+            createAttachmentWithError(AttachmentError.AddAttachment(AddAttachmentError.InvalidDraftMessage))
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
 
         // Then
-        assertEquals(AttachmentAddError.InvalidDraftMessage, result?.error)
+        assertEquals(AddAttachmentError.InvalidDraftMessage, result?.error)
         assertEquals(listOf(attachment), result?.failedAttachments)
     }
 
     @Test
     fun `returns EncryptionError when no higher-priority error exists`() {
         // Given
-        val attachment = createAttachmentWithError(AddAttachmentError.EncryptionError)
+        val attachment = createAttachmentWithError(AttachmentError.AddAttachment(AddAttachmentError.EncryptionError))
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
 
         // Then
-        assertEquals(AttachmentAddError.EncryptionError, result?.error)
+        assertEquals(AddAttachmentError.EncryptionError, result?.error)
         assertEquals(listOf(attachment), result?.failedAttachments)
     }
 
     @Test
     fun `returns highest priority error when multiple errors exist`() {
         // Given
-        val tooManyAttachment = createAttachmentWithError(AddAttachmentError.TooManyAttachments)
-        val encryptionError = createAttachmentWithError(AddAttachmentError.EncryptionError)
+        val tooManyAttachment =
+            createAttachmentWithError(AttachmentError.AddAttachment(AddAttachmentError.TooManyAttachments))
+        val encryptionError =
+            createAttachmentWithError(AttachmentError.AddAttachment(AddAttachmentError.EncryptionError))
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(tooManyAttachment, encryptionError))
 
         // Then
-        assertEquals(AttachmentAddError.TooManyAttachments, result?.error)
+        assertEquals(AddAttachmentError.TooManyAttachments, result?.error)
         assertEquals(listOf(tooManyAttachment), result?.failedAttachments)
     }
 }

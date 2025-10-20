@@ -37,6 +37,7 @@ abstract class ConfigExtension(project: Project) {
     abstract val compileSdk: Property<Int>
     abstract val minSdk: Property<Int>
     abstract val targetSdk: Property<Int>
+    abstract val ndkVersion: Property<String>
     abstract val testInstrumentationRunner: Property<String>
     abstract val versionCode: Property<Int>
     abstract val versionName: Property<String>
@@ -52,6 +53,7 @@ abstract class ConfigExtension(project: Project) {
         compileSdk.convention(properties.getProperty("compileSdk").toInt())
         minSdk.convention(properties.getProperty("minSdk").toInt())
         targetSdk.convention(properties.getProperty("targetSdk").toInt())
+        ndkVersion.convention(properties.getProperty("ndkVersion"))
         testInstrumentationRunner.convention(properties.getProperty("testInstrumentationRunner"))
         versionCode.convention(properties.getProperty("versionCode").toInt())
         versionName.convention(properties.getProperty("versionName"))

@@ -64,8 +64,7 @@ fun UnreadItemsFilter(
             FilterChip(
                 modifier = modifier
                     .animateContentSize(
-                        animationSpec =
-                        spring(
+                        animationSpec = spring(
                             stiffness = StiffnessHigh,
                             dampingRatio = DampingRatioLowBouncy,
                             visibilityThreshold = IntSize.VisibilityThreshold
@@ -126,7 +125,7 @@ private fun addCloseIconForEnabledState(state: UnreadFilterState.Data): @Composa
                 modifier = Modifier.size(ProtonDimens.IconSize.Medium),
                 painter = painterResource(R.drawable.ic_proton_cross_small),
                 contentDescription = null,
-                tint = ProtonTheme.colors.iconNorm
+                tint = ProtonTheme.colors.brandPlus30
             )
         }
     } else {

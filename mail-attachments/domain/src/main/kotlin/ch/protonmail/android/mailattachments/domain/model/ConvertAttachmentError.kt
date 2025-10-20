@@ -16,13 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.model
+package ch.protonmail.android.mailattachments.domain.model
 
-sealed interface AttachmentAddError {
-    data object AttachmentTooLarge : AttachmentAddError
-    data object TooManyAttachments : AttachmentAddError
-    data object InvalidDraftMessage : AttachmentAddError
-    data object EncryptionError : AttachmentAddError
-    data object RetryUpload : AttachmentAddError
-    data object Unknown : AttachmentAddError
+import ch.protonmail.android.mailcommon.domain.model.DataError
+
+sealed interface ConvertAttachmentError {
+
+    data object InvalidState : ConvertAttachmentError
+    data object Noop : ConvertAttachmentError
+    data object AttachmentNotExisting : ConvertAttachmentError
+    data object MessageNotExisting : ConvertAttachmentError
+    data object AttachmentMessageIsNotADraft : ConvertAttachmentError
+
+    data class Other(val error: DataError) : ConvertAttachmentError
 }

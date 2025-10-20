@@ -19,12 +19,13 @@
 package ch.protonmail.android.mailcomposer.presentation.mapper.modifications
 
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -132,7 +133,7 @@ internal class EffectsStateModificationTest(
             arrayOf(
                 "shows attachments unexpected",
                 initialState,
-                RecoverableError.AttachmentsStore(AttachmentAddError.InvalidDraftMessage),
+                RecoverableError.AttachmentsStore(AddAttachmentError.InvalidDraftMessage),
                 initialState.copy(
                     error = Effect.of(TextUiModel.TextRes(R.string.composer_unexpected_attachments_error))
                 )
@@ -140,13 +141,13 @@ internal class EffectsStateModificationTest(
             arrayOf(
                 "shows attachments number exceeded error",
                 initialState,
-                RecoverableError.AttachmentsStore(AttachmentAddError.TooManyAttachments),
+                RecoverableError.AttachmentsStore(AddAttachmentError.TooManyAttachments),
                 initialState.copy(error = Effect.of(TextUiModel.TextRes(R.string.composer_too_many_attachments_error)))
             ),
             arrayOf(
                 "show file size exceeded error",
                 initialState,
-                RecoverableError.AttachmentsStore(AttachmentAddError.AttachmentTooLarge),
+                RecoverableError.AttachmentsStore(AddAttachmentError.AttachmentTooLarge),
                 initialState.copy(attachmentsFileSizeExceeded = Effect.of(emptyList()))
             ),
             arrayOf(
@@ -289,7 +290,7 @@ internal class EffectsStateModificationTest(
                 initialState,
                 RecoverableError.AttachmentsListChangedWithError(
                     AttachmentAddErrorWithList(
-                        error = AttachmentAddError.TooManyAttachments,
+                        error = AddAttachmentError.TooManyAttachments,
                         failedAttachments = listOf(
                             errorAttachment(AddAttachmentError.TooManyAttachments)
                         )
@@ -304,7 +305,7 @@ internal class EffectsStateModificationTest(
                 initialState,
                 RecoverableError.AttachmentsListChangedWithError(
                     AttachmentAddErrorWithList(
-                        error = AttachmentAddError.AttachmentTooLarge,
+                        error = AddAttachmentError.AttachmentTooLarge,
                         failedAttachments = listOf(
                             errorAttachment(AddAttachmentError.AttachmentTooLarge)
                         )
@@ -319,7 +320,7 @@ internal class EffectsStateModificationTest(
                 initialState,
                 RecoverableError.AttachmentsListChangedWithError(
                     AttachmentAddErrorWithList(
-                        error = AttachmentAddError.EncryptionError,
+                        error = AddAttachmentError.EncryptionError,
                         failedAttachments = listOf(
                             errorAttachment(AddAttachmentError.EncryptionError)
                         )
@@ -334,7 +335,7 @@ internal class EffectsStateModificationTest(
                 initialState,
                 RecoverableError.AttachmentsListChangedWithError(
                     AttachmentAddErrorWithList(
-                        error = AttachmentAddError.InvalidDraftMessage,
+                        error = AddAttachmentError.InvalidDraftMessage,
                         failedAttachments = listOf(
                             errorAttachment(AddAttachmentError.InvalidDraftMessage)
                         )
@@ -349,11 +350,9 @@ internal class EffectsStateModificationTest(
                 initialState,
                 RecoverableError.AttachmentsListChangedWithError(
                     AttachmentAddErrorWithList(
-                        error = AttachmentAddError.Unknown,
+                        error = AddAttachmentError.Other(DataError.Local.Unknown),
                         failedAttachments = listOf(
-                            errorAttachment(
-                                AddAttachmentError.AttachmentTooLarge
-                            )
+                            errorAttachment(AddAttachmentError.AttachmentTooLarge)
                         )
                     )
                 ),
@@ -423,7 +422,7 @@ internal class EffectsStateModificationTest(
         private fun errorAttachment(error: AddAttachmentError): AttachmentMetadataWithState =
             AttachmentMetadataWithState(
                 attachmentMetadata = invoiceAttachment,
-                attachmentState = AttachmentState.Error(reason = error)
+                attachmentState = AttachmentState.Error(reason = AttachmentError.AddAttachment(error))
             )
     }
 }

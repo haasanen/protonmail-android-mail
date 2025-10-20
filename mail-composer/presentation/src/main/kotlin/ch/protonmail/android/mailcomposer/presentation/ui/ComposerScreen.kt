@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import android.text.format.Formatter
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -216,7 +215,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 is BottomSheetType.InlineImageActions -> InlineImageActionsBottomSheetContent(
                     contentId = sheetType.contentId,
                     onTransformToAttachment = {
-                        Toast.makeText(context, featureMissingSnackbarMessage, Toast.LENGTH_SHORT).show()
+                        viewModel.submit(ComposerAction.ConvertInlineToAttachment(it))
                     },
                     onRemove = { viewModel.submit(ComposerAction.RemoveInlineAttachment(it)) }
                 )
@@ -372,7 +371,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                             },
                             loadImage = { viewModel.loadImage(it) },
                             onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
-                            onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineAttachment(it)) },
+                            onInlineImageRemoved = {
+                                viewModel.submit(ComposerAction.InlineAttachmentDeletedFromBody(it))
+                            },
                             onInlineImageClicked = { contentId ->
                                 bottomSheetType.value = BottomSheetType.InlineImageActions(contentId)
                                 viewModel.submit(ComposerAction.InlineImageActionsRequested)

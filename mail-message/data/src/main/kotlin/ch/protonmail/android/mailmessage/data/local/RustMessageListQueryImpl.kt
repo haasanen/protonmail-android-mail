@@ -39,6 +39,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -120,6 +121,8 @@ class RustMessageListQueryImpl @Inject constructor(
         }
     }
 
+    override fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter == true
+
     private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {
         Timber.d("rust-message-query: [destroy and] initialize paginator instance...")
         destroy()
@@ -135,12 +138,14 @@ class RustMessageListQueryImpl @Inject constructor(
                 session = session,
                 labelId = pageDescriptor.labelId.toLocalLabelId(),
                 unread = pageDescriptor.unread,
+                includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowSpamTrash.Show,
                 callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
             )
 
             is PageDescriptor.Search -> createRustSearchPaginator(
                 session = session,
                 keyword = pageDescriptor.keyword,
+                includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowSpamTrash.Show,
                 callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
             )
         }.onRight { wrapper ->
@@ -236,24 +241,40 @@ class RustMessageListQueryImpl @Inject constructor(
     }
 
     private sealed interface PageDescriptor {
+
         val userId: UserId
-        data class Default(override val userId: UserId, val labelId: LabelId, val unread: Boolean) : PageDescriptor
-        data class Search(override val userId: UserId, val keyword: String) : PageDescriptor
+
+        data class Default(
+            override val userId: UserId,
+            val labelId: LabelId,
+            val unread: Boolean,
+            val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide
+        ) : PageDescriptor
+
+        data class Search(
+            override val userId: UserId,
+            val keyword: String,
+            val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide
+        ) : PageDescriptor
     }
 
     private fun PageKey.toPageDescriptor(userId: UserId): PageDescriptor = when (this) {
         is PageKey.DefaultPageKey -> PageDescriptor.Default(
             userId = userId,
             labelId = this.labelId,
-            unread = this.readStatus == ReadStatus.Unread
+            unread = this.readStatus == ReadStatus.Unread,
+            showSpamTrash = this.showSpamTrash
         )
+
         is PageKey.PageKeyForSearch -> PageDescriptor.Search(
             userId = userId,
-            keyword = keyword
+            keyword = keyword,
+            showSpamTrash = this.showSpamTrash
         )
     }
 
     companion object {
+
         const val NONE_FOLLOWUP_GRACE_MS = 250L
     }
 }

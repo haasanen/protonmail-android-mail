@@ -50,6 +50,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.IsExpandableLocation
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
@@ -91,6 +92,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MoveResult
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
@@ -193,6 +195,7 @@ class MailboxViewModel @Inject constructor(
     private val observeViewModeChanged: ObserveViewModeChanged,
     private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
     private val terminateConversationPaginator: TerminateConversationPaginator,
+    private val isExpandableLocation: IsExpandableLocation,
     private val eventLoopRepository: EventLoopRepository
 ) : ViewModel() {
 
@@ -268,6 +271,29 @@ class MailboxViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
+        combine(
+            observeLoadedMailLabelId()
+                .mapToExistingLabel()
+                .distinctUntilChanged(),
+            state.observeSearchDataReady()
+        ) { loadedMailLabel, dataReady ->
+            val userId = primaryUserId.filterNotNull().first()
+            val viewMode = if (dataReady) {
+                ViewMode.NoConversationGrouping
+            } else {
+                getCurrentViewModeForLabel(userId, loadedMailLabel.id.labelId)
+            }
+
+            if (isExpandableLocation(viewMode)) {
+                MailboxEvent.ShowSpamTrashFilter
+            } else {
+                MailboxEvent.HideSpamTrashFilter
+            }
+        }
+            .distinctUntilChanged()
+            .onEach { emitNewStateFrom(it) }
+            .launchIn(viewModelScope)
+
         observeAvatarImageStates()
             .onEach { avatarImageStates ->
                 emitNewStateFrom(MailboxEvent.AvatarImageStatesUpdated(avatarImageStates))
@@ -322,7 +348,9 @@ class MailboxViewModel @Inject constructor(
             when (viewAction) {
                 is MailboxViewAction.ExitSelectionMode,
                 is MailboxViewAction.DisableUnreadFilter,
-                is MailboxViewAction.EnableUnreadFilter -> emitNewStateFrom(viewAction)
+                is MailboxViewAction.EnableUnreadFilter,
+                is MailboxViewAction.EnableShowSpamTrashFilter,
+                is MailboxViewAction.DisableShowSpamTrashFilter -> emitNewStateFrom(viewAction)
 
                 is MailboxViewAction.MailboxItemsChanged -> handleMailboxItemChanged(viewAction.itemIds)
                 is MailboxViewAction.OnItemAvatarClicked -> handleOnAvatarClicked(viewAction.item)
@@ -553,9 +581,10 @@ class MailboxViewModel @Inject constructor(
             combine(
                 observeMailLabelChangeRequests(),
                 state.observeUnreadFilterState(),
+                state.observeShowSpamTrashFilterState(),
                 state.observeSearchQuery(),
                 observeViewModeChanged(userId)
-            ) { selectedMailLabel, unreadFilterEnabled, query, _ ->
+            ) { selectedMailLabel, unreadFilterEnabled, showSpamTrashEnabled, query, _ ->
 
                 val isInSearchMode = state.value.isInSearchMode()
                 if (selectedMailLabel != currentMailLabel || currentSearchModeState != isInSearchMode) {
@@ -573,6 +602,7 @@ class MailboxViewModel @Inject constructor(
                     userId = userId,
                     selectedMailLabelId = selectedMailLabel.id,
                     filterUnread = unreadFilterEnabled,
+                    showSpamTrash = showSpamTrashEnabled,
                     type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
                     searchQuery = query
                 )
@@ -1173,12 +1203,21 @@ class MailboxViewModel @Inject constructor(
             .mapNotNull { it?.isFilterEnabled }
             .distinctUntilChanged()
 
+    private fun Flow<MailboxState>.observeShowSpamTrashFilterState() =
+        this.map { it.showSpamTrashIncludeFilterState as? ShowSpamTrashIncludeFilterState.Data }
+            .map { (it as? ShowSpamTrashIncludeFilterState.Data.Shown)?.enabled ?: false }
+            .distinctUntilChanged()
+
     private fun observeMailLabelChangeRequests(): Flow<MailLabel> = observeSelectedMailLabelId()
         .mapToExistingLabel()
         .distinctUntilChanged()
 
     private fun Flow<MailboxState>.observeSearchQuery() = this.map { it.mailboxListState as? MailboxListState.Data }
         .mapNotNull { it?.searchState?.searchQuery }
+        .distinctUntilChanged()
+
+    private fun Flow<MailboxState>.observeSearchDataReady() = this.map { it.mailboxListState as? MailboxListState.Data }
+        .map { it?.searchState?.hasData() ?: false }
         .distinctUntilChanged()
 
     private fun MailboxState.isInSearchMode() =
@@ -1215,6 +1254,7 @@ class MailboxViewModel @Inject constructor(
             mailboxListState = MailboxListState.Loading,
             topAppBarState = MailboxTopAppBarState.Loading,
             unreadFilterState = UnreadFilterState.Loading,
+            showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Loading,
             bottomAppBarState = BottomBarState.Data.Hidden(
                 BottomBarTarget.Mailbox,
                 emptyList<ActionUiModel>().toImmutableList()

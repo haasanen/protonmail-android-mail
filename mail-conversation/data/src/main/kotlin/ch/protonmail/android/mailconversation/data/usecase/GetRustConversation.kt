@@ -35,8 +35,14 @@ class GetRustConversation @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         conversationId: LocalConversationId
-    ): Either<ConversationError, ConversationAndMessages> =
-        when (val result = conversation(mailbox.getRustMailbox(), conversationId)) {
+    ): Either<ConversationError, ConversationAndMessages> {
+        val result = conversation(
+            mailbox = mailbox.getRustMailbox(),
+            id = conversationId,
+            showAll = true // ET-4980
+        )
+
+        return when (result) {
             is ConversationResult.Error -> result.v1.toConversationError().left()
             is ConversationResult.Ok -> {
                 when (val data = result.v1) {
@@ -45,4 +51,5 @@ class GetRustConversation @Inject constructor() {
                 }
             }
         }
+    }
 }

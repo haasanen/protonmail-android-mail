@@ -45,6 +45,8 @@ interface RustMessageDataSource {
 
     suspend fun terminatePaginator(userId: UserId)
 
+    fun supportsIncludeFilter(): Boolean
+
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalMessageMetadata>
     suspend fun getMessage(userId: UserId, messageId: RemoteMessageId): Either<DataError, LocalMessageMetadata>
 
@@ -113,6 +115,8 @@ interface RustMessageDataSource {
     ): Either<DataError, UndoableOperation>
 
     suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
+
+    suspend fun blockSender(userId: UserId, email: String): Either<DataError, Unit>
 
     suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
 

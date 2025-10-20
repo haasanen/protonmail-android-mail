@@ -53,6 +53,8 @@ class RustConversationRepositoryImpl @Inject constructor(
         rustConversationDataSource.terminatePaginator(userId)
     }
 
+    override fun supportsIncludeFilter() = rustConversationDataSource.supportsIncludeFilter()
+
     override suspend fun getConversations(
         userId: UserId,
         pageKey: PageKey.DefaultPageKey

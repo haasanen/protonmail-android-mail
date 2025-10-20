@@ -24,10 +24,10 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.MailUserSessionUserIdResult
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.ReadFilter
@@ -41,14 +41,17 @@ class CreateRustMessagesPaginator @Inject constructor() {
         session: MailUserSessionWrapper,
         labelId: LocalLabelId,
         unread: Boolean,
+        includeSpamAndTrash: Boolean,
         callback: MessageScrollerLiveQueryCallback
     ): Either<DataError, MessagePaginatorWrapper> {
-        val filterParam = if (unread) ReadFilter.UNREAD else ReadFilter.ALL
+        val readFilter = if (unread) ReadFilter.UNREAD else ReadFilter.ALL
+        val includeSwitch = if (includeSpamAndTrash) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
         return when (
             val result = scrollMessagesForLabel(
                 session.getRustUserSession(),
                 labelId,
-                filterParam,
+                readFilter,
+                includeSwitch,
                 callback
             )
         ) {
@@ -56,10 +59,7 @@ class CreateRustMessagesPaginator @Inject constructor() {
             is ScrollMessagesForLabelResult.Ok -> {
                 when (val userIdResult = session.getRustUserSession().userId()) {
                     is MailUserSessionUserIdResult.Error -> userIdResult.v1.toDataError().left()
-                    is MailUserSessionUserIdResult.Ok -> {
-                        val params = PaginatorParams(userIdResult.v1, labelId, unread)
-                        MailboxMessagePaginatorWrapper(result.v1, params).right()
-                    }
+                    is MailUserSessionUserIdResult.Ok -> MailboxMessagePaginatorWrapper(result.v1).right()
                 }
             }
         }

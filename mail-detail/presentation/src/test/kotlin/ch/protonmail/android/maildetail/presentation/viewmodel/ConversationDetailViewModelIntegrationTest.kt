@@ -77,6 +77,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
+import ch.protonmail.android.maildetail.domain.usecase.BlockSender
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -380,6 +381,7 @@ internal class ConversationDetailViewModelIntegrationTest {
     }
     private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
     private val unblockSender = mockk<UnblockSender>()
+    private val blockSender = mockk<BlockSender>()
 
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val attachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
@@ -2612,6 +2614,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
         markMessageAsLegitimate = markMessageAsLegitimate,
         unblockSender = unblockSender,
+        blockSender = blockSender,
         cancelScheduleSendMessage = cancelScheduleSendMessage,
         printMessage = printMessage,
         getRsvpEvent = getRsvpEvent,

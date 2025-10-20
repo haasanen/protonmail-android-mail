@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
+import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.ReadFilter
 import uniffi.proton_mail_uniffi.ScrollConversationsForLabelResult
 import uniffi.proton_mail_uniffi.scrollConversationsForLabel
@@ -38,14 +39,17 @@ class CreateRustConversationPaginator @Inject constructor() {
         session: MailUserSessionWrapper,
         labelId: LocalLabelId,
         unread: Boolean,
+        showSpamTrash: Boolean,
         callback: ConversationScrollerLiveQueryCallback
     ): Either<DataError, ConversationPaginatorWrapper> {
         val filterParam = if (unread) ReadFilter.UNREAD else ReadFilter.ALL
+        val includeSwitch = if (showSpamTrash) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
         return when (
             val result = scrollConversationsForLabel(
-                session.getRustUserSession(),
-                labelId,
-                filterParam,
+                session = session.getRustUserSession(),
+                labelId = labelId,
+                unread = filterParam,
+                include = includeSwitch,
                 callback
             )
         ) {

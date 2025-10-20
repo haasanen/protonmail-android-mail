@@ -54,6 +54,7 @@ class MailboxPagerFactoryTest {
             userId = userId,
             selectedMailLabelId = selectedMailLabelId,
             filterUnread = false,
+            showSpamTrash = false,
             type = type,
             searchQuery = ""
         )

@@ -33,4 +33,6 @@ class AttachmentsWrapper(private val rustAttachmentList: AttachmentList) {
     suspend fun removeInlineAttachment(cid: String) = rustAttachmentList.removeWithCid(cid)
     suspend fun attachments() = rustAttachmentList.attachments()
     suspend fun createWatcher(callback: AsyncLiveQueryCallback) = rustAttachmentList.watcher(callback)
+
+    suspend fun transformToAttachment(cid: String) = rustAttachmentList.swapAttachmentDisposition(cid)
 }

@@ -56,7 +56,6 @@ class ObserveWebSettingsStateFlow @Inject constructor(
 
         forkSession(userId).fold(
             ifRight = { forkedSessionId ->
-                Timber.e("web-email-settings: Forking session success $forkedSessionId")
                 WebSettingsState.Data(
                     webSettingsUrl = getSettingsUrl(forkedSessionId, theme, webSettingsConfig),
                     theme = theme,

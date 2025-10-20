@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -39,11 +40,12 @@ class MailboxPagerFactory @Inject constructor(
         userId: UserId,
         selectedMailLabelId: MailLabelId,
         filterUnread: Boolean,
+        showSpamTrash: Boolean,
         type: MailboxItemType,
         searchQuery: String
     ): Pager<MailboxPageKey, MailboxItem> {
         Timber.d("Paging: creating new paginator for ${selectedMailLabelId.labelId}")
-        val mailboxPageKey = buildPageKey(filterUnread, selectedMailLabelId, userId, searchQuery)
+        val mailboxPageKey = buildPageKey(filterUnread, showSpamTrash, selectedMailLabelId, userId, searchQuery)
         return Pager(
             config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, initialLoadSize = INITIAL_LOAD_SIZE),
             pagingSourceFactory = { pagingSourceFactory.create(mailboxPageKey, type) }
@@ -52,18 +54,21 @@ class MailboxPagerFactory @Inject constructor(
 
     private fun buildPageKey(
         filterUnread: Boolean,
+        showSpamTrash: Boolean,
         selectedMailLabelId: MailLabelId,
         userId: UserId,
         searchQuery: String
     ): MailboxPageKey {
         val pageKey: PageKey = if (searchQuery.isNotEmpty()) {
             PageKey.PageKeyForSearch(
-                keyword = searchQuery
+                keyword = searchQuery,
+                showSpamTrash = if (showSpamTrash) ShowSpamTrash.Show else ShowSpamTrash.Hide
             )
         } else {
             PageKey.DefaultPageKey(
                 labelId = selectedMailLabelId.labelId,
-                readStatus = if (filterUnread) ReadStatus.Unread else ReadStatus.All
+                readStatus = if (filterUnread) ReadStatus.Unread else ReadStatus.All,
+                showSpamTrash = if (showSpamTrash) ShowSpamTrash.Show else ShowSpamTrash.Hide
             )
         }
 
@@ -74,6 +79,7 @@ class MailboxPagerFactory @Inject constructor(
     }
 
     companion object {
+
         private const val DEFAULT_PAGE_SIZE = 50
         private const val INITIAL_LOAD_SIZE = 1
     }

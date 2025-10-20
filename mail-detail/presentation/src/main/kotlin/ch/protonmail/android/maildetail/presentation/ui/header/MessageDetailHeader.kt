@@ -151,7 +151,12 @@ private fun MessageDetailHeaderLayout(
                 avatarUiModel = uiModel.avatar,
                 avatarImageUiModel = uiModel.avatarImage,
                 actions = ParticipantAvatar.Actions(
-                    onAvatarClicked = { actions.onAvatarClicked(uiModel.sender, uiModel.avatar) },
+                    onAvatarClicked = {
+                        actions.onAvatarClicked(
+                            uiModel.sender,
+                            uiModel.avatar, uiModel.messageIdUiModel
+                        )
+                    },
                     onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(it) },
                     onAvatarImageLoadFailed = { }
                 )
@@ -426,7 +431,11 @@ private fun MessageDetailHeaderCard(
             modifier = Modifier.padding(ProtonDimens.Spacing.Medium),
             verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
         ) {
-            SenderDetails(uiModel.sender, uiModel.avatar, actions)
+            SenderDetails(
+                uiModel.sender, uiModel.avatar,
+                uiModel.messageIdUiModel,
+                actions
+            )
             RecipientsSection(uiModel, actions)
             ExtendedHeaderSection(uiModel)
         }
@@ -437,6 +446,7 @@ private fun MessageDetailHeaderCard(
 private fun SenderDetails(
     senderUiModel: ParticipantUiModel,
     avatarUiModel: AvatarUiModel,
+    messageIdUiModel: MessageIdUiModel,
     actions: MessageDetailHeader.Actions
 ) {
     Row(verticalAlignment = Alignment.Top, modifier = Modifier.fillMaxWidth()) {
@@ -453,7 +463,7 @@ private fun SenderDetails(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = { actions.onParticipantClicked(senderUiModel, avatarUiModel) }
+                    onClick = { actions.onParticipantClicked(senderUiModel, avatarUiModel, messageIdUiModel) }
                 )
         ) {
             SenderNameRow(
@@ -476,17 +486,20 @@ private fun RecipientsSection(uiModel: MessageDetailHeaderUiModel, actions: Mess
         RecipientsTitleAndList(
             title = stringResource(R.string.message_details_header_to),
             recipients = uiModel.toRecipients,
+            messageIdUiModel = uiModel.messageIdUiModel,
             hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
             actions = actions
         )
         RecipientsTitleAndList(
             title = stringResource(R.string.message_details_header_cc),
             recipients = uiModel.ccRecipients,
+            messageIdUiModel = uiModel.messageIdUiModel,
             actions = actions
         )
         RecipientsTitleAndList(
             title = stringResource(R.string.message_details_header_bcc),
             recipients = uiModel.bccRecipients,
+            messageIdUiModel = uiModel.messageIdUiModel,
             actions = actions
         )
     }
@@ -496,6 +509,7 @@ private fun RecipientsSection(uiModel: MessageDetailHeaderUiModel, actions: Mess
 private fun RecipientsTitleAndList(
     title: String,
     recipients: ImmutableList<ParticipantUiModel>,
+    messageIdUiModel: MessageIdUiModel,
     hasUndisclosedRecipients: Boolean = false,
     actions: MessageDetailHeader.Actions
 ) {
@@ -517,7 +531,7 @@ private fun RecipientsTitleAndList(
                         modifier = Modifier.clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                            onClick = { actions.onParticipantClicked(recipient, null) }
+                            onClick = { actions.onParticipantClicked(recipient, null, messageIdUiModel) }
                         )
                     ) {
                         ParticipantText(
@@ -604,10 +618,10 @@ object MessageDetailHeader {
         val onReplyAll: (MessageId) -> Unit,
         val onShowFeatureMissingSnackbar: () -> Unit,
         val onMore: (MessageId, MessageThemeOptions) -> Unit,
-        val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onAvatarClicked: (ParticipantUiModel, AvatarUiModel, MessageIdUiModel) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onAvatarImageLoadFailed: () -> Unit,
-        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
+        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel) -> Unit,
         val onCollapseMessage: (MessageIdUiModel) -> Unit
     ) {
 
@@ -619,10 +633,10 @@ object MessageDetailHeader {
                 onReplyAll = {},
                 onShowFeatureMissingSnackbar = {},
                 onMore = { _, _ -> },
-                onAvatarClicked = { _, _ -> },
+                onAvatarClicked = { _, _, _ -> },
                 onAvatarImageLoadRequested = { },
                 onAvatarImageLoadFailed = { },
-                onParticipantClicked = { _, _ -> },
+                onParticipantClicked = { _, _, _ -> },
                 onCollapseMessage = {}
             )
         }

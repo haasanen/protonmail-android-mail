@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.composer.data.local
 
+import java.lang.IllegalStateException
 import android.net.Uri
 import app.cash.turbine.test
 import arrow.core.left
@@ -104,12 +105,12 @@ class RustAttachmentDataSourceImplTest {
 
         // When
         dataSource.observeAttachments().test {
+            coEvery { rustDraftDataSource.attachmentList() } answers {
+                throw IllegalStateException("Draft already closed")
+            }
             callbackSlot.captured.onUpdate()
 
             // Then
-            val emission = awaitItem()
-            assertTrue(emission.isRight())
-            assertEquals(listOf(expectedMetadataWithState), emission.getOrNull())
             cancelAndIgnoreRemainingEvents()
         }
 
@@ -366,4 +367,39 @@ class RustAttachmentDataSourceImplTest {
         assertEquals(rustError.toDeleteAttachmentError().left(), result)
     }
 
+    @Test
+    fun `ignore attachments updates when callback is fired after rust draft was already closed`() = runTest {
+        // Given
+        val attachment = LocalAttachmentMetadataSample.Pdf
+        val draftAttachment = DraftAttachment(
+            state = DraftAttachmentState.Uploaded,
+            attachment = attachment,
+            stateModifiedTimestamp = 0L
+        )
+
+        val expectedMetadataWithState = AttachmentMetadataWithState(
+            attachmentMetadata = attachment.toAttachmentMetadata(),
+            attachmentState = AttachmentState.Uploaded
+        )
+
+        val wrapper = mockk<AttachmentsWrapper>()
+        val watcher = mockk<DraftAttachmentWatcher>()
+        val callbackSlot = slot<AsyncLiveQueryCallback>()
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.attachments() } returns AttachmentListAttachmentsResult.Ok(listOf(draftAttachment))
+        coEvery { wrapper.createWatcher(capture(callbackSlot)) } returns AttachmentListWatcherResult.Ok(watcher)
+
+        // When
+        dataSource.observeAttachments().test {
+            callbackSlot.captured.onUpdate()
+
+            // Then
+            val emission = awaitItem()
+            assertTrue(emission.isRight())
+            assertEquals(listOf(expectedMetadataWithState), emission.getOrNull())
+            cancelAndIgnoreRemainingEvents()
+        }
+
+    }
 }

@@ -23,6 +23,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toAttachmentMetaDataWithState
+import ch.protonmail.android.composer.data.mapper.toConvertError
 import ch.protonmail.android.composer.data.mapper.toDeleteAttachmentError
 import ch.protonmail.android.composer.data.mapper.toObserveAttachmentsError
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
@@ -31,6 +32,7 @@ import ch.protonmail.android.mailattachments.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailattachments.domain.model.ConvertAttachmentError
 import ch.protonmail.android.mailcommon.data.file.FileInformation
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
@@ -51,6 +53,7 @@ import uniffi.proton_mail_uniffi.AttachmentListRemoveResult
 import uniffi.proton_mail_uniffi.AttachmentListRemoveWithCidResult
 import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import uniffi.proton_mail_uniffi.DraftAttachmentWatcher
+import uniffi.proton_mail_uniffi.VoidDraftAttachmentDispositionSwapResult
 import javax.inject.Inject
 
 class RustAttachmentDataSourceImpl @Inject constructor(
@@ -68,7 +71,13 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             val updateCallback = object : AsyncLiveQueryCallback {
                 override suspend fun onUpdate() {
                     Timber.d("rust-draft-attachments: Attachment list updated")
-                    rustDraftDataSource.attachmentList().onLeft { error ->
+                    val attachmentList = try {
+                        rustDraftDataSource.attachmentList()
+                    } catch (e: IllegalStateException) {
+                        Timber.w("Received attachments update while draft was already closed. $e")
+                        return
+                    }
+                    attachmentList.onLeft { error ->
                         send(error.left())
                     }.onRight { attachmentListWrapper ->
                         send(attachmentListWrapper.getAttachments())
@@ -185,6 +194,29 @@ class RustAttachmentDataSourceImpl @Inject constructor(
                         is AttachmentListRemoveWithCidResult.Error -> {
                             Timber.e("rust-draft-attachments: Failed to remove inline attachment: ${removeResult.v1}")
                             removeResult.v1.toDeleteAttachmentError().left()
+                        }
+                    }
+                }
+            )
+        }
+
+    override suspend fun convertToAttachment(cid: String): Either<ConvertAttachmentError, Unit> =
+        withContext(ioDispatcher) {
+            val listResult = rustDraftDataSource.attachmentList()
+
+            return@withContext listResult.fold(
+                ifLeft = {
+                    ConvertAttachmentError.Other(it).left()
+                },
+                ifRight = {
+                    when (val result = it.transformToAttachment(cid)) {
+                        is VoidDraftAttachmentDispositionSwapResult.Error -> {
+                            Timber.e("rust-draft-attachments: Failed to convert attachment: $result")
+                            result.v1.toConvertError().left()
+                        }
+                        VoidDraftAttachmentDispositionSwapResult.Ok -> {
+                            Timber.d("rust-draft-attachments: converted inline img to attachment")
+                            Unit.right()
                         }
                     }
                 }

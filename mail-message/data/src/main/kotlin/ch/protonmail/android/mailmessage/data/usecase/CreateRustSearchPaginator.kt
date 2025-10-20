@@ -23,10 +23,10 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.SearchMessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.MailUserSessionUserIdResult
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.PaginatorSearchOptions
@@ -39,17 +39,24 @@ class CreateRustSearchPaginator @Inject constructor() {
     suspend operator fun invoke(
         session: MailUserSessionWrapper,
         keyword: String,
+        includeSpamAndTrash: Boolean,
         callback: MessageScrollerLiveQueryCallback
-    ): Either<DataError, MessagePaginatorWrapper> = when (
-        val result = scrollerSearch(session.getRustUserSession(), PaginatorSearchOptions(keyword), callback)
-    ) {
-        is ScrollerSearchResult.Error -> result.v1.toDataError().left()
-        is ScrollerSearchResult.Ok -> {
-            when (val userIdResult = session.getRustUserSession().userId()) {
-                is MailUserSessionUserIdResult.Error -> userIdResult.v1.toDataError().left()
-                is MailUserSessionUserIdResult.Ok -> {
-                    val params = PaginatorParams(userIdResult.v1, keyword = keyword)
-                    SearchMessagePaginatorWrapper(result.v1, params).right()
+    ): Either<DataError, MessagePaginatorWrapper> {
+        val includeSwitch = if (includeSpamAndTrash) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
+
+        val result = scrollerSearch(
+            session = session.getRustUserSession(),
+            options = PaginatorSearchOptions(keyword),
+            include = includeSwitch,
+            callback
+        )
+
+        return when (result) {
+            is ScrollerSearchResult.Error -> result.v1.toDataError().left()
+            is ScrollerSearchResult.Ok -> {
+                when (val userIdResult = session.getRustUserSession().userId()) {
+                    is MailUserSessionUserIdResult.Error -> userIdResult.v1.toDataError().left()
+                    is MailUserSessionUserIdResult.Ok -> SearchMessagePaginatorWrapper(result.v1).right()
                 }
             }
         }

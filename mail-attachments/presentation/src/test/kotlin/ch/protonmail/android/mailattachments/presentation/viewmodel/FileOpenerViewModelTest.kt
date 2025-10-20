@@ -16,12 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailattachments.presentation
+package ch.protonmail.android.mailattachments.presentation.viewmodel
 
 import android.net.Uri
 import app.cash.turbine.test
 import ch.protonmail.android.mailattachments.presentation.ui.OpenAttachmentInput
-import ch.protonmail.android.mailattachments.presentation.viewmodel.FileOpenerViewModel
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest

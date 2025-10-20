@@ -150,7 +150,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchMode
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.hasClearableOperations
@@ -225,6 +224,8 @@ fun MailboxScreen(
         navigateToComposer = { actions.navigateToComposer() },
         onDisableUnreadFilter = { viewModel.submit(MailboxViewAction.DisableUnreadFilter) },
         onEnableUnreadFilter = { viewModel.submit(MailboxViewAction.EnableUnreadFilter) },
+        onEnableSpamTrashFilter = { viewModel.submit(MailboxViewAction.EnableShowSpamTrashFilter) },
+        onDisableSpamTrashFilter = { viewModel.submit(MailboxViewAction.DisableShowSpamTrashFilter) },
         onSelectAllClicked = {
             viewModel.submit(MailboxViewAction.SelectAll(mailboxListItems.itemSnapshotList.items))
         },
@@ -455,13 +456,15 @@ fun MailboxScreen(
     val stickyHeaderActions = MailboxStickyHeader.Actions(
         onUnreadFilterEnabled = actions.onEnableUnreadFilter,
         onUnreadFilterDisabled = actions.onDisableUnreadFilter,
+        onSpamTrashFilterEnabled = actions.onEnableSpamTrashFilter,
+        onSpamTrashFilterDisabled = actions.onDisableSpamTrashFilter,
         onSelectAllClicked = actions.onSelectAllClicked,
         onDeselectAllClicked = actions.onDeselectAllClicked
     )
 
-    val fileSavedString = stringResource(R.string.file_saved)
     val fileSaver = fileSaver(
-        onFileSaved = { Toast.makeText(context, fileSavedString, Toast.LENGTH_SHORT).show() }
+        onFileSaved = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() },
+        onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
     )
 
     val openAttachment = fileOpener()
@@ -520,16 +523,13 @@ fun MailboxScreen(
                     )
                 )
 
-                if (mailboxState.topAppBarState !is MailboxTopAppBarState.Data.SearchMode) {
-
-                    MailboxStickyHeader(
-                        modifier = Modifier.windowInsetsPadding(
-                            WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
-                        ),
-                        state = mailboxState,
-                        actions = stickyHeaderActions
-                    )
-                }
+                MailboxStickyHeader(
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                    ),
+                    state = mailboxState,
+                    actions = stickyHeaderActions
+                )
             }
         },
         bottomBar = {
@@ -1231,6 +1231,8 @@ object MailboxScreen {
         val navigateToComposer: () -> Unit,
         val onDisableUnreadFilter: () -> Unit,
         val onEnableUnreadFilter: () -> Unit,
+        val onEnableSpamTrashFilter: () -> Unit,
+        val onDisableSpamTrashFilter: () -> Unit,
         val onSelectAllClicked: () -> Unit,
         val onDeselectAllClicked: () -> Unit,
         val onExitSelectionMode: () -> Unit,
@@ -1293,6 +1295,8 @@ object MailboxScreen {
                 navigateToComposer = {},
                 onDisableUnreadFilter = {},
                 onEnableUnreadFilter = {},
+                onEnableSpamTrashFilter = {},
+                onDisableSpamTrashFilter = {},
                 onSelectAllClicked = {},
                 onDeselectAllClicked = {},
                 onExitSelectionMode = {},

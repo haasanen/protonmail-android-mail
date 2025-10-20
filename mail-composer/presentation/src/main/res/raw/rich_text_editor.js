@@ -6,15 +6,9 @@
 document.getElementById('$EDITOR_ID').addEventListener('input', function(){
     var body = document.getElementById('$EDITOR_ID').innerHTML
     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
-});
 
-/* Listen for changes to the webview size and dispatches them to KT */
-const observer = new ResizeObserver(entries => {
-for (const entry of entries) {
-    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
-}
+    requestAnimationFrame(() => updateCaretPosition());
 });
-observer.observe(document.querySelector('body'));
 
 /* Listen for changes to the body where images are removed and dispatches them to KT */
 const removeInlineImageObserver = new MutationObserver(mutations => {
@@ -65,66 +59,65 @@ function trackCursorPosition() {
             updateCaretPosition();
         }
     });
+}
+trackCursorPosition();
 
-    function updateCaretPosition() {
-        var editor = document.getElementById('$EDITOR_ID');
-        var selection = window.getSelection();
-        if (selection.rangeCount > 0) {
-            var range = selection.getRangeAt(0);
+function updateCaretPosition() {
+    var editor = document.getElementById('$EDITOR_ID');
+    var selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        var range = selection.getRangeAt(0);
 
-            // Update the caret position only if the range is collapsed to prevent selection deletion.
-            if (!range.collapsed) {
-                // If the text is selected, we can't modify the DOM.
-                return;
-            }
-
-            // Create a temporary span element to measure the caret position
-            const span = document.createElement('span');
-            span.textContent = '\u200B'; // Zero-width space character
-
-            range.insertNode(span);
-
-            // Get the bounding client rect of the span
-            const rect = span.getBoundingClientRect();
-
-            // Get the line height of the span
-            const lineHeight = window.getComputedStyle(span).lineHeight;
-            let parsedLineHeight = 16; // Default fallback
-            let parsedLineHeightFactor = 1.2
-
-            // Check if lineHeight is not 'normal' before parsing
-            if (lineHeight && lineHeight !== 'normal') {
-                const lineHeightValue = lineHeight.replace(/[^\d.]/g, '');
-                // Add another check to ensure parsing is possible
-                if (lineHeightValue) {
-                     parsedLineHeight = parseFloat(lineHeightValue) * parsedLineHeightFactor;
-                }
-            } else {
-                // Handle 'normal' line height - still using 1.2 * font-size.
-                const fontSize = window.getComputedStyle(span).fontSize;
-                const fontSizeValue = fontSize.replace(/[^\d.]/g, '');
-                 if (fontSizeValue) {
-                     parsedLineHeight = parseFloat(fontSizeValue) * parsedLineHeightFactor;
-                 }
-            }
-
-            // Remove the temporary span element using its parent node
-            if (span.parentNode) {
-                 span.parentNode.removeChild(span);
-            }
-
-            // Restore the original selection (caret position)
-            selection.removeAllRanges();
-            selection.addRange(range); // Add the original range back
-
-            // Calculate the height of the caret position relative to the inputDiv
-            const caretPosition = rect.top - editor.getBoundingClientRect().top;
-            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition, parsedLineHeight);
+        // Update the caret position only if the range is collapsed to prevent selection deletion.
+        if (!range.collapsed) {
+            // If the text is selected, we can't modify the DOM.
+            return;
         }
+
+        // Create a temporary span element to measure the caret position
+        const span = document.createElement('span');
+        span.textContent = '\u200B'; // Zero-width space character
+
+        range.insertNode(span);
+
+        // Get the bounding client rect of the span
+        const rect = span.getBoundingClientRect();
+
+        // Get the line height of the span
+        const lineHeight = window.getComputedStyle(span).lineHeight;
+        let parsedLineHeight = 16; // Default fallback
+        let parsedLineHeightFactor = 1.2
+
+        // Check if lineHeight is not 'normal' before parsing
+        if (lineHeight && lineHeight !== 'normal') {
+            const lineHeightValue = lineHeight.replace(/[^\d.]/g, '');
+            // Add another check to ensure parsing is possible
+            if (lineHeightValue) {
+                 parsedLineHeight = parseFloat(lineHeightValue) * parsedLineHeightFactor;
+            }
+        } else {
+            // Handle 'normal' line height - still using 1.2 * font-size.
+            const fontSize = window.getComputedStyle(span).fontSize;
+            const fontSizeValue = fontSize.replace(/[^\d.]/g, '');
+             if (fontSizeValue) {
+                 parsedLineHeight = parseFloat(fontSizeValue) * parsedLineHeightFactor;
+             }
+        }
+
+        // Remove the temporary span element using its parent node
+        if (span.parentNode) {
+             span.parentNode.removeChild(span);
+        }
+
+        // Restore the original selection (caret position)
+        selection.removeAllRanges();
+        selection.addRange(range); // Add the original range back
+
+        // Calculate the height of the caret position relative to the inputDiv
+        const caretPosition = rect.top - editor.getBoundingClientRect().top;
+        $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition, parsedLineHeight);
     }
 }
-
-trackCursorPosition();
 
 /*******************************************************************************
  * Public functions invoked by kotlin through webview evaluate javascript method
@@ -169,6 +162,9 @@ function injectInlineImage(contentId) {
 }
 
 function stripInlineImage(contentId) {
+    // Disable remove image observer as we don't want this strip to trigger a delete
+    removeInlineImageObserver.disconnect();
+
     var editor = document.getElementById('$EDITOR_ID');
     const exactCidPattern = 'cid:' + contentId + '(?![0-9a-zA-Z])';
     const cidMatcher = new RegExp(exactCidPattern);
@@ -178,12 +174,14 @@ function stripInlineImage(contentId) {
         console.log("Checking image..." + img.src)
         // Check src attribute for a match
         if (cidMatcher.test(img.src)) {
-            console.log("Image was actually matched and removed ahaha")
+            console.log("Image was actually matched and removed")
             img.remove();
             break;
         }
     }
     // Dispatch an input updated event to ensure body is saved
     editor.dispatchEvent(new Event('input'));
+    // Re-enable remove image observer to react to DOM events again
+    removeInlineImageObserver.observe(document.getElementById('$EDITOR_ID'), {childList: true, subtree: true});
 }
 

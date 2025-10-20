@@ -201,6 +201,8 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.LabelAsCompleted,
                 is ConversationDetailViewAction.MoveToCompleted,
                 is ConversationDetailViewAction.PrintMessage,
+                is ConversationDetailViewAction.BlockSender,
+                is ConversationDetailViewAction.UnblockSender,
                 is MessageMoved,
                 is LastMessageMoved,
                 is LastMessageDeleted,

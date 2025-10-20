@@ -50,7 +50,19 @@ class ContactActionsBottomSheetReducer @Inject constructor() {
             add(ContactActionUiModel.CopyName(participant.name))
         }.toImmutableList()
 
-        val thirdActionGroup = emptyList<ContactActionUiModel>().toImmutableList()
+        val thirdActionGroup = if (isPrimaryUserAddress) {
+            emptyList()
+        } else {
+            buildList {
+                val action = when {
+                    contactId == null && isSenderBlocked -> ContactActionUiModel.UnblockAddress(participant)
+                    contactId == null && !isSenderBlocked -> ContactActionUiModel.BlockAddress(participant)
+                    contactId != null && isSenderBlocked -> ContactActionUiModel.UnblockContact(participant)
+                    else -> ContactActionUiModel.BlockContact(participant)
+                }
+                add(action)
+            }
+        }.toImmutableList()
 
         return BottomSheetState(
             contentState = ContactActionsBottomSheetState.Data(
@@ -60,7 +72,8 @@ class ContactActionsBottomSheetReducer @Inject constructor() {
                     firstActionGroup,
                     secondActionGroup,
                     thirdActionGroup
-                )
+                ),
+                origin = origin
             ),
             bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
         )
