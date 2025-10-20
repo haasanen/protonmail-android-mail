@@ -26,7 +26,6 @@ import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentErro
 import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentsHandler
 import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.model.FileSaveState
-import ch.protonmail.android.mailattachments.presentation.ui.SaveAttachmentInput
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -183,21 +182,21 @@ internal class FileSaverViewModelTest {
     fun `performSaveToDownloadFolder should successfully save file and emit Saved state`() = runTest {
         // Given
         val sourceUri = mockk<Uri>()
-        val attachmentInput = SaveAttachmentInput("fileName.pdf", sourceUri, "image/png")
+        val fileContent = FileContent("fileName.pdf", sourceUri, "image/png")
 
-        coEvery { attachmentsHandler.saveFileToDownloadsFolder(attachmentInput) } returns Unit.right()
+        coEvery { attachmentsHandler.saveFileToDownloadsFolder(fileContent) } returns Unit.right()
 
         // When + Then
         viewModel.saveState.test {
             assertEquals(FileSaveState.Idle, awaitItem())
 
-            viewModel.performSaveToDownloadFolder(attachmentInput)
+            viewModel.performSaveToDownloadFolder(fileContent)
 
             assertEquals(FileSaveState.Saving, awaitItem())
             assertEquals(FileSaveState.Saved.FallbackLocation, awaitItem())
         }
 
-        coVerify(exactly = 1) { attachmentsHandler.saveFileToDownloadsFolder(attachmentInput) }
+        coVerify(exactly = 1) { attachmentsHandler.saveFileToDownloadsFolder(fileContent) }
         confirmVerified(attachmentsHandler)
     }
 

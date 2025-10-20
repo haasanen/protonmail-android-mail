@@ -66,7 +66,6 @@ fun fileSaver(
             is FileSaveState.RequestingSave -> {
                 val attachmentInput = SaveAttachmentInput(
                     state.content.name,
-                    state.content.uri,
                     state.content.mimeType
                 )
 
@@ -75,7 +74,7 @@ fun fileSaver(
                     viewModel.markLaunchAsConsumed()
                 } catch (_: ActivityNotFoundException) {
                     Timber.d("Unable to find a suitable target for saving - fallback to Downloads folder")
-                    viewModel.performSaveToDownloadFolder(attachmentInput)
+                    viewModel.performSaveToDownloadFolder(state.content)
                 }
             }
 

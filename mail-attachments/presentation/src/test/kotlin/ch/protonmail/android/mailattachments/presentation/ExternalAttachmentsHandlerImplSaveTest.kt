@@ -26,7 +26,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import arrow.core.left
-import ch.protonmail.android.mailattachments.presentation.ui.SaveAttachmentInput
+import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.usecase.GenerateUniqueFileName
 import io.mockk.clearAllMocks
 import io.mockk.confirmVerified
@@ -69,17 +69,17 @@ internal class ExternalAttachmentsHandlerImplSaveTest {
     fun `saveFileToDownloadsFolder should emit an Error when the destination URI can't be determined`() = runTest {
         // Given
         val sourceUri = mockk<Uri>()
-        val attachmentInput = SaveAttachmentInput(FileName, sourceUri, MimeType)
+        val fileContent = FileContent(FileName, sourceUri, MimeType)
 
         val contentValues = ContentValues().apply {
             put(MediaStore.Downloads.DISPLAY_NAME, FileName)
-            put(MediaStore.Downloads.MIME_TYPE, attachmentInput.mimeType)
+            put(MediaStore.Downloads.MIME_TYPE, fileContent.mimeType)
         }
 
         every { context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues) } returns null
 
         // When
-        val actual = attachmentsHandler.saveFileToDownloadsFolder(attachmentInput)
+        val actual = attachmentsHandler.saveFileToDownloadsFolder(fileContent)
 
         // Then
         assertEquals(ExternalAttachmentErrorResult.UnableToCreateUri.left(), actual)
@@ -93,7 +93,7 @@ internal class ExternalAttachmentsHandlerImplSaveTest {
         val sourceUri = mockk<Uri>()
         val destinationUri = mockk<Uri>()
         val exception = IOException("Copy failed")
-        val attachmentInput = SaveAttachmentInput(FileName, sourceUri, MimeType)
+        val attachmentInput = FileContent(FileName, sourceUri, MimeType)
 
         val inputStream = object : InputStream() {
             override fun read(): Int {

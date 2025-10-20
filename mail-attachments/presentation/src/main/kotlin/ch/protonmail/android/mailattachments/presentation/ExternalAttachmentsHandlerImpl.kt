@@ -25,7 +25,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import arrow.core.Either
 import arrow.core.raise.either
-import ch.protonmail.android.mailattachments.presentation.ui.SaveAttachmentInput
+import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.usecase.GenerateUniqueFileName
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -51,19 +51,19 @@ class ExternalAttachmentsHandlerImpl @Inject constructor(
     }
 
     override suspend fun saveFileToDownloadsFolder(
-        attachmentInput: SaveAttachmentInput
+        fileContent: FileContent
     ): Either<ExternalAttachmentErrorResult, Unit> = either {
         withContext(Dispatchers.IO) {
             val values = ContentValues().apply {
-                put(MediaStore.Downloads.DISPLAY_NAME, generateUniqueFileName(attachmentInput.fileName))
-                put(MediaStore.Downloads.MIME_TYPE, attachmentInput.mimeType)
+                put(MediaStore.Downloads.DISPLAY_NAME, generateUniqueFileName(fileContent.name))
+                put(MediaStore.Downloads.MIME_TYPE, fileContent.mimeType)
             }
 
             val uri = context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
                 ?: raise(ExternalAttachmentErrorResult.UnableToCreateUri)
 
             try {
-                copyUriToDestination(sourceUri = attachmentInput.uri, destinationUri = uri)
+                copyUriToDestination(sourceUri = fileContent.uri, destinationUri = uri)
             } catch (_: IOException) {
                 raise(ExternalAttachmentErrorResult.UnableToCopy)
             }

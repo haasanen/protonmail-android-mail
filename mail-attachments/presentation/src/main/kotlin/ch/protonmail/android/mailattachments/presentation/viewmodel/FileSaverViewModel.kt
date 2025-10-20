@@ -24,7 +24,6 @@ import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentsHandler
 import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.model.FileSaveState
-import ch.protonmail.android.mailattachments.presentation.ui.SaveAttachmentInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,11 +52,11 @@ class FileSaverViewModel @Inject constructor(
         }
     }
 
-    fun performSaveToDownloadFolder(attachmentInput: SaveAttachmentInput) {
+    fun performSaveToDownloadFolder(fileContent: FileContent) {
         viewModelScope.launch {
             mutableSaveState.value = FileSaveState.Saving
 
-            externalAttachmentsHandler.saveFileToDownloadsFolder(attachmentInput)
+            externalAttachmentsHandler.saveFileToDownloadsFolder(fileContent)
                 .onLeft { mutableSaveState.value = FileSaveState.Error(it) }
                 .onRight { mutableSaveState.value = FileSaveState.Saved.FallbackLocation }
         }

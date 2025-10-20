@@ -20,14 +20,12 @@ package ch.protonmail.android.mailattachments.presentation
 
 import android.net.Uri
 import arrow.core.Either
-import ch.protonmail.android.mailattachments.presentation.ui.SaveAttachmentInput
+import ch.protonmail.android.mailattachments.presentation.model.FileContent
 
 interface ExternalAttachmentsHandler {
 
     suspend fun copyUriToDestination(sourceUri: Uri, destinationUri: Uri): Either<ExternalAttachmentErrorResult, Unit>
-    suspend fun saveFileToDownloadsFolder(
-        attachmentInput: SaveAttachmentInput
-    ): Either<ExternalAttachmentErrorResult, Unit>
+    suspend fun saveFileToDownloadsFolder(fileContent: FileContent): Either<ExternalAttachmentErrorResult, Unit>
 }
 
 sealed interface ExternalAttachmentErrorResult {
