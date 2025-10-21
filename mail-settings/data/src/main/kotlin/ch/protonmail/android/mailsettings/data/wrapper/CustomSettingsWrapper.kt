@@ -28,10 +28,12 @@ import uniffi.proton_mail_uniffi.CustomSettings
 import uniffi.proton_mail_uniffi.CustomSettingsMobileSignatureResult
 import uniffi.proton_mail_uniffi.CustomSettingsSetMobileSignatureEnabledResult
 import uniffi.proton_mail_uniffi.CustomSettingsSetMobileSignatureResult
+import uniffi.proton_mail_uniffi.CustomSettingsSwipeToAdjacentConversationResult
 
 class CustomSettingsWrapper(
     private val customSettings: CustomSettings
 ) {
+
     suspend fun getMobileSignature(): Either<DataError, LocalMobileSignature> {
         return when (val result = customSettings.mobileSignature()) {
             is CustomSettingsMobileSignatureResult.Ok -> result.v1.right()
@@ -53,4 +55,10 @@ class CustomSettingsWrapper(
         }
     }
 
+    suspend fun getNextMessageOnMoveEnabled(): Either<DataError, Boolean> {
+        return when (val result = customSettings.swipeToAdjacentConversation()) {
+            is CustomSettingsSwipeToAdjacentConversationResult.Ok -> result.v1.right()
+            is CustomSettingsSwipeToAdjacentConversationResult.Error -> result.v1.toDataError().left()
+        }
+    }
 }

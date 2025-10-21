@@ -24,6 +24,8 @@ import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.data.InMemoryToolbarActionsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
+import ch.protonmail.android.mailsettings.data.local.AutoAdvanceDataSource
+import ch.protonmail.android.mailsettings.data.local.AutoAdvanceDataSourceImpl
 import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSource
 import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSourceImpl
@@ -31,6 +33,7 @@ import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.RustToolbarActionSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.ToolbarActionSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
+import ch.protonmail.android.mailsettings.data.repository.AutoAdvanceRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncSettingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.CombinedContactsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.LocalStorageDataRepositoryImpl
@@ -41,6 +44,7 @@ import ch.protonmail.android.mailsettings.data.repository.RustMailSettingsReposi
 import ch.protonmail.android.mailsettings.data.repository.ToolbarActionsRepositoryImpl
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.AutoAdvanceRepository
 import ch.protonmail.android.mailsettings.domain.repository.BackgroundSyncSettingRepository
 import ch.protonmail.android.mailsettings.domain.repository.CombinedContactsRepository
 import ch.protonmail.android.mailsettings.domain.repository.InMemoryToolbarActionsRepository
@@ -135,7 +139,6 @@ object SettingsModule {
         @Reusable
         fun bindLocalDataRepository(impl: LocalStorageDataRepositoryImpl): LocalStorageDataRepository
 
-
         @Binds
         fun bindsMailSettingsDataSource(impl: RustMailSettingsDataSource): MailSettingsDataSource
 
@@ -150,6 +153,11 @@ object SettingsModule {
         @Singleton
         fun bindsMobileSignatureRepository(impl: MobileSignatureRepositoryImpl): MobileSignatureRepository
 
+        @Binds
+        fun autoAdvanceDataSource(impl: AutoAdvanceDataSourceImpl): AutoAdvanceDataSource
+
+        @Binds
+        fun bindsAutoAdvanceRepository(impl: AutoAdvanceRepositoryImpl): AutoAdvanceRepository
     }
 
     @Module
