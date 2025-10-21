@@ -61,8 +61,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -88,6 +86,7 @@ import ch.protonmail.android.mailattachments.presentation.ui.OpenAttachmentInput
 import ch.protonmail.android.mailattachments.presentation.ui.fileOpener
 import ch.protonmail.android.mailattachments.presentation.ui.fileSaver
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -160,9 +159,24 @@ import timber.log.Timber
 @Composable
 fun ConversationDetailScreen(
     modifier: Modifier = Modifier,
+    padding: PaddingValues,
     actions: ConversationDetail.Actions,
-    viewModel: ConversationDetailViewModel = hiltViewModel()
+    conversationId: ConversationId,
+    navigationArgs: ConversationDetail.NavigationArgs,
+    topBarState: TopBarState
 ) {
+    val viewModel = hiltViewModel<ConversationDetailViewModel, ConversationDetailViewModel.Factory>(
+        key = conversationId.id
+    ) { factory ->
+        factory.create(
+            conversationId = conversationId,
+            initialScrollToMessageId = navigationArgs.initialScrollToMessageId,
+            conversationEntryPoint = navigationArgs.conversationEntryPoint,
+            isSingleMessageModeEnabled = navigationArgs.singleMessageMode,
+            openedFromLocation = navigationArgs.openedFromLocation
+        )
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -176,6 +190,19 @@ fun ConversationDetailScreen(
         MessageTheme.Dark
     else
         MessageTheme.Light
+
+    val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
+    topBarState.messages.value = if (isSingleMessageMode) null else uiModel?.messageCount
+    topBarState.title.value = uiModel?.subject ?: DetailScreenTopBar.NoTitle
+    topBarState.isStarred.value = uiModel?.isStarred
+
+    ConsumableLaunchedEffect(effect = topBarState.topBarStarClickEffect.value) { starred ->
+        if (starred) {
+            viewModel.submit(ConversationDetailViewAction.Star)
+        } else {
+            viewModel.submit(ConversationDetailViewAction.UnStar)
+        }
+    }
 
     state.bottomSheetState?.let {
         ConsumableLaunchedEffect(effect = it.bottomSheetVisibilityEffect) { bottomSheetEffect ->
@@ -471,7 +498,10 @@ fun ConversationDetailScreen(
     ) {
         ConversationDetailScreen(
             modifier = modifier,
+            padding = padding,
             state = state,
+            topBarState = topBarState,
+            scrollToMessageId = state.scrollToMessage?.id,
             actions = ConversationDetailScreen.Actions(
                 onExit = actions.onExit,
                 onExitWithError = {
@@ -614,9 +644,7 @@ fun ConversationDetailScreen(
                 onReportPhishing = { messageId ->
                     viewModel.submit(ConversationDetailViewAction.ReportPhishing(messageId))
                 }
-            ),
-            scrollToMessageId = state.scrollToMessage?.id,
-            isSingleMessageMode = isSingleMessageMode
+            )
         )
     }
 }
@@ -627,11 +655,11 @@ fun ConversationDetailScreen(
 fun ConversationDetailScreen(
     state: ConversationDetailState,
     actions: ConversationDetailScreen.Actions,
+    padding: PaddingValues,
     modifier: Modifier = Modifier,
     scrollToMessageId: String?,
-    isSingleMessageMode: Boolean
+    topBarState: TopBarState
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
@@ -742,43 +770,14 @@ fun ConversationDetailScreen(
         }
     }
 
-    // When SubjectHeader is first time composed, we need to get the its actual height to be able to calculate yOffset
-    // for collapsing effect
-    val subjectHeaderSizeCallback: (Int) -> Unit = {
-        scrollBehavior.state.heightOffsetLimit = -it.toFloat()
-    }
-
     Scaffold(
         modifier = modifier
-            .testTag(ConversationDetailScreenTestTags.RootItem)
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+            .testTag(ConversationDetailScreenTestTags.RootItem),
         containerColor = ProtonTheme.colors.backgroundNorm,
         snackbarHost = {
             DismissableSnackbarHost(
                 modifier = Modifier.testTag(CommonTestTags.SnackbarHost),
                 protonSnackbarHostState = snackbarHostState
-            )
-        },
-        topBar = {
-            val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
-            val messageCount = if (isSingleMessageMode) null else uiModel?.messageCount
-            DetailScreenTopBar(
-                modifier = Modifier
-                    .graphicsLayer {
-                        translationY = scrollBehavior.state.heightOffset / 2f
-                    },
-                title = uiModel?.subject ?: DetailScreenTopBar.NoTitle,
-                isStarred = uiModel?.isStarred,
-                messageCount = messageCount,
-                actions = DetailScreenTopBar.Actions(
-                    onBackClick = { actions.onExit(null) },
-                    onStarClick = actions.onStarClick,
-                    onUnStarClick = actions.onUnStarClick
-                ),
-                subjectHeaderSizeCallback = subjectHeaderSizeCallback,
-                topAppBarState = scrollBehavior.state,
-                // implemented in another commit once this topbar is extracted from details
-                isDirectionForwards = { true }
             )
         },
         bottomBar = {
@@ -859,11 +858,12 @@ fun ConversationDetailScreen(
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
                     hiddenMessagesBannerState = state.hiddenMessagesBannerState,
-                    padding = innerPadding,
+                    parentPadding = padding,
+                    innerPadding = innerPadding,
                     scrollToMessageId = scrollToMessageId,
                     actions = conversationDetailItemActions,
                     onHiddenMessagesBannerClick = actions.onHiddenMessagesBannerClick,
-                    paddingOffsetDp = scrollBehavior.state.heightOffset.pxToDp(),
+                    paddingOffsetDp = topBarState.scrollBehavior.state.heightOffset.pxToDp(),
                     conversationKey = state.conversationId()
                 )
             }
@@ -885,7 +885,8 @@ fun ConversationDetailScreen(
 fun MessagesContentWithHiddenEdges(
     uiModels: ImmutableList<ConversationDetailMessageUiModel>,
     hiddenMessagesBannerState: HiddenMessagesBannerState,
-    padding: PaddingValues,
+    parentPadding: PaddingValues,
+    innerPadding: PaddingValues,
     scrollToMessageId: String?,
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
@@ -899,7 +900,8 @@ fun MessagesContentWithHiddenEdges(
             modifier = modifier,
             uiModels = uiModels,
             hiddenMessagesBannerState = hiddenMessagesBannerState,
-            padding = padding,
+            parentPadding = parentPadding,
+            innerPadding = innerPadding,
             scrollToMessageId = scrollToMessageId,
             actions = actions,
             onHiddenMessagesBannerClick = onHiddenMessagesBannerClick,
@@ -934,7 +936,8 @@ fun MessagesContentWithHiddenEdges(
 private fun MessagesContent(
     uiModels: ImmutableList<ConversationDetailMessageUiModel>,
     hiddenMessagesBannerState: HiddenMessagesBannerState,
-    padding: PaddingValues,
+    parentPadding: PaddingValues,
+    innerPadding: PaddingValues,
     scrollToMessageId: String?,
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
@@ -949,25 +952,29 @@ private fun MessagesContent(
     val layoutDirection = LocalLayoutDirection.current
     val contentPadding =
         PaddingValues(
-            start = padding.calculateStartPadding(layoutDirection),
-            end = padding.calculateEndPadding(layoutDirection),
+            start = parentPadding.calculateStartPadding(layoutDirection),
+            end = parentPadding.calculateEndPadding(layoutDirection),
             top = (
-                padding.calculateTopPadding() + ProtonDimens.Spacing.Standard + paddingOffsetDp
+                ProtonDimens.Spacing.Standard + paddingOffsetDp + parentPadding.calculateTopPadding()
                 ).coerceAtLeast(0f.dp),
-            bottom = (padding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny).coerceAtLeast(0f.dp)
+            // for bottom use inner-padding not parent because this screen owns the bottom bar
+            bottom = (innerPadding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny).coerceAtLeast(
+                0f.dp
+            )
         )
+
 
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
     val itemsHeight = remember(conversationId) { mutableStateMapOf<Int, Int>() }
     var scrollCount by remember(conversationId) { mutableIntStateOf(0) }
 
-    var scrollToIndex = remember(scrollToMessageId, uiModels) {
+    var scrollToIndex = remember(scrollToMessageId, uiModels, conversationId) {
         if (scrollToMessageId == null) return@remember null
         else uiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }.takeIf { it > -1 }
     }
 
-    LaunchedEffect(key1 = scrollToIndex, key2 = webContentLoaded) {
+    LaunchedEffect(key1 = scrollToIndex, key2 = webContentLoaded, key3 = conversationId) {
         if (scrollToIndex != null) {
 
             // We are having frequent state updates at the beginning which are causing recompositions and
@@ -995,7 +1002,7 @@ private fun MessagesContent(
 
     // height calculated based on whether there is space to fill (in the case where we have not many messages
     // then the message should take up the rest of the screen space
-    var scrollToMessageMinimumHeightPx by remember { mutableIntStateOf(0) }
+    var scrollToMessageMinimumHeightPx by remember(conversationId) { mutableIntStateOf(0) }
 
     // Detect if user manually scrolled the list
     var userScrolled by remember(conversationId) { mutableStateOf(false) }
@@ -1097,7 +1104,7 @@ private fun MessagesContent(
 
         itemsIndexed(uiModels) { index, uiModel ->
             val isLastItem = index == uiModels.size - 1
-            val rememberCachedHeight = remember { loadedItemsHeight[uiModel.messageId.id] }
+            val rememberCachedHeight = remember(conversationId) { loadedItemsHeight[uiModel.messageId.id] }
             val itemFinishedResizing = finishedResizingOperations && loadedItemsHeight.contains(uiModel.messageId.id)
 
             ConversationDetailItem(
@@ -1303,6 +1310,7 @@ object ConversationDetailScreen {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @AdaptivePreviews
 private fun ConversationDetailScreenPreview(
@@ -1311,10 +1319,11 @@ private fun ConversationDetailScreenPreview(
     ProtonTheme {
         ProtonTheme {
             ConversationDetailScreen(
+                padding = PaddingValues(),
+                topBarState = TopBarState(TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)),
                 state = state,
                 actions = ConversationDetailScreen.Actions.Empty,
-                scrollToMessageId = null,
-                isSingleMessageMode = false
+                scrollToMessageId = null
             )
         }
     }

@@ -19,7 +19,6 @@
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
 import android.net.Uri
-import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.Event
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
@@ -92,12 +91,12 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample.InvoiceWithLabelExpanded
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample.InvoiceWithLabelExpanding
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
@@ -160,7 +159,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
@@ -260,14 +258,6 @@ class ConversationDetailViewModelTest {
     private val reducer: ConversationDetailReducer = mockk {
         coEvery { newStateFrom(currentState = any(), operation = any()) } returns ConversationDetailState.Loading
     }
-    private val savedStateHandle: SavedStateHandle = mockk {
-        every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
-        every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns null
-        every { get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns "allmail"
-        every { get<String>(ConversationDetailScreen.IsSingleMessageMode) } returns "false"
-        every { get<String>(ConversationDetailScreen.ConversationDetailEntryPointNameKey) } returns
-            ConversationDetailEntryPoint.Mailbox.name
-    }
     private val starMessages = mockk<StarMessages>()
     private val unStarMessages = mockk<UnStarMessages>()
     private val starConversations: StarConversations = mockk {
@@ -365,60 +355,66 @@ class ConversationDetailViewModelTest {
     }
 
     private val viewModel by lazy {
-        ConversationDetailViewModel(
-            observePrimaryUserId = observePrimaryUserId,
-            messageIdUiModelMapper = messageIdUiModelMapper,
-            actionUiModelMapper = actionUiModelMapper,
-            conversationMessageMapper = conversationMessageMapper,
-            conversationMetadataMapper = conversationMetadataMapper,
-            markConversationAsRead = markConversationAsRead,
-            markConversationAsUnread = markConversationAsUnread,
-            moveConversation = move,
-            deleteConversations = deleteConversations,
-            observeConversation = observeConversation,
-            observeConversationMessages = observeConversationMessages,
-            observeDetailActions = observeDetailBottomBarActions,
-            reducer = reducer,
-            starConversations = starConversations,
-            unStarConversations = unStarConversations,
-            starMessages = starMessages,
-            unStarMessages = unStarMessages,
-            savedStateHandle = savedStateHandle,
-            getMessageBodyWithClickableLinks = getDecryptedMessageBody,
-            markMessageAsRead = markMessageAsRead,
-            messageViewStateCache = messageViewStateCache,
-            observeConversationViewState = observeConversationViewState,
-            getAttachmentIntentValues = getAttachmentIntentValues,
-            loadImageAvoidDuplicatedExecution = loadImageAvoidDuplicatedExecution,
-            ioDispatcher = Dispatchers.Unconfined,
-            observePrivacySettings = observePrivacySettings,
-            updateLinkConfirmationSetting = updateLinkConfirmationSetting,
-            reportPhishingMessage = reportPhishingMessage,
-            isProtonCalendarInstalled = isProtonCalendarInstalled,
-            markMessageAsUnread = markMessageAsUnread,
-            findContactByEmail = findContactByEmail,
-            getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
-            moveMessage = moveMessage,
-            deleteMessages = deleteMessages,
-            observePrimaryUserAddress = observePrimaryUserAddress,
-            loadAvatarImage = loadAvatarImage,
-            observeAvatarImageStates = observeAvatarImageStates,
-            getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
-            markMessageAsLegitimate = markMessageAsLegitimate,
-            unblockSender = unblockSender,
-            blockSender = blockSender,
-            isMessageSenderBlocked = isMessageSenderBlocked,
-            cancelScheduleSendMessage = cancelScheduleSendMessage,
-            printMessage = printMessage,
-            getRsvpEvent = getRsvpEvent,
-            answerRsvpEvent = answerRsvpEvent,
-            snoozeRepository = snoozeRepository,
-            unsubscribeFromNewsletter = unsubscribeFromNewsletter,
-            toolbarRefreshSignal = toolbarRefreshSignal,
-            resolveSystemLabelId = resolveSystemLabelId,
-            executeWhenOnline = executeWhenOnline
-        )
+        createViewModel()
     }
+
+    private fun createViewModel(labelId: LabelId = LabelIdSample.AllMail) = ConversationDetailViewModel(
+        observePrimaryUserId = observePrimaryUserId,
+        messageIdUiModelMapper = messageIdUiModelMapper,
+        actionUiModelMapper = actionUiModelMapper,
+        conversationMessageMapper = conversationMessageMapper,
+        conversationMetadataMapper = conversationMetadataMapper,
+        markConversationAsRead = markConversationAsRead,
+        markConversationAsUnread = markConversationAsUnread,
+        moveConversation = move,
+        deleteConversations = deleteConversations,
+        observeConversation = observeConversation,
+        observeConversationMessages = observeConversationMessages,
+        observeDetailActions = observeDetailBottomBarActions,
+        reducer = reducer,
+        starConversations = starConversations,
+        unStarConversations = unStarConversations,
+        starMessages = starMessages,
+        unStarMessages = unStarMessages,
+        getMessageBodyWithClickableLinks = getDecryptedMessageBody,
+        markMessageAsRead = markMessageAsRead,
+        messageViewStateCache = messageViewStateCache,
+        observeConversationViewState = observeConversationViewState,
+        getAttachmentIntentValues = getAttachmentIntentValues,
+        loadImageAvoidDuplicatedExecution = loadImageAvoidDuplicatedExecution,
+        ioDispatcher = Dispatchers.Unconfined,
+        observePrivacySettings = observePrivacySettings,
+        updateLinkConfirmationSetting = updateLinkConfirmationSetting,
+        reportPhishingMessage = reportPhishingMessage,
+        isProtonCalendarInstalled = isProtonCalendarInstalled,
+        markMessageAsUnread = markMessageAsUnread,
+        findContactByEmail = findContactByEmail,
+        getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
+        moveMessage = moveMessage,
+        deleteMessages = deleteMessages,
+        observePrimaryUserAddress = observePrimaryUserAddress,
+        loadAvatarImage = loadAvatarImage,
+        observeAvatarImageStates = observeAvatarImageStates,
+        getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
+        markMessageAsLegitimate = markMessageAsLegitimate,
+        unblockSender = unblockSender,
+        blockSender = blockSender,
+        cancelScheduleSendMessage = cancelScheduleSendMessage,
+        printMessage = printMessage,
+        getRsvpEvent = getRsvpEvent,
+        answerRsvpEvent = answerRsvpEvent,
+        snoozeRepository = snoozeRepository,
+        unsubscribeFromNewsletter = unsubscribeFromNewsletter,
+        toolbarRefreshSignal = toolbarRefreshSignal,
+        resolveSystemLabelId = resolveSystemLabelId,
+        executeWhenOnline = executeWhenOnline,
+        conversationId = conversationId,
+        isSingleMessageModeEnabled = false,
+        initialScrollToMessageId = null,
+        openedFromLocation = labelId,
+        isMessageSenderBlocked = isMessageSenderBlocked,
+        conversationEntryPoint = ConversationDetailEntryPoint.Mailbox
+    )
 
     @BeforeTest
     fun setUp() {
@@ -437,18 +433,6 @@ class ConversationDetailViewModelTest {
             // Then
             assertEquals(ConversationDetailState.Loading, awaitItem())
         }
-    }
-
-    @Test
-    fun `throws exception when conversation id parameter was not provided as input`() = runTest {
-        // Given
-        every { savedStateHandle.get<String>(ConversationDetailScreen.ConversationIdKey) } returns null
-
-        // When
-        val thrown = assertFailsWith<IllegalStateException> { viewModel.state }
-
-        // Then
-        assertEquals("No Conversation id given", thrown.message)
     }
 
     @Test
@@ -484,7 +468,6 @@ class ConversationDetailViewModelTest {
             )
         )
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any(), any())
         } returns flowOf(ConversationError.UnknownMessage.left())
@@ -514,7 +497,6 @@ class ConversationDetailViewModelTest {
             )
         )
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
 
         coEvery {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any(), any())
@@ -612,7 +594,6 @@ class ConversationDetailViewModelTest {
             )
         )
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeConversationMessages(
                 UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any(), any()
@@ -640,7 +621,6 @@ class ConversationDetailViewModelTest {
         // given
         val expectedState = initialState.copy(messagesState = ConversationDetailsMessagesState.Offline)
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeConversationMessages(
                 UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any(), any()
@@ -668,8 +648,6 @@ class ConversationDetailViewModelTest {
         // Given
         val labelId = LabelIdSample.AllMail
         val offlineError = DataError.Remote.NoNetwork
-
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
 
         coEvery {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId, any(), any())
@@ -729,6 +707,8 @@ class ConversationDetailViewModelTest {
     @Test
     fun `bottom bar state is data when use case returns actions`() = runTest {
         // Given
+        val labelId = LabelIdSample.Archive
+        val viewModel = createViewModel(labelId)
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
@@ -742,13 +722,12 @@ class ConversationDetailViewModelTest {
         } returns messages.first()
         val actions = listOf(Action.Archive)
         val actionUiModels = listOf(ActionUiModelTestData.archive).toImmutableList()
-        val labelId = LabelIdSample.Archive
+
         val expected = initialState.copy(
             bottomBarState = BottomBarState.Data.Shown(
                 BottomBarTarget.Conversation, actionUiModels
             )
         )
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeDetailBottomBarActions(
                 UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any(), any()
@@ -776,6 +755,7 @@ class ConversationDetailViewModelTest {
         // Given
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         val labelId = LabelIdSample.Trash
+        val viewModel = createViewModel(labelId)
         val expected = initialState.copy(bottomBarState = BottomBarState.Error.FailedLoadingActions)
         coEvery {
             conversationMessageMapper.toUiModel(
@@ -787,7 +767,6 @@ class ConversationDetailViewModelTest {
                 rsvpEventState = null
             )
         } returns messages.first()
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeDetailBottomBarActions(
                 UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any(), any()
@@ -822,7 +801,6 @@ class ConversationDetailViewModelTest {
             )
         )
 
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeDetailBottomBarActions(
                 UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any(), any()
@@ -880,7 +858,7 @@ class ConversationDetailViewModelTest {
     fun `verify order of emitted states when starring a conversation`() = runTest {
         // Given
         val labelId = LabelIdSample.Spam
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        val viewModel = createViewModel(labelId)
         val actionUiModels = listOf(
             ActionUiModelTestData.archive,
             ActionUiModelTestData.markUnread
@@ -1087,7 +1065,6 @@ class ConversationDetailViewModelTest {
     fun `mark as unread is called correctly when action is submitted`() = runTest {
         // given
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery { markConversationAsUnread(userId, labelId, conversationId) } returns Unit.right()
 
         // when
@@ -1102,7 +1079,6 @@ class ConversationDetailViewModelTest {
     fun `exit state is emitted when marked as unread successfully`() = runTest {
         // given
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery { markConversationAsUnread(userId, labelId, conversationId) } returns Unit.right()
         coEvery {
             reducer.newStateFrom(
@@ -1128,7 +1104,7 @@ class ConversationDetailViewModelTest {
     fun `exit state is emitted when moving the conversation item back to inbox`() = runTest {
         // given
         val labelId = LabelIdSample.Archive
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        val viewModel = createViewModel(labelId)
         coEvery { move(userId, conversationId, SystemLabelId.Inbox) } returns Unit.right()
         coEvery {
             reducer.newStateFrom(
@@ -1154,7 +1130,6 @@ class ConversationDetailViewModelTest {
     fun `error message is emitted when mark as unread fails`() = runTest {
         // given
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             markConversationAsUnread(userId, labelId, conversationId)
         } returns DataError.Local.NoDataCached.left()
@@ -1638,7 +1613,6 @@ class ConversationDetailViewModelTest {
             )
         )
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
 
         coEvery { observeConversationMessages(userId, conversationId, labelId, any(), any()) } returns flowOf(
             ConversationMessages(
@@ -1681,7 +1655,6 @@ class ConversationDetailViewModelTest {
     fun `exit state is emitted when marked as read successfully`() = runTest {
         // given
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery { markConversationAsRead(userId, labelId, conversationId) } returns Unit.right()
         coEvery {
             reducer.newStateFrom(
@@ -1707,7 +1680,6 @@ class ConversationDetailViewModelTest {
     fun `error message is emitted when mark as read fails`() = runTest {
         // given
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery { markConversationAsRead(userId, labelId, conversationId) } returns DataError.Local.NoDataCached.left()
         coEvery {
             reducer.newStateFrom(
@@ -1970,7 +1942,6 @@ class ConversationDetailViewModelTest {
     fun `verify request snooze bottom sheet correctly sets bottom sheet state`() = runTest {
         // Given
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
 
         val expectedResult = ConversationDetailState.Loading.copy(
             bottomSheetState = BottomSheetState(
@@ -2096,7 +2067,6 @@ class ConversationDetailViewModelTest {
             ConversationDetailMessageUiModelSample.AugWeatherForecast
         ).toImmutableList()
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             observeConversationMessages(
                 UserIdSample.Primary,
@@ -2195,7 +2165,6 @@ class ConversationDetailViewModelTest {
     fun `given unsnoozed successfully then message body is refreshed`() = runTest {
         // given
         val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery {
             reducer.newStateFrom(
                 currentState = any(),
