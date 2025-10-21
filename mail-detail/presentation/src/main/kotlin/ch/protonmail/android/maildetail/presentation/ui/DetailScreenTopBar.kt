@@ -18,6 +18,13 @@
 
 package ch.protonmail.android.maildetail.presentation.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,9 +47,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,6 +74,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumHint
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
@@ -246,21 +257,38 @@ private fun SubjectHeader(
                 vertical = ProtonDimens.Spacing.Standard
             )
     ) {
-        SelectionContainer(
-            modifier = Modifier
-                .testTag(DetailScreenTopBarTestTags.Subject)
-        ) {
-            Text(
+        AnimatedContent(
+            targetState = subject,
+            transitionSpec = {
+                // If the count is increasing, slide the new content in from the right
+                if (targetState > initialState) {
+                    slideInHorizontally { width -> width } + fadeIn() togetherWith
+                        slideOutHorizontally { width -> -width } + fadeOut()
+                } else {
+                    // If the count is decreasing, slide the new content in from the left
+                    slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                        slideOutHorizontally { width -> width } + fadeOut()
+                }.using(
+                    SizeTransform(clip = false)
+                )
+            }
+        ) { subject ->
+            SelectionContainer(
                 modifier = Modifier
-                    .graphicsLayer {
-                        alpha = subjectTextAlpha
-                    }
-                    .fillMaxWidth(),
-                text = subject,
-                overflow = TextOverflow.Ellipsis,
-                style = ProtonTheme.typography.headlineSmall,
-                textAlign = TextAlign.Center
-            )
+                    .testTag(DetailScreenTopBarTestTags.Subject)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .graphicsLayer {
+                            alpha = subjectTextAlpha
+                        }
+                        .fillMaxWidth(),
+                    text = subject,
+                    overflow = TextOverflow.Ellipsis,
+                    style = ProtonTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
@@ -302,6 +330,25 @@ object DetailScreenTopBar {
                 onUnStarClick = {}
             )
         }
+    }
+}
+
+@Stable
+class TopBarState @OptIn(ExperimentalMaterial3Api::class)
+constructor(val scrollBehavior: TopAppBarScrollBehavior) {
+
+    val messages = mutableStateOf<Int?>(0)
+    val title = mutableStateOf("")
+    val isStarred = mutableStateOf<Boolean?>(false)
+
+    val topBarStarClickEffect = mutableStateOf(Effect.empty<Boolean>())
+
+    fun onStarClick() {
+        topBarStarClickEffect.value = Effect.of(true)
+    }
+
+    fun onStarUnClick() {
+        topBarStarClickEffect.value = Effect.of(false)
     }
 }
 

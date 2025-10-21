@@ -330,14 +330,19 @@ class MailboxListReducer @Inject constructor(
             null
         }
 
-        val currentLocation = operation.contextLabel
+        val searchQuery = if (currentState is MailboxListState.Data.ViewMode && currentState.searchState.isInSearch()) {
+            currentState.searchState.searchQuery
+        } else null
 
+        val currentLocation = operation.contextLabel
 
         val request = OpenMailboxItemRequest(
             itemId = MailboxItemId(operation.item.conversationId.id),
             shouldOpenInComposer = false,
             subItemId = subItemId,
-            openedFromLocation = currentLocation
+            openedFromLocation = currentLocation,
+            // filterUnread = operation.unreadFilter,
+            searchKey = searchQuery
         )
 
         return when (currentState) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,16 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.domain.model
+package ch.protonmail.android.maildetail.presentation.mapper
 
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailcommon.domain.model.Cursor
+import ch.protonmail.android.mailcommon.domain.model.CursorId
+import ch.protonmail.android.mailcommon.domain.model.CursorResult
+import ch.protonmail.android.mailcommon.domain.model.End
+import ch.protonmail.android.maildetail.presentation.model.Page
+import ch.protonmail.android.mailcommon.domain.model.Error as CursorError
 
-data class OpenMailboxItemRequest(
-    val itemId: MailboxItemId,
-    val shouldOpenInComposer: Boolean,
-    val subItemId: MailboxItemId? = null,
-    val openedFromLocation: LabelId,
-    val filterUnread: Boolean = false,
-    val showSpamAndTrash: Boolean = false,
-    val searchKey: String? = null
-)
+fun CursorResult?.toPage() =
+    when (this) {
+        null -> Page.Loading
+        End -> Page.End
+        is Cursor -> Page.Conversation(CursorId(this.conversationId, this.subItemId))
+        is CursorError -> Page.Error
+    }

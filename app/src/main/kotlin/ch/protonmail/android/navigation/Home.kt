@@ -592,6 +592,13 @@ fun Home(
                                 notifyUserMessage?.let { showUndoableOperationSnackbar(it) }
                                 viewModel.recordViewOfMailboxScreen()
                             },
+                            showUndoableOperationSnackbar = { notifyUserMessage ->
+                                notifyUserMessage?.let {
+                                    showUndoableOperationSnackbar(
+                                        it
+                                    )
+                                }
+                            },
                             openMessageBodyLink = activityActions.openInActivityInNewTask,
                             handleProtonCalendarRequest = activityActions.openProtonCalendarIntentValues,
                             onAddLabel = { navController.navigate(Screen.FolderAndLabelSettings.route) },

@@ -104,6 +104,7 @@ import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
@@ -121,6 +122,7 @@ import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendD
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheet
@@ -1137,6 +1139,7 @@ object ConversationDetail {
 
     data class Actions(
         val onExit: (notifyUserMessage: ActionResult?) -> Unit,
+        val showUndoableOperationSnackbar: (notifyUserMessage: ActionResult?) -> Unit,
         val openMessageBodyLink: (uri: Uri) -> Unit,
         val handleProtonCalendarRequest: (values: OpenProtonCalendarIntentValues) -> Unit,
         val onAddLabel: () -> Unit,
@@ -1156,6 +1159,13 @@ object ConversationDetail {
         val onExitWithOpenInComposer: (MessageId) -> Unit,
         val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit,
         val onActionBarVisibilityChanged: (Boolean) -> Unit
+    )
+
+    data class NavigationArgs(
+        val singleMessageMode: Boolean,
+        val initialScrollToMessageId: MessageIdUiModel?,
+        val openedFromLocation: LabelId,
+        val conversationEntryPoint: ConversationDetailEntryPoint
     )
 }
 
