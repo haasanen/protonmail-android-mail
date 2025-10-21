@@ -115,4 +115,42 @@ internal class ExternalAttachmentsHandlerImplTest {
         verify(exactly = 1) { contentResolver.openOutputStream(destinationUri) }
         confirmVerified(contentResolver)
     }
+
+    @Test
+    fun `saveDataToDestination should successfully save data`() = runTest {
+        // Given
+        val destinationUri = mockk<Uri>()
+        val mimeType = "image/png"
+        val data = byteArrayOf(1, 2, 3, 4)
+        val outputStream = ByteArrayOutputStream()
+
+        every { contentResolver.openOutputStream(destinationUri) } returns outputStream
+
+        // When
+        val actual = attachmentsHandler.saveDataToDestination(destinationUri, mimeType, data)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+        assertEquals(data.toList(), outputStream.toByteArray().toList())
+        verify(exactly = 1) { contentResolver.openOutputStream(destinationUri) }
+        confirmVerified(contentResolver)
+    }
+
+    @Test
+    fun `saveDataToDestination should emit an Error when output stream is null`() = runTest {
+        // Given
+        val destinationUri = mockk<Uri>()
+        val mimeType = "image/png"
+        val data = byteArrayOf(1, 2, 3, 4)
+
+        every { contentResolver.openOutputStream(destinationUri) } returns null
+
+        // When
+        val actual = attachmentsHandler.saveDataToDestination(destinationUri, mimeType, data)
+
+        // Then
+        assertEquals(ExternalAttachmentErrorResult.UnableToCopy.left(), actual)
+        verify(exactly = 1) { contentResolver.openOutputStream(destinationUri) }
+        confirmVerified(contentResolver)
+    }
 }

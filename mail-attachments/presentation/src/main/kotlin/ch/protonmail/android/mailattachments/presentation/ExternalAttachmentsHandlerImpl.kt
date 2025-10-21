@@ -69,4 +69,43 @@ class ExternalAttachmentsHandlerImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun saveDataToDestination(
+        destinationUri: Uri,
+        mimeType: String,
+        data: ByteArray
+    ): Either<ExternalAttachmentErrorResult, Unit> = either {
+        withContext(Dispatchers.IO) {
+            try {
+                context.contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
+                    outputStream.write(data)
+                } ?: raise(ExternalAttachmentErrorResult.UnableToCopy)
+            } catch (_: IOException) {
+                raise(ExternalAttachmentErrorResult.UnableToCopy)
+            }
+        }
+    }
+
+    override suspend fun saveDataToDownloads(
+        fileName: String,
+        mimeType: String,
+        data: ByteArray
+    ): Either<ExternalAttachmentErrorResult, Unit> = either {
+        withContext(Dispatchers.IO) {
+            val values = ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                put(MediaStore.Downloads.MIME_TYPE, mimeType)
+            }
+
+            val uri = context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                ?: raise(ExternalAttachmentErrorResult.UnableToCreateUri)
+            try {
+                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    outputStream.write(data)
+                }
+            } catch (_: IOException) {
+                raise(ExternalAttachmentErrorResult.UnableToCopy)
+            }
+        }
+    }
 }

@@ -124,6 +124,62 @@ internal class ExternalAttachmentsHandlerImplSaveTest {
         assertEquals(ExternalAttachmentErrorResult.UnableToCopy.left(), actual)
     }
 
+    @Test
+    fun `saveDataToDownloads should emit an Error when the destination URI can't be determined`() = runTest {
+        // Given
+        val fileName = "test_image.png"
+        val data = byteArrayOf(1, 2, 3, 4)
+
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+            put(MediaStore.Downloads.MIME_TYPE, MimeType)
+        }
+
+        every { context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues) } returns null
+
+        // When
+        val actual = attachmentsHandler.saveDataToDownloads(fileName, MimeType, data)
+
+        // Then
+        assertEquals(ExternalAttachmentErrorResult.UnableToCreateUri.left(), actual)
+        verify(exactly = 1) { context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues) }
+        confirmVerified(context.contentResolver)
+    }
+
+    @Test
+    fun `saveDataToDownloads should emit an Error when an error occurs during write`() = runTest {
+        // Given
+        val fileName = "test_image.png"
+        val data = byteArrayOf(1, 2, 3, 4)
+        val destinationUri = mockk<Uri>()
+        val exception = IOException("Write failed")
+
+        val outputStream = object : ByteArrayOutputStream() {
+            override fun write(b: ByteArray) {
+                throw exception
+            }
+        }
+
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+            put(MediaStore.Downloads.MIME_TYPE, MimeType)
+        }
+
+        every {
+            context.contentResolver.insert(
+                MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                contentValues
+            )
+        } returns destinationUri
+        every { context.contentResolver.openOutputStream(destinationUri) } returns outputStream
+
+        // When
+        val actual = attachmentsHandler.saveDataToDownloads(fileName, MimeType, data)
+
+        // Then
+        assertEquals(ExternalAttachmentErrorResult.UnableToCopy.left(), actual)
+    }
+
     private companion object {
 
         const val FileName = "fileName.pdf"

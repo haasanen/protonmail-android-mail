@@ -26,9 +26,23 @@ interface ExternalAttachmentsHandler {
 
     suspend fun copyUriToDestination(sourceUri: Uri, destinationUri: Uri): Either<ExternalAttachmentErrorResult, Unit>
     suspend fun saveFileToDownloadsFolder(fileContent: FileContent): Either<ExternalAttachmentErrorResult, Unit>
+
+    suspend fun saveDataToDestination(
+        destinationUri: Uri,
+        mimeType: String,
+        data: ByteArray
+    ): Either<ExternalAttachmentErrorResult, Unit>
+
+    suspend fun saveDataToDownloads(
+        fileName: String,
+        mimeType: String,
+        data: ByteArray
+    ): Either<ExternalAttachmentErrorResult, Unit>
 }
 
 sealed interface ExternalAttachmentErrorResult {
     data object UnableToCreateUri : ExternalAttachmentErrorResult
     data object UnableToCopy : ExternalAttachmentErrorResult
+    data object UnableToLoadImage : ExternalAttachmentErrorResult
+    data object UserNotFound : ExternalAttachmentErrorResult
 }
