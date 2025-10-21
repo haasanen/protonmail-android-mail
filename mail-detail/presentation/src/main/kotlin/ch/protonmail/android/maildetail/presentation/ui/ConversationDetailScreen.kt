@@ -129,6 +129,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
+import ch.protonmail.android.mailmessage.presentation.model.BodyImageUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -136,6 +137,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ContactActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.DetailMoreActionsBottomSheetContent
+import ch.protonmail.android.mailmessage.presentation.ui.messageBodyImageSaver
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
@@ -592,9 +594,6 @@ fun ConversationDetailScreen(
                 },
                 onReportPhishing = { messageId ->
                     viewModel.submit(ConversationDetailViewAction.ReportPhishing(messageId))
-                },
-                onDownloadImage = { messageId, imageUrl ->
-                    Toast.makeText(context, context.getString(R.string.feature_coming_soon), Toast.LENGTH_SHORT).show()
                 }
             ),
             scrollToMessageId = state.scrollToMessage?.id,
@@ -621,6 +620,11 @@ fun ConversationDetailScreen(
     val context = LocalContext.current
 
     val fileSaver = fileSaver(
+        onFileSaved = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() },
+        onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+    )
+
+    val bodyImageSaver = messageBodyImageSaver(
         onFileSaved = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() },
         onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
     )
@@ -827,7 +831,9 @@ fun ConversationDetailScreen(
                     onMessage = actions.onMessage,
                     onUnsnoozeMessage = actions.onUnsnoozeMessage,
                     onUnsubscribeFromNewsletter = actions.onUnsubscribeFromNewsletter,
-                    onDownloadImage = actions.onDownloadImage
+                    onDownloadImage = { messageId, imageUrl ->
+                        bodyImageSaver(BodyImageUiModel(imageUrl, messageId))
+                    }
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
@@ -1202,8 +1208,7 @@ object ConversationDetailScreen {
         val onSnooze: () -> Unit,
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
-        val onReportPhishing: (MessageId) -> Unit,
-        val onDownloadImage: (MessageId, String) -> Unit
+        val onReportPhishing: (MessageId) -> Unit
     ) {
 
         companion object {
@@ -1262,8 +1267,7 @@ object ConversationDetailScreen {
                 onSnooze = {},
                 onActionBarVisibilityChanged = {},
                 onUnsubscribeFromNewsletter = {},
-                onReportPhishing = {},
-                onDownloadImage = { _, _ -> }
+                onReportPhishing = {}
             )
         }
     }
