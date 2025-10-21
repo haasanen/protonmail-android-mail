@@ -16,7 +16,6 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package ch.protonmail.android.maildetail.presentation.reducer
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -78,7 +77,7 @@ class PagedConversationDetailReducerTest(
                         autoAdvance = true,
                         currentItem = Page.Conversation(CursorId(ConversationId("300"))),
                         nextItem = Page.Conversation(CursorId(ConversationId("400"))),
-                        previousItem = Page.Conversation(CursorId(ConversationId("200"))),
+                        previousItem = Page.Conversation(CursorId(ConversationId("400"))),
                         navigationArgs = NavigationArgs(
                             singleMessageMode = false,
                             LabelId("1"),
@@ -227,8 +226,6 @@ class PagedConversationDetailReducerTest(
                     )
                 )
             )
-
-
         )
 
         @JvmStatic
@@ -249,4 +246,3 @@ class PagedConversationDetailReducerTest(
         )
     }
 }
-

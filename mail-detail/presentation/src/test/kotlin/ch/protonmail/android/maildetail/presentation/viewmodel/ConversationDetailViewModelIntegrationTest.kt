@@ -24,7 +24,6 @@ import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.text.format.Formatter
-import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.Event
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
@@ -136,7 +135,6 @@ import ch.protonmail.android.maildetail.presentation.reducer.EditScheduledMessag
 import ch.protonmail.android.maildetail.presentation.reducer.HiddenMessagesBannerReducer
 import ch.protonmail.android.maildetail.presentation.reducer.MarkAsLegitimateDialogReducer
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
@@ -145,7 +143,9 @@ import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDupli
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -339,14 +339,6 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val markConversationAsUnread: MarkConversationAsUnread = mockk()
     private val move: MoveConversation = mockk()
     private val deleteConversations: DeleteConversations = mockk()
-    private val savedStateHandle: SavedStateHandle = mockk {
-        every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
-        every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns "null"
-        every { get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns filterByLocationLabelId.id
-        every { get<String>(ConversationDetailScreen.IsSingleMessageMode) } returns "false"
-        every { get<String>(ConversationDetailScreen.ConversationDetailEntryPointNameKey) } returns
-            ConversationDetailEntryPoint.Mailbox.name
-    }
     private val starMessages = mockk<StarMessages>()
     private val unStarMessages = mockk<UnStarMessages>()
     private val starConversations: StarConversations = mockk()
@@ -1186,11 +1178,9 @@ internal class ConversationDetailViewModelIntegrationTest {
             searchedItem.messageId
         )
         coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
-        coEvery { savedStateHandle.get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns
-            searchedItem.messageId.id
 
         // When
-        val viewModel = buildConversationDetailViewModel()
+        val viewModel = buildConversationDetailViewModel(scrollToMessageId = searchedItem.messageId.id)
         viewModel.state.test {
             skipItems(3)
 
@@ -2075,7 +2065,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
 
         // When
-        val viewModel = buildConversationDetailViewModel()
+        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
 
         viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
 
@@ -2113,7 +2103,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { markMessageAsLegitimate(userId, messageId) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel()
+        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
 
         viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
 
@@ -2150,7 +2140,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { unblockSender(userId, email) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel()
+        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
 
         viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
 
@@ -2185,7 +2175,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { reportPhishingMessage(userId, messageId) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel()
+        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
 
         viewModel.state.test {
             skipItems(3)
@@ -2217,7 +2207,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { reportPhishingMessage(userId, messageId) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel()
+        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
 
         viewModel.state.test {
             skipItems(4)
@@ -2472,7 +2462,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { unsubscribeFromNewsletter(userId, messageId) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel()
+        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
 
         viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
 
@@ -2504,7 +2494,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveDetailBottomBarActions = observeDetailBottomBarActions,
         detailReducer: ConversationDetailReducer = reducer,
-        savedState: SavedStateHandle = savedStateHandle,
         starMsg: StarMessages = starMessages,
         unStarMsg: UnStarMessages = unStarMessages,
         star: StarConversations = starConversations,
@@ -2517,7 +2506,9 @@ internal class ConversationDetailViewModelIntegrationTest {
         findContactByEmailAddress: FindContactByEmail = findContactByEmail,
         loadAvatarImg: LoadAvatarImage = loadAvatarImage,
         observeAvatarImgStates: ObserveAvatarImageStates = observeAvatarImageStates,
-        executeOnOnline: ExecuteWhenOnline = executeWhenOnline
+        executeOnOnline: ExecuteWhenOnline = executeWhenOnline,
+        openedFromLocation: LabelId = LabelIdSample.AllMail,
+        scrollToMessageId: String? = null
     ) = ConversationDetailViewModel(
         observePrimaryUserId = observePrimaryUser,
         messageIdUiModelMapper = messageIdUiModelMapper,
@@ -2536,7 +2527,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         unStarConversations = unStar,
         starMessages = starMsg,
         unStarMessages = unStarMsg,
-        savedStateHandle = savedState,
         getMessageBodyWithClickableLinks = decryptedMessageBody,
         markMessageAsRead = markMessageAndConversationRead,
         messageViewStateCache = messageViewStateCache,
@@ -2569,7 +2559,12 @@ internal class ConversationDetailViewModelIntegrationTest {
         unsubscribeFromNewsletter = unsubscribeFromNewsletter,
         toolbarRefreshSignal = toolbarRefreshSignal,
         resolveSystemLabelId = resolveSystemLabelId,
-        executeWhenOnline = executeOnOnline
+        executeWhenOnline = executeOnOnline,
+        conversationId = conversationId,
+        isSingleMessageModeEnabled = false,
+        initialScrollToMessageId = scrollToMessageId?.let { MessageIdUiModel(scrollToMessageId) },
+        openedFromLocation = filterByLocationLabelId,
+        conversationEntryPoint = ConversationDetailEntryPoint.Mailbox
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

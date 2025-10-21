@@ -319,11 +319,11 @@ private fun Page(
 ) {
     // to be integrated
     ConversationDetailScreen(
-        // padding = innerPadding,
-        actions = conversationActions
-        // conversationId = conversationId,
-        // navigationArgs = navigationArgs,
-        // topBarState = topBarHostState
+        padding = innerPadding,
+        actions = conversationActions,
+        conversationId = conversationId,
+        navigationArgs = navigationArgs,
+        topBarState = topBarHostState
     )
 }
 

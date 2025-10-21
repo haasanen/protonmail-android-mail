@@ -45,13 +45,13 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactList
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationDetailEntryPointNameKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ViewModeIsConversation
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreenLegacy
+import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationRouterViewModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
@@ -129,9 +129,7 @@ internal fun NavGraphBuilder.addConversationDetail(
         popExitTransition = { RouteTransitions.exitTransitionRightToLeft },
         exitTransition = { RouteTransitions.exitTransitionRightToLeft }
     ) {
-        // upcoming new screen will go here
-        // PagedConversationDetailScreen(actions = actions)
-        ConversationDetailScreen(actions = actions)
+        PagedConversationDetailScreen(actions = actions)
     }
 
     composable(
