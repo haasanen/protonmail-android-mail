@@ -20,7 +20,6 @@ package ch.protonmail.android.maildetail.presentation.viewmodel
 
 import java.util.concurrent.CopyOnWriteArrayList
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -94,7 +93,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMe
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
@@ -144,6 +142,9 @@ import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacyS
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
@@ -175,11 +176,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
 @Suppress("LongParameterList", "TooManyFunctions", "LargeClass")
-class ConversationDetailViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = ConversationDetailViewModel.Factory::class)
+class ConversationDetailViewModel @AssistedInject constructor(
+    @Assisted val conversationId: ConversationId,
+    @Assisted val isSingleMessageModeEnabled: Boolean,
+    @Assisted val initialScrollToMessageId: MessageIdUiModel?,
+    @Assisted val openedFromLocation: LabelId,
+    @Assisted val conversationEntryPoint: ConversationDetailEntryPoint,
     observePrimaryUserId: ObservePrimaryUserId,
     private val messageIdUiModelMapper: MessageIdUiModelMapper,
     private val actionUiModelMapper: ActionUiModelMapper,
@@ -197,7 +202,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val unStarConversations: UnStarConversations,
     private val starMessages: StarMessages,
     private val unStarMessages: UnStarMessages,
-    private val savedStateHandle: SavedStateHandle,
     private val getMessageBodyWithClickableLinks: GetMessageBodyWithClickableLinks,
     private val markMessageAsRead: MarkMessageAsRead,
     private val messageViewStateCache: MessageViewStateCache,
@@ -260,13 +264,8 @@ class ConversationDetailViewModel @Inject constructor(
     )
 
     private val mutableDetailState = MutableStateFlow(initialState)
-    private val conversationId = requireConversationId()
-    private val initialScrollToMessageId = getInitialScrollToMessageId()
-    private val openedFromLocation = getOpenedFromLocation()
-    private val conversationEntryPoint = getEntryPoint()
     private val attachmentsState = MutableStateFlow<Map<MessageId, List<AttachmentMetadata>>>(emptyMap())
     private val showAllMessages = MutableStateFlow(false)
-    val isSingleMessageModeEnabled = getIsSingleMessageMode()
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
 
@@ -1061,35 +1060,6 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun requireConversationId(): ConversationId {
-        val conversationId = savedStateHandle.get<String>(ConversationDetailScreen.ConversationIdKey)
-            ?: throw IllegalStateException("No Conversation id given")
-        return ConversationId(conversationId)
-    }
-
-    private fun getIsSingleMessageMode(): Boolean {
-        val value = savedStateHandle.get<String>(ConversationDetailScreen.IsSingleMessageMode)
-        Timber.tag("SingleMessageMode").d("Show single message is: $value")
-        return value.toBoolean()
-    }
-
-    private fun getInitialScrollToMessageId(): MessageIdUiModel? {
-        val messageIdStr = savedStateHandle.get<String>(ConversationDetailScreen.ScrollToMessageIdKey)
-        return messageIdStr?.let { if (it == "null") null else MessageIdUiModel(it) }
-    }
-
-    private fun getOpenedFromLocation(): LabelId {
-        val labelId = savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey)
-            ?: throw IllegalStateException("No opened from label id given")
-        return LabelId(labelId)
-    }
-
-    private fun getEntryPoint(): ConversationDetailEntryPoint {
-        val value = savedStateHandle.get<String>(ConversationDetailScreen.ConversationDetailEntryPointNameKey)
-            ?: throw IllegalStateException("No Entry point given")
-        return ConversationDetailEntryPoint.valueOf(value)
-    }
-
     private suspend fun emitNewStateFrom(event: ConversationDetailOperation) {
         val newState = reducer.newStateFrom(state.value, event)
         mutableDetailState.update { newState }
@@ -1769,7 +1739,7 @@ class ConversationDetailViewModel @Inject constructor(
     private suspend fun resolveInitialShowAll(): Boolean {
         val label = resolveSystemLabelId(
             userId = primaryUserId.first(),
-            labelId = getOpenedFromLocation()
+            labelId = openedFromLocation
         ).getOrNull() ?: return false
 
         return label == SystemLabelId.AllMail
@@ -1810,6 +1780,18 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun <T> Flow<T>.restartableOn(signal: Flow<Unit>): Flow<T> = signal.onStart { emit(Unit) }
         .flatMapLatest { this@restartableOn }
+
+    @AssistedFactory
+    interface Factory {
+
+        fun create(
+            conversationId: ConversationId,
+            isSingleMessageModeEnabled: Boolean,
+            initialScrollToMessageId: MessageIdUiModel?,
+            openedFromLocation: LabelId,
+            conversationEntryPoint: ConversationDetailEntryPoint
+        ): ConversationDetailViewModel
+    }
 
     private companion object {
 
