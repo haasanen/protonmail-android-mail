@@ -19,8 +19,11 @@
 package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError
+import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
+import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -73,6 +76,14 @@ interface MessageRepository {
      * @return either the [Message] or a [DataError.Local]
      */
     fun observeMessage(userId: UserId, remoteMessageId: RemoteMessageId): Flow<Either<DataError, Message>>
+
+    /**
+     * Used to JIT swipe through conversations/ pages with methods exposed to get next and get previous and move to next
+     */
+    suspend fun getConversationCursor(
+        firstPage: CursorId,
+        userId: UserId,
+    ): Either<ConversationCursorError, ConversationCursor>
 
     /**
      * Moves the given [messageIds] from the optional exclusive label to the [toLabel]

@@ -21,7 +21,11 @@ package ch.protonmail.android.mailconversation.data.repository
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.repository.RustConversationCursorImpl
+import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.Cursor
+import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
@@ -40,6 +44,8 @@ import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
 import ch.protonmail.android.testdata.label.LabelTestData
@@ -56,7 +62,9 @@ import io.mockk.runs
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
+import org.junit.Assert
 import org.junit.Test
+import uniffi.proton_mail_uniffi.Id
 import kotlin.test.assertEquals
 
 class RustConversationRepositoryImplTest {
@@ -257,6 +265,77 @@ class RustConversationRepositoryImplTest {
                 }
                 awaitComplete()
             }
+    }
+
+    @Test
+    fun `when getConversationCursor returns a cursor with the first conversationId`() = runTest {
+        // Given
+        val conversationCursor = mockk<ConversationCursor>()
+        val firstPage = Id(100.toULong())
+        coEvery {
+            rustConversationDataSource.getConversationCursor(
+                firstPage = firstPage,
+                userId = userId,
+                pageKey = PageKey.DefaultPageKey(
+                    labelId = SystemLabelId.Archive.labelId,
+                    readStatus = ReadStatus.All,
+                    pageToLoad = PageToLoad.First
+                )
+            )
+        } returns conversationCursor.right()
+
+
+        // When
+        val result = rustConversationRepository.getConversationCursor(
+            firstPage = CursorId(ConversationId("100"), null),
+            labelId = SystemLabelId.Archive.labelId,
+            unreadFilterEnabled = false,
+            userId = userId
+        )
+
+        // Then
+        Assert.assertTrue(result.isRight())
+        Assert.assertTrue(result.getOrNull() is RustConversationCursorImpl)
+        Assert.assertEquals(ConversationId("100"), (result.getOrNull()?.current as? Cursor)?.conversationId)
+    }
+
+    @Test
+    fun `when unreadFilterEnabled is true then getConversationCursor returns a cursor for unread messages`() = runTest {
+        // Given
+        val conversationCursor = mockk<ConversationCursor>()
+        val firstPage = Id(100.toULong())
+        coEvery {
+            rustConversationDataSource.getConversationCursor(
+                firstPage = firstPage,
+                userId = userId,
+                pageKey = PageKey.DefaultPageKey(
+                    labelId = SystemLabelId.Archive.labelId,
+                    readStatus = ReadStatus.Unread,
+                    pageToLoad = PageToLoad.First
+                )
+            )
+        } returns conversationCursor.right()
+
+        // When
+        rustConversationRepository.getConversationCursor(
+            firstPage = CursorId(ConversationId("100"), null),
+            labelId = SystemLabelId.Archive.labelId,
+            unreadFilterEnabled = true,
+            userId = userId
+        )
+
+        // Then
+        coVerify(exactly = 1) {
+            rustConversationDataSource.getConversationCursor(
+                firstPage = firstPage,
+                userId = userId,
+                pageKey = PageKey.DefaultPageKey(
+                    labelId = SystemLabelId.Archive.labelId,
+                    readStatus = ReadStatus.Unread,
+                    pageToLoad = PageToLoad.First
+                )
+            )
+        }
     }
 
     @Test

@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcommon.dagger
 
 import android.content.Context
+import ch.protonmail.android.mailcommon.data.EphemeralMailBoxCoroutineScope
 import ch.protonmail.android.mailcommon.data.repository.AppLocaleRepositoryImpl
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
@@ -33,6 +34,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 import kotlin.time.Clock
 
@@ -64,4 +66,9 @@ object MailCommonModule {
     @Singleton
     @AppScope
     fun provideAppScope(@DefaultDispatcher dispatcher: CoroutineDispatcher) = CoroutineScope(dispatcher)
+
+    @Provides
+    @Singleton
+    @EphemeralMailBoxCoroutineScope
+    fun provideEphemeralMailBoxCCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 }

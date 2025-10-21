@@ -21,11 +21,13 @@ package ch.protonmail.android.mailmessage.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.MessageScroller
+import uniffi.proton_mail_uniffi.MessageScrollerCursorResult
 import uniffi.proton_mail_uniffi.MessageScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.MessageScrollerGetItemsResult
 import uniffi.proton_mail_uniffi.MessageScrollerSupportsIncludeFilterResult
@@ -52,6 +54,12 @@ class MailboxMessagePaginatorWrapper(
         is MessageScrollerGetItemsResult.Error -> result.v1.toPaginationError().left()
         is MessageScrollerGetItemsResult.Ok -> Unit.right()
     }
+
+    override suspend fun getCursor(conversationId: LocalConversationId) =
+        when (val result = rustPaginator.cursor(conversationId)) {
+            is MessageScrollerCursorResult.Error -> result.v1.toPaginationError().left()
+            is MessageScrollerCursorResult.Ok -> MailMessageCursorWrapper(result.v1).right()
+        }
 
     override fun destroy() {
         rustPaginator.handle().disconnect()

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,27 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.wrapper
+package ch.protonmail.android.mailmessage.domain.model
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 
-interface MessagePaginatorWrapper {
-
-    suspend fun supportsIncludeFilter(): Boolean
-
-    suspend fun nextPage(): Either<PaginationError, Unit>
-
-    suspend fun reload(): Either<PaginationError, Unit>
-
-    suspend fun getCursor(conversationId: LocalConversationId): Either<PaginationError, MailMessageCursorWrapper>
-
-    fun destroy()
-
-    fun filterUnread(filterUnread: Boolean)
-
-    fun showSpamAndTrash(show: Boolean)
-
-    fun updateKeyword(keyword: String)
+fun PaginationError.toConversationCursorError() = when (this) {
+    PaginationError.Offline -> ConversationCursorError.Offline
+    PaginationError.NonProcessableActions -> ConversationCursorError.InvalidState
+    PaginationError.PaginationDataNotSynced -> ConversationCursorError.InvalidState
+    is PaginationError.Other -> ConversationCursorError.Other(this.error)
 }

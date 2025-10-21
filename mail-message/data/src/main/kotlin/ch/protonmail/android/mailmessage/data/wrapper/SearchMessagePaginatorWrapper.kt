@@ -21,12 +21,14 @@ package ch.protonmail.android.mailmessage.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.PaginatorSearchOptions
 import uniffi.proton_mail_uniffi.SearchScroller
+import uniffi.proton_mail_uniffi.SearchScrollerCursorResult
 import uniffi.proton_mail_uniffi.SearchScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.SearchScrollerGetItemsResult
 import uniffi.proton_mail_uniffi.SearchScrollerSupportsIncludeFilterResult
@@ -52,6 +54,13 @@ class SearchMessagePaginatorWrapper(
     override suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.getItems()) {
         is SearchScrollerGetItemsResult.Error -> result.v1.toPaginationError().left()
         is SearchScrollerGetItemsResult.Ok -> Unit.right()
+    }
+
+    override suspend fun getCursor(
+        conversationId: LocalConversationId
+    ): Either<PaginationError, MailMessageCursorWrapper> = when (val result = rustPaginator.cursor(conversationId)) {
+        is SearchScrollerCursorResult.Error -> result.v1.toPaginationError().left()
+        is SearchScrollerCursorResult.Ok -> MailMessageCursorWrapper(result.v1).right()
     }
 
     override fun destroy() {

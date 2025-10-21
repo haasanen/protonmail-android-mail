@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
+import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError.InvalidState
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBottomBarActions
@@ -37,6 +38,7 @@ import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.domain.model.toConversationCursorError
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
@@ -340,6 +342,19 @@ class RustConversationDataSourceImpl @Inject constructor(
         }.mapLeft {
             Timber.e("rust-conversation: $actionName failed in rust: $it")
             DataError.Local.Unknown
+        }
+    }
+
+    override suspend fun getConversationCursor(firstPage: LocalConversationId) = withContext(ioDispatcher) {
+        // we are relying on the exiting pager being open already
+        val result = rustConversationsQuery.getCursor(firstPage)
+        return@withContext when {
+            result == null -> InvalidState.left()
+            else -> {
+                result.mapLeft {
+                    it.toConversationCursorError()
+                }
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.data.system.BuildVersionProviderImpl
 import ch.protonmail.android.mailcommon.data.system.ContentValuesProviderImpl
 import ch.protonmail.android.mailcommon.data.system.DeviceCapabilitiesImpl
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
+import ch.protonmail.android.mailcommon.domain.repository.EphemeralMailboxCursorRepository
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.mailcommon.domain.system.BuildVersionProvider
 import ch.protonmail.android.mailcommon.domain.system.ContentValuesProvider
@@ -32,6 +33,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+import ch.protonmail.android.mailcommon.data.repository.EphemeralMailboxCursorRepository as EphemeralMailboxCursorRepositoryImpl
 
 @Module(includes = [MailCommonDataModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
@@ -55,5 +58,11 @@ object MailCommonDataModule {
 
         @Binds
         fun bindUndoRepository(impl: UndoRepositoryImpl): UndoRepository
+
+        @Binds
+        @Singleton
+        fun bindEphermeralMailboxCursorRepository(
+            impl: EphemeralMailboxCursorRepositoryImpl
+        ): EphemeralMailboxCursorRepository
     }
 }

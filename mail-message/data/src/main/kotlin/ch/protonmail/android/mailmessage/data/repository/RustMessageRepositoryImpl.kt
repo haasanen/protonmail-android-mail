@@ -20,12 +20,18 @@ package ch.protonmail.android.mailmessage.data.repository
 
 import java.io.File
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.repository.RustConversationCursorImpl
+import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError
+import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
+import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
@@ -98,6 +104,19 @@ class RustMessageRepositoryImpl @Inject constructor(
             emit(message)
         }
 
+    override suspend fun getConversationCursor(
+        firstPage: CursorId,
+        userId: UserId
+    ): Either<ConversationCursorError, ConversationCursor> = rustMessageDataSource
+        .getConversationCursor(
+            firstPage = firstPage.messageId?.toLocalConversationId()
+                ?: firstPage.conversationId.toLocalConversationId(),
+            userId = userId
+        )
+        .map {
+            RustConversationCursorImpl(firstPage, it)
+        }
+
     override suspend fun moveTo(
         userId: UserId,
         messageIds: List<MessageId>,
@@ -168,6 +187,8 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     override suspend fun blockSender(userId: UserId, email: String): Either<DataError, Unit> =
         rustMessageDataSource.blockSender(userId, email)
+
+    private fun String.toLocalConversationId() = LocalConversationId(this.toULong())
 
     override suspend fun isMessageSenderBlocked(userId: UserId, messageId: MessageId): Either<DataError, Boolean> =
         rustMessageDataSource.isMessageSenderBlocked(userId, messageId.toLocalMessageId())

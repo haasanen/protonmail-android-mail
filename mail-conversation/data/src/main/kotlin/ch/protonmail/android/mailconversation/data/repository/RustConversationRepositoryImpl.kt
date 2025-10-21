@@ -21,8 +21,12 @@ package ch.protonmail.android.mailconversation.data.repository
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.repository.RustConversationCursorImpl
+import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
@@ -106,6 +110,17 @@ class RustConversationRepositoryImpl @Inject constructor(
     ).map { eitherConversationMessages ->
         eitherConversationMessages.flatMap { it.toConversationMessagesWithMessageToOpen() }
     }
+
+    override suspend fun getConversationCursor(
+        firstPage: CursorId,
+        userId: UserId
+    ): Either<ConversationCursorError, ConversationCursor> = rustConversationDataSource
+        .getConversationCursor(
+            firstPage = firstPage.conversationId.toLocalConversationId()
+        )
+        .map {
+            RustConversationCursorImpl(firstPage, it)
+        }
 
     override suspend fun move(
         userId: UserId,

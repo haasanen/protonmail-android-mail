@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.local
 import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
@@ -225,6 +226,11 @@ class RustConversationsQueryImpl @Inject constructor(
         paginatorState == null ||
             paginatorState?.pageDescriptor != pageDescriptor ||
             pageKey.pageToLoad == PageToLoad.First
+
+
+    override suspend fun getCursor(conversationId: LocalConversationId) =
+        paginatorState?.paginatorWrapper?.getCursor(conversationId)
+
 
     private fun destroy() {
         if (paginatorState == null) {

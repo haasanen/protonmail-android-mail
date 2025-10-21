@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.Either
 import arrow.core.left
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
@@ -113,6 +114,9 @@ class RustMessageListQueryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCursor(conversationId: LocalConversationId) =
+        paginatorState?.paginatorWrapper?.getCursor(conversationId)
+
     override suspend fun terminatePaginator(userId: UserId) {
         if (paginatorState?.pageDescriptor?.userId == userId) {
             paginatorMutex.withLock {
@@ -176,6 +180,7 @@ class RustMessageListQueryImpl @Inject constructor(
                                 Timber.d("rust-message-query: Ignoring status update")
                                 return@withLock
                             }
+
                             is MessageScrollerUpdate.List -> update.toScrollerUpdate()
 
                             is MessageScrollerUpdate.Error -> update.toScrollerUpdate()

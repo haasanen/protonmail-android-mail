@@ -19,8 +19,11 @@
 package ch.protonmail.android.mailconversation.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
@@ -74,6 +77,14 @@ interface ConversationRepository {
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
     ): Flow<Either<ConversationError, ConversationMessages>>
+
+    /**
+     * Used to JIT swipe through conversations/ pages with methods exposed to get next and get previous and move to next
+     */
+    suspend fun getConversationCursor(
+        firstPage: CursorId,
+        userId: UserId
+    ): Either<ConversationCursorError, ConversationCursor>
 
     suspend fun move(
         userId: UserId,

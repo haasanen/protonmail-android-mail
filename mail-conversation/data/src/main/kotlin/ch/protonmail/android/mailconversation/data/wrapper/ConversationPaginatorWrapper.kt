@@ -21,10 +21,12 @@ package ch.protonmail.android.mailconversation.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ConversationScroller
+import uniffi.proton_mail_uniffi.ConversationScrollerCursorResult
 import uniffi.proton_mail_uniffi.ConversationScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.ConversationScrollerGetItemsResult
 import uniffi.proton_mail_uniffi.ConversationScrollerSupportsIncludeFilterResult
@@ -51,6 +53,12 @@ class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroll
         is ConversationScrollerGetItemsResult.Error -> result.v1.toPaginationError().left()
         is ConversationScrollerGetItemsResult.Ok -> Unit.right()
     }
+
+    suspend fun getCursor(conversationId: LocalConversationId) =
+        when (val result = rustPaginator.cursor(conversationId)) {
+            is ConversationScrollerCursorResult.Error -> result.v1.toPaginationError().left()
+            is ConversationScrollerCursorResult.Ok -> ConversationCursorWrapper(result.v1).right()
+        }
 
     fun filterUnread(filterUnread: Boolean) {
         val filter = if (filterUnread) ReadFilter.UNREAD else ReadFilter.ALL
