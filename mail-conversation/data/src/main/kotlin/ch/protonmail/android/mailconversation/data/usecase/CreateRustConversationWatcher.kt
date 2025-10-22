@@ -38,13 +38,15 @@ class CreateRustConversationWatcher @Inject constructor() {
         mailbox: MailboxWrapper,
         conversationId: LocalConversationId,
         callback: LiveQueryCallback,
-        origin: OpenConversationOrigin
+        origin: OpenConversationOrigin,
+        showAll: Boolean
     ): Either<ConversationError, WatchedConversation> = when (
         val result = watchConversation(
             mailbox = mailbox.getRustMailbox(),
             id = conversationId,
             origin = origin,
-            callback = callback
+            callback = callback,
+            showAll = showAll
         )
     ) {
         is WatchConversationResult.Error -> result.v1.toConversationError().left()

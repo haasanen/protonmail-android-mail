@@ -125,6 +125,7 @@ fun DraftAttachmentUploadError.toAttachmentError(): AddAttachmentError = when (t
         DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> AddAttachmentError.InvalidState
         DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE -> AddAttachmentError.AttachmentTooLarge
         DraftAttachmentUploadErrorReason.TIMEOUT -> AddAttachmentError.UploadTimeout
+        DraftAttachmentUploadErrorReason.STORAGE_QUOTA_EXCEEDED -> AddAttachmentError.StorageQuotaExceeded
     }
 }
 

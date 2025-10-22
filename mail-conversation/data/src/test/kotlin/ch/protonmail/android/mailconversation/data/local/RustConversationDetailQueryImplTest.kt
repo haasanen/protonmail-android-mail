@@ -95,7 +95,7 @@ class RustConversationDetailQueryImplTest {
         val showAll = false
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
-            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin)
+            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin, showAll)
         } returns watcherMock.right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll)
@@ -142,7 +142,7 @@ class RustConversationDetailQueryImplTest {
         val showAll = false
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
-            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin)
+            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin, showAll)
         } returns watcherMock.right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll)
@@ -210,7 +210,7 @@ class RustConversationDetailQueryImplTest {
         val showAll = false
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
-            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin)
+            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin, showAll)
         } returns watcherMock.right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll)
@@ -223,7 +223,7 @@ class RustConversationDetailQueryImplTest {
             }
 
             // Then
-            coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId, any(), origin) }
+            coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId, any(), origin, showAll) }
         }
     }
 
@@ -263,10 +263,10 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(oldUserId, localLabelId) } returns mailbox.right()
         coEvery { rustMailboxFactory.create(newUserId, localLabelId) } returns newMailbox.right()
         coEvery {
-            createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot), origin)
+            createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot), origin, showAll)
         } returns watcherMock1.right()
         coEvery {
-            createRustConversationWatcher(newMailbox, conversationId2, capture(callbackSlot), origin)
+            createRustConversationWatcher(newMailbox, conversationId2, capture(callbackSlot), origin, showAll)
         } returns watcherMock2.right()
         coEvery {
             getRustConversation(mailbox, conversationId1, showAll)
@@ -296,8 +296,8 @@ class RustConversationDetailQueryImplTest {
         job2.join()
 
         // Then
-        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId1, any(), origin) }
-        coVerify(exactly = 1) { createRustConversationWatcher(newMailbox, conversationId2, any(), origin) }
+        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId1, any(), origin, showAll) }
+        coVerify(exactly = 1) { createRustConversationWatcher(newMailbox, conversationId2, any(), origin, showAll) }
     }
 
     @Test
@@ -333,10 +333,10 @@ class RustConversationDetailQueryImplTest {
         val showAll = false
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
-            createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot), origin)
+            createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot), origin, showAll)
         } returns watcherMock1.right()
         coEvery {
-            createRustConversationWatcher(mailbox, conversationId2, capture(callbackSlot), origin)
+            createRustConversationWatcher(mailbox, conversationId2, capture(callbackSlot), origin, showAll)
         } returns watcherMock2.right()
         coEvery {
             getRustConversation(mailbox, conversationId1, showAll)
@@ -365,8 +365,8 @@ class RustConversationDetailQueryImplTest {
         job2.join()
 
         // Then
-        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId1, any(), origin) }
-        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId2, any(), origin) }
+        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId1, any(), origin, showAll) }
+        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId2, any(), origin, showAll) }
     }
 
     @Test
@@ -393,7 +393,10 @@ class RustConversationDetailQueryImplTest {
         val showAll2 = true
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
-            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin)
+            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin, showAll1)
+        } returns watcherMock.right()
+        coEvery {
+            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin, showAll2)
         } returns watcherMock.right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll1)
@@ -422,7 +425,8 @@ class RustConversationDetailQueryImplTest {
         job2.join()
 
         // Then
-        coVerify(exactly = 2) { createRustConversationWatcher(mailbox, conversationId, any(), origin) }
+        coVerify { createRustConversationWatcher(mailbox, conversationId, any(), origin, showAll1) }
+        coVerify { createRustConversationWatcher(mailbox, conversationId, any(), origin, showAll2) }
     }
 
     @Test
@@ -447,7 +451,9 @@ class RustConversationDetailQueryImplTest {
         val origin = OpenConversationOrigin.PUSH_NOTIFICATION
         val showAll = false
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
-        coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin) } coAnswers {
+        coEvery {
+            createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot), origin, showAll)
+        } coAnswers {
             delay(100) // Simulate delay to enforce concurrency
             watcherMock.right()
         }
@@ -470,7 +476,7 @@ class RustConversationDetailQueryImplTest {
         jobList.awaitAll()
 
         // Then
-        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId, any(), origin) }
+        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId, any(), origin, showAll) }
     }
 
 }

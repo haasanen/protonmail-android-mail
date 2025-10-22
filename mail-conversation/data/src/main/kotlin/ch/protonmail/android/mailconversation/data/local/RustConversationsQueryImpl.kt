@@ -25,7 +25,9 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
+import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.util.awaitWithTimeout
 import ch.protonmail.android.mailpagination.data.model.scroller.PendingRequest
@@ -42,8 +44,6 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -56,7 +56,7 @@ import uniffi.proton_mail_uniffi.ConversationScrollerUpdate
 import javax.inject.Inject
 
 class RustConversationsQueryImpl @Inject constructor(
-    private val userSessionRepository: UserSessionRepository,
+    private val rustMailboxFactory: RustMailboxFactory,
     private val createRustConversationPaginator: CreateRustConversationPaginator,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope,
     private val invalidationRepository: PageInvalidationRepository
@@ -69,10 +69,10 @@ class RustConversationsQueryImpl @Inject constructor(
         userId: UserId,
         pageKey: PageKey.DefaultPageKey
     ): Either<PaginationError, List<LocalConversation>> {
-        val session = userSessionRepository.getUserSession(userId)
-        if (session == null) {
-            Timber.e("rust-conversation-query: trying to load conversation with a null session")
-            return PaginationError.Other(DataError.Local.NoUserSession).left()
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-conversation-query: trying to load conversation with a null mailbox")
+            return PaginationError.Other(DataError.Local.IllegalStateError).left()
         }
 
         val labelId = pageKey.labelId
@@ -83,7 +83,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
         paginatorMutex.withLock {
             if (shouldInitPaginator(pageDescriptor, pageKey)) {
-                initPaginator(pageDescriptor, session)
+                initPaginator(pageDescriptor, mailbox)
             }
         }
 
@@ -141,7 +141,7 @@ class RustConversationsQueryImpl @Inject constructor(
         }
     }
 
-    private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {
+    private suspend fun initPaginator(pageDescriptor: PageDescriptor, mailbox: MailboxWrapper) {
 
         Timber.d("rust-conversation-query: [destroy and] initialize paginator instance...")
         destroy()
@@ -152,7 +152,7 @@ class RustConversationsQueryImpl @Inject constructor(
         )
 
         createRustConversationPaginator(
-            session,
+            mailbox,
             pageDescriptor.labelId.toLocalLabelId(),
             pageDescriptor.unread,
             pageDescriptor.showSpamTrash,

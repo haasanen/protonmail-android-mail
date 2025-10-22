@@ -23,6 +23,7 @@ import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import kotlinx.coroutines.CoroutineScope
+import uniffi.proton_mail_uniffi.MailSessionIsFeatureEnabledResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,6 +39,9 @@ class UnleashFeatureFlagValueProvider @Inject constructor(
 
     override suspend fun getFeatureFlagValue(key: String): Boolean? = with(coroutineScope) {
         val mailSession = mailSessionRepository.getMailSession().getRustMailSession()
-        return@with mailSession.isFeatureEnabled(key)
+        return@with when (val result = mailSession.isFeatureEnabled(key)) {
+            is MailSessionIsFeatureEnabledResult.Error -> null
+            is MailSessionIsFeatureEnabledResult.Ok -> result.v1
+        }
     }
 }

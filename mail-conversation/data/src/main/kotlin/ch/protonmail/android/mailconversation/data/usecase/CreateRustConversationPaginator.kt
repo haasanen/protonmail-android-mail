@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
-import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.ReadFilter
@@ -36,7 +36,7 @@ import javax.inject.Inject
 class CreateRustConversationPaginator @Inject constructor() {
 
     suspend operator fun invoke(
-        session: MailUserSessionWrapper,
+        mailbox: MailboxWrapper,
         labelId: LocalLabelId,
         unread: Boolean,
         showSpamTrash: Boolean,
@@ -46,7 +46,7 @@ class CreateRustConversationPaginator @Inject constructor() {
         val includeSwitch = if (showSpamTrash) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
         return when (
             val result = scrollConversationsForLabel(
-                session = session.getRustUserSession(),
+                mailbox = mailbox.getRustMailbox(),
                 labelId = labelId,
                 unread = filterParam,
                 include = includeSwitch,

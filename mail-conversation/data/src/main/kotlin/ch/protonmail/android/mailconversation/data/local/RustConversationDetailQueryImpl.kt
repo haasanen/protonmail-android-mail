@@ -154,15 +154,14 @@ class RustConversationDetailQueryImpl @Inject constructor(
                 currentUserId = userId
                 currentLabelId = labelId
                 currentShowAllMessages = showAllMessages
-                createRustConversationWatcher(
-                    mailbox, conversationId, conversationUpdatedCallback(), entryPoint.toOrigin()
+                val conversationEither = createRustConversationWatcher(
+                    mailbox, conversationId, conversationUpdatedCallback(), entryPoint.toOrigin(), showAllMessages
                 ).onLeft {
                     Timber.w("Failed to create watcher for conversation: $it")
                 }.onRight {
                     conversationWatcher = it
                 }
 
-                val conversationEither = getRustConversation(mailbox, conversationId, showAllMessages)
                 conversationMutableStatusFlow.value = conversationEither.map { it.conversation }
                 conversationMessagesMutableStatusFlow.value = conversationEither.map {
                     LocalConversationMessages(it.messageIdToOpen, it.messages)

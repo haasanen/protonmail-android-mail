@@ -27,6 +27,7 @@ sealed interface AddAttachmentError {
     data object EncryptionError : AddAttachmentError
     data object InvalidState : AddAttachmentError
     data object UploadTimeout : AddAttachmentError
+    data object StorageQuotaExceeded : AddAttachmentError
 
     data class Other(val error: DataError) : AddAttachmentError
 }

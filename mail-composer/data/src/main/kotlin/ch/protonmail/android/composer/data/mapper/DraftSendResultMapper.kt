@@ -141,6 +141,8 @@ fun DraftAttachmentUploadErrorReason.toSendErrorReason(): SendErrorReason = when
 
     DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE ->
         SendErrorReason.ErrorNoMessage.AttachmentTooLarge
+
+    DraftAttachmentUploadErrorReason.STORAGE_QUOTA_EXCEEDED -> SendErrorReason.ErrorNoMessage.StorageQuotaExceeded
 }
 
 fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {

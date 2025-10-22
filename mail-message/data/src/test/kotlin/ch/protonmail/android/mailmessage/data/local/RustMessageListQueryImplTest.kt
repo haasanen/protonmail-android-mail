@@ -22,7 +22,9 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageListQueryImpl.Companion.NONE_FOLLOWUP_GRACE_MS
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
@@ -35,8 +37,6 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import io.mockk.Called
@@ -65,15 +65,15 @@ class RustMessageListQueryImplTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val session = mockk<MailUserSessionWrapper>()
+    private val mailbox = mockk<MailboxWrapper>()
 
-    private val userSessionRepository = mockk<UserSessionRepository>()
+    private val rustMailboxFactory = mockk<RustMailboxFactory>()
     private val createRustMessagesPaginator = mockk<CreateRustMessagesPaginator>()
     private val createRustSearchPaginator = mockk<CreateRustSearchPaginator>()
     private val invalidationRepository = mockk<PageInvalidationRepository>()
 
     private val rustMessageListQuery = RustMessageListQueryImpl(
-        userSessionRepository = userSessionRepository,
+        rustMailboxFactory = rustMailboxFactory,
         createRustMessagesPaginator = createRustMessagesPaginator,
         createRustSearchPaginator = createRustSearchPaginator,
         coroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher),
@@ -113,11 +113,11 @@ class RustMessageListQueryImplTest {
     }
 
     @Test
-    fun `returns NoUserSession when no valid session is found`() = runTest {
+    fun `returns IllegalStateError when mailbox is null`() = runTest {
         // Given
         val pageKey = PageKey.DefaultPageKey()
-        coEvery { userSessionRepository.getUserSession(userId) } returns null
-        val expected = PaginationError.Other(DataError.Local.NoUserSession).left()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        val expected = PaginationError.Other(DataError.Local.IllegalStateError).left()
 
         // When
         val actual = rustMessageListQuery.getMessages(userId, pageKey)
@@ -135,10 +135,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -160,10 +160,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -185,10 +185,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithReloadEmittingReplaceFrom(callback, expectedMessages, idx = 0u)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -211,10 +211,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -229,7 +229,7 @@ class RustMessageListQueryImplTest {
         // Then
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false, callback = any()
@@ -247,10 +247,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -259,7 +259,7 @@ class RustMessageListQueryImplTest {
         } returns paginator.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = archive.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -274,7 +274,7 @@ class RustMessageListQueryImplTest {
         // Then
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -284,7 +284,7 @@ class RustMessageListQueryImplTest {
         coVerify { paginator.destroy() }
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = archive.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -302,10 +302,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -314,7 +314,7 @@ class RustMessageListQueryImplTest {
         } returns paginator.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = true,
                 includeSpamAndTrash = false,
@@ -329,7 +329,7 @@ class RustMessageListQueryImplTest {
         // Then
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -339,7 +339,7 @@ class RustMessageListQueryImplTest {
         coVerify { paginator.destroy() }
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = true,
                 includeSpamAndTrash = false,
@@ -361,10 +361,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -373,7 +373,7 @@ class RustMessageListQueryImplTest {
         } returns paginator.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = true,
@@ -388,7 +388,7 @@ class RustMessageListQueryImplTest {
         // Then
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -398,7 +398,7 @@ class RustMessageListQueryImplTest {
         coVerify { paginator.destroy() }
         coVerify(exactly = 1) {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = true,
@@ -414,10 +414,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustSearchPaginator(
-                session = session,
+                mailbox = mailbox,
                 keyword = "invoice",
                 includeSpamAndTrash = false,
                 callback = capture(callback)
@@ -440,14 +440,14 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustSearchPaginator(
-                session, "invoice", includeSpamAndTrash = false, capture(callback)
+                mailbox, "invoice", includeSpamAndTrash = false, capture(callback)
             )
         } returns paginator.right()
         coEvery {
-            createRustSearchPaginator(session, "report", includeSpamAndTrash = false, capture(callback))
+            createRustSearchPaginator(mailbox, "report", includeSpamAndTrash = false, capture(callback))
         } returns paginator.right()
 
         // When
@@ -455,9 +455,9 @@ class RustMessageListQueryImplTest {
         rustMessageListQuery.getMessages(userId, key2)
 
         // Then
-        coVerify(exactly = 1) { createRustSearchPaginator(session, "invoice", includeSpamAndTrash = false, any()) }
+        coVerify(exactly = 1) { createRustSearchPaginator(mailbox, "invoice", includeSpamAndTrash = false, any()) }
         coVerify { paginator.destroy() }
-        coVerify(exactly = 1) { createRustSearchPaginator(session, "report", includeSpamAndTrash = false, any()) }
+        coVerify(exactly = 1) { createRustSearchPaginator(mailbox, "report", includeSpamAndTrash = false, any()) }
     }
 
     @Test
@@ -469,10 +469,10 @@ class RustMessageListQueryImplTest {
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = labelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -512,10 +512,10 @@ class RustMessageListQueryImplTest {
             coEvery { destroy() } just Runs
         }
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,
@@ -550,10 +550,10 @@ class RustMessageListQueryImplTest {
             coEvery { destroy() } just Runs
         }
 
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = inboxLabelId.toLocalLabelId(),
                 unread = false,
                 includeSpamAndTrash = false,

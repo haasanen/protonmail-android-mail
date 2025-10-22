@@ -174,7 +174,8 @@ fun DraftAttachmentUploadError.toObserveAttachmentsError() = when (this) {
         DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> DataError.Local.IllegalStateError
         DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE,
         DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS,
-        DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE -> DataError.Local.Unknown
+        DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE,
+        DraftAttachmentUploadErrorReason.STORAGE_QUOTA_EXCEEDED -> DataError.Local.Unknown
 
         DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.CryptoError
     }
@@ -193,7 +194,8 @@ fun DraftAttachmentUploadError.toDeleteAttachmentError() = when (this) {
         DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE,
         DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS,
         DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE,
-        DraftAttachmentUploadErrorReason.CRYPTO -> AttachmentDeleteError.Other(DataError.Local.Unknown)
+        DraftAttachmentUploadErrorReason.CRYPTO,
+        DraftAttachmentUploadErrorReason.STORAGE_QUOTA_EXCEEDED -> AttachmentDeleteError.Other(DataError.Local.Unknown)
     }
 }
 

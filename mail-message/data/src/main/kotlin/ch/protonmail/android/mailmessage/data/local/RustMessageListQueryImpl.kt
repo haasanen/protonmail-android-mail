@@ -21,7 +21,9 @@ package ch.protonmail.android.mailmessage.data.local
 import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
@@ -41,8 +43,6 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -56,7 +56,7 @@ import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import javax.inject.Inject
 
 class RustMessageListQueryImpl @Inject constructor(
-    private val userSessionRepository: UserSessionRepository,
+    private val rustMailboxFactory: RustMailboxFactory,
     private val createRustMessagesPaginator: CreateRustMessagesPaginator,
     private val createRustSearchPaginator: CreateRustSearchPaginator,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope,
@@ -68,17 +68,17 @@ class RustMessageListQueryImpl @Inject constructor(
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> {
 
-        val session = userSessionRepository.getUserSession(userId)
-        if (session == null) {
-            Timber.e("rust-message-query: trying to load messages with a null session")
-            return PaginationError.Other(DataError.Local.NoUserSession).left()
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message-query: trying to load messages with a null mailbox")
+            return PaginationError.Other(DataError.Local.IllegalStateError).left()
         }
 
         val pageDescriptor = pageKey.toPageDescriptor(userId)
 
         paginatorMutex.withLock {
             if (shouldInitPaginator(pageDescriptor, pageKey)) {
-                initPaginator(pageDescriptor, session)
+                initPaginator(pageDescriptor, mailbox)
             }
         }
 
@@ -123,7 +123,7 @@ class RustMessageListQueryImpl @Inject constructor(
 
     override fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter == true
 
-    private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {
+    private suspend fun initPaginator(pageDescriptor: PageDescriptor, mailbox: MailboxWrapper) {
         Timber.d("rust-message-query: [destroy and] initialize paginator instance...")
         destroy()
 
@@ -135,7 +135,7 @@ class RustMessageListQueryImpl @Inject constructor(
 
         when (pageDescriptor) {
             is PageDescriptor.Default -> createRustMessagesPaginator(
-                session = session,
+                mailbox = mailbox,
                 labelId = pageDescriptor.labelId.toLocalLabelId(),
                 unread = pageDescriptor.unread,
                 includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowSpamTrash.Show,
@@ -143,7 +143,7 @@ class RustMessageListQueryImpl @Inject constructor(
             )
 
             is PageDescriptor.Search -> createRustSearchPaginator(
-                session = session,
+                mailbox = mailbox,
                 keyword = pageDescriptor.keyword,
                 includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowSpamTrash.Show,
                 callback = messagesUpdatedCallback(scrollerOnUpdateHandler)

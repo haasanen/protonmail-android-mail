@@ -86,7 +86,8 @@ internal sealed interface RecoverableError : EffectsStateModification {
 
                 AddAttachmentError.EncryptionError,
                 is AddAttachmentError.Other,
-                AddAttachmentError.InvalidDraftMessage ->
+                AddAttachmentError.InvalidDraftMessage,
+                AddAttachmentError.StorageQuotaExceeded ->
                     state.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
             }
     }
@@ -106,6 +107,9 @@ internal sealed interface RecoverableError : EffectsStateModification {
             is AddAttachmentError.Other,
             AddAttachmentError.InvalidDraftMessage ->
                 state.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
+
+            AddAttachmentError.StorageQuotaExceeded ->
+                state.copy(error = Effect.of(TextUiModel(R.string.composer_storage_quota_exceeded_error)))
         }
     }
 
