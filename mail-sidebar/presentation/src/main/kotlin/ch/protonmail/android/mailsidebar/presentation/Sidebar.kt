@@ -217,6 +217,7 @@ private fun SidebarHeader(modifier: Modifier = Modifier, hazeState: HazeState) {
     Box(
         modifier = modifier
             .height(ProtonDimens.sideBarHeaderHeight)
+            .background(ProtonTheme.colors.sidebarBackground)
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
@@ -226,9 +227,7 @@ private fun SidebarHeader(modifier: Modifier = Modifier, hazeState: HazeState) {
                     blurRadius = 20.dp,
                     noiseFactor = 0f
                 )
-            ) {
-                blurEnabled = true
-            }
+            )
             .fillMaxWidth()
     ) {
         Image(
