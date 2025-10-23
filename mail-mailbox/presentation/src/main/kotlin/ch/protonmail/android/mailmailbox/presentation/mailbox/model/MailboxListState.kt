@@ -37,6 +37,7 @@ sealed interface MailboxListState {
         val shouldShowFab: Boolean
         val avatarImagesUiModel: AvatarImagesUiModel
         val paginatorInvalidationEffect: Effect<Unit>
+        val refreshOngoing: Boolean
 
         data class ViewMode(
             override val currentMailLabel: MailLabel,
@@ -45,10 +46,10 @@ sealed interface MailboxListState {
             override val shouldShowFab: Boolean,
             override val avatarImagesUiModel: AvatarImagesUiModel,
             override val paginatorInvalidationEffect: Effect<Unit> = Effect.empty(),
+            override val refreshOngoing: Boolean,
             val openItemEffect: Effect<OpenMailboxItemRequest>,
             val scrollToMailboxTop: Effect<MailLabelId>,
             val refreshErrorEffect: Effect<Unit>,
-            val refreshRequested: Boolean,
             val displayAttachment: Effect<OpenAttachmentIntentValues> = Effect.empty(),
             val displayAttachmentError: Effect<TextUiModel> = Effect.empty(),
             val attachmentOpeningStarted: Effect<TextUiModel> = Effect.empty()
@@ -64,6 +65,7 @@ sealed interface MailboxListState {
             override val shouldShowFab: Boolean,
             override val avatarImagesUiModel: AvatarImagesUiModel,
             override val paginatorInvalidationEffect: Effect<Unit> = Effect.empty(),
+            override val refreshOngoing: Boolean,
             val selectedMailboxItems: Set<SelectedMailboxItem>,
             val areAllItemsSelected: Boolean
         ) : Data {

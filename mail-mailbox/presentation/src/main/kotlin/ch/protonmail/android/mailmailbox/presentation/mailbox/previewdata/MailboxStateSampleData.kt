@@ -82,7 +82,7 @@ object MailboxStateSampleData {
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
-            refreshRequested = false,
+            refreshOngoing = false,
             swipeActions = SwipeActionsUiModel(
                 start = SwipeUiModelSampleData.Trash,
                 end = SwipeUiModelSampleData.Archive
@@ -119,7 +119,7 @@ object MailboxStateSampleData {
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
-            refreshRequested = false,
+            refreshOngoing = false,
             swipeActions = SwipeActionsUiModel(
                 start = SwipeUiModelSampleData.Trash,
                 end = SwipeUiModelSampleData.Archive
@@ -175,7 +175,8 @@ object MailboxStateSampleData {
             searchState = MailboxSearchState.NotSearching,
             shouldShowFab = false,
             avatarImagesUiModel = AvatarImagesUiModel.Empty,
-            areAllItemsSelected = false
+            areAllItemsSelected = false,
+            refreshOngoing = false
         ),
         topAppBarState = MailboxTopAppBarState.Data.SelectionMode(
             currentLabelName = inboxDynamicLabel.text(),

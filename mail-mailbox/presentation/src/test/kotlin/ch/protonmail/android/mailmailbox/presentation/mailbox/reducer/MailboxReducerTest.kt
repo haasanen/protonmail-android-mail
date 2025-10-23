@@ -195,7 +195,7 @@ internal class MailboxReducerTest(
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 refreshErrorEffect = Effect.empty(),
-                refreshRequested = false,
+                refreshOngoing = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,

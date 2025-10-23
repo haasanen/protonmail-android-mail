@@ -250,7 +250,7 @@ class MailboxListReducer @Inject constructor(
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 refreshErrorEffect = Effect.empty(),
-                refreshRequested = false,
+                refreshOngoing = false,
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
                 shouldShowFab = true,
@@ -282,7 +282,7 @@ class MailboxListReducer @Inject constructor(
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 refreshErrorEffect = Effect.empty(),
-                refreshRequested = false,
+                refreshOngoing = false,
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
                 shouldShowFab = true,
@@ -348,8 +348,8 @@ class MailboxListReducer @Inject constructor(
 
     private fun reduceOfflineWithData(currentState: MailboxListState) = when (currentState) {
         is MailboxListState.Data.ViewMode -> {
-            if (currentState.refreshRequested) {
-                currentState.copy(refreshRequested = false)
+            if (currentState.refreshOngoing) {
+                currentState.copy(refreshOngoing = false)
             } else {
                 currentState
             }
@@ -359,19 +359,21 @@ class MailboxListReducer @Inject constructor(
     }
 
     private fun reduceRefresh(currentState: MailboxListState) = when (currentState) {
-        is MailboxListState.Data.ViewMode -> currentState.copy(refreshRequested = true)
+        is MailboxListState.Data.ViewMode -> currentState.copy(refreshOngoing = true)
+        is MailboxListState.Data.SelectionMode -> currentState.copy(refreshOngoing = true)
         else -> currentState
     }
 
     private fun reduceRefreshCompleted(currentState: MailboxListState) = when (currentState) {
-        is MailboxListState.Data.ViewMode -> currentState.copy(refreshRequested = false)
+        is MailboxListState.Data.ViewMode -> currentState.copy(refreshOngoing = false)
+        is MailboxListState.Data.SelectionMode -> currentState.copy(refreshOngoing = false)
         else -> currentState
     }
 
     private fun reduceErrorWithData(currentState: MailboxListState) = when (currentState) {
         is MailboxListState.Data.ViewMode -> {
-            if (currentState.refreshRequested) {
-                currentState.copy(refreshErrorEffect = Effect.of(Unit), refreshRequested = false)
+            if (currentState.refreshOngoing) {
+                currentState.copy(refreshErrorEffect = Effect.of(Unit), refreshOngoing = false)
             } else {
                 currentState
             }
@@ -389,7 +391,8 @@ class MailboxListReducer @Inject constructor(
                 searchState = currentState.searchState,
                 avatarImagesUiModel = currentState.avatarImagesUiModel,
                 shouldShowFab = false,
-                areAllItemsSelected = false
+                areAllItemsSelected = false,
+                refreshOngoing = currentState.refreshOngoing
             )
 
             else -> currentState
@@ -401,7 +404,7 @@ class MailboxListReducer @Inject constructor(
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
-            refreshRequested = false,
+            refreshOngoing = currentState.refreshOngoing,
             swipeActions = currentState.swipeActions,
             searchState = currentState.searchState,
             shouldShowFab = !currentState.searchState.isInSearch(),
