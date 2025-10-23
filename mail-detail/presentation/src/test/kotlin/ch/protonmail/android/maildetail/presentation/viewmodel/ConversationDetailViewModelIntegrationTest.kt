@@ -131,8 +131,8 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailM
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationReportPhishingDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.EditScheduledMessageDialogReducer
-import ch.protonmail.android.maildetail.presentation.reducer.MarkAsLegitimateDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.HiddenMessagesBannerReducer
+import ch.protonmail.android.maildetail.presentation.reducer.MarkAsLegitimateDialogReducer
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
@@ -145,6 +145,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfigur
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
@@ -494,6 +495,11 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val toolbarRefreshSignal = mockk<ToolbarActionsRefreshSignal> {
         every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
     }
+
+    private val resolveSystemLabelId = mockk<ResolveSystemLabelId> {
+        coEvery { this@mockk(any(), any()) } returns SystemLabelId.Inbox.right()
+    }
+
     private val testDispatcher: TestDispatcher by lazy { StandardTestDispatcher() }
 
     @BeforeTest
@@ -2557,6 +2563,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         snoozeRepository = snoozeRepository,
         unsubscribeFromNewsletter = unsubscribeFromNewsletter,
         toolbarRefreshSignal = toolbarRefreshSignal,
+        resolveSystemLabelId = resolveSystemLabelId,
         executeWhenOnline = executeOnOnline
     )
 

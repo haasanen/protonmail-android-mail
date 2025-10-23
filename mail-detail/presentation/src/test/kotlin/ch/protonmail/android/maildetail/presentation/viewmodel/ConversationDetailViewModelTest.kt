@@ -99,6 +99,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserA
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
@@ -351,6 +352,10 @@ class ConversationDetailViewModelTest {
         every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
     }
 
+    private val resolveSystemLabelId = mockk<ResolveSystemLabelId> {
+        coEvery { this@mockk(any(), any()) } returns SystemLabelId.Inbox.right()
+    }
+
     private val executeWhenOnline = mockk<ExecuteWhenOnline>(relaxed = true)
 
     private val testDispatcher: TestDispatcher by lazy {
@@ -407,6 +412,7 @@ class ConversationDetailViewModelTest {
             snoozeRepository = snoozeRepository,
             unsubscribeFromNewsletter = unsubscribeFromNewsletter,
             toolbarRefreshSignal = toolbarRefreshSignal,
+            resolveSystemLabelId = resolveSystemLabelId,
             executeWhenOnline = executeWhenOnline
         )
     }

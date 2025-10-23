@@ -103,6 +103,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -226,7 +227,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val snoozeRepository: SnoozeRepository,
     private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter,
     private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
-    private val executeWhenOnline: ExecuteWhenOnline
+    private val executeWhenOnline: ExecuteWhenOnline,
+    private val resolveSystemLabelId: ResolveSystemLabelId
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -270,7 +272,11 @@ class ConversationDetailViewModel @Inject constructor(
 
     init {
         Timber.d("Open detail screen for conversation ID: $conversationId")
-        setupObservers()
+        viewModelScope.launch {
+            showAllMessages.value = resolveInitialShowAll()
+            setupObservers()
+        }
+
         setupOfflineObserver()
     }
 
@@ -1761,6 +1767,21 @@ class ConversationDetailViewModel @Inject constructor(
     }
 
     /**
+     * Resolves the initial state of the `showAllMessages` parameter.
+     *
+     * This is required as when the message is opened from the AllMail folder (not Almost All Mail)
+     * the "Hidden messages" banner is not returned by Rust and the value should always be `true`.
+     */
+    private suspend fun resolveInitialShowAll(): Boolean {
+        val label = resolveSystemLabelId(
+            userId = primaryUserId.first(),
+            labelId = getOpenedFromLocation()
+        ).getOrNull() ?: return false
+
+        return label == SystemLabelId.AllMail
+    }
+
+    /**
      * A helper function that allows to perform actions that eventually cause the user to leave the screen, while
      * still making sure that observers are not being triggered during the execution of the action.
      *
@@ -1790,7 +1811,6 @@ class ConversationDetailViewModel @Inject constructor(
     }
 
     private suspend fun signalOfflineError() {
-        Timber.d("Emitting offline signal...")
         offlineErrorSignal.emit(Unit)
     }
 
