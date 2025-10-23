@@ -23,15 +23,23 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.MessageScroller
 import uniffi.proton_mail_uniffi.MessageScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.MessageScrollerGetItemsResult
+import uniffi.proton_mail_uniffi.MessageScrollerSupportsIncludeFilterResult
 
 class MailboxMessagePaginatorWrapper(
     private val rustPaginator: MessageScroller
 ) : MessagePaginatorWrapper {
 
-    override val supportsIncludeFilter = rustPaginator.supportsIncludeFilter()
+    override suspend fun supportsIncludeFilter() = when (val result = rustPaginator.supportsIncludeFilter()) {
+        is MessageScrollerSupportsIncludeFilterResult.Error -> {
+            Timber.w("message-paginator: failed to define supportsIncludeFilter: $result")
+            false
+        }
+        is MessageScrollerSupportsIncludeFilterResult.Ok -> result.v1
+    }
 
     override suspend fun nextPage(): Either<PaginationError, Unit> = when (val result = rustPaginator.fetchMore()) {
         is MessageScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()

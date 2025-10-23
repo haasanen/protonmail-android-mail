@@ -31,7 +31,7 @@ interface RustConversationsQuery {
         pageKey: PageKey.DefaultPageKey
     ): Either<PaginationError, List<LocalConversation>>
 
-    fun supportsIncludeFilter(): Boolean
+    suspend fun supportsIncludeFilter(): Boolean
 
     suspend fun terminatePaginator(userId: UserId)
 }

@@ -131,7 +131,7 @@ class RustConversationsQueryImpl @Inject constructor(
         return response
     }
 
-    override fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter == true
+    override suspend fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter() == true
 
     override suspend fun terminatePaginator(userId: UserId) {
         if (paginatorState?.pageDescriptor?.userId == userId) {

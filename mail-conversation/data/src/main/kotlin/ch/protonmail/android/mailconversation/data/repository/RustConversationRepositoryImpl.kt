@@ -53,7 +53,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         rustConversationDataSource.terminatePaginator(userId)
     }
 
-    override fun supportsIncludeFilter() = rustConversationDataSource.supportsIncludeFilter()
+    override suspend fun supportsIncludeFilter() = rustConversationDataSource.supportsIncludeFilter()
 
     override suspend fun getConversations(
         userId: UserId,

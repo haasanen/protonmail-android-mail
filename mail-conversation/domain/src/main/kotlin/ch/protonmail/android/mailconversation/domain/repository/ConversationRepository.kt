@@ -37,7 +37,7 @@ interface ConversationRepository {
 
     suspend fun terminatePaginator(userId: UserId)
 
-    fun supportsIncludeFilter(): Boolean
+    suspend fun supportsIncludeFilter(): Boolean
 
     /**
      * Load all [Conversation] from local cache for [userId].

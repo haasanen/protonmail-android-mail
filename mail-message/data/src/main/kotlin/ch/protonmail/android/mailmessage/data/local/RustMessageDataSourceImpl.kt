@@ -104,7 +104,8 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun terminatePaginator(userId: UserId) = rustMessageListQuery.terminatePaginator(userId)
 
-    override fun supportsIncludeFilter() = rustMessageListQuery.supportsIncludeFilter()
+    override suspend fun supportsIncludeFilter() = rustMessageListQuery.supportsIncludeFilter()
+
     override suspend fun getMessage(
         userId: UserId,
         messageId: LocalMessageId

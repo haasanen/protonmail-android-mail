@@ -23,7 +23,7 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 
 interface MessagePaginatorWrapper {
 
-    val supportsIncludeFilter: Boolean
+    suspend fun supportsIncludeFilter(): Boolean
 
     suspend fun nextPage(): Either<PaginationError, Unit>
 

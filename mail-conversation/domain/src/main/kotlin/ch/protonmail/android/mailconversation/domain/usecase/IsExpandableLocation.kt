@@ -28,7 +28,7 @@ class IsExpandableLocation @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
 
-    operator fun invoke(viewMode: ViewMode) = when (viewMode) {
+    suspend operator fun invoke(viewMode: ViewMode) = when (viewMode) {
         ViewMode.ConversationGrouping -> conversationsRepository.supportsIncludeFilter()
         ViewMode.NoConversationGrouping -> messageRepository.supportsIncludeFilter()
     }

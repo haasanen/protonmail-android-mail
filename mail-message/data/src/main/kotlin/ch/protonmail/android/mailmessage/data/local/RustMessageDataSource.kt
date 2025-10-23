@@ -45,7 +45,7 @@ interface RustMessageDataSource {
 
     suspend fun terminatePaginator(userId: UserId)
 
-    fun supportsIncludeFilter(): Boolean
+    suspend fun supportsIncludeFilter(): Boolean
 
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalMessageMetadata>
     suspend fun getMessage(userId: UserId, messageId: RemoteMessageId): Either<DataError, LocalMessageMetadata>

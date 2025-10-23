@@ -41,7 +41,7 @@ interface RustConversationDataSource {
 
     suspend fun terminatePaginator(userId: UserId)
 
-    fun supportsIncludeFilter(): Boolean
+    suspend fun supportsIncludeFilter(): Boolean
 
     suspend fun observeConversation(
         userId: UserId,

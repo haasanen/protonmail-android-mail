@@ -127,7 +127,7 @@ class RustMessageListQueryImpl @Inject constructor(
         }
     }
 
-    override fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter == true
+    override suspend fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter() == true
 
     private suspend fun initPaginator(pageDescriptor: PageDescriptor, mailbox: MailboxWrapper) {
         Timber.d("rust-message-query: [destroy and] initialize paginator instance...")

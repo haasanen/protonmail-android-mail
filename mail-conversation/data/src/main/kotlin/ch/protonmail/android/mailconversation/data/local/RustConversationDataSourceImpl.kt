@@ -76,7 +76,7 @@ class RustConversationDataSourceImpl @Inject constructor(
 
     override suspend fun terminatePaginator(userId: UserId) = rustConversationsQuery.terminatePaginator(userId)
 
-    override fun supportsIncludeFilter() = rustConversationsQuery.supportsIncludeFilter()
+    override suspend fun supportsIncludeFilter() = rustConversationsQuery.supportsIncludeFilter()
 
     /**
      * Gets the first x conversations for this labelId.

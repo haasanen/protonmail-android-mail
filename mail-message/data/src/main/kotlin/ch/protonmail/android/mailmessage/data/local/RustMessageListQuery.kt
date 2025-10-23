@@ -28,5 +28,5 @@ interface RustMessageListQuery {
     suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>>
     suspend fun terminatePaginator(userId: UserId)
 
-    fun supportsIncludeFilter(): Boolean
+    suspend fun supportsIncludeFilter(): Boolean
 }
