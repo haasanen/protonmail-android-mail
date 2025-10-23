@@ -23,5 +23,6 @@ import me.proton.core.domain.entity.UserId
 interface EventLoopRepository {
 
     suspend fun trigger(userId: UserId)
+    suspend fun triggerAndWait(userId: UserId)
 
 }

@@ -48,6 +48,12 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
         VoidEventResult.Ok -> Unit.right()
     }
 
+    suspend fun pollEventsAndWait(): Either<EventLoopError, Unit> =
+        when (val result = userSession.forceEventLoopPollAndWait()) {
+            is VoidEventResult.Error -> result.v1.toEventLoopError().left()
+            VoidEventResult.Ok -> Unit.right()
+        }
+
     suspend fun imageForSender(address: String, bimi: String?) = userSession.imageForSender(
         address,
         bimi,

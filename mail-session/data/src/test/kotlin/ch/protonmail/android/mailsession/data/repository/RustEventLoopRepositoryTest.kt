@@ -38,4 +38,21 @@ class RustEventLoopRepositoryTest {
         // Then
         coVerify { mailSession.pollEvents() }
     }
+
+    @Test
+    fun `triggers event loop and waits until it is completed`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val mailSession = mockk<MailUserSessionWrapper>(relaxUnitFun = true) {
+            coEvery { this@mockk.pollEventsAndWait() } returns Unit.right()
+        }
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+
+        // When
+        eventLoopRepository.triggerAndWait(userId)
+
+        // Then
+        coVerify(exactly = 1) { mailSession.pollEventsAndWait() }
+    }
+
 }

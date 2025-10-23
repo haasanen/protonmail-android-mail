@@ -39,4 +39,15 @@ class RustEventLoopRepository @Inject constructor(
         userSession.pollEvents()
     }
 
+    override suspend fun triggerAndWait(userId: UserId) {
+        val userSession = userSessionRepository.getUserSession(userId)
+        if (userSession == null) {
+            Timber.w("rust-event: event loop triggered for $userId but no session found. Stopping...")
+            return
+        }
+
+        Timber.d("rust-event: triggering event loop and waiting for $userId...")
+        userSession.pollEventsAndWait()
+    }
+
 }
