@@ -78,6 +78,9 @@ class ScrollerCache<T> {
                 }
             }
 
+
+            ScrollerUpdate.LoadingEnded,
+            ScrollerUpdate.LoadingStarted,
             is ScrollerUpdate.None,
             is ScrollerUpdate.Error -> Unit
         }

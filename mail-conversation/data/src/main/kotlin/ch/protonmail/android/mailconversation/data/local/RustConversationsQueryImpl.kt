@@ -51,7 +51,9 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.ConversationScrollerListUpdate
 import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
+import uniffi.proton_mail_uniffi.ConversationScrollerStatusUpdate
 import uniffi.proton_mail_uniffi.ConversationScrollerUpdate
 import javax.inject.Inject
 
@@ -289,16 +291,37 @@ class RustConversationsQueryImpl @Inject constructor(
     }
 
     companion object {
+
         const val NONE_FOLLOWUP_GRACE_MS = 250L
     }
 }
 
 fun ConversationScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<LocalConversation> = when (this) {
-    is ConversationScrollerUpdate.Append -> ScrollerUpdate.Append(v1)
-    is ConversationScrollerUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(idx.toInt(), items)
-    is ConversationScrollerUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(idx.toInt(), items)
-    is ConversationScrollerUpdate.Error -> ScrollerUpdate.Error(error)
-    ConversationScrollerUpdate.None -> ScrollerUpdate.None
-    is ConversationScrollerUpdate.ReplaceRange -> ScrollerUpdate.ReplaceRange(from.toInt(), to.toInt(), items)
+    is ConversationScrollerUpdate.List -> when (val listResult = this.v1) {
+        is ConversationScrollerListUpdate.Append -> ScrollerUpdate.Append(listResult.v1)
+        is ConversationScrollerListUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(
+            listResult.idx.toInt(),
+            listResult.items
+        )
+
+        is ConversationScrollerListUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(
+            listResult.idx.toInt(),
+            listResult.items
+        )
+
+        ConversationScrollerListUpdate.None -> ScrollerUpdate.None
+        is ConversationScrollerListUpdate.ReplaceRange -> ScrollerUpdate.ReplaceRange(
+            listResult.from.toInt(),
+            listResult.to.toInt(),
+            listResult.items
+        )
+    }
+
+    is ConversationScrollerUpdate.Status -> when (this.v1) {
+        ConversationScrollerStatusUpdate.FETCH_NEW_START -> ScrollerUpdate.LoadingStarted
+        ConversationScrollerStatusUpdate.FETCH_NEW_END -> ScrollerUpdate.LoadingEnded
+    }
+
+    is ConversationScrollerUpdate.Error -> ScrollerUpdate.Error(this.error)
 }
 

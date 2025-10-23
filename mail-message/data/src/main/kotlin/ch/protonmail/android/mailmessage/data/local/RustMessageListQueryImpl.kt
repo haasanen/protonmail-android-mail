@@ -36,6 +36,10 @@ import ch.protonmail.android.mailpagination.data.model.scroller.isCompleted
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerCache
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerOnUpdateHandler
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate.Append
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate.ReplaceBefore
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate.ReplaceFrom
+import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate.ReplaceRange
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
@@ -51,7 +55,9 @@ import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.Message
+import uniffi.proton_mail_uniffi.MessageScrollerListUpdate
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
+import uniffi.proton_mail_uniffi.MessageScrollerStatusUpdate
 import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import javax.inject.Inject
 
@@ -280,10 +286,22 @@ class RustMessageListQueryImpl @Inject constructor(
 }
 
 fun MessageScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<Message> = when (this) {
-    is MessageScrollerUpdate.Append -> ScrollerUpdate.Append(v1)
-    is MessageScrollerUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(idx.toInt(), items)
-    is MessageScrollerUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(idx.toInt(), items)
-    is MessageScrollerUpdate.Error -> ScrollerUpdate.Error(error)
-    MessageScrollerUpdate.None -> ScrollerUpdate.None
-    is MessageScrollerUpdate.ReplaceRange -> ScrollerUpdate.ReplaceRange(from.toInt(), to.toInt(), items)
+    is MessageScrollerUpdate.List -> when (val listResult = this.v1) {
+        is MessageScrollerListUpdate.Append -> Append(listResult.v1)
+        is MessageScrollerListUpdate.ReplaceFrom -> ReplaceFrom(listResult.idx.toInt(), listResult.items)
+        is MessageScrollerListUpdate.ReplaceBefore -> ReplaceBefore(listResult.idx.toInt(), listResult.items)
+        MessageScrollerListUpdate.None -> ScrollerUpdate.None
+        is MessageScrollerListUpdate.ReplaceRange -> ReplaceRange(
+            listResult.from.toInt(),
+            listResult.to.toInt(),
+            listResult.items
+        )
+    }
+
+    is MessageScrollerUpdate.Status -> when (this.v1) {
+        MessageScrollerStatusUpdate.FETCH_NEW_START -> ScrollerUpdate.LoadingStarted
+        MessageScrollerStatusUpdate.FETCH_NEW_END -> ScrollerUpdate.LoadingEnded
+    }
+
+    is MessageScrollerUpdate.Error -> ScrollerUpdate.Error(this.error)
 }
