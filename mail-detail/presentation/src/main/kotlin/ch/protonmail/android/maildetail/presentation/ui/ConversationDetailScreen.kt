@@ -111,10 +111,10 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
-import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
 import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
@@ -943,7 +943,7 @@ private fun MessagesContent(
 
     var scrollToIndex = remember(scrollToMessageId, uiModels) {
         if (scrollToMessageId == null) return@remember null
-        else uiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
+        else uiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }.takeIf { it > -1 }
     }
 
     LaunchedEffect(key1 = scrollToIndex, key2 = webContentLoaded) {
