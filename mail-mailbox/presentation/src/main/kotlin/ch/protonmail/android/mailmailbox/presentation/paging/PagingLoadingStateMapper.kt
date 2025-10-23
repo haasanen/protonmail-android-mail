@@ -27,11 +27,11 @@ import ch.protonmail.android.mailmailbox.presentation.paging.exception.Paginatio
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import timber.log.Timber
 
-fun LazyPagingItems<MailboxItemUiModel>.mapToUiStates(refreshRequested: Boolean): MailboxScreenState {
+fun LazyPagingItems<MailboxItemUiModel>.mapToUiStates(refreshOngoing: Boolean): MailboxScreenState {
 
-    // When the user performs Pull to Refresh (refreshRequested = true), we will ignore AppendLoading state, because
+    // When the user performs Pull to Refresh (refreshOngoing = true), we will ignore AppendLoading state, because
     // Paging Library performs Refresh Loading --> Gets New Data --> Starts Append Loading
-    if (refreshRequested) {
+    if (refreshOngoing) {
         return when {
             isPageLoadingNoData() -> MailboxScreenState.Loading
             isPageLoadingWithData() -> MailboxScreenState.LoadingWithData

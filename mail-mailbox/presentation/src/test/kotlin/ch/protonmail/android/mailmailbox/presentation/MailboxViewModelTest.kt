@@ -139,7 +139,6 @@ import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import ch.protonmail.android.testdata.user.UserIdTestData.userId1
 import io.mockk.Called
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -153,6 +152,7 @@ import io.mockk.runs
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -1421,13 +1421,17 @@ internal class MailboxViewModelTest {
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
-        every {
-            mailboxReducer.newStateFrom(
-                MailboxStateSampleData.Loading,
-                MailboxViewAction.Refresh
+        val stateRefreshCompleted = expectedState.copy(
+            mailboxListState = (expectedState.mailboxListState as MailboxListState.Data.ViewMode).copy(
+                refreshOngoing = false
             )
-        } returns expectedState
-        coEvery { eventLoopRepository.trigger(userId) } just Runs
+        )
+        expectedReducerResult(MailboxViewAction.Refresh, expectedState)
+        expectedReducerResult(MailboxEvent.RefreshCompleted, stateRefreshCompleted)
+        val gate = CompletableDeferred<Unit>()
+        coEvery { eventLoopRepository.triggerAndWait(userId) } coAnswers {
+            gate.await()
+        }
         expectPagerMock()
 
         // When
@@ -1435,7 +1439,15 @@ internal class MailboxViewModelTest {
         mailboxViewModel.state.test {
             // Then
             assertEquals(expectedState, awaitItem())
-            coVerify { eventLoopRepository.trigger(userId) }
+
+            // Let triggerAndWait finish
+            gate.complete(Unit)
+
+            // Then
+            assertEquals(stateRefreshCompleted, awaitItem())
+
+            coVerify(exactly = 1) { eventLoopRepository.triggerAndWait(userId) }
+            cancelAndIgnoreRemainingEvents()
         }
     }
 

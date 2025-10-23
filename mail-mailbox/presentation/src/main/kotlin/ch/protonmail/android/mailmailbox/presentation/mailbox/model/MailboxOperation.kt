@@ -90,7 +90,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data class ItemClicked(val item: MailboxItemUiModel) : MailboxViewAction
 
     object Refresh : MailboxViewAction, AffectingMailboxList
-    object RefreshCompleted : MailboxViewAction, AffectingMailboxList
     object EnableUnreadFilter : MailboxViewAction, AffectingUnreadFilter
     object DisableUnreadFilter : MailboxViewAction, AffectingUnreadFilter
 
@@ -349,6 +348,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
 
     object ShowSpamTrashFilter : MailboxEvent, AffectingShowSpamTrashFilter
     object HideSpamTrashFilter : MailboxEvent, AffectingShowSpamTrashFilter
+    object RefreshCompleted : MailboxEvent, AffectingMailboxList
+
 }
 
 

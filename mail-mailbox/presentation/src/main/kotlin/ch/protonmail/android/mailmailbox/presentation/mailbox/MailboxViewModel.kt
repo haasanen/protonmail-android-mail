@@ -215,6 +215,7 @@ class MailboxViewModel @Inject constructor(
     private val folderColorSettings = primaryUserId.flatMapLatest {
         observeFolderColorSettings(it).distinctUntilChanged()
     }
+    private var refreshJob: Job? = null
 
     val state: StateFlow<MailboxState> = mutableState.asStateFlow()
     val items: Flow<PagingData<MailboxItemUiModel>> = observePagingData().cachedIn(viewModelScope)
@@ -368,7 +369,6 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.OnAvatarImageLoadFailed -> handleOnAvatarImageLoadFailed(viewAction.item)
                 is MailboxViewAction.OnItemLongClicked -> handleItemLongClick(viewAction.item)
                 is MailboxViewAction.Refresh -> handlePullToRefresh(viewAction)
-                is MailboxViewAction.RefreshCompleted -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.ItemClicked -> handleItemClick(viewAction.item)
                 is MailboxViewAction.OnOfflineWithData -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.OnErrorWithData -> emitNewStateFrom(viewAction)
@@ -417,9 +417,19 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handlePullToRefresh(viewAction: MailboxViewAction.Refresh) {
-        emitNewStateFrom(viewAction)
-        eventLoopRepository.trigger(primaryUserId.first())
+    private fun handlePullToRefresh(viewAction: MailboxViewAction.Refresh) {
+        if (refreshJob?.isActive == true) return
+
+        refreshJob = viewModelScope.launch {
+            Timber.d("Pull to refresh started")
+            emitNewStateFrom(viewAction)
+
+            eventLoopRepository.triggerAndWait(primaryUserId.first())
+
+            emitNewStateFrom(MailboxEvent.RefreshCompleted)
+
+            Timber.d("Pull to refresh completed")
+        }
     }
 
     private fun handleRequestAttachment(action: MailboxViewAction.RequestAttachment) {

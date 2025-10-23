@@ -72,7 +72,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -243,7 +242,6 @@ fun MailboxScreen(
         onItemClicked = { item -> viewModel.submit(MailboxViewAction.ItemClicked(item)) },
         onItemLongClicked = { viewModel.submit(MailboxViewAction.OnItemLongClicked(it)) },
         onRefreshList = { viewModel.submit(MailboxViewAction.Refresh) },
-        onRefreshListCompleted = { viewModel.submit(MailboxViewAction.RefreshCompleted) },
         markAsRead = { viewModel.submit(MailboxViewAction.MarkAsRead) },
         markAsUnread = { viewModel.submit(MailboxViewAction.MarkAsUnread) },
         trash = { viewModel.submit(MailboxViewAction.Trash) },
@@ -727,8 +725,7 @@ private fun MailboxSwipeRefresh(
 ) {
     // We need to show the Pull To Refresh indicator at top at correct times, which are first time we fetch data from
     // remote and when the user pulls to refresh. We will use following flags to know when to show the indicator.
-    var loadingWithDataCount by remember { mutableIntStateOf(0) }
-    val refreshRequested = (state as? MailboxListState.Data.ViewMode)?.refreshRequested ?: false
+    val refreshOngoing = (state as? MailboxListState.Data.ViewMode)?.refreshOngoing ?: false
     val searchMode = (state as? MailboxListState.Data)?.searchState?.searchMode ?: MailboxSearchMode.None
 
     var lastViewState by remember { mutableStateOf<MailboxScreenState>(MailboxScreenState.Loading) }
@@ -738,10 +735,9 @@ private fun MailboxSwipeRefresh(
             state is MailboxListState.Loading -> MailboxScreenState.Loading
             state is MailboxListState.CouldNotLoadUserSession -> MailboxScreenState.CouldNotLoadUserSession
             searchMode.isInSearch() -> items.mapToUiStatesInSearch(searchMode, lastViewState)
-            else -> items.mapToUiStates(refreshRequested)
+            else -> items.mapToUiStates(refreshOngoing)
         }
     }
-    lastViewState = currentViewState
 
     BackHandler(
         state is MailboxListState.Data.ViewMode && searchMode.isInSearch()
@@ -756,21 +752,6 @@ private fun MailboxSwipeRefresh(
             ) {
                 actions.onSearchResult()
             }
-        }
-    }
-
-    val refreshing = currentViewState is MailboxScreenState.LoadingWithData ||
-        currentViewState is MailboxScreenState.SearchLoadingWithData
-
-    LaunchedEffect(refreshing) {
-        // first time refreshing
-        if (refreshing) {
-            loadingWithDataCount++
-        }
-
-        // We need to clear the refreshRequestedState after the refresh is done
-        if (refreshRequested && !refreshing) {
-            actions.onRefreshListCompleted()
         }
     }
 
@@ -789,11 +770,7 @@ private fun MailboxSwipeRefresh(
         }
     }
 
-    val isRefreshing = if (searchMode.isInSearch()) {
-        refreshing
-    } else {
-        refreshing && (refreshRequested || loadingWithDataCount == 1)
-    }
+    val isRefreshing = listDataState?.refreshOngoing ?: false
 
     MailboxPullToRefreshBox(
         modifier = modifier,
@@ -1245,7 +1222,6 @@ object MailboxScreen {
         val onAttachmentReady: (OpenAttachmentIntentValues) -> Unit,
         val onStarClicked: (MailboxItemUiModel) -> Unit,
         val onRefreshList: () -> Unit,
-        val onRefreshListCompleted: () -> Unit,
         val openDrawerMenu: () -> Unit,
         val showSnackbar: (SnackbarType) -> Unit,
         val onOfflineWithData: () -> Unit,
@@ -1307,7 +1283,6 @@ object MailboxScreen {
                 onAvatarImageLoadFailed = {},
                 onStarClicked = {},
                 onRefreshList = {},
-                onRefreshListCompleted = {},
                 openDrawerMenu = {},
                 showSnackbar = {},
                 onOfflineWithData = {},
