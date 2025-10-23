@@ -24,6 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.SearchScroller
 import uniffi.proton_mail_uniffi.SearchScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.SearchScrollerGetItemsResult
@@ -55,5 +56,14 @@ class SearchMessagePaginatorWrapper(
     override fun destroy() {
         rustPaginator.handle().disconnect()
         rustPaginator.terminate()
+    }
+
+    override fun filterUnread(filterUnread: Boolean) {
+        Timber.w("search-paginator: Called filter unread on a search paginator, which is illegal. No-op.")
+    }
+
+    override fun showSpamAndTrash(show: Boolean) {
+        val includeSwitch = if (show) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
+        rustPaginator.changeInclude(includeSwitch)
     }
 }

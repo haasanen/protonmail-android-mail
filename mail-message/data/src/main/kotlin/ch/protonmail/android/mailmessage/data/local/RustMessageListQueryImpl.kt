@@ -22,7 +22,6 @@ import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
-import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
@@ -87,6 +86,15 @@ class RustMessageListQueryImpl @Inject constructor(
                 initPaginator(pageDescriptor, mailbox)
             }
         }
+        when (pageKey) {
+            is PageKey.DefaultPageKey -> {
+                paginatorState?.paginatorWrapper?.filterUnread(pageKey.readStatus == ReadStatus.Unread)
+                paginatorState?.paginatorWrapper?.showSpamAndTrash(pageKey.showSpamTrash == ShowSpamTrash.Show)
+            }
+            is PageKey.PageKeyForSearch -> {
+                paginatorState?.paginatorWrapper?.showSpamAndTrash(pageKey.showSpamTrash == ShowSpamTrash.Show)
+            }
+        }
 
         Timber.d("rust-message-query: Paging: querying ${pageKey.pageToLoad.name} page for messages")
 
@@ -142,16 +150,12 @@ class RustMessageListQueryImpl @Inject constructor(
         when (pageDescriptor) {
             is PageDescriptor.Default -> createRustMessagesPaginator(
                 mailbox = mailbox,
-                labelId = pageDescriptor.labelId.toLocalLabelId(),
-                unread = pageDescriptor.unread,
-                includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowSpamTrash.Show,
                 callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
             )
 
             is PageDescriptor.Search -> createRustSearchPaginator(
                 mailbox = mailbox,
                 keyword = pageDescriptor.keyword,
-                includeSpamAndTrash = pageDescriptor.showSpamTrash == ShowSpamTrash.Show,
                 callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
             )
         }.onRight { wrapper ->
@@ -250,32 +254,20 @@ class RustMessageListQueryImpl @Inject constructor(
 
         val userId: UserId
 
-        data class Default(
-            override val userId: UserId,
-            val labelId: LabelId,
-            val unread: Boolean,
-            val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide
-        ) : PageDescriptor
+        data class Default(override val userId: UserId, val labelId: LabelId) : PageDescriptor
 
-        data class Search(
-            override val userId: UserId,
-            val keyword: String,
-            val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide
-        ) : PageDescriptor
+        data class Search(override val userId: UserId, val keyword: String) : PageDescriptor
     }
 
     private fun PageKey.toPageDescriptor(userId: UserId): PageDescriptor = when (this) {
         is PageKey.DefaultPageKey -> PageDescriptor.Default(
             userId = userId,
-            labelId = this.labelId,
-            unread = this.readStatus == ReadStatus.Unread,
-            showSpamTrash = this.showSpamTrash
+            labelId = this.labelId
         )
 
         is PageKey.PageKeyForSearch -> PageDescriptor.Search(
             userId = userId,
-            keyword = keyword,
-            showSpamTrash = this.showSpamTrash
+            keyword = keyword
         )
     }
 

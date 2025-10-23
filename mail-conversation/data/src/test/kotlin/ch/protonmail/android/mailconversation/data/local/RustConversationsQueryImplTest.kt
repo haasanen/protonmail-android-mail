@@ -9,7 +9,6 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationsQueryI
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
-import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
@@ -35,6 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import uniffi.proton_mail_uniffi.ConversationScrollerListUpdate
 import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.ConversationScrollerUpdate
 import kotlin.test.assertEquals
@@ -84,18 +84,21 @@ class RustConversationsQueryImplTest {
             coEvery { this@mockk.nextPage() } answers {
                 launch {
                     delay(100) // Simulate callback delay compared to nextPage invocation
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(expectedConversations))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(expectedConversations)
+                        )
+                    )
                 }
                 Unit.right()
             }
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()
@@ -120,18 +123,21 @@ class RustConversationsQueryImplTest {
             coEvery { this@mockk.nextPage() } answers {
                 launch {
                     delay(100) // Simulate callback delay compared to nextPage invocation
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(expectedConversations))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(expectedConversations)
+                        )
+                    )
                 }
                 Unit.right()
             }
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 capture(callbackSlot)
             )
         } returns paginator.right()
@@ -156,17 +162,23 @@ class RustConversationsQueryImplTest {
         val paginator = mockk<ConversationPaginatorWrapper> {
             launch {
                 delay(100) // Simulate callback delay compared to nextPage invocation
-                callbackSlot.captured.onUpdate(ConversationScrollerUpdate.ReplaceFrom(0uL, expectedConversations))
+                callbackSlot.captured.onUpdate(
+                    ConversationScrollerUpdate.List(
+                        ConversationScrollerListUpdate.ReplaceFrom(
+                            0uL,
+                            expectedConversations
+                        )
+                    )
+                )
             }
             coEvery { this@mockk.reload() } returns Unit.right()
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()
@@ -199,18 +211,23 @@ class RustConversationsQueryImplTest {
                 }
                 launch {
                     delay(100) // Simulate callback delay compared to nextPage invocation
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(expectedPage))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(
+                                expectedPage
+                            )
+                        )
+                    )
                 }
                 Unit.right()
             }
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()
@@ -223,9 +240,6 @@ class RustConversationsQueryImplTest {
         coVerify(exactly = 1) {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = any()
             )
         }
@@ -246,28 +260,24 @@ class RustConversationsQueryImplTest {
             coEvery { this@mockk.nextPage() } answers {
                 launch {
                     delay(100) // Simulate callback delay compared to nextPage invocation
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(
+                                firstPage
+                            )
+                        )
+                    )
                 }
                 Unit.right()
             }
             coEvery { this@mockk.disconnect() } just Runs
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
-                callback = capture(callbackSlot)
-            )
-        } returns paginator.right()
-        coEvery {
-            createRustConversationPaginator(
-                mailbox = mailbox,
-                labelId = newLabelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()
@@ -277,31 +287,18 @@ class RustConversationsQueryImplTest {
         rustConversationsQuery.getConversations(userId, newPageKey)
 
         // Then
-        coVerify(exactly = 1) {
+        coVerify(exactly = 2) {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = any()
             )
         }
 
         coVerify { paginator.disconnect() }
-
-        coVerify(exactly = 1) {
-            createRustConversationPaginator(
-                mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
-                callback = any()
-            )
-        }
     }
 
     @Test
-    fun `re initialises paginator when read status changes`() = runTest {
+    fun `updates paginator without re-initialising it when read status changes`() = runTest {
         // Given
         val firstPage = listOf(LocalConversationTestData.AugConversation)
         val userId = UserIdSample.Primary
@@ -309,36 +306,33 @@ class RustConversationsQueryImplTest {
         val readStatus = ReadStatus.All
         val newReadStatus = ReadStatus.Unread
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, readStatus = readStatus)
-        val newPageKey = pageKey.copy(readStatus = newReadStatus)
+        val newPageKey = pageKey.copy(readStatus = newReadStatus, pageToLoad = PageToLoad.Next)
         val mailbox = mockk<MailboxWrapper>()
         val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } answers {
                 launch {
                     delay(100) // Simulate callback delay compared to nextPage invocation
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(
+                                firstPage
+                            )
+                        )
+                    )
                 }
                 Unit.right()
             }
             coEvery { this@mockk.disconnect() } just Runs
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.filterUnread(true) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 capture(callbackSlot)
-            )
-        } returns paginator.right()
-        coEvery {
-            createRustConversationPaginator(
-                mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = true,
-                showSpamTrash = false,
-                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -350,28 +344,13 @@ class RustConversationsQueryImplTest {
         coVerify(exactly = 1) {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
-                callback = any()
-            )
-        }
-
-        coVerify { paginator.disconnect() }
-
-        coVerify(exactly = 1) {
-            createRustConversationPaginator(
-                mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = true,
-                showSpamTrash = false,
                 callback = any()
             )
         }
     }
 
     @Test
-    fun `re initialises paginator when show trash and spam status changes`() = runTest {
+    fun `updates paginator without re-initialising when show trash and spam status changes`() = runTest {
         // Given
         val firstPage = listOf(LocalConversationTestData.AugConversation)
         val userId = UserIdSample.Primary
@@ -379,36 +358,33 @@ class RustConversationsQueryImplTest {
         val showSpamTrash = ShowSpamTrash.Hide
         val newShowSpamTrash = ShowSpamTrash.Show
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, showSpamTrash = showSpamTrash)
-        val newPageKey = pageKey.copy(showSpamTrash = newShowSpamTrash)
+        val newPageKey = pageKey.copy(showSpamTrash = newShowSpamTrash, pageToLoad = PageToLoad.Next)
         val mailbox = mockk<MailboxWrapper>()
         val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } answers {
                 launch {
                     delay(100) // Simulate callback delay compared to nextPage invocation
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(
+                                firstPage
+                            )
+                        )
+                    )
                 }
                 Unit.right()
             }
             coEvery { this@mockk.disconnect() } just Runs
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(true) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 capture(callbackSlot)
-            )
-        } returns paginator.right()
-        coEvery {
-            createRustConversationPaginator(
-                mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = true,
-                callback = capture(callbackSlot)
             )
         } returns paginator.right()
 
@@ -420,21 +396,6 @@ class RustConversationsQueryImplTest {
         coVerify(exactly = 1) {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
-                callback = any()
-            )
-        }
-
-        coVerify { paginator.disconnect() }
-
-        coVerify(exactly = 1) {
-            createRustConversationPaginator(
-                mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = true,
                 callback = any()
             )
         }
@@ -454,19 +415,24 @@ class RustConversationsQueryImplTest {
             coEvery { nextPage() } answers {
                 launch {
                     delay(100) // Simulate callback delay compared to nextPage invocation
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(
+                                firstPage
+                            )
+                        )
+                    )
                 }
                 Unit.right()
             }
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()
@@ -477,7 +443,9 @@ class RustConversationsQueryImplTest {
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
-        callbackSlot.captured.onUpdate(ConversationScrollerUpdate.ReplaceBefore(2uL, firstPage))
+        callbackSlot.captured.onUpdate(
+            ConversationScrollerUpdate.List(ConversationScrollerListUpdate.ReplaceBefore(2uL, firstPage))
+        )
 
         // Then
         coVerify { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) }
@@ -497,19 +465,24 @@ class RustConversationsQueryImplTest {
             coEvery { nextPage() } answers {
                 launch {
                     delay(100) // Simulate callback delay compared to nextPage invocation
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(
+                                firstPage
+                            )
+                        )
+                    )
                 }
                 Unit.right()
             }
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()
@@ -520,7 +493,14 @@ class RustConversationsQueryImplTest {
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
-        callbackSlot.captured.onUpdate(ConversationScrollerUpdate.ReplaceFrom(2uL, firstPage))
+        callbackSlot.captured.onUpdate(
+            ConversationScrollerUpdate.List(
+                ConversationScrollerListUpdate.ReplaceFrom(
+                    2uL,
+                    firstPage
+                )
+            )
+        )
 
         // Then
         coVerify { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) }
@@ -542,23 +522,27 @@ class RustConversationsQueryImplTest {
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { nextPage() } answers {
                 CoroutineScope(mainDispatcherRule.testDispatcher).launch {
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.None)
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.List(ConversationScrollerListUpdate.None))
                     delay(NONE_FOLLOWUP_GRACE_MS - 100)
                     callbackSlot.captured.onUpdate(
-                        ConversationScrollerUpdate.ReplaceBefore(0uL, expectedFollowUp)
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.ReplaceBefore(
+                                0uL,
+                                expectedFollowUp
+                            )
+                        )
                     )
                 }
                 Unit.right()
             }
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()
@@ -584,26 +568,27 @@ class RustConversationsQueryImplTest {
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { nextPage() } answers {
                 CoroutineScope(mainDispatcherRule.testDispatcher).launch {
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.None)
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.List(ConversationScrollerListUpdate.None))
                     delay(NONE_FOLLOWUP_GRACE_MS + 100)
                     callbackSlot.captured.onUpdate(
-                        ConversationScrollerUpdate.ReplaceBefore(
-                            0uL,
-                            listOf(LocalConversationTestData.OctConversation)
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.ReplaceBefore(
+                                0uL,
+                                listOf(LocalConversationTestData.OctConversation)
+                            )
                         )
                     )
                 }
                 Unit.right()
             }
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()
@@ -632,21 +617,26 @@ class RustConversationsQueryImplTest {
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { nextPage() } answers {
                 CoroutineScope(mainDispatcherRule.testDispatcher).launch {
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.None)
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.List(ConversationScrollerListUpdate.None))
                     delay(NONE_FOLLOWUP_GRACE_MS + 100)
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(lateItems))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.Append(
+                                lateItems
+                            )
+                        )
+                    )
                 }
                 Unit.right()
             }
+            coEvery { this@mockk.filterUnread(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationPaginator(
                 mailbox = mailbox,
-                labelId = labelId.toLocalLabelId(),
-                unread = false,
-                showSpamTrash = false,
                 callback = capture(callbackSlot)
             )
         } returns paginator.right()

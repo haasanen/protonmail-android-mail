@@ -24,10 +24,12 @@ import arrow.core.right
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.MessageScroller
 import uniffi.proton_mail_uniffi.MessageScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.MessageScrollerGetItemsResult
 import uniffi.proton_mail_uniffi.MessageScrollerSupportsIncludeFilterResult
+import uniffi.proton_mail_uniffi.ReadFilter
 
 class MailboxMessagePaginatorWrapper(
     private val rustPaginator: MessageScroller
@@ -54,5 +56,15 @@ class MailboxMessagePaginatorWrapper(
     override fun destroy() {
         rustPaginator.handle().disconnect()
         rustPaginator.terminate()
+    }
+
+    override fun filterUnread(filterUnread: Boolean) {
+        val filter = if (filterUnread) ReadFilter.UNREAD else ReadFilter.ALL
+        rustPaginator.changeFilter(filter)
+    }
+
+    override fun showSpamAndTrash(show: Boolean) {
+        val includeSwitch = if (show) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
+        rustPaginator.changeInclude(includeSwitch)
     }
 }

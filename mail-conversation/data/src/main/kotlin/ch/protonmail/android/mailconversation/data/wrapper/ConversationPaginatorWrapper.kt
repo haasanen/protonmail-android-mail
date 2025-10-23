@@ -28,6 +28,8 @@ import uniffi.proton_mail_uniffi.ConversationScroller
 import uniffi.proton_mail_uniffi.ConversationScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.ConversationScrollerGetItemsResult
 import uniffi.proton_mail_uniffi.ConversationScrollerSupportsIncludeFilterResult
+import uniffi.proton_mail_uniffi.IncludeSwitch
+import uniffi.proton_mail_uniffi.ReadFilter
 
 class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroller) {
 
@@ -36,6 +38,7 @@ class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroll
             Timber.w("conversation-paginator: failed to define supportsIncludeFilter: $result")
             false
         }
+
         is ConversationScrollerSupportsIncludeFilterResult.Ok -> result.v1
     }
 
@@ -47,6 +50,16 @@ class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroll
     suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.getItems()) {
         is ConversationScrollerGetItemsResult.Error -> result.v1.toPaginationError().left()
         is ConversationScrollerGetItemsResult.Ok -> Unit.right()
+    }
+
+    fun filterUnread(filterUnread: Boolean) {
+        val filter = if (filterUnread) ReadFilter.UNREAD else ReadFilter.ALL
+        rustPaginator.changeFilter(filter)
+    }
+
+    fun showSpamAndTrash(show: Boolean) {
+        val includeSwitch = if (show) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
+        rustPaginator.changeInclude(includeSwitch)
     }
 
     fun disconnect() {

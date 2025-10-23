@@ -30,4 +30,8 @@ interface MessagePaginatorWrapper {
     suspend fun reload(): Either<PaginationError, Unit>
 
     fun destroy()
+
+    fun filterUnread(filterUnread: Boolean)
+
+    fun showSpamAndTrash(show: Boolean)
 }

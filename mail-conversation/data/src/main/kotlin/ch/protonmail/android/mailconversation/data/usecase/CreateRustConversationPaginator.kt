@@ -21,14 +21,11 @@ package ch.protonmail.android.mailconversation.data.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
-import uniffi.proton_mail_uniffi.IncludeSwitch
-import uniffi.proton_mail_uniffi.ReadFilter
 import uniffi.proton_mail_uniffi.ScrollConversationsForLabelResult
 import uniffi.proton_mail_uniffi.scrollConversationsForLabel
 import javax.inject.Inject
@@ -37,24 +34,14 @@ class CreateRustConversationPaginator @Inject constructor() {
 
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
-        labelId: LocalLabelId,
-        unread: Boolean,
-        showSpamTrash: Boolean,
         callback: ConversationScrollerLiveQueryCallback
-    ): Either<DataError, ConversationPaginatorWrapper> {
-        val filterParam = if (unread) ReadFilter.UNREAD else ReadFilter.ALL
-        val includeSwitch = if (showSpamTrash) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
-        return when (
-            val result = scrollConversationsForLabel(
-                mailbox = mailbox.getRustMailbox(),
-                labelId = labelId,
-                unread = filterParam,
-                include = includeSwitch,
-                callback
-            )
-        ) {
-            is ScrollConversationsForLabelResult.Error -> result.v1.toDataError().left()
-            is ScrollConversationsForLabelResult.Ok -> ConversationPaginatorWrapper(result.v1).right()
-        }
+    ): Either<DataError, ConversationPaginatorWrapper> = when (
+        val result = scrollConversationsForLabel(
+            mailbox = mailbox.getRustMailbox(),
+            callback
+        )
+    ) {
+        is ScrollConversationsForLabelResult.Error -> result.v1.toDataError().left()
+        is ScrollConversationsForLabelResult.Ok -> ConversationPaginatorWrapper(result.v1).right()
     }
 }

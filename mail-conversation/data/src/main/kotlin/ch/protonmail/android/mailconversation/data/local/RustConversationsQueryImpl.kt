@@ -26,7 +26,6 @@ import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScop
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
-import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.util.awaitWithTimeout
@@ -88,6 +87,8 @@ class RustConversationsQueryImpl @Inject constructor(
                 initPaginator(pageDescriptor, mailbox)
             }
         }
+        paginatorState?.paginatorWrapper?.filterUnread(pageKey.readStatus == ReadStatus.Unread)
+        paginatorState?.paginatorWrapper?.showSpamAndTrash(pageKey.showSpamTrash == ShowSpamTrash.Show)
 
         Timber.d("rust-conversation-query: Paging: querying ${pageKey.pageToLoad.name} page for conversation")
 
@@ -154,11 +155,8 @@ class RustConversationsQueryImpl @Inject constructor(
         )
 
         createRustConversationPaginator(
-            mailbox,
-            pageDescriptor.labelId.toLocalLabelId(),
-            pageDescriptor.unread,
-            pageDescriptor.showSpamTrash,
-            conversationsUpdatedCallback(scrollerOnUpdateHandler)
+            mailbox = mailbox,
+            callback = conversationsUpdatedCallback(scrollerOnUpdateHandler)
         )
             .onRight {
                 paginatorState = PaginatorState(
@@ -267,19 +265,11 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private data class PageDescriptor(
         val userId: UserId,
-        val labelId: LabelId,
-        val unread: Boolean,
-        val showSpamTrash: Boolean
+        val labelId: LabelId
     )
 
-    private fun PageKey.DefaultPageKey.toPageDescriptor(userId: UserId): PageDescriptor {
-        return PageDescriptor(
-            userId = userId,
-            labelId = this.labelId,
-            unread = this.readStatus == ReadStatus.Unread,
-            showSpamTrash = this.showSpamTrash == ShowSpamTrash.Show
-        )
-    }
+    private fun PageKey.DefaultPageKey.toPageDescriptor(userId: UserId): PageDescriptor =
+        PageDescriptor(userId = userId, labelId = this.labelId)
 
     private fun PaginatorState.withFollowUpResponse(): PaginatorState {
         val currentPending = this.pendingRequest

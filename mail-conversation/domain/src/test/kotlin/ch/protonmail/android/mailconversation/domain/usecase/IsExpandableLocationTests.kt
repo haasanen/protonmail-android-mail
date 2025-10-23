@@ -21,20 +21,21 @@ package ch.protonmail.android.mailconversation.domain.usecase
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 internal class IsExpandableLocationTests {
 
     private val conversationRepository = mockk<ConversationRepository> {
-        every { this@mockk.supportsIncludeFilter() } returns true
+        coEvery { this@mockk.supportsIncludeFilter() } returns true
     }
     private val messageRepository = mockk<MessageRepository> {
-        every { this@mockk.supportsIncludeFilter() } returns true
+        coEvery { this@mockk.supportsIncludeFilter() } returns true
     }
 
     private lateinit var isExpandableLocation: IsExpandableLocation
@@ -45,22 +46,22 @@ internal class IsExpandableLocationTests {
     }
 
     @Test
-    fun `should query the conversation repository on conversation grouping`() {
+    fun `should query the conversation repository on conversation grouping`() = runTest {
         // When
         isExpandableLocation(viewMode = ViewMode.ConversationGrouping)
 
         // When
-        verify(exactly = 1) { conversationRepository.supportsIncludeFilter() }
+        coVerify(exactly = 1) { conversationRepository.supportsIncludeFilter() }
         confirmVerified(conversationRepository, messageRepository)
     }
 
     @Test
-    fun `should query the message repository on conversation grouping`() {
+    fun `should query the message repository on conversation grouping`() = runTest {
         // When
         isExpandableLocation(viewMode = ViewMode.NoConversationGrouping)
 
         // When
-        verify(exactly = 1) { messageRepository.supportsIncludeFilter() }
+        coVerify(exactly = 1) { messageRepository.supportsIncludeFilter() }
         confirmVerified(conversationRepository, messageRepository)
     }
 }

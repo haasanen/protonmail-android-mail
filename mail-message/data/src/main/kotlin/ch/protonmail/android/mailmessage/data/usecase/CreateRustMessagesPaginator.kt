@@ -21,15 +21,12 @@ package ch.protonmail.android.mailmessage.data.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
-import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
-import uniffi.proton_mail_uniffi.ReadFilter
 import uniffi.proton_mail_uniffi.ScrollMessagesForLabelResult
 import uniffi.proton_mail_uniffi.scrollMessagesForLabel
 import javax.inject.Inject
@@ -38,24 +35,11 @@ class CreateRustMessagesPaginator @Inject constructor() {
 
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
-        labelId: LocalLabelId,
-        unread: Boolean,
-        includeSpamAndTrash: Boolean,
         callback: MessageScrollerLiveQueryCallback
-    ): Either<DataError, MessagePaginatorWrapper> {
-        val readFilter = if (unread) ReadFilter.UNREAD else ReadFilter.ALL
-        val includeSwitch = if (includeSpamAndTrash) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
-        return when (
-            val result = scrollMessagesForLabel(
-                mailbox.getRustMailbox(),
-                labelId,
-                readFilter,
-                includeSwitch,
-                callback
-            )
-        ) {
-            is ScrollMessagesForLabelResult.Error -> result.v1.toDataError().left()
-            is ScrollMessagesForLabelResult.Ok -> MailboxMessagePaginatorWrapper(result.v1).right()
-        }
+    ): Either<DataError, MessagePaginatorWrapper> = when (
+        val result = scrollMessagesForLabel(mailbox.getRustMailbox(), callback)
+    ) {
+        is ScrollMessagesForLabelResult.Error -> result.v1.toDataError().left()
+        is ScrollMessagesForLabelResult.Ok -> MailboxMessagePaginatorWrapper(result.v1).right()
     }
 }

@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.SearchMessagePaginatorWrapper
-import uniffi.proton_mail_uniffi.IncludeSwitch
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.PaginatorSearchOptions
 import uniffi.proton_mail_uniffi.ScrollerSearchResult
@@ -38,16 +37,12 @@ class CreateRustSearchPaginator @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         keyword: String,
-        includeSpamAndTrash: Boolean,
         callback: MessageScrollerLiveQueryCallback
     ): Either<DataError, MessagePaginatorWrapper> {
-        val includeSwitch = if (includeSpamAndTrash) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
-
         val result = scrollerSearch(
             mailbox = mailbox.getRustMailbox(),
             options = PaginatorSearchOptions(keyword),
-            include = includeSwitch,
-            callback
+            callback = callback
         )
 
         return when (result) {
