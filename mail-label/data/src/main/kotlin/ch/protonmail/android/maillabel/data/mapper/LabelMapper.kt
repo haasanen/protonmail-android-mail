@@ -125,6 +125,23 @@ fun LocalSystemLabel.toSystemLabel() = when (this) {
     }
 }
 
+fun SystemLabelId.toLocalSystemLabel() = when (this) {
+    SystemLabelId.Inbox -> LocalSystemLabel.INBOX
+    SystemLabelId.AllDrafts -> LocalSystemLabel.ALL_DRAFTS
+    SystemLabelId.AllSent -> LocalSystemLabel.ALL_SENT
+    SystemLabelId.Trash -> LocalSystemLabel.TRASH
+    SystemLabelId.Spam -> LocalSystemLabel.SPAM
+    SystemLabelId.AllMail -> LocalSystemLabel.ALL_MAIL
+    SystemLabelId.Archive -> LocalSystemLabel.ARCHIVE
+    SystemLabelId.Sent -> LocalSystemLabel.SENT
+    SystemLabelId.Drafts -> LocalSystemLabel.DRAFTS
+    SystemLabelId.Outbox -> LocalSystemLabel.OUTBOX
+    SystemLabelId.Starred -> LocalSystemLabel.STARRED
+    SystemLabelId.AllScheduled -> LocalSystemLabel.SCHEDULED
+    SystemLabelId.AlmostAllMail -> LocalSystemLabel.ALMOST_ALL_MAIL
+    SystemLabelId.Snoozed -> LocalSystemLabel.SNOOZED
+}
+
 fun MovableSystemFolder.toSystemLabel() = when (this) {
     MovableSystemFolder.INBOX -> SystemLabelId.Inbox
     MovableSystemFolder.TRASH -> SystemLabelId.Trash

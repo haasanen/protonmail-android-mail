@@ -22,17 +22,19 @@ import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
+import ch.protonmail.android.maillabel.data.local.RustGetLabelIdBySystemLabel
+import ch.protonmail.android.maillabel.data.local.RustGetSystemLabelById
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
-import ch.protonmail.android.maillabel.data.repository.InMemorySelectedMailLabelIdRepositoryImpl
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
+import ch.protonmail.android.maillabel.data.repository.InMemorySelectedMailLabelIdRepositoryImpl
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
 import ch.protonmail.android.maillabel.data.repository.ViewModeRepositoryImpl
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.maillabel.data.usecase.RustGetAllMailLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.maillabel.domain.repository.SelectedMailLabelIdRepository
-import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.repository.ViewModeRepository
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.Module
@@ -54,18 +56,23 @@ object MailLabelModule {
     @MailLabelRustCoroutineScope
     fun provideLabelRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    @Suppress("LongParameterList")
     @Provides
     @Singleton
     fun provideRustLabelDataSource(
         userSessionRepository: UserSessionRepository,
         createRustSidebar: CreateRustSidebar,
         rustGetAllMailLabelId: RustGetAllMailLabelId,
+        rustGetSystemLabelById: RustGetSystemLabelById,
+        rustGetLabelIdBySystemLabel: RustGetLabelIdBySystemLabel,
         @MailLabelRustCoroutineScope coroutineScope: CoroutineScope,
         @IODispatcher ioDispatcher: CoroutineDispatcher
     ): LabelDataSource = RustLabelDataSource(
         userSessionRepository,
         createRustSidebar,
         rustGetAllMailLabelId,
+        rustGetSystemLabelById,
+        rustGetLabelIdBySystemLabel,
         coroutineScope,
         ioDispatcher
     )

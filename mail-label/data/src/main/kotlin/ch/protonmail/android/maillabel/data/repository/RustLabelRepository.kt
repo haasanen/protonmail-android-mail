@@ -18,15 +18,21 @@
 
 package ch.protonmail.android.maillabel.data.repository
 
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.data.mapper.toLabelWithSystemLabelId
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.data.mapper.toLocalSystemLabel
+import ch.protonmail.android.maillabel.data.mapper.toSystemLabel
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.NewLabel
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -145,6 +151,20 @@ class RustLabelRepository @Inject constructor(
 
     override fun markAsStale(userId: UserId, type: LabelType) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun resolveSystemLabel(userId: UserId, labelId: LabelId): Either<DataError, SystemLabelId> {
+        return labelDataSource.resolveSystemLabelByLocalId(userId = userId, labelId = labelId.toLocalLabelId()).map {
+            it.toSystemLabel()
+        }
+    }
+
+    override suspend fun resolveLocalIdBySystemLabel(
+        userId: UserId,
+        labelId: SystemLabelId
+    ): Either<DataError, LabelId> {
+        return labelDataSource.resolveLocalIdBySystemLabel(userId = userId, systemLabel = labelId.toLocalSystemLabel())
+            .map { it.toLabelId() }
     }
 
     private fun Flow<List<Label>>.convertToDataResultFlow(): Flow<DataResult<List<Label>>> {

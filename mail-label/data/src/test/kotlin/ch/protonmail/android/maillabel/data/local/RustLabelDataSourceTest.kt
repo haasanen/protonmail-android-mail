@@ -20,9 +20,13 @@ package ch.protonmail.android.maillabel.data.local
 
 import app.cash.turbine.test
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalSystemLabel
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.maillabel.data.usecase.RustGetAllMailLabelId
 import ch.protonmail.android.maillabel.data.wrapper.SidebarWrapper
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
@@ -32,6 +36,7 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -44,7 +49,7 @@ import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.WatchHandle
 import kotlin.test.assertEquals
 
-class RustLabelDataSourceTest {
+internal class RustLabelDataSourceTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -56,11 +61,15 @@ class RustLabelDataSourceTest {
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
     private val createRustSidebar = mockk<CreateRustSidebar>()
     private val rustGetAllMailLabelId = mockk<RustGetAllMailLabelId>()
+    private val rustGetSystemLabelById = mockk<RustGetSystemLabelById>()
+    private val rustGetLabelIdBySystemLabel = mockk<RustGetLabelIdBySystemLabel>()
 
     private val labelDataSource = RustLabelDataSource(
         userSessionRepository,
         createRustSidebar,
         rustGetAllMailLabelId,
+        rustGetSystemLabelById,
+        rustGetLabelIdBySystemLabel,
         testCoroutineScope,
         mainDispatcherRule.testDispatcher
     )
@@ -347,5 +356,46 @@ class RustLabelDataSourceTest {
             // Then
             coVerify { sidebarMock.destroy() }
         }
+    }
+
+    @Test
+    fun `resolve system label by local id calls the UC with the user session and label`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val userSessionMock = mockk<MailUserSessionWrapper>()
+        val labelId = LabelId("1").toLocalLabelId()
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
+        coEvery {
+            rustGetSystemLabelById(userSessionMock, labelId)
+        } returns LocalSystemLabel.INBOX.right()
+
+        // When
+        val actual = labelDataSource.resolveSystemLabelByLocalId(userId, labelId)
+
+        // Then
+        assertEquals(LocalSystemLabel.INBOX.right(), actual)
+        coVerify(exactly = 1) { rustGetSystemLabelById(userSessionMock, labelId) }
+        confirmVerified(rustGetLabelIdBySystemLabel)
+    }
+
+    @Test
+    fun `resolve local id by system label calls the UC with the user session and system label`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val userSessionMock = mockk<MailUserSessionWrapper>()
+        val systemLabel = LocalSystemLabel.INBOX
+        val expectedLocalLabelId = LocalLabelId(1u)
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
+        coEvery {
+            rustGetLabelIdBySystemLabel(userSessionMock, systemLabel)
+        } returns expectedLocalLabelId.right()
+
+        // When
+        val actual = labelDataSource.resolveLocalIdBySystemLabel(userId, systemLabel)
+
+        // Then
+        assertEquals(expectedLocalLabelId.right(), actual)
+        coVerify(exactly = 1) { rustGetLabelIdBySystemLabel(userSessionMock, systemLabel) }
+        confirmVerified(rustGetLabelIdBySystemLabel)
     }
 }

@@ -18,11 +18,14 @@
 
 package ch.protonmail.android.maillabel.domain.repository
 
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.NewLabel
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.entity.UserId
@@ -102,6 +105,11 @@ interface LabelRepository {
         type: LabelType,
         labelId: LabelId
     )
+
+    suspend fun resolveSystemLabel(userId: UserId, labelId: LabelId): Either<DataError, SystemLabelId>
+
+    suspend fun resolveLocalIdBySystemLabel(userId: UserId, labelId: SystemLabelId): Either<DataError, LabelId>
+
 
     /**
      * Mark local data as stale for [userId], by [type].

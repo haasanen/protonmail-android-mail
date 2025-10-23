@@ -21,6 +21,7 @@ package ch.protonmail.android.maillabel.data.local
 import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalSystemLabel
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
@@ -51,6 +52,8 @@ class RustLabelDataSource @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustSidebar: CreateRustSidebar,
     private val rustGetAllMailLabelId: RustGetAllMailLabelId,
+    private val rustGetSystemLabelById: RustGetSystemLabelById,
+    private val rustGetLabelIdBySystemLabel: RustGetLabelIdBySystemLabel,
     @MailLabelRustCoroutineScope private val coroutineScope: CoroutineScope,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : LabelDataSource {
@@ -152,4 +155,36 @@ class RustLabelDataSource @Inject constructor(
             }
             return@withContext rustGetAllMailLabelId(session)
         }
+
+    override suspend fun resolveSystemLabelByLocalId(
+        userId: UserId,
+        labelId: LocalLabelId
+    ): Either<DataError, LocalSystemLabel> {
+        return withContext(ioDispatcher) {
+            val session = userSessionRepository.getUserSession(userId)
+
+            if (session == null) {
+                Timber.e("rust-label: trying to resolve system label by local id with null session.")
+                return@withContext DataError.Local.NoUserSession.left()
+            }
+
+            rustGetSystemLabelById(session, labelId)
+        }
+    }
+
+    override suspend fun resolveLocalIdBySystemLabel(
+        userId: UserId,
+        systemLabel: LocalSystemLabel
+    ): Either<DataError, LocalLabelId> {
+        return withContext(ioDispatcher) {
+            val session = userSessionRepository.getUserSession(userId)
+
+            if (session == null) {
+                Timber.e("rust-label: trying to resolve local id by system label with null session.")
+                return@withContext DataError.Local.NoUserSession.left()
+            }
+
+            rustGetLabelIdBySystemLabel(session, systemLabel)
+        }
+    }
 }

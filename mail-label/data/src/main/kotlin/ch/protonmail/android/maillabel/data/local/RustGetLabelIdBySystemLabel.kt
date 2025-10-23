@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -19,27 +19,25 @@
 package ch.protonmail.android.maillabel.data.local
 
 import arrow.core.Either
+import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalSystemLabel
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.SidebarCustomFolder
-import uniffi.proton_mail_uniffi.SidebarCustomLabel
-import uniffi.proton_mail_uniffi.SidebarSystemLabel
-import uniffi.proton_mail_uniffi.SystemLabel
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.ResolveSystemLabelIdResult
+import uniffi.proton_mail_uniffi.resolveSystemLabelId
+import javax.inject.Inject
 
-interface LabelDataSource {
+class RustGetLabelIdBySystemLabel @Inject constructor() {
 
-    fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>>
-
-    fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>>
-
-    fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>>
-
-    suspend fun getAllMailLabelId(userId: UserId): Either<DataError, LocalLabelId>
-
-    suspend fun resolveSystemLabelByLocalId(userId: UserId, labelId: LocalLabelId): Either<DataError, LocalSystemLabel>
-
-    suspend fun resolveLocalIdBySystemLabel(userId: UserId, systemLabel: SystemLabel): Either<DataError, LocalLabelId>
+    suspend operator fun invoke(
+        mailUserSession: MailUserSessionWrapper,
+        labelId: LocalSystemLabel
+    ): Either<DataError, LocalLabelId> = either {
+        when (val result = resolveSystemLabelId(mailUserSession.getRustUserSession(), labelId)) {
+            is ResolveSystemLabelIdResult.Error -> raise(result.v1.toDataError())
+            is ResolveSystemLabelIdResult.Ok -> result.v1 ?: raise(DataError.Local.NoDataCached)
+        }
+    }
 }
