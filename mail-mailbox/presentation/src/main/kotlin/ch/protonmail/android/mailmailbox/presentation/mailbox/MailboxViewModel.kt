@@ -1237,16 +1237,21 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun getFromLabelIdSearchAware(): LabelId {
         val currentLabelId = getSelectedMailLabelId().labelId
-
-        if (!state.value.isInSearchMode()) {
-            return currentLabelId
-        }
-
         val userId = primaryUserId.filterNotNull().first()
-        // Search should always happen with "AllMail" as current label
-        return findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId
-            ?: currentLabelId
+
+        return when {
+            isSpamTrashFilterEnabled() ->
+                findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId ?: currentLabelId
+
+            state.value.isInSearchMode() ->
+                findLocalSystemLabelId(userId, SystemLabelId.AlmostAllMail)?.labelId ?: currentLabelId
+
+            else -> currentLabelId
+        }
     }
+
+    private fun isSpamTrashFilterEnabled() =
+        (state.value.showSpamTrashIncludeFilterState as? ShowSpamTrashIncludeFilterState.Data.Shown)?.enabled == true
 
     companion object {
 
