@@ -20,30 +20,17 @@ package ch.protonmail.android.maillabel.domain.usecase
 
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import kotlinx.coroutines.flow.firstOrNull
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class FindLocalSystemLabelId @Inject constructor(
-    private val observeMailLabels: ObserveMailLabels,
-    private val getAllMailLocalLabelId: GetAllMailLocalLabelId
+    private val labelRepository: LabelRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId, systemLabelId: SystemLabelId): MailLabelId.System? =
-        when (systemLabelId) {
-            SystemLabelId.AllMail,
-            SystemLabelId.AlmostAllMail -> getAllMailLocalLabelId(userId)
-                ?.let { allMailLocalLabelId ->
-                    MailLabelId.System(allMailLocalLabelId)
-                }
-
-            else -> {
-                observeMailLabels(userId).firstOrNull()?.let { mailLabels ->
-                    mailLabels.system.firstOrNull {
-                        it.systemLabelId.labelId == systemLabelId.labelId
-                    }
-                }?.id
-            }
+    suspend operator fun invoke(userId: UserId, systemLabelId: SystemLabelId): MailLabelId.System? {
+        return labelRepository.resolveLocalIdBySystemLabel(userId, systemLabelId).getOrNull()?.let {
+            MailLabelId.System(it)
         }
-
+    }
 }
