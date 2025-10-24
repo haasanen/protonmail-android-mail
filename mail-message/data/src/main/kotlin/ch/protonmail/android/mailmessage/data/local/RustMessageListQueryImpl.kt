@@ -56,7 +56,6 @@ import timber.log.Timber
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageScrollerListUpdate
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
-import uniffi.proton_mail_uniffi.MessageScrollerStatusUpdate
 import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import javax.inject.Inject
 
@@ -173,7 +172,15 @@ class RustMessageListQueryImpl @Inject constructor(
                 Timber.d("rust-message-query: Received paginator update: ${update.javaClass.simpleName}")
                 coroutineScope.launch {
                     paginatorMutex.withLock {
-                        val update = update.toScrollerUpdate()
+                        val update = when (update) {
+                            is MessageScrollerUpdate.Status -> {
+                                Timber.d("rust-message-query: Ignoring status update")
+                                return@withLock
+                            }
+                            is MessageScrollerUpdate.List -> update.toScrollerUpdate()
+
+                            is MessageScrollerUpdate.Error -> update.toScrollerUpdate()
+                        }
 
                         val snapshot = paginatorState?.scrollerCache?.applyUpdate(update) ?: emptyList()
                         val pending = paginatorState?.pendingRequest
@@ -277,23 +284,17 @@ class RustMessageListQueryImpl @Inject constructor(
     }
 }
 
-fun MessageScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<Message> = when (this) {
-    is MessageScrollerUpdate.List -> when (val listResult = this.v1) {
-        is MessageScrollerListUpdate.Append -> Append(listResult.v1)
-        is MessageScrollerListUpdate.ReplaceFrom -> ReplaceFrom(listResult.idx.toInt(), listResult.items)
-        is MessageScrollerListUpdate.ReplaceBefore -> ReplaceBefore(listResult.idx.toInt(), listResult.items)
-        MessageScrollerListUpdate.None -> ScrollerUpdate.None
-        is MessageScrollerListUpdate.ReplaceRange -> ReplaceRange(
-            listResult.from.toInt(),
-            listResult.to.toInt(),
-            listResult.items
-        )
-    }
 
-    is MessageScrollerUpdate.Status -> when (this.v1) {
-        MessageScrollerStatusUpdate.FETCH_NEW_START -> ScrollerUpdate.LoadingStarted
-        MessageScrollerStatusUpdate.FETCH_NEW_END -> ScrollerUpdate.LoadingEnded
-    }
-
-    is MessageScrollerUpdate.Error -> ScrollerUpdate.Error(this.error)
+fun MessageScrollerUpdate.List.toScrollerUpdate(): ScrollerUpdate<Message> = when (val listResult = this.v1) {
+    is MessageScrollerListUpdate.Append -> Append(listResult.v1)
+    is MessageScrollerListUpdate.ReplaceFrom -> ReplaceFrom(listResult.idx.toInt(), listResult.items)
+    is MessageScrollerListUpdate.ReplaceBefore -> ReplaceBefore(listResult.idx.toInt(), listResult.items)
+    MessageScrollerListUpdate.None -> ScrollerUpdate.None
+    is MessageScrollerListUpdate.ReplaceRange -> ReplaceRange(
+        listResult.from.toInt(),
+        listResult.to.toInt(),
+        listResult.items
+    )
 }
+
+fun MessageScrollerUpdate.Error.toScrollerUpdate(): ScrollerUpdate<Message> = ScrollerUpdate.Error(this.error)

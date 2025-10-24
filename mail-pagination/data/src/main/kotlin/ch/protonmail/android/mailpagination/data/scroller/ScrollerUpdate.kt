@@ -27,8 +27,6 @@ sealed class ScrollerUpdate<out T> {
     data class ReplaceBefore<T>(val idx: Int, val items: List<T>) : ScrollerUpdate<T>()
     data class ReplaceRange<T>(val fromIdx: Int, val toIdx: Int, val items: List<T>) : ScrollerUpdate<T>()
     data class Error(val error: MailScrollerError) : ScrollerUpdate<Nothing>()
-    data object LoadingStarted : ScrollerUpdate<Nothing>()
-    data object LoadingEnded : ScrollerUpdate<Nothing>()
 }
 
 fun <T> ScrollerUpdate<T>.itemCount(): Int = when (this) {
@@ -38,6 +36,4 @@ fun <T> ScrollerUpdate<T>.itemCount(): Int = when (this) {
     is ScrollerUpdate.ReplaceBefore -> items.size
     is ScrollerUpdate.ReplaceRange -> items.size
     is ScrollerUpdate.Error -> 0
-    ScrollerUpdate.LoadingEnded -> 0
-    ScrollerUpdate.LoadingStarted -> 0
 }

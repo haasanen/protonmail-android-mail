@@ -305,7 +305,7 @@ internal class MailboxViewModelTest {
     private val eventLoopRepository = mockk<EventLoopRepository>()
 
     private val isExpandableLocation = mockk<IsExpandableLocation> {
-        every { this@mockk.invoke(any()) } returns false
+        coEvery { this@mockk.invoke(any()) } returns false
     }
     private val scope = TestScope(UnconfinedTestDispatcher())
 

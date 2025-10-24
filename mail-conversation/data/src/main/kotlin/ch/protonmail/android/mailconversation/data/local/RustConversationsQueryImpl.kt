@@ -52,7 +52,6 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ConversationScrollerListUpdate
 import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
-import uniffi.proton_mail_uniffi.ConversationScrollerStatusUpdate
 import uniffi.proton_mail_uniffi.ConversationScrollerUpdate
 import javax.inject.Inject
 
@@ -172,8 +171,17 @@ class RustConversationsQueryImpl @Inject constructor(
             override fun onUpdate(update: ConversationScrollerUpdate) {
                 coroutineScope.launch {
                     paginatorMutex.withLock {
+                        val scrollerUpdate = when (update) {
+                            is ConversationScrollerUpdate.Status -> {
+                                Timber.d("rust-conversation-query: Ignoring status update")
+                                return@withLock
+                            }
 
-                        val scrollerUpdate = update.toScrollerUpdate()
+                            is ConversationScrollerUpdate.List -> update.toScrollerUpdate()
+
+                            is ConversationScrollerUpdate.Error -> update.toScrollerUpdate()
+                        }
+
                         Timber.d(
                             "rust-conversation-query: Received paginator update: %s with %d items, current cache: %d",
                             update.javaClass.simpleName,
@@ -286,8 +294,8 @@ class RustConversationsQueryImpl @Inject constructor(
     }
 }
 
-fun ConversationScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<LocalConversation> = when (this) {
-    is ConversationScrollerUpdate.List -> when (val listResult = this.v1) {
+fun ConversationScrollerUpdate.List.toScrollerUpdate(): ScrollerUpdate<LocalConversation> =
+    when (val listResult = this.v1) {
         is ConversationScrollerListUpdate.Append -> ScrollerUpdate.Append(listResult.v1)
         is ConversationScrollerListUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(
             listResult.idx.toInt(),
@@ -307,11 +315,6 @@ fun ConversationScrollerUpdate.toScrollerUpdate(): ScrollerUpdate<LocalConversat
         )
     }
 
-    is ConversationScrollerUpdate.Status -> when (this.v1) {
-        ConversationScrollerStatusUpdate.FETCH_NEW_START -> ScrollerUpdate.LoadingStarted
-        ConversationScrollerStatusUpdate.FETCH_NEW_END -> ScrollerUpdate.LoadingEnded
-    }
-
-    is ConversationScrollerUpdate.Error -> ScrollerUpdate.Error(this.error)
-}
+fun ConversationScrollerUpdate.Error.toScrollerUpdate(): ScrollerUpdate<LocalConversation> =
+    ScrollerUpdate.Error(this.error)
 
