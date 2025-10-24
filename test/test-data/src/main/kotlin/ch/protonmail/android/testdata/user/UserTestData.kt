@@ -26,6 +26,7 @@ import ch.protonmail.android.testdata.user.UserTestData.USER_NAME_RAW
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.Flags
 import uniffi.proton_mail_uniffi.ProductUsedSpace
+import uniffi.proton_mail_uniffi.Role
 import uniffi.proton_mail_uniffi.UnixTimestamp
 import uniffi.proton_mail_uniffi.UserMnemonicStatus
 import uniffi.proton_mail_uniffi.UserType
@@ -84,7 +85,7 @@ object LocalUserTestData {
         mnemonicStatus = UserMnemonicStatus.ENABLED_AND_SET,
         private = false,
         productUsedSpace = ProductUsedSpace(0L, 0L, 0L, 0L, 0L),
-        role = 0U,
+        role = Role.Member,
         name = name,
         services = services.toUInt(),
         toMigrate = false,
