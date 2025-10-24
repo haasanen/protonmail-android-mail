@@ -34,4 +34,6 @@ interface MessagePaginatorWrapper {
     fun filterUnread(filterUnread: Boolean)
 
     fun showSpamAndTrash(show: Boolean)
+
+    fun updateKeyword(keyword: String)
 }

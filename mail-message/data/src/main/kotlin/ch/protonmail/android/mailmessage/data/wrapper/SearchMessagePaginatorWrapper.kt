@@ -25,6 +25,7 @@ import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.IncludeSwitch
+import uniffi.proton_mail_uniffi.PaginatorSearchOptions
 import uniffi.proton_mail_uniffi.SearchScroller
 import uniffi.proton_mail_uniffi.SearchScrollerFetchMoreResult
 import uniffi.proton_mail_uniffi.SearchScrollerGetItemsResult
@@ -66,4 +67,9 @@ class SearchMessagePaginatorWrapper(
         val includeSwitch = if (show) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
         rustPaginator.changeInclude(includeSwitch)
     }
+
+    override fun updateKeyword(keyword: String) {
+        rustPaginator.changeKeywords(PaginatorSearchOptions(keyword))
+    }
+
 }

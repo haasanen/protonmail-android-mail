@@ -67,4 +67,8 @@ class MailboxMessagePaginatorWrapper(
         val includeSwitch = if (show) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
         rustPaginator.changeInclude(includeSwitch)
     }
+
+    override fun updateKeyword(keyword: String) {
+        Timber.w("message-paginator: Called updateKeyword on a message paginator, which is illegal. No-op.")
+    }
 }
