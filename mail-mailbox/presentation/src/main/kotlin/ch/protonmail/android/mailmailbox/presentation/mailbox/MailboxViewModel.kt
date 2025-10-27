@@ -96,6 +96,9 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTras
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateSearchQuery
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
@@ -124,13 +127,19 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPref
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -196,7 +205,10 @@ class MailboxViewModel @Inject constructor(
     private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
     private val terminateConversationPaginator: TerminateConversationPaginator,
     private val isExpandableLocation: IsExpandableLocation,
-    private val eventLoopRepository: EventLoopRepository
+    private val eventLoopRepository: EventLoopRepository,
+    private val updateUnreadFilter: UpdateUnreadFilter,
+    private val updateSearchQuery: UpdateSearchQuery,
+    private val updateShowSpamTrashFilter: UpdateShowSpamTrashFilter
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserIdWithValidSession().filterNotNull()
@@ -554,14 +566,14 @@ class MailboxViewModel @Inject constructor(
     /**
      * Creates a [MailboxPagerFactory] and observes the emitted paging data. The Pager is re-created, when:
      * - The selected Mail Label (ie. Mailbox location) changes
-     * - The "Unread filter" state changes
-     * - The search keyword changes (search mode)
+     * - Entering/exiting search mode)
      *
      * This method keeps track of the "selected mail label" and the "search mode state" it's been called
      * to be able to hide the displayed items and show a loader as soon as such params change (avoiding
      * the old location's items from being displayed till the new ones are loaded).
      * This is achieved through `pagingDataFlow.emit(PagingData.empty())`
      */
+    @Suppress("LongMethod")
     private fun observePagingData(): Flow<PagingData<MailboxItemUiModel>> {
         val pagingDataFlow = MutableStateFlow<PagingData<MailboxItemUiModel>>(PagingData.empty())
         var currentMailLabel: MailLabel? = null
@@ -578,15 +590,15 @@ class MailboxViewModel @Inject constructor(
                 )
             )
 
+            // Create new pager when mail label, search mode or view mode changes. Changes in
+            // search query, unread filter and showSpamTrash will be handled by the existing pager.
             combine(
                 observeMailLabelChangeRequests(),
-                state.observeUnreadFilterState(),
-                state.observeShowSpamTrashFilterState(),
-                state.observeSearchQuery(),
+                state.observeSearchModeStatus(),
                 observeViewModeChanged(userId)
-            ) { selectedMailLabel, unreadFilterEnabled, showSpamTrashEnabled, query, _ ->
+            ) { selectedMailLabel, isInSearchMode, _ ->
 
-                val isInSearchMode = state.value.isInSearchMode()
+                val searchQuerySnapshot = state.observeSearchQuery().first()
                 if (selectedMailLabel != currentMailLabel || currentSearchModeState != isInSearchMode) {
                     pagingDataFlow.emit(
                         PagingData.empty(
@@ -598,24 +610,98 @@ class MailboxViewModel @Inject constructor(
                 }
 
                 val viewMode = getViewModeForCurrentLocation(selectedMailLabel.id)
+
                 mailboxPagerFactory.create(
                     userId = userId,
                     selectedMailLabelId = selectedMailLabel.id,
-                    filterUnread = unreadFilterEnabled,
-                    showSpamTrash = showSpamTrashEnabled,
-                    type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
-                    searchQuery = query
-                )
-            }.flatMapLatest {
-                mapPagingData(userId, it).also {
-                    currentMailLabel?.let { labelLoaded ->
-                        selectMailLabelId.setLocationAsLoaded(labelLoaded.id)
+                    type = if (!isInSearchMode) viewMode.toMailboxItemType() else MailboxItemType.Message,
+                    searchQuery = searchQuerySnapshot,
+                    isInSearchMode = isInSearchMode
+                ) to (isInSearchMode to viewMode)
+            }
+                .flatMapLatest { (pager, searchAndViewMode) ->
+                    val (isInSearchMode, viewMode) = searchAndViewMode
+
+                    channelFlow {
+                        Timber.d(
+                            "New Pager created for label=${currentMailLabel?.id?.labelId?.id} " +
+                                "isInSearchMode=$isInSearchMode viewMode=$viewMode"
+                        )
+
+                        // Start paging immediately and send items downstream.
+                        // Also signal when the first page has been emitted.
+                        val firstPageArrived = CompletableDeferred<Unit>()
+                        val pagingJob = launch {
+                            var emittedOnce = false
+                            mapPagingData(userId, pager)
+                                .onEach { page ->
+                                    if (!emittedOnce) {
+                                        emittedOnce = true
+                                        firstPageArrived.complete(Unit)
+
+                                        currentMailLabel?.let { labelLoaded ->
+                                            Timber.d("Setting loaded label id to: ${labelLoaded.id}")
+                                            selectMailLabelId.setLocationAsLoaded(labelLoaded.id)
+                                        }
+
+                                        Timber.d("First page arrived for label=${getSelectedMailLabelId()}")
+                                    }
+                                    send(page)
+                                }
+                                .collect()
+                        }
+
+                        // Start observers after the first page and skip their initial snapshots.
+                        // This will ensure that new Rust scroller has been created and is ready to
+                        // accept updates to the filters and search query.
+                        firstPageArrived.await()
+
+                        val jobs = mutableListOf<Job>()
+
+                        jobs += launch {
+                            state.observeUnreadFilterState()
+                                .distinctUntilChanged()
+                                .drop(1) // ignore initial value
+                                .collect { unreadEnabled ->
+                                    Timber.d("Updating unread filter: $unreadEnabled")
+                                    updateUnreadFilter(unreadEnabled, viewMode)
+                                }
+                        }
+
+                        jobs += launch {
+                            state.observeShowSpamTrashFilterState()
+                                .distinctUntilChanged()
+                                .drop(1) // ignore initial value
+                                .collect { showSpamTrash ->
+                                    Timber.d("Updating showSpamTrash filter: $showSpamTrash")
+                                    updateShowSpamTrashFilter(showSpamTrash, viewMode)
+                                }
+                        }
+
+                        if (isInSearchMode) {
+                            jobs += launch {
+                                state.observeSearchQuery()
+                                    .distinctUntilChanged()
+                                    .drop(1) // ignore initial value
+                                    .collect { q ->
+                                        Timber.d("Updating search query: $q")
+                                        updateSearchQuery(q)
+                                    }
+                            }
+                        }
+
+                        awaitClose {
+                            Timber.d("Cancelling pager")
+                            jobs.forEach { it.cancel() }
+                            pagingJob.cancel()
+                        }
                     }
                 }
+        }
+            .onEach {
+                pagingDataFlow.emit(it)
             }
-        }.onEach {
-            pagingDataFlow.emit(it)
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
 
         return pagingDataFlow
     }
@@ -1222,6 +1308,9 @@ class MailboxViewModel @Inject constructor(
 
     private fun MailboxState.isInSearchMode() =
         this.mailboxListState is MailboxListState.Data && this.mailboxListState.searchState.isInSearch()
+
+    fun Flow<MailboxState>.observeSearchModeStatus(): Flow<Boolean> = this.map { it.isInSearchMode() }
+        .distinctUntilChanged()
 
     private fun Flow<MailboxState>.observeSelectedMailboxItems() =
         this.map { it.mailboxListState as? MailboxListState.Data.SelectionMode }
