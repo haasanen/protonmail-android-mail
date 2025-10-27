@@ -38,11 +38,10 @@ class MailboxPagerFactory @Inject constructor(
         userId: UserId,
         selectedMailLabelId: MailLabelId,
         type: MailboxItemType,
-        searchQuery: String,
-        isInSearchMode: Boolean
+        searchQuery: String
     ): Pager<MailboxPageKey, MailboxItem> {
         Timber.d("Paging: creating new paginator for label: ${selectedMailLabelId.labelId}")
-        val mailboxPageKey = if (isInSearchMode) {
+        val mailboxPageKey = if (searchQuery.isNotEmpty()) {
             buildSearchPageKey(
                 userId = userId,
                 searchQuery = searchQuery

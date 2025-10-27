@@ -130,11 +130,6 @@ class RustMessageListQueryImpl @Inject constructor(
             ?: Timber.w("rust-message-query: No paginator to update unread filter")
     }
 
-    override suspend fun updateSearchQuery(searchQuery: String) {
-        paginatorState?.paginatorWrapper?.updateKeyword(searchQuery)
-            ?: Timber.w("rust-message-query: No paginator to update search query")
-    }
-
     override suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean) {
         paginatorState?.paginatorWrapper?.showSpamAndTrash(showSpamTrash)
             ?: Timber.w("rust-message-query: No paginator to update show spam/trash filter")

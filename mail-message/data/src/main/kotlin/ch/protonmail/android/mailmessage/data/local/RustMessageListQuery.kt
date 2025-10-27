@@ -32,8 +32,6 @@ interface RustMessageListQuery {
 
     suspend fun updateUnreadFilter(filterUnread: Boolean)
 
-    suspend fun updateSearchQuery(searchQuery: String)
-
     suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean)
 
 }

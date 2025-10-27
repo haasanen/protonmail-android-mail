@@ -36,7 +36,6 @@ import me.proton.core.domain.entity.UserId
 interface MessageRepository {
 
     suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean)
-    suspend fun updateSearchQuery(searchQuery: String)
     suspend fun updateUnreadFilter(filterUnread: Boolean)
 
     suspend fun terminatePaginator(userId: UserId)

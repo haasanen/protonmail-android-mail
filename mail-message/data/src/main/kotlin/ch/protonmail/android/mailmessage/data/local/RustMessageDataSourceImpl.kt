@@ -105,8 +105,6 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean) =
         rustMessageListQuery.updateShowSpamTrashFilter(showSpamTrash)
 
-    override suspend fun updateSearchQuery(searchQuery: String) = rustMessageListQuery.updateSearchQuery(searchQuery)
-
     override suspend fun updateUnreadFilter(filterUnread: Boolean) =
         rustMessageListQuery.updateUnreadFilter(filterUnread)
 

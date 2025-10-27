@@ -96,7 +96,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTras
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
-import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateSearchQuery
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
@@ -207,7 +206,6 @@ class MailboxViewModel @Inject constructor(
     private val isExpandableLocation: IsExpandableLocation,
     private val eventLoopRepository: EventLoopRepository,
     private val updateUnreadFilter: UpdateUnreadFilter,
-    private val updateSearchQuery: UpdateSearchQuery,
     private val updateShowSpamTrashFilter: UpdateShowSpamTrashFilter
 ) : ViewModel() {
 
@@ -594,11 +592,11 @@ class MailboxViewModel @Inject constructor(
             // search query, unread filter and showSpamTrash will be handled by the existing pager.
             combine(
                 observeMailLabelChangeRequests(),
-                state.observeSearchModeStatus(),
+                state.observeSearchQuery(),
                 observeViewModeChanged(userId)
-            ) { selectedMailLabel, isInSearchMode, _ ->
+            ) { selectedMailLabel, query, _ ->
 
-                val searchQuerySnapshot = state.observeSearchQuery().first()
+                val isInSearchMode = state.value.isInSearchMode()
                 if (selectedMailLabel != currentMailLabel || currentSearchModeState != isInSearchMode) {
                     pagingDataFlow.emit(
                         PagingData.empty(
@@ -615,17 +613,16 @@ class MailboxViewModel @Inject constructor(
                     userId = userId,
                     selectedMailLabelId = selectedMailLabel.id,
                     type = if (!isInSearchMode) viewMode.toMailboxItemType() else MailboxItemType.Message,
-                    searchQuery = searchQuerySnapshot,
-                    isInSearchMode = isInSearchMode
-                ) to (isInSearchMode to viewMode)
+                    searchQuery = query
+                ) to (query to viewMode)
             }
                 .flatMapLatest { (pager, searchAndViewMode) ->
-                    val (isInSearchMode, viewMode) = searchAndViewMode
+                    val (query, viewMode) = searchAndViewMode
 
                     channelFlow {
                         Timber.d(
                             "New Pager created for label=${currentMailLabel?.id?.labelId?.id} " +
-                                "isInSearchMode=$isInSearchMode viewMode=$viewMode"
+                                "query=$query viewMode=$viewMode"
                         )
 
                         // Start paging immediately and send items downstream.
@@ -676,18 +673,6 @@ class MailboxViewModel @Inject constructor(
                                     Timber.d("Updating showSpamTrash filter: $showSpamTrash")
                                     updateShowSpamTrashFilter(showSpamTrash, viewMode)
                                 }
-                        }
-
-                        if (isInSearchMode) {
-                            jobs += launch {
-                                state.observeSearchQuery()
-                                    .distinctUntilChanged()
-                                    .drop(1) // ignore initial value
-                                    .collect { q ->
-                                        Timber.d("Updating search query: $q")
-                                        updateSearchQuery(q)
-                                    }
-                            }
                         }
 
                         awaitClose {

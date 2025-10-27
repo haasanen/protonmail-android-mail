@@ -96,7 +96,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeUiModelSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
-import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateSearchQuery
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
@@ -312,7 +311,6 @@ internal class MailboxViewModelTest {
     }
 
     private val updateUnreadFilter = mockk<UpdateUnreadFilter>()
-    private val updateSearchQuery = mockk<UpdateSearchQuery>()
     private val updateShowSpamTrashFilter = mockk<UpdateShowSpamTrashFilter>()
 
     private val scope = TestScope(UnconfinedTestDispatcher())
@@ -365,7 +363,6 @@ internal class MailboxViewModelTest {
             isExpandableLocation = isExpandableLocation,
             eventLoopRepository = eventLoopRepository,
             updateUnreadFilter = updateUnreadFilter,
-            updateSearchQuery = updateSearchQuery,
             updateShowSpamTrashFilter = updateShowSpamTrashFilter
         )
     }
@@ -678,8 +675,8 @@ internal class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(expectedState, MailboxEvent.SwipeActionsChanged(expectedSwipeActions))
         } returns expectedStateWithSwipeGestures
-        expectPagerMock(user = userId, itemType = Message, isInSearchMode = false)
-        expectPagerMock(user = userId1, itemType = Message, isInSearchMode = false)
+        expectPagerMock(user = userId, itemType = Message)
+        expectPagerMock(user = userId1, itemType = Message)
 
         mailboxViewModel.state.test {
             awaitItem()
@@ -1150,8 +1147,7 @@ internal class MailboxViewModelTest {
                     userId,
                     initialLocationMailLabelId,
                     Message,
-                    any(),
-                    false
+                    any()
                 )
             }
 
@@ -1165,8 +1161,7 @@ internal class MailboxViewModelTest {
                     userId,
                     MailLabelTestData.spamSystemLabel.id,
                     Message,
-                    any(),
-                    false
+                    any()
                 )
             }
             cancelAndIgnoreRemainingEvents()
@@ -1368,7 +1363,7 @@ internal class MailboxViewModelTest {
                 MailboxViewAction.OnOfflineWithData
             )
         } returns expectedState
-        expectPagerMock(isInSearchMode = false)
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.OnOfflineWithData)
@@ -1433,7 +1428,7 @@ internal class MailboxViewModelTest {
             )
         } returns expectedState
         coEvery { eventLoopRepository.trigger(userId) } just Runs
-        expectPagerMock(isInSearchMode = false)
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.Refresh)
@@ -1548,8 +1543,7 @@ internal class MailboxViewModelTest {
                     userId,
                     MailLabelTestData.archiveSystemLabel.id,
                     Message,
-                    any(),
-                    false
+                    any()
                 )
             }
 
@@ -1564,8 +1558,7 @@ internal class MailboxViewModelTest {
                     userId,
                     inboxLabel.id,
                     Message,
-                    any(),
-                    false
+                    any()
                 )
             }
             cancelAndIgnoreRemainingEvents()
@@ -1602,8 +1595,7 @@ internal class MailboxViewModelTest {
                     userId,
                     MailLabelTestData.archiveSystemLabel.id,
                     Message,
-                    any(),
-                    false
+                    any()
                 )
             }
 
@@ -1618,8 +1610,7 @@ internal class MailboxViewModelTest {
                     userId,
                     MailLabelTestData.archiveSystemLabel.id,
                     Conversation,
-                    any(),
-                    false
+                    any()
                 )
             }
             cancelAndIgnoreRemainingEvents()
@@ -1660,8 +1651,7 @@ internal class MailboxViewModelTest {
                     userId,
                     MailLabelTestData.archiveSystemLabel.id,
                     Message,
-                    any(),
-                    false
+                    any()
                 )
             }
 
@@ -1688,8 +1678,7 @@ internal class MailboxViewModelTest {
                     userId,
                     MailLabelTestData.archiveSystemLabel.id,
                     Message,
-                    any(),
-                    false
+                    any()
                 )
             }
         }
@@ -2485,8 +2474,7 @@ internal class MailboxViewModelTest {
                     userId,
                     initialLocationMailLabelId,
                     Conversation,
-                    any(),
-                    false
+                    any()
                 )
             }
 
@@ -2499,8 +2487,7 @@ internal class MailboxViewModelTest {
                     userId,
                     initialLocationMailLabelId,
                     Message,
-                    any(),
-                    false
+                    any()
                 )
             }
             cancelAndIgnoreRemainingEvents()
@@ -2992,8 +2979,7 @@ internal class MailboxViewModelTest {
                 MailboxViewAction.EnterSearchMode
             )
         } returns expectedState
-        expectPagerMock(isInSearchMode = false)
-        expectPagerMock(isInSearchMode = true)
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.EnterSearchMode)
@@ -3026,8 +3012,7 @@ internal class MailboxViewModelTest {
                 MailboxViewAction.ExitSearchMode
             )
         } returns expectedState
-        expectPagerMock(isInSearchMode = false)
-        expectPagerMock(isInSearchMode = true)
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.ExitSearchMode)
@@ -3061,8 +3046,7 @@ internal class MailboxViewModelTest {
                 MailboxViewAction.SearchQuery(queryText)
             )
         } returns expectedState
-        expectPagerMock(isInSearchMode = false)
-        expectPagerMock(isInSearchMode = true)
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.SearchQuery(queryText))
@@ -3095,8 +3079,7 @@ internal class MailboxViewModelTest {
                 MailboxViewAction.SearchResult
             )
         } returns expectedState
-        expectPagerMock(isInSearchMode = false)
-        expectPagerMock(isInSearchMode = true)
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.SearchResult)
@@ -3736,7 +3719,6 @@ internal class MailboxViewModelTest {
         selectedLabelId: MailLabelId? = null,
         itemType: MailboxItemType? = null,
         searchQuery: String? = null,
-        isInSearchMode: Boolean? = null,
         pagingDataFlow: Flow<PagingData<MailboxItem>> = flowOf()
     ) {
 
@@ -3745,8 +3727,7 @@ internal class MailboxViewModelTest {
                 userId = user,
                 selectedMailLabelId = selectedLabelId ?: any(),
                 type = itemType ?: any(),
-                searchQuery = searchQuery ?: any(),
-                isInSearchMode = isInSearchMode ?: false
+                searchQuery = searchQuery ?: any()
             )
         } returns mockk mockPager@{ every { this@mockPager.flow } returns pagingDataFlow }
     }
