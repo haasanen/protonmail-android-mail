@@ -28,25 +28,15 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSessionWatchUserResult
+import uniffi.proton_mail_uniffi.MailUserSessionWatchUserStreamResult
 import uniffi.proton_mail_uniffi.User
-import uniffi.proton_mail_uniffi.WatchHandle
+import uniffi.proton_mail_uniffi.WatchUserStreamNextAsyncResult
 import javax.inject.Inject
 
 class RustUserDataSourceImpl @Inject constructor() : RustUserDataSource {
 
     override fun observeUser(mailUserSession: MailUserSessionWrapper): Flow<Either<DataError, User>> = callbackFlow {
         Timber.d("rust-user: Starting user observation")
-        var watcher: WatchHandle? = null
-        val updateCallback = object : AsyncLiveQueryCallback {
-            override suspend fun onUpdate() {
-                Timber.d("rust-user: user updated")
-                mailUserSession.getUser()
-                    .onLeft { error -> send(error.left()) }
-                    .onRight { user -> send(user.right()) }
-            }
-        }
 
         mailUserSession.getUser().onLeft { error ->
             Timber.e("rust-user: Failed to get user: $error")
@@ -57,25 +47,38 @@ class RustUserDataSourceImpl @Inject constructor() : RustUserDataSource {
             send(user.right())
 
             Timber.d("rust-user: Got user, creating watcher")
-            when (val watcherResult = mailUserSession.watchUser(updateCallback)) {
+            when (val userStream = mailUserSession.watchUserStream()) {
 
-                is MailUserSessionWatchUserResult.Error -> {
-                    Timber.e("rust-user: Failed to create watcher: ${watcherResult.v1}")
-                    send(watcherResult.v1.toDataError().left())
+                is MailUserSessionWatchUserStreamResult.Error -> {
+                    Timber.e("rust-user: Failed to create stream watcher: ${userStream.v1}")
+                    send(userStream.v1.toDataError().left())
                     close()
                     return@callbackFlow
                 }
 
-                is MailUserSessionWatchUserResult.Ok -> {
+                is MailUserSessionWatchUserStreamResult.Ok -> {
                     Timber.d("rust-user: Created user watcher")
-                    watcher = watcherResult.v1
+                    while (true) {
+                        when (userStream.v1.nextAsync()) {
+                            is WatchUserStreamNextAsyncResult.Error -> {
+                                Timber.w("rust-user: received new watcher error")
+                                break
+                            }
+
+                            WatchUserStreamNextAsyncResult.Ok -> {
+                                val update = mailUserSession.getUser()
+                                Timber.d("rust-user: received new watcher event $update")
+                                send(update)
+                            }
+                        }
+                    }
+
                 }
             }
         }
 
         awaitClose {
             Timber.d("rust-user: Closing watcher")
-            watcher?.disconnect()
         }
     }
 }

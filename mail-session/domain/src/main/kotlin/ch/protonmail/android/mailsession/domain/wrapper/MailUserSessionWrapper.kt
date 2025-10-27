@@ -61,6 +61,8 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
 
     fun watchUser(callback: AsyncLiveQueryCallback) = userSession.watchUser(callback)
 
+    fun watchUserStream() = userSession.watchUserStream()
+
     suspend fun getUser(): Either<DataError, User> = when (val result = userSession.user()) {
         is MailUserSessionUserResult.Error -> result.v1.toDataError().left()
         is MailUserSessionUserResult.Ok -> result.v1.right()

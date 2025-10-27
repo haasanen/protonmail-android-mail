@@ -32,7 +32,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSessionWatchUserResult
+import uniffi.proton_mail_uniffi.MailUserSessionWatchUserStreamResult
 import uniffi.proton_mail_uniffi.WatchHandle
+import uniffi.proton_mail_uniffi.WatchUserStream
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -56,16 +58,13 @@ internal class RustUserDataSourceImplTest {
         val user = LocalUserTestData.build()
 
         val wrapper = mockk<MailUserSessionWrapper>()
-        val handle = mockk<WatchHandle>(relaxed = true)
-        val callbackSlot = slot<AsyncLiveQueryCallback>()
+        val stream = mockk<WatchUserStream>()
 
         coEvery { wrapper.getUser() } returns user.right()
-        coEvery { wrapper.watchUser(capture(callbackSlot)) } returns MailUserSessionWatchUserResult.Ok(handle)
+        coEvery { wrapper.watchUserStream() } returns MailUserSessionWatchUserStreamResult.Ok(stream)
 
         // When
         dataSource.observeUser(wrapper).test {
-            callbackSlot.captured.onUpdate()
-
             // Then
             val emission = awaitItem()
             assertTrue(emission.isRight())
