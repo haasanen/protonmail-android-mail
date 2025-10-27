@@ -45,15 +45,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.AttachmentListAddInlineResult
 import uniffi.proton_mail_uniffi.AttachmentListAddResult
 import uniffi.proton_mail_uniffi.AttachmentListAttachmentsResult
 import uniffi.proton_mail_uniffi.AttachmentListRemoveResult
 import uniffi.proton_mail_uniffi.AttachmentListRemoveWithCidResult
-import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
-import uniffi.proton_mail_uniffi.DraftAttachmentWatcher
+import uniffi.proton_mail_uniffi.AttachmentListWatcherStreamResult
 import uniffi.proton_mail_uniffi.VoidDraftAttachmentDispositionSwapResult
+import uniffi.proton_mail_uniffi.VoidProtonResult
 import javax.inject.Inject
 
 class RustAttachmentDataSourceImpl @Inject constructor(
@@ -66,25 +65,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
         callbackFlow {
             Timber.d("rust-draft-attachments: Starting attachment observation")
 
-            val result = rustDraftDataSource.attachmentList()
-            var watcher: DraftAttachmentWatcher? = null
-            val updateCallback = object : AsyncLiveQueryCallback {
-                override suspend fun onUpdate() {
-                    Timber.d("rust-draft-attachments: Attachment list updated")
-                    val attachmentList = try {
-                        rustDraftDataSource.attachmentList()
-                    } catch (e: IllegalStateException) {
-                        Timber.w("Received attachments update while draft was already closed. $e")
-                        return
-                    }
-                    attachmentList.onLeft { error ->
-                        send(error.left())
-                    }.onRight { attachmentListWrapper ->
-                        send(attachmentListWrapper.getAttachments())
-                    }
-                }
-            }
-            result.onLeft { error ->
+            rustDraftDataSource.attachmentList().onLeft { error ->
                 Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
                 send(error.left())
                 close()
@@ -94,24 +75,37 @@ class RustAttachmentDataSourceImpl @Inject constructor(
                 send(attachmentListWrapper.getAttachments())
 
                 Timber.d("rust-draft-attachments: Got attachment list, creating watcher")
-                when (val watcherResult = attachmentListWrapper.createWatcher(updateCallback)) {
-                    is AttachmentListWatcherResult.Error -> {
+                when (val watcherResult = attachmentListWrapper.watcherStream()) {
+                    is AttachmentListWatcherStreamResult.Error -> {
                         Timber.e("rust-draft-attachments: Failed to create watcher: ${watcherResult.v1}")
                         send(watcherResult.v1.toObserveAttachmentsError().left())
                         close()
                         return@callbackFlow
                     }
 
-                    is AttachmentListWatcherResult.Ok -> {
+                    is AttachmentListWatcherStreamResult.Ok -> {
                         Timber.d("rust-draft-attachments: Created attachment list watcher")
-                        watcher = watcherResult.v1
+
+                        val watcherStream = watcherResult.v1
+                        while (true) {
+                            when (watcherStream.nextAsync()) {
+                                is VoidProtonResult.Error -> {
+                                    Timber.w("rust-draft-attachments: received new watcher error")
+                                    break
+                                }
+                                VoidProtonResult.Ok -> {
+                                    val update = attachmentListWrapper.getAttachments()
+                                    Timber.d("rust-draft-attachments: received new watcher event $update")
+                                    send(update)
+                                }
+                            }
+                        }
                     }
                 }
             }
 
             awaitClose {
                 Timber.d("rust-draft-attachments: Closing watcher")
-                watcher?.disconnect()
             }
         }
 
