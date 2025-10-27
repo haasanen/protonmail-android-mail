@@ -53,7 +53,10 @@ class MailboxUnreadFilterReducer @Inject constructor() {
             numUnread = operation.selectedLabelCount ?: 0,
             isFilterEnabled = false
         )
-        is UnreadFilterState.Data -> copy(numUnread = operation.selectedLabelCount ?: 0)
+        is UnreadFilterState.Data -> copy(
+            numUnread = operation.selectedLabelCount ?: 0,
+            isFilterEnabled = false
+        )
     }
 
     private fun UnreadFilterState.toNewStateForCountChanged(

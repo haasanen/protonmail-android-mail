@@ -108,7 +108,7 @@ internal class MailboxUnreadFilterReducerTest(
                     MailLabelTestData.dynamicSystemLabels[0],
                     UPDATED_UNREAD_COUNT
                 ),
-                expectedState = UnreadFilterState.Data(UPDATED_UNREAD_COUNT, isFilterEnabled = true)
+                expectedState = UnreadFilterState.Data(UPDATED_UNREAD_COUNT, isFilterEnabled = false)
             ),
             TestInput(
                 currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false),
@@ -124,7 +124,7 @@ internal class MailboxUnreadFilterReducerTest(
                     MailLabelTestData.dynamicSystemLabels[0],
                     selectedLabelCount = null
                 ),
-                expectedState = UnreadFilterState.Data(DEFAULT_UNREAD_COUNT, isFilterEnabled = true)
+                expectedState = UnreadFilterState.Data(DEFAULT_UNREAD_COUNT, isFilterEnabled = false)
             ),
             TestInput(
                 currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false),
