@@ -25,8 +25,6 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -39,38 +37,42 @@ class MailboxPagerFactory @Inject constructor(
     fun create(
         userId: UserId,
         selectedMailLabelId: MailLabelId,
-        filterUnread: Boolean,
-        showSpamTrash: Boolean,
         type: MailboxItemType,
-        searchQuery: String
+        searchQuery: String,
+        isInSearchMode: Boolean
     ): Pager<MailboxPageKey, MailboxItem> {
-        Timber.d("Paging: creating new paginator for ${selectedMailLabelId.labelId}")
-        val mailboxPageKey = buildPageKey(filterUnread, showSpamTrash, selectedMailLabelId, userId, searchQuery)
+        Timber.d("Paging: creating new paginator for label: ${selectedMailLabelId.labelId}")
+        val mailboxPageKey = if (isInSearchMode) {
+            buildSearchPageKey(
+                userId = userId,
+                searchQuery = searchQuery
+            )
+        } else {
+            buildDefaultPageKey(
+                selectedMailLabelId = selectedMailLabelId,
+                userId = userId
+            )
+        }
         return Pager(
             config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, initialLoadSize = INITIAL_LOAD_SIZE),
             pagingSourceFactory = { pagingSourceFactory.create(mailboxPageKey, type) }
         )
     }
 
-    private fun buildPageKey(
-        filterUnread: Boolean,
-        showSpamTrash: Boolean,
-        selectedMailLabelId: MailLabelId,
-        userId: UserId,
-        searchQuery: String
-    ): MailboxPageKey {
-        val pageKey: PageKey = if (searchQuery.isNotEmpty()) {
+    private fun buildDefaultPageKey(selectedMailLabelId: MailLabelId, userId: UserId): MailboxPageKey {
+        val pageKey = PageKey.DefaultPageKey(labelId = selectedMailLabelId.labelId)
+
+        return MailboxPageKey(
+            userId = userId,
+            pageKey = pageKey
+        )
+    }
+
+    private fun buildSearchPageKey(userId: UserId, searchQuery: String): MailboxPageKey {
+        val pageKey =
             PageKey.PageKeyForSearch(
-                keyword = searchQuery,
-                showSpamTrash = if (showSpamTrash) ShowSpamTrash.Show else ShowSpamTrash.Hide
+                keyword = searchQuery
             )
-        } else {
-            PageKey.DefaultPageKey(
-                labelId = selectedMailLabelId.labelId,
-                readStatus = if (filterUnread) ReadStatus.Unread else ReadStatus.All,
-                showSpamTrash = if (showSpamTrash) ShowSpamTrash.Show else ShowSpamTrash.Hide
-            )
-        }
 
         return MailboxPageKey(
             userId = userId,

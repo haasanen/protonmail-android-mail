@@ -43,6 +43,12 @@ import uniffi.proton_mail_uniffi.ThemeOpts
 @Suppress("ComplexInterface", "TooManyFunctions")
 interface RustMessageDataSource {
 
+    suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean)
+
+    suspend fun updateSearchQuery(searchQuery: String)
+
+    suspend fun updateUnreadFilter(filterUnread: Boolean)
+
     suspend fun terminatePaginator(userId: UserId)
 
     suspend fun supportsIncludeFilter(): Boolean

@@ -32,14 +32,11 @@ sealed interface PageKey {
 
     data class DefaultPageKey(
         val labelId: LabelId = LabelId("0"),
-        val readStatus: ReadStatus = ReadStatus.All,
-        val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide,
         override val pageToLoad: PageToLoad = PageToLoad.First
     ) : PageKey
 
     data class PageKeyForSearch(
         val keyword: String,
-        val showSpamTrash: ShowSpamTrash = ShowSpamTrash.Hide,
         override val pageToLoad: PageToLoad = PageToLoad.First
     ) : PageKey
 }

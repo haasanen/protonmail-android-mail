@@ -72,7 +72,7 @@ import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
 import javax.inject.Inject
 
-@SuppressWarnings("LongParameterList")
+@SuppressWarnings("LongParameterList", "TooManyFunctions")
 class RustMessageDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailboxFactory: RustMailboxFactory,
@@ -101,6 +101,14 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val executeWithUserSession: ExecuteWithUserSession,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustMessageDataSource {
+
+    override suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean) =
+        rustMessageListQuery.updateShowSpamTrashFilter(showSpamTrash)
+
+    override suspend fun updateSearchQuery(searchQuery: String) = rustMessageListQuery.updateSearchQuery(searchQuery)
+
+    override suspend fun updateUnreadFilter(filterUnread: Boolean) =
+        rustMessageListQuery.updateUnreadFilter(filterUnread)
 
     override suspend fun terminatePaginator(userId: UserId) = rustMessageListQuery.terminatePaginator(userId)
 

@@ -50,6 +50,14 @@ class RustMessageRepositoryImpl @Inject constructor(
     private val undoRepository: UndoRepository
 ) : MessageRepository {
 
+    override suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean) =
+        rustMessageDataSource.updateShowSpamTrashFilter(showSpamTrash)
+
+    override suspend fun updateSearchQuery(searchQuery: String) = rustMessageDataSource.updateSearchQuery(searchQuery)
+
+    override suspend fun updateUnreadFilter(filterUnread: Boolean) =
+        rustMessageDataSource.updateUnreadFilter(filterUnread)
+
     override suspend fun terminatePaginator(userId: UserId) {
         Timber.d("Terminating message paginator for userId: $userId")
         rustMessageDataSource.terminatePaginator(userId)

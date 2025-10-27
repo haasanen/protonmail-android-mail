@@ -39,6 +39,10 @@ import uniffi.proton_mail_uniffi.MoveAction
 
 interface RustConversationDataSource {
 
+    suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean)
+
+    suspend fun updateUnreadFilter(filterUnread: Boolean)
+
     suspend fun terminatePaginator(userId: UserId)
 
     suspend fun supportsIncludeFilter(): Boolean

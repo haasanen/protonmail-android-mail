@@ -35,6 +35,10 @@ import me.proton.core.domain.entity.UserId
 @Suppress("TooManyFunctions", "ComplexInterface")
 interface ConversationRepository {
 
+    suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean)
+
+    suspend fun updateUnreadFilter(filterUnread: Boolean)
+
     suspend fun terminatePaginator(userId: UserId)
 
     suspend fun supportsIncludeFilter(): Boolean

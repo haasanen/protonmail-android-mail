@@ -34,4 +34,9 @@ interface RustConversationsQuery {
     suspend fun supportsIncludeFilter(): Boolean
 
     suspend fun terminatePaginator(userId: UserId)
+
+    suspend fun updateUnreadFilter(filterUnread: Boolean)
+
+    suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean)
+
 }

@@ -29,4 +29,11 @@ interface RustMessageListQuery {
     suspend fun terminatePaginator(userId: UserId)
 
     suspend fun supportsIncludeFilter(): Boolean
+
+    suspend fun updateUnreadFilter(filterUnread: Boolean)
+
+    suspend fun updateSearchQuery(searchQuery: String)
+
+    suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean)
+
 }

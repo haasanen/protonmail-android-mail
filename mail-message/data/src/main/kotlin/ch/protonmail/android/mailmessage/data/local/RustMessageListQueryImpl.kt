@@ -43,8 +43,6 @@ import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
-import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -83,15 +81,6 @@ class RustMessageListQueryImpl @Inject constructor(
         paginatorMutex.withLock {
             if (shouldInitPaginator(pageDescriptor, pageKey)) {
                 initPaginator(pageDescriptor, mailbox)
-            }
-        }
-        when (pageKey) {
-            is PageKey.DefaultPageKey -> {
-                paginatorState?.paginatorWrapper?.filterUnread(pageKey.readStatus == ReadStatus.Unread)
-                paginatorState?.paginatorWrapper?.showSpamAndTrash(pageKey.showSpamTrash == ShowSpamTrash.Show)
-            }
-            is PageKey.PageKeyForSearch -> {
-                paginatorState?.paginatorWrapper?.showSpamAndTrash(pageKey.showSpamTrash == ShowSpamTrash.Show)
             }
         }
 
@@ -135,6 +124,21 @@ class RustMessageListQueryImpl @Inject constructor(
     }
 
     override suspend fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter() == true
+
+    override suspend fun updateUnreadFilter(filterUnread: Boolean) {
+        paginatorState?.paginatorWrapper?.filterUnread(filterUnread)
+            ?: Timber.w("rust-message-query: No paginator to update unread filter")
+    }
+
+    override suspend fun updateSearchQuery(searchQuery: String) {
+        paginatorState?.paginatorWrapper?.updateKeyword(searchQuery)
+            ?: Timber.w("rust-message-query: No paginator to update search query")
+    }
+
+    override suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean) {
+        paginatorState?.paginatorWrapper?.showSpamAndTrash(showSpamTrash)
+            ?: Timber.w("rust-message-query: No paginator to update show spam/trash filter")
+    }
 
     private suspend fun initPaginator(pageDescriptor: PageDescriptor, mailbox: MailboxWrapper) {
         Timber.d("rust-message-query: [destroy and] initialize paginator instance...")

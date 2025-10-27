@@ -33,8 +33,6 @@ import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
-import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
@@ -264,10 +262,10 @@ class RustMessageListQueryImplTest {
     }
 
     @Test
-    fun `updates flag on paginator without re-initializing it when readStatus changes`() = runTest {
+    fun `updates flag on paginator without re-initializing it when unread filter is applied`() = runTest {
         // Given
-        val firstKey = PageKey.DefaultPageKey(labelId = inboxLabelId, readStatus = ReadStatus.All)
-        val secondKey = firstKey.copy(readStatus = ReadStatus.Unread, pageToLoad = PageToLoad.Next)
+        val firstKey = PageKey.DefaultPageKey(labelId = inboxLabelId)
+        val secondKey = firstKey.copy(pageToLoad = PageToLoad.Next)
 
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
@@ -283,7 +281,7 @@ class RustMessageListQueryImplTest {
 
         // When
         rustMessageListQuery.getMessages(userId, firstKey)
-        rustMessageListQuery.getMessages(userId, secondKey)
+        rustMessageListQuery.updateUnreadFilter(true)
 
         // Then
         coVerify(exactly = 1) {
@@ -296,14 +294,9 @@ class RustMessageListQueryImplTest {
     }
 
     @Test
-    fun `updates flag on paginator without re-initializing when includeSpamTrash changes`() = runTest {
+    fun `updates flag on paginator without re-initializing when includeSpamTrash filter is applied`() = runTest {
         // Given
-        val firstKey = PageKey.DefaultPageKey(
-            labelId = inboxLabelId,
-            readStatus = ReadStatus.All,
-            showSpamTrash = ShowSpamTrash.Hide
-        )
-        val secondKey = firstKey.copy(showSpamTrash = ShowSpamTrash.Show, pageToLoad = PageToLoad.Next)
+        val firstKey = PageKey.DefaultPageKey(labelId = inboxLabelId)
 
         val callback = slot<MessageScrollerLiveQueryCallback>()
         val paginator = paginatorWrapperWithNextEmitting(callback, expectedMessages)
@@ -319,7 +312,7 @@ class RustMessageListQueryImplTest {
 
         // When
         rustMessageListQuery.getMessages(userId, firstKey)
-        rustMessageListQuery.getMessages(userId, secondKey)
+        rustMessageListQuery.updateShowSpamTrashFilter(true)
 
         // Then
         coVerify(exactly = 1) {

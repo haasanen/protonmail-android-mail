@@ -40,8 +40,6 @@ import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
-import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -76,8 +74,7 @@ class RustConversationsQueryImpl @Inject constructor(
         }
 
         val labelId = pageKey.labelId
-        val unread = pageKey.readStatus == ReadStatus.Unread
-        Timber.d("rust-conversation-query: observe conversations for labelId $labelId unread: $unread")
+        Timber.d("rust-conversation-query: observe conversations for labelId $labelId")
 
         val pageDescriptor = pageKey.toPageDescriptor(userId)
 
@@ -86,8 +83,6 @@ class RustConversationsQueryImpl @Inject constructor(
                 initPaginator(pageDescriptor, mailbox)
             }
         }
-        paginatorState?.paginatorWrapper?.filterUnread(pageKey.readStatus == ReadStatus.Unread)
-        paginatorState?.paginatorWrapper?.showSpamAndTrash(pageKey.showSpamTrash == ShowSpamTrash.Show)
 
         Timber.d("rust-conversation-query: Paging: querying ${pageKey.pageToLoad.name} page for conversation")
 
@@ -141,6 +136,14 @@ class RustConversationsQueryImpl @Inject constructor(
         } else {
             Timber.d("rust-conversation-query: Not terminating paginator, userId does not match")
         }
+    }
+
+    override suspend fun updateUnreadFilter(filterUnread: Boolean) {
+        paginatorState?.paginatorWrapper?.filterUnread(filterUnread)
+    }
+
+    override suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean) {
+        paginatorState?.paginatorWrapper?.showSpamAndTrash(showSpamTrash)
     }
 
     private suspend fun initPaginator(pageDescriptor: PageDescriptor, mailbox: MailboxWrapper) {

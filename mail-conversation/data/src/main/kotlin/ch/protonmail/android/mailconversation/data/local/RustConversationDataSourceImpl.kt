@@ -74,6 +74,12 @@ class RustConversationDataSourceImpl @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustConversationDataSource {
 
+    override suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean) =
+        rustConversationsQuery.updateShowSpamTrashFilter(showSpamTrash)
+
+    override suspend fun updateUnreadFilter(filterUnread: Boolean) =
+        rustConversationsQuery.updateUnreadFilter(filterUnread)
+
     override suspend fun terminatePaginator(userId: UserId) = rustConversationsQuery.terminatePaginator(userId)
 
     override suspend fun supportsIncludeFilter() = rustConversationsQuery.supportsIncludeFilter()

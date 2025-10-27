@@ -48,6 +48,12 @@ class RustConversationRepositoryImpl @Inject constructor(
     private val undoRepository: UndoRepository
 ) : ConversationRepository {
 
+    override suspend fun updateShowSpamTrashFilter(showSpamTrash: Boolean) =
+        rustConversationDataSource.updateShowSpamTrashFilter(showSpamTrash)
+
+    override suspend fun updateUnreadFilter(filterUnread: Boolean) =
+        rustConversationDataSource.updateUnreadFilter(filterUnread)
+
     override suspend fun terminatePaginator(userId: UserId) {
         Timber.d("rust-conversation-repo: terminatePaginator for userId: $userId")
         rustConversationDataSource.terminatePaginator(userId)

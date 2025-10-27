@@ -15,8 +15,6 @@ import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
-import ch.protonmail.android.mailpagination.domain.model.ReadStatus
-import ch.protonmail.android.mailpagination.domain.model.ShowSpamTrash
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
@@ -298,15 +296,12 @@ class RustConversationsQueryImplTest {
     }
 
     @Test
-    fun `updates paginator without re-initialising it when read status changes`() = runTest {
+    fun `updates paginator without re-initialising it when unread filter is updated`() = runTest {
         // Given
         val firstPage = listOf(LocalConversationTestData.AugConversation)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val readStatus = ReadStatus.All
-        val newReadStatus = ReadStatus.Unread
-        val pageKey = PageKey.DefaultPageKey(labelId = labelId, readStatus = readStatus)
-        val newPageKey = pageKey.copy(readStatus = newReadStatus, pageToLoad = PageToLoad.Next)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val mailbox = mockk<MailboxWrapper>()
         val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
@@ -324,9 +319,7 @@ class RustConversationsQueryImplTest {
                 Unit.right()
             }
             coEvery { this@mockk.disconnect() } just Runs
-            coEvery { this@mockk.filterUnread(false) } just Runs
-            coEvery { this@mockk.filterUnread(true) } just Runs
-            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            coEvery { this@mockk.filterUnread(any()) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -338,7 +331,7 @@ class RustConversationsQueryImplTest {
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
-        rustConversationsQuery.getConversations(userId, newPageKey)
+        rustConversationsQuery.updateUnreadFilter(true)
 
         // Then
         coVerify(exactly = 1) {
@@ -350,15 +343,12 @@ class RustConversationsQueryImplTest {
     }
 
     @Test
-    fun `updates paginator without re-initialising when show trash and spam status changes`() = runTest {
+    fun `updates paginator without re-initialising when show trash filter is called`() = runTest {
         // Given
         val firstPage = listOf(LocalConversationTestData.AugConversation)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val showSpamTrash = ShowSpamTrash.Hide
-        val newShowSpamTrash = ShowSpamTrash.Show
-        val pageKey = PageKey.DefaultPageKey(labelId = labelId, showSpamTrash = showSpamTrash)
-        val newPageKey = pageKey.copy(showSpamTrash = newShowSpamTrash, pageToLoad = PageToLoad.Next)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val mailbox = mockk<MailboxWrapper>()
         val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
@@ -377,8 +367,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.disconnect() } just Runs
             coEvery { this@mockk.filterUnread(false) } just Runs
-            coEvery { this@mockk.showSpamAndTrash(true) } just Runs
-            coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            coEvery { this@mockk.showSpamAndTrash(any()) } just Runs
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -390,7 +379,7 @@ class RustConversationsQueryImplTest {
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
-        rustConversationsQuery.getConversations(userId, newPageKey)
+        rustConversationsQuery.updateShowSpamTrashFilter(true)
 
         // Then
         coVerify(exactly = 1) {

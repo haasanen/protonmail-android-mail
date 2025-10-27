@@ -64,11 +64,13 @@ class SearchMessagePaginatorWrapper(
     }
 
     override fun showSpamAndTrash(show: Boolean) {
+        Timber.d("search-paginator: Updating show spam and trash to: $show")
         val includeSwitch = if (show) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
         rustPaginator.changeInclude(includeSwitch)
     }
 
     override fun updateKeyword(keyword: String) {
+        Timber.d("search-paginator: Updating search keyword to: $keyword")
         rustPaginator.changeKeywords(PaginatorSearchOptions(keyword))
     }
 

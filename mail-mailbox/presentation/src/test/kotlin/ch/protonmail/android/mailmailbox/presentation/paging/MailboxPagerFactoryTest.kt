@@ -22,7 +22,6 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import io.mockk.every
@@ -35,8 +34,7 @@ class MailboxPagerFactoryTest {
 
     private val pagingSourceFactory = mockk<MailboxItemPagingSourceFactory>()
     private val selectedMailLabelId = MailLabelTestData.starredSystemLabel.id
-    private val readStatus = ReadStatus.All
-    private val pageKey = PageKey.DefaultPageKey(labelId = selectedMailLabelId.labelId, readStatus = readStatus)
+    private val pageKey = PageKey.DefaultPageKey(labelId = selectedMailLabelId.labelId)
 
     private val mailboxPagerFactory = MailboxPagerFactory(pagingSourceFactory)
 
@@ -53,10 +51,9 @@ class MailboxPagerFactoryTest {
         val pager = mailboxPagerFactory.create(
             userId = userId,
             selectedMailLabelId = selectedMailLabelId,
-            filterUnread = false,
-            showSpamTrash = false,
             type = type,
-            searchQuery = ""
+            searchQuery = "",
+            isInSearchMode = false
         )
 
         // Then

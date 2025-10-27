@@ -59,11 +59,13 @@ class MailboxMessagePaginatorWrapper(
     }
 
     override fun filterUnread(filterUnread: Boolean) {
+        Timber.d("message-paginator: Changing unread filter to %s", filterUnread)
         val filter = if (filterUnread) ReadFilter.UNREAD else ReadFilter.ALL
         rustPaginator.changeFilter(filter)
     }
 
     override fun showSpamAndTrash(show: Boolean) {
+        Timber.d("message-paginator: Changing show spam and trash to %s", show)
         val includeSwitch = if (show) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
         rustPaginator.changeInclude(includeSwitch)
     }
