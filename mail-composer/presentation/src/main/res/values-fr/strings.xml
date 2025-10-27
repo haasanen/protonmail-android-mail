@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Le nombre maximal de pièces jointes (100) est dépassé.</string>
   <string name="composer_delete_attachment_error">Une erreur inattendue s’est produite lors de la suppression d’une pièce jointe.</string>
   <string name="composer_unexpected_attachments_error">Une erreur inattendue s’est produite concernant les pièces jointes.</string>
+  <string name="composer_storage_quota_exceeded_error">Votre espace de stockage est rempli. Veuillez libérer de l\'espace ou changer d\'abonnement pour en avoir plus.</string>
   <string name="composer_attach_capture_from_camera_error">La capture d\'une pièce jointe depuis l\'appareil photo n\'est pas possible pour l\'instant.</string>
   <string name="composer_warning_local_data_shown">La dernière version de ce brouillon n\'a pas pu être chargée. Toute modification remplacera son contenu.</string>
   <string name="composer_button_add_password">Ajouter un mot de passe</string>
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Brouillon non trouvé. Il se peut que vous l\'avez déjà envoyé ou abandonner.</string>
   <string name="composer_error_send_draft_message_too_large">Le message est trop volumineux pour être envoyé. Veuillez réduire la taille de vos pièces jointes.</string>
   <string name="composer_error_send_draft_attachments_error">La pièce jointe est manquante. Veuillez l\'importer à nouveau.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">La conversion de la pièce jointe n\'a pas abouti. Veuillez importer à nouveau.</string>
   <string name="composer_error_send_draft_invalid_recipient">Certains destinataires ne sont pas valides, veuillez les vérifier et réessayer.</string>
   <string name="composer_error_send_draft_schedule_send_error">L\'heure d\'envoi programmé se situe dans le passé. Allez dans les Brouillons pour l\'envoyer ou le reprogrammer.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">La date d\'expiration du message est trop proche.</string>

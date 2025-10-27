@@ -123,10 +123,10 @@
   <string name="auth_fido_security_keys_learn_more">Докладніше</string>
   <string name="auth_user_check_delinquent_error">Ваш обліковий запис наразі призупинено через несплату рахунку.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Дозволено лише один безплатний обліковий запис Proton.</item>
-    <item quantity="few">Дозволено лише %d безплатні облікові записи Proton.</item>
-    <item quantity="many">Дозволено лише %d безплатних облікових записів Proton.</item>
-    <item quantity="other">Дозволено лише %d безплатних облікових записів Proton.</item>
+    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
+    <item quantity="few">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="many">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Щось пішло не так. Повторіть спробу.</string>
   <string name="auth_fido_config_error">Помилка отримання збережених ключів.</string>

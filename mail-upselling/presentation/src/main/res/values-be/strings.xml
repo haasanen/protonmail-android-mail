@@ -103,7 +103,7 @@
   <!-- Other UI Items -->
   <string name="upselling_unlimited_description_override">Ваша ўніверсальная прэміяльная падпіска</string>
   <string name="upselling_auto_renew_text">Аўтападаўжэнне па тым жа самым кошце і на тых жа ўмовах пакуль не будзе скасавана</string>
-  <string name="upselling_auto_renew_text_promo">Вітальная прапанова. Аўтаматычнае падаўжэнне %s%s пакуль не будзе скасавана</string>
+  <string name="upselling_auto_renew_text_promo">Вітальная прапанова. Аўтаматычнае падаўжэнне за %s%s пакуль не будзе скасавана</string>
   <string name="upselling_auto_renew_text_promo_short">Вітальная прапанова. Аўтаматычнае падаўжэнне за %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Аўтападаўжэнне за %s%s пакуль не будзе скасавана</string>
   <string name="upselling_social_proof_reviews">БОЛЬШ ЗА 2000 ВОДГУКАЎ</string>

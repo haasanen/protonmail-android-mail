@@ -26,6 +26,7 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Neteja la consulta de cerca</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Introduïu la consulta de cerca</string>
   <string name="filter_unread_button_text">No llegits</string>
+  <string name="include_spam_trash_text">Incloeu-hi el Correu brossa i la Paperera</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">%d seleccionat</item>
     <item quantity="other">%d seleccionats</item>

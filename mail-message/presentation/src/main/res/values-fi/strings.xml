@@ -58,6 +58,8 @@
   <string name="message_link_long_click_copy_description">Proton Mailista kopioitiin tekstiä</string>
   <string name="message_link_long_click_share">Jaa linkki</string>
   <string name="message_link_long_click_share_via">Jaa linkki osoitteella</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Download image</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Kopioi osoite</string>
   <string name="contact_actions_copy_address_description">Kopioi yhteystiedon osoite</string>
@@ -71,6 +73,12 @@
   <string name="contact_actions_add_contact_description">Tallenna vastaanottaja yhteystiedoksi</string>
   <string name="contact_actions_block_contact">Estä tämä yhteystieto</string>
   <string name="contact_actions_block_contact_description">Estä tämä yhteystieto</string>
+  <string name="contact_actions_unblock_contact">Block this contact</string>
+  <string name="contact_actions_unblock_contact_description">Block this contact</string>
+  <string name="contact_actions_block_address">Block this address</string>
+  <string name="contact_actions_block_address_description">Block this address</string>
+  <string name="contact_actions_unblock_address">Unblock this address</string>
+  <string name="contact_actions_unblock_address_description">Unblock this address</string>
   <string name="contact_actions_view_contact_details">Näytä yhteystieto</string>
   <string name="contact_actions_view_contact_details_description">Näytä yhteystiedon tiedot</string>
 </resources>

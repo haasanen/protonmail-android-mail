@@ -99,7 +99,7 @@
   <string name="phishing_link_confirmation_dialog_button_continue">Ігнараваць папярэджанне і працягнуць</string>
   <!-- Mark as legitimate confirmation dialog -->
   <string name="mark_as_legitimate_phishing_dialog_title">Пацвердзіць пазначанае як надзейнае</string>
-  <string name="mark_as_legitimate_phishing_dialog_message">Прыносім прабачэнні. Верагодна, што гэта наша памылка. Пацвердзіце, ці хочаце вы пазначыць гэты ліст як надзейны.</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Прыносім прабачэнні. Верагодна, што гэта наша памылка. Пацвердзіце, калі хочаце пазначыць гэты ліст як надзейны.</string>
   <string name="mark_as_legitimate_spam_dialog_title">Пацвердзіць, што гэта не спам</string>
   <string name="mark_as_legitimate_spam_dialog_message">Прыносім прабачэнні. Верагодна, што гэта наша памылка. Пацвердзіце, што гэты ліст не з\'яўляецца спамам.</string>
   <!-- Delete message dialog -->
@@ -120,10 +120,8 @@
   <string name="message_report_phishing_dialog_cancel_button">Скасаваць</string>
   <string name="open_on_protoncalendar_banner_title">Адкрыць у Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Бяспечны зашыфраваны каляндар</string>
-  <string name="trashed_messages_banner">Гэта размова змяшчае выдаленыя паведамленні.</string>
-  <string name="non_trashed_messages_banner">Гэта размова змяшчае паведамленні, якія не былі выдалены.</string>
-  <string name="show">Паказаць</string>
-  <string name="hide">Схаваць</string>
+  <string name="trashed_messages_banner">Паказаць выдаленыя паведамленні ў гэтай размове.</string>
+  <string name="non_trashed_messages_banner">Паказаць невыдаленыя паведамленні ў гэтай размове.</string>
   <string name="recipient_me">я</string>
   <string name="message_details_header_from">Ад</string>
   <string name="message_details_header_to">Каму</string>
@@ -169,7 +167,7 @@
   <string name="rsvp_widget_today">Сёння</string>
   <string name="rsvp_widget_tomorrow">Заўтра</string>
   <string name="rsvp_widget_invite_details_unavailable">Падрабязнасці запрашэння недаступны</string>
-  <string name="rsvp_widget_could_not_load">Немагчыма загрузіць інфармацыю.\nПаспрабуйце яшчэ раз.</string>
+  <string name="rsvp_widget_could_not_load">Не ўдалося загрузіць інфармацыю.\nПаспрабуйце яшчэ раз.</string>
   <string name="rsvp_widget_button_retry">Паўтарыць</string>
   <string name="rsvp_widget_error_answering">Адбылася памылка пры адказе на гэтую падзею</string>
   <string name="rsvp_widget_open_in_proton_calendar">Адкрыць у Proton Calendar</string>
@@ -179,11 +177,13 @@
   <string name="snooze_message_snoozed_until_banner_title">Адкладзена да</string>
   <string name="snooze_message_unsnooze_banner_button">Скасаваць адкладанне</string>
   <string name="unsubscribe_newsletter_banner_message">Гэта паведамленне са спіса рассылкі.</string>
-  <string name="unsubscribe_newsletter_banner_button">Адпісацца</string>
+  <string name="unsubscribe_newsletter_banner_button">Скасаваць падпіску</string>
   <string name="unsubscribe_newsletter_dialog_text">Вы сапраўды хочаце скасаваць падпіску? Вы больш не будзеце атрымліваць лісты са спіса рассылкі.</string>
   <string name="unsubscribe_newsletter_dialog_cancel">Скасаваць</string>
-  <string name="unsubscribe_newsletter_dialog_confirm">Адпісацца</string>
-  <string name="already_unsubscribed_banner_message">Вы адпісаліся ад гэтай рассылкі</string>
+  <string name="unsubscribe_newsletter_dialog_confirm">Скасаваць падпіску</string>
+  <string name="already_unsubscribed_banner_message">Вы скасавалі падпіску на гэты спіс рассылкі.</string>
   <string name="error_unsubscribe_newsletter">Не ўдалося адпісацца ад рассылкі</string>
   <string name="detail_error_loading_single_message">Не ўдалося загрузіць паведамленне</string>
+  <string name="error_downloading_image">Не ўдалося спампаваць відарыс</string>
+  <string name="image_downloaded_successfully">Відарыс спампаваны</string>
 </resources>

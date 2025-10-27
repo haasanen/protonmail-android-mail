@@ -62,6 +62,8 @@
   <string name="message_link_long_click_copy_description">Текст скопійовано з Proton Mail</string>
   <string name="message_link_long_click_share">Поділитись посиланням</string>
   <string name="message_link_long_click_share_via">Поділитись посиланням через</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Download image</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Копіювати адресу</string>
   <string name="contact_actions_copy_address_description">Копіювати адресу контакту</string>
@@ -75,6 +77,12 @@
   <string name="contact_actions_add_contact_description">Зберегти цього отримувача до контактів</string>
   <string name="contact_actions_block_contact">Заблокувати цей контакт</string>
   <string name="contact_actions_block_contact_description">Заблокувати цей контакт</string>
+  <string name="contact_actions_unblock_contact">Block this contact</string>
+  <string name="contact_actions_unblock_contact_description">Block this contact</string>
+  <string name="contact_actions_block_address">Block this address</string>
+  <string name="contact_actions_block_address_description">Block this address</string>
+  <string name="contact_actions_unblock_address">Unblock this address</string>
+  <string name="contact_actions_unblock_address_description">Unblock this address</string>
   <string name="contact_actions_view_contact_details">Подробиці контакту</string>
   <string name="contact_actions_view_contact_details_description">Переглянути інформацію про контакт</string>
 </resources>

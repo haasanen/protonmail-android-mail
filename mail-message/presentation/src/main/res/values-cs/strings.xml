@@ -62,6 +62,8 @@
   <string name="message_link_long_click_copy_description">Text zkopírován z Proton Mail</string>
   <string name="message_link_long_click_share">Sdílet odkaz</string>
   <string name="message_link_long_click_share_via">Sdílet odkaz skrze</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Stáhnout obrázek</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Kopírovat adresu</string>
   <string name="contact_actions_copy_address_description">Kopírovat adresu kontaktu</string>
@@ -75,6 +77,12 @@
   <string name="contact_actions_add_contact_description">Uložte tohoto příjemce jako kontakt</string>
   <string name="contact_actions_block_contact">Zablokovat tento kontakt</string>
   <string name="contact_actions_block_contact_description">Zablokovat tento kontakt</string>
+  <string name="contact_actions_unblock_contact">Zablokovat tento kontakt</string>
+  <string name="contact_actions_unblock_contact_description">Zablokovat tento kontakt</string>
+  <string name="contact_actions_block_address">Zablokovat tuto adresu</string>
+  <string name="contact_actions_block_address_description">Zablokovat tuto adresu</string>
+  <string name="contact_actions_unblock_address">Odblokovat tuto adresu</string>
+  <string name="contact_actions_unblock_address_description">Odblokovat tuto adresu</string>
   <string name="contact_actions_view_contact_details">Zobrazit detaily kontaktu</string>
   <string name="contact_actions_view_contact_details_description">Zobrazit detaily kontaktu</string>
 </resources>

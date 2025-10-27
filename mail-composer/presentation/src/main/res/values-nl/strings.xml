@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Maximum aantal bijlage (100) overschreden.</string>
   <string name="composer_delete_attachment_error">Er is een onverwachte fout opgetreden tijdens het verwijderen van een bijlage.</string>
   <string name="composer_unexpected_attachments_error">Er is een onverwachte fout opgetreden met betrekking tot bijlagen.</string>
+  <string name="composer_storage_quota_exceeded_error">Uw opslag is vol. Maak alstublieft ruimte vrij of upgrade om meer toe te voegen.</string>
   <string name="composer_attach_capture_from_camera_error">Het vastleggen van een bijlage met de camera is momenteel niet mogelijk.</string>
   <string name="composer_warning_local_data_shown">Het laden van de laatste versie van dit concept is mislukt. Wijzigingen zal het inhoud overschrijven.</string>
   <string name="composer_button_add_password">Wachtwoord toevoegen</string>
@@ -68,10 +69,10 @@
   <string name="composer_expiration_time_bottom_sheet_title">Vervaldatum bericht</string>
   <string name="composer_expiration_time_bottom_sheet_done">Instellen</string>
   <string name="composer_bottom_bar_expiration_time_none">Never expires</string>
-  <string name="composer_bottom_bar_expiration_time_one_hour">After 1 hour</string>
-  <string name="composer_bottom_bar_expiration_time_one_day">After 1 day</string>
-  <string name="composer_bottom_bar_expiration_time_three_days">After 3 days</string>
-  <string name="composer_bottom_bar_expiration_time_one_week">After 1 week</string>
+  <string name="composer_bottom_bar_expiration_time_one_hour">Na 1 uur</string>
+  <string name="composer_bottom_bar_expiration_time_one_day">Na 1 dag</string>
+  <string name="composer_bottom_bar_expiration_time_three_days">Na 3 dagen</string>
+  <string name="composer_bottom_bar_expiration_time_one_week">Na 1 week</string>
   <string name="composer_bottom_bar_expiration_time_custom">Op een specifieke datum</string>
   <string name="composer_error_setting_expiration_time">Vervaltijd instellen mislukt</string>
   <!-- Send expiring message to external recipients dialog -->
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
   <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
   <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Kan de bijlage niet converteren. Gelieve opnieuw te uploaden.</string>
   <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
   <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>
@@ -169,5 +171,5 @@
   <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
   <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
-  <string name="composer_expiration_time_learn_more">Learn more</string>
+  <string name="composer_expiration_time_learn_more">Meer informatie</string>
 </resources>

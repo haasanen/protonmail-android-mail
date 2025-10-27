@@ -56,6 +56,8 @@
   <string name="message_link_long_click_copy_description">Proton Mailからコピーされました</string>
   <string name="message_link_long_click_share">共有リンク</string>
   <string name="message_link_long_click_share_via">でリンクを共有</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Download image</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">アドレスをコピー</string>
   <string name="contact_actions_copy_address_description">連絡先アドレスをコピー</string>
@@ -69,6 +71,12 @@
   <string name="contact_actions_add_contact_description">この宛先を連絡先として保存</string>
   <string name="contact_actions_block_contact">この連絡先をブロック</string>
   <string name="contact_actions_block_contact_description">この連絡先をブロック</string>
+  <string name="contact_actions_unblock_contact">この連絡先をブロック</string>
+  <string name="contact_actions_unblock_contact_description">この連絡先をブロック</string>
+  <string name="contact_actions_block_address">このアドレスをブロック</string>
+  <string name="contact_actions_block_address_description">このアドレスをブロック</string>
+  <string name="contact_actions_unblock_address">このアドレスのブロックを解除</string>
+  <string name="contact_actions_unblock_address_description">このアドレスのブロックを解除</string>
   <string name="contact_actions_view_contact_details">連絡先の詳細を表示</string>
   <string name="contact_actions_view_contact_details_description">連絡先の詳細を閲覧</string>
 </resources>

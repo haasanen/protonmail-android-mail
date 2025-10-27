@@ -26,6 +26,7 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Borrar la consulta de búsqueda</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Ingresar la consulta de búsqueda</string>
   <string name="filter_unread_button_text">Sin leer</string>
+  <string name="include_spam_trash_text">Incluir las carpetas Spam/Papelera</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">%d seleccionados</item>
     <item quantity="other">%d seleccionados</item>

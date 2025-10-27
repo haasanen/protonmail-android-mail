@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Jumlah lampiran maksimal (100) terlampaui</string>
   <string name="composer_delete_attachment_error">Terdapat kesalahan yang tidak terduga pada saat menghapus lampiran.</string>
   <string name="composer_unexpected_attachments_error">Terdapat kesalahan yang tidak terduga yang berhubungan dengan lampiran.</string>
+  <string name="composer_storage_quota_exceeded_error">Your storage is full. Please free up space or upgrade to add more.</string>
   <string name="composer_attach_capture_from_camera_error">Mengambil lampiran dari kamera saat ini belum dimungkinkan</string>
   <string name="composer_warning_local_data_shown">Versi terbaru draf ini gagal dimuat. Perubahan apa pun akan menimpa draf ini.</string>
   <string name="composer_button_add_password">Tambahkan kata sandi</string>
@@ -161,10 +162,11 @@
   <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
   <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
   <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
-  <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
-  <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
-  <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>
-  <string name="composer_error_send_draft_package_error">Problem sending message. Please try again.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Unable to convert attachment. Please upload again.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Sebagian penerima tidak valid. Silakan periksa daftar penerima Anda dan coba lagi.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Waktu pengiriman terjadwal sudah lampau. Buka Draf untuk mengirim atau menjadwalkan ulang pesan ini.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Waktu kedaluwarsa pesan terlalu dini.</string>
+  <string name="composer_error_send_draft_package_error">Terjadi kesalahan dalam mengirim pesan. Silakan coba lagi.</string>
   <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
   <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>

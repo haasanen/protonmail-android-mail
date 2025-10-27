@@ -123,10 +123,10 @@
   <string name="auth_fido_security_keys_learn_more">Več o tem</string>
   <string name="auth_user_check_delinquent_error">Vaš račun je trenutno zadržan zaradi neplačanega računa.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Dovoljen je le en brezplačni Proton račun.</item>
-    <item quantity="two">Dovoljena sta le %d brezplačna Proton računa.</item>
-    <item quantity="few">Dovoljeni so le %d brezplačni Proton računi.</item>
-    <item quantity="other">Dovoljenih je le %d brezplačnih Proton računov.</item>
+    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
+    <item quantity="two">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="few">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Nekaj je šlo narobe. Poskusite znova.</string>
   <string name="auth_fido_config_error">Napaka pri pridobivanju shranjenih ključev.</string>

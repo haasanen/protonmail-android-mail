@@ -48,7 +48,7 @@
   <string name="action_view_in_light_mode_description">Паглядзець паведамленні ў светлым рэжыме</string>
   <string name="action_view_in_dark_mode_description">Паглядзець паведамленні ў цёмным рэжыме</string>
   <string name="action_print_description">Друкаваць</string>
-  <string name="action_view_headers_description">Прагледзець загалоўкі</string>
+  <string name="action_view_headers_description">Паглядзець загалоўкі</string>
   <string name="action_view_html_description">Паглядзець HTML</string>
   <string name="action_report_phishing_description">Паведаміць пра фішынг</string>
   <string name="action_remind_description">Нагадаць мне</string>
@@ -78,7 +78,7 @@
   <string name="action_view_in_light_mode_content_description">Паглядзець паведамленні ў светлым рэжыме</string>
   <string name="action_view_in_dark_mode_content_description">Паглядзець паведамленні ў цёмным рэжыме</string>
   <string name="action_print_content_description">Друкаваць</string>
-  <string name="action_view_headers_content_description">Прагледзець загалоўкі</string>
+  <string name="action_view_headers_content_description">Паглядзець загалоўкі</string>
   <string name="action_view_html_content_description">Паглядзець HTML</string>
   <string name="action_report_phishing_content_description">Паведаміць пра фішынг</string>
   <string name="action_remind_content_description">Нагадаць мне</string>

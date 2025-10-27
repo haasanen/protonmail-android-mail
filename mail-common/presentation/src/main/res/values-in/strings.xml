@@ -18,12 +18,12 @@
   -->
 <resources>
   <string name="expiration_expired">Kedaluwarsa</string>
-  <string name="expiration_days_arg">%d hari</string>
-  <string name="expiration_hours_arg">%d j</string>
-  <string name="expiration_minutes_arg">%d jt</string>
+  <string name="expiration_days_arg">%dhr</string>
+  <string name="expiration_hours_arg">%dj</string>
+  <string name="expiration_minutes_arg">%dmnt</string>
   <string name="retry">Coba lagi</string>
   <string name="toolbar_back_content_description">Kembali ke layar sebelumnya</string>
-  <string name="x_error_not_logged_in">Tidak masuk</string>
+  <string name="x_error_not_logged_in">Tidak terhubung masuk</string>
   <string name="action_customize_toolbar">Sesuaikan toolbar</string>
   <string name="action_customize_toolbar_description">Sesuaikan toolbar</string>
   <string name="action_customize_toolbar_content_description">Sesuaikan toolbar</string>
@@ -62,7 +62,7 @@
   <string name="action_reply_to_content_description">Balas ke %s</string>
   <string name="action_reply_all_content_description">Balas semua</string>
   <string name="action_forward_content_description">Teruskan</string>
-  <string name="action_mark_read_content_description">Tandai dibaca</string>
+  <string name="action_mark_read_content_description">Tandai telah dibaca</string>
   <string name="action_mark_unread_content_description">Tandai belum dibaca</string>
   <string name="action_star_content_description">Bintangi</string>
   <string name="action_unstar_content_description">Hapus bintang</string>
@@ -80,7 +80,7 @@
   <string name="action_print_content_description">Cetak</string>
   <string name="action_view_headers_content_description">Lihat header</string>
   <string name="action_view_html_content_description">Lihat HTML</string>
-  <string name="action_report_phishing_content_description">Laporkan phishing</string>
+  <string name="action_report_phishing_content_description">Laporkan upaya phishing</string>
   <string name="action_remind_content_description">Ingatkan saya</string>
   <string name="action_save_pdf_content_description">Simpan sebagai PDF</string>
   <string name="action_sender_emails_content_description">Tentukan tindakan untuk email dari pengirim ini ke depannya</string>
@@ -100,7 +100,7 @@
   <string name="auth_badge_official">Resmi</string>
   <string name="intent_failure_no_app_found_to_handle_this_action">Tidak ada aplikasi yang ditemukan untuk menangani tindakan ini</string>
   <string name="action_copied_to_clipboard">Disalin ke papan klip</string>
-  <string name="mailbox_action_delete_dialog_button_cancel">Batalkan</string>
+  <string name="mailbox_action_delete_dialog_button_cancel">Batal</string>
   <string name="mailbox_action_delete_dialog_button_delete">Hapus</string>
   <string name="picker_dialog_cancel">Batal</string>
   <string name="color_purple">Ungu</string>
@@ -127,7 +127,7 @@
   <string name="undo_success_message">Tindakan diurungkan</string>
   <string name="undo_failure_message">Tindakan gagal diurungkan</string>
   <string name="feature_coming_soon">Fitur ini akan segera hadir…</string>
-  <string name="cancelling_scheduled_send_message">Cancelling…</string>
+  <string name="cancelling_scheduled_send_message">Membatalkan…</string>
   <!-- date time picker -->
   <string name="time_picker_custom_time_label">Waktu</string>
   <string name="time_picker_custom_date_label">Tanggal</string>

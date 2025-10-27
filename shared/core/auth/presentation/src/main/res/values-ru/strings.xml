@@ -123,10 +123,10 @@
   <string name="auth_fido_security_keys_learn_more">Подробнее</string>
   <string name="auth_user_check_delinquent_error">Ваш аккаунт на данный момент заблокирован из-за просроченного счета.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Разрешен только один бесплатный аккаунт Proton.</item>
-    <item quantity="few">Разрешены только %d бесплатных аккаунта Proton.</item>
-    <item quantity="many">Разрешены только %d бесплатных аккаунтов Proton.</item>
-    <item quantity="other">Разрешены только %d бесплатных аккаунтов Proton.</item>
+    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
+    <item quantity="few">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="many">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Что-то пошло не так. Пожалуйста, попробуйте еще раз.</string>
   <string name="auth_fido_config_error">Ошибка при получении сохранённых ключей.</string>

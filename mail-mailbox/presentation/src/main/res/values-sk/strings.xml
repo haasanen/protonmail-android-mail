@@ -26,6 +26,7 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Vymazanie vyhľadávacieho reťazca</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Zadajte vyhľadávací reťazec</string>
   <string name="filter_unread_button_text">Neprečítané</string>
+  <string name="include_spam_trash_text">Zahrnúť Spam/Kôš</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">Vybrané: %d</item>
     <item quantity="few">Vybrané: %d</item>

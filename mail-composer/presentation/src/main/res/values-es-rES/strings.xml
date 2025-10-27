@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Se ha excedido el número máximo de archivos adjuntos (100).</string>
   <string name="composer_delete_attachment_error">Se ha producido un error inesperado al eliminar un archivo adjunto.</string>
   <string name="composer_unexpected_attachments_error">Se ha producido un error inesperado relacionado con los archivos adjuntos.</string>
+  <string name="composer_storage_quota_exceeded_error">Tu almacenamiento está lleno. Libera espacio o mejora tu plan para añadir más.</string>
   <string name="composer_attach_capture_from_camera_error">No es posible capturar un archivo adjunto desde la cámara en este momento</string>
   <string name="composer_warning_local_data_shown">Error al cargar la última versión de este borrador. Cualquier cambio sobrescribirá su contenido.</string>
   <string name="composer_button_add_password">Añadir una contraseña</string>
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">No se encontró el borrador. Puede que ya lo hayas enviado o descartado.</string>
   <string name="composer_error_send_draft_message_too_large">El mensaje es demasiado grande para enviarlo. Reduce el tamaño de tus archivos adjuntos.</string>
   <string name="composer_error_send_draft_attachments_error">Falta el archivo adjunto. Vuelve a cargarlo.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">No se puede convertir el archivo adjunto. Cárgalo de nuevo.</string>
   <string name="composer_error_send_draft_invalid_recipient">Algunos destinatarios no son válidos, revisa los destinatarios y vuelve a intentarlo.</string>
   <string name="composer_error_send_draft_schedule_send_error">El envío está programado con una hora ya pasada. Ve a Borradores para enviarlo manualmente o reprogramarlo.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">El tiempo de expiración del mensaje es demasiado pronto.</string>

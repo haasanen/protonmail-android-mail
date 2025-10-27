@@ -26,6 +26,7 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Εκκαθάριση ερωτήματος αναζήτησης</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Εισάγετε το ερώτημα αναζήτησης</string>
   <string name="filter_unread_button_text">Μη αναγνωσμένα</string>
+  <string name="include_spam_trash_text">Συμπεριλάβετε Ανεπιθύμητα/Διαγραμμένα</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">%d Επιλεγμένο/α</item>
     <item quantity="other">%d Επιλεγμένο/α</item>

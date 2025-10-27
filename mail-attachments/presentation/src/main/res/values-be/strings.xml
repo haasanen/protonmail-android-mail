@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Адкрыць праз…</string>
   <string name="file_saved">Файл захаваны</string>
+  <string name="file_saved_fallback">Файл захаваны ў папку Спампоўкі</string>
+  <string name="error_saving_file">Адбылася памылка падчас захавання файла</string>
 </resources>

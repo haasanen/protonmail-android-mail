@@ -23,5 +23,5 @@
   <string name="human_verification_visit_help_center_title">Наведайце наш цэнтр падтрымкі</string>
   <string name="human_verification_visit_help_center_description">Даведацца больш аб антыспамавай праверцы і навошта мы яе выкарыстоўваем.</string>
   <string name="human_verification_help">Даведка</string>
-  <string name="human_verification_general_error">Адбылася памылка праверкі.</string>
+  <string name="human_verification_general_error">Адбылася памылка спраўджання.</string>
 </resources>

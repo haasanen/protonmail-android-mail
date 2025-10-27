@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Za odpiranje uporabi …</string>
   <string name="file_saved">Datoteka shranjena</string>
+  <string name="file_saved_fallback">File saved to Downloads folder</string>
+  <string name="error_saving_file">An error occurred during file save</string>
 </resources>

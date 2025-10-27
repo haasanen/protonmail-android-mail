@@ -123,9 +123,9 @@
   <string name="auth_fido_security_keys_learn_more">Detalii</string>
   <string name="auth_user_check_delinquent_error">Contul vă este suspendat datorită unei facturi neachitate.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Este permis doar un cont Proton gratuit.</item>
-    <item quantity="few">Sunt permise doar %d conturi Proton gratuite.</item>
-    <item quantity="other">Sunt permise doar %d de conturi Proton gratuite.</item>
+    <item quantity="one">Numărul maxim de %d cont gratuit a fost depășit.</item>
+    <item quantity="few">Numărul maxim de %d conturi gratuite a fost depășit.</item>
+    <item quantity="other">Numărul maxim de %d de conturi gratuite a fost depășit.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Ceva nu a funcționat bine. Reîncercați.</string>
   <string name="auth_fido_config_error">Eroare la preluarea cheilor stocate.</string>

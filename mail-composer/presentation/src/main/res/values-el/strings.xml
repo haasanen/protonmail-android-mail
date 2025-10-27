@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Υπέρβαση μέγιστου αριθμού συνημμένων (100).</string>
   <string name="composer_delete_attachment_error">Παρουσιάστηκε ένα μη αναμενόμενο σφάλμα κατά τη διαγραφή ενός συνημμένου.</string>
   <string name="composer_unexpected_attachments_error">Παρουσιάστηκε ένα μη αναμενόμενο σφάλμα που σχετίζεται με τα συνημμένα.</string>
+  <string name="composer_storage_quota_exceeded_error">Ο αποθηκευτικός σας χώρος είναι πλήρης. Παρακαλούμε απελευθερώστε χώρο ή αναβαθμίστε για να προσθέσετε περισσότερο.</string>
   <string name="composer_attach_capture_from_camera_error">Η λήψη συνημμένου από την κάμερα δεν είναι δυνατή αυτή τη στιγμή.</string>
   <string name="composer_warning_local_data_shown">Απέτυχε η φόρτωση της τελευταίας έκδοσης αυτού του προχείρου. Οποιαδήποτε αλλαγή θα υπερισχύει του περιεχομένου της.</string>
   <string name="composer_button_add_password">Προσθήκη κωδικού πρόσβασης</string>
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Το πρόχειρο δε βρέθηκε. Ίσως το έχετε ήδη στείλει ή απορρίψει.</string>
   <string name="composer_error_send_draft_message_too_large">Το μήνυμα είναι πολύ μεγάλο για να αποστολή. Παρακαλούμε μειώστε το μέγεθος των συνημμένων αρχείων.</string>
   <string name="composer_error_send_draft_attachments_error">Το συνημμένο λείπει. Παρακαλούμε ανεβάστε το ξανά.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Δεν είναι δυνατή η μετατροπή του συνημμένου. Παρακαλούμε ανεβάστε ξανά.</string>
   <string name="composer_error_send_draft_invalid_recipient">Ορισμένοι παραλήπτες δεν είναι έγκυροι, παρακαλούμε ελέγξτε τους παραλήπτες και δοκιμάστε ξανά.</string>
   <string name="composer_error_send_draft_schedule_send_error">Η προγραμματισμένη ώρα αποστολής είναι στο παρελθόν. Μεταβείτε στα Πρόχειρα για να το στείλετε ή να το επαναπρογραμματίσετε.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Ο χρόνος λήξης μηνύματος είναι πολύ σύντομος.</string>

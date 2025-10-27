@@ -123,10 +123,10 @@
   <string name="auth_fido_security_keys_learn_more">Dowiedz się więcej</string>
   <string name="auth_user_check_delinquent_error">Twoje konto jest obecnie zawieszone z powodu zaległych faktur.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Możesz dodać tylko 1 darmowe konto Proton.</item>
-    <item quantity="few">Możesz dodać tylko %d darmowe konta Proton.</item>
-    <item quantity="many">Możesz dodać tylko %d darmowych kont Proton.</item>
-    <item quantity="other">Możesz dodać tylko %d darmowego konta Proton.</item>
+    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
+    <item quantity="few">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="many">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Coś poszło nie tak. Spróbuj ponownie.</string>
   <string name="auth_fido_config_error">Wystąpił błąd podczas pobierania przechowywanych kluczy.</string>

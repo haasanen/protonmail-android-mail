@@ -86,20 +86,20 @@
   <string name="upselling_select_plan_year">12 bulan</string>
   <string name="upselling_select_plan_month">1 bulan</string>
   <!-- Onboarding upsell -->
-  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
-  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
-  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_choose_plan">Pilih paket Anda</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Bulanan</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Tahunan</string>
   <string name="upselling_onboarding_best_value">Penawaran terbaik</string>
-  <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
-  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
-  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
-  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
-  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
+  <string name="upselling_onboarding_yearly_savings">Bayar per tahun dan hemat %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Tampilkan lebih banyak</string>
+  <string name="upselling_onboarding_entitlements_show_less">Tampilkan lebih sedikit</string>
+  <string name="upselling_onboarding_button_continue_free">Lanjut dengan paket Free</string>
+  <string name="upselling_onboarding_autorenew">Tertagih dengan harga %s setiap %s</string>
   <string name="upselling_onboarding_autorenew_welcome_offer">Penawaran selamat datang. Diperbarui secara otomatis pada harga %s setiap %s</string>
-  <string name="upselling_onboarding_autorenew_month">month</string>
-  <string name="upselling_onboarding_autorenew_year">12 months</string>
-  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
-  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
+  <string name="upselling_onboarding_autorenew_month">bulan</string>
+  <string name="upselling_onboarding_autorenew_year">12 bulan</string>
+  <string name="upselling_onboarding_free_entitlement_storage">Ruang penyimpanan 1 GB</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 alamat email</string>
   <!-- Other UI Items -->
   <string name="upselling_unlimited_description_override">Langganan premium menyeluruh Anda</string>
   <string name="upselling_auto_renew_text">Diperbarui secara otomatis pada harga dan ketentuan yang sama kecuali apabila dibatalkan</string>

@@ -17,14 +17,14 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Classic</string>
-  <string name="app_icon_name_dark">Dark</string>
+  <string name="app_icon_name_classic">Klasik</string>
+  <string name="app_icon_name_dark">Gelap</string>
   <string name="app_icon_name_retro">Retro</string>
-  <string name="app_icon_name_weather">Weather</string>
-  <string name="app_icon_name_notes">Notes</string>
-  <string name="app_icon_name_calculator">Calculator</string>
+  <string name="app_icon_name_weather">Cuaca</string>
+  <string name="app_icon_name_notes">Catatan</string>
+  <string name="app_icon_name_calculator">Kalkulator</string>
   <string name="dialog_sign_out_account_title">Keluar</string>
-  <string name="dialog_sign_out_account_description">The data associated to your account will remain on this device unless you select to delete it.</string>
+  <string name="dialog_sign_out_account_description">Data yang terhubung dengan akun Anda akan tetap tersimpan pada perangkat ini kecuali Anda memilih untuk menghapusnya.</string>
   <string name="dialog_sign_out_account_confirm">Keluar</string>
   <string name="dialog_sign_out_account_cancel">Batalkan</string>
   <string name="dialog_remove_account_title">Hapus akun?</string>
@@ -48,13 +48,13 @@
   <string name="mailbox_message_scheduling">Menjadwalkan pesan…</string>
   <string name="mailbox_message_scheduling_offline">Offline: Pesan diantrekan untuk dijadwalkan</string>
   <string name="mailbox_message_scheduled_for_sending_success">Pesan ini akan dikirim pada %1$s</string>
-  <string name="launcher_alert_duplicate_account_description">The user is already signed in</string>
-  <string name="settings_change_icon_title">App Icon</string>
-  <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
-  <string name="settings_change_icon_confirmation_title">Change app icon?</string>
-  <string name="settings_change_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
-  <string name="settings_change_icon_action_cancel">Cancel</string>
-  <string name="settings_change_icon_change_icon">Change icon</string>
+  <string name="launcher_alert_duplicate_account_description">Pengguna ini telah terhubung masuk</string>
+  <string name="settings_change_icon_title">Ikon Aplikasi</string>
+  <string name="settings_change_icon_description">Samarkan Proton Mail dengan ikon aplikasi yang tidak mencolok. Notifikasi yang masuk akan tetap menampilkan nama dan ikon Proton Mail bawaan.</string>
+  <string name="settings_change_icon_confirmation_title">Ubah ikon aplikasi?</string>
+  <string name="settings_change_icon_confirmation_details">Tindakan ini akan menutup aplikasi Proton Mail dan menghapus seluruh notifikasi.\n\nUntuk memulai ulang Proton Mail, cukup ketuk ikon aplikasi baru Anda.</string>
+  <string name="settings_change_icon_action_cancel">Batal</string>
+  <string name="settings_change_icon_change_icon">Ubah ikon</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Discreet app icon</string>
+  <string name="settings_change_icon_header_discreet">Ikon aplikasi rahasia</string>
 </resources>

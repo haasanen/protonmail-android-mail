@@ -42,7 +42,7 @@
   <string name="mail_settings_app_hint">Mobiele app-aanpassingen</string>
   <string name="mail_settings_theme">Thema</string>
   <string name="mail_settings_auto_lock">Automatisch vergrendelen</string>
-  <string name="mail_settings_app_icon">App icon</string>
+  <string name="mail_settings_app_icon">App-icoon</string>
   <string name="mail_settings_alternative_routing">Alternatieve routing</string>
   <string name="mail_settings_app_language">App-taal</string>
   <string name="mail_settings_app_language_sys_default">Systeemstandaard</string>

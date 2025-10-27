@@ -82,7 +82,7 @@
   <string name="auth_signup_external_footnote">З адрасам Proton, вы можаце карыстацца ўсімі сэрвісамі Proton</string>
   <string name="auth_signup_recovery_skip">Прапусціць</string>
   <string name="auth_signup_recovery_title">Задаць спосаб аднаўлення (неабавязкова)</string>
-  <string name="auth_signup_recovery_subtitle">Мы адправім вам інструкцыі для аднаўлення на гэты адрас электроннай пошты або на нумар тэлефона, калі вы не зможаце атрымаць доступ да свайго ўліковага запісу.</string>
+  <string name="auth_signup_recovery_subtitle">Вам будуць адпраўлены інструкцыі для аднаўлення на гэты адрас электроннай пошты або на нумар тэлефона, калі вы не зможаце атрымаць доступ да свайго ўліковага запісу.</string>
   <string name="auth_signup_recovery_email">Электронная пошта</string>
   <string name="auth_signup_recovery_phone">Тэлефон</string>
   <string name="auth_signup_recovery_email_hint">Электронная пошта для аднаўлення доступу</string>
@@ -123,10 +123,10 @@
   <string name="auth_fido_security_keys_learn_more">Даведацца больш</string>
   <string name="auth_user_check_delinquent_error">Ваш уліковы запіс прыпынены з прычыны неаплачанага рахунка.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Дазволены толькі адзін бясплатны ўліковы запіс Proton.</item>
-    <item quantity="few">Дазволены толькі %d бясплатныя ўліковыя запісы Proton.</item>
-    <item quantity="many">Дазволены толькі %d бясплатных уліковых запісаў Proton.</item>
-    <item quantity="other">Дазволены толькі %d бясплатных уліковых запісаў Proton.</item>
+    <item quantity="one">Максімальная колькасць %d бясплатнага ўліковага запіса была перавышана.</item>
+    <item quantity="few">Максімальная колькасць %d бясплатных уліковых запісаў была перавышана.</item>
+    <item quantity="many">Максімальная колькасць %d бясплатных уліковых запісаў была перавышана.</item>
+    <item quantity="other">Максімальная колькасць %d бясплатных уліковых запісаў была перавышана.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Нешта пайшло не так. Паспрабуйце яшчэ раз.</string>
   <string name="auth_fido_config_error">Памылка атрымання захаваных ключоў.</string>

@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Limit maksymalnej liczby załączników (100) został osiągnięty.</string>
   <string name="composer_delete_attachment_error">Wystąpił nieoczekiwany błąd podczas usuwania załącznika.</string>
   <string name="composer_unexpected_attachments_error">Wystąpił nieoczekiwany błąd z załącznikami.</string>
+  <string name="composer_storage_quota_exceeded_error">Your storage is full. Please free up space or upgrade to add more.</string>
   <string name="composer_attach_capture_from_camera_error">Przechwytywanie załącznika z aparatu nie jest obecnie możliwe</string>
   <string name="composer_warning_local_data_shown">Nie udało się załadować najnowszej wersji szkicu. Wszelkie jej zmiany spowodują nadpisanie zawartości.</string>
   <string name="composer_button_add_password">Dodaj hasło</string>
@@ -164,6 +165,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
   <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
   <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Unable to convert attachment. Please upload again.</string>
   <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
   <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>

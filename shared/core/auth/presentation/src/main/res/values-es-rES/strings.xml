@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">Más información</string>
   <string name="auth_user_check_delinquent_error">Tu cuenta se encuentra suspendida en este momento debido a una factura vencida.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Solo se permite una cuenta gratuita de Proton.</item>
-    <item quantity="other">Solo se permiten %d cuentas gratuitas de Proton.</item>
+    <item quantity="one">Se ha superado el número máximo de %d cuenta gratuita.</item>
+    <item quantity="other">Se ha superado el número máximo de %d cuentas gratuitas.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Se ha producido un error. Inténtalo de nuevo.</string>
   <string name="auth_fido_config_error">Error al recuperar las claves almacenadas.</string>

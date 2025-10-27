@@ -116,10 +116,8 @@
   <string name="message_report_phishing_dialog_cancel_button">Annuler</string>
   <string name="open_on_protoncalendar_banner_title">Ouvrir dans Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Calendrier chiffré et sécurisé</string>
-  <string name="trashed_messages_banner">Cette conversation comporte des messages qui sont dans le dossier Corbeille.</string>
-  <string name="non_trashed_messages_banner">Cette conversation comporte des messages qui ne sont pas dans le dossier Corbeille.</string>
-  <string name="show">Afficher</string>
-  <string name="hide">Masquer</string>
+  <string name="trashed_messages_banner">Montrer les messages mis à la corbeille dans cette conversation.</string>
+  <string name="non_trashed_messages_banner">Montrer les messages non supprimés dans cette conversation.</string>
   <string name="recipient_me">moi</string>
   <string name="message_details_header_from">De</string>
   <string name="message_details_header_to">À</string>
@@ -180,4 +178,6 @@
   <string name="already_unsubscribed_banner_message">Vous êtes désabonné de cette liste de diffusion.</string>
   <string name="error_unsubscribe_newsletter">La désinscription à la newsletter n\'a pas abouti.</string>
   <string name="detail_error_loading_single_message">Le message n\'a pas pu être chargé.</string>
+  <string name="error_downloading_image">L\'image n\'a pas pu être téléchargée.</string>
+  <string name="image_downloaded_successfully">L\'image a été téléchargée</string>
 </resources>

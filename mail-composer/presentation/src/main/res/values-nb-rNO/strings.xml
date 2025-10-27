@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Maksimalt antall vedlegg (100) er overskredet.</string>
   <string name="composer_delete_attachment_error">Det oppstod en uventet feil under sletting av et vedlegg.</string>
   <string name="composer_unexpected_attachments_error">Det oppstod en uventet feil relatert til vedlegg.</string>
+  <string name="composer_storage_quota_exceeded_error">Lagringsplassen din er full. Frigjør plass eller oppgrader for å legge til mer.</string>
   <string name="composer_attach_capture_from_camera_error">Det er ikke mulig å ta opp et vedlegg fra kameraet for øyeblikket.</string>
   <string name="composer_warning_local_data_shown">Den nyeste versjonen av dette utkastet kunne ikke lastes inn. Enhver endring vil overstyre innholdet.</string>
   <string name="composer_button_add_password">Legg til passord</string>
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Utkast ikke funnet. Du kan allerede ha sendt eller forkastet det.</string>
   <string name="composer_error_send_draft_message_too_large">Meldingen er for stor til å sendes. Reduser størrelsen på vedleggene dine.</string>
   <string name="composer_error_send_draft_attachments_error">Vedlegg mangler. Last opp igjen.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Kan ikke konvertere vedlegget. Last opp igjen.</string>
   <string name="composer_error_send_draft_invalid_recipient">Noen mottakere er ugyldige. Sjekk mottakerne og prøv igjen.</string>
   <string name="composer_error_send_draft_schedule_send_error">Planlagt sendetid er i fortiden. Gå til utkast for å sende eller omplanlegge den.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Meldingens utløpstid er for tidlig.</string>

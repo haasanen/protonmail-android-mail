@@ -49,7 +49,7 @@
   <string name="mail_settings_combined_contacts">Kişileri birleştirme</string>
   <string name="mail_settings_swipe_actions">Kaydırma işlemleri</string>
   <string name="mail_settings_combined_contacts_hint">E-posta adreslerinin, oturum açtığınız tüm hesaplardaki kişilerle otomatik olarak tamamlanması için bu özelliği açın.</string>
-  <string name="mail_settings_alternative_routing_hint">Proton sitelerine erişimin engellenmiş olması durumunda, uygulama Proton ağına ulaşmak için alternatif ağ yöneltmesi kullanmayı dener. Güvenlik duvarlarını veya ağ sorunlarını aşmakta yararlı olabilir. Bağlantı güvenilirliğini artırmak için bu seçeneği açık tutmanız önerilir.</string>
+  <string name="mail_settings_alternative_routing_hint">Proton sitelerine erişimin engellenmiş olması durumunda, uygulama Proton ağına ulaşmak için alternatif ağ yönlendirmesi kullanmayı dener. Güvenlik duvarlarını veya ağ sorunlarını aşmakta yararlı olabilir. Bağlantı güvenilirliğini artırmak için bu seçeneği açık tutmanız önerilir.</string>
   <!-- App customization settings-->
   <string name="mail_settings_app_customization_title">Uygulama özelleştirme</string>
   <string name="mail_settings_app_customization_notification">Bildirimler</string>
@@ -67,7 +67,7 @@
   <string name="mail_settings_app_customization_swipe_action">Kaydırma işlemi</string>
   <string name="mail_settings_app_customization_swipe_action_hint">Sola veya sağa kaydırdığınızda silme veya arşivleme gibi hızlı işlemleri ayarlayın.</string>
   <string name="mail_settings_app_customization_customize_toolbar">Araç çubuklarını özelleştir</string>
-  <string name="mail_settings_app_customization_alternative_routing">Alternatif yöneltme</string>
+  <string name="mail_settings_app_customization_alternative_routing">Alternatif yönlendirme</string>
   <string name="mail_settings_app_customization_alternative_routing_hint">Proton siteleri engelleniyorsa güvenlik duvarlarını ve ağ sorunlarını aşın.</string>
   <string name="mail_settings_app_customization_view_application_logs">Uygulama günlüklerini görüntüleyin</string>
   <string name="mail_settings_app_customization_mail_experience_header">E-posta deneyimi</string>

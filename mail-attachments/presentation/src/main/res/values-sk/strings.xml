@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Otvoriť pomocou…</string>
   <string name="file_saved">Súbor uložený</string>
+  <string name="file_saved_fallback">Súbor bol uložený do priečinka Stiahnuté súbory</string>
+  <string name="error_saving_file">Vyskytla sa chyba pri ukladaní súboru</string>
 </resources>

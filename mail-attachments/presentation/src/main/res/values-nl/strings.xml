@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Openen met…</string>
   <string name="file_saved">Bestand opgeslagen</string>
+  <string name="file_saved_fallback">Bestand opgeslagen in de map Downloads</string>
+  <string name="error_saving_file">Er is een fout opgetreden tijdens het opslaan van het bestand.</string>
 </resources>

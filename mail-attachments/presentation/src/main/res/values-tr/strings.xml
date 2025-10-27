@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Şununla aç…</string>
   <string name="file_saved">Dosya kaydedildi</string>
+  <string name="file_saved_fallback">Dosya İndirilenler klasörüne kaydedildi</string>
+  <string name="error_saving_file">Dosya kaydedilirken bir sorun çıktı</string>
 </resources>

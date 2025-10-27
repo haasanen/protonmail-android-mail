@@ -56,6 +56,8 @@
   <string name="message_link_long_click_copy_description">Proton Mail으로부터 텍스트를 복사했습니다</string>
   <string name="message_link_long_click_share">링크 공유하기</string>
   <string name="message_link_long_click_share_via">이 방법으로 링크 공유하기</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Download image</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">주소 복사하기</string>
   <string name="contact_actions_copy_address_description">연락처 주소를 복사합니다</string>
@@ -69,6 +71,12 @@
   <string name="contact_actions_add_contact_description">이 받는 이를 연락처에 저장합니다</string>
   <string name="contact_actions_block_contact">이 연락처 차단</string>
   <string name="contact_actions_block_contact_description">이 연락처 차단</string>
+  <string name="contact_actions_unblock_contact">Block this contact</string>
+  <string name="contact_actions_unblock_contact_description">Block this contact</string>
+  <string name="contact_actions_block_address">Block this address</string>
+  <string name="contact_actions_block_address_description">Block this address</string>
+  <string name="contact_actions_unblock_address">Unblock this address</string>
+  <string name="contact_actions_unblock_address_description">Unblock this address</string>
   <string name="contact_actions_view_contact_details">연락처 세부 정보 보기</string>
   <string name="contact_actions_view_contact_details_description">연락처의 세부 정보를 봅니다</string>
 </resources>

@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">Saiba mais</string>
   <string name="auth_user_check_delinquent_error">A sua conta encontra-se atualmente em estado de espera devido a uma fatura vencida.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Só é permitida uma conta gratuita de Proton.</item>
-    <item quantity="other">Só são permitidas %d contas gratuitas de Proton.</item>
+    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
+    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Ocorreu um erro. Tente novamente mais tarde.</string>
   <string name="auth_fido_config_error">Erro ao obter as chaves guardadas.</string>

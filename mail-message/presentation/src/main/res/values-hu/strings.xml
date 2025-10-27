@@ -58,6 +58,8 @@
   <string name="message_link_long_click_copy_description">Szöveg Proton Mailről másolva</string>
   <string name="message_link_long_click_share">Link megosztása</string>
   <string name="message_link_long_click_share_via">Hivatkozás megosztása:</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Download image</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Cím másolása</string>
   <string name="contact_actions_copy_address_description">Cím másolása</string>
@@ -71,6 +73,12 @@
   <string name="contact_actions_add_contact_description">Címzett mentése névjegyként</string>
   <string name="contact_actions_block_contact">Kapcsolat blokkolása</string>
   <string name="contact_actions_block_contact_description">Névjegy letiltása</string>
+  <string name="contact_actions_unblock_contact">Block this contact</string>
+  <string name="contact_actions_unblock_contact_description">Block this contact</string>
+  <string name="contact_actions_block_address">Block this address</string>
+  <string name="contact_actions_block_address_description">Block this address</string>
+  <string name="contact_actions_unblock_address">Unblock this address</string>
+  <string name="contact_actions_unblock_address_description">Unblock this address</string>
   <string name="contact_actions_view_contact_details">Névjegy részletei</string>
   <string name="contact_actions_view_contact_details_description">Névjegy részleteinek megtekintése</string>
 </resources>

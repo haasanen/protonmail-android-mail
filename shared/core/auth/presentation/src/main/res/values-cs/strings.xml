@@ -123,10 +123,10 @@
   <string name="auth_fido_security_keys_learn_more">Více informací</string>
   <string name="auth_user_check_delinquent_error">Váš účet je aktuálně pozastaven kvůli faktuře po splatnosti.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Je povolen pouze jeden bezplatný účet Proton.</item>
-    <item quantity="few">Jsou povoleny pouze %d bezplatné účty Proton.</item>
-    <item quantity="many">Je povoleno pouze %d bezplatných účtů Proton.</item>
-    <item quantity="other">Je povoleno pouze %d bezplatných účtů Proton.</item>
+    <item quantity="one">Maximální počet %d bezplatného účtů byl překročen.</item>
+    <item quantity="few">Maximální počet %d bezplatných účtů byl překročen.</item>
+    <item quantity="many">Maximální počet %d bezplatných účtů byl překročen.</item>
+    <item quantity="other">Maximální počet %d bezplatných účtů byl překročen.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Něco se pokazilo. Prosím, zkuste to znovu.</string>
   <string name="auth_fido_config_error">Chyba při získávání uložených klíčů.</string>

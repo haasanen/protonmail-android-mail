@@ -62,6 +62,8 @@
   <string name="message_link_long_click_copy_description">Besedilo kopirano iz Proton Mail</string>
   <string name="message_link_long_click_share">Deli povezavo</string>
   <string name="message_link_long_click_share_via">Delite povezavo prek</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Prenesi sliko</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Kopiraj naslov</string>
   <string name="contact_actions_copy_address_description">Kopiraj kontaktni naslov</string>
@@ -75,6 +77,12 @@
   <string name="contact_actions_add_contact_description">Shrani tega prejemnika kot stik</string>
   <string name="contact_actions_block_contact">Blokiraj ta stik</string>
   <string name="contact_actions_block_contact_description">Blokiraj ta stik</string>
+  <string name="contact_actions_unblock_contact">Blokiraj ta stik</string>
+  <string name="contact_actions_unblock_contact_description">Blokiraj ta stik</string>
+  <string name="contact_actions_block_address">Blokiraj ta naslov</string>
+  <string name="contact_actions_block_address_description">Blokiraj ta naslov</string>
+  <string name="contact_actions_unblock_address">Odblokiraj ta naslov</string>
+  <string name="contact_actions_unblock_address_description">Odblokiraj ta naslov</string>
   <string name="contact_actions_view_contact_details">Ogled podrobnosti stika</string>
   <string name="contact_actions_view_contact_details_description">Oglejte si podrobnosti stika</string>
 </resources>

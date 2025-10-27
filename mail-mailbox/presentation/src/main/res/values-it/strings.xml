@@ -26,6 +26,7 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Cancella la parola chiave</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Inserisci una parola chiave</string>
   <string name="filter_unread_button_text">Non letto</string>
+  <string name="include_spam_trash_text">Includi spam/cestino</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">%d elemento selezionato</item>
     <item quantity="other">%d elementi selezionati</item>

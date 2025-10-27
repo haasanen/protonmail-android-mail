@@ -56,6 +56,8 @@
   <string name="message_link_long_click_copy_description">從Proton Mail複製文字</string>
   <string name="message_link_long_click_share">分享連結</string>
   <string name="message_link_long_click_share_via">分享連結途徑</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Download image</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">複製電子郵件地址</string>
   <string name="contact_actions_copy_address_description">複製聯絡電子郵件位址</string>
@@ -69,6 +71,12 @@
   <string name="contact_actions_add_contact_description">將此收件者儲存為聯絡人</string>
   <string name="contact_actions_block_contact">封鎖此聯絡人</string>
   <string name="contact_actions_block_contact_description">封鎖此聯絡人</string>
+  <string name="contact_actions_unblock_contact">Block this contact</string>
+  <string name="contact_actions_unblock_contact_description">Block this contact</string>
+  <string name="contact_actions_block_address">Block this address</string>
+  <string name="contact_actions_block_address_description">Block this address</string>
+  <string name="contact_actions_unblock_address">Unblock this address</string>
+  <string name="contact_actions_unblock_address_description">Unblock this address</string>
   <string name="contact_actions_view_contact_details">檢視聯絡人詳細資料</string>
   <string name="contact_actions_view_contact_details_description">瀏覽聯絡人詳細資料</string>
 </resources>

@@ -33,7 +33,7 @@
   <string name="auth_login_close">Tutup</string>
   <string name="auth_login_help">Bantuan</string>
   <string name="auth_sign_in">Masuk</string>
-  <string name="auth_login_username">Username or email</string>
+  <string name="auth_login_username">Nama pengguna atau email</string>
   <string name="auth_email">Email</string>
   <string name="auth_password">Kata sandi</string>
   <string name="auth_username_placeholder">Nama pengguna atau email</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">Nama pengguna tidak boleh kosong.</string>
   <string name="auth_signup_email_assistive_text">Email tidak boleh kosong.</string>
   <string name="auth_signup_next">Selanjutnya</string>
-  <string name="auth_signup_username">Username</string>
+  <string name="auth_signup_username">Nama pengguna</string>
   <string name="auth_signup_create_password">Buat kata sandi Anda</string>
   <string name="auth_signup_password">Kata sandi</string>
   <string name="auth_signup_repeat_password">Ulangi kata sandi</string>
@@ -123,7 +123,7 @@
   <string name="auth_fido_security_keys_learn_more">Pelajari lebih lanjut</string>
   <string name="auth_user_check_delinquent_error">Akun Anda sedang ditangguhkan karena adanya faktur yang tertunggak.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="other">Hanya %d akun Proton gratis yang diizinkan.</item>
+    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Terdapat suatu kesalahan. Silakan coba lagi.</string>
   <string name="auth_fido_config_error">Kesalahan saat mengambil kunci yang tersimpan.</string>

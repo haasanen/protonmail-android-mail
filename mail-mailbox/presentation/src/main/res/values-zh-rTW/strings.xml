@@ -26,6 +26,7 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">清除搜尋欄</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">輸入搜索查詢</string>
   <string name="filter_unread_button_text">Unread</string>
+  <string name="include_spam_trash_text">Include Spam/Trash</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="other">已選取 %d</item>
   </plurals>

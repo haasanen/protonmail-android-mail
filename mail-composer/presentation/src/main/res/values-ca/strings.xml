@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">S\'ha superat el nombre màxim de fitxers adjunts (100).</string>
   <string name="composer_delete_attachment_error">S\'ha produït un error inesperat en suprimir un fitxer adjunt.</string>
   <string name="composer_unexpected_attachments_error">S\'ha produït un error inesperat relacionat amb els fitxers adjunts.</string>
+  <string name="composer_storage_quota_exceeded_error">El vostre emmagatzematge és ple. Allibereu espai o milloreu de pla per afegir-ne més.</string>
   <string name="composer_attach_capture_from_camera_error">Capturar un adjunt des de la càmera no és possible en aquest moment.</string>
   <string name="composer_warning_local_data_shown">La darrera versió d\'aquest esborrany no s\'ha pogut carregar. Qualsevol canvi anul·larà el seu contingut.</string>
   <string name="composer_button_add_password">Afegeix una contrasenya</string>
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">No s\'ha trobat l\'esborrany. Potser ja l\'heu enviat o l\'heu descartat.</string>
   <string name="composer_error_send_draft_message_too_large">El missatge és massa gran per ser enviat. Reduïu-ne la mida dels adjunts.</string>
   <string name="composer_error_send_draft_attachments_error">No s\'ha pogut trobar l\'adjunt. Torneu-lo a carregar.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">No s\'ha pogut convertir l\'adjunt. Torneu-lo a carregar.</string>
   <string name="composer_error_send_draft_invalid_recipient">Alguns destinataris no són vàlids. Comproveu-los i torneu-ho a provar.</string>
   <string name="composer_error_send_draft_schedule_send_error">L\'hora d\'enviament programada ja ha passat. Aneu a Esborranys per a enviar-lo o reprogramar-lo.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">La data de caducitat del missatge és massa aviat.</string>

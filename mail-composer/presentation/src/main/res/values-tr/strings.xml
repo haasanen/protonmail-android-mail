@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">En fazla ek dosya sayısına (100) ulaşıldı.</string>
   <string name="composer_delete_attachment_error">Bir ek dosya silinirken beklenmeyen bir sorun çıktı.</string>
   <string name="composer_unexpected_attachments_error">Ek dosyalarla ilgili beklenmeyen bir sorun çıktı.</string>
+  <string name="composer_storage_quota_exceeded_error">Depolama alanınız dolu. Lütfen yer açın veya depolama alanınızı artırmak için tarifenizi yükseltin.</string>
   <string name="composer_attach_capture_from_camera_error">Şu anda kameradan bir ek dosya eklenemez</string>
   <string name="composer_warning_local_data_shown">Taslağın son sürümü yüklenemedi. Yapılmış değişiklikler geçersiz olacak.</string>
   <string name="composer_button_add_password">Parola ekle</string>
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Taslak bulunamadı. Zaten göndermiş ya da yok saymış olabilirsiniz.</string>
   <string name="composer_error_send_draft_message_too_large">İleti gönderilmek için çok büyük. Lütfen ek dosyalarınızın boyutunu azaltın.</string>
   <string name="composer_error_send_draft_attachments_error">Ek dosya eksik. Lütfen yeniden yükleyin.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Ek dosya dönüştürülemedi. Lütfen yeniden yükleyin.</string>
   <string name="composer_error_send_draft_invalid_recipient">Bazı alıcılar geçersiz. Lütfen alıcıları denetleyip yeniden deneyin.</string>
   <string name="composer_error_send_draft_schedule_send_error">Zamanlanmış gönderim zamanı geçmişte. Göndermek ya da yeniden zamanlamak için Taslaklar kutusuna gidin.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">İletinin geçerlilik sonu süresi çok yakında.</string>

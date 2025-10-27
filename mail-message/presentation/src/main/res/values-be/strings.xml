@@ -62,6 +62,8 @@
   <string name="message_link_long_click_copy_description">Тэкст скапіяваны з Proton Mail</string>
   <string name="message_link_long_click_share">Абагуліць спасылку</string>
   <string name="message_link_long_click_share_via">Абагуліць спасылку праз</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Спампаваць відарыс</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Скапіяваць адрас</string>
   <string name="contact_actions_copy_address_description">Скапіяваць адрас кантакту</string>
@@ -75,6 +77,12 @@
   <string name="contact_actions_add_contact_description">Захаваць гэтага атрымальніка як кантакт</string>
   <string name="contact_actions_block_contact">Заблакіраваць гэты кантакт</string>
   <string name="contact_actions_block_contact_description">Заблакіраваць гэты кантакт</string>
+  <string name="contact_actions_unblock_contact">Заблакіраваць гэты кантакт</string>
+  <string name="contact_actions_unblock_contact_description">Заблакіраваць гэты кантакт</string>
+  <string name="contact_actions_block_address">Заблакіраваць гэты адрас</string>
+  <string name="contact_actions_block_address_description">Заблакіраваць гэты адрас</string>
+  <string name="contact_actions_unblock_address">Разблакіраваць гэты адрас</string>
+  <string name="contact_actions_unblock_address_description">Разблакіраваць гэты адрас</string>
   <string name="contact_actions_view_contact_details">Паглядзець кантактныя звесткі</string>
   <string name="contact_actions_view_contact_details_description">Паглядзець падрабязнасці кантакту</string>
 </resources>

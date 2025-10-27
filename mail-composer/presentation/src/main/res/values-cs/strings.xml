@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Překročen maximální počet příloh (100).</string>
   <string name="composer_delete_attachment_error">Při mazání přílohy došlo k neočekávané chybě.</string>
   <string name="composer_unexpected_attachments_error">V souvislosti s přílohami došlo k neočekávané chybě.</string>
+  <string name="composer_storage_quota_exceeded_error">Vaše úložiště je plné. Uvolněte místo nebo proveďte navýšení, abyste získali více.</string>
   <string name="composer_attach_capture_from_camera_error">Nahrávání přílohy z fotoaparátu není v tuto chvíli možné</string>
   <string name="composer_warning_local_data_shown">Nejnovější verzi tohoto návrhu se nepodařilo načíst. Jakákoli změna přepíše její obsah.</string>
   <string name="composer_button_add_password">Přidat heslo</string>
@@ -164,6 +165,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Koncept nenalezen. Možná jste jej již odeslali nebo zahodili.</string>
   <string name="composer_error_send_draft_message_too_large">Zpráva je příliš velká na odeslání. Prosím, zmenšete velikost svých příloh.</string>
   <string name="composer_error_send_draft_attachments_error">Příloha chybí. Nahrajte ji prosím znovu.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Nelze převést přílohu. Zkuste ji nahrát znovu.</string>
   <string name="composer_error_send_draft_invalid_recipient">Někteří příjemci jsou neplatní, zkontrolujte příjemce a zkuste to znovu.</string>
   <string name="composer_error_send_draft_schedule_send_error">Naplánovaný čas odeslání je v minulosti. Přejděte do Konceptů, kde zprávu můžete odeslat nebo přeplánovat.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Čas vypršení platnosti zprávy je příliš brzy.</string>

@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Apri con…</string>
   <string name="file_saved">File salvato</string>
+  <string name="file_saved_fallback">File salvato nella cartella Download</string>
+  <string name="error_saving_file">Si è verificato un errore durante il salvataggio del file</string>
 </resources>

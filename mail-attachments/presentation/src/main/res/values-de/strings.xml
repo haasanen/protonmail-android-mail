@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Öffnen mit …</string>
   <string name="file_saved">Datei gespeichert</string>
+  <string name="file_saved_fallback">Datei im Ordner „Downloads“ gespeichert</string>
+  <string name="error_saving_file">Beim Speichern der Datei ist ein Fehler aufgetreten</string>
 </resources>

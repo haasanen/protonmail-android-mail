@@ -105,7 +105,7 @@
   </plurals>
   <string name="contact_bottom_sheet_redirect_to_web_title">Na voljo na spletu</string>
   <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Skrij</string>
-  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Creating contacts or groups in the app is not yet ready. For now, you can create them in the web app and they’ll sync to your device.</string>
-  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Editing contacts or groups in the app is not yet ready. For now, you can edit them in the web app and changes will sync to your device.</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Ustvarjanje stikov ali skupin v aplikaciji še ni pripravljeno. Zaenkrat jih lahko ustvarite v spletni različici, od koder se bodo sinhronizirali na vašo napravo.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Urejanje stikov ali skupin v aplikaciji še ni pripravljeno. Zaenkrat jih lahko uredite v spletni različici, od koder se bodo spremembe sinhronizirale na vašo napravo.</string>
   <string name="contact_bottom_sheet_redirect_to_web_button">Nadaljuj na spletu</string>
 </resources>

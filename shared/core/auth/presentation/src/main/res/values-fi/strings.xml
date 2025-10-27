@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">Lue lisää</string>
   <string name="auth_user_check_delinquent_error">Tilisi on lukittu erääntyneen laskun vuoksi.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Vain yksi ilmainen Proton-tili on sallittu.</item>
-    <item quantity="other">Vain %d ilmaista Proton-tiliä sallitaan.</item>
+    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
+    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Jotain meni pieleen. Yritä uudelleen.</string>
   <string name="auth_fido_config_error">Virhe noudettaessa tallennettuja avaimia.</string>

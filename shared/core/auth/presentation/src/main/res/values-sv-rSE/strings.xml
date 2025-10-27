@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">Lär dig mer</string>
   <string name="auth_user_check_delinquent_error">Ditt konto är för närvarande pausat på grund av en förfallen faktura.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Endast ett gratis Proton-konto är tillåtet.</item>
-    <item quantity="other">Endast %d gratis Proton-konton är tillåtna.</item>
+    <item quantity="one">Det maximala antalet %d gratiskonto har överskridits.</item>
+    <item quantity="other">Det maximala antalet %d gratiskonton har överskridits.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Något gick fel. Försök igen.</string>
   <string name="auth_fido_config_error">Fel vid hämtning av lagrade nycklar.</string>

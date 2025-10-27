@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Número máximo de 100 anexos foi excedido.</string>
   <string name="composer_delete_attachment_error">Ocorreu um erro inesperado ao tentar excluir um anexo.</string>
   <string name="composer_unexpected_attachments_error">Ocorreu um erro inesperado relacionado a anexos.</string>
+  <string name="composer_storage_quota_exceeded_error">Seu armazenamento está cheio. Por favor, libere espaço ou faça upgrade para adicionar mais.</string>
   <string name="composer_attach_capture_from_camera_error">Capturar um anexo da câmera não é possível neste momento</string>
   <string name="composer_warning_local_data_shown">A versão mais recente deste rascunho não foi carregada. Qualquer alteração substituirá seu conteúdo.</string>
   <string name="composer_button_add_password">Adicionar senha</string>
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Rascunho não encontrado. Pode já ter sido enviada ou descartada.</string>
   <string name="composer_error_send_draft_message_too_large">A mensagem é grande demais para enviar. Reduza o tamanho de seus anexos.</string>
   <string name="composer_error_send_draft_attachments_error">Anexo ausente. Carregue-o novamente.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Não foi possível converter o anexo. Envie-o novamente.</string>
   <string name="composer_error_send_draft_invalid_recipient">Alguns destinatários são inválidos. Verifique os destinatários e tente novamente.</string>
   <string name="composer_error_send_draft_schedule_send_error">O horário de envio agendado já passou. Acesse Rascunhos para enviar ou reagendar o envio.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">O tempo de expiração da mensagem esta perto demais.</string>

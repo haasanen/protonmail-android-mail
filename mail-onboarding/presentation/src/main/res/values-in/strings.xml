@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Selamat datang di Proton Mail, di mana privasi merupakan hal yang baku</string>
-  <string name="onboarding_welcome_description">Enjoy encrypted messages, less spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
+  <string name="onboarding_welcome_description">Nikmati pesan yang terenkripsi, lebih sedikit spam, perlindungan dari phishing, dan pelacak yang diblokir. Selamat datang di privasi.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Fokus pada ujung jari Anda</string>
   <string name="onboarding_rebuilt_description">Gunakan waktu Anda untuk bertindak, bukan untuk menyortir. Kotak masuk Anda dirancang agar lebih mudah digunakan, sehingga Anda dapat menemukan hal yang penting secara lebih cepat.</string>

@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">Más información</string>
   <string name="auth_user_check_delinquent_error">La cuenta está actualmente en espera debido a una factura atrasada.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Solo se permite una cuenta gratuita de Proton.</item>
-    <item quantity="other">Solo se permiten %d cuentas gratuitas de Proton.</item>
+    <item quantity="one">Se ha excedido el número máximo de %d cuenta gratuita.</item>
+    <item quantity="other">Se ha excedido el número máximo de %d cuentas gratuitas.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Algo salió mal. Intente de nuevo.</string>
   <string name="auth_fido_config_error">Error al recuperar claves almacenadas.</string>

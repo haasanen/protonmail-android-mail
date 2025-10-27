@@ -116,10 +116,8 @@
   <string name="message_report_phishing_dialog_cancel_button">Avbryt</string>
   <string name="open_on_protoncalendar_banner_title">Öppna i Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Säker krypterad kalender</string>
-  <string name="trashed_messages_banner">Denna konversation innehåller kastade meddelanden.</string>
-  <string name="non_trashed_messages_banner">Denna konversation innehåller icke kastade meddelanden.</string>
-  <string name="show">Visa</string>
-  <string name="hide">Dölj</string>
+  <string name="trashed_messages_banner">Visa kastade meddelanden i denna konversation.</string>
+  <string name="non_trashed_messages_banner">Visa ej kastade meddelanden i denna konversation.</string>
   <string name="recipient_me">jag</string>
   <string name="message_details_header_from">Från</string>
   <string name="message_details_header_to">Till</string>
@@ -180,4 +178,6 @@
   <string name="already_unsubscribed_banner_message">Du har avslutat prenumeration från denna e-postlista.</string>
   <string name="error_unsubscribe_newsletter">Misslyckades att avsluta prenumeration på nyhetsbrev</string>
   <string name="detail_error_loading_single_message">Misslyckades ladda meddelande</string>
+  <string name="error_downloading_image">Misslyckades att ladda ner bild</string>
+  <string name="image_downloaded_successfully">Bild nedladdad</string>
 </resources>

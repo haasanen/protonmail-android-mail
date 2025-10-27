@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Abrir con…</string>
   <string name="file_saved">Archivo guardado</string>
+  <string name="file_saved_fallback">Archivo guardado en la carpeta Descargas</string>
+  <string name="error_saving_file">Ocurrió un error al guardar el archivo</string>
 </resources>

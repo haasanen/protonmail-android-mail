@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">Scopri di più</string>
   <string name="auth_user_check_delinquent_error">Account sospeso a causa di una fattura scaduta</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Limite di un account Proton gratuito raggiunto</item>
-    <item quantity="other">Limite di %d account Proton gratuiti raggiunto</item>
+    <item quantity="one">È stato raggiunto il numero massimo di %d account gratuiti.</item>
+    <item quantity="other">È stato raggiunto il numero massimo di %d account gratuiti.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Si è verificato un errore</string>
   <string name="auth_fido_config_error">Caricamento delle chiavi non riuscito</string>

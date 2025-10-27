@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">添付ファイルの最大数（100個）を超えました。</string>
   <string name="composer_delete_attachment_error">添付ファイルの削除中に予期しないエラーが発生しました。</string>
   <string name="composer_unexpected_attachments_error">添付ファイルに関連して、予期しないエラーが発生しました。</string>
+  <string name="composer_storage_quota_exceeded_error">ストレージがいっぱいです。スペースを開けるかアップグレードしてさらに追加してください。</string>
   <string name="composer_attach_capture_from_camera_error">現在、カメラからの添付ファイルの取り込みはできません。</string>
   <string name="composer_warning_local_data_shown">この下書きの最新バージョンの読み込みに失敗しました。変更するとコンテンツが上書きされます。</string>
   <string name="composer_button_add_password">パスワードを追加</string>
@@ -81,7 +82,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">パスワード保護を追加する</string>
   <string name="composer_send_expiring_message_to_external_may_fail">すべての受信者がProton Mailを使用していることを確認できませんでした。メッセージの有効期限をサポートしているのはProtonのアドレスのみです。この場合は、代わりにパスワードを追加することをお勧めします。</string>
   <string name="composer_send_expiring_message_to_external_will_fail">一部の受信者 (%1$s) は、デフォルトでは有効期限をサポートしていません。Proton Mail以外の受信者の有効期限を有効にするには、パスワードを追加してください。</string>
-  <string name="composer_send_expiring_message_to_external_will_fail_for_all">None of the recipients support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">受信者はいずれもデフォルトでは有効期限をサポートしていません。Proton Mail以外の宛先の有効期限を有効にするには、パスワードを追加してください。</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">通知の送信</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">\@pm.me からのメッセージ送信は有料の機能です。あなたのメッセージはデフォルトのアドレスから送信されます。</string>
@@ -161,6 +162,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">下書きが見つかりません。すでに送信または破棄された可能性があります。</string>
   <string name="composer_error_send_draft_message_too_large">メッセージが大きすぎて送信できません。添付ファイルのサイズを小さくしてください。</string>
   <string name="composer_error_send_draft_attachments_error">添付ファイルが見つかりません。もう一度アップロードしてください。</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">添付ファイルを変換できませんでした。もう一度アップロードしてください。</string>
   <string name="composer_error_send_draft_invalid_recipient">いくつかの宛先が無効です。宛先をご確認の上、もう一度お試しください。</string>
   <string name="composer_error_send_draft_schedule_send_error">指定された送信時刻が過去のものです。「下書き」に移動して送信するか、再スケジュールしてください。</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">メッセージの有効期限が早すぎます。</string>

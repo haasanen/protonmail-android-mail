@@ -114,10 +114,8 @@
   <string name="message_report_phishing_dialog_cancel_button">キャンセル</string>
   <string name="open_on_protoncalendar_banner_title">Proton Calendar で開く</string>
   <string name="open_on_protoncalendar_banner_description">安全で暗号化されたカレンダー</string>
-  <string name="trashed_messages_banner">この会話にはゴミ箱にあるメッセージが含まれています</string>
-  <string name="non_trashed_messages_banner">この会話には削除されていないメッセージが含まれています。</string>
-  <string name="show">表示</string>
-  <string name="hide">非表示</string>
+  <string name="trashed_messages_banner">この会話のごみ箱にあるメッセージを表示。</string>
+  <string name="non_trashed_messages_banner">この会話内の削除済みではないメッセージを表示。</string>
   <string name="recipient_me">私</string>
   <string name="message_details_header_from">差出人</string>
   <string name="message_details_header_to">宛先</string>
@@ -164,7 +162,7 @@
   <string name="rsvp_widget_button_retry">再試行</string>
   <string name="rsvp_widget_error_answering">この予定への返信中にエラーが発生しました</string>
   <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar で開く</string>
-  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Proton Calendar で開けませんでした</string>
   <string name="rsvp_widget_copy_address">アドレスをコピー</string>
   <string name="rsvp_widget_message">メッセージ</string>
   <string name="snooze_message_snoozed_until_banner_title">までスヌーズ</string>
@@ -177,4 +175,6 @@
   <string name="already_unsubscribed_banner_message">このメーリングリストの登録は解除されました。</string>
   <string name="error_unsubscribe_newsletter">ニュースレターの登録解除に失敗しました</string>
   <string name="detail_error_loading_single_message">メッセージの読み込みに失敗しました</string>
+  <string name="error_downloading_image">Failed to download image</string>
+  <string name="image_downloaded_successfully">Image downloaded</string>
 </resources>

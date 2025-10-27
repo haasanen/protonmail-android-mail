@@ -123,7 +123,7 @@
   <string name="auth_fido_security_keys_learn_more">より詳しく</string>
   <string name="auth_user_check_delinquent_error">アカウントは支払い期限を過ぎたため現在保留中です。</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="other">無料のProtonアカウントは%d個までしか許可されていません。</item>
+    <item quantity="other">%d 個の無料アカウント数が上限に達しました。</item>
   </plurals>
   <string name="common_error_something_went_wrong">何か問題が発生しました。もう一度お試しください。</string>
   <string name="auth_fido_config_error">保管されたキーの取得中にエラーが発生しました。</string>

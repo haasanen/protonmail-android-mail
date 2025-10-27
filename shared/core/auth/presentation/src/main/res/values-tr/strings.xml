@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">Ayrıntılı bilgi alın</string>
   <string name="auth_user_check_delinquent_error">Süresi geçmiş bir fatura nedeniyle hesabınız askıya alındı.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Yalnızca bir ücretsiz Proton hesabına izin verilir.</item>
-    <item quantity="other">Yalnızca %d ücretsiz Proton hesabına izin verilir.</item>
+    <item quantity="one">Olabilecek en fazla %d ücretsiz hesap sayısı aşıldı.</item>
+    <item quantity="other">Olabilecek en fazla %d ücretsiz hesap sayısı aşıldı.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Bir sorun çıktı. Lütfen yeniden deneyin.</string>
   <string name="auth_fido_config_error">Kaydedilmiş anahtarlar alınırken sorun çıktı.</string>

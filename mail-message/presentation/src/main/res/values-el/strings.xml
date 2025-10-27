@@ -58,6 +58,8 @@
   <string name="message_link_long_click_copy_description">Το κείμενο αντιγράφηκε από το Proton Mail</string>
   <string name="message_link_long_click_share">Κοινοποίηση συνδέσμου</string>
   <string name="message_link_long_click_share_via">Κοινοποίηση συνδέσμου μέσω</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Λήψη εικόνας</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Αντιγραφή διεύθυνσης</string>
   <string name="contact_actions_copy_address_description">Αντιγραφή διεύθυνσης επαφής</string>
@@ -71,6 +73,12 @@
   <string name="contact_actions_add_contact_description">Αποθήκευση αυτού του παραλήπτη ως επαφή</string>
   <string name="contact_actions_block_contact">Αποκλεισμός αυτής της επαφής</string>
   <string name="contact_actions_block_contact_description">Αποκλεισμός αυτής της επαφής</string>
+  <string name="contact_actions_unblock_contact">Αποκλεισμός αυτής της επαφής</string>
+  <string name="contact_actions_unblock_contact_description">Αποκλεισμός αυτής της επαφής</string>
+  <string name="contact_actions_block_address">Αποκλεισμός αυτής της διεύθυνσης</string>
+  <string name="contact_actions_block_address_description">Αποκλεισμός αυτής της διεύθυνσης</string>
+  <string name="contact_actions_unblock_address">Ξεμπλοκάρισμα αυτής της διεύθυνσης</string>
+  <string name="contact_actions_unblock_address_description">Ξεμπλοκάρισμα αυτής της διεύθυνσης</string>
   <string name="contact_actions_view_contact_details">Προβολή στοιχείων επαφής</string>
   <string name="contact_actions_view_contact_details_description">Προβολή λεπτομερειών της επαφής</string>
 </resources>

@@ -58,6 +58,8 @@
   <string name="message_link_long_click_copy_description">Tekst gekopieerd van Proton Mail</string>
   <string name="message_link_long_click_share">Link delen</string>
   <string name="message_link_long_click_share_via">Link delen via</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Afbeelding downloaden</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Adres kopiëren</string>
   <string name="contact_actions_copy_address_description">Contactadres kopiëren</string>
@@ -71,6 +73,12 @@
   <string name="contact_actions_add_contact_description">Sla deze ontvanger op als contactpersoon</string>
   <string name="contact_actions_block_contact">Blokkeer dit contact</string>
   <string name="contact_actions_block_contact_description">Blokkeer dit contact</string>
+  <string name="contact_actions_unblock_contact">Blokkeer dit contact</string>
+  <string name="contact_actions_unblock_contact_description">Blokkeer dit contact</string>
+  <string name="contact_actions_block_address">Blokkeer dit adres</string>
+  <string name="contact_actions_block_address_description">Blokkeer dit adres</string>
+  <string name="contact_actions_unblock_address">Deblokkeer dit adres</string>
+  <string name="contact_actions_unblock_address_description">Deblokkeer dit adres</string>
   <string name="contact_actions_view_contact_details">Contactdetails bekijken</string>
   <string name="contact_actions_view_contact_details_description">Bekijk de details van de contactpersoon</string>
 </resources>

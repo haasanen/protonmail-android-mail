@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">打开方式…</string>
   <string name="file_saved">文件已保存</string>
+  <string name="file_saved_fallback">文件已保存到下载文件夹</string>
+  <string name="error_saving_file">文件保存失败</string>
 </resources>

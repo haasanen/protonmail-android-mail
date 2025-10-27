@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Maximale Anzahl Anhänge (100) überschritten.</string>
   <string name="composer_delete_attachment_error">Beim Löschen eines Anhangs ist ein unerwarteter Fehler aufgetreten.</string>
   <string name="composer_unexpected_attachments_error">Es gab einen unerwarteten Fehler im Zusammenhang mit Anhängen.</string>
+  <string name="composer_storage_quota_exceeded_error">Dein Speicherplatz ist aufgebraucht. Bitte gib Speicherplatz frei oder führe ein Upgrade durch, um mehr Speicherplatz zu erhalten.</string>
   <string name="composer_attach_capture_from_camera_error">Das Aufnehmen eines Anhangs über die Kamera ist zur Zeit nicht möglich</string>
   <string name="composer_warning_local_data_shown">Die letzte Version dieses Entwurfs konnte nicht geladen werden. Jede Änderung wird den Inhalt überschreiben.</string>
   <string name="composer_button_add_password">Passwort hinzufügen</string>
@@ -162,6 +163,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Entwurf nicht gefunden. Möglicherweise wurde er bereits gesendet oder gelöscht.</string>
   <string name="composer_error_send_draft_message_too_large">Die Nachricht ist zu groß, um sie versenden zu können. Bitte verkleinere deine Anhänge.</string>
   <string name="composer_error_send_draft_attachments_error">Anhang fehlt. Bitte erneut hochladen.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Anhang kann nicht umgewandelt werden. Bitte erneut hochladen.</string>
   <string name="composer_error_send_draft_invalid_recipient">Einige Empfänger sind ungültig. Bitte überprüfe die Empfänger und versuche es erneut.</string>
   <string name="composer_error_send_draft_schedule_send_error">Die geplante Sendezeit liegt in der Vergangenheit. Wechsle zu „Entwürfe“, um die Nachricht zu senden oder neu zu planen.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Die Ablaufzeit der Nachricht ist zu kurzfristig.</string>

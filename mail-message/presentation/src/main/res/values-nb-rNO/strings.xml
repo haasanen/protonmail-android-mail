@@ -58,6 +58,8 @@
   <string name="message_link_long_click_copy_description">Tekst kopiert fra Proton Mail</string>
   <string name="message_link_long_click_share">Del kobling</string>
   <string name="message_link_long_click_share_via">Del kobling via</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Last ned bilde</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Kopier adresse</string>
   <string name="contact_actions_copy_address_description">Kopier kontaktadresse</string>
@@ -71,6 +73,12 @@
   <string name="contact_actions_add_contact_description">Lagre denne mottakeren som en kontakt</string>
   <string name="contact_actions_block_contact">Blokker denne kontakten</string>
   <string name="contact_actions_block_contact_description">Blokker denne kontakten</string>
+  <string name="contact_actions_unblock_contact">Blokker denne kontakten</string>
+  <string name="contact_actions_unblock_contact_description">Blokker denne kontakten</string>
+  <string name="contact_actions_block_address">Blokker denne adressen</string>
+  <string name="contact_actions_block_address_description">Blokker denne adressen</string>
+  <string name="contact_actions_unblock_address">Opphev blokkeringen av denne adressen</string>
+  <string name="contact_actions_unblock_address_description">Opphev blokkeringen av denne adressen</string>
   <string name="contact_actions_view_contact_details">Se kontaktinformasjon</string>
   <string name="contact_actions_view_contact_details_description">Vis detaljer om kontakten</string>
 </resources>

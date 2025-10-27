@@ -133,7 +133,7 @@
   <!-- Customize Toolbar -->
   <string name="mail_settings_custom_toolbar_title">Наладзіць панэлі інструментаў</string>
   <string name="mail_settings_custom_toolbar_list_view_title">Спіс панэлі інструментаў</string>
-  <string name="mail_settings_custom_toolbar_list_view_description">Гэта панэль інструментаў з\'явіцца, калі выбрана некалькі паведамленняў у спісе (напрыклад, уваходныя, сметніца і г.д.).</string>
+  <string name="mail_settings_custom_toolbar_list_view_description">Гэта панэль інструментаў з\'явіцца пры выбары некалькіх паведамленняў у спісе (напрыклад, уваходныя, сметніца і г.д.).</string>
   <string name="mail_settings_custom_toolbar_message_view_title">Панэль інструментаў паведамлення</string>
   <string name="mail_settings_custom_toolbar_message_view_description">Гэта панэль інструментаў застаецца бачнай пры чытанні паведамленняў</string>
   <string name="mail_settings_custom_toolbar_conversation_view_title">Панэль інструментаў размовы</string>

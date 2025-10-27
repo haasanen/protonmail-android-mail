@@ -56,6 +56,8 @@
   <string name="message_link_long_click_copy_description">从 Proton Mail 复制的文本</string>
   <string name="message_link_long_click_share">共享链接</string>
   <string name="message_link_long_click_share_via">通过</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Download image</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">复制邮箱地址</string>
   <string name="contact_actions_copy_address_description">复制联系人地址</string>
@@ -69,6 +71,12 @@
   <string name="contact_actions_add_contact_description">将此收件人另存为联系人</string>
   <string name="contact_actions_block_contact">屏蔽此联系人</string>
   <string name="contact_actions_block_contact_description">屏蔽此联系人</string>
+  <string name="contact_actions_unblock_contact">屏蔽此联系人</string>
+  <string name="contact_actions_unblock_contact_description">屏蔽此联系人</string>
+  <string name="contact_actions_block_address">屏蔽此地址</string>
+  <string name="contact_actions_block_address_description">屏蔽此地址</string>
+  <string name="contact_actions_unblock_address">取消屏蔽此地址</string>
+  <string name="contact_actions_unblock_address_description">取消屏蔽此地址</string>
   <string name="contact_actions_view_contact_details">查看联系人详情</string>
   <string name="contact_actions_view_contact_details_description">查看联系人详情</string>
 </resources>

@@ -123,7 +123,7 @@
   <string name="auth_fido_security_keys_learn_more">了解详情</string>
   <string name="auth_user_check_delinquent_error">您的账户因欠费已被停用。</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="other">只允许%d个免费的 Proton 账户</item>
+    <item quantity="other">已超出免费帐户的最大数量 %d。</item>
   </plurals>
   <string name="common_error_something_went_wrong">出错了，请再试一次。</string>
   <string name="auth_fido_config_error">检索存储的密钥时出错。</string>

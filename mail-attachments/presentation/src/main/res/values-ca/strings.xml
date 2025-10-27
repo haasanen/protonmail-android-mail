@@ -19,4 +19,6 @@
 <resources>
   <string name="open_with">Obriu amb...</string>
   <string name="file_saved">S\'ha desat el fitxer</string>
+  <string name="file_saved_fallback">El fitxer s\'ha desat a la carpeta de Descàrregues</string>
+  <string name="error_saving_file">Hi ha hagut un error en desar el fitxer</string>
 </resources>

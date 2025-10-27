@@ -60,6 +60,7 @@
   <string name="composer_too_many_attachments_error">Prekoračeno je največje število priponk (100).</string>
   <string name="composer_delete_attachment_error">Pri brisanju priponke je prišlo do nepričakovane napake.</string>
   <string name="composer_unexpected_attachments_error">Prišlo je do nepričakovane napake, povezane s priponkami.</string>
+  <string name="composer_storage_quota_exceeded_error">Your storage is full. Please free up space or upgrade to add more.</string>
   <string name="composer_attach_capture_from_camera_error">Trenutno ni mogoče zajeti priponke s kamero</string>
   <string name="composer_warning_local_data_shown">Zadnje različice tega osnutka ni bilo mogoče naložiti. Vsaka sprememba bo vplivala na njeno vsebino.</string>
   <string name="composer_button_add_password">Dodaj geslo</string>
@@ -164,6 +165,7 @@
   <string name="composer_error_send_draft_message_does_not_exist">Osnutka ni bilo mogoče najti. Morda ste ga že poslali ali zavrgli.</string>
   <string name="composer_error_send_draft_message_too_large">Sporočilo je preveliko za pošiljanje. Zmanjšajte velikost priponk.</string>
   <string name="composer_error_send_draft_attachments_error">Priponka manjka. Naložite jo znova.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Unable to convert attachment. Please upload again.</string>
   <string name="composer_error_send_draft_invalid_recipient">Nekateri prejemniki so neveljavni. Preverite naslove prejemnikov in poskusite znova.</string>
   <string name="composer_error_send_draft_schedule_send_error">Načrtovani čas pošiljanja je v preteklosti. Pojdite v osnutke, da pošljete sporočilo ali spremenite čas pošiljanja.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>

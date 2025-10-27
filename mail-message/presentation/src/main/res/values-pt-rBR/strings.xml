@@ -58,6 +58,8 @@
   <string name="message_link_long_click_copy_description">Texto copiado do Proton Mail</string>
   <string name="message_link_long_click_share">Compartilhar link</string>
   <string name="message_link_long_click_share_via">Compartilhar link via</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Baixar imagem</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Copiar endereço</string>
   <string name="contact_actions_copy_address_description">Copiar endereço do contato</string>
@@ -71,6 +73,12 @@
   <string name="contact_actions_add_contact_description">Salvar destinatário como um contato</string>
   <string name="contact_actions_block_contact">Bloquear este contato</string>
   <string name="contact_actions_block_contact_description">Bloquear este contato</string>
+  <string name="contact_actions_unblock_contact">Bloquear este contato</string>
+  <string name="contact_actions_unblock_contact_description">Bloquear este contato</string>
+  <string name="contact_actions_block_address">Bloquear este endereço</string>
+  <string name="contact_actions_block_address_description">Bloquear este endereço</string>
+  <string name="contact_actions_unblock_address">Desbloquear este endereço</string>
+  <string name="contact_actions_unblock_address_description">Desbloquear este endereço</string>
   <string name="contact_actions_view_contact_details">Ver detalhes do contato</string>
   <string name="contact_actions_view_contact_details_description">Ver detalhes do contato</string>
 </resources>

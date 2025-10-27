@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">További információk</string>
   <string name="auth_user_check_delinquent_error">Fiókja jelenleg, számlatartozás miatt, fel van függesztve.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">Csak egy ingyenes Proton fiók engedélyezett.</item>
-    <item quantity="other">Csak %d ingyenes Proton fiók engedélyezett.</item>
+    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
+    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Valami hiba történt. Kérjük próbálja újra.</string>
   <string name="auth_fido_config_error">Hiba a tárolt kulcsok lekérésekor.</string>

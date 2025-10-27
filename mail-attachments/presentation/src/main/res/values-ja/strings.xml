@@ -17,6 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="open_with">Open with…</string>
-  <string name="file_saved">File saved</string>
+  <string name="open_with">開く：</string>
+  <string name="file_saved">ファイルが保存されました</string>
+  <string name="file_saved_fallback">ファイルがダウンロードフォルダに保存されました</string>
+  <string name="error_saving_file">ファイル保存中にエラーが発生しました</string>
 </resources>

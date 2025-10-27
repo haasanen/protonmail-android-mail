@@ -58,6 +58,8 @@
   <string name="message_link_long_click_copy_description">Proton Mail üzerindeki metin kopyalandı</string>
   <string name="message_link_long_click_share">Bağlantıyı paylaş</string>
   <string name="message_link_long_click_share_via">Bağlantıyı şununla paylaş</string>
+  <!-- Message body image actions -->
+  <string name="message_image_long_click_download">Görseli indir</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Adresi kopyala</string>
   <string name="contact_actions_copy_address_description">Kişi adresini kopyala</string>
@@ -71,6 +73,12 @@
   <string name="contact_actions_add_contact_description">Bu alıcıyı kişi olarak kaydet</string>
   <string name="contact_actions_block_contact">Bu kişiyi engelle</string>
   <string name="contact_actions_block_contact_description">Bu kişiyi engelle</string>
+  <string name="contact_actions_unblock_contact">Bu kişiyi engelle</string>
+  <string name="contact_actions_unblock_contact_description">Bu kişiyi engelle</string>
+  <string name="contact_actions_block_address">Bu adresi engelle</string>
+  <string name="contact_actions_block_address_description">Bu adresi engelle</string>
+  <string name="contact_actions_unblock_address">Bu adresin engellemesini kaldır</string>
+  <string name="contact_actions_unblock_address_description">Bu adresin engellemesini kaldır</string>
   <string name="contact_actions_view_contact_details">Kişi bilgilerini görüntüle</string>
   <string name="contact_actions_view_contact_details_description">İletişim bilgilerini görüntüle</string>
 </resources>

@@ -42,7 +42,7 @@
   <string name="new_contact">Kontak baru</string>
   <string name="new_group">Grup baru</string>
   <string name="import_contact">Unggah kontak perangkat</string>
-  <string name="contact_deleted">Contact deleted</string>
+  <string name="contact_deleted">Kontak dihapus</string>
   <string name="contact_delete_dialog_title">Hapus %1$s?</string>
   <string name="contact_delete_dialog_text">Kontak ini akan dihapus dari daftar kontak Anda.</string>
   <string name="contact_delete_dialog_cancel_button">Batalkan</string>
@@ -89,14 +89,14 @@
   <string name="contact_details_action_copy_label">Salin</string>
   <string name="contact_details_action_message_label">Pesan</string>
   <string name="contact_details_action_call_label">Panggil</string>
-  <string name="contact_details_action_open_url_label">Open URL</string>
+  <string name="contact_details_action_open_url_label">Buka URL</string>
   <string name="contact_group_details_send_message_action">Kirim pesan grup</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="other">%1$d kontak</item>
   </plurals>
-  <string name="contact_bottom_sheet_redirect_to_web_title">Available on web</string>
-  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Dismiss</string>
-  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Creating contacts or groups in the app is not yet ready. For now, you can create them in the web app and they’ll sync to your device.</string>
-  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Editing contacts or groups in the app is not yet ready. For now, you can edit them in the web app and changes will sync to your device.</string>
-  <string name="contact_bottom_sheet_redirect_to_web_button">Continue on web</string>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Tersedia di web</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Tutup</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Fitur pembuatan kontak atau grup di aplikasi saat ini belum tersedia. Untuk saat ini, Anda dapat membuat kontak/grup ini pada aplikasi web, dan segala perubahan yang Anda buat akan disinkronkan ke perangkat Anda.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Fitur penyuntingan kontak atau grup di aplikasi saat ini belum tersedia. Untuk saat ini, Anda dapat menyunting kontak/grup ini pada aplikasi web, dan segala perubahan yang Anda buat akan disinkronkan ke perangkat Anda.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Lanjut di web</string>
 </resources>

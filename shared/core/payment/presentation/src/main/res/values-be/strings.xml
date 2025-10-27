@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="payment_error_title">Нешта пайшло не так</string>
-  <string name="payment_error_description">Немагчыма загрузіць гэту старонку. Абнавіце старонку або праверце сваё падключэнне да інтэрнэту.</string>
+  <string name="payment_error_description">Не ўдалося загрузіць гэту старонку. Абнавіце старонку або праверце сваё падключэнне да інтэрнэту.</string>
   <string name="payment_purchase_button_get">Атрымаць %1$s</string>
   <string name="payment_purchase_button_subscribed">Падпісацца на %1$s</string>
   <string name="payment_purchase_button_product_not_found">Прадукт не знойдзены ў краме</string>

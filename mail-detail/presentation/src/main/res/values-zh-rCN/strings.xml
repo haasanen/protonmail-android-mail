@@ -114,10 +114,8 @@
   <string name="message_report_phishing_dialog_cancel_button">取消</string>
   <string name="open_on_protoncalendar_banner_title">在 Proton Calendar 中打开</string>
   <string name="open_on_protoncalendar_banner_description">安全加密日历</string>
-  <string name="trashed_messages_banner">当前会话包含已删除的邮件。</string>
-  <string name="non_trashed_messages_banner">当前会话不含已删除的邮件。</string>
-  <string name="show">显示</string>
-  <string name="hide">隐藏</string>
+  <string name="trashed_messages_banner">显示此会话中的回收站中的邮件。</string>
+  <string name="non_trashed_messages_banner">显示此会话中的非回收站中的邮件。</string>
   <string name="recipient_me">我</string>
   <string name="message_details_header_from">发件人：</string>
   <string name="message_details_header_to">收件人：</string>
@@ -177,4 +175,6 @@
   <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
   <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
   <string name="detail_error_loading_single_message">邮件加载失败</string>
+  <string name="error_downloading_image">Failed to download image</string>
+  <string name="image_downloaded_successfully">Image downloaded</string>
 </resources>

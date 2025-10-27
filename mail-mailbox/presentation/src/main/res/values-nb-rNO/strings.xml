@@ -26,6 +26,7 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Nullstill søk</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Angi søkeord</string>
   <string name="filter_unread_button_text">Ulest</string>
+  <string name="include_spam_trash_text">Inkluder søppelpost/papirkurv</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">%d valgt</item>
     <item quantity="other">%d valgt</item>
