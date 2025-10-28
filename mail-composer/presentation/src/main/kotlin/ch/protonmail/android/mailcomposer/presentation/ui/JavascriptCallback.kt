@@ -19,9 +19,11 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import android.webkit.JavascriptInterface
+import androidx.annotation.Keep
 
 const val JAVASCRIPT_CALLBACK_INTERFACE_NAME = "MessageBodyInterface"
 
+@Keep
 class JavascriptCallback(
     private val onMessageBodyChanged: (String) -> Unit,
     private val onCursorPositionChanged: (Float, Float) -> Unit,
