@@ -19,11 +19,13 @@
 package me.proton.android.core.humanverification.presentation
 
 import android.webkit.JavascriptInterface
+import androidx.annotation.Keep
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.deserializeOrNull
 
 /** JS Interface used for communication between the WebView contents and the client. */
+@Keep
 class VerificationJSInterface(
     private val scope: CoroutineScope,
     private val handleVerificationResponse: (HV3ResponseMessage) -> Unit

@@ -21,9 +21,6 @@ package ch.protonmail.android.mailsettings.presentation.websettings
 import android.annotation.SuppressLint
 import android.net.http.SslError
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.webkit.JavascriptInterface
 import android.webkit.SslErrorHandler
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -35,9 +32,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import ch.protonmail.android.mailsettings.presentation.websettings.UpsellJsHelper.UpsellFoldersActionName
 import ch.protonmail.android.mailsettings.presentation.websettings.UpsellJsHelper.UpsellInterfaceName
-import ch.protonmail.android.mailsettings.presentation.websettings.UpsellJsHelper.UpsellLabelsActionName
 import ch.protonmail.android.mailsettings.presentation.websettings.UpsellJsHelper.upsellJavascriptCode
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
@@ -71,29 +66,7 @@ fun SettingWebView(
     }
 
     val jsInterface = remember {
-        object {
-            @JavascriptInterface
-            fun postMessage(message: String) {
-                Timber.d("web-settings: JavaScript interface called with message: $message")
-
-                // Enforce the navigation to run on the Main thread
-                Handler(Looper.getMainLooper()).post {
-                    Timber.d("web-settings: Triggering '$message' callback")
-
-                    when (message) {
-                        UpsellLabelsActionName ->
-                            onUpsell(UpsellingEntryPoint.Feature.Labels, state.upsellingVisibility)
-
-                        UpsellFoldersActionName ->
-                            onUpsell(UpsellingEntryPoint.Feature.Folders, state.upsellingVisibility)
-
-                        else -> {
-                            Timber.d("web-settings: Unsupported flow for: $message")
-                        }
-                    }
-                }
-            }
-        }
+        WebSettingsJavaScriptInterface(onUpsell, state.upsellingVisibility)
     }
 
     val client = remember(state) {
@@ -177,29 +150,3 @@ fun SettingWebView(
     }
 }
 
-private object UpsellJsHelper {
-
-    const val UpsellInterfaceName = "UpsellInterface"
-
-    const val UpsellLabelsActionName = "labels-action"
-    const val UpsellFoldersActionName = "folders-action"
-
-    val upsellJavascriptCode = """
-        (function() {
-            // Create webkit messageHandlers compatibility for Android
-            if (!window.webkit) {
-                window.webkit = {
-                    messageHandlers: {
-                        upsell: {
-                            postMessage: function(message) {
-                                if (window.$UpsellInterfaceName) {
-                                    window.$UpsellInterfaceName.postMessage(message);
-                                }
-                            }
-                        }
-                    }
-                };
-            }
-        })();
-    """.trimIndent()
-}
