@@ -22,6 +22,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    kotlin("plugin.serialization")
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")

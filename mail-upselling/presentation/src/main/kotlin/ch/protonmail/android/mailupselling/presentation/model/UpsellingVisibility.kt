@@ -18,6 +18,18 @@
 
 package ch.protonmail.android.mailupselling.presentation.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class UpsellingVisibility {
-    HIDDEN, PROMO, NORMAL
+
+    @SerialName("hidden")
+    HIDDEN,
+
+    @SerialName("promo")
+    PROMO,
+
+    @SerialName("normal")
+    NORMAL
 }
