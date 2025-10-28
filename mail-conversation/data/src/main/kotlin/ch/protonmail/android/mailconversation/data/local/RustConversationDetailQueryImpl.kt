@@ -81,7 +81,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     ): Flow<Either<ConversationError, LocalConversation>> = callbackFlow {
         initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint, showAllMessages)
 
-        val job = coroutineScope.launch {
+        val job = launch {
             conversationStatusFlow.collect { value ->
                 send(value)
             }
@@ -89,7 +89,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
         awaitClose {
             job.cancel()
-            coroutineScope.launch {
+            launch {
                 mutex.withLock {
                     if (currentConversationId == conversationId) {
                         Timber.d("conversation called destroy on $conversationId")
@@ -110,7 +110,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     ): Flow<Either<ConversationError, LocalConversationMessages>> = callbackFlow {
         initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint, showAllMessages)
 
-        val job = coroutineScope.launch {
+        val job = launch {
             conversationMessagesStatusFlow.collect { value ->
                 send(value)
             }
@@ -118,7 +118,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
         awaitClose {
             job.cancel()
-            coroutineScope.launch {
+            launch {
                 mutex.withLock {
                     if (currentConversationId == conversationId) {
                         Timber.d("conversation called destroy on $conversationId")
