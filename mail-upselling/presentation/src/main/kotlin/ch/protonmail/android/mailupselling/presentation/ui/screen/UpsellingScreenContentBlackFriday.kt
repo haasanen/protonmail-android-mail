@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +46,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -58,32 +56,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeDescriptionUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementsListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceListUiModel
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
-import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues.backgroundGradient
+import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues.BlackFriday.upsellingBackground
 import ch.protonmail.android.mailupselling.presentation.ui.screen.entitlements.comparisontable.ComparisonTable
 import ch.protonmail.android.mailupselling.presentation.ui.screen.entitlements.simplelist.UpsellingEntitlementsListLayout
 import ch.protonmail.android.mailupselling.presentation.ui.screen.footer.UpsellingPlanButtonsFooter
@@ -93,7 +83,7 @@ import dev.chrisbanes.haze.rememberHazeState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter") // Don't use PaddingValues or it won't render the blur
 @Composable
-internal fun UpsellingScreenContent(
+internal fun UpsellingScreenContentBlackFriday(
     modifier: Modifier = Modifier,
     state: UpsellingScreenContentState.Data,
     actions: UpsellingScreen.Actions
@@ -113,12 +103,6 @@ internal fun UpsellingScreenContent(
         derivedStateOf {
             val maxScroll = 100f
             (scrollState.value.toFloat() / maxScroll).coerceIn(0f, 1f)
-        }
-    }
-
-    val imageScale = remember {
-        derivedStateOf {
-            1f - scrollProgress.value * 0.2f
         }
     }
 
@@ -173,64 +157,30 @@ internal fun UpsellingScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .background(backgroundGradient)
+                    .upsellingBackground()
                     .padding(bottom = footerHeight + ProtonDimens.Spacing.Large)
                     .windowInsetsPadding(WindowInsets.safeDrawing),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
-                Spacer(modifier = Modifier.weight(UpsellingLayoutValues.topSpacingWeight))
-
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge * 2))
                 Image(
                     modifier = Modifier
-                        .height(UpsellingLayoutValues.imageHeight)
-                        .aspectRatio(1f)
                         .padding(horizontal = ProtonDimens.Spacing.Large)
                         .padding(top = ProtonDimens.Spacing.Large)
-                        .scale(imageScale.value)
                         .alpha(imageAlpha.value),
                     painter = painterResource(id = plans.icon.iconResId),
                     contentDescription = NO_CONTENT_DESCRIPTION
                 )
 
-                Text(
-                    modifier = Modifier
-                        .padding(horizontal = ProtonDimens.Spacing.Large)
-                        .padding(top = ProtonDimens.Spacing.Large),
-                    text = plans.title.text.string(),
-                    style = ProtonTheme.typography.titleLargeNorm,
-                    fontWeight = FontWeight.Bold,
-                    color = UpsellingLayoutValues.titleColor,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
-
-                when (plans.description) {
-                    is PlanUpgradeDescriptionUiModel.Simple -> Text(
-                        modifier = Modifier
-                            .padding(horizontal = ProtonDimens.Spacing.Large)
-                            .padding(top = ProtonDimens.Spacing.Small),
-                        text = plans.description.text.string(),
-                        style = ProtonTheme.typography.bodyLargeNorm,
-                        fontWeight = FontWeight.Normal,
-                        color = UpsellingLayoutValues.subtitleColor,
-                        textAlign = TextAlign.Center
-                    )
-
-                    PlanUpgradeDescriptionUiModel.SocialProof -> SocialProofDescription()
-                }
-
-                if (state.plans.variant == PlanUpgradeVariant.SocialProof) {
-                    Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
-                    SocialProofBadges(modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Standard))
-                }
-
-                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
 
                 when (state.plans.entitlements) {
                     is PlanUpgradeEntitlementsListUiModel.ComparisonTableList ->
-                        ComparisonTable(state.plans.entitlements, state.plans.variant)
+                        ComparisonTable(
+                            modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large),
+                            entitlementsUiModel = state.plans.entitlements,
+                            variant = state.plans.variant
+                        )
 
                     is PlanUpgradeEntitlementsListUiModel.SimpleList ->
                         UpsellingEntitlementsListLayout(state.plans.entitlements)
@@ -279,30 +229,10 @@ internal fun UpsellingScreenContent(
 
 @AdaptivePreviews
 @Composable
-private fun UpsellingScreenContentPreview_Promo() {
+private fun UpsellingScreenContentBlackFriday_Promo() {
     ProtonTheme {
-        UpsellingScreenContent(
-            state = UpsellingContentPreviewData.Base,
-            actions = UpsellingScreen.Actions(
-                onDisplayed = {},
-                onDismiss = {},
-                onError = {},
-                onUpgradeAttempt = {},
-                onUpgrade = {},
-                onUpgradeCancelled = {},
-                onUpgradeErrored = {},
-                onSuccess = {}
-            )
-        )
-    }
-}
-
-@AdaptivePreviews
-@Composable
-private fun UpsellingContentPreview_SocialProof() {
-    ProtonTheme {
-        UpsellingScreenContent(
-            state = UpsellingContentPreviewData.SocialProof,
+        UpsellingScreenContentBlackFriday(
+            state = UpsellingContentPreviewData.BlackFriday,
             actions = UpsellingScreen.Actions(
                 onDisplayed = {},
                 onDismiss = {},

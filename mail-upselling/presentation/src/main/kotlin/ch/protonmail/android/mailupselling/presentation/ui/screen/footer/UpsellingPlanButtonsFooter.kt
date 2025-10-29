@@ -32,6 +32,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingContentPreviewData
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
@@ -46,7 +47,7 @@ internal fun UpsellingPlanButtonsFooter(
     val shouldShowIntroPriceFooter = plans is PlanUpgradeInstanceListUiModel.Data.IntroPrice &&
         plans.shorterCycle is PlanUpgradeInstanceUiModel.Promotional
 
-//    val shouldShowBlackFridayFooter = plans is PlanUpgradeInstanceListUiModel.Data.BlackFriday
+    val shouldShowBlackFridayFooter = plans is PlanUpgradeInstanceListUiModel.Data.BlackFriday
 
     Column(
         modifier.background(UpsellingLayoutValues.UpsellingPlanButtonsFooter.backgroundColor)
@@ -59,15 +60,15 @@ internal fun UpsellingPlanButtonsFooter(
         )
 
         when {
-//            shouldShowBlackFridayFooter -> when {
-//                plans.longerCycle is PlanUpgradeInstanceUiModel.Promotional.BlackFriday &&
-//                    plans.variant == PlanUpgradeVariant.BlackFriday.Wave1 ->
-//                    PaymentButtonsBlackFriday(plans.longerCycle, actions)
-//
-//                plans.shorterCycle is PlanUpgradeInstanceUiModel.Promotional.BlackFriday &&
-//                    plans.variant == PlanUpgradeVariant.BlackFriday.Wave2 ->
-//                    PaymentButtonsBlackFriday(plans.shorterCycle, actions)
-//            }
+            shouldShowBlackFridayFooter -> when {
+                plans.longerCycle is PlanUpgradeInstanceUiModel.Promotional.BlackFriday &&
+                    plans.variant == PlanUpgradeVariant.BlackFriday.Wave1 ->
+                    PaymentButtonsBlackFriday(plans.longerCycle, actions)
+
+                plans.shorterCycle is PlanUpgradeInstanceUiModel.Promotional.BlackFriday &&
+                    plans.variant == PlanUpgradeVariant.BlackFriday.Wave2 ->
+                    PaymentButtonsBlackFriday(plans.shorterCycle, actions)
+            }
 
             shouldShowIntroPriceFooter -> PaymentButtonsIntroPricing(plans.shorterCycle, actions)
             else -> PaymentButtonsHorizontalLayout(plans, actions)

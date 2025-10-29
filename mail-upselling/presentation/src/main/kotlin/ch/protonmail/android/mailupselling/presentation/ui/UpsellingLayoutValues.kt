@@ -19,13 +19,19 @@
 package ch.protonmail.android.mailupselling.presentation.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 
-internal object UpsellingLayoutValues {
+object UpsellingLayoutValues {
 
     val titleColor = Color.White
     val subtitleColor = Color.White
@@ -67,6 +73,12 @@ internal object UpsellingLayoutValues {
         val textColor = Color.White
 
         val itemTextSize = 14.sp
+
+        fun checkmarkTint(variant: PlanUpgradeVariant) =
+            if (variant is PlanUpgradeVariant.BlackFriday) Color.Black else Color.White
+
+        fun checkmarkBackground(variant: PlanUpgradeVariant) =
+            if (variant is PlanUpgradeVariant.BlackFriday) Color.White else Color.Black.copy(alpha = 0.2f)
     }
 
     object EntitlementsList {
@@ -112,6 +124,7 @@ internal object UpsellingLayoutValues {
     }
 
     object UpsellOnboarding {
+
         val bestValueShape = RoundedCornerShape(10.dp)
         val tabIndicatorWidth = 36.dp
         val tabIndicatorHeight = 3.dp
@@ -124,6 +137,7 @@ internal object UpsellingLayoutValues {
         val outlineBorderStoke = BorderStroke(1.dp, coloredBorderBrush)
         val outlineUpsellingBorderStoke = BorderStroke(2.dp, onboardingColoredBrush)
     }
+
     val coloredBorderBrush = Brush.linearGradient(
         colors = listOf(
             Color(0xFF00FF88),
@@ -132,6 +146,47 @@ internal object UpsellingLayoutValues {
             Color(0xFFFF0088)
         )
     )
+
+    object BlackFriday {
+
+        val mainColor = Color(0xFFD8FF00)
+        val upsellingButtonTint = Color(0xFF0F0F0F)
+        val borderBrush = Brush.linearGradient(
+            colors = listOf(mainColor, mainColor)
+        )
+
+        @Composable
+        @Suppress("MagicNumber")
+        fun Modifier.upsellingBackground() = this
+            .background(Color(0xFF1B1340))
+            // The "beam effect" behind in the background
+            .drawBehind {
+                drawRect(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF6841B8).copy(alpha = 1f),
+                            Color(0xFF1B102C).copy(alpha = 0.2f)
+                        ),
+                        center = Offset(-size.width * 0.1f, size.height * 0.95f),
+                        radius = size.height * 0.5f
+                    )
+                )
+
+                // Diagonal lines on top
+                val strokeWidth = 1.dp.toPx()
+                val spacing = 20.dp.toPx()
+                var startX = -size.height
+                while (startX < size.width) {
+                    drawLine(
+                        color = Color.White.copy(alpha = 0.05f),
+                        start = Offset(startX, 0f),
+                        end = Offset(startX + size.height, size.height),
+                        strokeWidth = strokeWidth
+                    )
+                    startX += spacing
+                }
+            }
+    }
 
     private val onboardingColoredBrush = Brush.linearGradient(
         colors = listOf(
