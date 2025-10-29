@@ -19,5 +19,6 @@
 package ch.protonmail.android.mailsession.domain.model
 
 data class UserSettings(
+    val news: Int,
     val crashReports: Boolean
 )

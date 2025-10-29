@@ -16,12 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.data.mapper
+package ch.protonmail.android.mailupselling.domain.usecase
 
-import ch.protonmail.android.mailcommon.data.mapper.LocalUserSettings
-import ch.protonmail.android.mailsession.domain.model.UserSettings
+import arrow.core.Either
+import arrow.core.raise.either
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-internal fun LocalUserSettings.toUserSettings(): UserSettings = UserSettings(
-    news = news.toInt(),
-    crashReports = crashReports
-)
+class HasInAppNotificationsEnabled @Inject constructor(
+    private val sessionRepo: UserSessionRepository
+) {
+
+    suspend operator fun invoke(userId: UserId): Either<DataError, Boolean> = either {
+        val settings = sessionRepo.getUserSettings(userId) ?: raise(DataError.Local.NoDataCached)
+        val hasSettingEnabled = settings.news and (1 shl 14) != 0 // 1 << 14
+        hasSettingEnabled
+    }
+}
