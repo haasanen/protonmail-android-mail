@@ -25,6 +25,7 @@ import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
 import ch.protonmail.android.mailsettings.presentation.settings.signature.mapper.MobileSignatureUiModelMapper
 import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureMenuState
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,7 +47,7 @@ internal class SignatureSettingsMenuViewModel @Inject constructor(
         .flatMapLatest { userId ->
             combine(
                 mobileSignatureRepository.observeMobileSignature(userId),
-                observeUpsellingVisibility()
+                observeUpsellingVisibility(UpsellingEntryPoint.Feature.MobileSignature)
             ) { mobileSignaturePreference, upsellVisibility ->
                 val uiModel = MobileSignatureUiModelMapper.toUiModel(mobileSignaturePreference)
                 MobileSignatureMenuState.Data(settings = uiModel, upsellingVisibility = upsellVisibility)

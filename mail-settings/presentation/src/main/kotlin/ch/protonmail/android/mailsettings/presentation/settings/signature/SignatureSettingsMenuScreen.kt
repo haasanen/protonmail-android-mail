@@ -174,12 +174,12 @@ private fun MobileSignatureSettingsItemForFreePlan(
 
         val onNavigateToUpsell: () -> Unit = {
             when (upsellingVisibility) {
-                UpsellingVisibility.HIDDEN -> {
+                is UpsellingVisibility.Hidden -> {
                     Toast.makeText(context, fallbackText, Toast.LENGTH_SHORT).show()
                 }
 
-                UpsellingVisibility.PROMO,
-                UpsellingVisibility.NORMAL -> onNavigateToUpselling(
+                is UpsellingVisibility.Promotional,
+                is UpsellingVisibility.Normal -> onNavigateToUpselling(
                     UpsellingEntryPoint.Feature.MobileSignature,
                     upsellingVisibility
                 )
@@ -284,7 +284,7 @@ private fun PreviewMobileSignatureEnabled() {
                 "This is a mobile signature",
                 TextUiModel.TextRes(R.string.mail_settings_app_customization_mobile_signature_on)
             ),
-            upsellingVisibility = UpsellingVisibility.HIDDEN,
+            upsellingVisibility = UpsellingVisibility.Hidden,
             actions = SignatureSettingsMenuScreen.Actions.Empty
         )
     }
@@ -300,7 +300,7 @@ private fun PreviewMobileSignatureDisabled() {
                 "This is a mobile signature",
                 TextUiModel.TextRes(R.string.mail_settings_app_customization_mobile_signature_off)
             ),
-            upsellingVisibility = UpsellingVisibility.HIDDEN,
+            upsellingVisibility = UpsellingVisibility.Hidden,
             actions = SignatureSettingsMenuScreen.Actions.Empty
         )
     }
@@ -316,7 +316,7 @@ private fun PreviewMobileSignatureUpselling() {
                 "This is a mobile signature",
                 TextUiModel.TextRes(R.string.mail_settings_app_customization_mobile_signature_off)
             ),
-            upsellingVisibility = UpsellingVisibility.NORMAL,
+            upsellingVisibility = UpsellingVisibility.Normal,
             actions = SignatureSettingsMenuScreen.Actions.Empty
         )
     }
