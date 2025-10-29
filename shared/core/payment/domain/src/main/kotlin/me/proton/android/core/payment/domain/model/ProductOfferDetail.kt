@@ -15,15 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.payment.presentation.component
+package me.proton.android.core.payment.domain.model
 
-import me.proton.android.core.payment.domain.model.ProductOfferDetail
-import me.proton.android.core.payment.presentation.model.Product
+data class ProductOfferDetail(
+    val metadata: ProductMetadata,
+    val header: ProductDetailHeader,
+    val offer: ProductOffer
+)
 
-sealed interface PurchaseButtonState {
-    data object Idle : PurchaseButtonState
-    data object Loading : PurchaseButtonState
-    data class Pending(val product: ProductOfferDetail) : PurchaseButtonState
-    data class Success(val product: Product) : PurchaseButtonState
-    data class Error(val message: String, val enabled: Boolean = true) : PurchaseButtonState
-}
+data class ProductDetailHeader(
+    val title: String,
+    val description: String,
+    val priceText: String,
+    val cycleText: String,
+    val starred: Boolean
+)

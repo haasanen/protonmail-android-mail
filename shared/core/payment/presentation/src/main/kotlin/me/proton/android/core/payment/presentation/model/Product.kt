@@ -17,33 +17,38 @@
 
 package me.proton.android.core.payment.presentation.model
 
+import me.proton.android.core.payment.domain.model.ProductDetailHeader
 import me.proton.android.core.payment.domain.model.ProductEntitlement
-import me.proton.android.core.payment.domain.model.ProductHeader
+import me.proton.android.core.payment.domain.model.ProductOfferToken
 
 data class Product(
     val planName: String,
     val productId: String,
     val accountId: String,
     val cycle: Int,
-    val header: ProductHeader,
+    val header: ProductDetailHeader,
+    val offerToken: ProductOfferToken,
     val entitlements: List<ProductEntitlement>,
     val renewalText: String?
 ) {
 
     companion object {
 
+        private val dummyOfferToken = ProductOfferToken("test")
+
         val test = Product(
             planName = "bundle2022",
             productId = "giapmail_bundle2022_12_renewing",
             accountId = "cus_google_1234",
             cycle = 12,
-            header = ProductHeader(
+            header = ProductDetailHeader(
                 title = "Proton Unlimited",
                 description = "Comprehensive privacy and security with all Proton services combined.",
                 priceText = "CHF99.00",
                 cycleText = "Per year",
                 starred = true
             ),
+            offerToken = dummyOfferToken,
             entitlements = listOf(
                 ProductEntitlement.Description(
                     iconName = null,
@@ -74,13 +79,14 @@ data class Product(
             productId = "giapmail_mail2022_1_renewing",
             accountId = "cus_google_1234",
             cycle = 1,
-            header = ProductHeader(
+            header = ProductDetailHeader(
                 title = "Mail Plus",
                 description = "Secure email with advanced features for your everyday communication.",
                 priceText = "CHF0.99",
                 cycleText = "Per month",
                 starred = false
             ),
+            offerToken = dummyOfferToken,
             entitlements = listOf(
                 ProductEntitlement.Description(
                     iconName = null,
@@ -121,13 +127,14 @@ data class Product(
             productId = "giappass_pass2022_1_renewing",
             accountId = "cus_google_1234",
             cycle = 1,
-            header = ProductHeader(
+            header = ProductDetailHeader(
                 title = "Pass Plus",
                 description = "For next-level password management and identity protection.",
                 priceText = "CHF0.99",
                 cycleText = "Per month",
                 starred = false
             ),
+            offerToken = dummyOfferToken,
             entitlements = listOf(
                 ProductEntitlement.Description(
                     iconName = null,

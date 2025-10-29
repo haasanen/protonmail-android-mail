@@ -30,7 +30,8 @@ import kotlinx.coroutines.flow.transformLatest
 import me.proton.android.core.payment.domain.LogTag
 import me.proton.android.core.payment.domain.PaymentManager
 import me.proton.android.core.payment.domain.SubscriptionManager
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductMetadata
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.android.core.payment.domain.model.Purchase
 import me.proton.android.core.payment.domain.model.PurchaseStatus
 import me.proton.android.core.payment.presentation.PurchaseOrchestrator
@@ -64,15 +65,36 @@ class PurchaseButtonProcessorNative @Inject constructor(
     private fun onLoad(product: Product) = flow {
         val storeProducts = paymentManager.getStoreProducts(listOf(product.productId))
         val storeProduct = storeProducts.firstOrNull()
+
         when {
             storeProduct == null -> emit(PurchaseButtonState.Error(productNotFound, enabled = false))
-            else -> emitAll(observePurchases(product, storeProduct))
+            else -> {
+                // Reconvene the offer by using the provided Offer token
+                val requestedOffer = storeProduct.offers.find { storeOffer ->
+                    storeOffer.token == product.offerToken
+                } ?: return@flow emit(PurchaseButtonState.Error(productNotFound, enabled = false))
+
+                val productMetadata = ProductMetadata(
+                    productId = storeProduct.metadata.productId,
+                    customerId = product.accountId,
+                    planName = product.planName,
+                    entitlements = product.entitlements
+                )
+
+                val productOfferDetail = ProductOfferDetail(
+                    metadata = productMetadata,
+                    header = product.header,
+                    offer = requestedOffer
+                )
+
+                emitAll(observePurchases(product, productOfferDetail))
+            }
         }
     }.catch {
         emit(PurchaseButtonState.Error(it.message ?: "Error on onLoad"))
     }
 
-    private fun observePurchases(product: Product, detail: ProductDetail) =
+    private fun observePurchases(product: Product, detail: ProductOfferDetail) =
         paymentManager.observeStorePurchases().transformLatest { list ->
             val purchase = list.firstOrNull { it.productId == product.productId }
             when {
@@ -90,7 +112,7 @@ class PurchaseButtonProcessorNative @Inject constructor(
 
     private fun onPurchase(product: Product) = flow {
         val activity = requireNotNull(activityProvider.lastResumed)
-        purchaseOrchestrator.startPurchaseWorkflow(activity, product.productId, product.accountId)
+        purchaseOrchestrator.startPurchaseWorkflow(activity, product.productId, product.offerToken, product.accountId)
         emitAll(onLoad(product))
     }.catch {
         emit(PurchaseButtonState.Error(it.message ?: "Error on startPurchaseWorkflow"))
@@ -98,13 +120,16 @@ class PurchaseButtonProcessorNative @Inject constructor(
 
     private fun onPending(
         product: Product,
-        detail: ProductDetail,
+        detail: ProductOfferDetail,
         purchase: Purchase
     ) = flow<PurchaseButtonState> {
         CoreLogger.d(LogTag.STORE, "onPending: $detail")
         emit(PurchaseButtonState.Pending(detail))
         // Workaround: Override detail.planName by product.planName.
-        subscriptionManager.subscribe(detail.copy(planName = product.planName), purchase)
+        subscriptionManager.subscribe(
+            detail.copy(metadata = detail.metadata.copy(planName = product.planName)),
+            purchase
+        )
     }.catch { exception ->
         val exceptionMessage = exception.message ?: "Error occurred whilst subscribing."
         CoreLogger.e(LogTag.SUBSCRIBE, exceptionMessage)

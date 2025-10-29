@@ -19,7 +19,9 @@ package me.proton.android.core.payment.domain.usecase
 
 import me.proton.android.core.payment.domain.PaymentManager
 import me.proton.android.core.payment.domain.SubscriptionManager
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOffer
+import me.proton.android.core.payment.domain.model.ProductOfferList
+import me.proton.android.core.payment.domain.model.ProductSelectionHeader
 import me.proton.android.core.payment.domain.model.PurchaseStatus
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,41 +32,43 @@ class GetAvailableUpgrades @Inject constructor(
     private val subscriptionManager: SubscriptionManager
 ) {
 
-    suspend operator fun invoke(): List<ProductDetail> {
+    suspend operator fun invoke(): List<ProductOfferList> {
         if (!subscriptionManager.areInAppPurchasesEnabled()) {
             return emptyList()
         }
 
         val upgrades = subscriptionManager.getAvailable()
-        if (upgrades.isEmpty()) return upgrades
+        if (upgrades.isEmpty()) return emptyList()
 
-        val ids = upgrades.map { it.productId }
+        val ids = upgrades.map { it.metadata.productId }
         val storePurchases = paymentManager.getStorePurchases().associateBy { it.productId }
-        val storeProducts = paymentManager.getStoreProducts(ids).associateBy { it.productId }
+        val storeProducts = paymentManager.getStoreProducts(ids).associateBy { it.metadata.productId }
         val acknowledged = storePurchases.filterValues { it.status == PurchaseStatus.Acknowledged }
         val available = upgrades
             // Remove any acknowledged Purchase.
-            .filter { !acknowledged.containsKey(it.productId) }
+            .filter { !acknowledged.containsKey(it.metadata.productId) }
             // Remove any unavailable product in Store.
-            .filter { storeProducts.containsKey(it.productId) }
+            .filter { storeProducts.containsKey(it.metadata.productId) }
 
         return available.map {
-            val store = storeProducts.getValue(it.productId)
-            it.copy(
-                header = it.header.copy(
-                    priceText = store.header.priceText
+            val store = storeProducts.getValue(it.metadata.productId)
+            ProductOfferList(
+                metadata = it.metadata,
+                header = ProductSelectionHeader(
+                    it.header.title,
+                    it.header.description,
+                    it.header.cycleText,
+                    it.header.starred
                 ),
-                price = it.price.copy(
-                    amount = store.price.amount,
-                    currency = store.price.currency,
-                    formatted = store.price.formatted
-                ),
-                renew = it.price.copy(
-                    amount = store.renew.amount,
-                    currency = store.renew.currency,
-                    formatted = store.renew.formatted
-                )
+                offers = store.offers.injectCustomerId(it.metadata.customerId)
             )
         }
+    }
+
+    private fun List<ProductOffer>.injectCustomerId(customerId: String) = map { offer ->
+        offer.copy(
+            current = offer.current.copy(customerId = customerId),
+            renew = offer.renew.copy(customerId = customerId)
+        )
     }
 }

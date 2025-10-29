@@ -19,10 +19,10 @@ package me.proton.android.core.payment.domain.model
 
 data class SubscriptionDetail(
     val name: String,
-    val header: ProductHeader,
+    val header: ProductDetailHeader,
     val entitlements: List<ProductEntitlement>,
-    val price: ProductPrice?,
-    val renew: ProductPrice?,
+    val price: ProductOfferPrice?,
+    val renew: ProductOfferPrice?,
     val periodEnd: Long?,
     val managedBy: Int?
 )

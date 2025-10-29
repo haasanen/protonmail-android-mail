@@ -33,8 +33,8 @@ import kotlinx.coroutines.launch
 import me.proton.android.core.payment.domain.LogTag
 import me.proton.android.core.payment.domain.PaymentMetricsTracker
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.IAP_SUBSCRIBE
+import me.proton.android.core.payment.domain.model.ProductOfferToken
 import me.proton.android.core.payment.google.data.PurchaseStoreListener
-import me.proton.android.core.payment.google.data.extension.checkOrThrow
 import me.proton.android.core.payment.google.data.extension.metrics
 import me.proton.android.core.payment.google.data.extension.withConnection
 import me.proton.android.core.payment.presentation.PurchaseOrchestrator
@@ -73,17 +73,21 @@ class PurchaseOrchestratorImpl @Inject constructor(
     private suspend fun launchBillingFlow(
         caller: Activity,
         productId: String,
+        offerToken: ProductOfferToken,
         accountId: String
     ): BillingResult {
         val productDetailResult = getProductDetails(productId)
         val productDetail = requireNotNull(productDetailResult.productDetailsList).first()
-        val offerDetail = requireNotNull(productDetail.subscriptionOfferDetails).first()
+
+        val offer = productDetail.subscriptionOfferDetails?.first { it.offerToken == offerToken.value }
+        requireNotNull(offer) { "Offer not found for product id '$productId'" }
+
         val params = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(
                 listOf(
                     ProductDetailsParams.newBuilder()
                         .setProductDetails(productDetail)
-                        .setOfferToken(offerDetail.offerToken)
+                        .setOfferToken(offer.offerToken)
                         .build()
                 )
             )
@@ -98,17 +102,19 @@ class PurchaseOrchestratorImpl @Inject constructor(
     override fun startPurchaseWorkflow(
         caller: Activity,
         productId: String,
+        offerToken: ProductOfferToken,
         accountId: String
     ) {
         scopeProvider.GlobalIOSupervisedScope.launch {
-            val result = launchBillingFlow(caller, productId, accountId)
+            val result = runCatching { launchBillingFlow(caller, productId, offerToken, accountId) }
             CoreLogger.d(LogTag.STORE, "launchBillingFlow result: $result")
 
-            result.metrics(
-                onResponse = { paymentMetricsTracker.track(IAP_SUBSCRIBE, it) },
-                onError = { CoreLogger.e(LogTag.IN_APP_PURCHASE, it) }
-            )
-            result.checkOrThrow()
+            result.getOrNull()?.let { billingResult ->
+                billingResult.metrics(
+                    onResponse = { paymentMetricsTracker.track(IAP_SUBSCRIBE, it) },
+                    onError = { CoreLogger.e(LogTag.IN_APP_PURCHASE, it) }
+                )
+            }
         }
     }
 }

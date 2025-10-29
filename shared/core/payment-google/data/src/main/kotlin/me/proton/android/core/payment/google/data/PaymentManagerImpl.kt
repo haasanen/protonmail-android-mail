@@ -20,6 +20,7 @@ package me.proton.android.core.payment.google.data
 import android.content.Context
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.PendingPurchasesParams
+import com.android.billingclient.api.ProductDetails
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -28,14 +29,17 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import me.proton.android.core.payment.domain.PaymentManager
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.PlayStoreProductMetadata
+import me.proton.android.core.payment.domain.model.PlayStoreProductOfferList
+import me.proton.android.core.payment.domain.model.ProductOffer
+import me.proton.android.core.payment.domain.model.ProductOfferTags
+import me.proton.android.core.payment.domain.model.ProductOfferToken
 import me.proton.android.core.payment.domain.model.Purchase
 import me.proton.android.core.payment.google.data.extension.getOrThrow
 import me.proton.android.core.payment.google.data.extension.getProductDetails
 import me.proton.android.core.payment.google.data.extension.getProductPurchasesAsync
 import me.proton.android.core.payment.google.data.extension.withConnection
-import me.proton.android.core.payment.google.data.model.toProductHeader
-import me.proton.android.core.payment.google.data.model.toProductPrice
+import me.proton.android.core.payment.google.data.model.toProductPriceOffer
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,21 +56,45 @@ class PaymentManagerImpl @Inject constructor(
         .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
         .build()
 
-    override suspend fun getStoreProducts(ids: List<String>): List<ProductDetail> = newClient().withConnection {
-        getProductDetails(ids).getOrThrow()?.map { detail ->
-            val phases = detail.subscriptionOfferDetails?.getOrNull(0)?.pricingPhases?.pricingPhaseList ?: emptyList()
-            val current = phases.getOrNull(0)
-            val renew = phases.getOrNull(1)
-            ProductDetail(
-                productId = detail.productId,
-                planName = detail.name, // Comes from Proton BE.
-                header = detail.toProductHeader(requireNotNull(current)),
-                price = current.toProductPrice(detail.productId),
-                renew = renew?.toProductPrice(detail.productId) ?: current.toProductPrice(detail.productId),
-                entitlements = emptyList()
-            )
-        }.orEmpty()
-    }
+    override suspend fun getStoreProducts(ids: List<String>): List<PlayStoreProductOfferList> =
+        newClient().withConnection {
+            getProductDetails(ids).getOrThrow()?.flatMap { detail ->
+                buildList {
+                    val offers = detail.subscriptionOfferDetails.orEmpty()
+
+                    val productOffers = offers.filterNotNull().mapNotNull { offer ->
+
+                        val pricingPhases = offer.pricingPhases.pricingPhaseList
+                        val current = pricingPhases.getOrNull(0) ?: return@mapNotNull null
+                        val renew = pricingPhases.getOrNull(1)
+
+                        val isBaseOffer = pricingPhases.size == 1 &&
+                            current.recurrenceMode == ProductDetails.RecurrenceMode.INFINITE_RECURRING
+
+                        ProductOffer(
+                            isBaseOffer = isBaseOffer,
+                            tags = ProductOfferTags(offer.offerTags.toSet()),
+                            token = ProductOfferToken(offer.offerToken),
+                            current = current.toProductPriceOffer(detail.productId),
+                            renew = renew?.toProductPriceOffer(detail.productId)
+                                ?: current.toProductPriceOffer(detail.productId)
+                        )
+                    }
+
+                    val metadata = PlayStoreProductMetadata(
+                        productId = detail.productId,
+                        planName = detail.name
+                    )
+
+                    val offerList = PlayStoreProductOfferList(
+                        metadata = metadata,
+                        offers = productOffers
+                    )
+
+                    add(offerList)
+                }
+            }.orEmpty()
+        }
 
     override suspend fun getStorePurchases(): List<Purchase> = newClient().withConnection {
         purchaseStoreListener.purchases
