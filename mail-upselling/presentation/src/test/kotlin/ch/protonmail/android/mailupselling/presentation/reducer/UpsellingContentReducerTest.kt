@@ -29,7 +29,7 @@ import ch.protonmail.android.mailupselling.presentation.mapper.PlanUpgradeUiMapp
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeUiModel
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.test.runTest
@@ -72,7 +72,7 @@ internal class UpsellingContentReducerTest {
     fun `should reduce to data when mapping succeeds`() = runTest {
         // Given
         val uiModel = mockk<PlanUpgradeUiModel>()
-        every {
+        coEvery {
             planUpgradeUiMapper.toUiModel(any(), any())
         } returns uiModel.right()
 
@@ -86,7 +86,7 @@ internal class UpsellingContentReducerTest {
     @Test
     fun `should reduce to error when mapping fails`() = runTest {
         // Given
-        every {
+        coEvery {
             planUpgradeUiMapper.toUiModel(any(), any())
         } returns PlanMappingError.EmptyList.left()
 

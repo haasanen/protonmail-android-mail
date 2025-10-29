@@ -29,7 +29,7 @@ internal class OnboardingUpsellingReducer @Inject constructor(
     private val mapper: OnboardingPlanUpgradeUiMapper
 ) {
 
-    fun newStateFrom(operation: OnboardingUpsellOperation): OnboardingUpsellState {
+    suspend fun newStateFrom(operation: OnboardingUpsellOperation): OnboardingUpsellState {
         return when (operation) {
             is OnboardingUpsellEvent.DataLoaded -> reducePlansListToNewState(operation)
             is OnboardingUpsellEvent.LoadingError -> reduceErrorEvent(operation)
@@ -37,7 +37,7 @@ internal class OnboardingUpsellingReducer @Inject constructor(
         }
     }
 
-    private fun reducePlansListToNewState(operation: OnboardingUpsellEvent.DataLoaded): OnboardingUpsellState {
+    private suspend fun reducePlansListToNewState(operation: OnboardingUpsellEvent.DataLoaded): OnboardingUpsellState {
         val uiModel = mapper.toUiModel(operation.productDetails)
 
         return uiModel.fold(

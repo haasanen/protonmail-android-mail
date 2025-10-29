@@ -38,9 +38,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import me.proton.core.util.kotlin.deserialize
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 internal class UpsellingViewModel @Inject constructor(
@@ -62,8 +64,18 @@ internal class UpsellingViewModel @Inject constructor(
             ?: UpsellingEntryPoint.Feature.Navbar
 
         viewModelScope.launch {
-            val plans = observeMailPlusPlanUpgrades().first().takeIf { it.isNotEmpty() }
-                ?: return@launch emitNewStateFrom(UpsellingScreenContentEvent.LoadingError.NoSubscriptions)
+            val plans = try {
+                withTimeoutOrNull(10.seconds) {
+                    observeMailPlusPlanUpgrades(entryPoint).first { it.isNotEmpty() }
+                }
+            } catch (_: NoSuchElementException) {
+                null // Flow completed without non-empty list (e.g., no userId)
+            }
+
+            if (plans == null) {
+                emitNewStateFrom(UpsellingScreenContentEvent.LoadingError.NoSubscriptions)
+                return@launch
+            }
 
             emitNewStateFrom(UpsellingScreenContentEvent.DataLoaded(plans, entryPoint))
         }
@@ -81,7 +93,7 @@ internal class UpsellingViewModel @Inject constructor(
         resetPlanUpgradesCache()
     }
 
-    private fun emitNewStateFrom(operation: UpsellingScreenContentOperation) {
+    private suspend fun emitNewStateFrom(operation: UpsellingScreenContentOperation) {
         mutableState.update { upsellingContentReducer.newStateFrom(operation) }
     }
 }

@@ -20,8 +20,14 @@ package ch.protonmail.android.mailupselling.domain
 
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.cache.AvailableUpgradesCache
+import ch.protonmail.android.mailupselling.domain.model.BlackFridayPhase
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.domain.usecase.GetCurrentBlackFridayPhase
+import ch.protonmail.android.mailupselling.domain.usecase.IsEligibleForBlackFridayPromotion
 import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
+import ch.protonmail.android.testdata.upselling.UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
+import ch.protonmail.android.testdata.upselling.UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -40,13 +46,22 @@ internal class ObserveMailPlusPlanUpgradesTest {
     private val availableUpgradesCache = mockk<AvailableUpgradesCache>()
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
 
+    private val getCurrentBlackFridayPhase = mockk<GetCurrentBlackFridayPhase>()
+    private val isEligibleForBlackFridayPromotion = mockk<IsEligibleForBlackFridayPromotion>()
+
     private val userId = UserId("user-id")
     private lateinit var observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades
 
     @BeforeTest
     fun setup() {
         every { observePrimaryUserId() } returns flowOf(userId)
-        observeMailPlusPlanUpgrades = ObserveMailPlusPlanUpgrades(availableUpgradesCache, observePrimaryUserId)
+        coEvery { getCurrentBlackFridayPhase() } returns BlackFridayPhase.None
+        observeMailPlusPlanUpgrades = ObserveMailPlusPlanUpgrades(
+            availableUpgradesCache,
+            observePrimaryUserId,
+            getCurrentBlackFridayPhase,
+            isEligibleForBlackFridayPromotion
+        )
     }
 
     @AfterTest
@@ -57,23 +72,27 @@ internal class ObserveMailPlusPlanUpgradesTest {
     @Test
     fun `should return filtered plans with mail plus only ids when invoked`() = runTest {
         // Given
-        val expectedPlans = listOf(
-            UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-            UpsellingTestData.MailPlusProducts.YearlyProductDetail
+        val mailPlusPlans = listOf(
+            UpsellingTestData.MailPlusProducts.MonthlyProductOfferList,
+            UpsellingTestData.MailPlusProducts.YearlyProductOfferList
         )
+
+        val expectedOffers = listOf(MonthlyProductOfferDetail, YearlyProductOfferDetail)
+
+        coEvery { isEligibleForBlackFridayPromotion(userId) } returns false
 
         coEvery { availableUpgradesCache.observe(userId) } returns flowOf(
             buildList {
-                addAll(expectedPlans)
-                add(UpsellingTestData.UnlimitedMailProduct.MonthlyProductDetail)
-                add(UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail)
+                addAll(mailPlusPlans)
+                add(UpsellingTestData.UnlimitedMailProduct.MonthlyProductOfferList)
+                add(UpsellingTestData.UnlimitedMailProduct.YearlyProductOfferList)
             }
         )
 
         // When
-        val actualPlans = observeMailPlusPlanUpgrades().first()
+        val actualPlans = observeMailPlusPlanUpgrades(entryPoint = UpsellingEntryPoint.Feature.Navbar).first()
 
         // Then
-        assertEquals(expectedPlans, actualPlans)
+        assertEquals(expectedOffers, actualPlans)
     }
 }

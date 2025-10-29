@@ -31,20 +31,24 @@ import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenCon
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen.UpsellingEntryPointKey
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import io.mockk.verify
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 internal class UpsellingViewModelTest {
 
@@ -73,32 +77,55 @@ internal class UpsellingViewModelTest {
     @Test
     fun `should return loading error when plans fetching returns an empty list`() = runTest {
         // Given
-        coEvery { observeMailPlusPlanUpgrades() } returns flowOf(emptyList())
+        coEvery { observeMailPlusPlanUpgrades(any()) } returns flowOf(emptyList())
         val expectedFailure = mockk<UpsellingScreenContentState.Error>()
-        every {
+        coEvery {
             upsellingContentReducer.newStateFrom(UpsellingScreenContentEvent.LoadingError.NoSubscriptions)
         } returns expectedFailure
 
         // When
         viewModel().state.test {
-            // Then
             assertEquals(expectedFailure, awaitItem())
         }
 
-        verify {
+        coVerify {
             upsellingContentReducer.newStateFrom(UpsellingScreenContentEvent.LoadingError.NoSubscriptions)
         }
         confirmVerified(upsellingContentReducer)
     }
 
     @Test
+    fun `should return loading error when timeout occurs waiting for non-empty plans`() = runTest {
+        // Given
+        coEvery { observeMailPlusPlanUpgrades(UpsellingEntryPoint.Feature.Navbar) } returns flow {
+            emit(emptyList())
+            delay(15.seconds)
+        }
+
+        val expectedFailure = mockk<UpsellingScreenContentState.Error>()
+        coEvery {
+            upsellingContentReducer.newStateFrom(UpsellingScreenContentEvent.LoadingError.NoSubscriptions)
+        } returns expectedFailure
+
+        // When
+        viewModel().state.test {
+            awaitItem()
+
+            advanceTimeBy(11.seconds)
+
+            // Then
+            assertEquals(expectedFailure, awaitItem())
+        }
+    }
+
+    @Test
     fun `should return data state when plans fetching returns a valid list`() = runTest {
         // Given
-        val expectedList = listOf<ProductDetail>(mockk(), mockk())
-        coEvery { observeMailPlusPlanUpgrades() } returns flowOf(expectedList)
+        val expectedList = listOf<ProductOfferDetail>(mockk(), mockk())
+        coEvery { observeMailPlusPlanUpgrades(UpsellingEntryPoint.Feature.Navbar) } returns flowOf(expectedList)
 
         val expectedModel = mockk<UpsellingScreenContentState.Data>()
-        every {
+        coEvery {
             upsellingContentReducer.newStateFrom(
                 operation = UpsellingScreenContentEvent.DataLoaded(
                     plans = expectedList,
@@ -113,7 +140,7 @@ internal class UpsellingViewModelTest {
             assertEquals(expectedModel, awaitItem())
         }
 
-        verify {
+        coVerify {
             upsellingContentReducer.newStateFrom(
                 UpsellingScreenContentEvent.DataLoaded(
                     plans = expectedList,
