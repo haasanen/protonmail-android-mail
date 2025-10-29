@@ -70,11 +70,14 @@ fun UpsellingMailButton(
         exit = scaleOut()
     ) {
         when (state.value.visibility) {
-            UpsellingVisibility.HIDDEN -> Unit
-            UpsellingVisibility.PROMO ->
+            is UpsellingVisibility.Hidden -> Unit
+            is UpsellingVisibility.Promotional.IntroductoryPrice ->
                 UpsellingPromotionalMailButton(modifier = modifier, onButtonClick = { onClick(type) })
 
-            UpsellingVisibility.NORMAL -> UpsellingMailButton(modifier = modifier, onButtonClick = { onClick(type) })
+//            is UpsellingVisibility.Promotional.BlackFriday ->
+//                UpsellingBlackFridayMailButton(visibility, modifier = modifier, onButtonClick = { onClick(type) })
+
+            else -> UpsellingMailButton(modifier = modifier, onButtonClick = { onClick(type) })
         }
     }
 }
