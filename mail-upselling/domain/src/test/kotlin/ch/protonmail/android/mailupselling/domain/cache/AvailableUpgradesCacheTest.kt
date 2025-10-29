@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferList
 import me.proton.android.core.payment.domain.usecase.GetAvailableUpgrades
 import me.proton.core.domain.entity.UserId
 import org.junit.Rule
@@ -51,7 +51,7 @@ internal class AvailableUpgradesCacheTest {
     private lateinit var cache: AvailableUpgradesCache
 
     private val userId = UserId("test-user-123")
-    private val mockProductDetails = listOf<ProductDetail>(mockk(), mockk())
+    private val mockProductDetails = listOf<ProductOfferList>(mockk(), mockk())
 
     @BeforeTest
     fun setup() {
@@ -89,7 +89,7 @@ internal class AvailableUpgradesCacheTest {
     @Test
     fun `observe - reloads data when cache is expired`() = runTest {
         // Given
-        val updatedProducts = listOf(mockk<ProductDetail>())
+        val updatedProducts = listOf(mockk<ProductOfferList>())
         coEvery { getAvailableUpgrades() } returns mockProductDetails
 
         // When (first load)
@@ -131,7 +131,7 @@ internal class AvailableUpgradesCacheTest {
     @Test
     fun `get - triggers reload and returns old data when cache is expired`() = runTest {
         // Given
-        val updatedProducts = listOf(mockk<ProductDetail>())
+        val updatedProducts = listOf(mockk<ProductOfferList>())
         coEvery { getAvailableUpgrades() } returnsMany listOf(mockProductDetails, updatedProducts)
 
         // Pre-populate cache
@@ -190,7 +190,7 @@ internal class AvailableUpgradesCacheTest {
         coEvery { getAvailableUpgrades() } returns mockProductDetails
 
         // When - Launch multiple concurrent observers
-        val results = mutableListOf<List<ProductDetail>>()
+        val results = mutableListOf<List<ProductOfferList>>()
         val jobs = List(5) {
             launch {
                 cache.observe(userId).test {
@@ -214,8 +214,8 @@ internal class AvailableUpgradesCacheTest {
     fun `cache maintains separate state for different users`() = runTest {
         // Given
         val userId2 = UserId("test-user-456")
-        val user1Products = listOf(mockk<ProductDetail>())
-        val user2Products = listOf(mockk<ProductDetail>())
+        val user1Products = listOf(mockk<ProductOfferList>())
+        val user2Products = listOf(mockk<ProductOfferList>())
 
         coEvery { getAvailableUpgrades() } returnsMany listOf(user1Products, user2Products)
 

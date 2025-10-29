@@ -29,10 +29,10 @@ import javax.inject.Provider
 class GetUpsellingOnboardingVisibility @Inject constructor(
     private val getOnboardingUpsellingPlans: GetOnboardingPlanUpgrades,
     @PlayServicesAvailableValue private val playServicesAvailable: Provider<Boolean>,
-    @IsOnboardingUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
+    @IsOnboardingUpsellEnabled private val isOnboardingUpsellEnabled: FeatureFlag<Boolean>
 ) {
 
     suspend operator fun invoke(userId: UserId) = playServicesAvailable.get() &&
-        isUpsellEnabled.get() &&
+        isOnboardingUpsellEnabled.get() &&
         getOnboardingUpsellingPlans(userId).isRight()
 }

@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailupselling.domain
 
 import arrow.core.left
-import arrow.core.right
 import ch.protonmail.android.mailupselling.domain.cache.AvailableUpgradesCache
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlanUpgrades
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlansError
@@ -53,20 +52,27 @@ internal class GetOnboardingPlanUpgradesTest {
 
     @Test
     fun `should return plans when the expected instances are present`() = runTest {
-        val expectedList = listOf(
-            UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-            UpsellingTestData.MailPlusProducts.YearlyProductDetail,
-            UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail,
-            UpsellingTestData.UnlimitedMailProduct.MonthlyProductDetail
+        val expectedInstances = listOf(
+            UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail,
+            UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail,
+            UpsellingTestData.UnlimitedMailProduct.MonthlyProductOfferDetail,
+            UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail
         )
 
-        coEvery { availableUpgradesCache.get(userId) } returns expectedList
+        val availablePlans = listOf(
+            UpsellingTestData.MailPlusProducts.MonthlyProductOfferList,
+            UpsellingTestData.MailPlusProducts.YearlyProductOfferList,
+            UpsellingTestData.UnlimitedMailProduct.MonthlyProductOfferList,
+            UpsellingTestData.UnlimitedMailProduct.YearlyProductOfferList
+        )
+
+        coEvery { availableUpgradesCache.get(userId) } returns availablePlans
 
         // When
-        val actual = getOnboardingPlanUpgrades(userId)
+        val actual = getOnboardingPlanUpgrades(userId).getOrNull()
 
         // Then
-        assertEquals(expectedList.right(), actual)
+        assertEquals(expectedInstances, actual)
     }
 
     @Test
@@ -84,12 +90,14 @@ internal class GetOnboardingPlanUpgradesTest {
     @Test
     fun `should return an error when expected instances are not present`() = runTest {
         // Given
-        coEvery { availableUpgradesCache.get(userId) } returns listOf(
-            UpsellingTestData.MailPlusProducts.MonthlyProductDetail.copy(planName = "anotherPlanName"),
-            UpsellingTestData.MailPlusProducts.YearlyProductDetail,
-            UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail,
-            UpsellingTestData.UnlimitedMailProduct.MonthlyProductDetail
+        val availablePlans = listOf(
+            UpsellingTestData.MailPlusProducts.MonthlyProductOfferList.copy(offers = emptyList()),
+            UpsellingTestData.MailPlusProducts.YearlyProductOfferList,
+            UpsellingTestData.UnlimitedMailProduct.MonthlyProductOfferList,
+            UpsellingTestData.UnlimitedMailProduct.YearlyProductOfferList
         )
+
+        coEvery { availableUpgradesCache.get(userId) } returns availablePlans
 
         // When
         val actual = getOnboardingPlanUpgrades(userId)
