@@ -21,13 +21,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
 android {
-    namespace = "ch.protonmail.android.mailupselling.dagger"
+    namespace = "ch.protonmail.android.mailupselling.data"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
@@ -45,14 +43,21 @@ android {
             jvmTarget = JvmTarget.fromTarget("17")
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-    implementation(libs.dagger.hilt.android)
+    implementation(libs.bundles.module.data)
 
-    implementation(project(":mail-upselling:data"))
+    implementation(project(":mail-common:data"))
+    implementation(project(":mail-common:domain"))
     implementation(project(":mail-upselling:domain"))
-    implementation(project(":mail-upselling:presentation"))
-    implementation(project(":shared:core:payment-google:domain"))
+    implementation(libs.arrow.core)
+
+    testImplementation(project(":test:test-data"))
+    testImplementation(project(":test:utils"))
+    testImplementation(libs.bundles.test)
 }

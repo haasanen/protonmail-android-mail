@@ -18,11 +18,20 @@
 
 package ch.protonmail.android.mailupselling.dagger
 
+import android.content.Context
+import ch.protonmail.android.mailupselling.data.BlackFridayDataStoreProvider
+import ch.protonmail.android.mailupselling.data.local.BlackFridayLocalDataSource
+import ch.protonmail.android.mailupselling.data.local.BlackFridayLocalDataSourceImpl
+import ch.protonmail.android.mailupselling.data.repository.BlackFridayRepositoryImpl
 import ch.protonmail.android.mailupselling.domain.annotation.PlayServicesAvailableValue
 import ch.protonmail.android.mailupselling.domain.annotation.UpsellingCacheScope
+import ch.protonmail.android.mailupselling.domain.repository.BlackFridayRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +39,29 @@ import kotlinx.coroutines.SupervisorJob
 import me.proton.android.core.payment.google.domain.GoogleServicesAvailability
 import me.proton.android.core.payment.google.domain.GoogleServicesUtils
 import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface UpsellingModule {
+
+    @Binds
+    @Reusable
+    fun provideBlackFridayRepository(impl: BlackFridayRepositoryImpl): BlackFridayRepository
+
+    @Binds
+    @Singleton
+    fun provideBlackFridayDataSource(impl: BlackFridayLocalDataSourceImpl): BlackFridayLocalDataSource
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object UpsellingModuleProvider {
+
+        @Provides
+        @Singleton
+        fun provideDataStoreProvider(@ApplicationContext context: Context): BlackFridayDataStoreProvider =
+            BlackFridayDataStoreProvider(context)
+    }
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
