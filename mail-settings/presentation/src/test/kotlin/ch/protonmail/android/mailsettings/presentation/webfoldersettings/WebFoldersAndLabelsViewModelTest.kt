@@ -33,6 +33,7 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfi
 import ch.protonmail.android.mailsettings.presentation.ObserveWebSettingsStateFlow
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -82,7 +83,9 @@ class WebFoldersAndLabelsViewModelTest {
         coEvery { this@mockk() } just Runs
     }
     private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
-        coEvery { this@mockk.invoke() } returns flowOf(UpsellingVisibility.HIDDEN)
+        coEvery {
+            this@mockk.invoke(entryPoint = UpsellingEntryPoint.Feature.Folders)
+        } returns flowOf(UpsellingVisibility.Hidden)
     }
 
     private fun buildViewModel() = WebFoldersAndLabelsViewModel(
@@ -122,7 +125,7 @@ class WebFoldersAndLabelsViewModelTest {
             // Then
             val actualState = awaitItem() as WebSettingsState.Data
             assertEquals(testTheme, actualState.theme)
-            assertEquals(UpsellingVisibility.HIDDEN, actualState.upsellingVisibility)
+            assertEquals(UpsellingVisibility.Hidden, actualState.upsellingVisibility)
         }
     }
 
@@ -131,7 +134,9 @@ class WebFoldersAndLabelsViewModelTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
         every { appSettingsRepository.observeTheme() } returns flowOf(testTheme)
-        every { observeUpsellingVisibility() } returns flowOf(UpsellingVisibility.NORMAL)
+        every {
+            observeUpsellingVisibility(UpsellingEntryPoint.Feature.Folders)
+        } returns flowOf(UpsellingVisibility.Normal)
         val viewModel = buildViewModel()
 
         // When
@@ -140,7 +145,7 @@ class WebFoldersAndLabelsViewModelTest {
             // Then
             val actualState = awaitItem() as WebSettingsState.Data
             assertEquals(testTheme, actualState.theme)
-            assertEquals(UpsellingVisibility.NORMAL, actualState.upsellingVisibility)
+            assertEquals(UpsellingVisibility.Normal, actualState.upsellingVisibility)
         }
     }
 

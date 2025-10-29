@@ -26,12 +26,15 @@ import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,11 +50,31 @@ class ObserveWebSettingsStateFlow @Inject constructor(
     operator fun invoke(
         coroutineScope: CoroutineScope,
         getSettingsUrl: (ForkedSessionId, Theme, WebSettingsConfig) -> String
+    ): Flow<WebSettingsState> = invoke(
+        coroutineScope = coroutineScope,
+        upsellingFlow = flowOf(UpsellingVisibility.Hidden),
+        getSettingsUrl = getSettingsUrl
+    )
+
+    operator fun invoke(
+        coroutineScope: CoroutineScope,
+        entryPoint: UpsellingEntryPoint.Feature,
+        getSettingsUrl: (ForkedSessionId, Theme, WebSettingsConfig) -> String
+    ): Flow<WebSettingsState> = invoke(
+        coroutineScope = coroutineScope,
+        upsellingFlow = observeUpsellingVisibility(entryPoint),
+        getSettingsUrl = getSettingsUrl
+    )
+
+    private fun invoke(
+        coroutineScope: CoroutineScope,
+        upsellingFlow: Flow<UpsellingVisibility>,
+        getSettingsUrl: (ForkedSessionId, Theme, WebSettingsConfig) -> String
     ): Flow<WebSettingsState> = combine(
         observePrimaryUserId().filterNotNull(),
         appSettingsRepository.observeTheme(),
         observeWebSettingsConfig(),
-        observeUpsellingVisibility()
+        upsellingFlow
     ) { userId, theme, webSettingsConfig, upsellingVisibility ->
 
         forkSession(userId).fold(
