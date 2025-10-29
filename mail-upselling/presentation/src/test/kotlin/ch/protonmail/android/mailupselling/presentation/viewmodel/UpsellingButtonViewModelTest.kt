@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailupselling.presentation.viewmodel
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingState
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
@@ -48,39 +49,45 @@ internal class UpsellingButtonViewModelTest {
     @Test
     fun `should propagate the use case visibility (normal)`() = runTest {
         // Given
-        every { observeVisibilityUseCase() } returns flowOf(UpsellingVisibility.NORMAL)
-        val viewModel = UpsellingButtonViewModel(observeVisibilityUseCase)
+        every {
+            observeVisibilityUseCase(UpsellingEntryPoint.Feature.MobileSignature)
+        } returns flowOf(UpsellingVisibility.Normal)
+        val viewModel = UpsellingButtonViewModel(UpsellingEntryPoint.Feature.MobileSignature, observeVisibilityUseCase)
 
         // When
         viewModel.state.test {
             // Then
-            assertEquals(UpsellingState(UpsellingVisibility.NORMAL), awaitItem())
+            assertEquals(UpsellingState(UpsellingVisibility.Normal), awaitItem())
         }
     }
 
     @Test
     fun `should propagate the use case visibility (promo)`() = runTest {
         // Given
-        every { observeVisibilityUseCase() } returns flowOf(UpsellingVisibility.PROMO)
-        val viewModel = UpsellingButtonViewModel(observeVisibilityUseCase)
+        every {
+            observeVisibilityUseCase(UpsellingEntryPoint.Feature.MobileSignature)
+        } returns flowOf(UpsellingVisibility.Promotional.IntroductoryPrice)
+        val viewModel = UpsellingButtonViewModel(UpsellingEntryPoint.Feature.MobileSignature, observeVisibilityUseCase)
 
         // When
         viewModel.state.test {
             // Then
-            assertEquals(UpsellingState(UpsellingVisibility.PROMO), awaitItem())
+            assertEquals(UpsellingState(UpsellingVisibility.Promotional.IntroductoryPrice), awaitItem())
         }
     }
 
     @Test
     fun `should propagate the use case visibility (hidden)`() = runTest {
         // Given
-        every { observeVisibilityUseCase() } returns flowOf(UpsellingVisibility.HIDDEN)
-        val viewModel = UpsellingButtonViewModel(observeVisibilityUseCase)
+        every {
+            observeVisibilityUseCase(UpsellingEntryPoint.Feature.MobileSignature)
+        } returns flowOf(UpsellingVisibility.Hidden)
+        val viewModel = UpsellingButtonViewModel(UpsellingEntryPoint.Feature.MobileSignature, observeVisibilityUseCase)
 
         // When
         viewModel.state.test {
             // Then
-            assertEquals(UpsellingState(UpsellingVisibility.HIDDEN), awaitItem())
+            assertEquals(UpsellingState(UpsellingVisibility.Hidden), awaitItem())
         }
     }
 }

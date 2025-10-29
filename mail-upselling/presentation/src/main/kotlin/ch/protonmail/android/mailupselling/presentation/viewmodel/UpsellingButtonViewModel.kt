@@ -21,22 +21,26 @@ package ch.protonmail.android.mailupselling.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingState
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class UpsellingButtonViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = UpsellingButtonViewModel.Factory::class)
+class UpsellingButtonViewModel @AssistedInject constructor(
+    @Assisted val upsellingEntryPoint: UpsellingEntryPoint.Feature,
     observeUpsellingVisibility: ObserveUpsellingVisibility
 ) : ViewModel() {
 
-    val state: StateFlow<UpsellingState> = observeUpsellingVisibility()
+    val state: StateFlow<UpsellingState> = observeUpsellingVisibility(upsellingEntryPoint)
         .map { visibility -> UpsellingState(visibility) }
         .stateIn(
             scope = viewModelScope,
@@ -44,8 +48,14 @@ class UpsellingButtonViewModel @Inject constructor(
             initialValue = initialState
         )
 
+    @AssistedFactory
+    interface Factory {
+
+        fun create(upsellingEntryPoint: UpsellingEntryPoint.Feature): UpsellingButtonViewModel
+    }
+
     companion object {
 
-        val initialState = UpsellingState(visibility = UpsellingVisibility.HIDDEN)
+        val initialState = UpsellingState(visibility = UpsellingVisibility.Hidden)
     }
 }

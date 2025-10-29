@@ -41,11 +41,12 @@ import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilit
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingButtonViewModel
 
 @Composable
-fun SidebarUpsellRow(
-    modifier: Modifier = Modifier,
-    onClick: (type: UpsellingVisibility) -> Unit,
-    viewModel: UpsellingButtonViewModel = hiltViewModel()
-) {
+fun SidebarUpsellRow(modifier: Modifier = Modifier, onClick: (type: UpsellingVisibility) -> Unit) {
+
+    val viewModel = hiltViewModel<UpsellingButtonViewModel, UpsellingButtonViewModel.Factory> { factory ->
+        factory.create(UpsellingEntryPoint.Feature.Sidebar)
+    }
+
     val state = viewModel.state.collectAsStateWithLifecycle()
     val type = state.value.visibility
 
@@ -57,9 +58,11 @@ fun SidebarUpsellRow(
             exit = scaleOut()
         ) {
             when (state.value.visibility) {
-                UpsellingVisibility.HIDDEN -> Unit
-                UpsellingVisibility.PROMO,
-                UpsellingVisibility.NORMAL -> SidebarUpsellRow(onButtonClick = { onClick(type) })
+                is UpsellingVisibility.Hidden -> Unit
+//                is UpsellingVisibility.Promotional.BlackFriday ->
+//                    SidebarUpsellRowBlackFriday(visibility, onButtonClick = { onClick(type) })
+
+                else -> SidebarUpsellRow(onButtonClick = { onClick(type) })
             }
         }
     }

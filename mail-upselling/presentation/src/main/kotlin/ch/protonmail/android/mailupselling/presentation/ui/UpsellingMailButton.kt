@@ -49,16 +49,18 @@ import androidx.lifecycle.compose.dropUnlessResumed
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingButtonViewModel
 
 @Composable
-fun UpsellingMailButton(
-    modifier: Modifier = Modifier,
-    onClick: (type: UpsellingVisibility) -> Unit,
-    viewModel: UpsellingButtonViewModel = hiltViewModel()
-) {
+fun UpsellingMailButton(modifier: Modifier = Modifier, onClick: (type: UpsellingVisibility) -> Unit) {
+
+    val viewModel = hiltViewModel<UpsellingButtonViewModel, UpsellingButtonViewModel.Factory> { factory ->
+        factory.create(UpsellingEntryPoint.Feature.Navbar)
+    }
+
     val state = viewModel.state.collectAsStateWithLifecycle()
 
     // For now type is not propagated as it will be needed for telemetry purposes in a later story.
@@ -95,7 +97,7 @@ private fun UpsellingMailButton(onButtonClick: () -> Unit, modifier: Modifier = 
         Row(
             modifier = Modifier
                 .padding(vertical = ProtonDimens.Spacing.Small)
-                .padding(horizontal = ProtonDimens.Spacing.Small),
+                .padding(horizontal = ProtonDimens.Spacing.Compact),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
