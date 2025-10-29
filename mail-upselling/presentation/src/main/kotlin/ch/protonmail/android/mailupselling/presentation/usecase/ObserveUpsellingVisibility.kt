@@ -24,22 +24,20 @@ import ch.protonmail.android.mailsession.domain.model.hasSubscription
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
 import ch.protonmail.android.mailupselling.domain.annotation.PlayServicesAvailableValue
-import ch.protonmail.android.mailupselling.domain.usecase.GetPromotionStatus
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
-import ch.protonmail.android.mailupselling.domain.usecase.PromoStatus
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import me.proton.android.core.payment.domain.model.ProductDetail
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
 class ObserveUpsellingVisibility @Inject constructor(
-    private val getPromotionStatus: GetPromotionStatus,
+    private val resolveUpsellingVisibilityForPlans: ResolveUpsellingVisibilityForPlans,
     private val observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades,
     private val observeUser: ObserveUser,
     private val observePrimaryUserId: ObservePrimaryUserId,
@@ -47,37 +45,32 @@ class ObserveUpsellingVisibility @Inject constructor(
     @IsUpsellEnabled private val isUpsellEnabled: FeatureFlag<Boolean>
 ) {
 
-    operator fun invoke(): Flow<UpsellingVisibility> = observePrimaryUserId().flatMapLatest { userId ->
-        userId ?: return@flatMapLatest flowOf(UpsellingVisibility.HIDDEN)
+    operator fun invoke(entryPoint: UpsellingEntryPoint.Feature): Flow<UpsellingVisibility> =
+        observePrimaryUserId().flatMapLatest { userId ->
+            userId ?: return@flatMapLatest flowOf(UpsellingVisibility.Hidden)
 
-        if (!playServicesAvailable.get()) {
-            return@flatMapLatest flowOf(UpsellingVisibility.HIDDEN)
-        }
+            if (!playServicesAvailable.get()) {
+                return@flatMapLatest flowOf(UpsellingVisibility.Hidden)
+            }
 
-        if (!isUpsellEnabled.get()) {
-            Timber.d("user-subscription: upsell FF disabled - hiding entry point")
-            return@flatMapLatest flowOf(UpsellingVisibility.HIDDEN)
-        }
+            if (!isUpsellEnabled.get()) {
+                Timber.d("upsell: FF disabled - hiding entry point")
+                return@flatMapLatest flowOf(UpsellingVisibility.Hidden)
+            }
 
-        combine(
-            observeUser(userId).filterNotNull(),
-            observeMailPlusPlanUpgrades()
-        ) { userEither, plusPlans ->
-            val user = userEither.getOrNull() ?: return@combine UpsellingVisibility.HIDDEN
+            combine(
+                observeUser(userId).filterNotNull(),
+                observeMailPlusPlanUpgrades(entryPoint)
+            ) { userEither, plusPlans ->
+                val user = userEither.getOrNull() ?: return@combine UpsellingVisibility.Hidden
 
-            if (user.hasSubscription()) {
-                Timber.d("user-subscription: hiding entry point")
-                UpsellingVisibility.HIDDEN
-            } else {
-                Timber.d("user-subscription: resolving entry point")
-                resolvePromoVisibility(plusPlans)
+                if (user.hasSubscription()) { // Need Monthly + Yearly for Upselling flows
+                    UpsellingVisibility.Hidden
+                } else {
+                    resolveUpsellingVisibilityForPlans(plusPlans).also {
+                        Timber.d("upsell: resolving entry point to $it")
+                    }
+                }
             }
         }
-    }
-
-    private fun resolvePromoVisibility(plans: List<ProductDetail>) = when (getPromotionStatus(plans)) {
-        PromoStatus.NO_PLANS -> UpsellingVisibility.HIDDEN
-        PromoStatus.NORMAL -> UpsellingVisibility.NORMAL
-        PromoStatus.PROMO -> UpsellingVisibility.PROMO
-    }
 }

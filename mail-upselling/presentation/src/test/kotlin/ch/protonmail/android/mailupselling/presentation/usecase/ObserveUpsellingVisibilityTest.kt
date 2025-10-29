@@ -23,9 +23,8 @@ import arrow.core.right
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
-import ch.protonmail.android.mailupselling.domain.usecase.GetPromotionStatus
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
-import ch.protonmail.android.mailupselling.domain.usecase.PromoStatus
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserTestData
@@ -35,7 +34,7 @@ import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import javax.inject.Provider
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -44,7 +43,7 @@ import kotlin.test.assertEquals
 
 internal class ObserveUpsellingVisibilityTest {
 
-    private val getPromotionStatus = mockk<GetPromotionStatus>()
+    private val resolveUpsellingVisibilityForPlans = mockk<ResolveUpsellingVisibilityForPlans>()
     private val observeMailPlusPlanUpgrades = mockk<ObserveMailPlusPlanUpgrades>()
     private val observeUser = mockk<ObserveUser>()
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
@@ -62,7 +61,7 @@ internal class ObserveUpsellingVisibilityTest {
         every { observePrimaryUserId() } returns flowOf(UserIdTestData.userId)
 
         observeUpselling = ObserveUpsellingVisibility(
-            getPromotionStatus,
+            resolveUpsellingVisibilityForPlans,
             observeMailPlusPlanUpgrades,
             observeUser,
             observePrimaryUserId,
@@ -82,9 +81,9 @@ internal class ObserveUpsellingVisibilityTest {
         every { playServicesAvailable.get() } returns false
 
         // When
-        observeUpselling().test {
+        observeUpselling(UpsellingEntryPoint.Feature.Navbar).test {
             // Then
-            assertEquals(UpsellingVisibility.HIDDEN, awaitItem())
+            assertEquals(UpsellingVisibility.Hidden, awaitItem())
             awaitComplete()
         }
     }
@@ -95,9 +94,9 @@ internal class ObserveUpsellingVisibilityTest {
         coEvery { isUpsellEnabled.get() } returns false
 
         // When
-        observeUpselling().test {
+        observeUpselling(UpsellingEntryPoint.Feature.Navbar).test {
             // Then
-            assertEquals(UpsellingVisibility.HIDDEN, awaitItem())
+            assertEquals(UpsellingVisibility.Hidden, awaitItem())
             awaitComplete()
         }
     }
@@ -106,14 +105,14 @@ internal class ObserveUpsellingVisibilityTest {
     fun `should proxy getPromotionStatus result - hidden due to no plans`() = runTest {
         // Given
         every { observeUser(userId = UserIdTestData.userId) } returns flowOf(UserTestData.freeUser.right())
-        coEvery { observeMailPlusPlanUpgrades() } returns flowOf(listOf())
-        coEvery { getPromotionStatus(any()) } returns PromoStatus.NO_PLANS
+        coEvery { observeMailPlusPlanUpgrades(UpsellingEntryPoint.Feature.Navbar) } returns flowOf(listOf())
+        coEvery { resolveUpsellingVisibilityForPlans(any()) } returns UpsellingVisibility.Hidden
         coEvery { isUpsellEnabled.get() } returns true
 
         // When
-        observeUpselling().test {
+        observeUpselling(UpsellingEntryPoint.Feature.Navbar).test {
             // Then
-            assertEquals(UpsellingVisibility.HIDDEN, awaitItem())
+            assertEquals(UpsellingVisibility.Hidden, awaitItem())
             awaitComplete()
         }
     }
@@ -122,15 +121,15 @@ internal class ObserveUpsellingVisibilityTest {
     fun `should proxy getPromotionStatus result when hide signal returns false - normal`() = runTest {
         // Given
         every { observeUser(userId = UserIdTestData.userId) } returns flowOf(UserTestData.freeUser.right())
-        val expectedPlans = listOf(mockk<ProductDetail>())
-        coEvery { observeMailPlusPlanUpgrades() } returns flowOf(expectedPlans)
-        every { getPromotionStatus(expectedPlans) } returns PromoStatus.NORMAL
+        val expectedPlans = listOf(mockk<ProductOfferDetail>())
+        coEvery { observeMailPlusPlanUpgrades(UpsellingEntryPoint.Feature.Navbar) } returns flowOf(expectedPlans)
+        coEvery { resolveUpsellingVisibilityForPlans(expectedPlans) } returns UpsellingVisibility.Normal
         coEvery { isUpsellEnabled.get() } returns true
 
         // When
-        observeUpselling().test {
+        observeUpselling(UpsellingEntryPoint.Feature.Navbar).test {
             // Then
-            assertEquals(UpsellingVisibility.NORMAL, awaitItem())
+            assertEquals(UpsellingVisibility.Normal, awaitItem())
             awaitComplete()
         }
     }
@@ -139,15 +138,17 @@ internal class ObserveUpsellingVisibilityTest {
     fun `should proxy getPromotionStatus result when hide signal returns false - promo`() = runTest {
         // Given
         every { observeUser(userId = UserIdTestData.userId) } returns flowOf(UserTestData.freeUser.right())
-        val expectedPlans = listOf(mockk<ProductDetail>())
-        coEvery { observeMailPlusPlanUpgrades() } returns flowOf(expectedPlans)
-        every { getPromotionStatus(expectedPlans) } returns PromoStatus.PROMO
+        val expectedPlans = listOf(mockk<ProductOfferDetail>())
+        coEvery { observeMailPlusPlanUpgrades(UpsellingEntryPoint.Feature.Navbar) } returns flowOf(expectedPlans)
+        coEvery {
+            resolveUpsellingVisibilityForPlans(expectedPlans)
+        } returns UpsellingVisibility.Promotional.IntroductoryPrice
         coEvery { isUpsellEnabled.get() } returns true
 
         // When
-        observeUpselling().test {
+        observeUpselling(UpsellingEntryPoint.Feature.Navbar).test {
             // Then
-            assertEquals(UpsellingVisibility.PROMO, awaitItem())
+            assertEquals(UpsellingVisibility.Promotional.IntroductoryPrice, awaitItem())
             awaitComplete()
         }
     }
