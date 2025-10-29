@@ -43,7 +43,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -126,8 +125,13 @@ class UserSessionRepositoryImpl @Inject constructor(
         userSessionCache.remove(userId)
     }
 
-    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId> = userSessionUpdatedFlow.filter {
-        it == userId
+    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId?> = userSessionUpdatedFlow.map {
+        val isSessionAvailable = userSessionCache.contains(userId)
+        if (isSessionAvailable) {
+            return@map userId
+        } else {
+            return@map null
+        }
     }.distinctUntilChanged()
 
     override suspend fun getUserSession(userId: UserId): MailUserSessionWrapper? {
