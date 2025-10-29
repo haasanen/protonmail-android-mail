@@ -18,18 +18,31 @@
 
 package ch.protonmail.android.mailupselling.presentation.model
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class UpsellingVisibility {
+sealed interface UpsellingVisibility {
 
-    @SerialName("hidden")
-    HIDDEN,
+    @Serializable
+    data object Hidden : UpsellingVisibility
 
-    @SerialName("promo")
-    PROMO,
+    @Serializable
+    data object Normal : UpsellingVisibility
 
-    @SerialName("normal")
-    NORMAL
+    @Serializable
+    sealed interface Promotional : UpsellingVisibility {
+
+        @Serializable
+        data object IntroductoryPrice : Promotional
+
+        @Serializable
+        sealed interface BlackFriday : Promotional {
+
+            @Serializable
+            data object Wave1 : BlackFriday
+
+            @Serializable
+            data object Wave2 : BlackFriday
+        }
+    }
 }

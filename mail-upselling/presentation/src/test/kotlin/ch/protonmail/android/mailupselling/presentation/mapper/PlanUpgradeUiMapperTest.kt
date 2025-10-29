@@ -23,8 +23,10 @@ import android.content.Context
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailupselling.domain.model.BlackFridayPhase
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.domain.usecase.GetCurrentBlackFridayPhase
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlement
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlementItemUiModel
@@ -39,10 +41,13 @@ import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanU
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.ProductInstances
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.unmockkAll
-import me.proton.android.core.payment.domain.model.ProductDetail
+import kotlinx.coroutines.test.runTest
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -59,6 +64,11 @@ internal class PlanUpgradeUiMapperTest {
     private val descriptionUiMapper = mockk<PlanUpgradeDescriptionUiMapper>()
     private val instanceUiMapper = mockk<PlanUpgradeInstanceUiModelMapper>()
     private val entitlementsUiMapper = mockk<PlanUpgradeEntitlementsUiMapper>()
+    private val getCurrentBlackFridayPhase = mockk<GetCurrentBlackFridayPhase> {
+        coEvery { this@mockk.invoke() } returns BlackFridayPhase.None
+    }
+
+    private val planUpgradeMapper = spyk(PlanUpgradeMapper(getCurrentBlackFridayPhase))
 
     private lateinit var planUpgradeUiMapper: PlanUpgradeUiMapper
     private lateinit var context: Context
@@ -68,6 +78,7 @@ internal class PlanUpgradeUiMapperTest {
         planUpgradeUiMapper = PlanUpgradeUiMapper(
             iconUiMapper = iconUiMapper,
             titleUiMapper = titleUiMapper,
+            planUpgradeMapper = planUpgradeMapper,
             descriptionUiMapper = descriptionUiMapper,
             planInstanceUiMapper = instanceUiMapper,
             entitlementsUiMapper = entitlementsUiMapper
@@ -82,7 +93,7 @@ internal class PlanUpgradeUiMapperTest {
     }
 
     @Test
-    fun `should return a plan with no options if the instances are not present`() {
+    fun `should return a plan with no options if the instances are not present`() = runTest {
         // Given
         val products = ProductInstances(emptyList())
 
@@ -94,12 +105,12 @@ internal class PlanUpgradeUiMapperTest {
     }
 
     @Test
-    fun `should return an invalid list if the instances are the same`() {
+    fun `should return an invalid list if the instances are the same`() = runTest {
         // Given
         val products = ProductInstances(
             listOf(
-                UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-                UpsellingTestData.MailPlusProducts.MonthlyProductDetail
+                UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail,
+                UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
             )
         )
 
@@ -111,15 +122,15 @@ internal class PlanUpgradeUiMapperTest {
     }
 
     @Test
-    fun `should return a plan with two options if the instances are different`() {
+    fun `should return a plan with two options if the instances are different`() = runTest {
         // Given
         expectIconUiModel()
         expectTitleUiModel()
         expectDescriptionUiModel()
         expectEntitlementsUiModel()
 
-        val shorterInstance = UpsellingTestData.MailPlusProducts.MonthlyProductDetail
-        val longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+        val shorterInstance = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
+        val longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = shorterInstance.header.title,
@@ -167,7 +178,7 @@ internal class PlanUpgradeUiMapperTest {
     }
 
     @Test
-    fun `should return a plan with promo if the variant FF is on`() {
+    fun `should return a plan with promo if the variant FF is on`() = runTest {
         // Given
         expectIconUiModel()
         expectTitleUiModelPromo()
@@ -175,8 +186,7 @@ internal class PlanUpgradeUiMapperTest {
         expectEntitlementsUiModel()
 
         val shorterInstance = UpsellingTestData.MailPlusProducts.MonthlyPromoProductDetail
-        val longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductDetail
-
+        val longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = shorterInstance.header.title,
@@ -257,8 +267,8 @@ internal class PlanUpgradeUiMapperTest {
 
     @Suppress("LongParameterList")
     private fun expectInstanceUiModel(
-        monthlyInstance: ProductDetail,
-        yearlyInstance: ProductDetail,
+        monthlyInstance: ProductOfferDetail,
+        yearlyInstance: ProductOfferDetail,
         expectedInstance: Pair<PlanUpgradeInstanceUiModel, PlanUpgradeInstanceUiModel>
     ) {
         every { instanceUiMapper.toUiModel(monthlyInstance, yearlyInstance) } returns expectedInstance

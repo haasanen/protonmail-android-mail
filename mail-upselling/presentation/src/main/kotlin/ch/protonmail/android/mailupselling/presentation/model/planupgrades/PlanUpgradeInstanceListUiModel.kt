@@ -35,6 +35,12 @@ sealed interface PlanUpgradeInstanceListUiModel {
             override val longerCycle: PlanUpgradeInstanceUiModel
         ) : Data(shorterCycle, longerCycle, PlanUpgradeVariant.IntroductoryPrice)
 
+        class BlackFriday(
+            blackFridayVariant: PlanUpgradeVariant.BlackFriday,
+            override val shorterCycle: PlanUpgradeInstanceUiModel,
+            override val longerCycle: PlanUpgradeInstanceUiModel
+        ) : Data(shorterCycle, longerCycle, blackFridayVariant)
+
         data class SocialProof(
             override val shorterCycle: PlanUpgradeInstanceUiModel,
             override val longerCycle: PlanUpgradeInstanceUiModel

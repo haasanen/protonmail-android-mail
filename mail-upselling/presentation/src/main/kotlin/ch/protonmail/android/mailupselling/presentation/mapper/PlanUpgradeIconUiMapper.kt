@@ -25,13 +25,20 @@ import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanU
 import javax.inject.Inject
 
 internal class PlanUpgradeIconUiMapper @Inject constructor() {
-
     fun toUiModel(
         upsellingEntryPoint: UpsellingEntryPoint.Feature,
         variant: PlanUpgradeVariant
     ): PlanUpgradeIconUiModel {
         if (variant == PlanUpgradeVariant.SocialProof) {
             return PlanUpgradeIconUiModel(R.drawable.ic_mail_social_proof)
+        }
+
+        if (variant is PlanUpgradeVariant.BlackFriday.Wave1) {
+            return PlanUpgradeIconUiModel(R.drawable.upselling_bf_header_wave1)
+        }
+
+        if (variant is PlanUpgradeVariant.BlackFriday.Wave2) {
+            return PlanUpgradeIconUiModel(R.drawable.upselling_bf_header_wave2)
         }
 
         val drawableRes = when (upsellingEntryPoint) {

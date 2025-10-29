@@ -23,6 +23,8 @@ import ch.protonmail.android.mailupselling.domain.extensions.normalizedPrice
 import ch.protonmail.android.mailupselling.domain.extensions.normalizedPriceWithCurrency
 import ch.protonmail.android.mailupselling.domain.extensions.totalPriceWithCurrency
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeSupportedTags
+import ch.protonmail.android.mailupselling.domain.model.isTaggedWith
 import ch.protonmail.android.mailupselling.domain.usecase.GetDiscountRate
 import ch.protonmail.android.mailupselling.domain.usecase.GetYearlySaving
 import ch.protonmail.android.mailupselling.presentation.extension.toUiModel
@@ -30,8 +32,9 @@ import ch.protonmail.android.mailupselling.presentation.mapper.RenewalCycle.BiYe
 import ch.protonmail.android.mailupselling.presentation.mapper.RenewalCycle.Monthly
 import ch.protonmail.android.mailupselling.presentation.mapper.RenewalCycle.Yearly
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PromoKind
 import dagger.hilt.android.qualifiers.ApplicationContext
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.android.core.payment.presentation.R
 import me.proton.android.core.payment.presentation.model.Product
 import javax.inject.Inject
@@ -43,8 +46,8 @@ class PlanUpgradeInstanceUiModelMapper @Inject constructor(
 ) {
 
     fun toUiModel(
-        monthlyPlanInstance: ProductDetail,
-        yearlyPlanInstance: ProductDetail
+        monthlyPlanInstance: ProductOfferDetail,
+        yearlyPlanInstance: ProductOfferDetail
     ): Pair<PlanUpgradeInstanceUiModel, PlanUpgradeInstanceUiModel> {
 
         val monthlyUiModel = createPlanUiModel(
@@ -62,34 +65,50 @@ class PlanUpgradeInstanceUiModelMapper @Inject constructor(
     }
 
     private fun createPlanUiModel(
-        productDetail: ProductDetail,
+        productDetail: ProductOfferDetail,
         cycle: PlanUpgradeCycle,
-        comparisonPriceInstance: ProductDetail? = null
+        comparisonPriceInstance: ProductOfferDetail? = null
     ): PlanUpgradeInstanceUiModel {
-        val currentPrice = productDetail.price
-        val defaultPrice = productDetail.renew
+        val currentPrice = productDetail.offer.current
+        val defaultPrice = productDetail.offer.renew
 
-        val isPromotional = currentPrice.amount < defaultPrice.amount
-        val currency = productDetail.price.currency
+        val promoKind = when {
+            productDetail.isTaggedWith(PlanUpgradeSupportedTags.BlackFriday) -> PromoKind.BlackFriday
+            productDetail.isTaggedWith(PlanUpgradeSupportedTags.IntroductoryPrice) -> PromoKind.IntroPrice
+            productDetail.offer.isBaseOffer -> null
+            else -> null
+        }
+        val isPromotional = promoKind != null
+        val currency = productDetail.offer.current.currency
 
         return if (isPromotional) {
             val promotionalPrice = currentPrice.normalizedPrice(cycle.months)
             val renewalPrice = defaultPrice.normalizedPrice(cycle.months)
-            PlanUpgradeInstanceUiModel.Promotional(
+
+            // In case of BF, discount rate is based on monthly pricing, not on original same-cycle pricing.
+            val discountRate = if (promoKind == PromoKind.BlackFriday && cycle == PlanUpgradeCycle.Yearly) {
+                comparisonPriceInstance?.let { getDiscountRate(it, productDetail) }
+            } else {
+                getDiscountRate(promotionalPrice, renewalPrice)
+            }
+
+            val params = PlanUpgradeInstanceUiModel.Promotional.Params(
                 name = productDetail.header.title,
-                pricePerCycle = productDetail.price.normalizedPriceWithCurrency(currency, cycle.months).toUiModel(),
-                promotionalPrice = productDetail.price.totalPriceWithCurrency(currency).toUiModel(),
-                renewalPrice = productDetail.renew.totalPriceWithCurrency(currency).toUiModel(),
+                pricePerCycle = currentPrice.normalizedPriceWithCurrency(currency, cycle.months).toUiModel(),
+                promotionalPrice = currentPrice.totalPriceWithCurrency(currency).toUiModel(),
+                renewalPrice = defaultPrice.totalPriceWithCurrency(currency).toUiModel(),
                 yearlySaving = comparisonPriceInstance?.let { getYearlySaving(it, productDetail) },
-                discountRate = getDiscountRate(promotionalPrice, renewalPrice),
+                discountRate = discountRate,
                 cycle = cycle,
                 product = productDetail.toProduct(context)
             )
+
+            PlanUpgradeInstanceUiModel.Promotional(promoKind, params)
         } else {
             PlanUpgradeInstanceUiModel.Standard(
                 name = productDetail.header.title,
-                pricePerCycle = productDetail.price.normalizedPriceWithCurrency(currency, cycle.months).toUiModel(),
-                totalPrice = productDetail.price.totalPriceWithCurrency(currency).toUiModel(),
+                pricePerCycle = currentPrice.normalizedPriceWithCurrency(currency, cycle.months).toUiModel(),
+                totalPrice = currentPrice.totalPriceWithCurrency(currency).toUiModel(),
                 yearlySaving = comparisonPriceInstance?.let { getYearlySaving(it, productDetail) },
                 discountRate = comparisonPriceInstance?.let { getDiscountRate(it, productDetail) },
                 cycle = cycle,
@@ -99,30 +118,51 @@ class PlanUpgradeInstanceUiModelMapper @Inject constructor(
     }
 }
 
-internal fun ProductDetail.toProduct(context: Context): Product {
+internal fun ProductOfferDetail.toProduct(context: Context): Product {
     return Product(
-        planName = planName,
-        productId = productId,
-        accountId = requireNotNull(price.customerId),
-        cycle = price.cycle,
+        planName = metadata.planName,
+        productId = metadata.productId,
+        accountId = requireNotNull(offer.current.customerId),
+        offerToken = offer.token,
+        cycle = offer.current.cycle,
         header = header,
-        entitlements = entitlements,
+        entitlements = metadata.entitlements,
         renewalText = getRenewalText(context)
     )
 }
 
-private fun ProductDetail.getRenewalText(context: Context): String? {
+private fun ProductOfferDetail.getRenewalText(context: Context): String? {
     val res = context.resources
 
-    return when {
-        price.amount == renew.amount -> null
-        else -> when (price.cycle) {
-            Monthly -> res.getString(R.string.payment_welcome_offer_renew_monthly, renew.formatted)
-            Yearly -> res.getString(R.string.payment_welcome_offer_renew_annually, renew.formatted)
-            BiYearly -> res.getString(R.string.payment_welcome_offer_renew_biennially, renew.formatted)
-            else -> res.getQuantityString(R.plurals.payment_welcome_offer_renew_other, price.cycle, renew.formatted)
+    fun getBlackFridayRenewal(): String? {
+        return when (offer.renew.cycle) {
+            Monthly -> res.getString(R.string.payment_bf_renew_monthly, offer.renew.formatted)
+            Yearly -> res.getString(R.string.payment_bf_renew_annually, offer.renew.formatted)
+            BiYearly -> res.getString(R.string.payment_welcome_offer_renew_biennially, offer.renew.formatted)
+            else -> null
         }
     }
+
+    fun getIntroPricingRenewal(): String? {
+        return when (offer.renew.cycle) {
+            Monthly -> res.getString(R.string.payment_welcome_offer_renew_monthly, offer.renew.formatted)
+            Yearly -> res.getString(R.string.payment_welcome_offer_renew_annually, offer.renew.formatted)
+            BiYearly -> res.getString(R.string.payment_welcome_offer_renew_biennially, offer.renew.formatted)
+            else -> null
+        }
+    }
+
+    return when {
+        offer.isBaseOffer -> null
+        offer.tags.value.contains("bf-promo") -> getBlackFridayRenewal()
+        offer.tags.value.contains("introductory-price") -> getIntroPricingRenewal()
+        else -> res.getQuantityString(
+            R.plurals.payment_welcome_offer_renew_other,
+            offer.current.cycle,
+            offer.renew.formatted
+        )
+    }
+
 }
 
 private object RenewalCycle {

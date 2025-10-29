@@ -31,8 +31,10 @@ import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanU
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -42,12 +44,14 @@ internal class OnboardingPlanUpgradeUiMapperTest {
 
     private val instanceMapper = mockk<PlanUpgradeInstanceUiModelMapper>()
     private val entitlementsMapper = mockk<PlanUpgradeEntitlementsUiMapper>()
+    private val planUpgradeMapper = mockk<PlanUpgradeMapper>()
 
     private lateinit var uiMapper: OnboardingPlanUpgradeUiMapper
 
     @BeforeTest
     fun setup() {
         uiMapper = OnboardingPlanUpgradeUiMapper(
+            planUpgradeMapper,
             instanceMapper,
             entitlementsMapper
         )
@@ -59,7 +63,7 @@ internal class OnboardingPlanUpgradeUiMapperTest {
     }
 
     @Test
-    fun `should map to error if no plans are served`() {
+    fun `should map to error if no plans are served`() = runTest {
         // When
         val actual = uiMapper.toUiModel(emptyList())
 
@@ -68,10 +72,10 @@ internal class OnboardingPlanUpgradeUiMapperTest {
     }
 
     @Test
-    fun `should map to error if invalid instances are served`() {
+    fun `should map to error if invalid instances are served`() = runTest {
         // Given
         val productDetails = listOf(
-            UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
+            UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail,
             UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail
         )
 
@@ -83,11 +87,15 @@ internal class OnboardingPlanUpgradeUiMapperTest {
     }
 
     @Test
-    fun `should map to monthly, yearly and free plans ui model`() {
+    fun `should map to monthly, yearly and free plans ui model`() = runTest {
         // Given
-        val monthlyMailPlus = UpsellingTestData.MailPlusProducts.MonthlyProductDetail
-        val yearlyMailPlus = UpsellingTestData.MailPlusProducts.YearlyProductDetail
-        val monthlyUnlimited = UpsellingTestData.UnlimitedMailProduct.MonthlyProductDetail
+        coEvery {
+            planUpgradeMapper.resolveVariant(any(), any(), any())
+        } returns PlanUpgradeVariant.Normal.right()
+
+        val monthlyMailPlus = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
+        val yearlyMailPlus = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
+        val monthlyUnlimited = UpsellingTestData.UnlimitedMailProduct.MonthlyProductOfferDetail
         val yearlyUnlimited = UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail
 
         val mockedMailPlusEntitlements = listOf(mockk<PlanUpgradeEntitlementListUiModel>())
@@ -164,6 +172,7 @@ internal class OnboardingPlanUpgradeUiMapperTest {
     }
 
     private companion object {
+
         val FreePlan = OnboardingPlanUpgradeUiModel.Free(
             planName = TextUiModel("Proton Free"),
             entitlements = listOf(
@@ -179,5 +188,4 @@ internal class OnboardingPlanUpgradeUiMapperTest {
             currency = "EUR"
         )
     }
-
 }

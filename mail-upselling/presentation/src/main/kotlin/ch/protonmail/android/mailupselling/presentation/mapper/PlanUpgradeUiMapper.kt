@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailupselling.presentation.mapper
 
 import arrow.core.Either
+import arrow.core.getOrElse
 import arrow.core.raise.either
 import arrow.core.right
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
@@ -31,25 +32,28 @@ internal class PlanUpgradeUiMapper @Inject constructor(
     private val titleUiMapper: PlanUpgradeTitleUiMapper,
     private val descriptionUiMapper: PlanUpgradeDescriptionUiMapper,
     private val planInstanceUiMapper: PlanUpgradeInstanceUiModelMapper,
-    private val entitlementsUiMapper: PlanUpgradeEntitlementsUiMapper
+    private val entitlementsUiMapper: PlanUpgradeEntitlementsUiMapper,
+    private val planUpgradeMapper: PlanUpgradeMapper
 ) {
 
-    fun toUiModel(
+    suspend fun toUiModel(
         products: ProductInstances,
         upsellingEntryPoint: UpsellingEntryPoint.Feature
     ): Either<PlanMappingError, PlanUpgradeUiModel> = either {
         if (products.instances.isEmpty()) raise(PlanMappingError.EmptyList)
 
-        val monthlyPlan = products.instances.minBy { it.price.cycle }
-        val yearlyPlan = products.instances.maxBy { it.price.cycle }
+        val monthlyPlan = products.instances.minBy { it.offer.current.cycle }
+        val yearlyPlan = products.instances.maxBy { it.offer.current.cycle }
 
         if (monthlyPlan == yearlyPlan) raise(PlanMappingError.InvalidList)
 
-        val variant = PlanUpgradeMapper.resolveVariant(
+        val variant = planUpgradeMapper.resolveVariant(
             monthlyPlan,
             yearlyPlan,
             upsellingEntryPoint
-        )
+        ).getOrElse {
+            raise(PlanMappingError.InvalidList)
+        }
 
         val (shorterCycleUiModel, longerCycleUiModel) = planInstanceUiMapper.toUiModel(
             monthlyPlan,
@@ -62,7 +66,7 @@ internal class PlanUpgradeUiMapper @Inject constructor(
             description = descriptionUiMapper.toUiModel(monthlyPlan, upsellingEntryPoint, variant),
             entitlements = entitlementsUiMapper.toTableUiModel(),
             variant = variant,
-            list = PlanUpgradeMapper.resolveListUiModel(shorterCycleUiModel, longerCycleUiModel, variant)
+            list = planUpgradeMapper.resolveListUiModel(shorterCycleUiModel, longerCycleUiModel, variant)
         ).right()
     }
 }

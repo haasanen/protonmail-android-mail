@@ -26,6 +26,7 @@ import ch.protonmail.android.mailupselling.domain.usecase.GetDiscountRate
 import ch.protonmail.android.mailupselling.domain.usecase.GetYearlySaving
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PromoKind
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -51,8 +52,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
     @Test
     fun `should map standard instances correctly`() {
         // Given
-        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail
-        val yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
+        val yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = monthlyPlan.header.title,
@@ -88,9 +89,9 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
     fun `should map promo instances correctly (monthly promo)`() {
         // Given
         val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyPromoProductDetail
-        val yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+        val yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
 
-        val monthlyExpected = PlanUpgradeInstanceUiModel.Promotional(
+        val promoParams = PlanUpgradeInstanceUiModel.Promotional.Params(
             name = monthlyPlan.header.title,
             pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("9.00"), currencyCode = "EUR"),
             promotionalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("9.00"), currencyCode = "EUR"),
@@ -101,11 +102,14 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             yearlySaving = null
         )
 
+        val monthlyExpected =
+            PlanUpgradeInstanceUiModel.Promotional(promoKind = PromoKind.IntroPrice, params = promoParams)
+
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = yearlyPlan.header.title,
             pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("9.00"), currencyCode = "EUR"),
             totalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("108.00"), currencyCode = "EUR"),
-            discountRate = null,
+            discountRate = 25,
             cycle = PlanUpgradeCycle.Yearly,
             product = yearlyPlan.toProduct(context),
             yearlySaving = YearlySaving("EUR", BigDecimal("36.00"))
@@ -124,7 +128,7 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
     @Test
     fun `should map promo instances correctly (yearly promo)`() {
         // Given
-        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail
+        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
         val yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyPromoProductDetail
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
@@ -137,7 +141,7 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             yearlySaving = null
         )
 
-        val yearlyExpected = PlanUpgradeInstanceUiModel.Promotional(
+        val promoParams = PlanUpgradeInstanceUiModel.Promotional.Params(
             name = yearlyPlan.header.title,
             pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal("4.50"), currencyCode = "EUR"),
             promotionalPrice = PlanUpgradePriceUiModel(amount = BigDecimal("54.00"), currencyCode = "EUR"),
@@ -147,6 +151,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             product = yearlyPlan.toProduct(context),
             yearlySaving = YearlySaving("EUR", BigDecimal("90.00"))
         )
+
+        val yearlyExpected = PlanUpgradeInstanceUiModel.Promotional(promoKind = PromoKind.IntroPrice, promoParams)
 
         // When
         val actual = mapper.toUiModel(

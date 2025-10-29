@@ -24,13 +24,13 @@ import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeDescriptionUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import javax.inject.Inject
 
 internal class PlanUpgradeDescriptionUiMapper @Inject constructor() {
 
     fun toUiModel(
-        productDetail: ProductDetail,
+        productDetail: ProductOfferDetail,
         upsellingEntryPoint: UpsellingEntryPoint.Feature,
         variant: PlanUpgradeVariant
     ): PlanUpgradeDescriptionUiModel {
@@ -38,7 +38,7 @@ internal class PlanUpgradeDescriptionUiMapper @Inject constructor() {
             return PlanUpgradeDescriptionUiModel.SocialProof
         }
 
-        val description = when (productDetail.planName) {
+        val description = when (productDetail.metadata.planName) {
             PlanUpgradeIds.UnlimitedPlanId -> getUnlimitedDescription()
             PlanUpgradeIds.PlusPlanId -> getPlusDescription(variant, upsellingEntryPoint)
             else -> getDefaultDescription(productDetail)
@@ -47,7 +47,8 @@ internal class PlanUpgradeDescriptionUiMapper @Inject constructor() {
         return PlanUpgradeDescriptionUiModel.Simple(description)
     }
 
-    private fun getDefaultDescription(productDetail: ProductDetail) = TextUiModel.Text(productDetail.header.description)
+    private fun getDefaultDescription(productDetail: ProductOfferDetail) =
+        TextUiModel.Text(productDetail.header.description)
     private fun getUnlimitedDescription() = TextUiModel.TextRes(R.string.upselling_unlimited_description_override)
     private fun getPlusDescription(
         variant: PlanUpgradeVariant,

@@ -16,8 +16,20 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailupselling.presentation.model.planupgrades
+package ch.protonmail.android.mailupselling.domain.model
 
 import me.proton.android.core.payment.domain.model.ProductOfferDetail
 
-data class ProductInstances(val instances: List<ProductOfferDetail>)
+/**
+ * Represents the offers (either promotional or base plan) supported by the current app version.
+ *
+ * Any offer that does not contain the following tags on Play Console won't be picked up by the app,
+ * with the exception of the base offer (often untagged).
+ */
+sealed class PlanUpgradeSupportedTags(val value: String) {
+
+    data object BlackFriday : PlanUpgradeSupportedTags("bf-promo")
+    data object IntroductoryPrice : PlanUpgradeSupportedTags("introductory-price")
+}
+
+fun ProductOfferDetail.isTaggedWith(tag: PlanUpgradeSupportedTags) = offer.tags.value.contains(tag.value)

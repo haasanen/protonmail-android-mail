@@ -27,8 +27,13 @@ internal data class PlanUpgradeUiModel(
     val list: PlanUpgradeInstanceListUiModel
 )
 
-enum class PlanUpgradeVariant {
-    Normal,
-    IntroductoryPrice,
-    SocialProof
+sealed interface PlanUpgradeVariant {
+    data object Normal : PlanUpgradeVariant
+    data object IntroductoryPrice : PlanUpgradeVariant
+    data object SocialProof : PlanUpgradeVariant
+
+    sealed interface BlackFriday : PlanUpgradeVariant {
+        data object Wave1 : BlackFriday
+        data object Wave2 : BlackFriday
+    }
 }
