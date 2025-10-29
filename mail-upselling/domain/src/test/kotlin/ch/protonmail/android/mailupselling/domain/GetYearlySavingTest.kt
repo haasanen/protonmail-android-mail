@@ -22,7 +22,10 @@ import java.math.BigDecimal
 import ch.protonmail.android.mailupselling.domain.model.YearlySaving
 import ch.protonmail.android.mailupselling.domain.usecase.GetYearlySaving
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
-import me.proton.android.core.payment.domain.model.ProductPrice
+import me.proton.android.core.payment.domain.model.ProductOffer
+import me.proton.android.core.payment.domain.model.ProductOfferPrice
+import me.proton.android.core.payment.domain.model.ProductOfferTags
+import me.proton.android.core.payment.domain.model.ProductOfferToken
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -38,8 +41,8 @@ internal class GetYearlySavingTest {
 
         // When
         val actual = getYearlySaving(
-            monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+            monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail,
+            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
         )
 
         // Then
@@ -51,34 +54,44 @@ internal class GetYearlySavingTest {
         // Given
         val expected = YearlySaving("EUR", BigDecimal("37.20"))
 
-        val monthlyPrice = ProductPrice(
+        val monthlyPrice = ProductOfferPrice(
             productId = "productId",
             customerId = "customerId",
             cycle = 1,
             amount = (15.49f * 1000 * 1000).toLong(),
             currency = "EUR",
-            formatted = "EUR 108.00"
+            formatted = "EUR 15.49"
         )
 
-        val yearlyPrice = ProductPrice(
+        val yearlyPrice = ProductOfferPrice(
             productId = "productId",
             customerId = "customerId",
             cycle = 12,
             amount = (148.68f * 1000 * 1000).toLong(),
             currency = "EUR",
-            formatted = "EUR 108.00"
+            formatted = "EUR 148.69"
+        )
+
+        val monthlyOffer = ProductOffer(
+            isBaseOffer = true,
+            tags = ProductOfferTags(emptySet()),
+            current = monthlyPrice,
+            renew = monthlyPrice,
+            token = ProductOfferToken("monthly")
+        )
+
+        val yearlyOffer = ProductOffer(
+            isBaseOffer = true,
+            tags = ProductOfferTags(emptySet()),
+            current = yearlyPrice,
+            renew = yearlyPrice,
+            token = ProductOfferToken("yearly")
         )
 
         // When
         val actual = getYearlySaving(
-            monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail.copy(
-                price = monthlyPrice,
-                renew = monthlyPrice
-            ),
-            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail.copy(
-                price = yearlyPrice,
-                renew = yearlyPrice
-            )
+            monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail.copy(offer = monthlyOffer),
+            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail.copy(offer = yearlyOffer)
         )
 
         // Then
@@ -88,17 +101,41 @@ internal class GetYearlySavingTest {
     @Test
     fun `should return the expected yearly saving (promo)`() {
         // Given
-        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail
-        val referenceMonthlyPlan = monthlyPlan.copy(
-            price = monthlyPlan.price.copy(amount = 1),
-            renew = monthlyPlan.renew.copy(amount = 12 * 1000 * 1000)
+        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
+
+        val monthlyPrice = ProductOfferPrice(
+            productId = "productId",
+            customerId = "customerId",
+            cycle = 1,
+            amount = (1f * 1000 * 1000).toLong(),
+            currency = "EUR",
+            formatted = "EUR 1"
         )
+
+        val renewPrice = ProductOfferPrice(
+            productId = "productId",
+            customerId = "customerId",
+            cycle = 1,
+            amount = (12f * 1000 * 1000).toLong(),
+            currency = "EUR",
+            formatted = "EUR 12.00"
+        )
+
+        val monthlyOffer = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail.offer.copy(
+            isBaseOffer = false,
+            tags = ProductOfferTags(setOf("tag")),
+            token = ProductOfferToken("monthly"),
+            current = monthlyPrice,
+            renew = renewPrice
+        )
+
+        val referenceMonthlyPlan = monthlyPlan.copy(offer = monthlyOffer)
         val expected = YearlySaving("EUR", BigDecimal("36.00"))
 
         // When
         val actual = getYearlySaving(
             monthlyPlan = referenceMonthlyPlan,
-            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
         )
 
         // Then
@@ -108,15 +145,23 @@ internal class GetYearlySavingTest {
     @Test
     fun `should return null if the yearly saving is less than 0`() {
         // Given
-        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail
-        val referenceMonthlyPlan = monthlyPlan.copy(
-            renew = monthlyPlan.renew.copy(amount = 0)
+        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
+
+        val renewPrice = ProductOfferPrice(
+            productId = "productId",
+            customerId = "customerId",
+            cycle = 1,
+            amount = (0f * 1000 * 1000).toLong(),
+            currency = "EUR",
+            formatted = "EUR 0.00"
         )
+
+        val referenceMonthlyPlan = monthlyPlan.copy(offer = monthlyPlan.offer.copy(renew = renewPrice))
 
         // When
         val actual = getYearlySaving(
             monthlyPlan = referenceMonthlyPlan,
-            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
         )
 
         // Then
@@ -127,8 +172,8 @@ internal class GetYearlySavingTest {
     fun `should return null if the cycles mismatch (monthly)`() {
         // When
         val actual = getYearlySaving(
-            monthlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail,
-            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+            monthlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail,
+            yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
         )
 
         // Then
@@ -139,8 +184,8 @@ internal class GetYearlySavingTest {
     fun `should return null if the cycles mismatch (yearly)`() {
         // When
         val actual = getYearlySaving(
-            monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-            yearlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail
+            monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail,
+            yearlyPlan = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
         )
 
         // Then

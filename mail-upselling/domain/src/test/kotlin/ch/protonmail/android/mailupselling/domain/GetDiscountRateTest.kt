@@ -36,8 +36,8 @@ internal class GetDiscountRateTest {
 
         // When
         val actual = getDiscountRate(
-            shorterInstance = UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-            longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+            shorterInstance = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail,
+            longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
         )
 
         // Then
@@ -48,8 +48,8 @@ internal class GetDiscountRateTest {
     fun `should return null if the discount rate is 0 (2 instances)`() {
         // When
         val actual = getDiscountRate(
-            shorterInstance = UpsellingTestData.MailPlusProducts.YearlyProductDetail,
-            longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductDetail
+            shorterInstance = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail,
+            longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
         )
 
         // Then
@@ -60,8 +60,8 @@ internal class GetDiscountRateTest {
     fun `should return null if the yearly price is higher than the monthly price (2 instances)`() {
         // When
         val actual = getDiscountRate(
-            shorterInstance = UpsellingTestData.MailPlusProducts.YearlyProductDetail,
-            longerInstance = UpsellingTestData.MailPlusProducts.MonthlyProductDetail
+            shorterInstance = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail,
+            longerInstance = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
         )
 
         // Then
