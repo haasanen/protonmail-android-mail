@@ -53,7 +53,7 @@ fun SettingWebView(
 ) {
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
-    val isUpsellEligible = state.upsellingVisibility != UpsellingVisibility.HIDDEN
+    val isUpsellEligible = state.upsellingVisibility != UpsellingVisibility.Hidden
 
     // Resolve system theme only if the URL contains the placeholder
     val resolvedUrl = remember(state) {

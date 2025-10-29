@@ -71,6 +71,7 @@ import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.UnSnooze
 import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.ui.Tile
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingBottomSheetButton
@@ -300,6 +301,7 @@ fun UpsellSnoozeButton(
     if (isUseTileLayout) {
         UpsellingBottomSheetButton(
             modifier = modifier.fillMaxHeight(),
+            upsellingEntryPoint = UpsellingEntryPoint.Feature.Snooze,
             layout = Tile,
             text = stringResource(R.string.snooze_custom_upsell_title_short),
             hint = stringResource(R.string.snooze_custom_upsell_hint_short),
@@ -308,6 +310,7 @@ fun UpsellSnoozeButton(
     } else {
         UpsellingBottomSheetButton(
             modifier = modifier,
+            upsellingEntryPoint = UpsellingEntryPoint.Feature.Snooze,
             text = stringResource(R.string.snooze_custom_upsell_title),
             onUpsellNavigation = { type -> onEvent(SnoozeOperationViewAction.Upgrade(type)) }
         )

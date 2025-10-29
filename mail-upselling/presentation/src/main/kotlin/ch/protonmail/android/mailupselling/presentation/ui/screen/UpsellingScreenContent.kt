@@ -230,7 +230,7 @@ internal fun UpsellingScreenContent(
 
                 when (state.plans.entitlements) {
                     is PlanUpgradeEntitlementsListUiModel.ComparisonTableList ->
-                        ComparisonTable(state.plans.entitlements, state.plans.variant)
+                        ComparisonTable(state.plans.entitlements)
 
                     is PlanUpgradeEntitlementsListUiModel.SimpleList ->
                         UpsellingEntitlementsListLayout(state.plans.entitlements)

@@ -27,6 +27,7 @@ import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepos
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureMenuState
 import ch.protonmail.android.mailsettings.presentation.settings.signature.model.MobileSignatureUiModel
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -53,7 +54,7 @@ class SignatureSettingsViewModelTest {
     private val upsellingFlow = MutableSharedFlow<UpsellingVisibility>()
     private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
         every {
-            this@mockk.invoke()
+            this@mockk.invoke(entryPoint = UpsellingEntryPoint.Feature.MobileSignature)
         } returns upsellingFlow
     }
 
@@ -77,7 +78,7 @@ class SignatureSettingsViewModelTest {
                     R.string.mail_settings_app_customization_mobile_signature_on
                 )
             ),
-            upsellingVisibility = UpsellingVisibility.NORMAL
+            upsellingVisibility = UpsellingVisibility.Normal
         )
 
     @Before
@@ -105,7 +106,7 @@ class SignatureSettingsViewModelTest {
 
             // When
             signatureFlow.emit(signatureSettings)
-            upsellingFlow.emit(UpsellingVisibility.NORMAL)
+            upsellingFlow.emit(UpsellingVisibility.Normal)
 
             // Then
             val actual = awaitItem() as MobileSignatureMenuState.Data
@@ -126,7 +127,7 @@ class SignatureSettingsViewModelTest {
                     status = MobileSignatureStatus.Disabled
                 )
             )
-            upsellingFlow.emit(UpsellingVisibility.NORMAL)
+            upsellingFlow.emit(UpsellingVisibility.Normal)
 
             // Then
             val actual = awaitItem() as MobileSignatureMenuState.Data
@@ -153,13 +154,13 @@ class SignatureSettingsViewModelTest {
 
                 // When
                 signatureFlow.emit(signatureSettings)
-                upsellingFlow.emit(UpsellingVisibility.HIDDEN)
+                upsellingFlow.emit(UpsellingVisibility.Hidden)
 
                 // Then
                 val actual = awaitItem() as MobileSignatureMenuState.Data
                 val expected = expectedSignatureSettings.copy(
                     settings = expectedSignatureSettings.settings,
-                    upsellingVisibility = UpsellingVisibility.HIDDEN
+                    upsellingVisibility = UpsellingVisibility.Hidden
                 )
                 Assert.assertEquals(expected, actual)
             }
