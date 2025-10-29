@@ -98,7 +98,10 @@ import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingSte
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.blackfriday.BlackFridayModalState
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
+import ch.protonmail.android.mailupselling.presentation.viewmodel.BlackFridayModalUpsellViewModel
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
@@ -161,7 +164,8 @@ fun Home(
     launcherActions: Launcher.Actions,
     viewModel: HomeViewModel = hiltViewModel(),
     onboardingStepViewModel: OnboardingStepViewModel = hiltViewModel(),
-    notificationsPermissionViewModel: NotificationsPermissionViewModel = hiltViewModel()
+    notificationsPermissionViewModel: NotificationsPermissionViewModel = hiltViewModel(),
+    blackFridayModalUpsellViewModel: BlackFridayModalUpsellViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController().withSentryObservableEffect()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -192,6 +196,7 @@ fun Home(
     val state by viewModel.state.collectAsStateWithLifecycle(HomeState.Initial)
     val onboardingEligibilityState by onboardingStepViewModel.onboardingEligibilityState.collectAsStateWithLifecycle()
     val notificationsPermissionsState by notificationsPermissionViewModel.state.collectAsStateWithLifecycle()
+    val blackFridayEligibilityState by blackFridayModalUpsellViewModel.state.collectAsStateWithLifecycle()
 
     var bottomSheetType: BottomSheetType by remember { mutableStateOf(BottomSheetType.Onboarding) }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -427,7 +432,7 @@ fun Home(
             }
     }
 
-    LaunchedEffect(onboardingEligibilityState, notificationsPermissionsState) {
+    LaunchedEffect(onboardingEligibilityState, notificationsPermissionsState, blackFridayEligibilityState) {
         when {
             onboardingEligibilityState == OnboardingEligibilityState.Required -> {
                 bottomSheetType = BottomSheetType.Onboarding
@@ -446,6 +451,20 @@ fun Home(
                 }.invokeOnCompletion {
                     showBottomSheet = true
                 }
+            }
+
+            blackFridayEligibilityState is BlackFridayModalState.Show -> {
+                val state = blackFridayEligibilityState as BlackFridayModalState.Show
+
+                // This should ideally be in the screen itself but putting it here for simplicity.
+                blackFridayModalUpsellViewModel.saveModalSeenTimestamp(state.wave)
+
+                navController.navigate(
+                    Screen.FeatureUpselling(
+                        UpsellingEntryPoint.Feature.Navbar,
+                        state.wave
+                    )
+                )
             }
 
             else -> {
