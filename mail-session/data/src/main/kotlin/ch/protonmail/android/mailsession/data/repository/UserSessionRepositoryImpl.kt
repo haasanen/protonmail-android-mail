@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailsession.data.repository
 
+import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.left
@@ -64,8 +65,11 @@ class UserSessionRepositoryImpl @Inject constructor(
     private val mailSession by lazy { mailSessionRepository.getMailSession() }
 
     // Cache to store MailUserSession per UserId
-    private val userSessionCache = mutableMapOf<UserId, MailUserSessionWrapper>()
-    private val userSessionUpdatedFlow = MutableSharedFlow<UserId>(replay = 1)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val userSessionCache = mutableMapOf<UserId, MailUserSessionWrapper>()
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val userSessionAddedSignal = MutableSharedFlow<Unit>(replay = 1)
 
     private suspend fun getStoredAccount(userId: UserId) = mailSession.getAccount(userId.toLocalUserId())
 
@@ -125,9 +129,8 @@ class UserSessionRepositoryImpl @Inject constructor(
         userSessionCache.remove(userId)
     }
 
-    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId?> = userSessionUpdatedFlow.map {
-        val isSessionAvailable = userSessionCache.contains(userId)
-        if (isSessionAvailable) {
+    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId?> = userSessionAddedSignal.map {
+        if (userSessionCache.contains(userId)) {
             return@map userId
         } else {
             return@map null
@@ -149,8 +152,8 @@ class UserSessionRepositoryImpl @Inject constructor(
         // throws network error
         val userContext = session?.let { mailSession.userContextFromSession(it) }
         userContext?.getOrNull()?.let {
-            userSessionUpdatedFlow.emit(userId)
             userSessionCache[userId] = it
+            userSessionAddedSignal.emit(Unit)
             return it
         }
         return null

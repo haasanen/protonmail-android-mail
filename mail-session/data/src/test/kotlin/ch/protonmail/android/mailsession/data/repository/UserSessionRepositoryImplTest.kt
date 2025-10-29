@@ -235,6 +235,23 @@ class UserSessionRepositoryImplTest {
         }
     }
 
+    @Test
+    fun `when switching to a user with a cached session, observe session available emits`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val userId1 = UserIdTestData.userId1
+        val mailSession = mockk<MailUserSessionWrapper>()
+        val mailSession1 = mockk<MailUserSessionWrapper>()
+        userSessionRepository.userSessionCache[userId] = mailSession
+        userSessionRepository.userSessionCache[userId1] = mailSession1
+        userSessionRepository.userSessionAddedSignal.emit(Unit)
+
+        // When
+        userSessionRepository.observeUserSessionAvailable(userId).test {
+            // Then
+            assertEquals(userId, awaitItem())
+        }
+    }
 
     private fun mailSessionWithNoUserSessionsStored() = mockk<MailSessionWrapper> {
         coEvery { getAccount(any()) } returns DataError.Local.NoDataCached.left()
