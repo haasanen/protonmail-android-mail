@@ -23,7 +23,7 @@ import ch.protonmail.android.mailsession.domain.repository.getPrimarySession
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.android.core.payment.data.extension.getErrorMessage
 import me.proton.android.core.payment.data.extension.toObservabilityValue
-import me.proton.android.core.payment.data.model.toProductDetail
+import me.proton.android.core.payment.data.model.toProductOfferDetail
 import me.proton.android.core.payment.data.model.toSubscriptionDetail
 import me.proton.android.core.payment.domain.PaymentException
 import me.proton.android.core.payment.domain.PaymentException.Companion.ErrorCode.DEVELOPER_ERROR
@@ -156,7 +156,7 @@ class SubscriptionManagerRust @Inject constructor(
             is MailUserSessionGetPaymentsPlansResult.Error -> result.v1.throwException()
             is MailUserSessionGetPaymentsPlansResult.Ok -> {
                 return result.v1.plans.map { plan ->
-                    plan.instances.map { instance -> plan.toProductDetail(instance) }
+                    plan.instances.map { instance -> plan.toProductOfferDetail(instance) }
                 }.flatten()
             }
         }

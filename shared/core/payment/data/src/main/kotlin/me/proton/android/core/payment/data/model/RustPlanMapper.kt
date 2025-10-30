@@ -76,20 +76,15 @@ fun Subscription.toSubscriptionDetail() = SubscriptionDetail(
     managedBy = external?.toInt()
 )
 
-fun Plan.toProductDetail(instance: PlanInstance) = ProductOfferDetail(
-    metadata = ProductMetadata(
-        productId = requireNotNull(instance.vendors[PlanVendorName.GOOGLE]?.productId),
-        customerId = requireNotNull(instance.vendors[PlanVendorName.GOOGLE]?.customerId),
-        planName = requireNotNull(name),
-        entitlements = entitlements.map { it.toProductEntitlement() }
-    ),
-    header = toProductHeader(instance),
+fun Plan.toProductOfferDetail(instance: PlanInstance) = ProductOfferDetail(
+    metadata = toProductMetadata(instance),
+    header = toProductDetailHeader(instance),
     offer = ProductOffer(
         isBaseOffer = false,
         tags = ProductOfferTags(emptySet()),
         token = ProductOfferToken(""),
-        current = instance.toProductPrice(),
-        renew = instance.toProductPrice()
+        current = instance.toProductOfferPrice(),
+        renew = instance.toProductOfferPrice()
     )
 )
 
@@ -100,7 +95,7 @@ fun Plan.toProductMetadata(instance: PlanInstance) = ProductMetadata(
     entitlements = entitlements.map { it.toProductEntitlement() }
 )
 
-fun Plan.toProductHeader(instance: PlanInstance) = ProductDetailHeader(
+fun Plan.toProductDetailHeader(instance: PlanInstance) = ProductDetailHeader(
     title = title,
     description = description,
     priceText = instance.price.first().let { getFormattedPrice(it.current, it.currency) },
@@ -108,7 +103,7 @@ fun Plan.toProductHeader(instance: PlanInstance) = ProductDetailHeader(
     starred = decorations.any { it as? PlanDecoration.Starred != null }
 )
 
-fun PlanInstance.toProductPrice() = ProductOfferPrice(
+fun PlanInstance.toProductOfferPrice() = ProductOfferPrice(
     productId = requireNotNull(vendors[PlanVendorName.GOOGLE]?.productId),
     customerId = requireNotNull(vendors[PlanVendorName.GOOGLE]?.customerId),
     cycle = cycle.toInt(),
