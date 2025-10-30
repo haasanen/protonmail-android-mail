@@ -77,8 +77,6 @@
   <string name="contact_actions_add_contact_description">Uložte tohoto příjemce jako kontakt</string>
   <string name="contact_actions_block_contact">Zablokovat tento kontakt</string>
   <string name="contact_actions_block_contact_description">Zablokovat tento kontakt</string>
-  <string name="contact_actions_unblock_contact">Zablokovat tento kontakt</string>
-  <string name="contact_actions_unblock_contact_description">Zablokovat tento kontakt</string>
   <string name="contact_actions_block_address">Zablokovat tuto adresu</string>
   <string name="contact_actions_block_address_description">Zablokovat tuto adresu</string>
   <string name="contact_actions_unblock_address">Odblokovat tuto adresu</string>

@@ -73,8 +73,6 @@
   <string name="contact_actions_add_contact_description">Lagre denne mottakeren som en kontakt</string>
   <string name="contact_actions_block_contact">Blokker denne kontakten</string>
   <string name="contact_actions_block_contact_description">Blokker denne kontakten</string>
-  <string name="contact_actions_unblock_contact">Blokker denne kontakten</string>
-  <string name="contact_actions_unblock_contact_description">Blokker denne kontakten</string>
   <string name="contact_actions_block_address">Blokker denne adressen</string>
   <string name="contact_actions_block_address_description">Blokker denne adressen</string>
   <string name="contact_actions_unblock_address">Opphev blokkeringen av denne adressen</string>

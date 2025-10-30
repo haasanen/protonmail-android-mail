@@ -77,8 +77,6 @@
   <string name="contact_actions_add_contact_description">Захаваць гэтага атрымальніка як кантакт</string>
   <string name="contact_actions_block_contact">Заблакіраваць гэты кантакт</string>
   <string name="contact_actions_block_contact_description">Заблакіраваць гэты кантакт</string>
-  <string name="contact_actions_unblock_contact">Заблакіраваць гэты кантакт</string>
-  <string name="contact_actions_unblock_contact_description">Заблакіраваць гэты кантакт</string>
   <string name="contact_actions_block_address">Заблакіраваць гэты адрас</string>
   <string name="contact_actions_block_address_description">Заблакіраваць гэты адрас</string>
   <string name="contact_actions_unblock_address">Разблакіраваць гэты адрас</string>

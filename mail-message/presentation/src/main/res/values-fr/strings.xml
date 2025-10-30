@@ -73,8 +73,6 @@
   <string name="contact_actions_add_contact_description">Enregistrer ce destinataire comme contact.</string>
   <string name="contact_actions_block_contact">Bloquer ce contact</string>
   <string name="contact_actions_block_contact_description">Bloquer ce contact</string>
-  <string name="contact_actions_unblock_contact">Bloquer ce contact</string>
-  <string name="contact_actions_unblock_contact_description">Bloquer ce contact</string>
   <string name="contact_actions_block_address">Bloquer cette adresse</string>
   <string name="contact_actions_block_address_description">Bloquer cette adresse</string>
   <string name="contact_actions_unblock_address">Débloquer cette adresse</string>

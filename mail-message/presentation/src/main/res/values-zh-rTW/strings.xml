@@ -71,8 +71,6 @@
   <string name="contact_actions_add_contact_description">將此收件者儲存為聯絡人</string>
   <string name="contact_actions_block_contact">封鎖此聯絡人</string>
   <string name="contact_actions_block_contact_description">封鎖此聯絡人</string>
-  <string name="contact_actions_unblock_contact">Block this contact</string>
-  <string name="contact_actions_unblock_contact_description">Block this contact</string>
   <string name="contact_actions_block_address">Block this address</string>
   <string name="contact_actions_block_address_description">Block this address</string>
   <string name="contact_actions_unblock_address">Unblock this address</string>

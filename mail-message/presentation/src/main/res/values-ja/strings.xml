@@ -71,8 +71,6 @@
   <string name="contact_actions_add_contact_description">この宛先を連絡先として保存</string>
   <string name="contact_actions_block_contact">この連絡先をブロック</string>
   <string name="contact_actions_block_contact_description">この連絡先をブロック</string>
-  <string name="contact_actions_unblock_contact">この連絡先をブロック</string>
-  <string name="contact_actions_unblock_contact_description">この連絡先をブロック</string>
   <string name="contact_actions_block_address">このアドレスをブロック</string>
   <string name="contact_actions_block_address_description">このアドレスをブロック</string>
   <string name="contact_actions_unblock_address">このアドレスのブロックを解除</string>

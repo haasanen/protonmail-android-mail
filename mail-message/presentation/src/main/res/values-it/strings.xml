@@ -73,8 +73,6 @@
   <string name="contact_actions_add_contact_description">Salva come contatto</string>
   <string name="contact_actions_block_contact">Blocca</string>
   <string name="contact_actions_block_contact_description">Blocca questo contatto</string>
-  <string name="contact_actions_unblock_contact">Blocca questo contatto</string>
-  <string name="contact_actions_unblock_contact_description">Blocca questo contatto</string>
   <string name="contact_actions_block_address">Blocca questo indirizzo</string>
   <string name="contact_actions_block_address_description">Blocca questo indirizzo</string>
   <string name="contact_actions_unblock_address">Sblocca questo indirizzo</string>

@@ -71,8 +71,6 @@
   <string name="contact_actions_add_contact_description">将此收件人另存为联系人</string>
   <string name="contact_actions_block_contact">屏蔽此联系人</string>
   <string name="contact_actions_block_contact_description">屏蔽此联系人</string>
-  <string name="contact_actions_unblock_contact">屏蔽此联系人</string>
-  <string name="contact_actions_unblock_contact_description">屏蔽此联系人</string>
   <string name="contact_actions_block_address">屏蔽此地址</string>
   <string name="contact_actions_block_address_description">屏蔽此地址</string>
   <string name="contact_actions_unblock_address">取消屏蔽此地址</string>
