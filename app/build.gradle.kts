@@ -104,7 +104,12 @@ android {
             isDebuggable = false
             enableUnitTestCoverage = false
             isMinifyEnabled = true
-            proguardFiles.addAll(file("proguard").listFiles())
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                *fileTree("proguard").files.toTypedArray()
+            )
+
             manifestPlaceholders["isFcmServiceEnabled"] = isFcmServiceEnabled
             signingConfig = signingConfigs["debug"]
         }
