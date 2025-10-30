@@ -50,6 +50,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ViewModeIsConversation
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreenLegacy
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationRouterViewModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -88,6 +89,7 @@ internal fun NavGraphBuilder.addConversationDetail(
                         ?.takeIf { it != "null" }
                         ?.let(::MessageId),
                     openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
+                    // for the conversation view
                     isSingleMessageMode = singleMessageMode,
                     entryPoint = ConversationDetailEntryPoint.valueOf(
                         backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
@@ -100,7 +102,10 @@ internal fun NavGraphBuilder.addConversationDetail(
                         ?.takeIf { it != "null" }
                         ?.let(::MessageId),
                     openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
+                    // for the conversation view
                     isSingleMessageMode = singleMessageMode,
+                    // for the message list grouping
+                    viewModeIsConversation = backStackEntry.arguments?.getBoolean(ViewModeIsConversation)!!,
                     entryPoint = ConversationDetailEntryPoint.valueOf(
                         backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
                     )
@@ -124,6 +129,7 @@ internal fun NavGraphBuilder.addConversationDetail(
         exitTransition = { RouteTransitions.exitTransitionRightToLeft }
     ) {
         // upcoming new screen will go here
+        // PagedConversationDetailScreen(actions = actions)
         ConversationDetailScreen(actions = actions)
     }
 
@@ -168,6 +174,7 @@ internal fun NavGraphBuilder.addMailbox(
                                 MessageId(mailboxItemId.value)
                             },
                             openedFromLocation = request.openedFromLocation,
+                            viewModeIsConversation = request.viewModeIsConversation,
                             entryPoint = ConversationDetailEntryPoint.Mailbox
                         )
                     }

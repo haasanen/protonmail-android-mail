@@ -32,6 +32,7 @@ import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiMo
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
@@ -77,6 +78,7 @@ import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
+import ch.protonmail.android.mailmailbox.domain.usecase.SetEphemeralMailboxCursor
 import ch.protonmail.android.mailmailbox.presentation.helper.MailboxAsyncPagingDataDiffer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxViewModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
@@ -306,6 +308,8 @@ internal class MailboxViewModelTest {
     }
     private val eventLoopRepository = mockk<EventLoopRepository>()
 
+    private val setEphemeralMailboxCursor = mockk<SetEphemeralMailboxCursor>()
+
     private val isExpandableLocation = mockk<IsExpandableLocation> {
         coEvery { this@mockk.invoke(any()) } returns false
     }
@@ -363,7 +367,8 @@ internal class MailboxViewModelTest {
             isExpandableLocation = isExpandableLocation,
             eventLoopRepository = eventLoopRepository,
             updateUnreadFilter = updateUnreadFilter,
-            updateShowSpamTrashFilter = updateShowSpamTrashFilter
+            updateShowSpamTrashFilter = updateShowSpamTrashFilter,
+            setEphemeralMailboxCursor = setEphemeralMailboxCursor
         )
     }
 
@@ -1284,17 +1289,29 @@ internal class MailboxViewModelTest {
         val expectedState = createMailboxDataState(
             openEffect = Effect.of(
                 OpenMailboxItemRequest(
-                    MailboxItemId(item.id), shouldOpenInComposer = false, openedFromLocation = labelId
+                    MailboxItemId(item.id), shouldOpenInComposer = false, openedFromLocation = labelId,
+                    viewModeIsConversation = false, subItemId = MailboxItemId(item.id)
                 )
             )
         )
+        coEvery {
+            setEphemeralMailboxCursor.invoke(
+                userId, false,
+                CursorId(
+                    item.conversationId, item.id
+                )
+            )
+        } just runs
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedTrashSpamFilterStateChange(intermediateState)
         expectedSelectedLabelCountStateChange(intermediateState)
         every {
             mailboxReducer.newStateFrom(
                 intermediateState,
-                MailboxEvent.ItemClicked.ItemDetailsOpened(item, labelId)
+                MailboxEvent.ItemClicked.ItemDetailsOpened(
+                    item, labelId,
+                    false, item.id
+                )
             )
         } returns expectedState
         expectPagerMock()
@@ -1304,6 +1321,14 @@ internal class MailboxViewModelTest {
         mailboxViewModel.state.test {
             // Then
             assertEquals(expectedState, awaitItem())
+            coVerify(exactly = 1) {
+                setEphemeralMailboxCursor.invoke(
+                    userId, false,
+                    CursorId(
+                        item.conversationId, item.id
+                    )
+                )
+            }
         }
     }
 
@@ -1465,6 +1490,14 @@ internal class MailboxViewModelTest {
             )
         )
 
+        coEvery {
+            setEphemeralMailboxCursor.invoke(
+                userId, true,
+                CursorId(
+                    item.conversationId
+                )
+            )
+        } just runs
         coEvery { getCurrentViewModeForLabel(userId = any(), any()) } returns ConversationGrouping
 
         expectedTrashSpamFilterStateChange(intermediateState)
@@ -1472,7 +1505,7 @@ internal class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 intermediateState,
-                MailboxEvent.ItemClicked.ItemDetailsOpened(item, labelId)
+                MailboxEvent.ItemClicked.ItemDetailsOpened(item, labelId, true, null)
             )
         } returns expectedState
         expectPagerMock()
@@ -1485,6 +1518,15 @@ internal class MailboxViewModelTest {
 
             // Then
             assertEquals(expectedState, awaitItem())
+
+            coVerify(exactly = 1) {
+                setEphemeralMailboxCursor.invoke(
+                    userId, true,
+                    CursorId(
+                        item.conversationId
+                    )
+                )
+            }
         }
     }
 
@@ -1637,12 +1679,17 @@ internal class MailboxViewModelTest {
         val pagingData = PagingData.from(listOf(unreadMailboxItem))
         expectPagerMock(pagingDataFlow = flowOf(pagingData))
         val labelId = initialLocationMailLabelId.labelId
+        coEvery {
+            setEphemeralMailboxCursor.invoke(userId, any(), any())
+        } just runs
         every {
             mailboxReducer.newStateFrom(
                 expectedMailBoxState,
                 MailboxEvent.ItemClicked.ItemDetailsOpened(
                     unreadMailboxItemUiModel,
-                    contextLabel = labelId
+                    contextLabel = labelId,
+                    false,
+                    null
                 )
             )
         } returns createMailboxDataState(

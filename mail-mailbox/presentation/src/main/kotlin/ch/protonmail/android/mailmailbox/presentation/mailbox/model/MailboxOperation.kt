@@ -294,7 +294,9 @@ internal sealed interface MailboxEvent : MailboxOperation {
 
         data class ItemDetailsOpened(
             override val item: MailboxItemUiModel,
-            val contextLabel: LabelId
+            val contextLabel: LabelId,
+            val viewModeIsConversationGrouping: Boolean,
+            val subitemId: String?
         ) : ItemClicked, AffectingMailboxList
 
         data class OpenComposer(

@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
@@ -320,29 +319,14 @@ class MailboxListReducer @Inject constructor(
         operation: MailboxEvent.ItemClicked.ItemDetailsOpened,
         currentState: MailboxListState
     ): MailboxListState {
-        // in search mode, subItemId is set to scroll to the searched item
-        // in message mode, subItemId is set to open the message
-        val subItemId = if (operation.item.type == MailboxItemType.Message ||
-            currentState is MailboxListState.Data.ViewMode && currentState.searchState.isInSearch()
-        ) {
-            MailboxItemId(operation.item.id)
-        } else {
-            null
-        }
-
-        val searchQuery = if (currentState is MailboxListState.Data.ViewMode && currentState.searchState.isInSearch()) {
-            currentState.searchState.searchQuery
-        } else null
-
         val currentLocation = operation.contextLabel
 
         val request = OpenMailboxItemRequest(
             itemId = MailboxItemId(operation.item.conversationId.id),
             shouldOpenInComposer = false,
-            subItemId = subItemId,
+            subItemId = operation.subitemId?.let { MailboxItemId(operation.subitemId) },
             openedFromLocation = currentLocation,
-            // filterUnread = operation.unreadFilter,
-            searchKey = searchQuery
+            viewModeIsConversation = operation.viewModeIsConversationGrouping
         )
 
         return when (currentState) {

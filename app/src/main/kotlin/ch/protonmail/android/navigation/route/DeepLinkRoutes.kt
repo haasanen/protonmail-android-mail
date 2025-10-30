@@ -95,7 +95,8 @@ internal fun NavGraphBuilder.addDeepLinkHandler(navController: NavHostController
                             scrollToMessageId = state.scrollToMessageId,
                             openedFromLocation = state.contextLabelId,
                             isSingleMessageMode = false,
-                            entryPoint = ConversationDetailEntryPoint.PushNotification
+                            entryPoint = ConversationDetailEntryPoint.PushNotification,
+                            viewModeIsConversation = true
                         )
                     ) {
                         popUpTo(Destination.Screen.Mailbox.route) { inclusive = false }
@@ -110,7 +111,8 @@ internal fun NavGraphBuilder.addDeepLinkHandler(navController: NavHostController
                             scrollToMessageId = state.messageId,
                             openedFromLocation = state.contextLabelId,
                             isSingleMessageMode = true,
-                            entryPoint = ConversationDetailEntryPoint.PushNotification
+                            entryPoint = ConversationDetailEntryPoint.PushNotification,
+                            viewModeIsConversation = false
                         )
                     ) {
                         popUpTo(Destination.Screen.Mailbox.route) { inclusive = false }

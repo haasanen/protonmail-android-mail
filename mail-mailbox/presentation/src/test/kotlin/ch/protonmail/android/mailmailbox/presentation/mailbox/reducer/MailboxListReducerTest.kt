@@ -253,7 +253,9 @@ internal class MailboxListReducerTest(
                 currentState = MailboxListState.Loading,
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
                     item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    contextLabel = LabelIdSample.RustLabel3
+                    contextLabel = LabelIdSample.RustLabel3,
+                    viewModeIsConversationGrouping = true,
+                    subitemId = null
                 ),
                 expectedState = MailboxListState.Loading
             ),
@@ -261,7 +263,9 @@ internal class MailboxListReducerTest(
                 currentState = MailboxListState.Loading,
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
                     item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    contextLabel = LabelIdSample.RustLabel3
+                    contextLabel = LabelIdSample.RustLabel3,
+                    viewModeIsConversationGrouping = true,
+                    subitemId = null
                 ),
                 expectedState = MailboxListState.Loading
             ),
@@ -367,7 +371,9 @@ internal class MailboxListReducerTest(
                 ),
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
                     item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    contextLabel = MailLabelTestData.customLabelOne.id.labelId
+                    contextLabel = MailLabelTestData.customLabelOne.id.labelId,
+                    viewModeIsConversationGrouping = true,
+                    subitemId = null
                 ),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.customLabelOne,
@@ -375,7 +381,6 @@ internal class MailboxListReducerTest(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
                             shouldOpenInComposer = false,
-                            subItemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.id),
                             openedFromLocation = MailLabelTestData.customLabelOne.id.labelId
                         )
                     ),
@@ -402,7 +407,9 @@ internal class MailboxListReducerTest(
                 ),
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
                     item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    contextLabel = MailLabelTestData.customLabelOne.id.labelId
+                    contextLabel = MailLabelTestData.customLabelOne.id.labelId,
+                    viewModeIsConversationGrouping = true,
+                    subitemId = null
                 ),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.customLabelOne,
@@ -410,8 +417,9 @@ internal class MailboxListReducerTest(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
                             shouldOpenInComposer = false,
-                            subItemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.id),
-                            openedFromLocation = MailLabelTestData.customLabelOne.id.labelId
+                            subItemId = null,
+                            openedFromLocation = MailLabelTestData.customLabelOne.id.labelId,
+                            viewModeIsConversation = true
                         )
                     ),
                     scrollToMailboxTop = Effect.empty(),
@@ -444,7 +452,8 @@ internal class MailboxListReducerTest(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.draftMailboxItemUiModel.id),
                             shouldOpenInComposer = true,
-                            openedFromLocation = MailLabelTestData.customLabelOne.id.labelId
+                            openedFromLocation = MailLabelTestData.customLabelOne.id.labelId,
+                            viewModeIsConversation = true
                         )
                     ),
                     scrollToMailboxTop = Effect.empty(),

@@ -489,7 +489,9 @@ internal class MailboxReducerTest(
             TestInput(
                 MailboxEvent.ItemClicked.ItemDetailsOpened(
                     item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    contextLabel = LabelIdSample.RustLabel1
+                    contextLabel = LabelIdSample.RustLabel1,
+                    true,
+                    null
                 ),
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,
