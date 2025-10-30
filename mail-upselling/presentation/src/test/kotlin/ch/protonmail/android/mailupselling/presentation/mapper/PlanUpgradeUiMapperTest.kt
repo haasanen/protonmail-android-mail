@@ -185,7 +185,7 @@ internal class PlanUpgradeUiMapperTest {
         expectDescriptionUiModelPromo()
         expectEntitlementsUiModel()
 
-        val shorterInstance = UpsellingTestData.MailPlusProducts.MonthlyPromoProductDetail
+        val shorterInstance = UpsellingTestData.MailPlusProducts.MonthlyPromoProductOfferDetail
         val longerInstance = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(

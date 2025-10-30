@@ -90,7 +90,7 @@ object UpsellingTestData {
             offers = listOf(MonthlyProductOfferDetail.offer)
         )
 
-        val MonthlyPromoProductDetail = ProductOfferDetail(
+        val MonthlyPromoProductOfferDetail = ProductOfferDetail(
             metadata = mailPlusMetadata,
             header = ProductDetailHeader(
                 title = "Mail Plus",
@@ -102,6 +102,38 @@ object UpsellingTestData {
             offer = ProductOffer(
                 isBaseOffer = false,
                 tags = ProductOfferTags(setOf("introductory-price")),
+                token = offerToken,
+                current = ProductOfferPrice(
+                    productId = "productId",
+                    customerId = "customerId",
+                    cycle = 1,
+                    amount = 9 * 1000 * 1000,
+                    currency = "EUR",
+                    formatted = "EUR 9.00"
+                ),
+                renew = ProductOfferPrice(
+                    productId = "productId",
+                    customerId = "customerId",
+                    cycle = 1,
+                    amount = 12 * 1000 * 1000,
+                    currency = "EUR",
+                    formatted = "EUR 12.00"
+                )
+            )
+        )
+
+        val MonthlyPromoAndBFProductDetail = ProductOfferDetail(
+            metadata = mailPlusMetadata,
+            header = ProductDetailHeader(
+                title = "Mail Plus",
+                description = "Description",
+                priceText = "EUR 12.00",
+                cycleText = "/month",
+                starred = false
+            ),
+            offer = ProductOffer(
+                isBaseOffer = false,
+                tags = ProductOfferTags(setOf("introductory-price", "bf-promo")),
                 token = offerToken,
                 current = ProductOfferPrice(
                     productId = "productId",

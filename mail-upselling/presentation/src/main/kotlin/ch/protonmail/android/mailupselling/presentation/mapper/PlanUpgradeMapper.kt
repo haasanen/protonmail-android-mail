@@ -18,9 +18,8 @@
 
 package ch.protonmail.android.mailupselling.presentation.mapper
 
-import arrow.core.Either
-import arrow.core.raise.either
 import ch.protonmail.android.mailupselling.domain.model.BlackFridayPhase
+import ch.protonmail.android.mailupselling.domain.model.BlackFridaySupported
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeSupportedTags
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.usecase.GetCurrentBlackFridayPhase
@@ -38,15 +37,20 @@ internal class PlanUpgradeMapper @Inject constructor(
         monthlyInstance: ProductOfferDetail?,
         yearlyInstance: ProductOfferDetail?,
         entryPoint: UpsellingEntryPoint
-    ): Either<PlanUpgradeMappingError, PlanUpgradeVariant> = either {
+    ): PlanUpgradeVariant {
         val instances = listOfNotNull(monthlyInstance, yearlyInstance)
+        val currentBlackFridayPhase = getCurrentBlackFridayPhase()
 
-        when {
-            instances.containsTag(PlanUpgradeSupportedTags.BlackFriday) -> when (getCurrentBlackFridayPhase()) {
-                BlackFridayPhase.None -> raise(PlanUpgradeMappingError.InvalidBlackFridayState)
-                BlackFridayPhase.Active.Wave2 -> PlanUpgradeVariant.BlackFriday.Wave2
-                BlackFridayPhase.Active.Wave1 -> PlanUpgradeVariant.BlackFriday.Wave1
-            }
+        return when {
+            // A plan can be tagged as BF + Intro, so the extra checks on the entryPoint/phases are required.
+            entryPoint is BlackFridaySupported &&
+                currentBlackFridayPhase is BlackFridayPhase.Active &&
+                instances.containsTag(PlanUpgradeSupportedTags.BlackFriday) ->
+
+                when (currentBlackFridayPhase) {
+                    BlackFridayPhase.Active.Wave2 -> PlanUpgradeVariant.BlackFriday.Wave2
+                    BlackFridayPhase.Active.Wave1 -> PlanUpgradeVariant.BlackFriday.Wave1
+                }
 
             instances.containsTag(PlanUpgradeSupportedTags.IntroductoryPrice) -> PlanUpgradeVariant.IntroductoryPrice
             entryPoint.supportsHeaderVariants() -> PlanUpgradeVariant.SocialProof
@@ -79,6 +83,7 @@ internal class PlanUpgradeMapper @Inject constructor(
             )
         }
     }
+
 
     private fun List<ProductOfferDetail>.containsTag(tag: PlanUpgradeSupportedTags) =
         any { it.offer.tags.value.contains(tag.value) }

@@ -91,7 +91,7 @@ internal class OnboardingPlanUpgradeUiMapperTest {
         // Given
         coEvery {
             planUpgradeMapper.resolveVariant(any(), any(), any())
-        } returns PlanUpgradeVariant.Normal.right()
+        } returns PlanUpgradeVariant.Normal
 
         val monthlyMailPlus = UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail
         val yearlyMailPlus = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail

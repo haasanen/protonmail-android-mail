@@ -88,7 +88,7 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
     @Test
     fun `should map promo instances correctly (monthly promo)`() {
         // Given
-        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyPromoProductDetail
+        val monthlyPlan = UpsellingTestData.MailPlusProducts.MonthlyPromoProductOfferDetail
         val yearlyPlan = UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail
 
         val promoParams = PlanUpgradeInstanceUiModel.Promotional.Params(

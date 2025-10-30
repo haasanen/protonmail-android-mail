@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailupselling.presentation.mapper
 
 import arrow.core.Either
-import arrow.core.getOrElse
 import arrow.core.raise.either
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -89,9 +88,7 @@ internal class OnboardingPlanUpgradeUiMapper @Inject constructor(
             monthlyPlan,
             yearlyPlan,
             UpsellingEntryPoint.PostOnboarding
-        ).getOrElse {
-            raise(PlanMappingError.InvalidList)
-        }
+        )
 
         val (monthlyUiModel, yearlyUiModel) = planInstanceUiMapper.toUiModel(
             monthlyPlan,
