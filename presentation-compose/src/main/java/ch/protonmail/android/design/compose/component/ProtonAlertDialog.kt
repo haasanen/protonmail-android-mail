@@ -165,18 +165,28 @@ fun ProtonDialogTitle(title: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ProtonAlertDialogText(@StringRes textResId: Int, modifier: Modifier = Modifier) {
+fun ProtonAlertDialogText(
+    @StringRes textResId: Int,
+    color: Color = Color.Unspecified,
+    modifier: Modifier = Modifier
+) {
     ProtonAlertDialogText(
         text = stringResource(id = textResId),
+        color = color,
         modifier = modifier
     )
 }
 
 @Composable
-fun ProtonAlertDialogText(text: String, modifier: Modifier = Modifier) {
+fun ProtonAlertDialogText(
+    text: String,
+    color: Color = Color.Unspecified,
+    modifier: Modifier = Modifier
+) {
     Text(
         text = text,
         style = ProtonTheme.typography.bodyMediumWeak,
+        color = color,
         modifier = modifier
     )
 }
@@ -188,6 +198,7 @@ fun ProtonAlertDialogButton(
     enabled: Boolean = true,
     loading: Boolean = false,
     contained: Boolean = true,
+    textColor: Color = ProtonTheme.colors.interactionBrandDefaultNorm,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     onClick: () -> Unit
 ) {
@@ -198,6 +209,7 @@ fun ProtonAlertDialogButton(
         enabled = enabled,
         loading = loading,
         contained = contained,
+        textColor = textColor,
         interactionSource = interactionSource
     )
 }
@@ -209,6 +221,7 @@ fun ProtonAlertDialogButton(
     enabled: Boolean = true,
     loading: Boolean = false,
     contained: Boolean = true,
+    textColor: Color = ProtonTheme.colors.interactionBrandDefaultNorm,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     onClick: () -> Unit
 ) {
@@ -223,7 +236,7 @@ fun ProtonAlertDialogButton(
         Text(
             text = title,
             style = ProtonTheme.typography.labelLarge,
-            color = ProtonTheme.colors.interactionBrandDefaultNorm,
+            color = textColor,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
