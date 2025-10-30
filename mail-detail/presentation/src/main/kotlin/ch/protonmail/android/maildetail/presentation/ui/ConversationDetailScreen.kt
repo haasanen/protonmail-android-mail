@@ -116,6 +116,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
+import ch.protonmail.android.maildetail.presentation.ui.dialog.BlockSenderDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
@@ -242,6 +243,13 @@ fun ConversationDetailScreen(
         onDismiss = { viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessageDismissed) }
     )
 
+    BlockSenderDialog(
+        state = state.blockSenderDialogState,
+        onConfirm = { messageId, email ->
+            viewModel.submit(ConversationDetailViewAction.BlockSenderConfirmed(messageId, email))
+        },
+        onDismiss = { viewModel.submit(ConversationDetailViewAction.BlockSenderDismissed) }
+    )
 
     ProtonModalBottomSheetLayout(
         showBottomSheet = showBottomSheet,
@@ -435,10 +443,12 @@ fun ConversationDetailScreen(
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.onComposeNewMessage(it.address)
                         },
-                        onBlockClicked = { participant, messageId ->
+                        onBlockClicked = { participant, messageId, contactId ->
                             viewModel.submit(
                                 ConversationDetailViewAction.BlockSender(
-                                    messageId?.let { MessageIdUiModel(it.id) }, participant.address
+                                    messageId = messageId?.let { MessageIdUiModel(it.id) },
+                                    email = participant.address,
+                                    contactId = contactId
                                 )
                             )
 

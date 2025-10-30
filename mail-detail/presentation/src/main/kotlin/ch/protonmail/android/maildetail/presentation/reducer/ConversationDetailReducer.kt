@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
+import ch.protonmail.android.maildetail.presentation.model.BlockSenderDialogState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomBarEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomSheetEvent
@@ -85,6 +86,7 @@ class ConversationDetailReducer @Inject constructor(
     private val bottomSheetReducer: BottomSheetReducer,
     private val deleteDialogReducer: ConversationDeleteDialogReducer,
     private val reportPhishingDialogReducer: ConversationReportPhishingDialogReducer,
+    private val blockSenderDialogReducer: ConversationBlockSenderDialogReducer,
     private val hiddenMessagesBannerReducer: HiddenMessagesBannerReducer,
     private val markAsLegitimateDialogReducer: MarkAsLegitimateDialogReducer,
     private val editScheduledMessageDialogReducer: EditScheduledMessageDialogReducer,
@@ -114,7 +116,8 @@ class ConversationDetailReducer @Inject constructor(
             reportPhishingDialogState = currentState.toNewReportPhishingDialogState(operation),
             hiddenMessagesBannerState = currentState.toNewHiddenMessagesBannerState(operation),
             markAsLegitimateDialogState = currentState.toNewMarkAsLegitimateDialogState(operation),
-            editScheduledMessageDialogState = currentState.toNewEditScheduleMessageDialogState(operation)
+            editScheduledMessageDialogState = currentState.toNewEditScheduleMessageDialogState(operation),
+            blockSenderDialogState = currentState.toNewBlockSenderDialogState(operation)
         )
     }
 
@@ -377,6 +380,16 @@ class ConversationDetailReducer @Inject constructor(
             reportPhishingDialogReducer.newStateFrom(operation)
         } else {
             reportPhishingDialogState
+        }
+    }
+
+    private fun ConversationDetailState.toNewBlockSenderDialogState(
+        operation: ConversationDetailOperation
+    ): BlockSenderDialogState {
+        return if (operation is ConversationDetailOperation.AffectingBlockSenderDialog) {
+            blockSenderDialogReducer.newStateFrom(operation)
+        } else {
+            blockSenderDialogState
         }
     }
 

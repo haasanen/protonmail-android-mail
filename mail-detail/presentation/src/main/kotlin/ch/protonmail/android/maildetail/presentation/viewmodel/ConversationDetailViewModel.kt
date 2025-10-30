@@ -387,6 +387,8 @@ class ConversationDetailViewModel @Inject constructor(
             is ScrollRequestCompleted,
             is ConversationDetailViewAction.ReportPhishing,
             is ConversationDetailViewAction.ReportPhishingDismissed,
+            is ConversationDetailViewAction.BlockSender,
+            is ConversationDetailViewAction.BlockSenderDismissed,
             is ConversationDetailViewAction.MarkMessageAsLegitimate,
             is ConversationDetailViewAction.MarkMessageAsLegitimateDismissed,
             is ConversationDetailViewAction.EditScheduleSendMessageDismissed,
@@ -429,7 +431,7 @@ class ConversationDetailViewModel @Inject constructor(
                 handleMarkMessageAsLegitimateConfirmed(action)
 
             is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action)
-            is ConversationDetailViewAction.BlockSender -> handleBlockSender(action)
+            is ConversationDetailViewAction.BlockSenderConfirmed -> handleBlockSenderConfirmed(action)
             is ConversationDetailViewAction.EditScheduleSendMessageConfirmed -> handleEditScheduleSendMessage(action)
             is ConversationDetailViewAction.PrintMessage -> handlePrintMessage(action.context, action.messageId)
             is ConversationDetailViewAction.RetryRsvpEventLoading ->
@@ -1693,19 +1695,20 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleBlockSender(action: ConversationDetailViewAction.BlockSender) = viewModelScope.launch {
+    private fun handleBlockSenderConfirmed(action: ConversationDetailViewAction.BlockSenderConfirmed) =
         viewModelScope.launch {
-            blockSender(
-                userId = primaryUserId.first(),
-                email = action.email
-            ).fold(
-                ifLeft = { Timber.e("Failed to block sender in message ${action.messageId?.id}") },
-                ifRight = { action.messageId?.let { setOrRefreshMessageBody(it) } }
-            )
+            viewModelScope.launch {
+                blockSender(
+                    userId = primaryUserId.first(),
+                    email = action.email
+                ).fold(
+                    ifLeft = { Timber.e("Failed to block sender in message ${action.messageId?.id}") },
+                    ifRight = { action.messageId?.let { setOrRefreshMessageBody(it) } }
+                )
 
-            emitNewStateFrom(action)
+                emitNewStateFrom(action)
+            }
         }
-    }
 
     private fun handleGetRsvpEvent(messageId: MessageId, refresh: Boolean) {
         viewModelScope.launch {

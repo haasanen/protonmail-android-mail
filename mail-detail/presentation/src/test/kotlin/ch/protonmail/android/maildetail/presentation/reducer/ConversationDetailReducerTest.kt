@@ -78,6 +78,7 @@ class ConversationDetailReducerTest(
     private val bottomSheetReducer = mockk<BottomSheetReducer>(relaxed = true)
     private val deleteDialogReducer = mockk<ConversationDeleteDialogReducer>(relaxed = true)
     private val reportPhishingDialogReducer = mockk<ConversationReportPhishingDialogReducer>(relaxed = true)
+    private val blockSenderDialogReducer = mockk<ConversationBlockSenderDialogReducer>(relaxed = true)
     private val trashedMessagesBannerReducer = mockk<HiddenMessagesBannerReducer>(relaxed = true)
     private val markAsLegitimateDialogReducer = mockk<MarkAsLegitimateDialogReducer>(relaxed = true)
     private val editScheduledMessageDialogReducer = mockk<EditScheduledMessageDialogReducer>(relaxed = true)
@@ -88,6 +89,7 @@ class ConversationDetailReducerTest(
         bottomSheetReducer = bottomSheetReducer,
         deleteDialogReducer = deleteDialogReducer,
         reportPhishingDialogReducer = reportPhishingDialogReducer,
+        blockSenderDialogReducer = blockSenderDialogReducer,
         hiddenMessagesBannerReducer = trashedMessagesBannerReducer,
         markAsLegitimateDialogReducer = markAsLegitimateDialogReducer,
         editScheduledMessageDialogReducer = editScheduledMessageDialogReducer,
@@ -181,6 +183,12 @@ class ConversationDetailReducerTest(
                 verify { reportPhishingDialogReducer wasNot Called }
             }
 
+            if (reducesBlockSenderDialog) {
+                verify { blockSenderDialogReducer.newStateFrom(any()) }
+            } else {
+                verify { blockSenderDialogReducer wasNot Called }
+            }
+
             if (reducesMarkAsLegitimateDialog) {
                 verify { markAsLegitimateDialogReducer.newStateFrom(any()) }
             } else {
@@ -210,6 +218,7 @@ class ConversationDetailReducerTest(
         val reducesDeleteDialog: Boolean,
         val reducesTrashedMessagesBanner: Boolean,
         val reducesReportPhishingDialog: Boolean,
+        val reducesBlockSenderDialog: Boolean,
         val reducesMarkAsLegitimateDialog: Boolean,
         val reducesEditScheduleSendDialog: Boolean
     ) {
@@ -278,6 +287,13 @@ class ConversationDetailReducerTest(
                 MessageId(messageId.id)
             ) affects listOf(ReportPhishingDialog),
             ConversationDetailViewAction.ReportPhishingDismissed affects listOf(ReportPhishingDialog),
+            ConversationDetailViewAction.BlockSender(
+                MessageIdUiModel(messageId.id), participant.participantAddress, null
+            ) affects listOf(BottomSheet, BlockSenderDialog),
+            ConversationDetailViewAction.BlockSenderConfirmed(
+                MessageIdUiModel(messageId.id), participant.participantAddress
+            ) affects listOf(BlockSenderDialog),
+            ConversationDetailViewAction.BlockSenderDismissed affects listOf(BlockSenderDialog),
             ConversationDetailViewAction.MarkMessageAsLegitimate(
                 MessageId(messageId.id), isPhishing = true
             ) affects listOf(MarkAsLegitimateDialog),
@@ -401,6 +417,7 @@ private infix fun ConversationDetailOperation.affects(entities: List<Entity>) = 
     reducesDeleteDialog = entities.contains(DeleteDialog),
     reducesTrashedMessagesBanner = entities.contains(HiddenMessagesBanner),
     reducesReportPhishingDialog = entities.contains(ReportPhishingDialog),
+    reducesBlockSenderDialog = entities.contains(BlockSenderDialog),
     reducesMarkAsLegitimateDialog = entities.contains(MarkAsLegitimateDialog),
     reducesEditScheduleSendDialog = entities.contains(EditScheduleSendDialog)
 )
@@ -422,6 +439,7 @@ private data object MessageScroll : Entity
 private data object DeleteDialog : Entity
 private data object HiddenMessagesBanner : Entity
 private data object ReportPhishingDialog : Entity
+private data object BlockSenderDialog : Entity
 private data object MarkAsLegitimateDialog : Entity
 private data object EditScheduleSendDialog : Entity
 

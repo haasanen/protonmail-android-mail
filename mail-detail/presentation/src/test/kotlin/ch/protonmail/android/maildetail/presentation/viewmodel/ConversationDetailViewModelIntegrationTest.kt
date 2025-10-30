@@ -126,6 +126,7 @@ import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialo
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
+import ch.protonmail.android.maildetail.presentation.reducer.ConversationBlockSenderDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDeleteDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailMessagesReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailMetadataReducer
@@ -483,6 +484,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         ),
         deleteDialogReducer = ConversationDeleteDialogReducer(),
         reportPhishingDialogReducer = ConversationReportPhishingDialogReducer(),
+        blockSenderDialogReducer = ConversationBlockSenderDialogReducer(),
         hiddenMessagesBannerReducer = HiddenMessagesBannerReducer(),
         markAsLegitimateDialogReducer = MarkAsLegitimateDialogReducer(),
         editScheduledMessageDialogReducer = EditScheduledMessageDialogReducer(),

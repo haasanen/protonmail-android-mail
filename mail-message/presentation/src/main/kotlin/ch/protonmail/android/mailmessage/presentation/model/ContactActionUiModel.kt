@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.presentation.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.R
 
@@ -53,7 +54,7 @@ sealed class ContactActionUiModel(
         descriptionRes = R.string.contact_actions_add_contact_description
     )
 
-    data class BlockContact(val participant: Participant) : ContactActionUiModel(
+    data class BlockContact(val participant: Participant, val contactId: ContactId) : ContactActionUiModel(
         iconRes = R.drawable.ic_proton_circle_slash,
         textRes = R.string.contact_actions_block_contact,
         descriptionRes = R.string.contact_actions_block_contact_description

@@ -45,7 +45,7 @@ object ContactActionsGroupsSample {
             if (isContactBlocked) {
                 add(ContactActionUiModel.UnblockContact(participant))
             } else {
-                add(ContactActionUiModel.BlockContact(participant))
+                add(ContactActionUiModel.BlockContact(participant, ContactIdSample.Doe))
             }
         }.toImmutableList()
 

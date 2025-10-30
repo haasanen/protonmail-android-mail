@@ -46,7 +46,8 @@ data class ConversationDetailState(
     val reportPhishingDialogState: ReportPhishingDialogState,
     val hiddenMessagesBannerState: HiddenMessagesBannerState,
     val markAsLegitimateDialogState: MarkAsLegitimateDialogState,
-    val editScheduledMessageDialogState: EditScheduledMessageDialogState
+    val editScheduledMessageDialogState: EditScheduledMessageDialogState,
+    val blockSenderDialogState: BlockSenderDialogState
 ) {
 
     companion object {
@@ -71,7 +72,8 @@ data class ConversationDetailState(
             reportPhishingDialogState = ReportPhishingDialogState.Hidden,
             hiddenMessagesBannerState = HiddenMessagesBannerState.Hidden,
             markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
-            editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
+            editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden,
+            blockSenderDialogState = BlockSenderDialogState.Hidden
         )
     }
 }

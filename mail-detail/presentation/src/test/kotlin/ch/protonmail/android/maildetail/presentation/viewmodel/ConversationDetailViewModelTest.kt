@@ -2043,12 +2043,29 @@ class ConversationDetailViewModelTest {
         // When
         viewModel.state.test {
             initialStateEmitted()
-            viewModel.submit(ConversationDetailViewAction.BlockSender(messageIdUiModel, email))
+            viewModel.submit(ConversationDetailViewAction.BlockSenderConfirmed(messageIdUiModel, email))
 
             advanceUntilIdle()
 
             // Then
             coVerify { blockSender(userId, email) }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `do not call block sender when dismissed`() = runTest {
+        // Given
+        viewModel.state.test {
+            initialStateEmitted()
+
+            // When
+            viewModel.submit(ConversationDetailViewAction.BlockSenderDismissed)
+
+            advanceUntilIdle()
+
+            // Then
+            coVerify(exactly = 0) { blockSender(userId, any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }

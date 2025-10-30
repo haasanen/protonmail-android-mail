@@ -20,11 +20,13 @@ package ch.protonmail.android.mailmessage.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
-import ch.protonmail.android.testdata.contact.ContactActionsGroupsSample
 import ch.protonmail.android.testdata.contact.ContactSample
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -61,6 +63,7 @@ internal class ContactActionsBottomSheetReducerTest(
         private val sampleOrigin =
             ContactActionsBottomSheetState.Origin.MessageDetails(MessageId("msg-1"))
 
+
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = BottomSheetState(ContactActionsBottomSheetState.Loading),
@@ -76,7 +79,12 @@ internal class ContactActionsBottomSheetReducerTest(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
-                        actions = ContactActionsGroupsSample.defaultForContact(sampleParticipant, false),
+                        actions = expectedGroupsFor(
+                            participant = sampleParticipant,
+                            contactId = sampleContact.id,
+                            isSenderBlocked = false,
+                            isPrimaryUserAddress = false
+                        ),
                         origin = sampleOrigin
                     )
                 )
@@ -95,7 +103,12 @@ internal class ContactActionsBottomSheetReducerTest(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
-                        actions = ContactActionsGroupsSample.defaultForContact(sampleParticipant, true),
+                        actions = expectedGroupsFor(
+                            participant = sampleParticipant,
+                            contactId = sampleContact.id,
+                            isSenderBlocked = true,
+                            isPrimaryUserAddress = false
+                        ),
                         origin = sampleOrigin
                     )
                 )
@@ -114,7 +127,12 @@ internal class ContactActionsBottomSheetReducerTest(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
-                        actions = ContactActionsGroupsSample.defaultForNoContact(sampleParticipant, true),
+                        actions = expectedGroupsFor(
+                            participant = sampleParticipant,
+                            contactId = null,
+                            isSenderBlocked = true,
+                            isPrimaryUserAddress = false
+                        ),
                         origin = sampleOrigin
                     )
                 )
@@ -133,7 +151,12 @@ internal class ContactActionsBottomSheetReducerTest(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
-                        actions = ContactActionsGroupsSample.defaultForNoContact(sampleParticipant, false),
+                        actions = expectedGroupsFor(
+                            participant = sampleParticipant,
+                            contactId = null,
+                            isSenderBlocked = false,
+                            isPrimaryUserAddress = false
+                        ),
                         origin = sampleOrigin
                     )
                 )
@@ -152,14 +175,55 @@ internal class ContactActionsBottomSheetReducerTest(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = primaryUserParticipant,
                         avatarUiModel = sampleAvatar,
-                        actions = ContactActionsGroupsSample.defaultForNoContact(
-                            primaryUserParticipant, isAddressBlocked = false, isPrimaryUserAddress = true
+                        actions = expectedGroupsFor(
+                            participant = primaryUserParticipant,
+                            contactId = null,
+                            isSenderBlocked = false,
+                            isPrimaryUserAddress = true
                         ),
                         origin = sampleOrigin
                     )
                 )
             )
         )
+
+        private fun expectedGroupsFor(
+            participant: Participant,
+            contactId: ContactId?,
+            isSenderBlocked: Boolean,
+            isPrimaryUserAddress: Boolean
+        ): ContactActionsBottomSheetState.ContactActionsGroups {
+            val first = listOf(
+                ContactActionUiModel.NewMessage(participant)
+            ).toImmutableList()
+
+            val second = listOf(
+                ContactActionUiModel.CopyAddress(participant.address),
+                ContactActionUiModel.CopyName(participant.name)
+            ).toImmutableList()
+
+            val third = if (isPrimaryUserAddress) {
+                emptyList()
+            } else {
+                listOf(
+                    when {
+                        contactId == null && !isSenderBlocked -> ContactActionUiModel.BlockAddress(participant)
+                        contactId == null && isSenderBlocked -> ContactActionUiModel.UnblockAddress(participant)
+                        contactId != null && !isSenderBlocked -> ContactActionUiModel.BlockContact(
+                            participant, contactId
+                        )
+
+                        else -> ContactActionUiModel.UnblockContact(participant)
+                    }
+                )
+            }.toImmutableList()
+
+            return ContactActionsBottomSheetState.ContactActionsGroups(
+                firstGroup = first,
+                secondGroup = second,
+                thirdGroup = third
+            )
+        }
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")

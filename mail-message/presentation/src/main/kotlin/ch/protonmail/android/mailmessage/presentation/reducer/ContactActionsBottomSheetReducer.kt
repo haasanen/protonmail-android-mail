@@ -54,11 +54,18 @@ class ContactActionsBottomSheetReducer @Inject constructor() {
             emptyList()
         } else {
             buildList {
-                val action = when {
-                    contactId == null && isSenderBlocked -> ContactActionUiModel.UnblockAddress(participant)
-                    contactId == null && !isSenderBlocked -> ContactActionUiModel.BlockAddress(participant)
-                    contactId != null && isSenderBlocked -> ContactActionUiModel.UnblockContact(participant)
-                    else -> ContactActionUiModel.BlockContact(participant)
+                val action = if (contactId == null) {
+                    if (isSenderBlocked) {
+                        ContactActionUiModel.UnblockAddress(participant)
+                    } else {
+                        ContactActionUiModel.BlockAddress(participant)
+                    }
+                } else {
+                    if (isSenderBlocked) {
+                        ContactActionUiModel.UnblockContact(participant)
+                    } else {
+                        ContactActionUiModel.BlockContact(participant, contactId)
+                    }
                 }
                 add(action)
             }

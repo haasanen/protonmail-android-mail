@@ -42,6 +42,7 @@ import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
@@ -133,9 +134,13 @@ private fun callbackForActions(
     is ContactActionUiModel.CopyAddress -> actions.onCopyAddressClicked(action.address)
     is ContactActionUiModel.CopyName -> actions.onCopyNameClicked(action.name)
     is ContactActionUiModel.NewMessage -> actions.onNewMessageClicked(action.participant)
-    is ContactActionUiModel.BlockContact -> actions.onBlockClicked(action.participant, sheetOrigin.getMessageId())
+    is ContactActionUiModel.BlockContact -> actions.onBlockClicked(
+        action.participant,
+        sheetOrigin.getMessageId(), action.contactId
+    )
+
     is ContactActionUiModel.UnblockContact -> actions.onUnblockClicked(action.participant, sheetOrigin.getMessageId())
-    is ContactActionUiModel.BlockAddress -> actions.onBlockClicked(action.participant, sheetOrigin.getMessageId())
+    is ContactActionUiModel.BlockAddress -> actions.onBlockClicked(action.participant, sheetOrigin.getMessageId(), null)
     is ContactActionUiModel.UnblockAddress -> actions.onUnblockClicked(action.participant, sheetOrigin.getMessageId())
 }
 
@@ -194,7 +199,7 @@ object ContactActionsBottomSheetContent {
         val onCopyNameClicked: (name: String) -> Unit,
         val onNewMessageClicked: (participant: Participant) -> Unit,
         val onAddContactClicked: (participant: Participant) -> Unit,
-        val onBlockClicked: (participant: Participant, messageId: MessageId?) -> Unit,
+        val onBlockClicked: (participant: Participant, messageId: MessageId?, contactId: ContactId?) -> Unit,
         val onUnblockClicked: (participant: Participant, messageId: MessageId?) -> Unit
     )
 }
@@ -228,7 +233,7 @@ fun ContactActionsBottomSheetContentPreview() {
                 onCopyNameClicked = {},
                 onNewMessageClicked = {},
                 onAddContactClicked = {},
-                onBlockClicked = { _, _ -> },
+                onBlockClicked = { _, _, _ -> },
                 onUnblockClicked = { _, _ -> }
             )
         )

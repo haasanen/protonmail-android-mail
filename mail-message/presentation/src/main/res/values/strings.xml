@@ -16,7 +16,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <plurals name="selected_count_title">
         <item quantity="one">%d Selected</item>
         <item quantity="other">%d Selected</item>
@@ -73,6 +73,9 @@
     <string name="contact_actions_add_contact_description">Save this recipient as a contact</string>
     <string name="contact_actions_block_contact">Block this contact</string>
     <string name="contact_actions_block_contact_description">Block this contact</string>
+    <string name="contact_actions_block_contact_dialog_text">Emails from <xliff:g id="email">%1$s</xliff:g> will no longer be delivered and will be permanently deleted. You can manage blocked email addresses in the settings.</string>
+    <string name="contact_actions_block_contact_dialog_button_block">Block</string>
+    <string name="contact_actions_block_contact_dialog_button_cancel">Cancel</string>
     <string name="contact_actions_unblock_contact">Block this contact</string>
     <string name="contact_actions_unblock_contact_description">Block this contact</string>
     <string name="contact_actions_block_address">Block this address</string>

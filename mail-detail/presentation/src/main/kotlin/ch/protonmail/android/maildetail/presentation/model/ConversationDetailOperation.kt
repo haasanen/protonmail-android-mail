@@ -27,6 +27,7 @@ import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentVa
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailconversation.domain.entity.HiddenMessagesBanner
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
@@ -39,6 +40,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessageBar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessages
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingReportPhishingDialog
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingBlockSenderDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingHiddenMessagesBanner
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -63,6 +65,8 @@ sealed interface ConversationDetailOperation {
     sealed interface AffectingHiddenMessagesBanner
     sealed interface AffectingMarkAsLegitimateDialog
     sealed interface AffectingEditScheduleMessageDialog
+    sealed interface AffectingBlockSenderDialog
+
 }
 
 sealed interface ConversationDetailEvent : ConversationDetailOperation {
@@ -350,8 +354,13 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class UnblockSender(val messageId: MessageIdUiModel?, val email: String) :
         ConversationDetailViewAction, AffectingBottomSheet
-    data class BlockSender(val messageId: MessageIdUiModel?, val email: String) :
-        ConversationDetailViewAction, AffectingBottomSheet
+    data class BlockSender(val messageId: MessageIdUiModel?, val email: String, val contactId: ContactId?) :
+        ConversationDetailViewAction, AffectingBottomSheet, AffectingBlockSenderDialog
+    object BlockSenderDismissed : ConversationDetailViewAction, AffectingBlockSenderDialog
+    data class BlockSenderConfirmed(
+        val messageId: MessageIdUiModel?,
+        val email: String
+    ) : ConversationDetailViewAction, AffectingBlockSenderDialog
 
     data object EditScheduleSendMessageDismissed :
         ConversationDetailViewAction, AffectingEditScheduleMessageDialog
