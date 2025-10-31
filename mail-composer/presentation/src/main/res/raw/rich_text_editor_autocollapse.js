@@ -183,6 +183,13 @@ document.addEventListener('selectionchange', function() {
         const range = selection.getRangeAt(0);
         const container = range.commonAncestorContainer;
         let element = container.nodeType === Node.TEXT_NODE ? container.parentElement : container;
+
+        // Allow normal editing when the quote is expanded
+        const expandedQuote = element?.closest('.protonmail_quote[data-expanded]');
+        if (expandedQuote) {
+            return;
+        }
+
         const collapsedQuote = element?.closest('.protonmail_quote:not([data-expanded])');
 
         if (collapsedQuote) {

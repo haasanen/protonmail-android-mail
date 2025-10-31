@@ -248,8 +248,8 @@ div[role="textbox"]{
     max-height: none;
 }
 
-/* Make quote containers undeletable */
-.protonmail_quote:not([data-expanded]) {
+/* Make quote containers undeletable - only for top-level collapsed quotes */
+.protonmail_quote:not(.protonmail_quote .protonmail_quote):not([data-expanded]) {
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
