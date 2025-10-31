@@ -26,6 +26,7 @@ import ch.protonmail.android.maildetail.presentation.model.PagedConversationDeta
 import ch.protonmail.android.maildetail.presentation.model.PagedConversationDetailState.Ready
 import ch.protonmail.android.maildetail.presentation.model.addPage
 import ch.protonmail.android.maildetail.presentation.model.currentPage
+import ch.protonmail.android.maildetail.presentation.model.exists
 import ch.protonmail.android.maildetail.presentation.model.nextPage
 import javax.inject.Inject
 
@@ -47,7 +48,7 @@ class PagedConversationDetailReducer @Inject constructor() {
                         .addPage(event.previousItem)
                         .addPage(event.currentItem)
                         .addPage(event.nextItem)
-                ).setFocusIndexes(),
+                ).setFocusIndexes(event.previousItem.exists()),
                 navigationArgs = event.navigationArgs
             )
 
@@ -95,7 +96,7 @@ private fun reduceUpdatePage(
         .addPage(event.nextItem),
     userScrollEnabled = true,
     pendingRemoval = null
-).setFocusIndexes()
+).setFocusIndexes(event.previousItem.exists())
 
 private fun reducePagerState(
     currentState: PagedConversationDetailState,
@@ -109,8 +110,8 @@ private fun reducePagerState(
     }
 }
 
-private fun DynamicViewPagerState.setFocusIndexes(): DynamicViewPagerState {
-    val newFocusIndex = if (this.pages.size < 3) 0 else 1
+private fun DynamicViewPagerState.setFocusIndexes(hasPrevious: Boolean): DynamicViewPagerState {
+    val newFocusIndex = if (!hasPrevious) 0 else 1
     return this.copy(
         currentPageIndex = newFocusIndex,
         focusPageIndex = newFocusIndex

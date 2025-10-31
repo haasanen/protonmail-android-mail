@@ -54,6 +54,8 @@ sealed interface Page {
     object End : Page
 }
 
+fun Page?.exists() = this !is Page.End && this != null
+
 data class PagedConversationEffects(
     val error: Effect<Error> = Effect.empty()
 )
