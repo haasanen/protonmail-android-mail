@@ -82,7 +82,7 @@ interface MessageRepository {
      */
     suspend fun getConversationCursor(
         firstPage: CursorId,
-        userId: UserId,
+        userId: UserId
     ): Either<ConversationCursorError, ConversationCursor>
 
     /**

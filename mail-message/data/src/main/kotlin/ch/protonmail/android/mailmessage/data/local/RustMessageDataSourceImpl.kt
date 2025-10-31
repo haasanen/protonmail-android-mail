@@ -173,17 +173,30 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun getConversationCursor(
         firstPage: LocalConversationId,
         userId: UserId
-    ): Either<ConversationCursorError, ConversationCursor> =   withContext(ioDispatcher) {
-        rustMessageListQuery.getCursor(firstPage)
-            ?.mapLeft {
-                it.toConversationCursorError().apply {
-                    Timber.d("rust-message could not get a cursor there is an error $this")
+    ): Either<ConversationCursorError, ConversationCursor> = withContext(ioDispatcher) {
+        // we are relying on the exiting pager being open already
+        var result = rustMessageListQuery.getCursor(firstPage)
+        if (result == null) {
+            // pager probably not initialised so initialise pager with first page
+            Timber.d("rust-message cursor unable to get cursor, retrieving conversations and retrying")
+            rustMessageListQuery.getMessages(userId, PageKey.DefaultPageKey())
+                .onLeft {
+                    Timber.e("rust-message cursor unable to recover and get conversations")
+                }
+                .onRight {
+                    result = rustMessageListQuery.getCursor(firstPage)
+                }
+        }
+
+        return@withContext when {
+            result == null -> InvalidState.left()
+            else -> {
+                result.mapLeft {
+                    it.toConversationCursorError()
                 }
             }
-            ?: InvalidState.left().apply {
-                Timber.d("rust-message could not get a cursor it is null")
-            }
-            }
+        }
+    }
 
 
     override suspend fun getSenderImage(

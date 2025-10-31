@@ -23,8 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.EphemeralMailboxCursor
 import ch.protonmail.android.mailcommon.domain.repository.EphemeralMailboxCursorRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.SetEphemeralMailboxCursor
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -46,16 +45,15 @@ class GetConversationCursor @Inject constructor(
         messageId: String?,
         viewModeIsConversationMode: Boolean
     ) = cursorRepository.observeCursor()
-        .flatMapLatest { state ->
-            // in the case of notifications we have no previous cursor set up from mailbox, so try to set it ourselves
+        .map { state ->
             if (state == null || state == EphemeralMailboxCursor.NotInitalised) {
                 setEphemeralMailboxCursor(
                     userId, viewModeIsConversationMode,
                     CursorId(conversationId, messageId)
                 )
-                cursorRepository.observeCursor()
+                EphemeralMailboxCursor.Initialising
             } else {
-                flowOf(state)
+                state
             }
         }
 }

@@ -345,16 +345,28 @@ class RustConversationDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getConversationCursor(firstPage: LocalConversationId) = withContext(ioDispatcher) {
-        // we are relying on the exiting pager being open already
-        val result = rustConversationsQuery.getCursor(firstPage)
-        return@withContext when {
-            result == null -> InvalidState.left()
-            else -> {
-                result.mapLeft {
-                    it.toConversationCursorError()
+    override suspend fun getConversationCursor(userId: UserId, firstPage: LocalConversationId) =
+        withContext(ioDispatcher) {
+            // we are relying on the exiting pager being open already
+            var result = rustConversationsQuery.getCursor(firstPage)
+            if (result == null) {
+                // pager probably not initialised so initialise pager with first page
+                Timber.d("rust-conversation cursor unable to get cursor, retrieving conversations and retrying")
+                rustConversationsQuery.getConversations(userId, PageKey.DefaultPageKey())
+                    .onLeft {
+                        Timber.e("rust-conversation cursor unable to recover and get conversations")
+                    }
+                    .onRight {
+                        result = rustConversationsQuery.getCursor(firstPage)
+                    }
+            }
+            return@withContext when {
+                result == null -> InvalidState.left()
+                else -> {
+                    result.mapLeft {
+                        it.toConversationCursorError()
+                    }
                 }
             }
         }
-    }
 }

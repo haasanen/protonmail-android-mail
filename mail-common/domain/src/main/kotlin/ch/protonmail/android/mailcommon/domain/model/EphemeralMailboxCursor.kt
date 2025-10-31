@@ -24,4 +24,5 @@ sealed interface EphemeralMailboxCursor {
     data class Data(val cursor: ConversationCursor) : EphemeralMailboxCursor
     data object NotInitalised : EphemeralMailboxCursor
     data object CursorDead : EphemeralMailboxCursor
+    data object Initialising : EphemeralMailboxCursor
 }

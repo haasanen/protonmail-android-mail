@@ -57,10 +57,11 @@ class MailMessageCursorWrapperTest {
 
         val mockMessage = mockk<Message>()
         every { mockMessage.id } returns Id(1.toULong())
+        every { mockMessage.conversationId } returns Id(2.toULong())
         coEvery { mailMessageCursor.fetchNext() } returns MailMessageCursorFetchNextResult.Ok(mockMessage)
 
         val result = sut.nextPage()
-        Assert.assertEquals((result as Cursor).conversationId.id, "1")
+        Assert.assertEquals((result as Cursor).conversationId.id, "2")
         coVerify { mailMessageCursor.fetchNext() }
     }
 
@@ -68,10 +69,11 @@ class MailMessageCursorWrapperTest {
     fun `test when Some then do not fetch async`() = runTest {
         val mockMessage = mockk<Message>()
         every { mockMessage.id } returns Id(1.toULong())
+        every { mockMessage.conversationId } returns Id(2.toULong())
         coEvery { mailMessageCursor.peekNext() } returns NextMailCursorMessage.Some(mockMessage)
 
         val result = sut.nextPage()
-        Assert.assertEquals((result as Cursor).conversationId.id, "1")
+        Assert.assertEquals((result as Cursor).conversationId.id, "2")
         coVerify(exactly = 0) { mailMessageCursor.fetchNext() }
     }
 }

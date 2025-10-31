@@ -22,7 +22,7 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.repository.RustConversationCursorImpl
-import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
+import ch.protonmail.android.mailcommon.data.wrapper.ConversationCursor
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.Cursor
 import ch.protonmail.android.mailcommon.domain.model.CursorId
@@ -44,8 +44,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.mailpagination.domain.model.PageToLoad
-import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
 import ch.protonmail.android.testdata.label.LabelTestData
@@ -275,12 +273,7 @@ class RustConversationRepositoryImplTest {
         coEvery {
             rustConversationDataSource.getConversationCursor(
                 firstPage = firstPage,
-                userId = userId,
-                pageKey = PageKey.DefaultPageKey(
-                    labelId = SystemLabelId.Archive.labelId,
-                    readStatus = ReadStatus.All,
-                    pageToLoad = PageToLoad.First
-                )
+                userId = userId
             )
         } returns conversationCursor.right()
 
@@ -288,8 +281,6 @@ class RustConversationRepositoryImplTest {
         // When
         val result = rustConversationRepository.getConversationCursor(
             firstPage = CursorId(ConversationId("100"), null),
-            labelId = SystemLabelId.Archive.labelId,
-            unreadFilterEnabled = false,
             userId = userId
         )
 
@@ -307,20 +298,13 @@ class RustConversationRepositoryImplTest {
         coEvery {
             rustConversationDataSource.getConversationCursor(
                 firstPage = firstPage,
-                userId = userId,
-                pageKey = PageKey.DefaultPageKey(
-                    labelId = SystemLabelId.Archive.labelId,
-                    readStatus = ReadStatus.Unread,
-                    pageToLoad = PageToLoad.First
-                )
+                userId = userId
             )
         } returns conversationCursor.right()
 
         // When
         rustConversationRepository.getConversationCursor(
             firstPage = CursorId(ConversationId("100"), null),
-            labelId = SystemLabelId.Archive.labelId,
-            unreadFilterEnabled = true,
             userId = userId
         )
 
@@ -328,12 +312,7 @@ class RustConversationRepositoryImplTest {
         coVerify(exactly = 1) {
             rustConversationDataSource.getConversationCursor(
                 firstPage = firstPage,
-                userId = userId,
-                pageKey = PageKey.DefaultPageKey(
-                    labelId = SystemLabelId.Archive.labelId,
-                    readStatus = ReadStatus.Unread,
-                    pageToLoad = PageToLoad.First
-                )
+                userId = userId
             )
         }
     }

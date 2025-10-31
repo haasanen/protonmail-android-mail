@@ -138,6 +138,7 @@ interface RustConversationDataSource {
     ): Either<DataError, UndoableOperation>
 
     suspend fun getConversationCursor(
+        userId: UserId,
         firstPage: LocalConversationId
     ): Either<ConversationCursorError, ConversationCursor>
 }

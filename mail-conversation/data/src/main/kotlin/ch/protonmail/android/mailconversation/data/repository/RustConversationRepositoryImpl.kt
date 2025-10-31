@@ -116,6 +116,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId: UserId
     ): Either<ConversationCursorError, ConversationCursor> = rustConversationDataSource
         .getConversationCursor(
+            userId = userId,
             firstPage = firstPage.conversationId.toLocalConversationId()
         )
         .map {

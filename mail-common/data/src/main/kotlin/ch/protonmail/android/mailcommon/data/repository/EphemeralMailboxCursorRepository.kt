@@ -34,7 +34,8 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
 class EphemeralMailboxCursorRepository @Inject constructor(
-    @EphemeralMailBoxCoroutineScope private val coroutineScope: CoroutineScope
+    @EphemeralMailBoxCoroutineScope private val coroutineScope: CoroutineScope,
+    stopTimeOutMs: Long = 5000.milliseconds.inWholeMilliseconds
 ) :
     EphemeralMailboxCursorRepository {
 
@@ -59,7 +60,7 @@ class EphemeralMailboxCursorRepository @Inject constructor(
         }
         .shareIn(
             scope = coroutineScope,
-            started = WhileSubscribed(stopTimeoutMillis = 5000.milliseconds.inWholeMilliseconds),
+            started = WhileSubscribed(stopTimeoutMillis = stopTimeOutMs),
             replay = 1
         )
 
@@ -71,7 +72,7 @@ class EphemeralMailboxCursorRepository @Inject constructor(
     }
 
     private fun cleanup() {
-        Timber.Forest.d("conversation-cursor being cleaned up")
+        Timber.d("conversation-cursor being cleaned up")
         _cursorState.value?.close()
         _cursorState.value = null
     }

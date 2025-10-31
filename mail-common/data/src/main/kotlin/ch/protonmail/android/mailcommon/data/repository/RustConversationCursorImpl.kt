@@ -65,8 +65,8 @@ class RustConversationCursorImpl(
 
     override suspend fun init() {
         mutex.withLock {
-            previous = conversationCursorWrapper.previousPage()
-            next = conversationCursorWrapper.nextPage()
+            previous = conversationCursorWrapper.previousPage().recoverFromErrorIfNeeded()
+            next = conversationCursorWrapper.nextPage().recoverFromErrorIfNeeded()
         }
     }
 
@@ -129,11 +129,11 @@ class RustConversationCursorImpl(
                     Timber.d("conversation-pager next was not preloaded, trying to load again")
                     next = current
                     // try reload next
-                    previous = conversationCursorWrapper.previousPage()
+                    current = conversationCursorWrapper.previousPage()
                     // then move forwards
                     conversationCursorWrapper.goBackwards()
                     // then preload
-                    next = conversationCursorWrapper.previousPage()
+                    previous = conversationCursorWrapper.previousPage()
                 }
 
                 // an error should not block the user from moving backwards past this cursor position
