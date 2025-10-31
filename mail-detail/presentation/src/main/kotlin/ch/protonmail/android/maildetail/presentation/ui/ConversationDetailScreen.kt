@@ -776,7 +776,9 @@ fun ConversationDetailScreen(
                     onUnStarClick = actions.onUnStarClick
                 ),
                 subjectHeaderSizeCallback = subjectHeaderSizeCallback,
-                topAppBarState = scrollBehavior.state
+                topAppBarState = scrollBehavior.state,
+                // implemented in another commit once this topbar is extracted from details
+                isDirectionForwards = { true }
             )
         },
         bottomBar = {

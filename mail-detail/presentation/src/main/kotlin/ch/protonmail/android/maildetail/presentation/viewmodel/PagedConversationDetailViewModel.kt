@@ -67,22 +67,20 @@ class PagedConversationDetailViewModel @Inject constructor(
 
 
     init {
-        Timber.d("conversation-cursor PAged ConversationDetailViewModel")
-        /*      viewModelScope.launch {
-                  observePrimaryUserId().first()?.let { userId ->
-                      Timber.d("conversation-cursor PAged ConversationDetailViewModel $userId")
-                      val autoAdvance = getAutoAdvance(userId)
-                      getConversationCursor(
-                          singleMessageMode = requireSingleMessageMode(),
-                          conversationId = requireConversationId(),
-                          userId = userId,
-                          messageId = getInitialScrollToMessageId()?.id,
-                          viewModeIsConversationMode = requireViewModeModeIsConversation()
-                      ).collect { state ->
-                          onCursor(autoAdvance, state)
-                      }
-                  }
-              }*/
+        /**viewModelScope.launch {
+        observePrimaryUserId().first()?.let { userId ->
+        val autoAdvance = getAutoAdvance(userId)
+        getConversationCursor(
+        singleMessageMode = requireSingleMessageMode(),
+        conversationId = requireConversationId(),
+        userId = userId,
+        messageId = getInitialScrollToMessageId()?.id,
+        viewModeIsConversationMode = requireViewModeModeIsConversation()
+        ).collect { state ->
+        onCursor(autoAdvance, state)
+        }
+        }
+        }**/
     }
 
     /* private fun onCursor(autoAdvance: Boolean, cursorState: EphemeralMailboxCursor?) {
@@ -97,25 +95,26 @@ class PagedConversationDetailViewModel @Inject constructor(
                      PagedConversationEffects(Effect.of(UiError.OTHER))
              }
 
-             is EphemeralMailboxCursor.Data -> {
-                 val cursor = cursorState.cursor
-                 conversationCursor = cursor
-                 emitNewStateFor(
-                     Ready(
-                         autoAdvance = autoAdvance,
-                         cursor.current.toPage(),
-                         cursor.next.toPage(),
-                         cursor.previous.toPage(),
-                         navigationArgs = NavigationArgs(
-                             openedFromLocation = requireLabelId(),
-                             singleMessageMode = requireSingleMessageMode(),
-                             conversationEntryPoint = getEntryPoint()
-                         )
-                     )
-                 )
-             }
-         }
-     }*/
+            is EphemeralMailboxCursor.Data -> {
+                val cursor = cursorState.cursor
+                conversationCursor = cursor
+                emitNewStateFor(
+                    PagedConversationDetailEvent.Ready(
+                        autoAdvance = autoAdvance,
+                        cursor.current.toPage(),
+                        cursor.next.toPage(),
+                        cursor.previous.toPage(),
+                        navigationArgs = NavigationArgs(
+                            openedFromLocation = requireLabelId(),
+                            singleMessageMode = requireSingleMessageMode(),
+                            conversationEntryPoint = getEntryPoint()
+                        )
+                    )
+                )
+            }
+            EphemeralMailboxCursor.Initialising -> { }
+        }
+    } */
 
     private fun emitNewStateFor(event: PagedConversationDetailEvent) {
         val currentState = mutableState.value

@@ -88,15 +88,14 @@ private fun reduceAutoAdvanceRequested(currentState: DynamicViewPagerState): Dyn
 private fun reduceUpdatePage(
     currentState: DynamicViewPagerState,
     event: PagedConversationDetailEvent.UpdatePage
-): DynamicViewPagerState =
-    currentState.copy(
-        pages = mutableListOf<Page>()
-            .addPage(event.previousItem)
-            .addPage(event.currentItem)
-            .addPage(event.nextItem),
-        userScrollEnabled = true,
-        pendingRemoval = null
-    ).setFocusIndexes()
+): DynamicViewPagerState = currentState.copy(
+    pages = mutableListOf<Page>()
+        .addPage(event.previousItem)
+        .addPage(event.currentItem)
+        .addPage(event.nextItem),
+    userScrollEnabled = true,
+    pendingRemoval = null
+).setFocusIndexes()
 
 private fun reducePagerState(
     currentState: PagedConversationDetailState,
