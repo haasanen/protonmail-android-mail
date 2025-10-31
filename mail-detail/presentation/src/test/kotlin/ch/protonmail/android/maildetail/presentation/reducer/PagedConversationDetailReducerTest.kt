@@ -18,7 +18,7 @@
 
 
 package ch.protonmail.android.maildetail.presentation.reducer
-/*
+
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -55,9 +55,12 @@ class PagedConversationDetailReducerTest(
             autoAdvanceEnabled = true,
             DynamicViewPagerState(
                 currentPageIndex = 1,
-                currentPage = Page.Conversation(CursorId(ConversationId("300"), null)),
-                nextPage = Page.Conversation(CursorId(ConversationId("400"))),
-                previousPage = Page.Conversation(CursorId(ConversationId("400")))
+                focusPageIndex = 1,
+                pages = listOf(
+                    Page.Conversation(CursorId(ConversationId("400"))),
+                    Page.Conversation(CursorId(ConversationId("300"), null)),
+                    Page.Conversation(CursorId(ConversationId("200")))
+                )
             ),
             NavigationArgs(
                 singleMessageMode = false,
@@ -73,11 +76,9 @@ class PagedConversationDetailReducerTest(
                     currentState = PagedConversationDetailState.Loading,
                     event = PagedConversationDetailEvent.Ready(
                         autoAdvance = true,
-                        count = 3,
-                        currentIndex = 1,
                         currentItem = Page.Conversation(CursorId(ConversationId("300"))),
                         nextItem = Page.Conversation(CursorId(ConversationId("400"))),
-                        previousItem = Page.Conversation(CursorId(ConversationId("400"))),
+                        previousItem = Page.Conversation(CursorId(ConversationId("200"))),
                         navigationArgs = NavigationArgs(
                             singleMessageMode = false,
                             LabelId("1"),
@@ -88,9 +89,12 @@ class PagedConversationDetailReducerTest(
                         autoAdvanceEnabled = true,
                         DynamicViewPagerState(
                             currentPageIndex = 1,
-                            currentPage = Page.Conversation(CursorId(ConversationId("300"))),
-                            nextPage = Page.Conversation(CursorId(ConversationId("400"))),
-                            previousPage = Page.Conversation(CursorId(ConversationId("400")))
+                            focusPageIndex = 1,
+                            pages = listOf(
+                                Page.Conversation(CursorId(ConversationId("200"))),
+                                Page.Conversation(CursorId(ConversationId("300"))),
+                                Page.Conversation(CursorId(ConversationId("400")))
+                            )
                         ),
                         navigationArgs = NavigationArgs(
                             singleMessageMode = false,
@@ -107,25 +111,124 @@ class PagedConversationDetailReducerTest(
                 TestParams.TestInput(
                     currentState = readyState,
                     event = PagedConversationDetailEvent.UpdatePage(
-                        currentIndex = 2,
-                        count = 4,
                         currentItem = Page.Conversation(CursorId(ConversationId("500"))),
                         nextItem = Page.Conversation(CursorId(ConversationId("600"))),
                         previousItem = Page.Conversation(CursorId(ConversationId("900")))
                     ),
                     expectedState =
-                        readyState.copy(
-                            dynamicViewPagerState = readyState.dynamicViewPagerState.copy(
-                                currentPage = Page.Conversation(CursorId(ConversationId("500"))),
-                                nextPage = Page.Conversation(CursorId(ConversationId("600"))),
-                                previousPage = Page.Conversation(CursorId(ConversationId("900"))),
-                                currentPageIndex = 2,
-                                pageCount = 4,
-                                focusPage = Effect.of(2)
-                            )
+                    readyState.copy(
+                        dynamicViewPagerState = readyState.dynamicViewPagerState.copy(
+                            pages = listOf(
+                                Page.Conversation(CursorId(ConversationId("900"))),
+                                Page.Conversation(CursorId(ConversationId("500"))),
+                                Page.Conversation(CursorId(ConversationId("600")))
+                            ),
+                            currentPageIndex = 1,
+                            focusPageIndex = 1
                         )
+                    )
+                )
+            ),
+            TestParams(
+                "on update page with page start End",
+                TestParams.TestInput(
+                    currentState = readyState,
+                    event = PagedConversationDetailEvent.UpdatePage(
+                        currentItem = Page.Conversation(CursorId(ConversationId("500"))),
+                        nextItem = Page.Conversation(CursorId(ConversationId("600"))),
+                        previousItem = Page.End
+                    ),
+                    expectedState =
+                    readyState.copy(
+                        dynamicViewPagerState = readyState.dynamicViewPagerState.copy(
+                            pages = listOf(
+                                Page.Conversation(CursorId(ConversationId("500"))),
+                                Page.Conversation(CursorId(ConversationId("600")))
+                            ),
+                            currentPageIndex = 0,
+                            focusPageIndex = 0
+                        )
+                    )
+                )
+            ),
+            TestParams(
+                "on update page with page finish End",
+                TestParams.TestInput(
+                    currentState = readyState,
+                    event = PagedConversationDetailEvent.UpdatePage(
+                        currentItem = Page.Conversation(CursorId(ConversationId("500"))),
+                        nextItem = Page.End,
+                        previousItem = Page.Conversation(CursorId(ConversationId("600")))
+                    ),
+                    expectedState =
+                    readyState.copy(
+                        dynamicViewPagerState = readyState.dynamicViewPagerState.copy(
+                            pages = listOf(
+                                Page.Conversation(CursorId(ConversationId("600"))),
+                                Page.Conversation(CursorId(ConversationId("500")))
+                            ),
+                            currentPageIndex = 1,
+                            focusPageIndex = 1
+                        )
+                    )
+                )
+            ),
+            TestParams(
+                "on clear focus page",
+                TestParams.TestInput(
+                    currentState = readyState,
+                    event = PagedConversationDetailEvent.ClearFocusPage,
+                    expectedState =
+                    readyState.copy(
+                        dynamicViewPagerState = readyState.dynamicViewPagerState.copy(
+                            focusPageIndex = null
+                        )
+                    )
+                )
+            ),
+            TestParams(
+                "on auto advance",
+                TestParams.TestInput(
+                    currentState = readyState,
+                    event = PagedConversationDetailEvent.AutoAdvanceRequested,
+                    expectedState =
+                    readyState.copy(
+                        dynamicViewPagerState = readyState.dynamicViewPagerState.copy(
+                            scrollToPage = Effect.of(Unit),
+                            pendingRemoval = Page.Conversation(CursorId(ConversationId("300"))),
+                            userScrollEnabled = false
+                        )
+                    )
+                )
+            ),
+            TestParams(
+                "on auto advance no next item",
+                TestParams.TestInput(
+                    currentState = readyState.copy(
+                        dynamicViewPagerState = readyState.dynamicViewPagerState.copy(
+                            pages = listOf(
+                                Page.Conversation(CursorId(ConversationId("600"))),
+                                Page.Conversation(CursorId(ConversationId("500")))
+                            ),
+                            currentPageIndex = 1
+                        )
+                    ),
+                    event = PagedConversationDetailEvent.AutoAdvanceRequested,
+                    expectedState =
+                    readyState.copy(
+                        dynamicViewPagerState = readyState.dynamicViewPagerState.copy(
+                            pages = listOf(
+                                Page.Conversation(CursorId(ConversationId("600"))),
+                                Page.Conversation(CursorId(ConversationId("500")))
+                            ),
+                            currentPageIndex = 1,
+                            exit = Effect.of(Unit)
+                        )
+                    )
                 )
             )
+
+
         )
 
         @JvmStatic
@@ -146,4 +249,4 @@ class PagedConversationDetailReducerTest(
         )
     }
 }
-*/
+
