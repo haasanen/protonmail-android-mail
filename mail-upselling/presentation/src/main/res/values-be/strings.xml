@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Ваша ўніверсальная прэміяльная падпіска</string>
   <string name="upselling_auto_renew_text">Аўтападаўжэнне па тым жа самым кошце і на тых жа ўмовах пакуль не будзе скасавана</string>
   <string name="upselling_auto_renew_text_promo">Вітальная прапанова. Аўтаматычнае падаўжэнне за %s%s пакуль не будзе скасавана</string>
+  <string name="upselling_auto_renew_text_bfriday">Скідкі разлічваюцца на падставе стандартнай платы за месяц. Аўтаматычна падаўжаецца з коштам у %s%s, пакуль не будзе скасавана.</string>
   <string name="upselling_auto_renew_text_promo_short">Вітальная прапанова. Аўтаматычнае падаўжэнне за %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Аўтападаўжэнне за %s%s пакуль не будзе скасавана</string>
   <string name="upselling_social_proof_reviews">БОЛЬШ ЗА 2000 ВОДГУКАЎ</string>
   <string name="upselling_description_social_proof">Перайдзіце на тарыфны план, які радуе мільёны падпісчыкаў.</string>
   <string name="upselling_discount_tag">ЭКАНОМІЯ %s%%</string>
   <string name="upselling_month">/месяц</string>
+  <string name="upselling_month_only">толькі %s /месяц</string>
   <string name="upselling_year">/год</string>
   <string name="upselling_get_button">Атрымаць %s</string>
   <plurals name="upselling_month">

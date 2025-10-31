@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Vaša premijska naročnina vse v enem</string>
   <string name="upselling_auto_renew_text">Samodejno se obnovi po enaki ceni in pod enakimi pogoji, razen če je preklicano</string>
   <string name="upselling_auto_renew_text_promo">Ponudba dobrodošlice. Samodejno se podaljša po ceni %s%s, razen če jo prekličete.</string>
+  <string name="upselling_auto_renew_text_bfriday">Popusti temeljijo na standardni mesečni ceni. Naročnina se samodejno podaljša po ceni %s%s do preklica.</string>
   <string name="upselling_auto_renew_text_promo_short">Ponudba dobrodošlice. Samodejno se podaljša po ceni %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Samodejno se podaljša po ceni %s%s, razen če jo prekličete.</string>
   <string name="upselling_social_proof_reviews">2k+ OCEN</string>
   <string name="upselling_description_social_proof">Nadgradite na izkušnjo, nad katero so navdušeni milijoni naročnikov.</string>
   <string name="upselling_discount_tag">PRIHRANITE %s%%</string>
   <string name="upselling_month">/mesec</string>
+  <string name="upselling_month_only">samo %s /mesec</string>
   <string name="upselling_year">/leto</string>
   <string name="upselling_get_button">Pridobi %s</string>
   <plurals name="upselling_month">

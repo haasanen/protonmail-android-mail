@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Il tuo unico e completo abbonamento premium</string>
   <string name="upselling_auto_renew_text">Si rinnova automaticamente allo stesso prezzo e condizioni eccetto annullamento</string>
   <string name="upselling_auto_renew_text_promo">Offerta di benvenuto. Si rinnova automaticamente a %s%s eccetto annullamento.</string>
+  <string name="upselling_auto_renew_text_bfriday">Gli sconti si basano sui prezzi mensili standard. Si rinnova automaticamente a %s /%s fino all\'annullamento.</string>
   <string name="upselling_auto_renew_text_promo_short">Offerta di benvenuto. Si rinnova automaticamente a %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Si rinnova automaticamente a %s%s eccetto annullamento</string>
   <string name="upselling_social_proof_reviews">OLTRE 2.000 RECENSIONI</string>
   <string name="upselling_description_social_proof">Passa all\'esperienza che milioni di abbonati stanno provando</string>
   <string name="upselling_discount_tag">Risparmia il %s%%</string>
   <string name="upselling_month">/ mese</string>
+  <string name="upselling_month_only">Solo %s /mese</string>
   <string name="upselling_year">/anno</string>
   <string name="upselling_get_button">Passa a %s</string>
   <plurals name="upselling_month">

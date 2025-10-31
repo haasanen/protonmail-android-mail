@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Kaiken kattava premium-tilauksesi</string>
   <string name="upselling_auto_renew_text">Uusiutuu automaattisesti samaan hintaan ja samoilla ehdoilla, ellei tilausta peruta</string>
   <string name="upselling_auto_renew_text_promo">Tervetuliaistarjous. Jatkuu automaattisesti hintaan %s%s, ellei peruuteta.</string>
+  <string name="upselling_auto_renew_text_bfriday">Alennukset perustuvat normaaliin kuukausihinnoitteluun. Tilaus uusitaan automaattisesti hintaan %s%s, kunnes se peruutetaan.</string>
   <string name="upselling_auto_renew_text_promo_short">Tervetuliaistarjous. Jatkuu automaattisesti hintaan %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Uusiutuu automaattisesti hintaan %s%s, ellei peruuteta</string>
   <string name="upselling_social_proof_reviews">2 000 + arvostelua</string>
   <string name="upselling_description_social_proof">Päivitä kokemukseen, josta miljoonat tilaajat ovat innoissaan.</string>
   <string name="upselling_discount_tag">SÄÄSTÄ %s %%</string>
   <string name="upselling_month">/kuukausi</string>
+  <string name="upselling_month_only">vain %s /kk</string>
   <string name="upselling_year">/vuosi</string>
   <string name="upselling_get_button">Hanki %s</string>
   <plurals name="upselling_month">

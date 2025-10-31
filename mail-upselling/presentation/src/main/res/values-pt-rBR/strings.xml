@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Sua assinatura premium completa</string>
   <string name="upselling_auto_renew_text">Renovação automática com o mesmo preço e condições, a menos que seja cancelado</string>
   <string name="upselling_auto_renew_text_promo">Oferta de boas-vindas. Renovação automática em %s%s, a menos que você cancele o plano</string>
+  <string name="upselling_auto_renew_text_bfriday">Os descontos são baseados no preço mensal padrão. Renovação automática por %s%s até você cancelar.</string>
   <string name="upselling_auto_renew_text_promo_short">Oferta de boas-vindas. Renovação automática em %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Renovação automática em %s%s, a menos que você cancele o plano</string>
   <string name="upselling_social_proof_reviews">+ DE 2 MIL AVALIAÇÕES</string>
   <string name="upselling_description_social_proof">Faça upgrade para a experiência que milhões de assinantes já amam.</string>
   <string name="upselling_discount_tag">ECONOMIZE %s%%</string>
   <string name="upselling_month">/mês</string>
+  <string name="upselling_month_only">somente %s /mês</string>
   <string name="upselling_year">/ano</string>
   <string name="upselling_get_button">Obter %s</string>
   <plurals name="upselling_month">

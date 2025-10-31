@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Az Ön mindent egyben tartalmazó prémium előfizetése</string>
   <string name="upselling_auto_renew_text">Lemondás nélkül automatikusan megújul ugyanazon az áron és feltételek mellett</string>
   <string name="upselling_auto_renew_text_promo">Üdvözlő ajánlat. Automatikusan megújul %s%s áron, hacsak nem mondja le</string>
+  <string name="upselling_auto_renew_text_bfriday">A kedvezmények a normál havi díjszabáson alapulnak. Automatikusan megújul %s%s áron a lemondásig.</string>
   <string name="upselling_auto_renew_text_promo_short">Üdvözlő ajánlat. Automatikusan megújul %s%s áron.</string>
   <string name="upselling_auto_renew_text_standard">Automatikusan megújul %s%s áron, hacsak nem mondja le</string>
   <string name="upselling_social_proof_reviews">2000+ ÉRTÉKELÉS</string>
   <string name="upselling_description_social_proof">Frissítsen arra az élményre, amelyért előfizetők milliói rajonganak.</string>
   <string name="upselling_discount_tag">%s%% kedvezmény</string>
   <string name="upselling_month">/hó</string>
+  <string name="upselling_month_only">csak %s/hó</string>
   <string name="upselling_year">/év</string>
   <string name="upselling_get_button">%s beszerzése</string>
   <plurals name="upselling_month">

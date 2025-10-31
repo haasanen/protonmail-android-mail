@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Langganan premium menyeluruh Anda</string>
   <string name="upselling_auto_renew_text">Diperbarui secara otomatis pada harga dan ketentuan yang sama kecuali apabila dibatalkan</string>
   <string name="upselling_auto_renew_text_promo">Penawaran selamat datang. Diperpanjang otomatis dengan harga %s%s kecuali dibatalkan</string>
+  <string name="upselling_auto_renew_text_bfriday">Diskon didasarkan pada harga bulanan standar. Diperbarui secara otomatis pada %s%s hingga dibatalkan.</string>
   <string name="upselling_auto_renew_text_promo_short">Penawaran selamat datang. Diperpanjang otomatis dengan harga %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Diperpanjang otomatis dengan harga %s%s kecuali dibatalkan</string>
   <string name="upselling_social_proof_reviews">2000+ ULASAN</string>
   <string name="upselling_description_social_proof">Tingkatkan ke pengalaman yang dicintai oleh jutaan pelanggan.</string>
   <string name="upselling_discount_tag">HEMAT %s%%</string>
   <string name="upselling_month">/bulan</string>
+  <string name="upselling_month_only">hanya %s / bulan</string>
   <string name="upselling_year">/tahun</string>
   <string name="upselling_get_button">Dapatkan %s</string>
   <plurals name="upselling_month">

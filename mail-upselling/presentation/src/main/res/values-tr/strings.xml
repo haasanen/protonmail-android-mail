@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Tümünü bir arada sunan ücretli abonelik</string>
   <string name="upselling_auto_renew_text">İptal edilmediği sürece aynı fiyat ve koşullarla otomatik olarak yenilenir</string>
   <string name="upselling_auto_renew_text_promo">Karşılama teklifi. İptal edilmedikçe %s%s zamanında otomatik olarak yenilenir</string>
+  <string name="upselling_auto_renew_text_bfriday">İndirimler standart aylık ücretlere göre belirlenir. İptal edilene kadar %s%s ile otomatik yenilenir.</string>
   <string name="upselling_auto_renew_text_promo_short">Karşılama teklifi. Otomatik olarak %s%s zamanında yenilenir.</string>
   <string name="upselling_auto_renew_text_standard">İptal edilmedikçe %s%s zamanında otomatik olarak yenilenir</string>
   <string name="upselling_social_proof_reviews">2 bin üzerinde YORUM</string>
   <string name="upselling_description_social_proof">Milyonlarca abonenin severek kullandığı deneyime yükseltin.</string>
   <string name="upselling_discount_tag">%s%% indirim</string>
   <string name="upselling_month">/ay</string>
+  <string name="upselling_month_only">yalnızca %s / ay</string>
   <string name="upselling_year">/yıl</string>
   <string name="upselling_get_button">%s alın</string>
   <plurals name="upselling_month">

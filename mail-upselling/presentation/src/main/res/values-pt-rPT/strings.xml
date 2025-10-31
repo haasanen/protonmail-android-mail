@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">A sua subscrição premium tudo-em-um</string>
   <string name="upselling_auto_renew_text">Renovação automática pelo mesmo preço e condições, exceto se for cancelada</string>
   <string name="upselling_auto_renew_text_promo">Oferta de boas-vindas. Renovação automática por %s%s, salvo cancelamento</string>
+  <string name="upselling_auto_renew_text_bfriday">Os descontos baseiam-se no preço mensal padrão. A renovação é automática por %s%s até ao cancelamento.</string>
   <string name="upselling_auto_renew_text_promo_short">Oferta de boas-vindas. Renovação automática por %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Renovação automática por %s%s, salvo cancelamento</string>
   <string name="upselling_social_proof_reviews">Mais de 2 mil AVALIAÇÕES</string>
   <string name="upselling_description_social_proof">Atualize para a experiência que milhões de subscritores elogiam.</string>
   <string name="upselling_discount_tag">POUPE %s%%</string>
   <string name="upselling_month">/mês</string>
+  <string name="upselling_month_only">apenas %s/mês</string>
   <string name="upselling_year">/ano</string>
   <string name="upselling_get_button">Obter %s</string>
   <plurals name="upselling_month">

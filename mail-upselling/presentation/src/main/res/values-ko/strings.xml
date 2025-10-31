@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">올인원 프리미엄 구독</string>
   <string name="upselling_auto_renew_text">취소되기 전까지 같은 가격과 규정으로 갱신됩니다</string>
   <string name="upselling_auto_renew_text_promo">환영 할인. 취소 전까지 %s%s(으)로 자동갱신됩니다.</string>
+  <string name="upselling_auto_renew_text_bfriday">할인은 표준 월간 요금을 기준으로 합니다. 취소할 때까지 %s%s로 자동 갱신됩니다.</string>
   <string name="upselling_auto_renew_text_promo_short">환영 할인. %s%s에 자동갱신됩니다.</string>
   <string name="upselling_auto_renew_text_standard">취소 전까지 %s%s(으)로 갱신됩니다</string>
   <string name="upselling_social_proof_reviews">2천개 이상의 리뷰</string>
   <string name="upselling_description_social_proof">수백만 명의 구독자가 극찬하는 경험을 위해 업그레이드하세요.</string>
   <string name="upselling_discount_tag">%s%% 절약</string>
   <string name="upselling_month">/월</string>
+  <string name="upselling_month_only">오직 %s/월</string>
   <string name="upselling_year">/연간</string>
   <string name="upselling_get_button">%s 받기</string>
   <plurals name="upselling_month">

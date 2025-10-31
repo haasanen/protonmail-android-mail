@@ -28,6 +28,9 @@
   <plurals name="payment_pay_other">
     <item quantity="other">Bayar untuk %d bulan</item>
   </plurals>
+  <string name="payment_bf_renew_monthly">Diskon didasarkan pada harga bulanan standar. Diperpanjang otomatis seharga %1$s/bulan</string>
+  <string name="payment_bf_renew_annually">Diskon didasarkan pada harga bulanan standar. Diperpanjang otomatis seharga %1$s/tahun</string>
+  <string name="payment_bf_renew_biennially">Diskon didasarkan pada harga bulanan standar. Diperpanjang otomatis seharga %1$s setiap 2 tahun</string>
   <string name="payment_welcome_offer_renew_monthly">Penawaran selamat datang. Diperbarui secara otomatis pada harga %1$s/bulan</string>
   <string name="payment_welcome_offer_renew_annually">Penawaran selamat datang. Diperbarui secara otomatis pada harga %1$s/tahun</string>
   <string name="payment_welcome_offer_renew_biennially">Penawaran selamat datang. Diperbarui secara otomatis pada %1$s setiap 2 tahun</string>
@@ -40,5 +43,5 @@
   <string name="payment_subscription_managed_by_google">Langganan Anda dikelola oleh Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Langganan Anda dikelola oleh Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Langganan Anda tidak dapat dikelola dari aplikasi seluler.</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Satu atau lebih tindakan tidak dapat diproses. Silakan keluar dan masuk kembali ke akun Anda.</string>
 </resources>

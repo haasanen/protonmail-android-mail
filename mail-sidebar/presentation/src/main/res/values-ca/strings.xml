@@ -24,4 +24,5 @@
   <string name="drawer_item_create_label">Crea una etiqueta</string>
   <string name="drawer_item_create_folder">Crea una carpeta</string>
   <string name="drawer_upgrade_plus">Milloreu al pla Mail Plus</string>
+  <string name="drawer_upgrade_plus_black_friday">Oferta del Black Friday</string>
 </resources>

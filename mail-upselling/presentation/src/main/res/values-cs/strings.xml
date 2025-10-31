@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Vaše prémiové předplatné obsahující vše v jednom</string>
   <string name="upselling_auto_renew_text">Automatické obnovení za stejnou cenu a za stejných podmínek, pokud není zrušeno</string>
   <string name="upselling_auto_renew_text_promo">Uvítací nabídka. Automaticky se obnoví %s%s, pokud nebude zrušena</string>
+  <string name="upselling_auto_renew_text_bfriday">Slevy jsou založeny na standardních měsíčních cenách. Automatické obnovení za cenu %s%s až do zrušení.</string>
   <string name="upselling_auto_renew_text_promo_short">Uvítací nabídka. Automaticky se obnoví %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Automaticky se obnoví %s%s, pokud nebude zrušena</string>
   <string name="upselling_social_proof_reviews">2000+ RECENZÍ</string>
   <string name="upselling_description_social_proof">Navýšením získáte zážitek, o kterém básní miliony předplatitelů.</string>
   <string name="upselling_discount_tag">UŠETŘETE %s%%</string>
   <string name="upselling_month">/měsíčně</string>
+  <string name="upselling_month_only">pouze %s /měsíc</string>
   <string name="upselling_year">/ročně</string>
   <string name="upselling_get_button">Získejte %s</string>
   <plurals name="upselling_month">
