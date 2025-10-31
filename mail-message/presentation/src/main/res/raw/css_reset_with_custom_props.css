@@ -7,6 +7,9 @@ audio,canvas,progress,video{
 abbr,mark,meter,time,output{
     display:inline
 }
+body {
+    padding-top: var(--vv-top-inset, 0px);
+}
 html{
     box-sizing:border-box
 }

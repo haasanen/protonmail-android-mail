@@ -265,3 +265,44 @@ function stripInlineImage(contentId) {
     removeInlineImageObserver.observe(document.getElementById('$EDITOR_ID'), {childList: true, subtree: true});
 }
 
+/*******************************************************************************
+ * This function compensates for the visual viewport’s vertical offset
+ * by applying CSS padding.
+ *
+ * Problem: unreachable top content due to the visual viewport having top offset. This happens
+ * when we copy-paste some text into the editor and then scroll up and down. It's observed randomly.
+ * There is no clear pattern to it.
+ *
+ * How it works:
+ *
+ * Read `window.visualViewport.offsetTop` and apply it as a
+ * `padding-top` via a CSS custom property (`--vv-top-inset`).
+ * This visually shifts the page content down so that the real top text becomes
+ * visible again inside the viewport. Please ensure the CSS custom property is defined.
+ ******************************************************************************/
+function compensateVisualViewportOffset() {
+    // Visual viewport is not supported on this browser; nothing to fix.
+    if (!window.visualViewport) return;
+
+    let lastPadding = 0;
+    const MIN_OFFSET_CHANGE_PX = 2;
+
+    function applyOffsetCompensation() {
+        const topCssPadding = Math.round(window.visualViewport.offsetTop || 0);
+
+        // Update only if the value changed meaningfully
+        if (Math.abs(topCssPadding - lastPadding) > MIN_OFFSET_CHANGE_PX) {
+            document.documentElement.style.setProperty('--vv-top-inset', topCssPadding + 'px');
+            document.body.style.paddingTop = 'var(--vv-top-inset)';
+            lastPadding = topCssPadding;
+        }
+    }
+
+    // Keep padding in sync with viewport movements/resizes
+    window.visualViewport.addEventListener('scroll', applyOffsetCompensation, { passive: true });
+    window.visualViewport.addEventListener('resize', applyOffsetCompensation, { passive: true });
+
+    // Initial compensation
+    applyOffsetCompensation();
+}
+compensateVisualViewportOffset();
