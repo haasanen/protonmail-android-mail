@@ -68,19 +68,19 @@ class PagedConversationDetailViewModel @Inject constructor(
 
     init {
         /**viewModelScope.launch {
-        observePrimaryUserId().first()?.let { userId ->
-        val autoAdvance = getAutoAdvance(userId)
-        getConversationCursor(
-        singleMessageMode = requireSingleMessageMode(),
-        conversationId = requireConversationId(),
-        userId = userId,
-        messageId = getInitialScrollToMessageId()?.id,
-        viewModeIsConversationMode = requireViewModeModeIsConversation()
-        ).collect { state ->
-        onCursor(autoAdvance, state)
-        }
-        }
-        }**/
+         observePrimaryUserId().first()?.let { userId ->
+         val autoAdvance = getAutoAdvance(userId)
+         getConversationCursor(
+         singleMessageMode = requireSingleMessageMode(),
+         conversationId = requireConversationId(),
+         userId = userId,
+         messageId = getInitialScrollToMessageId()?.id,
+         viewModeIsConversationMode = requireViewModeModeIsConversation()
+         ).collect { state ->
+         onCursor(autoAdvance, state)
+         }
+         }
+         }**/
     }
 
     /* private fun onCursor(autoAdvance: Boolean, cursorState: EphemeralMailboxCursor?) {
@@ -226,6 +226,11 @@ class PagedConversationDetailViewModel @Inject constructor(
     private suspend fun guardCursor(block: suspend (cursor: ConversationCursor) -> Unit) {
         if (conversationCursor != null) {
             block(conversationCursor!!)
+        } else {
+            Timber.w(
+                "conversation-cursor PagedConversationDetailViewModel" +
+                    " guardCursor received a null cursor and couldn't execute block"
+            )
         }
     }
 }

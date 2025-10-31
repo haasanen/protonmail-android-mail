@@ -86,21 +86,20 @@ fun PagedConversationDetailScreen(
             )
         }
     }
-    val state by viewModel.state.collectAsStateWithLifecycle(PagedConversationDetailState.Loading)
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    when (state) {
+    when (val currentState = state) {
         is PagedConversationDetailState.Error,
         is PagedConversationDetailState.Loading -> ProtonHorizontallyCenteredProgress()
 
         is PagedConversationDetailState.Ready -> {
-            val readyState = state as PagedConversationDetailState.Ready
-            ConsumableLaunchedEffect(readyState.dynamicViewPagerState.exit) {
+            ConsumableLaunchedEffect(currentState.dynamicViewPagerState.exit) {
                 actions.onExit(null)
             }
             PagedConversationDetailScreen(
                 modifier = modifier,
                 conversationDetailActions = actions,
-                state = readyState,
+                state = currentState,
                 showUndoableOperationSnackbar = { action -> actions.showUndoableOperationSnackbar(action) },
                 onPagerAction = { viewModel.submit(it) }
             )
@@ -109,7 +108,7 @@ fun PagedConversationDetailScreen(
 }
 
 @Composable
-fun PagedConversationDetailScreen(
+private fun PagedConversationDetailScreen(
     modifier: Modifier = Modifier,
     conversationDetailActions: ConversationDetail.Actions,
     state: PagedConversationDetailState.Ready,
@@ -117,29 +116,26 @@ fun PagedConversationDetailScreen(
     onPagerAction: (PagedConversationDetailAction) -> Unit
 ) {
     val onTopbarBackClicked = { conversationDetailActions.onExit(null) }
-    val actions = remember {
-        state.autoAdvanceEnabled.takeIf { it }?.let {
-            conversationDetailActions.copy(
-                onExit = {
-                    if (state.autoAdvanceEnabled) {
-                        showUndoableOperationSnackbar(it)
-                        onPagerAction(PagedConversationDetailAction.AutoAdvance)
-                    } else {
-                        conversationDetailActions.onExit(it)
-                    }
+    val actions = state.autoAdvanceEnabled.takeIf { it }?.let {
+        conversationDetailActions.copy(
+            onExit = {
+                if (state.autoAdvanceEnabled) {
+                    showUndoableOperationSnackbar(it)
+                    onPagerAction(PagedConversationDetailAction.AutoAdvance)
+                } else {
+                    conversationDetailActions.onExit(it)
                 }
-            )
-        } ?: conversationDetailActions
-    }
+            }
+        )
+    } ?: conversationDetailActions
 
-    val conversationDetailScreenArgs = remember {
+    val conversationDetailScreenArgs =
         ConversationDetail.NavigationArgs(
             singleMessageMode = state.navigationArgs.singleMessageMode,
             openedFromLocation = state.navigationArgs.openedFromLocation,
             conversationEntryPoint = state.navigationArgs.conversationEntryPoint,
             initialScrollToMessageId = null
         )
-    }
 
     ConversationPager(
         modifier = modifier,
@@ -324,7 +320,7 @@ private fun Page(
     // to be integrated
     ConversationDetailScreen(
         // padding = innerPadding,
-        actions = conversationActions,
+        actions = conversationActions
         // conversationId = conversationId,
         // navigationArgs = navigationArgs,
         // topBarState = topBarHostState
