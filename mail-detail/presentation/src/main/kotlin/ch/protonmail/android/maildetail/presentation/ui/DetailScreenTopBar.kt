@@ -94,7 +94,8 @@ fun DetailScreenTopBar(
     messageCount: Int?,
     actions: DetailScreenTopBar.Actions,
     subjectHeaderSizeCallback: (Int) -> Unit,
-    topAppBarState: TopAppBarState
+    topAppBarState: TopAppBarState,
+    isDirectionForwards: () -> Boolean
 ) {
     Column(
         modifier = modifier
@@ -145,7 +146,8 @@ fun DetailScreenTopBar(
                     max = maxSubjectHeightDp.dp
                 ),
             subject = title,
-            subjectTextAlpha = subjectAlpha
+            subjectTextAlpha = subjectAlpha,
+            isDirectionForwards = isDirectionForwards
         )
     }
 }
@@ -246,7 +248,8 @@ fun CustomSingleLineTopAppBar(
 private fun SubjectHeader(
     subject: String,
     modifier: Modifier = Modifier,
-    subjectTextAlpha: Float
+    subjectTextAlpha: Float,
+    isDirectionForwards: () -> Boolean
 ) {
 
     Box(
@@ -261,7 +264,7 @@ private fun SubjectHeader(
             targetState = subject,
             transitionSpec = {
                 // If the count is increasing, slide the new content in from the right
-                if (targetState > initialState) {
+                if (isDirectionForwards()) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
                         slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
@@ -367,7 +370,8 @@ private fun DetailScreenTopBarPreview(
             messageCount = preview.messageCount,
             actions = DetailScreenTopBar.Actions.Empty,
             subjectHeaderSizeCallback = {},
-            topAppBarState = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = state).state
+            topAppBarState = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = state).state,
+            isDirectionForwards = { true }
         )
     }
 }

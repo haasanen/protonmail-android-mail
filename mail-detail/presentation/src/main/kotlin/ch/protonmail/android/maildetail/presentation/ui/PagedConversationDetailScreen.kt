@@ -231,7 +231,8 @@ private fun ConversationPager(
                     onUnStarClick = { currentTopBarState.onStarUnClick() }
                 ),
                 subjectHeaderSizeCallback = subjectHeaderSizeCallback,
-                topAppBarState = currentTopBarState.scrollBehavior.state
+                topAppBarState = currentTopBarState.scrollBehavior.state,
+                isDirectionForwards = { pagerState.lastScrolledForward }
             )
         }
     ) { innerPadding ->
