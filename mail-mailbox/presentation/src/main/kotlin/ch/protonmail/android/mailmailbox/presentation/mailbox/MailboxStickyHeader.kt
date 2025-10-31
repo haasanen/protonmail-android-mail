@@ -71,7 +71,7 @@ fun MailboxStickyHeader(
 
             ShowSpamTrashIncludeFilter(
                 modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
-                state = ShowSpamTrashIncludeFilterState.Data.Hidden, // ET-5091
+                state = state.showSpamTrashIncludeFilterState,
                 onFilterEnabled = actions.onSpamTrashFilterEnabled,
                 onFilterDisabled = actions.onSpamTrashFilterDisabled
             )
@@ -80,14 +80,14 @@ fun MailboxStickyHeader(
                 if (state.topAppBarState is MailboxTopAppBarState.Data.SearchMode) {
                     SearchModeStickyHeader(
                         searchState = state.topAppBarState,
-                        showSpamTrashFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden, // ET-5091
+                        showSpamTrashFilterState = state.showSpamTrashIncludeFilterState,
                         onEnabled = actions.onSpamTrashFilterEnabled,
                         onDisabled = actions.onSpamTrashFilterDisabled
                     )
                 } else {
                     DefaultModeStickyHeader(
                         unreadFilterState = state.unreadFilterState,
-                        showSpamTrashFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden, // ET-5091
+                        spamTrashFilterState = state.showSpamTrashIncludeFilterState,
                         onReadEnabled = actions.onUnreadFilterEnabled,
                         onReadDisabled = actions.onUnreadFilterDisabled,
                         onSpamTrashEnabled = actions.onSpamTrashFilterEnabled,
@@ -121,7 +121,7 @@ private fun RowScope.SearchModeStickyHeader(
 @Composable
 private fun RowScope.DefaultModeStickyHeader(
     unreadFilterState: UnreadFilterState,
-    showSpamTrashFilterState: ShowSpamTrashIncludeFilterState,
+    spamTrashFilterState: ShowSpamTrashIncludeFilterState,
     onReadEnabled: () -> Unit,
     onReadDisabled: () -> Unit,
     onSpamTrashEnabled: () -> Unit,
@@ -138,7 +138,7 @@ private fun RowScope.DefaultModeStickyHeader(
 
     ShowSpamTrashIncludeFilter(
         modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
-        state = showSpamTrashFilterState,
+        state = spamTrashFilterState,
         onFilterEnabled = onSpamTrashEnabled,
         onFilterDisabled = onSpamTrashDisabled
     )
