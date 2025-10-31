@@ -31,7 +31,7 @@ class ResolveUpsellingVisibilityForPlans @Inject constructor(
 ) {
 
     suspend operator fun invoke(plans: List<ProductOfferDetail>): UpsellingVisibility {
-        val instances = plans.takeIf { it.size == 2 }
+        val instances = plans.takeIf { it.size == 2 } // We always expect 2 instances (monthly + yearly)
             ?: return UpsellingVisibility.Hidden
 
         // Only check BF phase if offers are tagged for it

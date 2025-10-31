@@ -53,13 +53,13 @@ class GetOnboardingPlanUpgrades @Inject constructor(
         val mailPlusPlans = this.filter { it.metadata.planName == PlanUpgradeIds.PlusPlanId }
         val unlimitedPlans = this.filter { it.metadata.planName == PlanUpgradeIds.UnlimitedPlanId }
 
-        return mailPlusPlans.assertExpectedPlans() && unlimitedPlans.assertExpectedPlans()
+        return mailPlusPlans.containsExpectedPlans() && unlimitedPlans.containsExpectedPlans()
     }
 
     private fun List<ProductOfferDetail>.containsTag(tag: PlanUpgradeSupportedTags) =
         any { it.offer.tags.value.contains(tag.value) }
 
-    private fun List<ProductOfferDetail>.assertExpectedPlans() = size == 2 &&
+    private fun List<ProductOfferDetail>.containsExpectedPlans() = size == 2 &&
         this.any { it.offer.renew.cycle in listOf(PlanUpgradeCycle.Monthly.months, PlanUpgradeCycle.Yearly.months) }
 }
 
