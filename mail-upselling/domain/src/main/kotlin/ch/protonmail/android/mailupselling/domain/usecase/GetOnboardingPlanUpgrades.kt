@@ -30,7 +30,8 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetOnboardingPlanUpgrades @Inject constructor(
-    private val cache: AvailableUpgradesCache
+    private val cache: AvailableUpgradesCache,
+    private val isEligibleForBlackFridayPromotion: IsEligibleForBlackFridayPromotion
 ) {
 
     suspend operator fun invoke(userId: UserId): Either<GetOnboardingPlansError, List<ProductOfferDetail>> = either {
@@ -39,8 +40,12 @@ class GetOnboardingPlanUpgrades @Inject constructor(
         val containsBlackFridayPlans = upgrades.filterForTags(primaryTag = PlanUpgradeSupportedTags.BlackFriday.value)
             .containsTag(PlanUpgradeSupportedTags.BlackFriday)
 
-        // If BF, we should not return plans in onboarding.
-        if (containsBlackFridayPlans) raise(GetOnboardingPlansError.UnsupportedBlackFridayFlow)
+        val isEligibleForBlackFriday = isEligibleForBlackFridayPromotion(userId)
+
+        // If BF and eligible, we should not return plans in onboarding.
+        if (containsBlackFridayPlans && isEligibleForBlackFriday) {
+            raise(GetOnboardingPlansError.UnsupportedBlackFridayFlow)
+        }
 
         val offerDetailsList = upgrades.filterForTags(primaryTag = PlanUpgradeSupportedTags.IntroductoryPrice.value)
             .takeIf { it.containsExpectedInstances() }

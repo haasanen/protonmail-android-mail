@@ -154,6 +154,54 @@ object UpsellingTestData {
             )
         )
 
+        val MonthlyBFProductDetail = ProductOfferDetail(
+            metadata = mailPlusMetadata,
+            header = ProductDetailHeader(
+                title = "Mail Plus",
+                description = "Description",
+                priceText = "EUR 12.00",
+                cycleText = "/month",
+                starred = false
+            ),
+            offer = ProductOffer(
+                isBaseOffer = false,
+                tags = ProductOfferTags(setOf("bf-promo")),
+                token = offerToken,
+                current = ProductOfferPrice(
+                    productId = "productId",
+                    customerId = "customerId",
+                    cycle = 1,
+                    amount = 9 * 1000 * 1000,
+                    currency = "EUR",
+                    formatted = "EUR 9.00"
+                ),
+                renew = ProductOfferPrice(
+                    productId = "productId",
+                    customerId = "customerId",
+                    cycle = 1,
+                    amount = 12 * 1000 * 1000,
+                    currency = "EUR",
+                    formatted = "EUR 12.00"
+                )
+            )
+        )
+
+        val MonthlyBFProductOfferList = ProductOfferList(
+            metadata = ProductMetadata(
+                productId = "productId",
+                customerId = "customerId",
+                planName = "mail2022",
+                entitlements = emptyList()
+            ),
+            header = ProductSelectionHeader(
+                title = "Mail Plus",
+                description = "Description",
+                cycleText = "/month",
+                starred = false
+            ),
+            offers = listOf(MonthlyProductOfferDetail.offer, MonthlyBFProductDetail.offer)
+        )
+
         val YearlyProductOfferDetail = ProductOfferDetail(
             metadata = mailPlusMetadata,
             header = ProductDetailHeader(

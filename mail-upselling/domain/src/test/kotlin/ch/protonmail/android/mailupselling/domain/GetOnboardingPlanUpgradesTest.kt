@@ -22,6 +22,7 @@ import arrow.core.left
 import ch.protonmail.android.mailupselling.domain.cache.AvailableUpgradesCache
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlanUpgrades
 import ch.protonmail.android.mailupselling.domain.usecase.GetOnboardingPlansError
+import ch.protonmail.android.mailupselling.domain.usecase.IsEligibleForBlackFridayPromotion
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -32,17 +33,22 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 internal class GetOnboardingPlanUpgradesTest {
 
     private val availableUpgradesCache = mockk<AvailableUpgradesCache>()
     private val userId = UserId("user-id")
 
+    private val isEligibleForBlackFriday = mockk<IsEligibleForBlackFridayPromotion> {
+        coEvery { this@mockk(userId) } returns false
+    }
+
     private lateinit var getOnboardingPlanUpgrades: GetOnboardingPlanUpgrades
 
     @BeforeTest
     fun setup() {
-        getOnboardingPlanUpgrades = GetOnboardingPlanUpgrades(availableUpgradesCache)
+        getOnboardingPlanUpgrades = GetOnboardingPlanUpgrades(availableUpgradesCache, isEligibleForBlackFriday)
     }
 
     @AfterTest
@@ -85,6 +91,50 @@ internal class GetOnboardingPlanUpgradesTest {
 
         // Then
         assertEquals(GetOnboardingPlansError.MismatchingPlans.left(), actual)
+    }
+
+    @Test
+    fun `should return non BF instances (offer available, not eligible)`() = runTest {
+        val expectedInstances = listOf(
+            UpsellingTestData.MailPlusProducts.MonthlyProductOfferDetail,
+            UpsellingTestData.MailPlusProducts.YearlyProductOfferDetail,
+            UpsellingTestData.UnlimitedMailProduct.MonthlyProductOfferDetail,
+            UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail
+        )
+
+        val availablePlans = listOf(
+            UpsellingTestData.MailPlusProducts.MonthlyBFProductOfferList,
+            UpsellingTestData.MailPlusProducts.YearlyProductOfferList,
+            UpsellingTestData.UnlimitedMailProduct.MonthlyProductOfferList,
+            UpsellingTestData.UnlimitedMailProduct.YearlyProductOfferList
+        )
+
+        coEvery { availableUpgradesCache.get(userId) } returns availablePlans
+
+        // When
+        val actual = getOnboardingPlanUpgrades(userId).getOrNull()
+
+        // Then
+        assertEquals(expectedInstances, actual)
+    }
+
+    @Test
+    fun `should return no plans (BF offer available, eligible)`() = runTest {
+        val availablePlans = listOf(
+            UpsellingTestData.MailPlusProducts.MonthlyBFProductOfferList,
+            UpsellingTestData.MailPlusProducts.YearlyProductOfferList,
+            UpsellingTestData.UnlimitedMailProduct.MonthlyProductOfferList,
+            UpsellingTestData.UnlimitedMailProduct.YearlyProductOfferList
+        )
+
+        coEvery { availableUpgradesCache.get(userId) } returns availablePlans
+        coEvery { isEligibleForBlackFriday(userId) } returns true
+
+        // When
+        val actual = getOnboardingPlanUpgrades(userId).getOrNull()
+
+        // Then
+        assertNull(actual)
     }
 
     @Test
