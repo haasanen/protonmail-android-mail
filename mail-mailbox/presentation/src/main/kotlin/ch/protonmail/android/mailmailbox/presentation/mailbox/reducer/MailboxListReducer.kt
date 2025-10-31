@@ -321,7 +321,6 @@ class MailboxListReducer @Inject constructor(
     ): MailboxListState {
         val currentLocation = operation.contextLabel
 
-
         val request = OpenMailboxItemRequest(
             itemId = MailboxItemId(operation.item.conversationId.id),
             shouldOpenInComposer = false,

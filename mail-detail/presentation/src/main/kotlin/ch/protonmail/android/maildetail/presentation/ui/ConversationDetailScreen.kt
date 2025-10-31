@@ -1007,7 +1007,7 @@ private fun MessagesContent(
     // Detect if user manually scrolled the list
     var userScrolled by remember(conversationId) { mutableStateOf(false) }
     var userTapped by remember(conversationId) { mutableStateOf(false) }
-    LaunchedEffect(key1 = listState.isScrollInProgress) {
+    LaunchedEffect(key1 = listState.isScrollInProgress, key2 = conversationId) {
         if (!userScrolled && userTapped && listState.isScrollInProgress) {
             userScrolled = true
         }
@@ -1188,7 +1188,6 @@ object ConversationDetailScreen {
     const val ScrollToMessageIdKey = "scroll to message id"
     const val IsSingleMessageMode = "is showing single message"
     const val OpenedFromLocationKey = "opened from location"
-    const val ViewModeIsConversation = "view mode is conversation"
     const val ConversationDetailEntryPointNameKey = "detail origin entry point"
 
     data class Actions(
