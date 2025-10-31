@@ -57,7 +57,7 @@
   <string name="message_link_long_click_share">共有リンク</string>
   <string name="message_link_long_click_share_via">でリンクを共有</string>
   <!-- Message body image actions -->
-  <string name="message_image_long_click_download">Download image</string>
+  <string name="message_image_long_click_download">画像をダウンロード</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">アドレスをコピー</string>
   <string name="contact_actions_copy_address_description">連絡先アドレスをコピー</string>

@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Din allt-i-ett premiumprenumeration</string>
   <string name="upselling_auto_renew_text">Autoförnyas med samma pris och villkor tills uppsägning</string>
   <string name="upselling_auto_renew_text_promo">Välkomsterbjudande. Förnyas automatiskt till %s%s om det inte avbryts.</string>
+  <string name="upselling_auto_renew_text_bfriday">Rabatter är baserade på ordinarie månadspriser. Förnyas automatiskt för %s%s tills det avbryts.</string>
   <string name="upselling_auto_renew_text_promo_short">Välkomsterbjudande. Förnyas automatiskt med %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Förnyas automatiskt till %s%s om det inte avbryts.</string>
   <string name="upselling_social_proof_reviews">2 000+ RECENSIONER</string>
   <string name="upselling_description_social_proof">Uppgradera till upplevelsen som miljoner prenumeranter hyllar.</string>
   <string name="upselling_discount_tag">SPARA %s %%</string>
   <string name="upselling_month">/månad</string>
+  <string name="upselling_month_only">endast %s/månad</string>
   <string name="upselling_year">/år</string>
   <string name="upselling_get_button">Skaffa %s</string>
   <plurals name="upselling_month">

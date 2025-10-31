@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Η premium συνδρομή σας all-in-one</string>
   <string name="upselling_auto_renew_text">Ανανεώνεται αυτόματα στην ίδια τιμή και με τους ίδιους όρους, εκτός εάν ακυρωθεί</string>
   <string name="upselling_auto_renew_text_promo">Προσφορά καλωσορίσματος. Ανανεώνεται αυτόματα σε %s%s εκτός εάν ακυρωθεί</string>
+  <string name="upselling_auto_renew_text_bfriday">Οι εκπτώσεις βασίζονται στην τυπική μηνιαία τιμολόγηση. Αυτόματη ανανέωση σε %s%s μέχρι να ακυρωθεί.</string>
   <string name="upselling_auto_renew_text_promo_short">Προσφορά καλωσορίσματος. Αυτόματη ανανέωση στα %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Ανανεώνεται αυτόματα σε %s%s εκτός εάν ακυρωθεί</string>
   <string name="upselling_social_proof_reviews">2k+ ΚΡΙΤΙΚΕΣ</string>
   <string name="upselling_description_social_proof">Αναβαθμίστε στην εμπειρία που εκατομμύρια συνδρομητές αποθεώνουν.</string>
   <string name="upselling_discount_tag">ΕΞΟΙΚΟΝΟΜΗΣΤΕ %s%%</string>
   <string name="upselling_month">/μήνα</string>
+  <string name="upselling_month_only">μόνο %s /μήνα</string>
   <string name="upselling_year">/έτος</string>
   <string name="upselling_get_button">Αποκτήστε %s</string>
   <plurals name="upselling_month">

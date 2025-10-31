@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Dein All-In-One-Premium-Abonnement</string>
   <string name="upselling_auto_renew_text">Verlängert sich automatisch zum gleichen Preis und zu den gleichen Bedingungen, wenn es nicht gekündigt wird.</string>
   <string name="upselling_auto_renew_text_promo">Willkommensangebot. Verlängert sich automatisch für %s%s, sofern nicht gekündigt</string>
+  <string name="upselling_auto_renew_text_bfriday">Rabatte basieren auf den regulären monatlichen Preisen. Automatische Verlängerung zu %s%s, bis diese gekündigt wird.</string>
   <string name="upselling_auto_renew_text_promo_short">Willkommensangebot. Verlängert sich automatisch für %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Verlängert sich automatisch für %s%s, sofern nicht gekündigt</string>
   <string name="upselling_social_proof_reviews">Über 2.000 Bewertungen</string>
   <string name="upselling_description_social_proof">Umsteigen auf die Erfahrung, von der Millionen Abonnenten schwärmen.</string>
   <string name="upselling_discount_tag">SPARE %s%%</string>
   <string name="upselling_month">/Monat</string>
+  <string name="upselling_month_only">nur %s/Monat</string>
   <string name="upselling_year">/Jahr</string>
   <string name="upselling_get_button">%s holen</string>
   <plurals name="upselling_month">

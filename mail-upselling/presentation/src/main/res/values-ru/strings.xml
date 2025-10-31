@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Ваша комплексная платная подписка</string>
   <string name="upselling_auto_renew_text">Автоматическое продление по той же цене и на тех же условиях, если не отменено</string>
   <string name="upselling_auto_renew_text_promo">Приветственное предложение. Автоматически продлевается по цене %s%s, если подписка не будет отменена</string>
+  <string name="upselling_auto_renew_text_bfriday">Скидки рассчитываются от стандартной ежемесячной цены. Подписка будет автоматически продлена по цене %s%s, пока вы её не отмените.</string>
   <string name="upselling_auto_renew_text_promo_short">Приветственное предложение. Автоматически продлевается по цене %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Автоматически продлевается по цене %s%s, если подписка не будет отменена</string>
   <string name="upselling_social_proof_reviews">2 ТЫС.+ ОТЗЫВОВ</string>
   <string name="upselling_description_social_proof">Улучшите до версии, от которой в восторге миллионы подписчиков.</string>
   <string name="upselling_discount_tag">Сэкономьте %s%%</string>
   <string name="upselling_month">/месяц</string>
+  <string name="upselling_month_only">всего %s в месяц</string>
   <string name="upselling_year">/год</string>
   <string name="upselling_get_button">Получить %s</string>
   <plurals name="upselling_month">

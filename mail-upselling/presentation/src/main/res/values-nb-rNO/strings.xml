@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Ditt alt-i-ett Premium-abonnement</string>
   <string name="upselling_auto_renew_text">Automatisk fornyelse til samme pris og vilkår med mindre oppsigelse</string>
   <string name="upselling_auto_renew_text_promo">Velkomsttilbud. Fornyes automatisk til %s%s med mindre oppsigelse</string>
+  <string name="upselling_auto_renew_text_bfriday">Rabatter er basert på standard månedspris. Fornyes automatisk til %s%s inntil abonnementet kanselleres.</string>
   <string name="upselling_auto_renew_text_promo_short">Velkomsttilbud. Fornyes automatisk til %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Fornyes automatisk til %s%s med mindre oppsigelse</string>
   <string name="upselling_social_proof_reviews">2k+ ANMELDELSER</string>
   <string name="upselling_description_social_proof">Oppgrader til opplevelsen som millioner av abonnenter elsker.</string>
   <string name="upselling_discount_tag">Spar %s%%</string>
   <string name="upselling_month">/måned</string>
+  <string name="upselling_month_only">kun %s /måned</string>
   <string name="upselling_year">/år</string>
   <string name="upselling_get_button">Skaff deg %s</string>
   <plurals name="upselling_month">

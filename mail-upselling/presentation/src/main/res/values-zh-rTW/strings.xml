@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">您的多合一進階訂閱</string>
   <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
   <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_bfriday">折扣以標準月費計算。在取消前，將以 %s%s 自動續訂。</string>
   <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
   <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
   <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
   <string name="upselling_discount_tag">儲存 %s%%</string>
   <string name="upselling_month">/月</string>
+  <string name="upselling_month_only">僅 %s /月</string>
   <string name="upselling_year">/年</string>
   <string name="upselling_get_button">選用 %s</string>
   <plurals name="upselling_month">

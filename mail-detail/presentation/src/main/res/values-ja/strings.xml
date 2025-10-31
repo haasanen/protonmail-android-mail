@@ -175,6 +175,6 @@
   <string name="already_unsubscribed_banner_message">このメーリングリストの登録は解除されました。</string>
   <string name="error_unsubscribe_newsletter">ニュースレターの登録解除に失敗しました</string>
   <string name="detail_error_loading_single_message">メッセージの読み込みに失敗しました</string>
-  <string name="error_downloading_image">Failed to download image</string>
-  <string name="image_downloaded_successfully">Image downloaded</string>
+  <string name="error_downloading_image">画像をダウンロードできませんでした</string>
+  <string name="image_downloaded_successfully">画像をダウンロードしました</string>
 </resources>

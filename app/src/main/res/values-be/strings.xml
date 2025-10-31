@@ -44,7 +44,7 @@
   <string name="label_saved">Метка захавана</string>
   <string name="label_deleted">Метка выдалена</string>
   <string name="app_locked">Праграма заблакіравана</string>
-  <string name="use_pin_instead">Выкарыстаць замест гэтага PIN</string>
+  <string name="use_pin_instead">Выкарыстоўваць PIN-код</string>
   <string name="mailbox_message_scheduling">Планаванне паведамлення…</string>
   <string name="mailbox_message_scheduling_offline">Вы па-за сеткай. Паведамленне ў чарзе на планаванне</string>
   <string name="mailbox_message_scheduled_for_sending_success">Гэта паведамленне будзе адпраўлена %1$s</string>

@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Преміальна передплата з усіма можливостями</string>
   <string name="upselling_auto_renew_text">Автопоновлення за тією ж ціною та умовами доки не буде скасовано</string>
   <string name="upselling_auto_renew_text_promo">Вітальна пропозиція. Автопоновлення через %s%s, якщо не скасовано</string>
+  <string name="upselling_auto_renew_text_bfriday">Знижки розраховуються на основі стандартної місячної ціни. Автоматичне поновлення за %s%s до скасування.</string>
   <string name="upselling_auto_renew_text_promo_short">Вітальна пропозиція. Автопоновлення за %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Автопоновлення через %s%s, якщо не скасовано</string>
   <string name="upselling_social_proof_reviews">ПОНАД 2 ТИС. ВІДГУКІВ</string>
   <string name="upselling_description_social_proof">Отримайте покращений досвід, яким захоплюються мільйони підписників.</string>
   <string name="upselling_discount_tag">ЗАОЩАДЬТЕ %s%%</string>
   <string name="upselling_month">/місяць</string>
+  <string name="upselling_month_only">лише %s /міс.</string>
   <string name="upselling_year">/рік</string>
   <string name="upselling_get_button">Отримати %s</string>
   <plurals name="upselling_month">

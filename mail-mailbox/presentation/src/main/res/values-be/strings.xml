@@ -35,7 +35,7 @@
   </plurals>
   <string name="mailbox_default_recipient">(Без атрымальніка)</string>
   <string name="mailbox_default_sender">(Без адпраўніка)</string>
-  <string name="mailbox_error_message_offline">Немагчыма атрымаць элементы, бо вы па-за сеткай</string>
+  <string name="mailbox_error_message_offline">Вы па-за сеткай. Немагчыма атрымаць элементы</string>
   <string name="mailbox_error_message_generic">Збой загрузкі паштовай скрыні</string>
   <string name="mailbox_error_message_user_session">Немагчыма загрузіць сеанс. Праверце падключэнне і паўтарыце спробу.</string>
   <string name="mailbox_error_message_unexpected">Нешта пайшло не так</string>
@@ -98,7 +98,7 @@
   <string name="mailbox_action_spam_message">Паведамленне перамешчана ў спам</string>
   <string name="mailbox_search_placeholder_text">Пошук паведамленняў</string>
   <string name="mailbox_search_no_results_title">Няма супадзенняў</string>
-  <string name="mailbox_search_no_results_explanation">Вы можаце змяніць ваш пошукавы запыт або ачысціць яго.</string>
+  <string name="mailbox_search_no_results_explanation">Вы можаце змяніць свой пошукавы запыт або ачысціць яго.</string>
   <plurals name="mailbox_action_move_conversation">
     <item quantity="one">Размова перамешчана ў %s</item>
     <item quantity="few">Размовы перамешчаны ў %s</item>

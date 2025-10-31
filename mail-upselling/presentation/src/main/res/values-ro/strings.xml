@@ -104,12 +104,14 @@
   <string name="upselling_unlimited_description_override">Abonamentul premium complet</string>
   <string name="upselling_auto_renew_text">Se reînnoiește automat la același preț și condiții, dacă nu este anulat.</string>
   <string name="upselling_auto_renew_text_promo">Ofertă de bun venit. Se reînnoiește automat cu %s %s dacă nu e anulată.</string>
+  <string name="upselling_auto_renew_text_bfriday">Reducerile se bazează pe prețurile lunare standard. Se reînnoiește automat cu %s %s până la anulare.</string>
   <string name="upselling_auto_renew_text_promo_short">Ofertă de bun venit. Se reînnoiește automat cu %s %s.</string>
   <string name="upselling_auto_renew_text_standard">Se reînnoiește automat cu %s %s dacă nu e anulată.</string>
   <string name="upselling_social_proof_reviews">Peste 2.000 de RECENZII</string>
   <string name="upselling_description_social_proof">Treceți la experiența de care sunt încântați milioane de abonați.</string>
   <string name="upselling_discount_tag">ECONOMISIȚI %s%%</string>
   <string name="upselling_month">/lună</string>
+  <string name="upselling_month_only">doar %s/lună</string>
   <string name="upselling_year">/an</string>
   <string name="upselling_get_button">Obțineți %s</string>
   <plurals name="upselling_month">
