@@ -20,15 +20,15 @@ package ch.protonmail.android.mailupselling.domain.usecase
 
 import java.math.BigDecimal
 import java.math.RoundingMode
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class GetDiscountRate @Inject constructor() {
 
-    operator fun invoke(shorterInstance: ProductDetail, longerInstance: ProductDetail): Int? {
+    operator fun invoke(shorterInstance: ProductOfferDetail, longerInstance: ProductOfferDetail): Int? {
         val longerInstancePrice = BigDecimal(longerInstance.currentPrice)
-        val shorterInstancePrice = BigDecimal(shorterInstance.currentPrice)
+        val shorterInstancePrice = BigDecimal(shorterInstance.renewalPrice)
         val longerInstanceCycle = BigDecimal(longerInstance.cycle)
         val shorterInstanceCycle = BigDecimal(shorterInstance.cycle)
 
@@ -60,8 +60,11 @@ class GetDiscountRate @Inject constructor() {
     }
 }
 
-private val ProductDetail.currentPrice: Long
-    get() = price.amount
+private val ProductOfferDetail.currentPrice: Long
+    get() = offer.current.amount
 
-private val ProductDetail.cycle: Int
-    get() = price.cycle
+private val ProductOfferDetail.renewalPrice: Long
+    get() = offer.renew.amount
+
+private val ProductOfferDetail.cycle: Int
+    get() = offer.current.cycle

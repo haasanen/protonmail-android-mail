@@ -23,21 +23,21 @@ import java.math.RoundingMode
 import ch.protonmail.android.mailupselling.domain.extensions.totalPrice
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.domain.model.YearlySaving
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import javax.inject.Inject
 
 class GetYearlySaving @Inject constructor() {
 
-    operator fun invoke(monthlyPlan: ProductDetail, yearlyPlan: ProductDetail): YearlySaving? {
-        if (monthlyPlan.renew.cycle != PlanUpgradeCycle.Monthly.months) return null
-        if (yearlyPlan.renew.cycle != PlanUpgradeCycle.Yearly.months) return null
+    operator fun invoke(monthlyPlan: ProductOfferDetail, yearlyPlan: ProductOfferDetail): YearlySaving? {
+        if (monthlyPlan.offer.renew.cycle != PlanUpgradeCycle.Monthly.months) return null
+        if (yearlyPlan.offer.renew.cycle != PlanUpgradeCycle.Yearly.months) return null
 
-        val currency = monthlyPlan.price.currency
+        val currency = monthlyPlan.offer.current.currency
 
         // Check on monthly renewal price since it's unaffected by promo/offers
-        val rawValue = monthlyPlan.renew.totalPrice()
+        val rawValue = monthlyPlan.offer.renew.totalPrice()
             .multiply(BigDecimal(PlanUpgradeCycle.Yearly.months))
-            .minus(yearlyPlan.price.totalPrice())
+            .minus(yearlyPlan.offer.current.totalPrice())
             .setScale(2, RoundingMode.HALF_UP)
 
         return YearlySaving(currency, rawValue).takeIf { rawValue.signum() > 0 }

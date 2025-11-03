@@ -20,24 +20,46 @@ package ch.protonmail.android.mailupselling.domain.usecase
 
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.cache.AvailableUpgradesCache
+import ch.protonmail.android.mailupselling.domain.model.BlackFridayPhase
+import ch.protonmail.android.mailupselling.domain.model.BlackFridaySupported
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeIds
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeSupportedTags
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
+import me.proton.android.core.payment.domain.model.filterForTags
 import javax.inject.Inject
 
 class ObserveMailPlusPlanUpgrades @Inject constructor(
     private val cache: AvailableUpgradesCache,
-    private val observePrimaryUserId: ObservePrimaryUserId
+    private val observePrimaryUserId: ObservePrimaryUserId,
+    private val getCurrentBlackFridayPhase: GetCurrentBlackFridayPhase,
+    private val isEligibleForBlackFridayPromotion: IsEligibleForBlackFridayPromotion
 ) {
 
-    operator fun invoke() = observePrimaryUserId().flatMapLatest { userId ->
+    operator fun invoke(entryPoint: UpsellingEntryPoint.Feature) = observePrimaryUserId().flatMapLatest { userId ->
         userId ?: return@flatMapLatest flowOf(emptyList())
 
-        cache.observe(userId)
-            .map { upgrades -> upgrades.filterMailPlus() }
+        val flowSupportsBlackFriday = entryPoint is BlackFridaySupported
+        val isBlackFridayOngoing = getCurrentBlackFridayPhase() != BlackFridayPhase.None
+        val supportsBlackFridayPromo = flowSupportsBlackFriday &&
+            isBlackFridayOngoing &&
+            isEligibleForBlackFridayPromotion(userId)
+
+        val offersTag = if (supportsBlackFridayPromo) {
+            PlanUpgradeSupportedTags.BlackFriday
+        } else {
+            PlanUpgradeSupportedTags.IntroductoryPrice
+        }
+
+        // Here should be either BF **OR** Intro pricing, never fallback between 2 promo prices
+        cache.observe(userId).map { upgrades ->
+            val eligibleOffers = upgrades.filterForTags(primaryTag = offersTag.value)
+            eligibleOffers.filterMailPlus()
+        }
     }
 
-    private fun List<ProductDetail>.filterMailPlus() = filter { it.planName == PlanUpgradeIds.PlusPlanId }
+    private fun List<ProductOfferDetail>.filterMailPlus() = filter { it.metadata.planName == PlanUpgradeIds.PlusPlanId }
 }

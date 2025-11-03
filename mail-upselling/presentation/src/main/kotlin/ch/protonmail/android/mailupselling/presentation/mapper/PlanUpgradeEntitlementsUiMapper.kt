@@ -22,13 +22,13 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlements.Entitlements
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementsListUiModel
-import me.proton.android.core.payment.domain.model.ProductDetail
 import me.proton.android.core.payment.domain.model.ProductEntitlement
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import javax.inject.Inject
 
 class PlanUpgradeEntitlementsUiMapper @Inject constructor() {
 
-    fun toOnboardingUiModel(plan: ProductDetail) = mapToDefaults(plan.entitlements)
+    fun toOnboardingUiModel(plan: ProductOfferDetail) = mapToDefaults(plan.metadata.entitlements)
 
     fun toTableUiModel() = mapToComparisonTable()
 

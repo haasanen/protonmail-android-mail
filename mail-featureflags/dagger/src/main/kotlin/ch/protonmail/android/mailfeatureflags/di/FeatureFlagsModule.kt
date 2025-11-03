@@ -25,6 +25,8 @@ import ch.protonmail.android.mailfeatureflags.data.local.factory.BooleanFeatureF
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerAutoCollapseQuotedTextEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave1Enabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
@@ -35,6 +37,8 @@ import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
 import ch.protonmail.android.mailfeatureflags.domain.model.ComposerAutoCollapseQuotedText
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
+import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Enabled
+import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
@@ -80,6 +84,18 @@ object FeatureFlagsModule {
     @IsOnboardingUpsellEnabled
     fun provideOnboardingUpsellEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(key = OnboardingUpsellingEnabled.key, false)
+
+    @Provides
+    @Singleton
+    @IsBlackFridayWave1Enabled
+    fun provideBlackFridayWave1Enabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = MailBlackFriday2025Enabled.key, false)
+
+    @Provides
+    @Singleton
+    @IsBlackFridayWave2Enabled
+    fun provideBlackFridayWave2Enabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = MailBlackFriday2025Wave2Enabled.key, false)
 
     @Provides
     @Singleton

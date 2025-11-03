@@ -48,6 +48,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingButtonViewModel
@@ -64,11 +65,15 @@ fun UpsellingBottomSheetButton(
     modifier: Modifier = Modifier,
     text: String,
     hint: String = stringResource(R.string.upselling_button_hint),
+    upsellingEntryPoint: UpsellingEntryPoint.Feature,
     onUpsellNavigation: (type: UpsellingVisibility) -> Unit,
     onUnavailableUpsell: (() -> Unit)? = null,
-    layout: UpsellingBottomSheetButtonLayout = Row,
-    viewModel: UpsellingButtonViewModel = hiltViewModel()
+    layout: UpsellingBottomSheetButtonLayout = Row
 ) {
+    val viewModel = hiltViewModel<UpsellingButtonViewModel, UpsellingButtonViewModel.Factory> { factory ->
+        factory.create(upsellingEntryPoint)
+    }
+
     val state = viewModel.state.collectAsStateWithLifecycle()
     val type = state.value.visibility
     val context = LocalContext.current
@@ -76,14 +81,14 @@ fun UpsellingBottomSheetButton(
 
     val onNavigateToUpsell: () -> Unit = {
         when (state.value.visibility) {
-            UpsellingVisibility.HIDDEN -> if (onUnavailableUpsell != null) {
+            is UpsellingVisibility.Hidden -> if (onUnavailableUpsell != null) {
                 onUnavailableUpsell()
             } else {
                 Toast.makeText(context, fallbackText, Toast.LENGTH_SHORT).show()
             }
 
-            UpsellingVisibility.PROMO,
-            UpsellingVisibility.NORMAL -> onUpsellNavigation(type)
+            is UpsellingVisibility.Promotional,
+            is UpsellingVisibility.Normal -> onUpsellNavigation(type)
         }
     }
 

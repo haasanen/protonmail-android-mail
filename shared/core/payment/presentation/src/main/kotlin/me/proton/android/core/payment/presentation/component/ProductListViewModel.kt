@@ -27,7 +27,8 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import me.proton.android.core.payment.domain.LogTag
 import me.proton.android.core.payment.domain.PaymentException
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
+import me.proton.android.core.payment.domain.model.getBaseOffer
 import me.proton.android.core.payment.domain.usecase.GetAvailableUpgrades
 import me.proton.android.core.payment.presentation.R
 import me.proton.android.core.payment.presentation.model.Product
@@ -54,15 +55,21 @@ class ProductListViewModel @Inject constructor(
 
     private fun onLoad() = flow {
         emit(ProductListState.Loading)
-        val details = getAvailableUpgrades()
+
+        val upgrades = getAvailableUpgrades()
+
+        val details = upgrades.filter { it.offers.firstOrNull { offer -> offer.isBaseOffer } != null }
+            .mapNotNull { it.getBaseOffer() }
+
         val list = details.map {
             Product(
-                planName = it.planName,
-                productId = it.productId,
-                accountId = requireNotNull(it.price.customerId),
-                cycle = it.price.cycle,
+                planName = it.metadata.planName,
+                productId = it.metadata.productId,
+                accountId = requireNotNull(it.offer.current.customerId),
+                cycle = it.offer.current.cycle,
+                offerToken = it.offer.token,
                 header = it.header,
-                entitlements = it.entitlements,
+                entitlements = it.metadata.entitlements,
                 renewalText = it.getRenewalText()
             )
         }
@@ -75,6 +82,7 @@ class ProductListViewModel @Inject constructor(
             PaymentException.Companion.ErrorCode.BILLING_UNAVAILABLE -> {
                 emit(ProductListState.Data(emptyList()))
             }
+
             else -> {
                 emit(ProductListState.Error(exceptionMessage))
             }
@@ -86,13 +94,17 @@ class ProductListViewModel @Inject constructor(
     }
 
     @Suppress("MagicNumber")
-    private fun ProductDetail.getRenewalText(): String? = when {
-        price.amount == renew.amount -> null
-        else -> when (price.cycle) {
-            1 -> res.getString(R.string.payment_welcome_offer_renew_monthly, renew.formatted)
-            12 -> res.getString(R.string.payment_welcome_offer_renew_annually, renew.formatted)
-            24 -> res.getString(R.string.payment_welcome_offer_renew_biennially, renew.formatted)
-            else -> res.getQuantityString(R.plurals.payment_welcome_offer_renew_other, price.cycle, renew.formatted)
+    private fun ProductOfferDetail.getRenewalText(): String? = when {
+        offer.isBaseOffer -> null
+        else -> when (offer.current.cycle) {
+            1 -> res.getString(R.string.payment_welcome_offer_renew_monthly, offer.renew.formatted)
+            12 -> res.getString(R.string.payment_welcome_offer_renew_annually, offer.renew.formatted)
+            24 -> res.getString(R.string.payment_welcome_offer_renew_biennially, offer.renew.formatted)
+            else -> res.getQuantityString(
+                R.plurals.payment_welcome_offer_renew_other,
+                offer.renew.cycle,
+                offer.renew.formatted
+            )
         }
     }
 }

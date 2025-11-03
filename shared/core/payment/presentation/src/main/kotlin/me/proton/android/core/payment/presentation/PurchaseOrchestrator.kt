@@ -18,6 +18,7 @@
 package me.proton.android.core.payment.presentation
 
 import android.app.Activity
+import me.proton.android.core.payment.domain.model.ProductOfferToken
 
 interface PurchaseOrchestrator {
 
@@ -27,6 +28,7 @@ interface PurchaseOrchestrator {
     fun startPurchaseWorkflow(
         caller: Activity,
         productId: String,
+        offerToken: ProductOfferToken,
         accountId: String
     )
 }

@@ -22,5 +22,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalUserSettings
 import ch.protonmail.android.mailsession.domain.model.UserSettings
 
 internal fun LocalUserSettings.toUserSettings(): UserSettings = UserSettings(
+    news = news.toInt(),
     crashReports = crashReports
 )

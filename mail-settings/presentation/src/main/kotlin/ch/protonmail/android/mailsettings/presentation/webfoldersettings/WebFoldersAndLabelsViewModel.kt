@@ -26,6 +26,7 @@ import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsSt
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsOperation
 import ch.protonmail.android.mailsettings.presentation.websettings.toFolderAndLabelSettingsUrl
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -37,7 +38,10 @@ class WebFoldersAndLabelsViewModel @Inject constructor(
     private val handleCloseWebSettings: HandleCloseWebSettings
 ) : ViewModel() {
 
-    val state: Flow<WebSettingsState> = observeWebSettings(viewModelScope) { sessionId, theme, config ->
+    val state: Flow<WebSettingsState> = observeWebSettings(
+        coroutineScope = viewModelScope,
+        entryPoint = UpsellingEntryPoint.Feature.Folders
+    ) { sessionId, theme, config ->
         config.toFolderAndLabelSettingsUrl(sessionId, theme)
     }
 

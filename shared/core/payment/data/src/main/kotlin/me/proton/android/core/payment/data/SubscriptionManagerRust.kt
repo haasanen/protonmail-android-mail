@@ -21,11 +21,9 @@ import android.content.Context
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.getPrimarySession
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
 import me.proton.android.core.payment.data.extension.getErrorMessage
 import me.proton.android.core.payment.data.extension.toObservabilityValue
-import me.proton.android.core.payment.data.model.toProductDetail
+import me.proton.android.core.payment.data.model.toProductOfferDetail
 import me.proton.android.core.payment.data.model.toSubscriptionDetail
 import me.proton.android.core.payment.domain.PaymentException
 import me.proton.android.core.payment.domain.PaymentException.Companion.ErrorCode.DEVELOPER_ERROR
@@ -36,7 +34,7 @@ import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.GE
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.GET_PLANS
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.GET_SUBSCRIPTION
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.SEND_PAYMENT_TOKEN
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.android.core.payment.domain.model.Purchase
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
 import uniffi.proton_mail_uniffi.GetPaymentsPlansOptions
@@ -53,6 +51,8 @@ import uniffi.proton_mail_uniffi.PaymentReceipt
 import uniffi.proton_mail_uniffi.PaymentToken
 import uniffi.proton_mail_uniffi.PaymentVendorState
 import uniffi.proton_mail_uniffi.UserSessionError
+import javax.inject.Inject
+import javax.inject.Singleton
 
 //region Constants
 
@@ -72,13 +72,13 @@ class SubscriptionManagerRust @Inject constructor(
     }
 
     private suspend fun getProtonToken(
-        product: ProductDetail,
+        product: ProductOfferDetail,
         purchase: Purchase,
         session: MailUserSession
     ): PaymentToken {
         val result = session.postPaymentsTokens(
-            amount = product.price.amount.toULong(),
-            currency = product.price.currency,
+            amount = product.offer.current.amount.toULong(),
+            currency = product.offer.current.currency,
             payment = PaymentReceipt.Google(
                 details = GoogleRecurringReceiptDetails(
                     orderId = purchase.orderId,
@@ -99,22 +99,22 @@ class SubscriptionManagerRust @Inject constructor(
 
     private suspend fun createOrUpdateSubscription(
         session: MailUserSession,
-        product: ProductDetail,
+        product: ProductOfferDetail,
         paymentToken: PaymentToken
     ) {
         val result = session.postPaymentsSubscription(
             subscription = NewSubscription(
-                cycle = product.price.cycle.toUByte(),
-                currency = product.price.currency,
+                cycle = product.offer.current.cycle.toUByte(),
+                currency = product.offer.current.currency,
                 currencyId = null,
-                plans = mapOf(product.planName to 1),
+                plans = mapOf(product.metadata.planName to 1),
                 planIds = null,
                 codes = null,
                 couponCode = null,
                 giftCode = null
             ),
             newValues = NewSubscriptionValues(
-                amount = product.price.amount.toULong(),
+                amount = product.offer.current.amount.toULong(),
                 payments = null,
                 paymentToken = paymentToken.token
             )
@@ -140,7 +140,7 @@ class SubscriptionManagerRust @Inject constructor(
         }
     }
 
-    override suspend fun getAvailable(): List<ProductDetail> {
+    override suspend fun getAvailable(): List<ProductOfferDetail> {
         val session = sessionRepository.getPrimarySession() ?: return emptyList()
         val options = GetPaymentsPlansOptions(
             vendor = VENDOR_ANDROID_GOOGLE,
@@ -156,13 +156,13 @@ class SubscriptionManagerRust @Inject constructor(
             is MailUserSessionGetPaymentsPlansResult.Error -> result.v1.throwException()
             is MailUserSessionGetPaymentsPlansResult.Ok -> {
                 return result.v1.plans.map { plan ->
-                    plan.instances.map { instance -> plan.toProductDetail(instance) }
+                    plan.instances.map { instance -> plan.toProductOfferDetail(instance) }
                 }.flatten()
             }
         }
     }
 
-    override suspend fun subscribe(product: ProductDetail, purchase: Purchase) {
+    override suspend fun subscribe(product: ProductOfferDetail, purchase: Purchase) {
         val session = checkNotNull(sessionRepository.getPrimarySession())
         val protonToken = getProtonToken(product, purchase, session)
         createOrUpdateSubscription(session, product, protonToken)

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferList
 import me.proton.android.core.payment.domain.usecase.GetAvailableUpgrades
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -45,7 +45,7 @@ class AvailableUpgradesCache @Inject constructor(
 
     private val cache = ConcurrentHashMap<UserId, MutableStateFlow<CacheState>>()
 
-    fun observe(userId: UserId): Flow<List<ProductDetail>> {
+    fun observe(userId: UserId): Flow<List<ProductOfferList>> {
         return flow {
             val mutableStateFlow = getOrCreateMutableCache(userId)
 
@@ -66,7 +66,7 @@ class AvailableUpgradesCache @Inject constructor(
         }
     }
 
-    suspend fun get(userId: UserId): List<ProductDetail> {
+    suspend fun get(userId: UserId): List<ProductOfferList> {
         val mutableStateFlow = getOrCreateMutableCache(userId)
 
         val currentState = mutableStateFlow.value
@@ -130,7 +130,7 @@ private sealed class CacheState {
     object Loading : CacheState()
 
     data class Success(
-        val upgrades: List<ProductDetail>,
+        val upgrades: List<ProductOfferList>,
         val timestamp: Long = Clock.System.now().toEpochMilliseconds()
     ) : CacheState() {
 

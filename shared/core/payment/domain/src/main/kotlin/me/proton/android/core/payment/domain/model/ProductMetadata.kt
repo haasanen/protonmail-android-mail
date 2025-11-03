@@ -1,46 +1,33 @@
 /*
- * Copyright (C) 2025 Proton AG
+ * Copyright (c) 2025 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
  *
- * This program is free software: you can redistribute it and/or modify
+ * Proton Mail is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Proton Mail is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package me.proton.android.core.payment.domain.model
 
-data class ProductDetail(
+data class ProductMetadata(
     val productId: String,
+    val customerId: String,
     val planName: String,
-    val header: ProductHeader,
-    val price: ProductPrice,
-    val renew: ProductPrice,
     val entitlements: List<ProductEntitlement>
 )
 
-data class ProductHeader(
-    val title: String,
-    val description: String,
-    val priceText: String,
-    val cycleText: String,
-    val starred: Boolean
-)
-
-data class ProductPrice(
+data class PlayStoreProductMetadata(
     val productId: String,
-    val customerId: String?,
-    val cycle: Int,
-    val amount: Long,
-    val currency: String,
-    val formatted: String?
+    val planName: String
 )
 
 sealed interface ProductEntitlement {

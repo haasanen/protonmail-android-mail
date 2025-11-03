@@ -31,14 +31,14 @@ internal class UpsellingContentReducer @Inject constructor(
     private val planUpgradeUiMapper: PlanUpgradeUiMapper
 ) {
 
-    fun newStateFrom(operation: UpsellingScreenContentOperation): UpsellingScreenContentState {
+    suspend fun newStateFrom(operation: UpsellingScreenContentOperation): UpsellingScreenContentState {
         return when (operation) {
             is UpsellingScreenContentEvent.DataLoaded -> reducePlansListToNewState(operation)
             is UpsellingScreenContentEvent.LoadingError -> reduceErrorEvent(operation)
         }
     }
 
-    private fun reducePlansListToNewState(
+    private suspend fun reducePlansListToNewState(
         operation: UpsellingScreenContentEvent.DataLoaded
     ): UpsellingScreenContentState {
         val uiModel = planUpgradeUiMapper.toUiModel(ProductInstances(operation.plans), operation.upsellingEntryPoint)

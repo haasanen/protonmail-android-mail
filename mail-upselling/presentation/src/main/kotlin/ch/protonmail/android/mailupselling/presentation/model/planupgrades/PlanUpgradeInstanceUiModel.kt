@@ -63,28 +63,62 @@ sealed class PlanUpgradeInstanceUiModel(
             }
     }
 
-    data class Promotional(
+    sealed class Promotional(
         override val name: String,
-        private val pricePerCycle: PlanUpgradePriceUiModel,
-        private val promotionalPrice: PlanUpgradePriceUiModel,
-        private val renewalPrice: PlanUpgradePriceUiModel,
+        val pricePerCycle: PlanUpgradePriceUiModel,
+        val promotionalPrice: PlanUpgradePriceUiModel,
+        val renewalPrice: PlanUpgradePriceUiModel,
         override val yearlySaving: YearlySaving?,
         override val discountRate: Int?,
         override val cycle: PlanUpgradeCycle,
         override val product: Product
     ) : PlanUpgradeInstanceUiModel(
-        name,
-        discountRate,
-        yearlySaving,
-        cycle,
-        product
+        name, discountRate, yearlySaving, cycle, product
     ) {
-
         override val primaryPrice: PlanUpgradePriceDisplayUiModel
             get() = PlanUpgradePriceDisplayUiModel(
                 pricePerCycle = pricePerCycle,
                 highlightedPrice = promotionalPrice,
                 secondaryPrice = renewalPrice
             )
+
+        data class IntroductoryPrice(
+            private val params: Params
+        ) : Promotional(
+            params.name, params.pricePerCycle, params.promotionalPrice,
+            params.renewalPrice, params.yearlySaving, params.discountRate,
+            params.cycle, params.product
+        )
+
+        data class BlackFriday(
+            private val params: Params
+        ) : Promotional(
+            params.name, params.pricePerCycle, params.promotionalPrice,
+            params.renewalPrice, params.yearlySaving, params.discountRate,
+            params.cycle, params.product
+        )
+
+        data class Params(
+            val name: String,
+            val pricePerCycle: PlanUpgradePriceUiModel,
+            val promotionalPrice: PlanUpgradePriceUiModel,
+            val renewalPrice: PlanUpgradePriceUiModel,
+            val yearlySaving: YearlySaving?,
+            val discountRate: Int?,
+            val cycle: PlanUpgradeCycle,
+            val product: Product
+        )
+
+        companion object {
+
+            operator fun invoke(promoKind: PromoKind, params: Params): Promotional = when (promoKind) {
+                PromoKind.IntroPrice -> IntroductoryPrice(params)
+                PromoKind.BlackFriday -> BlackFriday(params)
+            }
+        }
     }
+}
+
+enum class PromoKind {
+    IntroPrice, BlackFriday
 }

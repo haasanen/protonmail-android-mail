@@ -152,6 +152,7 @@ class UserSessionRepositoryImplTest {
             email = "userEmail",
             services = 0,
             subscribed = 0,
+            delinquent = 0,
             createTimeUtc = 0L,
             usedSpace = 0L,
             maxSpace = 0L

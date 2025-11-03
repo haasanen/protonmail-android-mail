@@ -138,6 +138,7 @@ include(":mail-session:domain")
 include(":mail-session:presentation")
 
 include(":mail-upselling:dagger")
+include(":mail-upselling:data")
 include(":mail-upselling:domain")
 include(":mail-upselling:presentation")
 

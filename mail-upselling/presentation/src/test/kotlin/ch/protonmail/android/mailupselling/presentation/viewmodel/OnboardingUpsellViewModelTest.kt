@@ -32,13 +32,13 @@ import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -78,7 +78,7 @@ internal class OnboardingUpsellViewModelTest {
         }
 
         // Then
-        verify { reducer.newStateFrom(OnboardingUpsellEvent.LoadingError.NoUserId) }
+        coVerify { reducer.newStateFrom(OnboardingUpsellEvent.LoadingError.NoUserId) }
         confirmVerified(reducer)
     }
 
@@ -94,7 +94,7 @@ internal class OnboardingUpsellViewModelTest {
         }
 
         // Then
-        verify { reducer.newStateFrom(OnboardingUpsellEvent.UnsupportedFlow.NotEnabled) }
+        coVerify { reducer.newStateFrom(OnboardingUpsellEvent.UnsupportedFlow.NotEnabled) }
         confirmVerified(reducer)
     }
 
@@ -110,7 +110,7 @@ internal class OnboardingUpsellViewModelTest {
         }
 
         // Then
-        verify { reducer.newStateFrom(OnboardingUpsellEvent.UnsupportedFlow.PaidUser) }
+        coVerify { reducer.newStateFrom(OnboardingUpsellEvent.UnsupportedFlow.PaidUser) }
         confirmVerified(reducer)
     }
 
@@ -128,7 +128,7 @@ internal class OnboardingUpsellViewModelTest {
         }
 
         // Then
-        verify { reducer.newStateFrom(OnboardingUpsellEvent.UnsupportedFlow.PlansMismatch) }
+        coVerify { reducer.newStateFrom(OnboardingUpsellEvent.UnsupportedFlow.PlansMismatch) }
         confirmVerified(reducer)
     }
 
@@ -136,7 +136,7 @@ internal class OnboardingUpsellViewModelTest {
     fun `should emit data loaded when product details are fetched correctly`() = runTest {
         // Given
         val user = UserTestData.Primary.copy(subscribed = 0)
-        val expectedList = listOf<ProductDetail>(mockk())
+        val expectedList = listOf<ProductOfferDetail>(mockk())
         every { observePrimaryUser() } returns flowOf(user.right())
         coEvery { getOnboardingPlanUpgrades(user.userId) } returns expectedList.right()
         coEvery { isUpsellEnabled.get() } returns true
@@ -147,7 +147,7 @@ internal class OnboardingUpsellViewModelTest {
         }
 
         // Then
-        verify { reducer.newStateFrom(OnboardingUpsellEvent.DataLoaded(user.userId, expectedList)) }
+        coVerify { reducer.newStateFrom(OnboardingUpsellEvent.DataLoaded(user.userId, expectedList)) }
         confirmVerified(reducer)
     }
 }

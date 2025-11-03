@@ -22,7 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeUiModel
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 
 internal sealed interface UpsellingScreenContentState {
 
@@ -36,7 +36,7 @@ sealed interface UpsellingScreenContentOperation {
     sealed interface UpsellingScreenContentEvent : UpsellingScreenContentOperation {
 
         data class DataLoaded(
-            val plans: List<ProductDetail>,
+            val plans: List<ProductOfferDetail>,
             val upsellingEntryPoint: UpsellingEntryPoint.Feature
         ) : UpsellingScreenContentEvent
 

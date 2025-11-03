@@ -17,13 +17,13 @@
 
 package me.proton.android.core.payment.presentation.component
 
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.android.core.payment.presentation.model.Product
 
 sealed interface PurchaseButtonState {
     data object Idle : PurchaseButtonState
     data object Loading : PurchaseButtonState
-    data class Pending(val product: ProductDetail) : PurchaseButtonState
+    data class Pending(val product: ProductOfferDetail) : PurchaseButtonState
     data class Success(val product: Product) : PurchaseButtonState
     data class Error(val message: String, val enabled: Boolean = true) : PurchaseButtonState
 }

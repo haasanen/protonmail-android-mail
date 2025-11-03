@@ -251,7 +251,7 @@ class SnoozeBottomSheetViewModelTest {
         // then
         sut.effects.test {
             assertEquals(SnoozeOptionsEffects(), awaitItem())
-            assertEquals(UpsellingVisibility.HIDDEN, awaitItem().navigateToUpsell.consume())
+            assertEquals(UpsellingVisibility.Hidden, awaitItem().navigateToUpsell.consume())
         }
     }
 
@@ -276,7 +276,7 @@ class SnoozeBottomSheetViewModelTest {
             SnoozeOperationViewAction.UnSnooze
 
         val inputUpgradeOperation =
-            SnoozeOperationViewAction.Upgrade(UpsellingVisibility.HIDDEN)
+            SnoozeOperationViewAction.Upgrade(UpsellingVisibility.Hidden)
         val outputSnoozeOptions = listOf(
             Tomorrow(outputInstant),
             UpgradeRequired

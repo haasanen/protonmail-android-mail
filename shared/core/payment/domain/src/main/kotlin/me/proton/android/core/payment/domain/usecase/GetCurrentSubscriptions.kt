@@ -17,7 +17,6 @@
 
 package me.proton.android.core.payment.domain.usecase
 
-import me.proton.android.core.payment.domain.PaymentManager
 import me.proton.android.core.payment.domain.SubscriptionManager
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
 import javax.inject.Inject
@@ -25,7 +24,6 @@ import javax.inject.Singleton
 
 @Singleton
 class GetCurrentSubscriptions @Inject constructor(
-    private val paymentManager: PaymentManager,
     private val subscriptionManager: SubscriptionManager
 ) {
 
@@ -34,15 +32,8 @@ class GetCurrentSubscriptions @Inject constructor(
         val ids = subscriptions.mapNotNull { null } // Use it.productId. Currently not existing.
         if (ids.isEmpty()) return subscriptions
 
-        val storeProducts = paymentManager.getStoreProducts(ids).associateBy { it.productId }
-        return subscriptions.map {
-            val store = storeProducts[it.name]
-            it.copy(
-                header = it.header.copy(
-                    priceText = store?.price?.formatted ?: store?.header?.priceText ?: it.header.priceText,
-                    cycleText = store?.header?.cycleText ?: it.header.cycleText
-                )
-            )
-        }
+        return subscriptions
+        // BE currently does not send info about current plan id (productId) nor the correct amount
+        // when the subscription is managed externally (Play Store/App Store).
     }
 }

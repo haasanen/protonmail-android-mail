@@ -34,13 +34,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens.IconSize
 import ch.protonmail.android.design.compose.theme.ProtonDimens.Spacing
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import me.proton.android.core.payment.domain.model.ProductHeader
+import me.proton.android.core.payment.domain.model.ProductDetailHeader
 import me.proton.android.core.payment.presentation.model.Subscription
 import me.proton.core.presentation.R
 
 @Composable
 fun ProductHeader(
-    header: ProductHeader,
+    header: ProductDetailHeader,
     modifier: Modifier = Modifier,
     icon: Painter? = null
 ) {
@@ -55,7 +55,9 @@ fun ProductHeader(
                 )
                 if (header.starred) {
                     Icon(
-                        modifier = Modifier.size(IconSize.Small).align(Alignment.CenterVertically),
+                        modifier = Modifier
+                            .size(IconSize.Small)
+                            .align(Alignment.CenterVertically),
                         painter = painterResource(R.drawable.ic_proton_star_filled),
                         tint = ProtonTheme.colors.iconAccent,
                         contentDescription = null
@@ -71,6 +73,7 @@ fun ProductHeader(
         }
         Column {
             Text(
+                modifier = Modifier.align(Alignment.End),
                 text = header.priceText,
                 style = ProtonTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
@@ -83,7 +86,10 @@ fun ProductHeader(
             )
             if (icon != null) {
                 Icon(
-                    modifier = Modifier.padding(top = Spacing.Large).size(IconSize.Medium).align(Alignment.End),
+                    modifier = Modifier
+                        .padding(top = Spacing.Large)
+                        .size(IconSize.Medium)
+                        .align(Alignment.End),
                     painter = icon,
                     tint = ProtonTheme.colors.iconAccent,
                     contentDescription = null

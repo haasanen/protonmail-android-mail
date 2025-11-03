@@ -19,14 +19,9 @@
 package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 
 internal sealed class AppSettingsState {
-    data class Data(
-        val settings: AppSettingsUiModel,
-        val upsellingVisibility: UpsellingVisibility
-    ) : AppSettingsState()
-
+    data class Data(val settings: AppSettingsUiModel) : AppSettingsState()
     data object Loading : AppSettingsState()
 }
 

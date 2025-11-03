@@ -17,22 +17,12 @@
 
 package me.proton.android.core.payment.google.data.model
 
-import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.ProductDetails.PricingPhase
 import kotlinx.datetime.DateTimePeriod
-import me.proton.android.core.payment.domain.model.ProductHeader
-import me.proton.android.core.payment.domain.model.ProductPrice
-
-fun ProductDetails.toProductHeader(phase: PricingPhase) = ProductHeader(
-    title = title,
-    description = description, // Comes from Proton BE.
-    priceText = phase.formattedPrice,
-    cycleText = phase.billingPeriod,
-    starred = false // Comes from Proton BE.
-)
+import me.proton.android.core.payment.domain.model.ProductOfferPrice
 
 @Suppress("MagicNumber")
-fun PricingPhase.toProductPrice(productId: String) = ProductPrice(
+fun PricingPhase.toProductPriceOffer(productId: String) = ProductOfferPrice(
     productId = productId,
     customerId = null, // Comes from Proton BE.
     amount = priceAmountMicros,

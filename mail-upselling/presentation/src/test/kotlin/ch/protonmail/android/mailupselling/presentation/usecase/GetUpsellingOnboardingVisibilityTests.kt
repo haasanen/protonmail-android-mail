@@ -27,7 +27,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.core.domain.entity.UserId
 import javax.inject.Provider
 import kotlin.test.Test
@@ -106,7 +106,10 @@ internal class GetUpsellingOnboardingVisibilityTests {
             coEvery { this@mockk.get() } returns true
         }
 
-        coEvery { getOnboardingPlanUpgrades.invoke(userId) } returns listOf<ProductDetail>(mockk(), mockk()).right()
+        coEvery { getOnboardingPlanUpgrades.invoke(userId) } returns listOf<ProductOfferDetail>(
+            mockk(),
+            mockk()
+        ).right()
 
         // When
         val actual = GetUpsellingOnboardingVisibility(

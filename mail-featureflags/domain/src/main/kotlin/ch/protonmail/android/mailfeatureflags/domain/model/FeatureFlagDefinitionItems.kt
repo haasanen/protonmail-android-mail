@@ -39,6 +39,22 @@ data object OnboardingUpsellingEnabled : FeatureFlagDefinition(
     name = "Enable Onboarding Upsell",
     category = FeatureFlagCategory.Upselling,
     description = "Makes the upsell flow available during the onboarding",
+    defaultValue = true
+)
+
+data object MailBlackFriday2025Enabled : FeatureFlagDefinition(
+    key = "MailBlackFriday2025",
+    name = "Enable BF (Wave 1)",
+    category = FeatureFlagCategory.Upselling,
+    description = "Enables BF offers.",
+    defaultValue = false
+)
+
+data object MailBlackFriday2025Wave2Enabled : FeatureFlagDefinition(
+    key = "MailBlackFriday2025Wave2",
+    name = "Enable BF (Wave 2)",
+    category = FeatureFlagCategory.Upselling,
+    description = "Enables BF offers.",
     defaultValue = false
 )
 

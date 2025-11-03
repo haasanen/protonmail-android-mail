@@ -30,6 +30,14 @@ annotation class IsOnboardingUpsellEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class IsBlackFridayWave1Enabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsBlackFridayWave2Enabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class IsMultithreadDnsDispatcherEnabled
 
 @Qualifier

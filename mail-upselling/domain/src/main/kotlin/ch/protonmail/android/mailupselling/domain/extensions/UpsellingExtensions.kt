@@ -21,17 +21,17 @@ package ch.protonmail.android.mailupselling.domain.extensions
 import java.math.BigDecimal
 import java.math.RoundingMode
 import ch.protonmail.android.mailupselling.domain.model.ProductPriceWithCurrency
-import me.proton.android.core.payment.domain.model.ProductPrice
+import me.proton.android.core.payment.domain.model.ProductOfferPrice
 
-fun ProductPrice.normalizedPrice(cycle: Int) = this.amount.normalized(cycle)
-fun ProductPrice.totalPrice(): BigDecimal = this.amount.toActualPrice()
+fun ProductOfferPrice.normalizedPrice(cycle: Int) = this.amount.normalized(cycle)
+fun ProductOfferPrice.totalPrice(): BigDecimal = this.amount.toActualPrice()
 
-fun ProductPrice.normalizedPriceWithCurrency(currency: String, cycle: Int): ProductPriceWithCurrency {
+fun ProductOfferPrice.normalizedPriceWithCurrency(currency: String, cycle: Int): ProductPriceWithCurrency {
     val actualPrice = this.amount.normalized(cycle)
     return ProductPriceWithCurrency(actualPrice, currency)
 }
 
-fun ProductPrice.totalPriceWithCurrency(currency: String): ProductPriceWithCurrency {
+fun ProductOfferPrice.totalPriceWithCurrency(currency: String): ProductPriceWithCurrency {
     val actualPrice = this.amount.toActualPrice()
     return ProductPriceWithCurrency(actualPrice, currency)
 }

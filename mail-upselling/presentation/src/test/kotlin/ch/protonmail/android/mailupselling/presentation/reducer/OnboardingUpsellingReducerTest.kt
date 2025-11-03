@@ -28,8 +28,9 @@ import ch.protonmail.android.mailupselling.presentation.model.onboarding.Onboard
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingUpsellOperation
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingUpsellOperation.OnboardingUpsellEvent
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingUpsellState
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -48,9 +49,9 @@ internal class OnboardingUpsellingReducerTest(
     private val reducer = OnboardingUpsellingReducer(mapper)
 
     @Test
-    fun `should reduce the state correctly`() {
+    fun `should reduce the state correctly`() = runTest {
         // Given
-        every { mapper.toUiModel(any()) } returns mapperResult
+        coEvery { mapper.toUiModel(any()) } returns mapperResult
 
         // When
         val updatedState = reducer.newStateFrom(operation)

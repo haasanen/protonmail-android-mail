@@ -18,6 +18,6 @@
 
 package ch.protonmail.android.mailupselling.presentation.model.planupgrades
 
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 
-data class ProductInstances(val instances: List<ProductDetail>)
+data class ProductInstances(val instances: List<ProductOfferDetail>)

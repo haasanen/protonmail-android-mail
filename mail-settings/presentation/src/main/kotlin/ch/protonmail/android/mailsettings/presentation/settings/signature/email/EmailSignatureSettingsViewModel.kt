@@ -67,7 +67,7 @@ class EmailSignatureSettingsViewModel @Inject constructor(
                     WebSettingsState.Data(
                         webSettingsUrl = webSettingsConfig.toEmailSignatureUrl(forkedSessionId, theme),
                         theme = theme,
-                        upsellingVisibility = UpsellingVisibility.HIDDEN // Upselling flow not available here.
+                        upsellingVisibility = UpsellingVisibility.Hidden // Upselling flow not available here.
                     )
                 },
                 ifLeft = { sessionError ->

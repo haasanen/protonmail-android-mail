@@ -28,15 +28,12 @@ import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetAppIconDescription
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
-import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -59,12 +56,6 @@ internal class AppSettingsViewModelTest {
         every { this@mockk.invoke() } returns true
     }
 
-    private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
-        every {
-            this@mockk.invoke()
-        } returns flowOf(UpsellingVisibility.NORMAL)
-    }
-
     private val getAppIconDescription = mockk<GetAppIconDescription> {
         every { this@mockk.invoke() } returns TextUiModel("Proton Mail")
     }
@@ -77,7 +68,6 @@ internal class AppSettingsViewModelTest {
         viewModel = AppSettingsViewModel(
             appSettingsRepository,
             getNotificationsEnabled,
-            observeUpsellingVisibility,
             getAppIconDescription
         )
     }

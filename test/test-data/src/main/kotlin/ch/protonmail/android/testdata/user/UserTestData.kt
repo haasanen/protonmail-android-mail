@@ -50,6 +50,7 @@ object UserTestData {
         name: String = USER_NAME_RAW,
         userId: UserId = UserIdTestData.Primary,
         subscribed: Int = 1,
+        delinquent: Int = 0,
         createdTimeUtc: Long = 1L,
         usedSpace: Long = 1_000_000_000L,
         maxSpace: Long = 15_000_000_000L
@@ -60,6 +61,7 @@ object UserTestData {
         name = name,
         services = 1,
         subscribed = subscribed,
+        delinquent = delinquent,
         createTimeUtc = createdTimeUtc,
         usedSpace = usedSpace,
         maxSpace = maxSpace

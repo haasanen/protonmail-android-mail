@@ -57,11 +57,19 @@ internal fun UpsellingAutoRenewGenericPolicyText(
 }
 
 @Composable
+@Suppress("DuplicateCaseInWhenExpression")
 private fun getRenewalNoticeForPromotion(planUiModel: PlanUpgradeInstanceUiModel, short: Boolean): String {
     val displayedPrice = planUiModel.primaryPrice
     val period = planUiModel.cycle.cycleStringValue()
     val (baseText, price) = when (planUiModel) {
-        is PlanUpgradeInstanceUiModel.Promotional ->
+        is PlanUpgradeInstanceUiModel.Promotional.BlackFriday ->
+            Pair(
+                R.string.upselling_auto_renew_text_bfriday,
+                displayedPrice.secondaryPrice?.getShorthandFormat()
+                    ?: displayedPrice.highlightedPrice.getShorthandFormat()
+            )
+
+        is PlanUpgradeInstanceUiModel.Promotional.IntroductoryPrice ->
             Pair(
                 if (short) R.string.upselling_auto_renew_text_promo_short else R.string.upselling_auto_renew_text_promo,
                 displayedPrice.secondaryPrice?.getShorthandFormat()

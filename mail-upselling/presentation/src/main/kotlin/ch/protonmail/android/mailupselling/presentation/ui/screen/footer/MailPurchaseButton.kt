@@ -44,6 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.viewmodel.hiltViewModelOrNull
+import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import me.proton.android.core.payment.presentation.R
 import me.proton.android.core.payment.presentation.component.PurchaseButtonAction
 import me.proton.android.core.payment.presentation.component.PurchaseButtonState
@@ -111,7 +112,9 @@ private fun MailPurchaseButton(
         modifier = modifier
     ) {
         val textColor = when (variant) {
-            MailPurchaseButtonVariant.Default -> Color.Black
+            MailPurchaseButtonVariant.Default,
+            MailPurchaseButtonVariant.BlackFriday -> Color.Black
+
             MailPurchaseButtonVariant.Inverted -> ProtonTheme.colors.textInverted
         }
 
@@ -149,11 +152,13 @@ private fun MailPurchaseButton(
 
     val backgroundColor = when (variant) {
         MailPurchaseButtonVariant.Default -> Color.White
+        MailPurchaseButtonVariant.BlackFriday -> UpsellingLayoutValues.BlackFriday.mainColor
         MailPurchaseButtonVariant.Inverted -> ProtonTheme.colors.interactionBrandDefaultNorm
     }
-
     val progressIndicatorColor = when (variant) {
-        MailPurchaseButtonVariant.Default -> Color.Black
+        MailPurchaseButtonVariant.Default,
+        MailPurchaseButtonVariant.BlackFriday -> Color.Black
+
         MailPurchaseButtonVariant.Inverted -> Color.White
     }
 
@@ -190,5 +195,6 @@ private fun MailPurchaseButton(
 
 enum class MailPurchaseButtonVariant {
     Default,
-    Inverted
+    Inverted,
+    BlackFriday
 }

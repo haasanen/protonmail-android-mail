@@ -29,19 +29,19 @@ import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingPlanUpgradeUiModel
 import ch.protonmail.android.mailupselling.presentation.model.onboarding.OnboardingPlanUpgradesListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementListUiModel
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import javax.inject.Inject
 
 internal class OnboardingPlanUpgradeUiMapper @Inject constructor(
+    private val planUpgradeMapper: PlanUpgradeMapper,
     private val planInstanceUiMapper: PlanUpgradeInstanceUiModelMapper,
     private val entitlementsUiMapper: PlanUpgradeEntitlementsUiMapper
 ) {
 
-    fun toUiModel(products: List<ProductDetail>): Either<PlanMappingError, OnboardingPlanUpgradesListUiModel> = either {
-
+    suspend fun toUiModel(products: List<ProductOfferDetail>) = either {
         if (products.isEmpty()) raise(PlanMappingError.EmptyList)
-        val mailPlans = products.filter { it.planName == PlanUpgradePlanType.MailPlusId }
-        val unlimitedPlans = products.filter { it.planName == PlanUpgradePlanType.UnlimitedId }
+        val mailPlans = products.filter { it.metadata.planName == PlanUpgradePlanType.MailPlusId }
+        val unlimitedPlans = products.filter { it.metadata.planName == PlanUpgradePlanType.UnlimitedId }
 
         val (mailMonthlyPlan, mailYearlyPlan) = createPlanPair(mailPlans).bind()
         val (unlimitedMonthlyPlan, unlimitedYearlyPlan) = createPlanPair(unlimitedPlans).bind()
@@ -58,7 +58,7 @@ internal class OnboardingPlanUpgradeUiMapper @Inject constructor(
                     R.drawable.ic_proton_envelope
                 )
             ),
-            currency = mailPlans.first().price.currency
+            currency = mailPlans.first().offer.current.currency
         )
 
         OnboardingPlanUpgradesListUiModel(
@@ -67,24 +67,24 @@ internal class OnboardingPlanUpgradeUiMapper @Inject constructor(
         )
     }
 
-    private fun createPlanPair(
-        plans: List<ProductDetail>
+    private suspend fun createPlanPair(
+        plans: List<ProductOfferDetail>
     ): Either<PlanMappingError, Pair<OnboardingPlanUpgradeUiModel.Paid, OnboardingPlanUpgradeUiModel.Paid>> = either {
         val monthly = toPlanModel(plans, PlanUpgradeCycle.Monthly).bind()
         val yearly = toPlanModel(plans, PlanUpgradeCycle.Yearly).bind()
         monthly to yearly
     }
 
-    private fun toPlanModel(
-        filteredPlans: List<ProductDetail>,
+    private suspend fun toPlanModel(
+        filteredPlans: List<ProductOfferDetail>,
         targetCycle: PlanUpgradeCycle
     ): Either<PlanMappingError, OnboardingPlanUpgradeUiModel.Paid> = either {
-        val monthlyPlan = filteredPlans.minBy { it.price.cycle }
-        val yearlyPlan = filteredPlans.maxBy { it.price.cycle }
-        val planType = PlanUpgradePlanType(monthlyPlan.planName) ?: raise(PlanMappingError.InvalidList)
+        val monthlyPlan = filteredPlans.minBy { it.offer.current.cycle }
+        val yearlyPlan = filteredPlans.maxBy { it.offer.current.cycle }
+        val planType = PlanUpgradePlanType(monthlyPlan.metadata.planName) ?: raise(PlanMappingError.InvalidList)
         if (monthlyPlan == yearlyPlan) raise(PlanMappingError.InvalidList)
 
-        val variant = PlanUpgradeMapper.resolveVariant(
+        val variant = planUpgradeMapper.resolveVariant(
             monthlyPlan,
             yearlyPlan,
             UpsellingEntryPoint.PostOnboarding

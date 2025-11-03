@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -52,6 +53,7 @@ import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.extension.cyclePlanName
 import ch.protonmail.android.mailupselling.presentation.extension.cycleStringValue
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingCheckmark
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingContentPreviewData
@@ -138,7 +140,7 @@ private fun CycleName(modifier: Modifier = Modifier, uiModel: PlanUpgradeInstanc
                             color = paymentButtonParams.discountTagBackground,
                             shape = paymentButtonParams.discountBadgeShape
                         )
-                        .padding(horizontal = ProtonDimens.Spacing.Small, vertical = ProtonDimens.Spacing.Tiny),
+                        .padding(horizontal = ProtonDimens.Spacing.Compact, vertical = ProtonDimens.Spacing.Small),
                     text = TextUiModel.TextResWithArgs(
                         R.string.upselling_select_plan_save,
                         listOf(uiModel.discountRate.toString())
@@ -153,47 +155,99 @@ private fun CycleName(modifier: Modifier = Modifier, uiModel: PlanUpgradeInstanc
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CyclePrices(modifier: Modifier = Modifier, uiModel: PlanUpgradeInstanceUiModel) {
-
-    val primaryPrice = uiModel.primaryPrice
-    val displayedPrice = primaryPrice.highlightedPrice
-    val pricePerCycle = primaryPrice.pricePerCycle
-    val period = uiModel.cycle.cycleStringValue()
-
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End
     ) {
-        FlowRow {
-            Text(
-                text = displayedPrice.getFullFormat(),
-                style = ProtonTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White
-            )
-            Text(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = ProtonDimens.Spacing.Small / 2),
-                text = period.string(),
-                style = ProtonTheme.typography.labelMediumNorm,
-                color = Color.White.copy(alpha = 0.7f)
-            )
-        }
+        PrimaryPriceRow(
+            price = uiModel.primaryPrice.highlightedPrice,
+            period = uiModel.cycle.cycleStringValue()
+        )
 
-        if (uiModel.cycle != PlanUpgradeCycle.Monthly) {
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
-            Text(
-                text = "${pricePerCycle.getFullFormat()} ${stringResource(R.string.upselling_month)}",
-                style = ProtonTheme.typography.labelMediumNorm,
-                color = Color.White.copy(alpha = 0.7f),
-                textAlign = TextAlign.End
-            )
-        }
+        SecondaryPriceText(uiModel = uiModel)
     }
 }
+
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PrimaryPriceRow(price: PlanUpgradePriceUiModel, period: TextUiModel) {
+    FlowRow {
+        Text(
+            text = price.getFullFormat(),
+            style = ProtonTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.White
+        )
+        Text(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(start = ProtonDimens.Spacing.Small / 2),
+            text = period.string(),
+            style = ProtonTheme.typography.labelMediumNorm,
+            color = Color.White.copy(alpha = 0.7f)
+        )
+    }
+}
+
+@Composable
+private fun getSecondaryPriceInfo(uiModel: PlanUpgradeInstanceUiModel): SecondaryPriceInfo? {
+    val primaryPrice = uiModel.primaryPrice
+    val pricePerCycle = primaryPrice.pricePerCycle
+
+    return when (uiModel) {
+        is PlanUpgradeInstanceUiModel.Standard -> {
+            if (uiModel.cycle != PlanUpgradeCycle.Monthly) {
+                SecondaryPriceInfo(
+                    text = "${pricePerCycle.getFullFormat()} ${stringResource(R.string.upselling_month)}"
+                )
+            } else null
+        }
+
+        is PlanUpgradeInstanceUiModel.Promotional.BlackFriday -> {
+            when (uiModel.cycle) {
+                PlanUpgradeCycle.Monthly -> {
+                    primaryPrice.secondaryPrice?.let {
+                        SecondaryPriceInfo(
+                            text = "${it.getFullFormat()} ${stringResource(R.string.upselling_month)}",
+                            strikethrough = true
+                        )
+                    }
+                }
+
+                PlanUpgradeCycle.Yearly -> {
+                    SecondaryPriceInfo(
+                        text = stringResource(R.string.upselling_month_only, pricePerCycle.getFullFormat())
+                    )
+                }
+            }
+        }
+
+        else -> null
+    }
+}
+
+@Composable
+private fun SecondaryPriceText(uiModel: PlanUpgradeInstanceUiModel) {
+    val info = getSecondaryPriceInfo(uiModel) ?: return
+
+    Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
+    Text(
+        text = info.text,
+        style = ProtonTheme.typography.labelMediumNorm.copy(
+            textDecoration = if (info.strikethrough) TextDecoration.LineThrough else null
+        ),
+        color = Color.White.copy(alpha = 0.7f),
+        textAlign = TextAlign.End
+    )
+}
+
+private data class SecondaryPriceInfo(
+    val text: String,
+    val strikethrough: Boolean = false
+)
 
 @AdaptivePreviews
 @Composable

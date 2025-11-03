@@ -23,10 +23,9 @@ import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetAppIconDescription
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
-import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,18 +34,14 @@ import javax.inject.Inject
 internal class AppSettingsViewModel @Inject constructor(
     val appSettingsRepository: AppSettingsRepository,
     val getNotificationsEnabled: GetNotificationsEnabled,
-    val observeUpsellingVisibility: ObserveUpsellingVisibility,
     val getAppIconDescription: GetAppIconDescription
 ) : ViewModel() {
 
-    val state = combine(
-        appSettingsRepository.observeAppSettings(),
-        observeUpsellingVisibility()
-    ) { appSettings, upsellVisibility ->
+    val state = appSettingsRepository.observeAppSettings().map { appSettings ->
         val notificationsEnabled = getNotificationsEnabled()
         val appIconDescription = getAppIconDescription()
         val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings, notificationsEnabled, appIconDescription)
-        AppSettingsState.Data(settings = uiModel, upsellingVisibility = upsellVisibility)
+        AppSettingsState.Data(settings = uiModel)
     }
         .stateIn(
             scope = viewModelScope,

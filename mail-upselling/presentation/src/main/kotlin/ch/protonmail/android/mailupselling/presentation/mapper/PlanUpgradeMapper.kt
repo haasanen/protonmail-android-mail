@@ -18,29 +18,42 @@
 
 package ch.protonmail.android.mailupselling.presentation.mapper
 
+import ch.protonmail.android.mailupselling.domain.model.BlackFridayPhase
+import ch.protonmail.android.mailupselling.domain.model.BlackFridaySupported
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeSupportedTags
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.domain.usecase.GetCurrentBlackFridayPhase
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
+import javax.inject.Inject
 
-internal object PlanUpgradeMapper {
-    fun resolveVariant(
-        monthlyInstance: ProductDetail?,
-        yearlyInstance: ProductDetail?,
+internal class PlanUpgradeMapper @Inject constructor(
+    private val getCurrentBlackFridayPhase: GetCurrentBlackFridayPhase
+) {
+
+    suspend fun resolveVariant(
+        monthlyInstance: ProductOfferDetail?,
+        yearlyInstance: ProductOfferDetail?,
         entryPoint: UpsellingEntryPoint
     ): PlanUpgradeVariant {
-        val isPromotional = listOfNotNull(monthlyInstance, yearlyInstance).any { instance ->
-            val currentPrice = instance.price.amount
-            val defaultPrice = instance.renew.amount
-            val isPromotional = currentPrice < defaultPrice
-            isPromotional
-        }
+        val instances = listOfNotNull(monthlyInstance, yearlyInstance)
+        val currentBlackFridayPhase = getCurrentBlackFridayPhase()
 
-        val supportsHeaderVariants = entryPoint.supportsHeaderVariants()
         return when {
-            isPromotional -> PlanUpgradeVariant.IntroductoryPrice
-            supportsHeaderVariants -> PlanUpgradeVariant.SocialProof
+            // A plan can be tagged as BF + Intro, so the extra checks on the entryPoint/phases are required.
+            entryPoint is BlackFridaySupported &&
+                currentBlackFridayPhase is BlackFridayPhase.Active &&
+                instances.containsTag(PlanUpgradeSupportedTags.BlackFriday) ->
+
+                when (currentBlackFridayPhase) {
+                    BlackFridayPhase.Active.Wave2 -> PlanUpgradeVariant.BlackFriday.Wave2
+                    BlackFridayPhase.Active.Wave1 -> PlanUpgradeVariant.BlackFriday.Wave1
+                }
+
+            instances.containsTag(PlanUpgradeSupportedTags.IntroductoryPrice) -> PlanUpgradeVariant.IntroductoryPrice
+            entryPoint.supportsHeaderVariants() -> PlanUpgradeVariant.SocialProof
             else -> PlanUpgradeVariant.Normal
         }
     }
@@ -55,6 +68,10 @@ internal object PlanUpgradeMapper {
                 PlanUpgradeInstanceListUiModel.Data.SocialProof(shorterCycleUiModel, longerCycleUiModel)
             }
 
+            variant is PlanUpgradeVariant.BlackFriday -> {
+                PlanUpgradeInstanceListUiModel.Data.BlackFriday(variant, shorterCycleUiModel, longerCycleUiModel)
+            }
+
             shorterCycleUiModel is PlanUpgradeInstanceUiModel.Promotional ||
                 longerCycleUiModel is PlanUpgradeInstanceUiModel.Promotional -> {
                 PlanUpgradeInstanceListUiModel.Data.IntroPrice(shorterCycleUiModel, longerCycleUiModel)
@@ -66,6 +83,10 @@ internal object PlanUpgradeMapper {
             )
         }
     }
+
+
+    private fun List<ProductOfferDetail>.containsTag(tag: PlanUpgradeSupportedTags) =
+        any { it.offer.tags.value.contains(tag.value) }
 
     private fun UpsellingEntryPoint.supportsHeaderVariants() = when (this) {
         UpsellingEntryPoint.PostOnboarding,
@@ -80,4 +101,8 @@ internal object PlanUpgradeMapper {
         UpsellingEntryPoint.Feature.ScheduleSend,
         UpsellingEntryPoint.Feature.Snooze -> false
     }
+}
+
+sealed interface PlanUpgradeMappingError {
+    data object InvalidBlackFridayState : PlanUpgradeMappingError
 }

@@ -34,6 +34,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
+import kotlin.time.Clock
 
 @Module(includes = [MailCommonDataModule::class])
 @InstallIn(SingletonComponent::class)
@@ -55,6 +56,9 @@ object MailCommonModule {
     @Singleton
     fun provideAppLocaleRepository(@ApplicationContext context: Context): AppLocaleRepository =
         AppLocaleRepositoryImpl(context)
+
+    @Provides
+    fun provideDefaultClockImpl(): Clock = Clock.System
 
     @Provides
     @Singleton

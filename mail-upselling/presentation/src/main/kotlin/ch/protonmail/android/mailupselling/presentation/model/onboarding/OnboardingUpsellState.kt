@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailupselling.presentation.model.onboarding
 
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.core.domain.entity.UserId
 
 internal interface OnboardingUpsellState {
@@ -40,7 +40,7 @@ sealed interface OnboardingUpsellOperation {
 
         data class DataLoaded(
             val userId: UserId,
-            val productDetails: List<ProductDetail>,
+            val productDetails: List<ProductOfferDetail>,
             val upsellingEntryPoint: UpsellingEntryPoint = UpsellingEntryPoint.PostOnboarding
         ) : OnboardingUpsellEvent
 

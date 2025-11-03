@@ -21,9 +21,9 @@ package ch.protonmail.android.mailupselling.presentation.model
 data class UpsellingState(val visibility: UpsellingVisibility) {
 
     val isShown = when (visibility) {
-        UpsellingVisibility.PROMO,
-        UpsellingVisibility.NORMAL -> true
+        is UpsellingVisibility.Promotional,
+        is UpsellingVisibility.Normal -> true
 
-        UpsellingVisibility.HIDDEN -> false
+        is UpsellingVisibility.Hidden -> false
     }
 }

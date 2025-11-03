@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingButtonViewModel
@@ -47,9 +48,13 @@ import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingButto
 fun UpsellBannerButton(
     ctaText: String,
     modifier: Modifier = Modifier,
-    onClick: (type: UpsellingVisibility) -> Unit = {},
-    viewModel: UpsellingButtonViewModel = hiltViewModel()
+    onClick: (type: UpsellingVisibility) -> Unit = {}
 ) {
+
+    val viewModel = hiltViewModel<UpsellingButtonViewModel, UpsellingButtonViewModel.Factory> { factory ->
+        factory.create(UpsellingEntryPoint.Feature.AutoDelete)
+    }
+
     val state = viewModel.state.collectAsStateWithLifecycle()
     val type = state.value.visibility
 
@@ -59,9 +64,9 @@ fun UpsellBannerButton(
         exit = scaleOut()
     ) {
         when (type) {
-            UpsellingVisibility.HIDDEN -> Unit
-            UpsellingVisibility.PROMO,
-            UpsellingVisibility.NORMAL ->
+            is UpsellingVisibility.Hidden -> Unit
+            is UpsellingVisibility.Promotional,
+            is UpsellingVisibility.Normal ->
                 UpsellBannerButtonContent(modifier = modifier, onClick = { onClick(type) }) {
                     Text(text = ctaText, style = ProtonTheme.typography.bodyMediumNorm)
                 }

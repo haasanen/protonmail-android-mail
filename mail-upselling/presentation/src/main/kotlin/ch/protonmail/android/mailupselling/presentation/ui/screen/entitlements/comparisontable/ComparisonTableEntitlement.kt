@@ -28,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,12 +41,14 @@ import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlement
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlementItemUiModel
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlements
-import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
+import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues.ComparisonTable
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingCheckmark
 
 @Composable
 internal fun ComparisonTableEntitlement(
     uiModel: ComparisonTableEntitlementItemUiModel,
+    variant: PlanUpgradeVariant,
     plusCellWidth: Dp,
     modifier: Modifier = Modifier
 ) {
@@ -59,15 +60,18 @@ internal fun ComparisonTableEntitlement(
             text = uiModel.title.string(),
             style = ProtonTheme.typography.bodyMedium,
             fontWeight = FontWeight.Normal,
-            color = UpsellingLayoutValues.ComparisonTable.textColor,
+            color = ComparisonTable.textColor,
             textAlign = TextAlign.Start
         )
 
-        val freeText = when (val freeElement = uiModel.freeValue) {
+        val (freeText, freeTextColor) = when (val freeElement = uiModel.freeValue) {
             ComparisonTableEntitlement.Free.NotPresent ->
-                stringResource(R.string.upselling_comparison_table_not_present)
+                Pair(
+                    stringResource(R.string.upselling_comparison_table_not_present),
+                    ComparisonTable.textColor.copy(alpha = 0.5f)
+                )
 
-            is ComparisonTableEntitlement.Free.Value -> freeElement.text.string()
+            is ComparisonTableEntitlement.Free.Value -> Pair(freeElement.text.string(), ComparisonTable.textColor)
         }
 
         Text(
@@ -76,8 +80,8 @@ internal fun ComparisonTableEntitlement(
                 .align(Alignment.CenterVertically),
             text = freeText,
             style = ProtonTheme.typography.labelMedium,
-            fontSize = UpsellingLayoutValues.ComparisonTable.itemTextSize,
-            color = UpsellingLayoutValues.ComparisonTable.textColor,
+            fontSize = ComparisonTable.itemTextSize,
+            color = freeTextColor,
             textAlign = TextAlign.Center
         )
 
@@ -87,8 +91,8 @@ internal fun ComparisonTableEntitlement(
             ComparisonTableEntitlement.Plus.Present -> {
                 Box(modifier = Modifier.widthIn(min = plusCellWidth)) {
                     UpsellingCheckmark(
-                        tint = Color.White,
-                        background = Color.Black.copy(alpha = 0.2f),
+                        tint = ComparisonTable.checkmarkTint(variant),
+                        background = ComparisonTable.checkmarkBackground(variant),
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -102,9 +106,9 @@ internal fun ComparisonTableEntitlement(
                     text = paidValue.text.string(),
                     style = ProtonTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = UpsellingLayoutValues.ComparisonTable.textColor,
+                    color = ComparisonTable.textColor,
                     textAlign = TextAlign.Center,
-                    fontSize = UpsellingLayoutValues.ComparisonTable.itemTextSize
+                    fontSize = ComparisonTable.itemTextSize
                 )
             }
         }
@@ -115,6 +119,10 @@ internal fun ComparisonTableEntitlement(
 @Composable
 private fun ComparisonTableEntitlementPreview() {
     ProtonTheme {
-        ComparisonTableEntitlement(ComparisonTableEntitlements.Entitlements.last(), plusCellWidth = 30.dp)
+        ComparisonTableEntitlement(
+            ComparisonTableEntitlements.Entitlements.last(),
+            variant = PlanUpgradeVariant.BlackFriday.Wave1,
+            plusCellWidth = 30.dp
+        )
     }
 }

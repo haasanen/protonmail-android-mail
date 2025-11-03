@@ -49,11 +49,13 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailupselling.presentation.R
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
+import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues.BlackFriday
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues.coloredBorderBrush
 
 @Composable
-internal fun ComparisonTableHeaderRow(onPaidColumnPlaced: (Dp) -> Unit) {
+internal fun ComparisonTableHeaderRow(planUpgradeVariant: PlanUpgradeVariant, onPaidColumnPlaced: (Dp) -> Unit) {
     var paidColumnWidth by remember { mutableStateOf(0.dp) }
     val localDensity = LocalDensity.current
 
@@ -100,7 +102,7 @@ internal fun ComparisonTableHeaderRow(onPaidColumnPlaced: (Dp) -> Unit) {
         ) {
             Row {
                 Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
-                PlusBadge()
+                PlusBadge(variant = planUpgradeVariant)
                 Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
             }
         }
@@ -108,12 +110,14 @@ internal fun ComparisonTableHeaderRow(onPaidColumnPlaced: (Dp) -> Unit) {
 }
 
 @Composable
-private fun PlusBadge() {
+private fun PlusBadge(variant: PlanUpgradeVariant) {
+    val brushColor = if (variant is PlanUpgradeVariant.BlackFriday) BlackFriday.borderBrush else coloredBorderBrush
+
     Surface(
         modifier = Modifier
             .border(
                 width = 2.dp,
-                brush = coloredBorderBrush,
+                brush = brushColor,
                 shape = RoundedCornerShape(8.dp)
             ),
         shape = RoundedCornerShape(8.dp),
@@ -137,6 +141,6 @@ private fun PlusBadge() {
 @Composable
 private fun ComparisonTableHeaderRowPreview() {
     ProtonTheme {
-        ComparisonTableHeaderRow { }
+        ComparisonTableHeaderRow(planUpgradeVariant = PlanUpgradeVariant.IntroductoryPrice) { }
     }
 }

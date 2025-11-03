@@ -19,10 +19,14 @@
 
 package me.proton.android.core.payment.data.model
 
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductDetailHeader
 import me.proton.android.core.payment.domain.model.ProductEntitlement
-import me.proton.android.core.payment.domain.model.ProductHeader
-import me.proton.android.core.payment.domain.model.ProductPrice
+import me.proton.android.core.payment.domain.model.ProductMetadata
+import me.proton.android.core.payment.domain.model.ProductOffer
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
+import me.proton.android.core.payment.domain.model.ProductOfferPrice
+import me.proton.android.core.payment.domain.model.ProductOfferTags
+import me.proton.android.core.payment.domain.model.ProductOfferToken
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
 import me.proton.core.presentation.utils.formatCentsPriceDefaultLocale
 import uniffi.proton_mail_uniffi.Plan
@@ -40,7 +44,7 @@ private fun getFormattedPrice(amount: ULong?, currency: String?) = when {
 
 fun Subscription.toSubscriptionDetail() = SubscriptionDetail(
     name = name ?: "free",
-    header = ProductHeader(
+    header = ProductDetailHeader(
         title = title,
         description = description,
         priceText = getFormattedPrice(amount, currency),
@@ -49,7 +53,7 @@ fun Subscription.toSubscriptionDetail() = SubscriptionDetail(
     ),
     entitlements = entitlements.map { it.toProductEntitlement() },
     price = amount?.let {
-        ProductPrice(
+        ProductOfferPrice(
             productId = "unknown",
             customerId = "unknown",
             cycle = requireNotNull(cycle).toInt(),
@@ -59,7 +63,7 @@ fun Subscription.toSubscriptionDetail() = SubscriptionDetail(
         )
     },
     renew = renewAmount?.let {
-        ProductPrice(
+        ProductOfferPrice(
             productId = "unknown",
             customerId = "unknown",
             cycle = requireNotNull(cycle).toInt(),
@@ -72,16 +76,26 @@ fun Subscription.toSubscriptionDetail() = SubscriptionDetail(
     managedBy = external?.toInt()
 )
 
-fun Plan.toProductDetail(instance: PlanInstance) = ProductDetail(
+fun Plan.toProductOfferDetail(instance: PlanInstance) = ProductOfferDetail(
+    metadata = toProductMetadata(instance),
+    header = toProductDetailHeader(instance),
+    offer = ProductOffer(
+        isBaseOffer = false,
+        tags = ProductOfferTags(emptySet()),
+        token = ProductOfferToken(""),
+        current = instance.toProductOfferPrice(),
+        renew = instance.toProductOfferPrice()
+    )
+)
+
+fun Plan.toProductMetadata(instance: PlanInstance) = ProductMetadata(
     productId = requireNotNull(instance.vendors[PlanVendorName.GOOGLE]?.productId),
+    customerId = requireNotNull(instance.vendors[PlanVendorName.GOOGLE]?.customerId),
     planName = requireNotNull(name),
-    header = toProductHeader(instance),
-    price = instance.toProductPrice(),
-    renew = instance.toProductPrice(),
     entitlements = entitlements.map { it.toProductEntitlement() }
 )
 
-fun Plan.toProductHeader(instance: PlanInstance) = ProductHeader(
+fun Plan.toProductDetailHeader(instance: PlanInstance) = ProductDetailHeader(
     title = title,
     description = description,
     priceText = instance.price.first().let { getFormattedPrice(it.current, it.currency) },
@@ -89,7 +103,7 @@ fun Plan.toProductHeader(instance: PlanInstance) = ProductHeader(
     starred = decorations.any { it as? PlanDecoration.Starred != null }
 )
 
-fun PlanInstance.toProductPrice() = ProductPrice(
+fun PlanInstance.toProductOfferPrice() = ProductOfferPrice(
     productId = requireNotNull(vendors[PlanVendorName.GOOGLE]?.productId),
     customerId = requireNotNull(vendors[PlanVendorName.GOOGLE]?.customerId),
     cycle = cycle.toInt(),

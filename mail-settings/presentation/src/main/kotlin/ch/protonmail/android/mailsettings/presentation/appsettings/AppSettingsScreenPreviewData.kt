@@ -20,7 +20,6 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.presentation.R
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 
 internal object AppSettingsScreenPreviewData {
 
@@ -33,8 +32,7 @@ internal object AppSettingsScreenPreviewData {
             theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
             notificationsEnabledStatus = TextUiModel("On"),
             appIconName = TextUiModel.Text("Default")
-        ),
-        upsellingVisibility = UpsellingVisibility.HIDDEN
+        )
     )
 
     val Actions = AppSettingsScreen.Actions(

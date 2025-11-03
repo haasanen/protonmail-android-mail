@@ -23,6 +23,8 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
+import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlement
+import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlementItemUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeDescriptionUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementsListUiModel
@@ -33,7 +35,9 @@ import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanU
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeTitleUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
-import me.proton.android.core.payment.domain.model.ProductHeader
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PromoKind
+import me.proton.android.core.payment.domain.model.ProductDetailHeader
+import me.proton.android.core.payment.domain.model.ProductOfferToken
 import me.proton.android.core.payment.presentation.model.Product
 
 internal object UpsellingContentPreviewData {
@@ -50,13 +54,14 @@ internal object UpsellingContentPreviewData {
             productId = "123",
             accountId = "456",
             cycle = 1,
-            header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            header = ProductDetailHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            offerToken = ProductOfferToken(""),
             entitlements = emptyList(),
             renewalText = null
         )
     )
 
-    private val MailPlusPlanModelMonthlyPromo = PlanUpgradeInstanceUiModel.Promotional(
+    private val mailMonthlyPromoParams = PlanUpgradeInstanceUiModel.Promotional.Params(
         name = "Mail Plus",
         pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal(5.99), currencyCode = "EUR"),
         promotionalPrice = PlanUpgradePriceUiModel(amount = BigDecimal(4.99), currencyCode = "EUR"),
@@ -69,10 +74,16 @@ internal object UpsellingContentPreviewData {
             productId = "123",
             accountId = "456",
             cycle = 1,
-            header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            header = ProductDetailHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            offerToken = ProductOfferToken(""),
             entitlements = emptyList(),
             renewalText = null
         )
+    )
+
+    private val MailPlusPlanModelMonthlyPromo = PlanUpgradeInstanceUiModel.Promotional(
+        promoKind = PromoKind.IntroPrice,
+        params = mailMonthlyPromoParams
     )
 
     private val MailPlusPlanModelYearly = PlanUpgradeInstanceUiModel.Standard(
@@ -87,13 +98,14 @@ internal object UpsellingContentPreviewData {
             productId = "123",
             accountId = "456",
             cycle = 1,
-            header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            header = ProductDetailHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            offerToken = ProductOfferToken(""),
             entitlements = emptyList(),
             renewalText = null
         )
     )
 
-    private val MailPlusPlanModelYearlyPromo = PlanUpgradeInstanceUiModel.Promotional(
+    private val mailYearlyPromoParams = PlanUpgradeInstanceUiModel.Promotional.Params(
         name = "Mail Plus",
         pricePerCycle = PlanUpgradePriceUiModel(amount = BigDecimal(49.99), currencyCode = "EUR"),
         promotionalPrice = PlanUpgradePriceUiModel(amount = BigDecimal(39.99), currencyCode = "EUR"),
@@ -106,10 +118,16 @@ internal object UpsellingContentPreviewData {
             productId = "123",
             accountId = "456",
             cycle = 1,
-            header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            header = ProductDetailHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            offerToken = ProductOfferToken(""),
             entitlements = emptyList(),
             renewalText = null
         )
+    )
+
+    private val MailPlusPlanModelYearlyPromo = PlanUpgradeInstanceUiModel.Promotional(
+        promoKind = PromoKind.IntroPrice,
+        params = mailYearlyPromoParams
     )
 
     private val UnlimitedPlanModelMonthly = PlanUpgradeInstanceUiModel.Standard(
@@ -124,7 +142,8 @@ internal object UpsellingContentPreviewData {
             productId = "123",
             accountId = "456",
             cycle = 1,
-            header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            header = ProductDetailHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            offerToken = ProductOfferToken(""),
             entitlements = emptyList(),
             renewalText = null
         )
@@ -141,7 +160,8 @@ internal object UpsellingContentPreviewData {
             productId = "123",
             accountId = "456",
             cycle = 12,
-            header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            header = ProductDetailHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            offerToken = ProductOfferToken(""),
             entitlements = emptyList(),
             renewalText = null
         )
@@ -162,7 +182,8 @@ internal object UpsellingContentPreviewData {
         MailPlusPlanModelYearlyPromo
     )
 
-    val UnlimitedNormalList = PlanUpgradeInstanceListUiModel.Data.Standard(
+    val BlackFridayList = PlanUpgradeInstanceListUiModel.Data.BlackFriday(
+        blackFridayVariant = PlanUpgradeVariant.BlackFriday.Wave1,
         UnlimitedPlanModelMonthly,
         UnlimitedPlanModelYearly
     )
@@ -180,6 +201,26 @@ internal object UpsellingContentPreviewData {
             PlanUpgradeEntitlementListUiModel.Local(
                 text = TextUiModel.Text("Entitlement 3"),
                 localResource = R.drawable.ic_upselling_gift
+            )
+        )
+    )
+
+    val ComparisonTableEntitlements = PlanUpgradeEntitlementsListUiModel.ComparisonTableList(
+        listOf(
+            ComparisonTableEntitlementItemUiModel(
+                title = TextUiModel.Text("Item 1"),
+                freeValue = ComparisonTableEntitlement.Free.NotPresent,
+                paidValue = ComparisonTableEntitlement.Plus.Present
+            ),
+            ComparisonTableEntitlementItemUiModel(
+                title = TextUiModel.Text("Item 2"),
+                freeValue = ComparisonTableEntitlement.Free.NotPresent,
+                paidValue = ComparisonTableEntitlement.Plus.Present
+            ),
+            ComparisonTableEntitlementItemUiModel(
+                title = TextUiModel.Text("Item 3"),
+                freeValue = ComparisonTableEntitlement.Free.NotPresent,
+                paidValue = ComparisonTableEntitlement.Plus.Present
             )
         )
     )
@@ -205,6 +246,19 @@ internal object UpsellingContentPreviewData {
             entitlements = SimpleListEntitlements,
             variant = PlanUpgradeVariant.IntroductoryPrice,
             list = PromoList
+        )
+    )
+
+    val BlackFriday = UpsellingScreenContentState.Data(
+        PlanUpgradeUiModel(
+            icon = PlanUpgradeIconUiModel(R.drawable.upselling_bf_header_wave2),
+            title = PlanUpgradeTitleUiModel(TextUiModel.Text("Upgrade to Mail Plus")),
+            description = PlanUpgradeDescriptionUiModel.Simple(
+                TextUiModel.Text("To unlock more storage and premium features")
+            ),
+            entitlements = ComparisonTableEntitlements,
+            variant = PlanUpgradeVariant.BlackFriday.Wave1,
+            list = BlackFridayList
         )
     )
 

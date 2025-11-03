@@ -17,11 +17,11 @@
 
 package me.proton.android.core.payment.presentation.model
 
+import me.proton.android.core.payment.domain.model.ProductDetailHeader
 import me.proton.android.core.payment.domain.model.ProductEntitlement
-import me.proton.android.core.payment.domain.model.ProductHeader
 
 data class Subscription(
-    val header: ProductHeader,
+    val header: ProductDetailHeader,
     val entitlements: List<ProductEntitlement>,
     val additionalText: List<String>
 ) {
@@ -29,7 +29,7 @@ data class Subscription(
     companion object {
 
         val test = Subscription(
-            header = ProductHeader(
+            header = ProductDetailHeader(
                 title = "Proton Unlimited",
                 description = "Comprehensive privacy and security with all Proton services combined.",
                 priceText = "CHF129.48",
@@ -89,7 +89,7 @@ data class Subscription(
         )
 
         val test_pass2022 = Subscription(
-            header = ProductHeader(
+            header = ProductDetailHeader(
                 title = "Pass Plus",
                 description = "For next-level password management and identity protection.",
                 priceText = "CHF0.99",
@@ -150,7 +150,7 @@ data class Subscription(
         )
 
         val test_free = Subscription(
-            header = ProductHeader(
+            header = ProductDetailHeader(
                 title = "Proton Free",
                 description = "Current plan",
                 priceText = "",

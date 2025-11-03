@@ -20,14 +20,15 @@ package ch.protonmail.android.mailupselling.presentation.ui.screen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingActions
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingViewModel
 
 @Composable
@@ -41,9 +42,15 @@ fun UpsellingScreen(upsellingActions: UpsellingScreen.Actions, modifier: Modifie
         }
     )
 
-    when (val state = viewModel.state.collectAsState().value) {
+    when (val state = viewModel.state.collectAsStateWithLifecycle().value) {
         UpsellingScreenContentState.Loading -> ProtonCenteredProgress(modifier = Modifier.fillMaxSize())
-        is UpsellingScreenContentState.Data -> UpsellingScreenContent(modifier, state, actions)
+        is UpsellingScreenContentState.Data -> when (state.plans.variant) {
+            is PlanUpgradeVariant.Normal,
+            is PlanUpgradeVariant.IntroductoryPrice,
+            is PlanUpgradeVariant.SocialProof -> UpsellingScreenContent(modifier, state, actions)
+
+            is PlanUpgradeVariant.BlackFriday -> UpsellingScreenContentBlackFriday(modifier, state, actions)
+        }
 
         is UpsellingScreenContentState.Error -> UpsellingScreenContentError(state = state, actions)
     }

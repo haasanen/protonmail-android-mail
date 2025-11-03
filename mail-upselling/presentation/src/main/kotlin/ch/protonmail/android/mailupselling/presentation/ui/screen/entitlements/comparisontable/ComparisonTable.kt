@@ -42,15 +42,20 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlements
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementsListUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 
 @Composable
-internal fun ComparisonTable(entitlementsUiModel: PlanUpgradeEntitlementsListUiModel.ComparisonTableList) {
+internal fun ComparisonTable(
+    entitlementsUiModel: PlanUpgradeEntitlementsListUiModel.ComparisonTableList,
+    variant: PlanUpgradeVariant,
+    modifier: Modifier = Modifier
+) {
     var highlightHeight by remember { mutableStateOf(0.dp) }
     var plusCellHeaderWidth by remember { mutableStateOf(0.dp) }
     val localDensity = LocalDensity.current
 
-    Box(modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Small)) {
+    Box(modifier = modifier.padding(horizontal = ProtonDimens.Spacing.Small)) {
         Box(
             modifier = Modifier
                 .padding(top = ProtonDimens.Spacing.Small)
@@ -72,11 +77,12 @@ internal fun ComparisonTable(entitlementsUiModel: PlanUpgradeEntitlementsListUiM
                     with(localDensity) { highlightHeight = coordinates.size.height.toDp() }
                 }
         ) {
-            ComparisonTableHeaderRow(onPaidColumnPlaced = { plusCellHeaderWidth = it })
+            ComparisonTableHeaderRow(planUpgradeVariant = variant, onPaidColumnPlaced = { plusCellHeaderWidth = it })
 
             entitlementsUiModel.items.forEachIndexed { index, item ->
                 ComparisonTableEntitlement(
                     modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Compact),
+                    variant = variant,
                     uiModel = item,
                     plusCellWidth = plusCellHeaderWidth
                 )
@@ -108,7 +114,20 @@ internal fun ComparisonTable(entitlementsUiModel: PlanUpgradeEntitlementsListUiM
 private fun ComparisonTablePreview() {
     ProtonTheme {
         ComparisonTable(
-            PlanUpgradeEntitlementsListUiModel.ComparisonTableList(ComparisonTableEntitlements.Entitlements)
+            PlanUpgradeEntitlementsListUiModel.ComparisonTableList(ComparisonTableEntitlements.Entitlements),
+            variant = PlanUpgradeVariant.IntroductoryPrice
+        )
+    }
+}
+
+@Preview
+@AdaptivePreviews
+@Composable
+private fun ComparisonTablePreviewBlackFriday() {
+    ProtonTheme {
+        ComparisonTable(
+            PlanUpgradeEntitlementsListUiModel.ComparisonTableList(ComparisonTableEntitlements.Entitlements),
+            variant = PlanUpgradeVariant.BlackFriday.Wave1
         )
     }
 }

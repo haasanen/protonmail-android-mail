@@ -18,20 +18,21 @@
 package me.proton.android.core.payment.domain
 
 import kotlinx.coroutines.flow.Flow
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.PlayStoreProductOfferList
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.android.core.payment.domain.model.Purchase
 
 /**
- * Get [ProductDetail] from App Store (e.g. Google Play Store).
+ * Get [ProductOfferDetail] from App Store (e.g. Google Play Store).
  */
 interface PaymentManager {
 
     /**
-     * Get corresponding [ProductDetail] from Store.
+     * Get corresponding [PlayStoreProductOfferList] from Store.
      *
      * @throws PaymentException
      */
-    suspend fun getStoreProducts(ids: List<String>): List<ProductDetail>
+    suspend fun getStoreProducts(ids: List<String>): List<PlayStoreProductOfferList>
 
     /**
      * Get existing [Purchase] from Store.

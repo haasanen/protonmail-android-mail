@@ -53,6 +53,7 @@ import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.InstantWithFormattedTime
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingBottomSheetButton
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
@@ -112,6 +113,7 @@ fun ScheduleSendBottomSheetContent(
             } else {
                 UpsellingBottomSheetButton(
                     text = stringResource(R.string.composer_schedule_send_custom_upsell_title),
+                    upsellingEntryPoint = UpsellingEntryPoint.Feature.ScheduleSend,
                     onUpsellNavigation = { type -> actions.onNavigateToUpsell(type) }
                 )
             }

@@ -51,6 +51,7 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
+    implementation(project(":mail-upselling:data"))
     implementation(project(":mail-upselling:domain"))
     implementation(project(":mail-upselling:presentation"))
     implementation(project(":shared:core:payment-google:domain"))

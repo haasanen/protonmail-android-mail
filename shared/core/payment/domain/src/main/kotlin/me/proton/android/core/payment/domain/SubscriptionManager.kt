@@ -17,12 +17,12 @@
 
 package me.proton.android.core.payment.domain
 
-import me.proton.android.core.payment.domain.model.ProductDetail
+import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.android.core.payment.domain.model.Purchase
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
 
 /**
- * Get [ProductDetail] from Proton Payment BE.
+ * Get [ProductOfferDetail] from Proton Payment BE.
  */
 interface SubscriptionManager {
 
@@ -33,9 +33,9 @@ interface SubscriptionManager {
 
 
     /**
-     * Get all available [ProductDetail] from BE.
+     * Get all available [ProductOfferDetail] from BE.
      */
-    suspend fun getAvailable(): List<ProductDetail>
+    suspend fun getAvailable(): List<ProductOfferDetail>
 
     /**
      * Subscribe to [product] using [purchase] on BE.
@@ -44,7 +44,7 @@ interface SubscriptionManager {
      *
      * @throws PaymentException
      */
-    suspend fun subscribe(product: ProductDetail, purchase: Purchase)
+    suspend fun subscribe(product: ProductOfferDetail, purchase: Purchase)
 
     /**
      * Check if In App Purchases are enabled for this user session.
