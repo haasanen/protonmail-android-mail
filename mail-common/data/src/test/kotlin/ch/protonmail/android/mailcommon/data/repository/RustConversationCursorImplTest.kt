@@ -37,16 +37,17 @@ import org.junit.Test
 class RustConversationCursorImplTest {
 
     private val conversationId = ConversationId("100")
-    private val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
 
     @Test
     fun `test cursor initial state is set`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         val sut = RustConversationCursorImpl(CursorId(conversationId, null), conversationCursorWrapper)
         Assert.assertNotNull(sut.current)
     }
 
     @Test
     fun `test cursor initialises correctly with next and previous pages`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.previousPage() } returns Cursor(ConversationId("200"))
         coEvery { conversationCursorWrapper.nextPage() } returns Cursor(ConversationId("50"))
 
@@ -60,6 +61,7 @@ class RustConversationCursorImplTest {
 
     @Test
     fun `test cursor initialises correctly with no previous page`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.previousPage() } returns End
         coEvery { conversationCursorWrapper.nextPage() } returns Cursor(ConversationId("50"))
 
@@ -71,6 +73,7 @@ class RustConversationCursorImplTest {
 
     @Test
     fun `test when next is end then current is end and goForwards is not called`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.previousPage() } returns Cursor(ConversationId("50"))
         coEvery { conversationCursorWrapper.nextPage() } returns End
 
@@ -80,12 +83,12 @@ class RustConversationCursorImplTest {
         Assert.assertEquals(expectedConversationId, (sut.current as? Cursor)?.conversationId)
         sut.moveForward()
         Assert.assertEquals(End, sut.current)
-        Assert.assertEquals(expectedConversationId, (sut.current as? Cursor)?.conversationId)
         coVerify(exactly = 0) { conversationCursorWrapper.goForwards() }
     }
 
     @Test
     fun `test when next increments moves the cursor forward`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.previousPage() } returns Cursor(ConversationId("50"))
         coEvery { conversationCursorWrapper.nextPage() } returns
             Cursor(ConversationId("200")) andThen Cursor(ConversationId("300"))
@@ -105,6 +108,7 @@ class RustConversationCursorImplTest {
 
     @Test
     fun `test when prev then move the cursor backwards`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.previousPage() } returns
             Cursor(ConversationId("50")) andThen Cursor(ConversationId("300"))
         coEvery { conversationCursorWrapper.nextPage() } returns Cursor(ConversationId("200"))
@@ -117,12 +121,13 @@ class RustConversationCursorImplTest {
         coVerify { conversationCursorWrapper.goBackwards() }
         Assert.assertEquals(ConversationId("50"), (sut.current as? Cursor)?.conversationId)
         Assert.assertEquals(conversationId, (sut.next as? Cursor)?.conversationId)
-        Assert.assertEquals(ConversationId("30"), (sut.previous as? Cursor)?.conversationId)
+        Assert.assertEquals(ConversationId("300"), (sut.previous as? Cursor)?.conversationId)
         coVerify(exactly = 2) { conversationCursorWrapper.previousPage() }
     }
 
     @Test
     fun `test when prev and unrecoverable Error then move the cursor backwards and ignore error`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.nextPage() } returns
             Cursor(ConversationId("50")) andThen Cursor(ConversationId("300"))
         coEvery { conversationCursorWrapper.previousPage() } returns
@@ -147,6 +152,7 @@ class RustConversationCursorImplTest {
 
     @Test
     fun `test when next and unrecoverable Error then move the cursor backwards and ignore error`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.previousPage() } returns
             Cursor(ConversationId("50")) andThen Cursor(ConversationId("300"))
         coEvery { conversationCursorWrapper.nextPage() } returns
@@ -171,6 +177,7 @@ class RustConversationCursorImplTest {
 
     @Test
     fun `test when prev and Error is recoverable then set null and reload to recover`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.nextPage() } returns
             Cursor(ConversationId("50")) andThen Cursor(ConversationId("300"))
         coEvery { conversationCursorWrapper.previousPage() } returns
@@ -192,6 +199,7 @@ class RustConversationCursorImplTest {
 
     @Test
     fun `test when next and Error is recoverable then set null and reload to recover`() = runTest {
+        val conversationCursorWrapper = mockk<ConversationCursor>(relaxed = true)
         coEvery { conversationCursorWrapper.previousPage() } returns
             Cursor(ConversationId("50")) andThen Cursor(ConversationId("300"))
         coEvery { conversationCursorWrapper.nextPage() } returns
