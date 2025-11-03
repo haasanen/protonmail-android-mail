@@ -846,8 +846,6 @@ class ConversationDetailViewModel @Inject constructor(
             val primaryUserAddress = observePrimaryUserAddress().first()
             val isPrimaryUserAddress = primaryUserAddress == action.participant.participantAddress
 
-            // Rust does not provide an API to check if a sender is blocked. Therefore,
-            // we get this data from message banners temporarily
             val senderBlocked = action.messageId?.let { isMessageSenderBlocked(userId, MessageId(it.id)) } ?: false
 
             val event = ConversationDetailEvent.ConversationBottomSheetEvent(

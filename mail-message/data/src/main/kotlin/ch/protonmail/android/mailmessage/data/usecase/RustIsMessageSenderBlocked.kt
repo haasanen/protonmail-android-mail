@@ -34,6 +34,6 @@ class RustIsMessageSenderBlocked @Inject constructor() {
     suspend operator fun invoke(mailbox: MailboxWrapper, messageId: LocalMessageId): Either<DataError, Boolean> =
         when (val result = isMessageSenderBlocked(mailbox.getRustMailbox(), messageId)) {
             is IsMessageSenderBlockedResult.Error -> result.v1.toDataError().left()
-            is IsMessageSenderBlockedResult.Ok -> result.v1?.right() ?: DataError.Local.NoDataCached.left()
+            is IsMessageSenderBlockedResult.Ok -> result.v1?.right() ?: DataError.Local.NotFound.left()
         }
 }
