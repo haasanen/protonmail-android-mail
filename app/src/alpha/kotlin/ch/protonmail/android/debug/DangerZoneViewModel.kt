@@ -26,5 +26,6 @@ import javax.inject.Inject
 @HiltViewModel
 internal class DangerZoneViewModel @Inject constructor() : ViewModel() {
 
-    fun crashApp() = makeMeCrash()
+    fun nativeCrashApp() = makeMeCrash()
+    fun crashApp() = Integer.parseInt("notInteger")
 }

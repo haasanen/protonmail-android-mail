@@ -60,6 +60,7 @@ internal fun DangerZoneScreen(
         content = { paddingValues ->
             DangerZoneScreen(
                 modifier = modifier.padding(paddingValues),
+                onNativeCrash = { viewModel.nativeCrashApp() },
                 onCrash = { viewModel.crashApp() }
             )
         }
@@ -67,9 +68,20 @@ internal fun DangerZoneScreen(
 }
 
 @Composable
-private fun DangerZoneScreen(modifier: Modifier = Modifier, onCrash: () -> Unit) {
+private fun DangerZoneScreen(
+    modifier: Modifier = Modifier,
+    onCrash: () -> Unit,
+    onNativeCrash: () -> Unit
+) {
 
     LazyColumn(modifier = modifier) {
+        item {
+            ProtonSettingsItem(
+                name = stringResource(R.string.app_debug_screen_danger_crash_native_title),
+                hint = stringResource(R.string.app_debug_screen_danger_crash_native_description),
+                onClick = onNativeCrash
+            )
+        }
         item {
             ProtonSettingsItem(
                 name = stringResource(R.string.app_debug_screen_danger_crash_title),
