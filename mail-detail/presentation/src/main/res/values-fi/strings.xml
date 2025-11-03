@@ -165,7 +165,7 @@
   <string name="rsvp_widget_button_retry">Yritä uudelleen</string>
   <string name="rsvp_widget_error_answering">Virhe vastattaessa tähän tapahtumaan</string>
   <string name="rsvp_widget_open_in_proton_calendar">Avaa Proton Calendarissa</string>
-  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Avaaminen Proton Calendarissa epäonnistui</string>
   <string name="rsvp_widget_copy_address">Kopioi osoite</string>
   <string name="rsvp_widget_message">Viesti</string>
   <string name="snooze_message_snoozed_until_banner_title">Torkutettu asti</string>
@@ -178,6 +178,6 @@
   <string name="already_unsubscribed_banner_message">Tilauksesi on poistettu tältä postituslistalta.</string>
   <string name="error_unsubscribe_newsletter">Uutiskirjeen tilauksen peruutus epäonnistui.</string>
   <string name="detail_error_loading_single_message">Viestin lataus epäonnistui</string>
-  <string name="error_downloading_image">Failed to download image</string>
-  <string name="image_downloaded_successfully">Image downloaded</string>
+  <string name="error_downloading_image">Kuvan lataus epäonnistui</string>
+  <string name="image_downloaded_successfully">Kuva ladattiin</string>
 </resources>

@@ -96,7 +96,7 @@
   <!-- Message sending error dialog -->
   <string name="message_sending_error_dialog_header">Памылка адпраўкі</string>
   <string name="message_sending_error_dialog_button_dismiss">Закрыць</string>
-  <string name="message_sending_error_dialog_text_error">Ваш ліст немагчыма адправіць на ўведзены адрас па наступнай прычыне:</string>
+  <string name="message_sending_error_dialog_text_error">Ваш ліст немагчыма адправіць на ўведзены адрас з прычыны:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Адсутнічаюць давераныя ключы: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Адрас не існуе: %s</string>
   <string name="set_message_password_title">Задаць пароль</string>

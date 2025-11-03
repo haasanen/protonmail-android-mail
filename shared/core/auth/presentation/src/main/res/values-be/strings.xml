@@ -95,7 +95,7 @@
   <string name="auth_signup_set_recovery">Задаць спосаб аднаўлення</string>
   <string name="auth_signup_your_account_is_being_setup">Адбываецца стварэнне вашага ўліковага запісу…</string>
   <string name="auth_signup_please_wait">Звычайна гэта доўжыцца не больш за хвіліну.</string>
-  <string name="auth_signup_congratulations_subtitle">Ваш уліковы запіс Proton паспяхова створаны.\nДалучайцеся да свету прыватнасці.</string>
+  <string name="auth_signup_congratulations_subtitle">Ваш уліковы запіс Proton паспяхова створаны.\nАтрымлівайце асалоду ад свету прыватнасці.</string>
   <string name="auth_signup_congratulations_title">Віншуем!</string>
   <string name="auth_signup_start_using_proton">Пачаць выкарыстоўваць Proton</string>
   <string name="auth_signup_validation_password">Пароль не можа быць пустым.</string>

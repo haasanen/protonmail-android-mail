@@ -47,7 +47,7 @@
   <string name="payment_subscription_upgrade_your_plan">Палепшыце свой тарыфны план</string>
   <string name="payment_subscription_renew_auto_renew_on">Ваш тарыфны план аўтаматычна падоўжыцца %1$s.</string>
   <string name="payment_subscription_managed_by_google">Ваша падпіска кіруецца Google Play.</string>
-  <string name="payment_subscription_managed_by_apple">Ваша падпіска кіруецца Apple Store.</string>
+  <string name="payment_subscription_managed_by_apple">Ваша падпіска кіруецца App Store.</string>
   <string name="payment_subscription_managed_by_other">Вашай падпіскай нельга кіраваць унутры мабільнай праграмы.</string>
   <string name="proton_error_non_processable_actions">Адно або некалькі дзеянняў не могуць быць апрацаваны. Выйдзіце з сістэмы і яшчэ раз увайдзіце ў свой уліковы запіс.</string>
 </resources>

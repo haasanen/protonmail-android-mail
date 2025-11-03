@@ -159,7 +159,7 @@
   <string name="rsvp_widget_event_cancelled">Падзея <b>скасавана</b></string>
   <string name="rsvp_widget_invite_outdated">Гэтае запрашэнне састарэла</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">Падзея скасавана. Гэтае запрашэнне састарэла.</string>
-  <string name="rsvp_widget_offline_invite_outdated">Вы па-за сеткай. Адлюстраваная інфармацыя можа быць неактуальнай.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Вы па-за сеткай. Адлюстраваная інфармацыя можа быць састарэлай.</string>
   <string name="rsvp_widget_address_is_incorrect">Ваш адрас не можа быць выкарыстаны для адказу. Абнавіце інфармацыю вашага ўліковага запісу.</string>
   <string name="rsvp_widget_user_is_organizer">Вы арганізатар.</string>
   <string name="rsvp_widget_user_is_not_invited">Вы не зможаце адказаць на запрашэнне падзеі, калі ў дадзены момант вы адсутнічаеце ў спісе ўдзельнікаў.</string>

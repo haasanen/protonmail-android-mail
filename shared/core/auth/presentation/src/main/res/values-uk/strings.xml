@@ -109,7 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Не вдалося перевірити поштову адресу</string>
   <string name="auth_signup_recovery_phone_validation_error">Не вдалося перевірити номер телефону</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Паролі відрізняються. Повторіть спробу.</string>
-  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_general_error">Щось пішло не так. Повторіть спробу.</string>
   <string name="auth_signup_countries_search">Пошук країни</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Не вдалося налаштувати користувача.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Не вдалося налаштувати адресу.</string>
@@ -123,10 +123,10 @@
   <string name="auth_fido_security_keys_learn_more">Докладніше</string>
   <string name="auth_user_check_delinquent_error">Ваш обліковий запис наразі призупинено через несплату рахунку.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
-    <item quantity="few">The maximum number of %d free accounts have been exceeded.</item>
-    <item quantity="many">The maximum number of %d free accounts have been exceeded.</item>
-    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="one">Максимальна кількість %d безплатного облікового запису була перевищена.</item>
+    <item quantity="few">Максимальна кількість %d безплатних облікових записів була перевищена.</item>
+    <item quantity="many">Максимальна кількість %d безплатних облікових записів була перевищена.</item>
+    <item quantity="other">Максимальна кількість %d безплатних облікових записів була перевищена.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Щось пішло не так. Повторіть спробу.</string>
   <string name="auth_fido_config_error">Помилка отримання збережених ключів.</string>

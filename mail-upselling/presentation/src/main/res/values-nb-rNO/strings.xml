@@ -111,7 +111,7 @@
   <string name="upselling_description_social_proof">Oppgrader til opplevelsen som millioner av abonnenter elsker.</string>
   <string name="upselling_discount_tag">Spar %s%%</string>
   <string name="upselling_month">/måned</string>
-  <string name="upselling_month_only">kun %s /måned</string>
+  <string name="upselling_month_only">kun %s/måned</string>
   <string name="upselling_year">/år</string>
   <string name="upselling_get_button">Skaff deg %s</string>
   <plurals name="upselling_month">

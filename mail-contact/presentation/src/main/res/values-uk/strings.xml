@@ -48,7 +48,7 @@
   <string name="new_contact">Новий контакт</string>
   <string name="new_group">Нова група</string>
   <string name="import_contact">Вивантажити контакти пристрою</string>
-  <string name="contact_deleted">Contact deleted</string>
+  <string name="contact_deleted">Контакт видалено</string>
   <string name="contact_delete_dialog_title">Видалити %1$s?</string>
   <string name="contact_delete_dialog_text">Цей контакт буде видалено з вашого списку контактів.</string>
   <string name="contact_delete_dialog_cancel_button">Скасувати</string>
@@ -95,7 +95,7 @@
   <string name="contact_details_action_copy_label">Копіювати</string>
   <string name="contact_details_action_message_label">Повідомлення</string>
   <string name="contact_details_action_call_label">Зателефонувати</string>
-  <string name="contact_details_action_open_url_label">Open URL</string>
+  <string name="contact_details_action_open_url_label">Відкрити URL-адресу</string>
   <string name="contact_group_details_send_message_action">Надіслати групове повідомлення</string>
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="one">%1$d контакт</item>
@@ -103,9 +103,9 @@
     <item quantity="many">%1$d контактів</item>
     <item quantity="other">%1$d контактів</item>
   </plurals>
-  <string name="contact_bottom_sheet_redirect_to_web_title">Available on web</string>
-  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Dismiss</string>
-  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Creating contacts or groups in the app is not yet ready. For now, you can create them in the web app and they’ll sync to your device.</string>
-  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Editing contacts or groups in the app is not yet ready. For now, you can edit them in the web app and changes will sync to your device.</string>
-  <string name="contact_bottom_sheet_redirect_to_web_button">Continue on web</string>
+  <string name="contact_bottom_sheet_redirect_to_web_title">Доступно у вебзастосунку</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Відхилити</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Створення контактів або груп у застосунку ще не готове. Наразі ви можете створювати їх у вебзастосунку, і вони синхронізуватимуться з вашим пристроєм.</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Редагування контактів або груп у застосунку ще не готове. Наразі ви можете редагувати їх у вебзастосунку, і зміни синхронізуватимуться з вашим пристроєм.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_button">Продовжити у вебзастосунку</string>
 </resources>

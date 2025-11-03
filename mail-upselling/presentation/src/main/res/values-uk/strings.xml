@@ -86,20 +86,20 @@
   <string name="upselling_select_plan_year">12 місяців</string>
   <string name="upselling_select_plan_month">1 місяць</string>
   <!-- Onboarding upsell -->
-  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
-  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
-  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_choose_plan">Виберіть тариф</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Щомісяця</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Щороку</string>
   <string name="upselling_onboarding_best_value">Найвигідніший</string>
-  <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
-  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
-  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
-  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
-  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
-  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
-  <string name="upselling_onboarding_autorenew_month">month</string>
-  <string name="upselling_onboarding_autorenew_year">12 months</string>
-  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
-  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
+  <string name="upselling_onboarding_yearly_savings">Сплачуйте щорічно і заощадьте %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">Розгорнути</string>
+  <string name="upselling_onboarding_entitlements_show_less">Згорнути</string>
+  <string name="upselling_onboarding_button_continue_free">Продовжити з тарифом Free</string>
+  <string name="upselling_onboarding_autorenew">Сплачується %s кожні %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">Вітальна пропозиція. Автоматично поновлюється за %s кожні %s</string>
+  <string name="upselling_onboarding_autorenew_month">місяць</string>
+  <string name="upselling_onboarding_autorenew_year">12 місяців</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 ГБ сховища</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 поштова адреса</string>
   <!-- Other UI Items -->
   <string name="upselling_unlimited_description_override">Преміальна передплата з усіма можливостями</string>
   <string name="upselling_auto_renew_text">Автопоновлення за тією ж ціною та умовами доки не буде скасовано</string>
