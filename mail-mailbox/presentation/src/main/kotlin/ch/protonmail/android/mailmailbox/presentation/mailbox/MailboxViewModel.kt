@@ -285,29 +285,6 @@ class MailboxViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
-        combine(
-            observeLoadedMailLabelId()
-                .mapToExistingLabel()
-                .distinctUntilChanged(),
-            state.observeSearchDataReady()
-        ) { loadedMailLabel, dataReady ->
-            val userId = primaryUserId.filterNotNull().first()
-            val viewMode = if (dataReady) {
-                ViewMode.NoConversationGrouping
-            } else {
-                getCurrentViewModeForLabel(userId, loadedMailLabel.id.labelId)
-            }
-
-            if (isExpandableLocation(viewMode)) {
-                MailboxEvent.ShowSpamTrashFilter
-            } else {
-                MailboxEvent.HideSpamTrashFilter
-            }
-        }
-            .distinctUntilChanged()
-            .onEach { emitNewStateFrom(it) }
-            .launchIn(viewModelScope)
-
         observeAvatarImageStates()
             .onEach { avatarImageStates ->
                 emitNewStateFrom(MailboxEvent.AvatarImageStatesUpdated(avatarImageStates))
@@ -711,6 +688,31 @@ class MailboxViewModel @Inject constructor(
                                     Timber.d("Updating showSpamTrash filter: $showSpamTrash")
                                     updateShowSpamTrashFilter(showSpamTrash, viewMode)
                                 }
+                        }
+
+                        jobs += launch {
+                            combine(
+                                observeLoadedMailLabelId()
+                                    .mapToExistingLabel()
+                                    .distinctUntilChanged(),
+                                state.observeSearchDataReady()
+                            ) { loadedMailLabel, dataReady ->
+                                val userId = primaryUserId.filterNotNull().first()
+                                val viewMode = if (dataReady) {
+                                    ViewMode.NoConversationGrouping
+                                } else {
+                                    getCurrentViewModeForLabel(userId, loadedMailLabel.id.labelId)
+                                }
+
+                                if (isExpandableLocation(viewMode)) {
+                                    MailboxEvent.ShowSpamTrashFilter
+                                } else {
+                                    MailboxEvent.HideSpamTrashFilter
+                                }
+                            }
+                                .distinctUntilChanged()
+                                .onEach { emitNewStateFrom(it) }
+                                .collect()
                         }
 
                         awaitClose {
