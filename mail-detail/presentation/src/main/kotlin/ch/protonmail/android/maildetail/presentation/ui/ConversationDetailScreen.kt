@@ -133,6 +133,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.model.BodyImageUiModel
+import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -662,7 +663,8 @@ fun ConversationDetailScreen(
                     },
                     showUndoableOperationSnackbar = { action ->
                         actions.showUndoableOperationSnackbar(action)
-                    }
+                    },
+                    onViewEntireMessageClicked = { _, _, _, _ -> }
                 )
             )
         }
@@ -879,7 +881,8 @@ private fun ConversationDetailScreen(
                     onDownloadImage = { messageId, imageUrl ->
                         bodyImageSaver(BodyImageUiModel(imageUrl, messageId))
                     },
-                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure
+                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure,
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
                 )
                 val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
 
@@ -1334,7 +1337,8 @@ object ConversationDetailScreen {
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
         val onReportPhishing: (MessageId) -> Unit,
-        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit
+        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
+        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit
     ) {
 
         companion object {
@@ -1395,7 +1399,8 @@ object ConversationDetailScreen {
                 onUnsubscribeFromNewsletter = {},
                 onReportPhishing = {},
                 onLoadImagesAfterImageProxyFailure = {},
-                showUndoableOperationSnackbar = {}
+                showUndoableOperationSnackbar = {},
+                onViewEntireMessageClicked = { _, _, _, _ -> }
             )
         }
     }

@@ -656,7 +656,8 @@ fun ConversationDetailScreenLegacy(
                     },
                     showUndoableOperationSnackbar = { action ->
                         actions.showUndoableOperationSnackbar(action)
-                    }
+                    },
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
                 ),
                 scrollToMessageId = state.scrollToMessage?.id
             )
@@ -885,7 +886,8 @@ private fun ConversationDetailScreenLegacy(
                     onDownloadImage = { messageId, imageUrl ->
                         bodyImageSaver(BodyImageUiModel(imageUrl, messageId))
                     },
-                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure
+                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure,
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
                 )
                 val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
 

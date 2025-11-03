@@ -33,6 +33,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAut
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
@@ -45,6 +46,7 @@ import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025En
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.RestrictMessageWebViewHeight
 import ch.protonmail.android.mailfeatureflags.domain.model.SwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
 import dagger.Module
@@ -191,4 +193,15 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun provideMultiThreadDnsDefinition(): FeatureFlagDefinition = AndroidDnsMultithread
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideRestrictMessageWebViewHeightDef(): FeatureFlagDefinition = RestrictMessageWebViewHeight
+
+    @Provides
+    @Singleton
+    @IsRestrictMessageWebViewHeightEnabled
+    fun provideRestrictMessageWebViewHeight(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = RestrictMessageWebViewHeight.key, false)
 }

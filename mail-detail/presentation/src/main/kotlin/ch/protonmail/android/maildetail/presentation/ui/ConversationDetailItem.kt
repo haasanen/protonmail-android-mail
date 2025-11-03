@@ -75,6 +75,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
+import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 
 @Composable
@@ -329,7 +330,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                     onLoadRemoteAndEmbeddedContent = { actions.onLoadRemoteAndEmbeddedContent(it) },
                     onPrint = { actions.onPrint(it) },
                     onDownloadImage = { messageId, imageUrl -> actions.onDownloadImage(messageId, imageUrl) },
-                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure
+                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure,
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
                 ),
                 onMessageBodyLoaded = { id: MessageId, i: Int ->
                     // now that the webview is loaded send the more recent height so it can be cached
@@ -413,7 +415,8 @@ object ConversationDetailItem {
         val onUnsnoozeMessage: () -> Unit,
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
         val onDownloadImage: (MessageId, String) -> Unit,
-        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit
+        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
+        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit
     )
 
     val previewActions = Actions(
@@ -450,7 +453,8 @@ object ConversationDetailItem {
         onUnsnoozeMessage = { },
         onUnsubscribeFromNewsletter = {},
         onDownloadImage = { _, _ -> },
-        onLoadImagesAfterImageProxyFailure = {}
+        onLoadImagesAfterImageProxyFailure = {},
+        onViewEntireMessageClicked = { _, _, _, _ -> }
     )
 }
 

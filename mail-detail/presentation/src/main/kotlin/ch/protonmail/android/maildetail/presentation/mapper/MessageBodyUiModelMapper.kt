@@ -19,6 +19,8 @@
 package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
@@ -32,10 +34,11 @@ import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import javax.inject.Inject
 
 class MessageBodyUiModelMapper @Inject constructor(
-    private val attachmentGroupUiModelMapper: AttachmentGroupUiModelMapper
+    private val attachmentGroupUiModelMapper: AttachmentGroupUiModelMapper,
+    @IsRestrictMessageWebViewHeightEnabled private val restrictMessageWebViewHeightEnabled: FeatureFlag<Boolean>
 ) {
 
-    fun toUiModel(
+    suspend fun toUiModel(
         decryptedMessageBody: DecryptedMessageBody,
         attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?,
         existingMessageBodyUiModel: MessageBodyUiModel? = null
@@ -69,7 +72,8 @@ class MessageBodyUiModelMapper @Inject constructor(
                 )
             } else null,
             viewModePreference = viewModePreference,
-            reloadMessageEffect = Effect.empty()
+            reloadMessageEffect = Effect.empty(),
+            shouldRestrictWebViewHeight = restrictMessageWebViewHeightEnabled.get()
         )
     }
 
@@ -83,7 +87,8 @@ class MessageBodyUiModelMapper @Inject constructor(
         shouldShowExpandCollapseButton = false,
         attachments = null,
         viewModePreference = ViewModePreference.ThemeDefault,
-        reloadMessageEffect = Effect.empty()
+        reloadMessageEffect = Effect.empty(),
+        shouldRestrictWebViewHeight = false
     )
 
     private fun MimeType.toMimeTypeUiModel() = when (this) {

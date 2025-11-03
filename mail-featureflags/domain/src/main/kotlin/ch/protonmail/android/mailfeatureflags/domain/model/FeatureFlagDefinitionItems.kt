@@ -105,3 +105,11 @@ data object InjectDetailCssOverrideEnabled : FeatureFlagDefinition(
     description = "Fix 0-height webview measurements by injecting additional CSS",
     defaultValue = false
 )
+
+data object RestrictMessageWebViewHeight : FeatureFlagDefinition(
+    key = "MailAndroidV7RestrictMessageWebViewHeight",
+    name = "Restrict message WebView height",
+    category = FeatureFlagCategory.Details,
+    description = "Restrict the height of the message web view in order to avoid crashes.",
+    defaultValue = false
+)

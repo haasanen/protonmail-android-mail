@@ -76,6 +76,7 @@ object MessageDetailBodyUiModelSample {
         shouldShowExpandCollapseButton = false,
         attachments = attachments,
         viewModePreference = ViewModePreference.ThemeDefault,
-        reloadMessageEffect = Effect.empty()
+        reloadMessageEffect = Effect.empty(),
+        shouldRestrictWebViewHeight = false
     )
 }

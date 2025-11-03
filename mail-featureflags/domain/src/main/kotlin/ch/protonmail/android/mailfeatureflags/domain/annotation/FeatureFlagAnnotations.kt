@@ -63,3 +63,7 @@ annotation class IsSwipeAutoAdvanceEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsInjectCssOverrideEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsRestrictMessageWebViewHeightEnabled

@@ -34,7 +34,8 @@ data class MessageBodyUiModel(
     val shouldShowExpandCollapseButton: Boolean,
     val attachments: AttachmentGroupUiModel?,
     val viewModePreference: ViewModePreference,
-    val reloadMessageEffect: Effect<Unit>
+    val reloadMessageEffect: Effect<Unit>,
+    val shouldRestrictWebViewHeight: Boolean
 )
 
 enum class MimeTypeUiModel(val value: String) {

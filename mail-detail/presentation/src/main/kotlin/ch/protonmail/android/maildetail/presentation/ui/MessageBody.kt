@@ -42,6 +42,7 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
+import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
 import ch.protonmail.android.mailmessage.presentation.ui.ZoomableWebView
 import timber.log.Timber
@@ -116,7 +117,8 @@ fun MessageBody(
                 onAttachmentClicked = actions.onAttachmentClicked,
                 loadImage = actions.loadImage,
                 onPrint = actions.onPrint,
-                onDownloadImage = actions.onDownloadImage
+                onDownloadImage = actions.onDownloadImage,
+                onViewEntireMessageClicked = actions.onViewEntireMessageClicked
             ),
             onBuildWebView = stableOnBuildWebView,
             onMessageBodyLoaded = onMessageBodyLoaded
@@ -196,7 +198,8 @@ object MessageBody {
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onDownloadImage: (messageId: MessageId, imageUrl: String) -> Unit,
-        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit
+        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
+        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit
     )
 }
 
