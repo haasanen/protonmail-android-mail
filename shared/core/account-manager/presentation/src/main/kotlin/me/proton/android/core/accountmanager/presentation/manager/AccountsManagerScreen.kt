@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.dropUnlessResumed
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.theme.LocalColors
@@ -95,7 +96,7 @@ fun AccountsManagerScreen(
         topBar = {
             ProtonSettingsTopBar(
                 title = stringResource(id = R.string.manage_accounts_title),
-                onBackClick = onCloseClicked,
+                onBackClick = dropUnlessResumed { onCloseClicked() },
                 actions = {
                     IconButton(
                         onClick = { onEvent(AccountSwitchEvent.OnAddAccount) }
