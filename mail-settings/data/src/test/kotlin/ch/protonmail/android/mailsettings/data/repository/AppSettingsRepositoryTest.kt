@@ -31,10 +31,12 @@ import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
+import ch.protonmail.android.mailsettings.domain.model.SwipeNextPreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
+import ch.protonmail.android.mailsettings.domain.repository.SwipeNextRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import io.mockk.coEvery
 import io.mockk.every
@@ -50,7 +52,7 @@ import uniffi.proton_mail_uniffi.AppAppearance
 import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AutoLock
 
-class AppSettingsRepositoryTest {
+internal class AppSettingsRepositoryTest {
 
     @get:Rule
     val loggingTestRule = LoggingTestRule()
@@ -76,7 +78,8 @@ class AppSettingsRepositoryTest {
         customAppLanguage = AppLanguage.FRENCH.langName,
         hasCombinedContactsEnabled = true,
         theme = Theme.LIGHT,
-        mobileSignaturePreference = MobileSignaturePreference.Empty
+        mobileSignaturePreference = MobileSignaturePreference.Empty,
+        swipeNextPreference = SwipeNextPreference.NotEnabled
     )
 
     private val userId = UserId("user-123")
@@ -87,6 +90,12 @@ class AppSettingsRepositoryTest {
     private val mobileSignatureRepository = mockk<MobileSignatureRepository> {
         every { observeMobileSignature(userId) } returns flowOf(MobileSignaturePreference.Empty)
     }
+
+    private val swipeNextRepository = mockk<SwipeNextRepository> {
+        coEvery { this@mockk.getSwipeNext(userId) } returns SwipeNextPreference.NotEnabled.right()
+        coEvery { this@mockk.observeSwipeNext(userId) } returns flowOf(SwipeNextPreference.NotEnabled.right())
+    }
+
     private val mockMailSessionWrapper = mockk<MailSessionWrapper>()
 
     private val mailSessionRepository = mockk<MailSessionRepository> {
@@ -105,7 +114,8 @@ class AppSettingsRepositoryTest {
             userSessionRepository = userSessionRepository,
             rustAppSettingsDataSource = appSettingsDataSource,
             appLanguageRepository = appLanguageRepository,
-            mobileSignatureRepository = mobileSignatureRepository
+            mobileSignatureRepository = mobileSignatureRepository,
+            swipeNextRepository = swipeNextRepository
         )
     }
 
@@ -133,6 +143,21 @@ class AppSettingsRepositoryTest {
         appSettingsRepository.observeAppSettings().test {
             // Then
             assertEquals(expectedAppSettings.customAppLanguage, awaitItem().customAppLanguage)
+        }
+    }
+
+    @Test
+    fun `returns swipe preference when observed`() = runTest {
+        // Given
+        val expectedSwipeNextPreference = SwipeNextPreference.Enabled
+        coEvery { swipeNextRepository.observeSwipeNext(userId) } returns flowOf(expectedSwipeNextPreference.right())
+        coEvery {
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
+        } returns mockAppSettings.right()
+        // When
+        appSettingsRepository.observeAppSettings().test {
+            // Then
+            assertEquals(expectedSwipeNextPreference, awaitItem().swipeNextPreference)
         }
     }
 
@@ -215,7 +240,7 @@ class AppSettingsRepositoryTest {
     }
 
     @Test
-    fun `when alternativeRouting is updated  then appSettings observer is also updated`() = runTest {
+    fun `when alternativeRouting is updated then appSettings observer is also updated`() = runTest {
         // Given
         val expectedInitialAppSettings = expectedAppSettings
         val expectedUpdatedRouting = false

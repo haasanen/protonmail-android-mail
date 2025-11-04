@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.SwipeNextPreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
@@ -54,7 +55,8 @@ internal class AppSettingsUiModelMapperTest(
             deviceContactsEnabled = true,
             theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
             notificationsEnabledStatus = TextUiModel(R.string.notifications_on),
-            appIconName = appIconName
+            appIconName = appIconName,
+            swipeNextEnabled = false
         )
 
         @JvmStatic
@@ -63,82 +65,91 @@ internal class AppSettingsUiModelMapperTest(
             arrayOf(
                 "to app settings with default values",
                 Arguments(
-                    baseAppSettings,
-                    true
+                    appSettings = baseAppSettings,
+                    notificationsEnabled = true
                 ),
                 baseUiModel
             ),
             arrayOf(
                 "to app settings with light theme",
                 Arguments(
-                    baseAppSettings.copy(theme = Theme.LIGHT),
-                    true
+                    appSettings = baseAppSettings.copy(theme = Theme.LIGHT),
+                    notificationsEnabled = true
                 ),
                 baseUiModel.copy(theme = TextUiModel.TextRes(R.string.mail_settings_theme_light))
             ),
             arrayOf(
                 "to app settings with dark theme",
                 Arguments(
-                    baseAppSettings.copy(theme = Theme.DARK),
-                    true
+                    appSettings = baseAppSettings.copy(theme = Theme.DARK),
+                    notificationsEnabled = true
                 ),
                 baseUiModel.copy(theme = TextUiModel.TextRes(R.string.mail_settings_theme_dark))
             ),
             arrayOf(
                 "to app settings with custom language",
                 Arguments(
-                    baseAppSettings.copy(customAppLanguage = "Custom language"),
-                    true
+                    appSettings = baseAppSettings.copy(customAppLanguage = "Custom language"),
+                    notificationsEnabled = true
                 ),
                 baseUiModel.copy(customLanguage = "Custom language")
             ),
             arrayOf(
                 "to app settings with pin lock enabled",
                 Arguments(
-                    baseAppSettings.copy(autolockProtection = Protection.Pin),
-                    true
+                    appSettings = baseAppSettings.copy(autolockProtection = Protection.Pin),
+                    notificationsEnabled = true
                 ),
                 baseUiModel.copy(autoLockEnabled = true)
             ),
             arrayOf(
                 "to app settings with biometrics lock enabled",
                 Arguments(
-                    baseAppSettings.copy(autolockProtection = Protection.Biometrics),
-                    true
+                    appSettings = baseAppSettings.copy(autolockProtection = Protection.Biometrics),
+                    notificationsEnabled = true
                 ),
                 baseUiModel.copy(autoLockEnabled = true)
             ),
             arrayOf(
                 "to app settings with no lock enabled",
                 Arguments(
-                    baseAppSettings,
-                    true
+                    appSettings = baseAppSettings,
+                    notificationsEnabled = true
                 ),
                 baseUiModel.copy(autoLockEnabled = false)
             ),
             arrayOf(
                 "to app settings with alternative routing enabled",
                 Arguments(
-                    baseAppSettings.copy(hasAlternativeRouting = true),
-                    true
+                    appSettings = baseAppSettings.copy(hasAlternativeRouting = true),
+                    notificationsEnabled = true
                 ),
                 baseUiModel.copy(alternativeRoutingEnabled = true)
             ),
             arrayOf(
                 "to app settings with device contacts enabled",
                 Arguments(
-                    baseAppSettings.copy(hasCombinedContactsEnabled = true),
-                    true
+                    appSettings = baseAppSettings.copy(hasCombinedContactsEnabled = true),
+                    notificationsEnabled = true
                 ),
                 baseUiModel.copy(deviceContactsEnabled = true)
             ),
             arrayOf(
                 "to app settings with notifications off",
                 Arguments(
-                    baseAppSettings,
-                    false
+                    appSettings = baseAppSettings,
+                    notificationsEnabled = false
                 ),
                 baseUiModel.copy(notificationsEnabledStatus = TextUiModel(R.string.notifications_off))
+            ),
+
+            arrayOf(
+                "to app settings with swipe pref on",
+                Arguments(
+                    appSettings = baseAppSettings.copy(swipeNextPreference = SwipeNextPreference.Enabled),
+                    notificationsEnabled = true
+                ),
+                baseUiModel.copy(swipeNextEnabled = true)
             )
         )
 

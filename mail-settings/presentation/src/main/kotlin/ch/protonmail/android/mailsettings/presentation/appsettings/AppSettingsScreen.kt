@@ -164,7 +164,8 @@ private fun AppSettingsScreenContent(
                 MainSettingsHeader(titleRes = R.string.mail_settings_app_customization_mail_experience_header)
 
                 MailExperienceSettingsItem(
-                    swipeToNextEmail = false, // not implemented coming soon
+                    swipeToNextEmail = state.settings.swipeNextEnabled,
+                    onIntent = onIntent,
                     actions = actions
                 )
 
@@ -378,7 +379,8 @@ private fun UseCombinedContactsSettingsItem(
 private fun MailExperienceSettingsItem(
     modifier: Modifier = Modifier,
     swipeToNextEmail: Boolean,
-    actions: AppSettingsScreen.Actions
+    actions: AppSettingsScreen.Actions,
+    onIntent: (AppSettingsAction) -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -394,9 +396,7 @@ private fun MailExperienceSettingsItem(
                 name = stringResource(id = R.string.mail_settings_app_customization_swipe_to_next_email),
                 hint = stringResource(id = R.string.mail_settings_app_customization_swipe_to_next_email_hint),
                 value = swipeToNextEmail,
-                onToggle = {
-                    actions.onSwipeToNextEmailClick()
-                }
+                onToggle = { onIntent(ToggleSwipeToNextEmail(it)) }
             )
 
             SettingsItemDivider()

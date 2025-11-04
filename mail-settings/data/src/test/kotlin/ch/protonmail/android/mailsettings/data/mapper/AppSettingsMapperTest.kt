@@ -20,6 +20,7 @@ package ch.protonmail.android.mailsettings.data.mapper
 
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
+import ch.protonmail.android.mailsettings.domain.model.SwipeNextPreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -41,7 +42,6 @@ class AppSettingsMapperTest {
         useAlternativeRouting = false
     )
 
-
     @Test
     fun `map AppAppearance to theme`() {
         assertEquals(Theme.DARK, AppAppearance.DARK_MODE.toTheme())
@@ -54,20 +54,20 @@ class AppSettingsMapperTest {
         assertEquals(
             Theme.DARK,
             localAppSettings.toAppSettings(
-                null, MobileSignaturePreference.Empty
+                null, MobileSignaturePreference.Empty, SwipeNextPreference.NotEnabled
             ).theme
         )
         assertEquals(
             Theme.LIGHT,
             localAppSettings.copy(appearance = AppAppearance.LIGHT_MODE)
-                .toAppSettings(null, MobileSignaturePreference.Empty)
+                .toAppSettings(null, MobileSignaturePreference.Empty, SwipeNextPreference.NotEnabled)
                 .theme
         )
 
         assertEquals(
             Theme.SYSTEM_DEFAULT,
             localAppSettings.copy(appearance = AppAppearance.SYSTEM)
-                .toAppSettings(null, MobileSignaturePreference.Empty)
+                .toAppSettings(null, MobileSignaturePreference.Empty, SwipeNextPreference.NotEnabled)
                 .theme
         )
     }
@@ -76,18 +76,18 @@ class AppSettingsMapperTest {
     fun `when map LocalAppSettings then AutoLock is mapped`() {
         assertTrue(
             localAppSettings.copy(protection = AppProtection.PIN)
-                .toAppSettings(null, MobileSignaturePreference.Empty)
+                .toAppSettings(null, MobileSignaturePreference.Empty, SwipeNextPreference.NotEnabled)
                 .hasAutoLock
         )
 
         assertTrue(
             localAppSettings.copy(protection = AppProtection.BIOMETRICS)
-                .toAppSettings(null, MobileSignaturePreference.Empty)
+                .toAppSettings(null, MobileSignaturePreference.Empty, SwipeNextPreference.NotEnabled)
                 .hasAutoLock
         )
         assertFalse(
             localAppSettings.copy(protection = AppProtection.NONE)
-                .toAppSettings(null, MobileSignaturePreference.Empty)
+                .toAppSettings(null, MobileSignaturePreference.Empty, SwipeNextPreference.NotEnabled)
                 .hasAutoLock
         )
     }
@@ -96,7 +96,7 @@ class AppSettingsMapperTest {
     fun `when map LocalAppSettings AND no language set then language is null`() {
         assertNull(
             localAppSettings
-                .toAppSettings(null, MobileSignaturePreference.Empty)
+                .toAppSettings(null, MobileSignaturePreference.Empty, SwipeNextPreference.NotEnabled)
                 .customAppLanguage
         )
     }
@@ -108,7 +108,8 @@ class AppSettingsMapperTest {
             localAppSettings
                 .toAppSettings(
                     customLanguage = AppLanguage.FRENCH,
-                    mobileSignature = MobileSignaturePreference.Empty
+                    mobileSignature = MobileSignaturePreference.Empty,
+                    swipeNext = SwipeNextPreference.NotEnabled
                 )
                 .customAppLanguage
         )

@@ -22,7 +22,9 @@ import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.SwipeNextPreference
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetAppIconDescription
@@ -35,6 +37,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
+import me.proton.core.domain.entity.UserId
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -60,15 +63,19 @@ internal class AppSettingsViewModelTest {
         every { this@mockk.invoke() } returns TextUiModel("Proton Mail")
     }
 
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
+        every { this@mockk.invoke() } returns flowOf(userId)
+    }
+
     private lateinit var viewModel: AppSettingsViewModel
 
     @Before
     fun setUp() {
-
         viewModel = AppSettingsViewModel(
             appSettingsRepository,
             getNotificationsEnabled,
-            getAppIconDescription
+            getAppIconDescription,
+            observePrimaryUserId
         )
     }
 
@@ -97,7 +104,8 @@ internal class AppSettingsViewModelTest {
                 deviceContactsEnabled = true,
                 theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
                 notificationsEnabledStatus = TextUiModel(R.string.notifications_on),
-                appIconName = TextUiModel.Text("Proton Mail")
+                appIconName = TextUiModel.Text("Proton Mail"),
+                swipeNextEnabled = false
             )
             assertEquals(expected, actual.settings)
         }
@@ -169,8 +177,34 @@ internal class AppSettingsViewModelTest {
         }
     }
 
+    @Test
+    fun `on new value received for swipe next THEN state is updated`() = runTest {
+        viewModel.state.test {
+            // Given
+            initialStateEmitted()
+
+            // When
+            appSettingsFlow.emit(AppSettingsTestData.appSettings)
+
+            // Then
+            val expectedFirstValue = false
+            val actual = awaitItem() as AppSettingsState.Data
+            assertEquals(expectedFirstValue, actual.settings.swipeNextEnabled)
+
+            val expectedSecondValue = SwipeNextPreference.Enabled
+            appSettingsFlow.emit(AppSettingsTestData.appSettings.copy(swipeNextPreference = expectedSecondValue))
+
+            val actualUpdatedData = awaitItem() as AppSettingsState.Data
+            assertEquals(expectedSecondValue.enabled, actualUpdatedData.settings.swipeNextEnabled)
+        }
+    }
 
     private suspend fun ReceiveTurbine<AppSettingsState>.initialStateEmitted() {
         awaitItem() as AppSettingsState.Loading
+    }
+
+    private companion object {
+
+        val userId = UserId("user-id")
     }
 }

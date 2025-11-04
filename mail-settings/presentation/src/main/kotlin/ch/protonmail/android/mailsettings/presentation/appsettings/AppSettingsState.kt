@@ -32,9 +32,11 @@ internal data class AppSettingsUiModel(
     val theme: TextUiModel,
     val deviceContactsEnabled: Boolean,
     val notificationsEnabledStatus: TextUiModel,
+    val swipeNextEnabled: Boolean,
     val appIconName: TextUiModel
 )
 
 internal sealed interface AppSettingsAction
 data class ToggleAlternativeRouting(val value: Boolean) : AppSettingsAction
 data class ToggleUseCombinedContacts(val value: Boolean) : AppSettingsAction
+data class ToggleSwipeToNextEmail(val value: Boolean) : AppSettingsAction

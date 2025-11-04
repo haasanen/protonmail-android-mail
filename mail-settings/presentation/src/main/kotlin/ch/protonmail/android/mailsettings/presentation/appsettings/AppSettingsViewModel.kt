@@ -20,6 +20,10 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
+import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetAppIconDescription
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
@@ -34,7 +38,8 @@ import javax.inject.Inject
 internal class AppSettingsViewModel @Inject constructor(
     val appSettingsRepository: AppSettingsRepository,
     val getNotificationsEnabled: GetNotificationsEnabled,
-    val getAppIconDescription: GetAppIconDescription
+    val getAppIconDescription: GetAppIconDescription,
+    val observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
     val state = appSettingsRepository.observeAppSettings().map { appSettings ->
@@ -54,6 +59,7 @@ internal class AppSettingsViewModel @Inject constructor(
             when (intent) {
                 is ToggleAlternativeRouting -> updateAlternativeRouting(intent.value)
                 is ToggleUseCombinedContacts -> updateUseCombinedContacts(intent.value)
+                is ToggleSwipeToNextEmail -> updateSwipeToNextEmail(intent.value)
             }
         }
     }
@@ -61,6 +67,11 @@ internal class AppSettingsViewModel @Inject constructor(
     private suspend fun updateAlternativeRouting(value: Boolean) = appSettingsRepository.updateAlternativeRouting(value)
     private suspend fun updateUseCombinedContacts(value: Boolean) =
         appSettingsRepository.updateUseCombineContacts(value)
+
+    private suspend fun updateSwipeToNextEmail(value: Boolean): Either<DataError, Unit> {
+        val userId = observePrimaryUserId().firstOrNull() ?: return DataError.Local.NoUserSession.left()
+        return appSettingsRepository.updateSwipeToNextEmail(userId, value)
+    }
 
     companion object {
 

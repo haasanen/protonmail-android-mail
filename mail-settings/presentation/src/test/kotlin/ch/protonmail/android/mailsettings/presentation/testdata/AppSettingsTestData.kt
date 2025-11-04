@@ -22,6 +22,7 @@ import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
+import ch.protonmail.android.mailsettings.domain.model.SwipeNextPreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 
 object AppSettingsTestData {
@@ -33,6 +34,7 @@ object AppSettingsTestData {
         customAppLanguage = null,
         hasCombinedContactsEnabled = true,
         theme = Theme.SYSTEM_DEFAULT,
-        mobileSignaturePreference = MobileSignaturePreference.Empty
+        mobileSignaturePreference = MobileSignaturePreference.Empty,
+        swipeNextPreference = SwipeNextPreference.NotEnabled
     )
 }

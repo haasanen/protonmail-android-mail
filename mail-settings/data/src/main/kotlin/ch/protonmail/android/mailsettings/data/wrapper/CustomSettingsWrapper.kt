@@ -28,6 +28,7 @@ import uniffi.proton_mail_uniffi.CustomSettings
 import uniffi.proton_mail_uniffi.CustomSettingsMobileSignatureResult
 import uniffi.proton_mail_uniffi.CustomSettingsSetMobileSignatureEnabledResult
 import uniffi.proton_mail_uniffi.CustomSettingsSetMobileSignatureResult
+import uniffi.proton_mail_uniffi.CustomSettingsSetSwipeToAdjacentConversationResult
 import uniffi.proton_mail_uniffi.CustomSettingsSwipeToAdjacentConversationResult
 
 class CustomSettingsWrapper(
@@ -55,10 +56,26 @@ class CustomSettingsWrapper(
         }
     }
 
+
+    @Deprecated("This method currently does not return the appropriate setting")
     suspend fun getNextMessageOnMoveEnabled(): Either<DataError, Boolean> {
         return when (val result = customSettings.swipeToAdjacentConversation()) {
             is CustomSettingsSwipeToAdjacentConversationResult.Ok -> result.v1.right()
             is CustomSettingsSwipeToAdjacentConversationResult.Error -> result.v1.toDataError().left()
+        }
+    }
+
+    suspend fun getSwipeToAdjacentConversation(): Either<DataError, Boolean> {
+        return when (val result = customSettings.swipeToAdjacentConversation()) {
+            is CustomSettingsSwipeToAdjacentConversationResult.Ok -> result.v1.right()
+            is CustomSettingsSwipeToAdjacentConversationResult.Error -> result.v1.toDataError().left()
+        }
+    }
+
+    suspend fun setSwipeToAdjacentConversation(enabled: Boolean): Either<DataError, Unit> {
+        return when (val result = customSettings.setSwipeToAdjacentConversation(enabled)) {
+            is CustomSettingsSetSwipeToAdjacentConversationResult.Error -> result.v1.toDataError().left()
+            CustomSettingsSetSwipeToAdjacentConversationResult.Ok -> Unit.right()
         }
     }
 }

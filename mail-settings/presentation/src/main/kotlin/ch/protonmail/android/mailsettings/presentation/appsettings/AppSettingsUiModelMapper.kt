@@ -37,7 +37,8 @@ internal object AppSettingsUiModelMapper {
             theme = appSettings.theme.toTextUiModel(),
             deviceContactsEnabled = appSettings.hasCombinedContactsEnabled,
             notificationsEnabledStatus = getNotificationStatus(notificationsEnabled),
-            appIconName = appIconDescription
+            appIconName = appIconDescription,
+            swipeNextEnabled = appSettings.swipeNextPreference.enabled
         )
     }
 

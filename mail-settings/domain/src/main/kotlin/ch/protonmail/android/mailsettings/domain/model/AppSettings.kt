@@ -28,7 +28,8 @@ data class AppSettings(
     val customAppLanguage: String?,
     val hasCombinedContactsEnabled: Boolean,
     val theme: Theme,
-    val mobileSignaturePreference: MobileSignaturePreference
+    val mobileSignaturePreference: MobileSignaturePreference,
+    val swipeNextPreference: SwipeNextPreference
 ) {
     val hasAutoLock = autolockProtection != Protection.None
 
@@ -46,7 +47,8 @@ data class AppSettings(
             DEFAULT_CUSTOM_LANGUAGE,
             DEFAULT_HAS_DEVICE_CONTACTS_ENABLED,
             DEFAULT_THEME,
-            MobileSignaturePreference.Empty
+            MobileSignaturePreference.Empty,
+            SwipeNextPreference.NotEnabled
         )
     }
 }

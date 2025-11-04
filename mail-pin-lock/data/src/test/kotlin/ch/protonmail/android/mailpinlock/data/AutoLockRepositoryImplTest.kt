@@ -33,16 +33,18 @@ import ch.protonmail.android.mailpinlock.model.BiometricsSystemState
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
+import ch.protonmail.android.mailsettings.domain.model.SwipeNextPreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
+import ch.protonmail.android.mailsettings.domain.repository.SwipeNextRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
@@ -98,6 +100,10 @@ class AutoLockRepositoryImplTest {
         every { observeMobileSignature(userId) } returns flowOf(MobileSignaturePreference.Empty)
     }
 
+    private val swipeNextRepository = mockk<SwipeNextRepository> {
+        coEvery { observeSwipeNext(userId) } returns flowOf(SwipeNextPreference.NotEnabled.right())
+    }
+
 
     private val appSettingsRepository: AppSettingsRepository = spyk(
         AppSettingsRepository(
@@ -105,7 +111,8 @@ class AutoLockRepositoryImplTest {
             userSessionRepository = userSessionRepository,
             rustAppSettingsDataSource = appSettingsDataSource,
             appLanguageRepository = appLanguageRepository,
-            mobileSignatureRepository = mobileSignatureRepository
+            mobileSignatureRepository = mobileSignatureRepository,
+            swipeNextRepository = swipeNextRepository
         )
     )
 
@@ -132,7 +139,8 @@ class AutoLockRepositoryImplTest {
         customAppLanguage = AppLanguage.FRENCH.langName,
         hasCombinedContactsEnabled = true,
         theme = Theme.LIGHT,
-        mobileSignaturePreference = MobileSignaturePreference.Empty
+        mobileSignaturePreference = MobileSignaturePreference.Empty,
+        swipeNextPreference = SwipeNextPreference.NotEnabled
     )
 
     @Test

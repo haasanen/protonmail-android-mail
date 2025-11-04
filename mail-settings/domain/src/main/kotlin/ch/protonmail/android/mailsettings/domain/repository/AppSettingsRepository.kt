@@ -24,6 +24,7 @@ import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 
 interface AppSettingsRepository {
 
@@ -32,6 +33,7 @@ interface AppSettingsRepository {
     suspend fun updateTheme(theme: Theme): Either<DataError, Unit>
     suspend fun updateAlternativeRouting(value: Boolean): Either<DataError, Unit>
     suspend fun updateUseCombineContacts(value: Boolean): Either<DataError, Unit>
+    suspend fun updateSwipeToNextEmail(userId: UserId, value: Boolean): Either<DataError, Unit>
     suspend fun updateInterval(interval: AutoLockInterval): Either<DataError, Unit>
     suspend fun refreshSettings()
 }
