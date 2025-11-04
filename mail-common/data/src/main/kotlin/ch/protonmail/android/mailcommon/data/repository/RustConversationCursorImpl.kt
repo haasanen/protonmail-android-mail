@@ -31,21 +31,21 @@ import timber.log.Timber
 import ch.protonmail.android.mailcommon.data.wrapper.ConversationCursor as ConversationCursorWrapper
 
 /**
- * Maintains a cursor position allowing a swipe based navigation.  If a CursorResult is null it can be considered to
- * be loading.  Therefore both null and error are considered valid positions and allow the UI to
- * display something meaningful.
+ * Maintains a cursor position allowing sequential based access to Conversations, maintains a position allowing
+ * forwards and backwards navigation through a conversationList.  The cursor is stateful and must be closed after use
  *
- * If we are at an End the index will update accordingly, 0 if we are at the start (no previous entries) or 1 this
- * value can be used to set the current index of viewpagers
+ * End indicates there there are no more entries available in this direction.
  *
  * [moveForward] and [moveBackward]  should be called asyncryonously to move the cursor forwards and backwards in
  * response to UI events. but the UI can use [next] and [previous] to update the page immediately and then call the
  * respective functions to update cursor position
  *
  */
-class RustConversationCursorImpl(
-    firstPage: CursorId,
-    private val conversationCursorWrapper: ConversationCursorWrapper
+class RustConversationCursorImpl private constructor(
+    private val conversationCursorWrapper: ConversationCursorWrapper,
+    initialCurrent: CursorResult?,
+    initialPrevious: CursorResult?,
+    initialNext: CursorResult?
 ) :
     ConversationCursor {
 
@@ -60,14 +60,9 @@ class RustConversationCursorImpl(
     private val mutex = Mutex()
 
     init {
-        current = Cursor(firstPage.conversationId, firstPage.messageId)
-    }
-
-    override suspend fun init() {
-        mutex.withLock {
-            previous = conversationCursorWrapper.previousPage().recoverFromErrorIfNeeded()
-            next = conversationCursorWrapper.nextPage().recoverFromErrorIfNeeded()
-        }
+        current = initialCurrent
+        previous = initialPrevious?.recoverFromErrorIfNeeded()
+        next = initialNext?.recoverFromErrorIfNeeded()
     }
 
     override suspend fun invalidatePrevious() {
@@ -164,5 +159,23 @@ class RustConversationCursorImpl(
 
     override fun close() {
         conversationCursorWrapper.disconnect()
+    }
+
+    companion object {
+
+        suspend operator fun invoke(
+            firstPage: CursorId,
+            conversationCursorWrapper: ConversationCursorWrapper
+        ): RustConversationCursorImpl {
+            val current = Cursor(firstPage.conversationId, firstPage.messageId)
+            val previous = conversationCursorWrapper.previousPage()
+            val next = conversationCursorWrapper.nextPage()
+            return RustConversationCursorImpl(
+                conversationCursorWrapper,
+                current,
+                previous,
+                next
+            )
+        }
     }
 }

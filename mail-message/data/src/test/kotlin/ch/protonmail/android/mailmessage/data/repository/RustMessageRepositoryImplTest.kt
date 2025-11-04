@@ -180,7 +180,10 @@ internal class RustMessageRepositoryImplTest {
     @Test
     fun `when getConversationCursor returns a cursor with the first messsageId`() = runTest {
         // Given
-        val conversationCursor = mockk<ConversationCursor>()
+        val conversationCursor = mockk<ConversationCursor> {
+            every { previousPage() } returns Cursor(ConversationId("200"))
+            coEvery { nextPage() } returns Cursor(ConversationId("300"))
+        }
         val firstPage = Id(100.toULong())
         coEvery {
             rustMessageDataSource.getConversationCursor(

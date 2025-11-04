@@ -25,7 +25,6 @@ interface ConversationCursor {
     val current: CursorResult?
     val next: CursorResult?
     val previous: CursorResult?
-    suspend fun init()
     suspend fun moveForward()
     suspend fun moveBackward()
     fun close()

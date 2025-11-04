@@ -268,7 +268,10 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `when getConversationCursor returns a cursor with the first conversationId`() = runTest {
         // Given
-        val conversationCursor = mockk<ConversationCursor>()
+        val conversationCursor = mockk<ConversationCursor> {
+            every { previousPage() } returns Cursor(ConversationId("200"))
+            coEvery { nextPage() } returns Cursor(ConversationId("300"))
+        }
         val firstPage = Id(100.toULong())
         coEvery {
             rustConversationDataSource.getConversationCursor(
@@ -293,7 +296,10 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `when unreadFilterEnabled is true then getConversationCursor returns a cursor for unread messages`() = runTest {
         // Given
-        val conversationCursor = mockk<ConversationCursor>()
+        val conversationCursor = mockk<ConversationCursor> {
+            every { previousPage() } returns Cursor(ConversationId("200"))
+            coEvery { nextPage() } returns Cursor(ConversationId("300"))
+        }
         val firstPage = Id(100.toULong())
         coEvery {
             rustConversationDataSource.getConversationCursor(

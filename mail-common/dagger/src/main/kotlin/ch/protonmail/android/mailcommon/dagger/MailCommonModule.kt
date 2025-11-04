@@ -70,5 +70,5 @@ object MailCommonModule {
     @Provides
     @Singleton
     @EphemeralMailBoxCoroutineScope
-    fun provideEphemeralMailBoxCCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    fun provideEphemeralMailBoxCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 }
