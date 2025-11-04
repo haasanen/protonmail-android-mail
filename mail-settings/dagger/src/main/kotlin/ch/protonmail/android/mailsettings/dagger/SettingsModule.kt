@@ -31,6 +31,8 @@ import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSource
 import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSourceImpl
 import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.RustToolbarActionSettingsDataSource
+import ch.protonmail.android.mailsettings.data.local.SwipeNextDataSource
+import ch.protonmail.android.mailsettings.data.local.SwipeNextDataSourceImpl
 import ch.protonmail.android.mailsettings.data.local.ToolbarActionSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AutoAdvanceRepositoryImpl
@@ -41,6 +43,7 @@ import ch.protonmail.android.mailsettings.data.repository.MobileSignatureReposit
 import ch.protonmail.android.mailsettings.data.repository.NotificationsSettingsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.PreventScreenshotsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.RustMailSettingsRepository
+import ch.protonmail.android.mailsettings.data.repository.SwipeNextRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.ToolbarActionsRepositoryImpl
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
@@ -53,6 +56,7 @@ import ch.protonmail.android.mailsettings.domain.repository.MailSettingsReposito
 import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
 import ch.protonmail.android.mailsettings.domain.repository.NotificationsSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.PreventScreenshotsRepository
+import ch.protonmail.android.mailsettings.domain.repository.SwipeNextRepository
 import ch.protonmail.android.mailsettings.domain.repository.ToolbarActionsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeObserverCoroutineScope
@@ -158,6 +162,12 @@ object SettingsModule {
 
         @Binds
         fun bindsAutoAdvanceRepository(impl: AutoAdvanceRepositoryImpl): AutoAdvanceRepository
+
+        @Binds
+        fun bindsSwipeNextDataSource(impl: SwipeNextDataSourceImpl): SwipeNextDataSource
+
+        @Binds
+        fun bindsSwipeNextRepository(impl: SwipeNextRepositoryImpl): SwipeNextRepository
     }
 
     @Module
