@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.ui
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -46,12 +48,17 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.model.EntireMessageBodyAction
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyState
 import ch.protonmail.android.maildetail.presentation.viewmodel.EntireMessageBodyViewModel
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.presentation.model.BodyImageUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
 import ch.protonmail.android.mailmessage.presentation.ui.ZoomableWebView
+import ch.protonmail.android.mailmessage.presentation.ui.messageBodyImageSaver
 import kotlinx.serialization.Serializable
 import timber.log.Timber
 
@@ -61,9 +68,15 @@ fun EntireMessageBodyScreen(
     onOpenMessageBodyLink: (Uri) -> Unit,
     viewModel: EntireMessageBodyViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val state = viewModel.state.collectAsStateWithLifecycle().value
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
+
+    val bodyImageSaver = messageBodyImageSaver(
+        onFileSaved = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() },
+        onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+    )
 
     ConsumableLaunchedEffect(effect = state.openMessageBodyLinkEffect) {
         if (state.requestPhishingLinkConfirmation) {
@@ -84,7 +97,7 @@ fun EntireMessageBodyScreen(
                 linkConfirmationDialogState.value?.let { onOpenMessageBodyLink(it) }
                 linkConfirmationDialogState.value = null
                 if (doNotShowAgain) {
-                    TODO()
+                    viewModel.submit(EntireMessageBodyAction.DoNotAskLinkConfirmationAgain)
                 }
             },
             linkUri = linkConfirmationDialogState.value
@@ -135,12 +148,28 @@ fun EntireMessageBodyScreen(
             is MessageBodyState.Data -> MessageBodyWebView(
                 modifier = Modifier.padding(padding),
                 messageBodyUiModel = messageBodyState.messageBodyUiModel,
-                onMessageBodyLinkClicked = { TODO() }
+                onMessageBodyLinkClicked = {
+                    viewModel.submit(EntireMessageBodyAction.MessageBodyLinkClicked(it))
+                },
+                loadImage = { messageId, url ->
+                    viewModel.loadImage(messageId, url)
+                },
+                onDownloadImage = { messageId, url ->
+                    bodyImageSaver(BodyImageUiModel(url, messageId))
+                }
             )
             is MessageBodyState.Error.Decryption -> MessageBodyWebView(
                 modifier = Modifier.padding(padding),
                 messageBodyUiModel = messageBodyState.encryptedMessageBody,
-                onMessageBodyLinkClicked = { TODO() }
+                onMessageBodyLinkClicked = {
+                    viewModel.submit(EntireMessageBodyAction.MessageBodyLinkClicked(it))
+                },
+                loadImage = { messageId, url ->
+                    viewModel.loadImage(messageId, url)
+                },
+                onDownloadImage = { messageId, url ->
+                    bodyImageSaver(BodyImageUiModel(url, messageId))
+                }
             )
             is MessageBodyState.Error.Data -> ProtonErrorMessage(
                 modifier = Modifier.padding(padding),
@@ -154,7 +183,9 @@ fun EntireMessageBodyScreen(
 private fun MessageBodyWebView(
     modifier: Modifier,
     messageBodyUiModel: MessageBodyUiModel,
-    onMessageBodyLinkClicked: (Uri) -> Unit
+    onMessageBodyLinkClicked: (Uri) -> Unit,
+    loadImage: (MessageId, String) -> MessageBodyImage?,
+    onDownloadImage: (MessageId, String) -> Unit
 ) {
     val webViewCache = remember { mutableStateOf<ZoomableWebView?>(null) }
     MessageBodyWebView(
@@ -168,9 +199,9 @@ private fun MessageBodyWebView(
             onExpandCollapseButtonCLicked = {}, // Button not shown, message is shown fully
             onAttachmentClicked = { _, _ -> }, // Attachments not shown in this screen
             onToggleAttachmentsExpandCollapseMode = {}, // Attachments not shown in this screen
-            loadImage = { _, _ -> null }, // TODO
+            loadImage = loadImage,
             onPrint = {}, // Print action is not available in this screen
-            onDownloadImage = { _, _ -> }, // TODO
+            onDownloadImage = onDownloadImage,
             onViewEntireMessageClicked = { _, _, _, _ -> } // Button won't be shown
         ),
         shouldAllowViewingEntireMessage = false,

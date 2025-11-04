@@ -22,13 +22,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.model.isOfflineError
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.maildetail.presentation.mapper.MessageBodyUiModelMapper
+import ch.protonmail.android.maildetail.presentation.model.EntireMessageBodyAction
 import ch.protonmail.android.maildetail.presentation.model.EntireMessageBodyState
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyState
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen
 import ch.protonmail.android.maildetail.presentation.usecase.IsDarkModeEnabled
+import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
@@ -38,6 +42,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -50,6 +55,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.proton.core.util.kotlin.deserializeOrNull
 import timber.log.Timber
 import javax.inject.Inject
@@ -60,9 +66,11 @@ class EntireMessageBodyViewModel @Inject constructor(
     private val isDarkModeEnabled: IsDarkModeEnabled,
     private val getMessageBodyWithClickableLinks: GetMessageBodyWithClickableLinks,
     private val messageBodyUiModelMapper: MessageBodyUiModelMapper,
+    private val loadImageAvoidDuplicatedExecution: LoadImageAvoidDuplicatedExecution,
     private val observeMessage: ObserveMessage,
     private val observePrivacySettings: ObservePrivacySettings,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val updateLinkConfirmationSetting: UpdateLinkConfirmationSetting
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -84,6 +92,24 @@ class EntireMessageBodyViewModel @Inject constructor(
         observeMessage()
         observePrivacySettings()
     }
+
+    fun submit(action: EntireMessageBodyAction) = when (action) {
+        is EntireMessageBodyAction.MessageBodyLinkClicked -> handleMessageBodyLinkClicked(action)
+        is EntireMessageBodyAction.DoNotAskLinkConfirmationAgain -> handleDoNotAskLinkConfirmationAgain()
+    }
+
+    fun loadImage(messageId: MessageId, url: String): MessageBodyImage? {
+        return runBlocking {
+            loadImageAvoidDuplicatedExecution(
+                userId = primaryUserId.first(),
+                messageId = messageId,
+                url = url,
+                shouldLoadImagesSafely = true,
+                coroutineContext = viewModelScope.coroutineContext
+            ).getOrNull()
+        }
+    }
+
 
     private fun requireMessageId(): MessageId {
         val messageIdParam = savedStateHandle.get<String>(EntireMessageBodyScreen.MESSAGE_ID_KEY)
@@ -175,4 +201,14 @@ class EntireMessageBodyViewModel @Inject constructor(
             )
         }
     }.launchIn(viewModelScope)
+
+    private fun handleMessageBodyLinkClicked(action: EntireMessageBodyAction.MessageBodyLinkClicked) {
+        mutableState.value = mutableState.value.copy(
+            openMessageBodyLinkEffect = Effect.of(action.uri)
+        )
+    }
+
+    private fun handleDoNotAskLinkConfirmationAgain() {
+        viewModelScope.launch { updateLinkConfirmationSetting(false) }
+    }
 }

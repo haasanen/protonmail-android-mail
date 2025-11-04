@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.left
@@ -25,10 +26,12 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.maildetail.presentation.mapper.MessageBodyUiModelMapper
+import ch.protonmail.android.maildetail.presentation.model.EntireMessageBodyAction
 import ch.protonmail.android.maildetail.presentation.model.EntireMessageBodyState
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyState
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen
 import ch.protonmail.android.maildetail.presentation.usecase.IsDarkModeEnabled
+import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.viewmodel.EntireMessageBodyViewModelTest.TestData.InputData
 import ch.protonmail.android.maildetail.presentation.viewmodel.EntireMessageBodyViewModelTest.TestData.MESSAGE_ID
 import ch.protonmail.android.maildetail.presentation.viewmodel.EntireMessageBodyViewModelTest.TestData.SUBJECT
@@ -41,11 +44,13 @@ import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.testdata.message.DecryptedMessageBodyTestData
 import ch.protonmail.android.testdata.message.MessageBodyUiModelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +73,7 @@ class EntireMessageBodyViewModelTest {
     }
     private val getMessageBodyWithClickableLinks = mockk<GetMessageBodyWithClickableLinks>()
     private val messageBodyUiModelMapper = mockk<MessageBodyUiModelMapper>()
+    private val loadImageAvoidDuplicatedExecution = mockk<LoadImageAvoidDuplicatedExecution>()
     private val observeMessage = mockk<ObserveMessage> {
         coEvery { this@mockk.invoke(UserIdTestData.userId, MessageId(MESSAGE_ID)) } returns flowOf(
             MessageTestData.buildMessage(
@@ -90,6 +96,9 @@ class EntireMessageBodyViewModelTest {
         every { this@mockk.get<String>(EntireMessageBodyScreen.MESSAGE_ID_KEY) } returns MESSAGE_ID
         every { this@mockk.get<String>(EntireMessageBodyScreen.INPUT_PARAMS_KEY) } returns InputData
     }
+    private val updateLinkConfirmationSetting = mockk<UpdateLinkConfirmationSetting> {
+        coEvery { this@mockk.invoke(false) } returns Unit.right()
+    }
 
     private val entireMessageBodyViewModel by lazy {
         EntireMessageBodyViewModel(
@@ -97,9 +106,11 @@ class EntireMessageBodyViewModelTest {
             isDarkModeEnabled = isDarkModeEnabled,
             getMessageBodyWithClickableLinks = getMessageBodyWithClickableLinks,
             messageBodyUiModelMapper = messageBodyUiModelMapper,
+            loadImageAvoidDuplicatedExecution = loadImageAvoidDuplicatedExecution,
             observeMessage = observeMessage,
             observePrivacySettings = observePrivacySettings,
-            savedStateHandle = savedStateHandle
+            savedStateHandle = savedStateHandle,
+            updateLinkConfirmationSetting = updateLinkConfirmationSetting
         )
     }
 
@@ -200,6 +211,53 @@ class EntireMessageBodyViewModelTest {
                 openMessageBodyLinkEffect = Effect.empty()
             )
             assertEquals(expected, item)
+        }
+    }
+
+    @Test
+    fun `should handle message body link clicked when action is submitted`() = runTest {
+        // Given
+        val decryptedMessageBody = DecryptedMessageBodyTestData.messageBodyWithAttachment
+        val messageBodyUiModel = MessageBodyUiModelTestData.messageBodyWithAttachmentsUiModel
+        val uri = mockk<Uri>()
+        coEvery {
+            getMessageBodyWithClickableLinks(UserIdTestData.userId, MessageId(MESSAGE_ID), any())
+        } returns decryptedMessageBody.right()
+        coEvery {
+            messageBodyUiModelMapper.toUiModel(decryptedMessageBody, null)
+        } returns messageBodyUiModel
+
+        // When
+        entireMessageBodyViewModel.state.test {
+            skipItems(1)
+
+            entireMessageBodyViewModel.submit(EntireMessageBodyAction.MessageBodyLinkClicked(uri))
+
+            // Then
+            assertEquals(uri, awaitItem().openMessageBodyLinkEffect.consume())
+        }
+    }
+
+    @Test
+    fun `should handle do not ask link confirmation again when action is submitted`() = runTest {
+        // Given
+        val decryptedMessageBody = DecryptedMessageBodyTestData.messageBodyWithAttachment
+        val messageBodyUiModel = MessageBodyUiModelTestData.messageBodyWithAttachmentsUiModel
+        coEvery {
+            getMessageBodyWithClickableLinks(UserIdTestData.userId, MessageId(MESSAGE_ID), any())
+        } returns decryptedMessageBody.right()
+        coEvery {
+            messageBodyUiModelMapper.toUiModel(decryptedMessageBody, null)
+        } returns messageBodyUiModel
+
+        // When
+        entireMessageBodyViewModel.state.test {
+            skipItems(1)
+
+            entireMessageBodyViewModel.submit(EntireMessageBodyAction.DoNotAskLinkConfirmationAgain)
+
+            // Then
+            coVerify { updateLinkConfirmationSetting(false) }
         }
     }
 
