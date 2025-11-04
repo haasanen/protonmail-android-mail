@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.navigation.route
 
+import android.net.Uri
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -51,6 +52,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.IsSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
+import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen.ViewModeIsConversation
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreenLegacy
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen
@@ -218,6 +220,18 @@ internal fun NavGraphBuilder.addMailbox(
             ),
             onEvent = onEvent,
             fabHostState = fabHostState
+        )
+    }
+}
+
+internal fun NavGraphBuilder.addEntireMessageBody(
+    navController: NavHostController,
+    onOpenMessageBodyLink: (Uri) -> Unit
+) {
+    composable(route = Destination.Screen.EntireMessageBody.route) {
+        EntireMessageBodyScreen(
+            onBackClick = { navController.navigateBack() },
+            onOpenMessageBodyLink = onOpenMessageBodyLink
         )
     }
 }

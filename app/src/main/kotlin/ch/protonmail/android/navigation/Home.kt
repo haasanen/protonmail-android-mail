@@ -123,6 +123,7 @@ import ch.protonmail.android.navigation.route.addCustomizeToolbarSettings
 import ch.protonmail.android.navigation.route.addDeepLinkHandler
 import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addEmailSignatureSettings
+import ch.protonmail.android.navigation.route.addEntireMessageBody
 import ch.protonmail.android.navigation.route.addExportLogsSettings
 import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
 import ch.protonmail.android.navigation.route.addLanguageSettings
@@ -673,8 +674,23 @@ fun Home(
                             },
                             onCustomizeMessageToolbar = {
                                 navController.navigate(Screen.EditToolbarScreen(ToolbarType.Message))
+                            },
+                            onViewEntireMessageClicked =
+                            { messageId, shouldShowEmbeddedImages, shouldShowRemoteContent, viewModePreference ->
+                                navController.navigate(
+                                    Screen.EntireMessageBody(
+                                        messageId,
+                                        shouldShowEmbeddedImages,
+                                        shouldShowRemoteContent,
+                                        viewModePreference
+                                    )
+                                )
                             }
                         )
+                    )
+                    addEntireMessageBody(
+                        navController,
+                        onOpenMessageBodyLink = activityActions.openInActivityInNewTask
                     )
                     addMailbox(
                         navController,

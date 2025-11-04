@@ -664,7 +664,7 @@ fun ConversationDetailScreen(
                     showUndoableOperationSnackbar = { action ->
                         actions.showUndoableOperationSnackbar(action)
                     },
-                    onViewEntireMessageClicked = { _, _, _, _ -> }
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
                 )
             )
         }
@@ -1258,7 +1258,8 @@ object ConversationDetail {
         val recordMailboxScreenView: () -> Unit,
         val onExitWithOpenInComposer: (MessageId) -> Unit,
         val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit,
-        val onActionBarVisibilityChanged: (Boolean) -> Unit
+        val onActionBarVisibilityChanged: (Boolean) -> Unit,
+        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit
     )
 
     data class NavigationArgs(
