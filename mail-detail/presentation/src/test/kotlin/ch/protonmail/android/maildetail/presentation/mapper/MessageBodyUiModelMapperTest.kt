@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
@@ -32,6 +33,7 @@ import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import ch.protonmail.android.testdata.message.MessageBodyTestData
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -88,7 +90,10 @@ class MessageBodyUiModelMapperTest {
     }
 
     private val messageBodyUiModelMapper = MessageBodyUiModelMapper(
-        attachmentGroupUiModelMapper = attachmentGroupUiModelMapper
+        attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
+        restrictMessageWebViewHeightEnabled = mockk<FeatureFlag<Boolean>> {
+            coEvery { get() } returns true
+        }
     )
 
     @Test
@@ -114,7 +119,8 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault,
-            reloadMessageEffect = Effect.empty()
+            reloadMessageEffect = Effect.empty(),
+            shouldRestrictWebViewHeight = true
         )
 
         // When
@@ -161,7 +167,8 @@ class MessageBodyUiModelMapperTest {
                 )
             ),
             viewModePreference = ViewModePreference.ThemeDefault,
-            reloadMessageEffect = Effect.empty()
+            reloadMessageEffect = Effect.empty(),
+            shouldRestrictWebViewHeight = true
         )
 
         // When
@@ -203,7 +210,8 @@ class MessageBodyUiModelMapperTest {
                 )
             ),
             viewModePreference = ViewModePreference.ThemeDefault,
-            reloadMessageEffect = Effect.empty()
+            reloadMessageEffect = Effect.empty(),
+            shouldRestrictWebViewHeight = true
         )
 
         // When
@@ -245,7 +253,8 @@ class MessageBodyUiModelMapperTest {
                     )
                 ),
                 viewModePreference = ViewModePreference.ThemeDefault,
-                reloadMessageEffect = Effect.empty()
+                reloadMessageEffect = Effect.empty(),
+                shouldRestrictWebViewHeight = true
             )
 
             every {
@@ -289,7 +298,8 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault,
-            reloadMessageEffect = Effect.empty()
+            reloadMessageEffect = Effect.empty(),
+            shouldRestrictWebViewHeight = true
         )
 
         // When
@@ -323,7 +333,8 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault,
-                reloadMessageEffect = Effect.empty()
+                reloadMessageEffect = Effect.empty(),
+                shouldRestrictWebViewHeight = true
             )
 
             // When
@@ -357,7 +368,8 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault,
-                reloadMessageEffect = Effect.empty()
+                reloadMessageEffect = Effect.empty(),
+                shouldRestrictWebViewHeight = true
             )
 
             // When
@@ -391,7 +403,8 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault,
-                reloadMessageEffect = Effect.empty()
+                reloadMessageEffect = Effect.empty(),
+                shouldRestrictWebViewHeight = true
             )
 
             // When
@@ -425,7 +438,8 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault,
-                reloadMessageEffect = Effect.empty()
+                reloadMessageEffect = Effect.empty(),
+                shouldRestrictWebViewHeight = true
             )
 
             // When
@@ -450,7 +464,8 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault,
-            reloadMessageEffect = Effect.empty()
+            reloadMessageEffect = Effect.empty(),
+            shouldRestrictWebViewHeight = false
         )
 
         // When
@@ -483,7 +498,8 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault,
-            reloadMessageEffect = Effect.empty()
+            reloadMessageEffect = Effect.empty(),
+            shouldRestrictWebViewHeight = true
         )
 
         // When

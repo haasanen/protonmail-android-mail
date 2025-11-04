@@ -22,6 +22,7 @@ import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
+import kotlinx.serialization.Serializable
 
 @Stable
 data class MessageBodyUiModel(
@@ -43,4 +44,5 @@ enum class MimeTypeUiModel(val value: String) {
     Html("text/html")
 }
 
+@Serializable
 enum class ViewModePreference { ThemeDefault, LightMode, DarkMode }

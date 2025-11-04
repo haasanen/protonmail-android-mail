@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -44,19 +46,22 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.maildetail.presentation.model.EntireMessageBodyState
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyState
+import ch.protonmail.android.maildetail.presentation.viewmodel.EntireMessageBodyViewModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
+import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
 import ch.protonmail.android.mailmessage.presentation.ui.ZoomableWebView
+import kotlinx.serialization.Serializable
 import timber.log.Timber
 
 @Composable
 fun EntireMessageBodyScreen(
     onBackClick: () -> Unit,
     onOpenMessageBodyLink: (Uri) -> Unit,
-    state: EntireMessageBodyState
+    viewModel: EntireMessageBodyViewModel = hiltViewModel()
 ) {
+    val state = viewModel.state.collectAsStateWithLifecycle().value
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
 
@@ -182,4 +187,17 @@ private fun onBuildWebView(webView: MutableState<ZoomableWebView?>) = { context:
 
     Timber.d("message-webview: factory returning webview")
     webView.value ?: throw IllegalStateException("WebView wasn't initialized.")
+}
+
+object EntireMessageBodyScreen {
+
+    const val MESSAGE_ID_KEY = "message id"
+    const val INPUT_PARAMS_KEY = "input params"
+
+    @Serializable
+    data class InputParams(
+        val shouldShowEmbeddedImages: Boolean,
+        val shouldShowRemoteContent: Boolean,
+        val viewModePreference: ViewModePreference
+    )
 }

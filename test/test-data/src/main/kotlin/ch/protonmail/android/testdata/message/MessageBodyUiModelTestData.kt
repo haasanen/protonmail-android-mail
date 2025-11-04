@@ -110,7 +110,8 @@ object MessageBodyUiModelTestData {
         shouldShowEmbeddedImagesBanner: Boolean = false,
         shouldShowRemoteContentBanner: Boolean = false,
         attachments: AttachmentGroupUiModel? = null,
-        viewModePreference: ViewModePreference = ViewModePreference.ThemeDefault
+        viewModePreference: ViewModePreference = ViewModePreference.ThemeDefault,
+        shouldRestrictWebViewHeight: Boolean = false
     ): MessageBodyUiModel {
         return MessageBodyUiModel(
             messageId = messageId,
@@ -122,7 +123,8 @@ object MessageBodyUiModelTestData {
             shouldShowExpandCollapseButton = false,
             attachments = attachments,
             viewModePreference = viewModePreference,
-            reloadMessageEffect = Effect.empty()
+            reloadMessageEffect = Effect.empty(),
+            shouldRestrictWebViewHeight = shouldRestrictWebViewHeight
         )
     }
 }

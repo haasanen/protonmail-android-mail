@@ -438,7 +438,10 @@ internal class ConversationDetailViewModelIntegrationTest {
         messageDetailFooterUiModelMapper = MessageDetailFooterUiModelMapper(),
         messageBannersUiModelMapper = MessageBannersUiModelMapper(context, formatScheduleSendTime),
         messageBodyUiModelMapper = MessageBodyUiModelMapper(
-            attachmentGroupUiModelMapper = attachmentGroupUiModelMapper
+            attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
+            restrictMessageWebViewHeightEnabled = mockk<FeatureFlag<Boolean>> {
+                coEvery { get() } returns true
+            }
         ),
         participantUiModelMapper = ParticipantUiModelMapper(resolveParticipantName),
         messageIdUiModelMapper = messageIdUiModelMapper,
