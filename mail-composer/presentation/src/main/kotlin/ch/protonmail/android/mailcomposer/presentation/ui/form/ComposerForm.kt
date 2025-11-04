@@ -56,7 +56,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
+import ch.protonmail.android.mailcomposer.presentation.model.editor.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyPlainText
 import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyWebView

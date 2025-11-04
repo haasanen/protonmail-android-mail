@@ -44,15 +44,13 @@ import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
-import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
+import ch.protonmail.android.mailcomposer.presentation.model.editor.CursorPosition
+import ch.protonmail.android.mailcomposer.presentation.model.editor.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.util.ComposerFocusUtils
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -60,6 +58,7 @@ import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.extension.isRemoteContent
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
 import ch.protonmail.android.mailmessage.presentation.ui.showInLightMode
+import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -81,33 +80,48 @@ fun EditableMessageBodyWebView(
     val localDensity = LocalDensity.current
 
     var webView by remember { mutableStateOf<WebView?>(null) }
-    var currentCursorPosition by remember { mutableStateOf(0.dp) }
-    var currentLineHeight by remember { mutableStateOf(0.dp) }
+    var currentCursorPosition by remember { mutableStateOf(CursorPosition(0f, 0f)) }
+    var currentLineHeightPx by remember { mutableStateOf(0f) }
     var webViewHeightPx by remember { mutableIntStateOf(0) }
+    var bodyContentVersion by remember { mutableIntStateOf(0) }
+    val isKeyboardVisible by keyboardVisibilityAsState()
 
-    LaunchedEffect(webViewHeightPx) {
+    LaunchedEffect(key1 = webViewHeightPx, key2 = isKeyboardVisible) {
         webViewActions.onWebViewParamsChanged(
-            WebViewMeasures(webViewHeightPx.toDp(localDensity), currentCursorPosition, currentLineHeight)
+            WebViewMeasures(
+                heightPx = webViewHeightPx.toFloat(),
+                cursorPosition = currentCursorPosition,
+                lineHeightPx = currentLineHeightPx,
+                bodyContentVersion = bodyContentVersion,
+                isKeyboardVisible = isKeyboardVisible
+            )
         )
     }
 
-    fun onCursorPositionChanged(position: Float, lineHeight: Float) {
-        // For unclear reasons, the data exposed we get form the webview (through running custom js)
-        // which one would expect being is px, is actually already in DP. Hence, no conversion here.
-        currentCursorPosition = Dp(position)
-        currentLineHeight = Dp(lineHeight)
+    fun onCursorPositionChanged(positionPx: Float, lineHeightPx: Float) {
+        currentCursorPosition = CursorPosition(topPx = positionPx, bottomPx = positionPx + lineHeightPx)
+        currentLineHeightPx = lineHeightPx
 
         webViewActions.onWebViewParamsChanged(
-            WebViewMeasures(webViewHeightPx.toDp(localDensity), currentCursorPosition, currentLineHeight)
+            WebViewMeasures(
+                heightPx = webViewHeightPx.toFloat(),
+                cursorPosition = currentCursorPosition,
+                lineHeightPx = currentLineHeightPx,
+                bodyContentVersion = bodyContentVersion,
+                isKeyboardVisible = isKeyboardVisible
+            )
         )
     }
 
     val javascriptCallback = remember {
         JavascriptCallback(
-            webViewActions.onMessageBodyChanged,
-            ::onCursorPositionChanged,
-            webViewActions.onInlineImageRemoved,
-            webViewActions.onInlineImageClicked
+            onMessageBodyChanged = { body ->
+                webViewActions.onMessageBodyChanged(body)
+                bodyContentVersion++
+            },
+            onCursorPositionChanged = ::onCursorPositionChanged,
+            onInlineImageRemoved = webViewActions.onInlineImageRemoved,
+            onInlineImageClicked = webViewActions.onInlineImageClicked
         )
     }
 
