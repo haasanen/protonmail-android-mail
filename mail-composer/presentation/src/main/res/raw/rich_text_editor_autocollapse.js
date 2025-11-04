@@ -113,9 +113,13 @@ function updateCaretPosition() {
         selection.removeAllRanges();
         selection.addRange(range); // Add the original range back
 
+        const density = window.devicePixelRatio || 1.0;
+
         // Calculate the height of the caret position relative to the inputDiv
         const caretPosition = rect.top - editor.getBoundingClientRect().top;
-        $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition, parsedLineHeight);
+        $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(
+          caretPosition * density,
+          parsedLineHeight * density);
     }
 }
 
