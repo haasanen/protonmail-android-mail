@@ -55,3 +55,7 @@ annotation class IsMessageExpirationEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsMessageDetailEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsSwipeAutoAdvanceEnabled

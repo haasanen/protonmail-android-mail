@@ -89,3 +89,11 @@ data object MessageDetailEnabled : FeatureFlagDefinition(
     description = "Allow to view a single message in the detail screen",
     defaultValue = true
 )
+
+data object SwipeAutoAdvanceEnabled : FeatureFlagDefinition(
+    key = "MailAndroidV7SwipeAutoAdvance",
+    name = "Swipe and AutoAdvance View",
+    category = FeatureFlagCategory.Details,
+    description = "Show New Conversation detail Screen (that swipes) or Legacy",
+    defaultValue = false
+)

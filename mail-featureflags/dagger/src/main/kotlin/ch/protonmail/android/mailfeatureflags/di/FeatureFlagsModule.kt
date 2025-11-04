@@ -32,6 +32,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailE
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
 import ch.protonmail.android.mailfeatureflags.domain.model.ComposerAutoCollapseQuotedText
@@ -42,6 +43,7 @@ import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wa
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.SwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
 import dagger.Module
 import dagger.Provides
@@ -68,6 +70,17 @@ object FeatureFlagsModule {
     @IsMessageDetailEnabled
     fun provideMessageDetailEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(MessageDetailEnabled.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideIsSwipeAutoEnabledDefinitions(): FeatureFlagDefinition = SwipeAutoAdvanceEnabled
+
+    @Provides
+    @Singleton
+    @IsSwipeAutoAdvanceEnabled
+    fun provideIsSwipeAutoEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(SwipeAutoAdvanceEnabled.key, false)
 
     @Provides
     @Singleton

@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
+import ch.protonmail.android.maildetail.presentation.usecase.GetIsSwipeAutoEnabled
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -29,13 +30,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConversationRouterViewModel @Inject constructor(
-    private val observePrimaryUserId: ObservePrimaryUserId,
-    private val isShowSingleMessageMode: IsShowSingleMessageMode
+    observePrimaryUserId: ObservePrimaryUserId,
+    private val isShowSingleMessageMode: IsShowSingleMessageMode,
+    private val isSwipeAutoAdvanceEnabled: GetIsSwipeAutoEnabled
+
 ) : ViewModel() {
 
-    val singleMessageModeEnabled: Flow<Boolean> = observePrimaryUserId()
+    val conversationSettings: Flow<ConversationSettings> = observePrimaryUserId()
         .filterNotNull()
         .mapLatest { userId ->
-            isShowSingleMessageMode(userId)
+            ConversationSettings(
+                singleMessageModeEnabled = isShowSingleMessageMode(userId),
+                swipeAutoAdvanceEnabled = isSwipeAutoAdvanceEnabled()
+            )
+
         }
+
+    data class ConversationSettings(val singleMessageModeEnabled: Boolean, val swipeAutoAdvanceEnabled: Boolean)
 }

@@ -93,6 +93,25 @@ sealed class Destination(val route: String) {
                 .replace(ConversationDetailEntryPointNameKey.wrap(), entryPoint.name)
         }
 
+        object ConversationNonSwipable : Destination(
+            "mailbox/conversation/${ConversationIdKey.wrap()}/" +
+                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/" +
+                "${IsSingleMessageMode.wrap()}/${ConversationDetailEntryPointNameKey.wrap()}"
+        ) {
+
+            operator fun invoke(
+                conversationId: ConversationId,
+                scrollToMessageId: MessageId? = null,
+                openedFromLocation: LabelId,
+                isSingleMessageMode: Boolean,
+                entryPoint: ConversationDetailEntryPoint
+            ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
+                .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
+                .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
+                .replace(IsSingleMessageMode.wrap(), isSingleMessageMode.toString())
+                .replace(ConversationDetailEntryPointNameKey.wrap(), entryPoint.name)
+        }
+
         object Composer : Destination("composer")
         object SetMessagePassword : Destination("composer/setMessagePassword")
 

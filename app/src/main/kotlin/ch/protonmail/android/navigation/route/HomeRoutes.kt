@@ -50,6 +50,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreenLegacy
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationRouterViewModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
@@ -73,23 +74,40 @@ internal fun NavGraphBuilder.addConversationDetail(
         Timber.d("Conversation Router init (composition)")
 
         val viewModel = hiltViewModel<ConversationRouterViewModel>()
-        val isSingleMessageMode by viewModel.singleMessageModeEnabled.collectAsStateWithLifecycle(null)
+        val conversationSettings by viewModel.conversationSettings.collectAsStateWithLifecycle(null)
 
-        LaunchedEffect(isSingleMessageMode) {
-            val singleMessageMode = isSingleMessageMode ?: return@LaunchedEffect
-            val conversationDestination = Destination.Screen.Conversation(
-                conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
-                scrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
-                    ?.takeIf { it != "null" }
-                    ?.let(::MessageId),
-                openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
-                isSingleMessageMode = singleMessageMode,
-                entryPoint = ConversationDetailEntryPoint.valueOf(
-                    backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
+        LaunchedEffect(conversationSettings) {
+            val conversationSettings = conversationSettings ?: return@LaunchedEffect
+            val singleMessageMode = conversationSettings.singleMessageModeEnabled
+            val swipeAutoAdvanceEnabled = conversationSettings.swipeAutoAdvanceEnabled
+
+            val conversationDestination = if (!swipeAutoAdvanceEnabled) {
+                Destination.Screen.ConversationNonSwipable(
+                    conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
+                    scrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
+                        ?.takeIf { it != "null" }
+                        ?.let(::MessageId),
+                    openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
+                    isSingleMessageMode = singleMessageMode,
+                    entryPoint = ConversationDetailEntryPoint.valueOf(
+                        backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
+                    )
                 )
-            )
+            } else {
+                Destination.Screen.Conversation(
+                    conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
+                    scrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
+                        ?.takeIf { it != "null" }
+                        ?.let(::MessageId),
+                    openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
+                    isSingleMessageMode = singleMessageMode,
+                    entryPoint = ConversationDetailEntryPoint.valueOf(
+                        backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
+                    )
+                )
+            }
 
-            Timber.d("Conversation Router resolved 'is single message mode' to $isSingleMessageMode")
+            Timber.d("Conversation Router resolved conversation settings to $conversationSettings")
             navController.navigate(conversationDestination) {
                 popUpTo(Destination.Screen.ConversationRouter.route) { inclusive = true }
             }
@@ -105,7 +123,18 @@ internal fun NavGraphBuilder.addConversationDetail(
         popExitTransition = { RouteTransitions.exitTransitionRightToLeft },
         exitTransition = { RouteTransitions.exitTransitionRightToLeft }
     ) {
+        // upcoming new screen will go here
         ConversationDetailScreen(actions = actions)
+    }
+
+    composable(
+        route = Destination.Screen.ConversationNonSwipable.route,
+        enterTransition = { RouteTransitions.enterTransientLeftToRight },
+        popEnterTransition = { RouteTransitions.enterTransientLeftToRight },
+        popExitTransition = { RouteTransitions.exitTransitionRightToLeft },
+        exitTransition = { RouteTransitions.exitTransitionRightToLeft }
+    ) {
+        ConversationDetailScreenLegacy(actions = actions)
     }
 }
 
