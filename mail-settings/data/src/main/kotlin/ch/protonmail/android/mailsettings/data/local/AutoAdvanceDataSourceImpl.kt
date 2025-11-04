@@ -20,33 +20,25 @@ package ch.protonmail.android.mailsettings.data.local
 
 import arrow.core.Either
 import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import ch.protonmail.android.mailsettings.data.usecase.CreateRustCustomSettings
-import ch.protonmail.android.mailsettings.data.wrapper.CustomSettingsWrapper
+import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
+import uniffi.proton_mail_uniffi.NextMessageOnMove
 import javax.inject.Inject
 
+// Here we're not intentionally using the MailSettingsRepository
+// since we need props that are not exposed by the model provided the legacy proton-libs.
 class AutoAdvanceDataSourceImpl @Inject constructor(
-    private val userSessionRepository: UserSessionRepository,
-    private val createRustCustomSettings: CreateRustCustomSettings
+    private val mailSettingsDataSource: MailSettingsDataSource
 ) : AutoAdvanceDataSource {
 
 
     override suspend fun getAutoAdvance(userId: UserId): Either<DataError, Boolean> {
-        val wrapper = getCustomSettingsWrapper(userId)
-            ?: return DataError.Local.NoUserSession.left()
-
-        return wrapper.getNextMessageOnMoveEnabled()
-    }
-
-    private suspend fun getCustomSettingsWrapper(userId: UserId): CustomSettingsWrapper? {
-        val session = userSessionRepository.getUserSession(userId)
-        if (session == null) {
-            Timber.e("auto-advance: user session does not exist!")
-            return null
-        }
-        return createRustCustomSettings(session)
+        return mailSettingsDataSource.observeMailSettings(userId)
+            .firstOrNull()
+            ?.let { it.nextMessageOnMove == NextMessageOnMove.ENABLED_EXPLICIT }
+            ?.right()
+            ?: DataError.Local.NoDataCached.left()
     }
 }

@@ -56,15 +56,6 @@ class CustomSettingsWrapper(
         }
     }
 
-
-    @Deprecated("This method currently does not return the appropriate setting")
-    suspend fun getNextMessageOnMoveEnabled(): Either<DataError, Boolean> {
-        return when (val result = customSettings.swipeToAdjacentConversation()) {
-            is CustomSettingsSwipeToAdjacentConversationResult.Ok -> result.v1.right()
-            is CustomSettingsSwipeToAdjacentConversationResult.Error -> result.v1.toDataError().left()
-        }
-    }
-
     suspend fun getSwipeToAdjacentConversation(): Either<DataError, Boolean> {
         return when (val result = customSettings.swipeToAdjacentConversation()) {
             is CustomSettingsSwipeToAdjacentConversationResult.Ok -> result.v1.right()

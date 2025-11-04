@@ -18,70 +18,44 @@
 
 package ch.protonmail.android.mailsettings.data.local
 
-import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalMailSettings
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import ch.protonmail.android.mailsettings.data.usecase.CreateRustCustomSettings
-import ch.protonmail.android.mailsettings.data.wrapper.CustomSettingsWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import io.mockk.Called
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import uniffi.proton_mail_uniffi.NextMessageOnMove
 import kotlin.test.assertEquals
 
-class AutoAdvanceDataSourceImplTest {
+internal class AutoAdvanceDataSourceImplTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val userSessionRepository = mockk<UserSessionRepository>()
-    private val createRustCustomSettings = mockk<CreateRustCustomSettings>()
-    private val wrapper = mockk<CustomSettingsWrapper>()
+    private val mailSettingsDataSource = mockk<MailSettingsDataSource>()
     private lateinit var dataSource: AutoAdvanceDataSourceImpl
 
-    private val userId = UserId("user-123")
-    private val session = mockk<MailUserSessionWrapper>(relaxed = true)
+    val mockSettings = mockk<LocalMailSettings> {
+        every { this@mockk.nextMessageOnMove } returns NextMessageOnMove.ENABLED_EXPLICIT
+    }
 
     @Before
     fun setup() {
-        dataSource = AutoAdvanceDataSourceImpl(
-            userSessionRepository = userSessionRepository,
-            createRustCustomSettings = createRustCustomSettings
-        )
-    }
-
-
-    @Test
-    fun `getAutoAdvance returns NoUserSession when session missing`() = runTest {
-        // Given
-        coEvery { userSessionRepository.getUserSession(userId) } returns null
-
-        // When
-        val result = dataSource.getAutoAdvance(userId)
-
-        // Then
-        assertEquals(DataError.Local.NoUserSession.left(), result)
-        verify { createRustCustomSettings wasNot Called }
+        dataSource = AutoAdvanceDataSourceImpl(mailSettingsDataSource)
     }
 
     @Test
     fun `getAutoAdvance maps true on success when true`() = runTest {
         // Given
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
-        every { createRustCustomSettings(any()) } returns wrapper
-
-        coEvery { wrapper.getNextMessageOnMoveEnabled() } returns Either.Right(true)
+        coEvery { mailSettingsDataSource.observeMailSettings(userId) } returns flowOf(mockSettings)
 
         val expected = true
 
@@ -89,18 +63,14 @@ class AutoAdvanceDataSourceImplTest {
         val result = dataSource.getAutoAdvance(userId)
 
         // Then
-        assertEquals(result, expected.right())
-        coVerify { wrapper.getNextMessageOnMoveEnabled() }
+        assertEquals(expected.right(), result)
     }
-
 
     @Test
     fun `getAutoAdvance maps false on success when false`() = runTest {
         // Given
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
-        every { createRustCustomSettings(any()) } returns wrapper
-
-        coEvery { wrapper.getNextMessageOnMoveEnabled() } returns Either.Right(false)
+        every { mockSettings.nextMessageOnMove } returns NextMessageOnMove.DISABLED_EXPLICIT
+        coEvery { mailSettingsDataSource.observeMailSettings(userId) } returns flowOf(mockSettings)
 
         val expected = false
 
@@ -108,24 +78,26 @@ class AutoAdvanceDataSourceImplTest {
         val result = dataSource.getAutoAdvance(userId)
 
         // Then
-        assertEquals(result, expected.right())
-        coVerify { wrapper.getNextMessageOnMoveEnabled() }
+        assertEquals(expected.right(), result)
     }
 
     @Test
-    fun `getAutoAdvance return error when Rust call fails`() = runTest {
+    fun `getAutoAdvance returns error on failure fetching settings`() = runTest {
         // Given
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
-        every { createRustCustomSettings(any()) } returns wrapper
+        every { mockSettings.nextMessageOnMove } returns NextMessageOnMove.DISABLED_EXPLICIT
+        coEvery { mailSettingsDataSource.observeMailSettings(userId) } returns flowOf()
 
-        val error = DataError.Local.CryptoError
-        coEvery { wrapper.getNextMessageOnMoveEnabled() } returns error.left()
+        val expected = false
 
         // When
         val result = dataSource.getAutoAdvance(userId)
 
         // Then
-        assertEquals(error.left(), result)
-        coVerify { wrapper.getNextMessageOnMoveEnabled() }
+        assertEquals(DataError.Local.NoDataCached.left(), result)
+    }
+
+    private companion object {
+
+        val userId = UserId("user-id")
     }
 }
