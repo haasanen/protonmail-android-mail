@@ -77,7 +77,7 @@ class PagedConversationDetailReducerTest(
                         autoAdvance = true,
                         currentItem = Page.Conversation(CursorId(ConversationId("300"))),
                         nextItem = Page.Conversation(CursorId(ConversationId("400"))),
-                        previousItem = Page.Conversation(CursorId(ConversationId("400"))),
+                        previousItem = Page.Conversation(CursorId(ConversationId("200"))),
                         navigationArgs = NavigationArgs(
                             singleMessageMode = false,
                             LabelId("1"),

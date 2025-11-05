@@ -87,6 +87,7 @@ import ch.protonmail.android.mailattachments.presentation.ui.OpenAttachmentInput
 import ch.protonmail.android.mailattachments.presentation.ui.fileOpener
 import ch.protonmail.android.mailattachments.presentation.ui.fileSaver
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -100,6 +101,7 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
+import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
@@ -115,6 +117,7 @@ import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendD
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheet
@@ -147,13 +150,29 @@ import timber.log.Timber
 /**
  * Conversation Detail screen without swipe
  */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationDetailScreenLegacy(
     modifier: Modifier = Modifier,
     actions: ConversationDetail.Actions,
-    viewModel: ConversationDetailViewModel = hiltViewModel()
+    conversationId: ConversationId,
+    singleMessageMode: Boolean,
+    openedFromLocation: LabelId,
+    initialScrollToMessageId: MessageIdUiModel?,
+    conversationEntryPoint: ConversationDetailEntryPoint
 ) {
+    val viewModel = hiltViewModel<ConversationDetailViewModel, ConversationDetailViewModel.Factory>(
+        key = conversationId.id
+    ) { factory ->
+        factory.create(
+            conversationId = conversationId,
+            initialScrollToMessageId = initialScrollToMessageId,
+            conversationEntryPoint = conversationEntryPoint,
+            isSingleMessageModeEnabled = singleMessageMode,
+            openedFromLocation = openedFromLocation
+        )
+    }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
