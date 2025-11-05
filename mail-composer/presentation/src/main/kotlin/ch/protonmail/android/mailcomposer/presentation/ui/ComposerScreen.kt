@@ -34,6 +34,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Rect
@@ -53,7 +55,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
@@ -68,15 +69,13 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
-import ch.protonmail.android.mailcommon.presentation.compose.toDp
-import ch.protonmail.android.mailcommon.presentation.compose.toPx
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerBottomSheetContent
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.replaceText
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
+import ch.protonmail.android.mailcomposer.presentation.model.editor.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.isExpirationTimeSet
@@ -89,8 +88,11 @@ import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilit
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("UseComposableActions")
@@ -302,22 +304,37 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
                 var columnBounds by remember { mutableStateOf(Rect.Zero) }
-                var visibleHeaderHeight by remember { mutableStateOf(0.dp) }
-                var visibleWebViewHeight by remember { mutableStateOf(0.dp) }
-                var headerHeight by remember { mutableStateOf(0.dp) }
+                var visibleHeaderHeightPx by remember { mutableStateOf(0f) }
+                var visibleWebViewHeightPx by remember { mutableStateOf(0f) }
+                var headerHeightPx by remember { mutableStateOf(0f) }
 
                 val scrollManager = remember {
                     EditorScrollManager(
-                        onUpdateScroll = { coroutineScope.launch { scrollState.scrollTo(it.toPx(localDensity)) } }
+                        scope = coroutineScope,
+                        onUpdateScroll = { coroutineScope.launch { scrollState.scrollTo(it.roundToInt()) } }
                     )
                 }
 
-                fun getComposeScreenParams() = ComposeScreenMeasures(
-                    visibleWebViewHeight,
-                    visibleHeaderHeight,
-                    headerHeight,
-                    scrollState.value.toDp(localDensity)
-                )
+                LaunchedEffect(Unit) {
+                    combine(
+                        snapshotFlow { visibleWebViewHeightPx },
+                        snapshotFlow { visibleHeaderHeightPx },
+                        snapshotFlow { headerHeightPx },
+                        snapshotFlow { scrollState.value }
+
+                    ) { visWebHeight, visHeaderHeight, header, scroll ->
+                        ComposeScreenMeasures(
+                            visibleWebViewHeightPx = visWebHeight,
+                            visibleHeaderHeightPx = visHeaderHeight,
+                            headerHeightPx = header,
+                            scrollValuePx = scroll.toFloat()
+                        )
+                    }
+                        .distinctUntilChanged()
+                        .collect { screenMeasures ->
+                            scrollManager.onScreenMeasuresChanged(screenMeasures)
+                        }
+                }
 
                 var formHeightPx by remember { mutableFloatStateOf(0f) }
 
@@ -351,19 +368,18 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 viewModel.submit(ComposerAction.ChangeSender)
                             },
                             onWebViewMeasuresChanged = { webViewParams ->
-                                scrollManager.onEditorParamsChanged(
-                                    getComposeScreenParams(),
+                                scrollManager.onWebViewMeasuresChanged(
                                     webViewParams
                                 )
                             },
                             onHeaderPositioned = { headerBoundsInWindow, measuredHeight ->
                                 val visibleBounds = headerBoundsInWindow.intersect(columnBounds)
-                                visibleHeaderHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
-                                headerHeight = measuredHeight.toDp(localDensity)
+                                visibleHeaderHeightPx = visibleBounds.height.coerceAtLeast(0f)
+                                headerHeightPx = measuredHeight
                             },
                             onWebViewPositioned = { boundsInWindow ->
                                 val visibleBounds = boundsInWindow.intersect(columnBounds)
-                                visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
+                                visibleWebViewHeightPx = visibleBounds.height.coerceAtLeast(0f)
                             },
                             loadImage = { viewModel.loadImage(it) },
                             onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },

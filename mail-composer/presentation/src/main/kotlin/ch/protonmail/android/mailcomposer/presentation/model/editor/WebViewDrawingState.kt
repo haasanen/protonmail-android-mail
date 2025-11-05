@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,13 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.presentation.model
+package ch.protonmail.android.mailcomposer.presentation.model.editor
 
-import androidx.compose.ui.unit.Dp
-
-data class ComposeScreenMeasures(
-    val visibleWebViewHeightDp: Dp,
-    val visibleHeaderHeightDp: Dp,
-    val headerHeightDp: Dp,
-    val scrollValueDp: Dp
+data class WebViewDrawingState(
+    val heightPx: Float,
+    val cursorPosition: CursorPosition,
+    val lineHeightPx: Float,
+    val bodyContentVersion: Int,
+    val isKeyboardVisible: Boolean
 )
