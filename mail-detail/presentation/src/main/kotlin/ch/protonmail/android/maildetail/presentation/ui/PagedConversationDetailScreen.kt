@@ -317,7 +317,6 @@ private fun Page(
     navigationArgs: ConversationDetail.NavigationArgs,
     conversationId: ConversationId
 ) {
-    // to be integrated
     ConversationDetailScreen(
         padding = innerPadding,
         actions = conversationActions,
