@@ -90,7 +90,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.PreloadContactSuggestions
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -166,9 +165,6 @@ internal class ComposerViewModelTest {
     private val composerRegistry = mockk<ActiveComposerRegistry> {
         every { this@mockk.register(any()) } just Runs
     }
-    private val isMessageExpirationEnabled = mockk<FeatureFlag<Boolean>> {
-        coEvery { this@mockk.get() } returns true
-    }
     private val observeMessagePasswordChanged = mockk<ObserveMessagePasswordChanged> {
         every { this@mockk.invoke() } returns flowOf()
     }
@@ -237,7 +233,6 @@ internal class ComposerViewModelTest {
         changeSenderAddress,
         composerRegistry,
         testDispatcher,
-        isMessageExpirationEnabled,
         observeMessagePasswordChanged,
         isMessagePasswordSet,
         observeRecipientsValidation,

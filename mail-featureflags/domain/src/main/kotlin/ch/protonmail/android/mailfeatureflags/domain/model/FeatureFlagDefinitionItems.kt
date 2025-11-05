@@ -66,14 +66,6 @@ data object AndroidDnsMultithread : FeatureFlagDefinition(
     defaultValue = false
 )
 
-data object MessageExpirationEnabled : FeatureFlagDefinition(
-    key = "message_expiration_enabled",
-    name = "Message Expiration",
-    category = FeatureFlagCategory.Composer,
-    description = "Allow to set message expiration in composer",
-    defaultValue = false
-)
-
 data object ComposerAutoCollapseQuotedText : FeatureFlagDefinition(
     key = "MailAndroidV7ComposerAutoCollapsedText",
     name = "Auto collapse composer quoted text",
