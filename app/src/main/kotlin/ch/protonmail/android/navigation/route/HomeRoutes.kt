@@ -67,6 +67,7 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotBlank
 import timber.log.Timber
 
+@SuppressWarnings("LongMethod")
 internal fun NavGraphBuilder.addConversationDetail(
     actions: ConversationDetail.Actions,
     navController: NavHostController

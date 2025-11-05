@@ -60,8 +60,8 @@ sealed class Destination(val route: String) {
 
         object ConversationRouter : Destination(
             "mailbox/conversation/${ConversationIdKey.wrap()}/" +
-                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}" +
-                "/${ConversationDetailEntryPointNameKey.wrap()}/${ViewModeIsConversation.wrap()}"
+                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/" +
+                ConversationDetailEntryPointNameKey.wrap() + "/${ViewModeIsConversation.wrap()}"
         ) {
 
             operator fun invoke(
@@ -100,9 +100,9 @@ sealed class Destination(val route: String) {
         }
 
         object ConversationNonSwipable : Destination(
-            "mailbox/conversation/${ConversationIdKey.wrap()}/" +
-                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/" +
-                "${IsSingleMessageMode.wrap()}/${ConversationDetailEntryPointNameKey.wrap()}"
+            "mailbox/conversationlegacy/${ConversationIdKey.wrap()}/" +
+                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/${IsSingleMessageMode.wrap()}" +
+                "/${ConversationDetailEntryPointNameKey.wrap()}"
         ) {
 
             operator fun invoke(
