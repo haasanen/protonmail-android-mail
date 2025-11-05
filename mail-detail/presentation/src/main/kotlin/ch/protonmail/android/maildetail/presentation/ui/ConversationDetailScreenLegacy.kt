@@ -767,7 +767,8 @@ fun ConversationDetailScreenLegacy(
                     onUnStarClick = actions.onUnStarClick
                 ),
                 subjectHeaderSizeCallback = subjectHeaderSizeCallback,
-                topAppBarState = scrollBehavior.state
+                topAppBarState = scrollBehavior.state,
+                isDirectionForwards = { true }
             )
         },
         bottomBar = {
