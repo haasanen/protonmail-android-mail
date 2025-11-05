@@ -44,6 +44,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetConversationCurs
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.repository.AutoAdvanceRepository
+import ch.protonmail.android.mailsettings.domain.repository.SwipeNextRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,6 +62,7 @@ import ch.protonmail.android.maildetail.presentation.model.Error as UiError
 class PagedConversationDetailViewModel @Inject constructor(
     private var autoAdvanceRepository: AutoAdvanceRepository,
     private var getConversationCursor: GetConversationCursor,
+    private var swipeNextRepository: SwipeNextRepository,
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val savedStateHandle: SavedStateHandle,
     private val reducer: PagedConversationDetailReducer
@@ -76,6 +78,8 @@ class PagedConversationDetailViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             observePrimaryUserId().first()?.let { userId ->
+                val swipeEnabledResult = swipeNextRepository.observeSwipeNext(userId).first()
+                val swipeEnabled = swipeEnabledResult.getOrNull()?.enabled ?: false
                 val autoAdvance = getAutoAdvance(userId)
                 getConversationCursor(
                     singleMessageMode = requireSingleMessageMode(),
@@ -84,13 +88,17 @@ class PagedConversationDetailViewModel @Inject constructor(
                     messageId = getInitialScrollToMessageId()?.id,
                     viewModeIsConversationMode = requireViewModeModeIsConversation()
                 ).collect { state ->
-                    onCursor(autoAdvance, state)
+                    onCursor(swipeEnabled, autoAdvance, state)
                 }
             }
         }
     }
 
-    private fun onCursor(autoAdvance: Boolean, cursorState: EphemeralMailboxCursor?) {
+    private fun onCursor(
+        swipeEnabled: Boolean,
+        autoAdvance: Boolean,
+        cursorState: EphemeralMailboxCursor?
+    ) {
         when (cursorState) {
             null,
             is EphemeralMailboxCursor.CursorDead,
@@ -107,6 +115,7 @@ class PagedConversationDetailViewModel @Inject constructor(
                 conversationCursor = cursor
                 emitNewStateFor(
                     PagedConversationDetailEvent.Ready(
+                        swipeEnabled = swipeEnabled,
                         autoAdvance = autoAdvance,
                         cursor.current.toPage(),
                         cursor.next.toPage(),
@@ -119,6 +128,7 @@ class PagedConversationDetailViewModel @Inject constructor(
                     )
                 )
             }
+
             EphemeralMailboxCursor.Initialising -> {}
         }
     }

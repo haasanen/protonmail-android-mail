@@ -29,6 +29,7 @@ import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetAp
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch

@@ -51,7 +51,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.IsSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ViewModeIsConversation
+import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen.ViewModeIsConversation
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreenLegacy
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationRouterViewModel

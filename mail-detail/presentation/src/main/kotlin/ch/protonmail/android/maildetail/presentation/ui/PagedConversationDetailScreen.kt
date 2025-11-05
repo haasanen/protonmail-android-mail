@@ -141,6 +141,7 @@ private fun PagedConversationDetailScreen(
         modifier = modifier,
         conversationActions = actions,
         state = state.dynamicViewPagerState,
+        swipeEnabled = state.swipeEnabled,
         conversationDetailScreenNavArgs = conversationDetailScreenArgs,
         onPagerAction = onPagerAction,
         onTopBarExit = onTopbarBackClicked
@@ -154,6 +155,7 @@ private fun ConversationPager(
     conversationActions: ConversationDetail.Actions,
     conversationDetailScreenNavArgs: ConversationDetail.NavigationArgs,
     state: DynamicViewPagerState,
+    swipeEnabled: Boolean,
     onPagerAction: (PagedConversationDetailAction) -> Unit,
     onTopBarExit: () -> Unit
 ) {
@@ -243,7 +245,7 @@ private fun ConversationPager(
             conversationActions = conversationActions,
             conversationDetailNavigationArgs = conversationDetailScreenNavArgs,
             onTopBarStateUpdated = onTopBarStateUpdated,
-            canScroll = state.userScrollEnabled
+            canScroll = state.userScrollEnabled && swipeEnabled
         )
     }
 

@@ -51,6 +51,7 @@ class PagedConversationDetailReducerTest(
     companion object {
 
         private val readyState = PagedConversationDetailState.Ready(
+            swipeEnabled = true,
             autoAdvanceEnabled = true,
             DynamicViewPagerState(
                 currentPageIndex = 1,
@@ -70,10 +71,11 @@ class PagedConversationDetailReducerTest(
 
         private val transitionsFromLoadingState = listOf(
             TestParams(
-                "from loading to conversation data",
+                "from loading to conversation data with swipe enabled",
                 TestParams.TestInput(
                     currentState = PagedConversationDetailState.Loading,
                     event = PagedConversationDetailEvent.Ready(
+                        swipeEnabled = true,
                         autoAdvance = true,
                         currentItem = Page.Conversation(CursorId(ConversationId("300"))),
                         nextItem = Page.Conversation(CursorId(ConversationId("400"))),
@@ -85,6 +87,43 @@ class PagedConversationDetailReducerTest(
                         )
                     ),
                     expectedState = PagedConversationDetailState.Ready(
+                        swipeEnabled = true,
+                        autoAdvanceEnabled = true,
+                        DynamicViewPagerState(
+                            currentPageIndex = 1,
+                            focusPageIndex = 1,
+                            pages = listOf(
+                                Page.Conversation(CursorId(ConversationId("200"))),
+                                Page.Conversation(CursorId(ConversationId("300"))),
+                                Page.Conversation(CursorId(ConversationId("400")))
+                            )
+                        ),
+                        navigationArgs = NavigationArgs(
+                            singleMessageMode = false,
+                            LabelId("1"),
+                            ConversationDetailEntryPoint.Mailbox
+                        )
+                    )
+                )
+            ),
+            TestParams(
+                "from loading to conversation data with swipe disabled",
+                TestParams.TestInput(
+                    currentState = PagedConversationDetailState.Loading,
+                    event = PagedConversationDetailEvent.Ready(
+                        swipeEnabled = false,
+                        autoAdvance = true,
+                        currentItem = Page.Conversation(CursorId(ConversationId("300"))),
+                        nextItem = Page.Conversation(CursorId(ConversationId("400"))),
+                        previousItem = Page.Conversation(CursorId(ConversationId("200"))),
+                        navigationArgs = NavigationArgs(
+                            singleMessageMode = false,
+                            LabelId("1"),
+                            ConversationDetailEntryPoint.Mailbox
+                        )
+                    ),
+                    expectedState = PagedConversationDetailState.Ready(
+                        swipeEnabled = false,
                         autoAdvanceEnabled = true,
                         DynamicViewPagerState(
                             currentPageIndex = 1,

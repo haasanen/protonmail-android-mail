@@ -42,6 +42,7 @@ class PagedConversationDetailReducer @Inject constructor() {
             }
 
             is PagedConversationDetailEvent.Ready -> Ready(
+                event.swipeEnabled,
                 event.autoAdvance,
                 DynamicViewPagerState(
                     pages = mutableListOf<Page>()

@@ -31,6 +31,7 @@ sealed interface PagedConversationDetailState {
     object Error : PagedConversationDetailState
 
     data class Ready(
+        val swipeEnabled: Boolean,
         val autoAdvanceEnabled: Boolean,
         val dynamicViewPagerState: DynamicViewPagerState,
         val navigationArgs: NavigationArgs
@@ -102,6 +103,7 @@ sealed interface PagedConversationDetailEvent : PagedConversationDetailOperation
 
     data class Error(val error: ConversationCursorError) : PagedConversationDetailEvent
     data class Ready(
+        val swipeEnabled: Boolean,
         val autoAdvance: Boolean,
         val currentItem: Page,
         val nextItem: Page?,
