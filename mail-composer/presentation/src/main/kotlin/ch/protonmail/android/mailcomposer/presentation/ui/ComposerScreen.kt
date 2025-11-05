@@ -157,11 +157,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             actions.onSetMessagePasswordClick()
         },
         onSetExpirationTimeClick = {
-            if (viewModel.isMessageExpirationEnabled.value) {
-                viewModel.submit(ComposerAction.OpenExpirationSettings)
-            } else {
-                showFeatureMissingSnackbar()
-            }
+            viewModel.submit(ComposerAction.OpenExpirationSettings)
         },
         onDiscardDraftClicked = { viewModel.submit(ComposerAction.DiscardDraftRequested) }
     )

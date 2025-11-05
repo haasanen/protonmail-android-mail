@@ -50,10 +50,6 @@ annotation class IsDebugInspectDbEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsMessageExpirationEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class IsMessageDetailEnabled
 
 @Qualifier

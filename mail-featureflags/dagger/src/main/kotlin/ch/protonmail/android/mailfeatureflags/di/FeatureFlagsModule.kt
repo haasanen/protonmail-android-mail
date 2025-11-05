@@ -29,7 +29,6 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWav
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSwipeAutoAdvanceEnabled
@@ -41,7 +40,6 @@ import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.MessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.SwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
@@ -167,15 +165,4 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun provideMultiThreadDnsDefinition(): FeatureFlagDefinition = AndroidDnsMultithread
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideMessageExpirationDefinitions(): FeatureFlagDefinition = MessageExpirationEnabled
-
-    @Provides
-    @Singleton
-    @IsMessageExpirationEnabled
-    fun provideMessageExpirationEnabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(key = MessageExpirationEnabled.key, false)
 }
