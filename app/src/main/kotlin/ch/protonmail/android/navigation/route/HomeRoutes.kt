@@ -44,9 +44,11 @@ import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.Contac
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
+import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationDetailEntryPointNameKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.IsSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ViewModeIsConversation
@@ -138,8 +140,20 @@ internal fun NavGraphBuilder.addConversationDetail(
         popEnterTransition = { RouteTransitions.enterTransientLeftToRight },
         popExitTransition = { RouteTransitions.exitTransitionRightToLeft },
         exitTransition = { RouteTransitions.exitTransitionRightToLeft }
-    ) {
-        ConversationDetailScreenLegacy(actions = actions)
+    ) { backStackEntry ->
+        ConversationDetailScreenLegacy(
+            conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
+            initialScrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
+                ?.takeIf { it != "null" }
+                ?.let(::MessageIdUiModel),
+            openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
+            // for the conversation view
+            singleMessageMode = backStackEntry.arguments?.getBoolean(IsSingleMessageMode)!!,
+            conversationEntryPoint = ConversationDetailEntryPoint.valueOf(
+                backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
+            ),
+            actions = actions
+        )
     }
 }
 

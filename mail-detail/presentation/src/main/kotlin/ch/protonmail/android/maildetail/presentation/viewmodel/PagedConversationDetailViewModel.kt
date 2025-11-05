@@ -21,11 +21,15 @@ package ch.protonmail.android.maildetail.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.EphemeralMailboxCursor
 import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maildetail.presentation.mapper.toPage
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
+import ch.protonmail.android.maildetail.presentation.model.NavigationArgs
 import ch.protonmail.android.maildetail.presentation.model.PagedConversationDetailAction
 import ch.protonmail.android.maildetail.presentation.model.PagedConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.PagedConversationDetailEvent.AutoAdvanceRequested
@@ -36,6 +40,7 @@ import ch.protonmail.android.maildetail.presentation.model.PagedConversationEffe
 import ch.protonmail.android.maildetail.presentation.reducer.PagedConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen
+import ch.protonmail.android.maildetail.presentation.usecase.GetConversationCursor
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.repository.AutoAdvanceRepository
@@ -43,17 +48,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
+import ch.protonmail.android.maildetail.presentation.model.Error as UiError
 
 @HiltViewModel
 @SuppressWarnings("UnusedPrivateMember")
 class PagedConversationDetailViewModel @Inject constructor(
     private var autoAdvanceRepository: AutoAdvanceRepository,
-    // private var getConversationCursor: GetConversationCursor,
+    private var getConversationCursor: GetConversationCursor,
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val savedStateHandle: SavedStateHandle,
     private val reducer: PagedConversationDetailReducer
@@ -67,33 +74,33 @@ class PagedConversationDetailViewModel @Inject constructor(
 
 
     init {
-        /**viewModelScope.launch {
-         observePrimaryUserId().first()?.let { userId ->
-         val autoAdvance = getAutoAdvance(userId)
-         getConversationCursor(
-         singleMessageMode = requireSingleMessageMode(),
-         conversationId = requireConversationId(),
-         userId = userId,
-         messageId = getInitialScrollToMessageId()?.id,
-         viewModeIsConversationMode = requireViewModeModeIsConversation()
-         ).collect { state ->
-         onCursor(autoAdvance, state)
-         }
-         }
-         }**/
+        viewModelScope.launch {
+            observePrimaryUserId().first()?.let { userId ->
+                val autoAdvance = getAutoAdvance(userId)
+                getConversationCursor(
+                    singleMessageMode = requireSingleMessageMode(),
+                    conversationId = requireConversationId(),
+                    userId = userId,
+                    messageId = getInitialScrollToMessageId()?.id,
+                    viewModeIsConversationMode = requireViewModeModeIsConversation()
+                ).collect { state ->
+                    onCursor(autoAdvance, state)
+                }
+            }
+        }
     }
 
-    /* private fun onCursor(autoAdvance: Boolean, cursorState: EphemeralMailboxCursor?) {
-         when (cursorState) {
-             null,
-             is EphemeralMailboxCursor.CursorDead,
-             is EphemeralMailboxCursor.NotInitalised -> {
-                 emitNewStateFor(
-                     PagedConversationDetailEvent.Error(ConversationCursorError.InvalidState)
-                 )
-                 _effects.value =
-                     PagedConversationEffects(Effect.of(UiError.OTHER))
-             }
+    private fun onCursor(autoAdvance: Boolean, cursorState: EphemeralMailboxCursor?) {
+        when (cursorState) {
+            null,
+            is EphemeralMailboxCursor.CursorDead,
+            is EphemeralMailboxCursor.NotInitalised -> {
+                emitNewStateFor(
+                    PagedConversationDetailEvent.Error(ConversationCursorError.InvalidState)
+                )
+                _effects.value =
+                    PagedConversationEffects(Effect.of(UiError.OTHER))
+            }
 
             is EphemeralMailboxCursor.Data -> {
                 val cursor = cursorState.cursor
@@ -112,9 +119,9 @@ class PagedConversationDetailViewModel @Inject constructor(
                     )
                 )
             }
-            EphemeralMailboxCursor.Initialising -> { }
+            EphemeralMailboxCursor.Initialising -> {}
         }
-    } */
+    }
 
     private fun emitNewStateFor(event: PagedConversationDetailEvent) {
         val currentState = mutableState.value
