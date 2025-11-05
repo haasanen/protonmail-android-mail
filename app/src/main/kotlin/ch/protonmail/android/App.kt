@@ -24,6 +24,7 @@ import androidx.compose.runtime.ExperimentalComposeRuntimeApi
 import androidx.lifecycle.ProcessLifecycleOwner
 import ch.protonmail.android.callbacks.SecureActivityLifecycleCallbacks
 import ch.protonmail.android.initializer.MainInitializer
+import ch.protonmail.android.initializer.background.RustEventLoopErrorLifecycleObserver
 import ch.protonmail.android.logging.LogsFileHandlerLifecycleObserver
 import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
@@ -53,6 +54,9 @@ internal class App : Application() {
     @Inject
     lateinit var firebaseLifecycleObserver: Provider<FirebaseMessagingTokenLifecycleObserver>
 
+    @Inject
+    lateinit var eventLoopLifecycleObserver: Provider<RustEventLoopErrorLifecycleObserver>
+
     @OptIn(ExperimentalComposeRuntimeApi::class)
     override fun onCreate() {
         super.onCreate()
@@ -68,6 +72,7 @@ internal class App : Application() {
         addLogsFileHandlerObserver()
         addDatabaseObserver()
         addFirebaseTokenLifecycleObserver()
+        addEventLoopObserver()
 
         benchmarkTracer.end()
     }
@@ -84,5 +89,9 @@ internal class App : Application() {
 
     private fun addFirebaseTokenLifecycleObserver() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(firebaseLifecycleObserver.get())
+    }
+
+    private fun addEventLoopObserver() {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(eventLoopLifecycleObserver.get())
     }
 }

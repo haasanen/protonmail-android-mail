@@ -41,6 +41,7 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
+import ch.protonmail.android.mailsession.domain.eventloop.EventLoopErrorSignal
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.HomeState
@@ -69,6 +70,7 @@ class HomeViewModel @Inject constructor(
     private val markMessageSendingStatusesAsSeen: MarkMessageSendingStatusesAsSeen,
     private val formatFullDate: FormatFullDate,
     private val cancelScheduleSendMessage: CancelScheduleSendMessage,
+    eventLoopErrorSignal: EventLoopErrorSignal,
     observePrimaryUserId: ObservePrimaryUserId,
     newIntentObserver: NewIntentObserver
 ) : ViewModel() {
@@ -78,6 +80,8 @@ class HomeViewModel @Inject constructor(
     private val mutableState = MutableStateFlow(HomeState.Initial)
 
     val state: StateFlow<HomeState> = mutableState
+
+    val eventLoopErrors = eventLoopErrorSignal.observeEventLoopErrors()
 
     init {
         primaryUserId.flatMapLatest { userId ->

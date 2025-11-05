@@ -45,6 +45,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
+import ch.protonmail.android.mailsession.domain.eventloop.EventLoopErrorSignal
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.HomeState
@@ -111,6 +112,11 @@ class HomeViewModelTest {
     private val undoSendMessage = mockk<UndoSendMessage>(relaxUnitFun = true)
     private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>(relaxUnitFun = true)
     private val markMessageSendingStatusesAsSeen = mockk<MarkMessageSendingStatusesAsSeen>(relaxUnitFun = true)
+
+    private val eventLoopErrorSignal = mockk<EventLoopErrorSignal> {
+        every { this@mockk.observeEventLoopErrors() } returns flowOf()
+    }
+
     private val formatFullDate = mockk<FormatFullDate>()
 
     private val homeViewModel by lazy {
@@ -122,6 +128,7 @@ class HomeViewModelTest {
             markMessageSendingStatusesAsSeen,
             formatFullDate,
             cancelScheduleSendMessage,
+            eventLoopErrorSignal,
             observePrimaryUserId,
             newIntentObserver
         )

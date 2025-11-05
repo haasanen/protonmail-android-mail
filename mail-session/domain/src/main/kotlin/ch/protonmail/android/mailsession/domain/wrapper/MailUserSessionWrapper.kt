@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.mapper.toEventLoopError
 import ch.protonmail.android.mailsession.domain.model.EventLoopError
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
+import uniffi.proton_mail_uniffi.EventLoopErrorObserver
 import uniffi.proton_mail_uniffi.ExecuteWhenOnlineCallbackAsync
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionForkResult
@@ -82,4 +83,6 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
         }
         userSession.executeWhenOnlineAsync(callback)
     }
+
+    fun observeEventLoopErrors(callback: EventLoopErrorObserver) = userSession.observeEventLoopErrors(callback)
 }
