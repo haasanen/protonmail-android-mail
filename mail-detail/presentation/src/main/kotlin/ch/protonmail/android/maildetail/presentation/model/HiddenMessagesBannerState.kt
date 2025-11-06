@@ -19,7 +19,9 @@
 package ch.protonmail.android.maildetail.presentation.model
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Stable
 
+@Stable
 sealed interface HiddenMessagesBannerState {
 
     data object Hidden : HiddenMessagesBannerState

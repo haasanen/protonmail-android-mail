@@ -1104,7 +1104,10 @@ private fun MessagesContent(
             is HiddenMessagesBannerState.Hidden -> Unit
         }
 
-        itemsIndexed(uiModels) { index, uiModel ->
+        itemsIndexed(
+            items = uiModels,
+            key = { _, uiModel -> uiModel.messageId.id }
+        ) { index, uiModel ->
             val isLastItem = index == uiModels.size - 1
             val rememberCachedHeight = remember { loadedItemsHeight[uiModel.messageId.id] }
             val itemFinishedResizing = finishedResizingOperations && loadedItemsHeight.contains(uiModel.messageId.id)

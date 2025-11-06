@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
+import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -25,11 +26,13 @@ import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import kotlinx.collections.immutable.ImmutableList
 
+@Stable
 sealed interface ConversationDetailMessageUiModel {
 
     val messageId: MessageIdUiModel
     val isUnread: Boolean
 
+    @Stable
     data class Collapsed(
         override val messageId: MessageIdUiModel,
         val avatar: AvatarUiModel,
@@ -49,12 +52,14 @@ sealed interface ConversationDetailMessageUiModel {
         val shouldShowUndisclosedRecipients: Boolean
     ) : ConversationDetailMessageUiModel
 
+    @Stable
     data class Expanding(
         override val messageId: MessageIdUiModel,
         val collapsed: Collapsed,
         override val isUnread: Boolean = collapsed.isUnread
     ) : ConversationDetailMessageUiModel
 
+    @Stable
     data class Expanded(
         override val messageId: MessageIdUiModel,
         override val isUnread: Boolean,

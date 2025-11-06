@@ -18,9 +18,11 @@
 
 package ch.protonmail.android.mailmessage.presentation.model
 
+import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 
+@Stable
 data class MessageBodyUiModel(
     val messageId: MessageId,
     val messageBody: String,

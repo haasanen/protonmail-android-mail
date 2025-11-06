@@ -147,23 +147,7 @@ fun MessageBodyWebView(
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
-    var webView by remember(messageId) { mutableStateOf<ZoomableWebView?>(null) }
     val contentLoaded = remember(messageId) { mutableStateOf(false) }
-
-    webView?.let {
-        val isInitialLoad = remember(messageId) { mutableStateOf(true) }
-
-        LaunchedEffect(messageId, messageBodyUiModel.messageBody, messageBodyUiModel.viewModePreference) {
-            if (isInitialLoad.value) {
-                Timber.d("message-webview: setting initial value on webview ${it.hashCode()}")
-                it.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
-                isInitialLoad.value = false
-            } else if (contentLoaded.value) {
-                Timber.d("message-webview: reload webview data when body/view preference has changed ${it.hashCode()}")
-                it.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
-            }
-        }
-    }
 
     val client = remember(messageId) {
         object : WebViewClient() {
@@ -193,6 +177,13 @@ fun MessageBodyWebView(
                 contentLoaded.value = true
             }
         }
+    }
+
+    val webView = remember(messageId) { onBuildWebView(context) }
+
+    LaunchedEffect(messageId, messageBodyUiModel.messageBody, messageBodyUiModel.viewModePreference) {
+        Timber.d("message-webview: setting initial value on webview ${webView.hashCode()} ($messageId)")
+        webView.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
     }
 
     LaunchedEffect(messageId) {
@@ -237,30 +228,27 @@ fun MessageBodyWebView(
         )
 
         AndroidView(
-            factory = { context ->
-                onBuildWebView(context).apply {
-                    this.settings.builtInZoomControls = true
-                    this.settings.displayZoomControls = false
-                    this.settings.javaScriptEnabled = false
-                    this.settings.safeBrowsingEnabled = true
-                    this.settings.allowContentAccess = false
-                    this.settings.allowFileAccess = false
-                    this.settings.loadWithOverviewMode = true
-                    this.settings.useWideViewPort = true
-                    this.isVerticalScrollBarEnabled = false
-                    this.layoutParams = initialLayoutParams
-                    this.webViewClient = client
+            factory = { webView },
+            update = {
+                it.settings.builtInZoomControls = true
+                it.settings.displayZoomControls = false
+                it.settings.javaScriptEnabled = false
+                it.settings.safeBrowsingEnabled = true
+                it.settings.allowContentAccess = false
+                it.settings.allowFileAccess = false
+                it.settings.loadWithOverviewMode = true
+                it.settings.useWideViewPort = true
+                it.isVerticalScrollBarEnabled = false
+                it.layoutParams = initialLayoutParams
+                it.webViewClient = client
 
-                    configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
-                    configureLongClick(
-                        this,
-                        actions.onMessageBodyLinkLongClicked,
-                        actions.onMessageBodyImageLongClicked
-                    )
-                    configureOnTouchListener(this)
-
-                    webView = this
-                }
+                configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
+                configureLongClick(
+                    it,
+                    actions.onMessageBodyLinkLongClicked,
+                    actions.onMessageBodyImageLongClicked
+                )
+                configureOnTouchListener(it)
             },
             modifier = Modifier
                 .testTag(MessageBodyWebViewTestTags.WebView)
@@ -270,10 +258,7 @@ fun MessageBodyWebView(
                 .onSizeChanged {
                     lastMeasuredWebViewHeight = it.height
                 }
-                .wrapContentSize(),
-            onRelease = {
-                webView = null
-            }
+                .wrapContentSize()
         )
 
 

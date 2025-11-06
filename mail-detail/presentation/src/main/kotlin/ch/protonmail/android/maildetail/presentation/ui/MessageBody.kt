@@ -85,7 +85,14 @@ fun MessageBody(
     }
 
     if (hasWebView) {
-        val webViewCache = remember { mutableStateOf<ZoomableWebView?>(null) }
+        val webViewCache = remember(messageBodyUiModel.messageId) {
+            mutableStateOf<ZoomableWebView?>(null)
+        }
+
+        val stableOnBuildWebView = remember(messageBodyUiModel.messageId) {
+            onBuildWebView(webViewCache)
+        }
+
         MessageBodyWebView(
             modifier = modifier,
             messageBodyUiModel = messageBodyUiModel,
@@ -101,7 +108,7 @@ fun MessageBody(
                 onPrint = actions.onPrint,
                 onDownloadImage = actions.onDownloadImage
             ),
-            onBuildWebView = onBuildWebView(webViewCache),
+            onBuildWebView = stableOnBuildWebView,
             onMessageBodyLoaded = onMessageBodyLoaded
         )
     } else {
@@ -152,7 +159,6 @@ fun MessageBodyButtonBannerPreview() {
     }
 }
 
-@Composable
 private fun onBuildWebView(webView: MutableState<ZoomableWebView?>) = { context: Context ->
     if (webView.value == null) {
         Timber.d("message-webview: factory creating new webview")
