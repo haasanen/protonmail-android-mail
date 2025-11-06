@@ -29,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -239,7 +240,8 @@ private fun ConversationPager(
             conversationActions = conversationActions,
             conversationDetailNavigationArgs = conversationDetailScreenNavArgs,
             onTopBarStateUpdated = onTopBarStateUpdated,
-            canScroll = state.userScrollEnabled && swipeEnabled
+            canScroll = state.userScrollEnabled && swipeEnabled,
+            scrollBehavior = scrollBehavior
         )
     }
 
@@ -255,6 +257,7 @@ private fun Pager(
     conversationDetailNavigationArgs: ConversationDetail.NavigationArgs,
     pages: ImmutableList<Page>,
     canScroll: Boolean,
+    scrollBehavior: TopAppBarScrollBehavior,
     onTopBarStateUpdated: (TopBarState) -> Unit
 ) {
     HorizontalPager(
@@ -276,7 +279,6 @@ private fun Pager(
 
         when (item) {
             is Page.Conversation -> {
-                val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)
                 val topBarHostState = remember { TopBarState(scrollBehavior) }
                 if (page == pagerState.targetPage) {
                     onTopBarStateUpdated(topBarHostState)
