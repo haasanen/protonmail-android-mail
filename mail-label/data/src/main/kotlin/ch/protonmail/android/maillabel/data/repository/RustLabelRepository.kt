@@ -35,50 +35,14 @@ import ch.protonmail.android.maillabel.domain.model.NewLabel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import me.proton.core.domain.arch.DataResult
-import me.proton.core.domain.arch.ResponseSource
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressWarnings("NotImplementedDeclaration")
 class RustLabelRepository @Inject constructor(
     private val labelDataSource: LabelDataSource
 ) : LabelRepository {
-
-    @Deprecated(
-        "Deprecated to ease the introduction of dynamic system folders",
-        replaceWith = ReplaceWith(
-            "One of labelRepository.observeCustomLabels || .observeCustomFolders || .observeSystemFolders"
-        )
-    )
-    override fun observeLabels(
-        userId: UserId,
-        type: LabelType,
-        refresh: Boolean
-    ): Flow<DataResult<List<Label>>> {
-        return when (type) {
-            LabelType.SystemFolder -> labelDataSource.observeSystemLabels(userId).map { localLabels ->
-                localLabels.map { it.toLabelWithSystemLabelId().label }
-            }.convertToDataResultFlow()
-
-            LabelType.MessageLabel -> labelDataSource.observeMessageLabels(userId).map { localLabels ->
-                localLabels.map { it.toLabel() }
-            }.convertToDataResultFlow()
-
-            LabelType.MessageFolder -> labelDataSource.observeMessageFolders(userId).map { localLabels ->
-                localLabels.map { it.toLabel() }
-            }.convertToDataResultFlow()
-
-            else -> {
-                Timber.w("rust-label: LabelRepository Unsupported label type: $type")
-                flowOf(DataResult.Error.Local("Unsupported label type $type", null))
-            }
-        }
-    }
 
     override fun observeCustomLabels(userId: UserId): Flow<List<Label>> =
         labelDataSource.observeMessageLabels(userId).map { customLabels ->
@@ -94,20 +58,6 @@ class RustLabelRepository @Inject constructor(
         labelDataSource.observeSystemLabels(userId).map { systemLabels ->
             systemLabels.map { it.toLabelWithSystemLabelId() }
         }
-
-    override suspend fun getLabels(
-        userId: UserId,
-        type: LabelType,
-        refresh: Boolean
-    ): List<Label> {
-        observeLabels(userId, type, refresh).firstOrNull().let {
-            return if (it is DataResult.Success) {
-                it.value
-            } else {
-                emptyList()
-            }
-        }
-    }
 
     override suspend fun getLabel(
         userId: UserId,
@@ -167,13 +117,4 @@ class RustLabelRepository @Inject constructor(
             .map { it.toLabelId() }
     }
 
-    private fun Flow<List<Label>>.convertToDataResultFlow(): Flow<DataResult<List<Label>>> {
-        return this.map { labels ->
-            if (labels.isNotEmpty()) {
-                DataResult.Success(ResponseSource.Remote, labels)
-            } else {
-                DataResult.Error.Local("No Labels Found", null)
-            }
-        }
-    }
 }

@@ -20,7 +20,12 @@ package ch.protonmail.android.maillabel.data.local
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.data.mapper.LocalSystemLabel
+import ch.protonmail.android.maillabel.data.mapper.toLabelId
+import ch.protonmail.android.maillabel.data.mapper.toLabelType
+import ch.protonmail.android.maillabel.data.mapper.toSystemLabel
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
@@ -29,12 +34,10 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.core.domain.arch.DataResult
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import uniffi.proton_mail_uniffi.LabelDescription
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -50,14 +53,29 @@ class RustLabelRepositoryTest {
         // Given
         val userId = UserIdTestData.userId
         val localLabelWithCount = LocalLabelTestData.localSystemLabelWithCount
-        val expectedLabel = LabelTestData.systemLabel
+        val labelDescription = localLabelWithCount.description as LabelDescription.System
+        val expectedLabel = LabelWithSystemLabelId(
+            Label(
+                labelId = localLabelWithCount.id.toLabelId(),
+                parentId = null,
+                name = localLabelWithCount.name,
+                type = labelDescription.toLabelType(),
+                path = "",
+                color = "",
+                order = localLabelWithCount.displayOrder.toInt(),
+                isNotified = localLabelWithCount.notify,
+                isExpanded = null,
+                isSticky = localLabelWithCount.sticky
+            ),
+            labelDescription.v1?.toSystemLabel() ?: SystemLabelId.AllMail
+        )
 
         every { labelDataSource.observeSystemLabels(userId) } returns flowOf(listOf(localLabelWithCount))
 
         // When
-        labelRepository.observeLabels(userId, LabelType.SystemFolder).test {
+        labelRepository.observeSystemLabels(userId).test {
             // Then
-            assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
+            assertEquals(listOf(expectedLabel), awaitItem())
             awaitComplete()
         }
     }
@@ -72,9 +90,9 @@ class RustLabelRepositoryTest {
         every { labelDataSource.observeMessageLabels(userId) } returns flowOf(listOf(localLabelWithCount))
 
         // When
-        labelRepository.observeLabels(userId, LabelType.MessageLabel).test {
+        labelRepository.observeCustomLabels(userId).test {
             // Then
-            assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
+            assertEquals(listOf(expectedLabel), awaitItem())
             awaitComplete()
         }
     }
@@ -89,16 +107,11 @@ class RustLabelRepositoryTest {
         every { labelDataSource.observeMessageFolders(userId) } returns flowOf(listOf(localLabelWithCount))
 
         // When
-        labelRepository.observeLabels(userId, LabelType.MessageFolder).test {
+        labelRepository.observeCustomFolders(userId).test {
             // Then
-            assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
+            assertEquals(listOf(expectedLabel), awaitItem())
             awaitComplete()
         }
-    }
-
-    private fun resultOrNull(dataResult: DataResult<List<Label>>): List<Label>? = when (dataResult) {
-        is DataResult.Success -> dataResult.value
-        else -> null
     }
 
     @RunWith(Parameterized::class)
