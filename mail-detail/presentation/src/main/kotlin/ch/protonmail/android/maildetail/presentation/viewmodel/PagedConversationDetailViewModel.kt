@@ -62,11 +62,10 @@ import javax.inject.Inject
 import ch.protonmail.android.maildetail.presentation.model.Error as UiError
 
 @HiltViewModel
-@SuppressWarnings("UnusedPrivateMember")
 class PagedConversationDetailViewModel @Inject constructor(
-    private var autoAdvanceRepository: AutoAdvanceRepository,
-    private var getConversationCursor: GetConversationCursor,
-    private var swipeNextRepository: SwipeNextRepository,
+    private val autoAdvanceRepository: AutoAdvanceRepository,
+    private val getConversationCursor: GetConversationCursor,
+    private val swipeNextRepository: SwipeNextRepository,
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val savedStateHandle: SavedStateHandle,
     private val reducer: PagedConversationDetailReducer
@@ -122,7 +121,6 @@ class PagedConversationDetailViewModel @Inject constructor(
                 }
         }
     }
-
 
     private fun onCursor(
         swipeEnabled: Boolean,

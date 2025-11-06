@@ -62,6 +62,7 @@ import ch.protonmail.android.maildetail.presentation.model.PagedConversationDeta
 import ch.protonmail.android.maildetail.presentation.model.PagedConversationDetailState
 import ch.protonmail.android.maildetail.presentation.viewmodel.PagedConversationDetailViewModel
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
+import kotlinx.collections.immutable.ImmutableList
 import timber.log.Timber
 
 @Composable
@@ -252,7 +253,7 @@ private fun Pager(
     innerPadding: PaddingValues,
     conversationActions: ConversationDetail.Actions,
     conversationDetailNavigationArgs: ConversationDetail.NavigationArgs,
-    pages: List<Page>,
+    pages: ImmutableList<Page>,
     canScroll: Boolean,
     onTopBarStateUpdated: (TopBarState) -> Unit
 ) {
@@ -260,6 +261,14 @@ private fun Pager(
         modifier = modifier,
         state = pagerState,
         beyondViewportPageCount = 0,
+        key = { index ->
+            pages.getOrNull(index)?.let {
+                when (it) {
+                    is Page.Conversation -> it.cursorId.conversationId.id
+                    else -> "page_$index"
+                }
+            } ?: "page_$index"
+        },
         // Disable user scrolling while the page is being updated through ViewModel methods.
         userScrollEnabled = canScroll
     ) { page ->

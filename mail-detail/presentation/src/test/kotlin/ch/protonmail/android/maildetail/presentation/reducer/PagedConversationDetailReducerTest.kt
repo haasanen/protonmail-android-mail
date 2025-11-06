@@ -28,6 +28,7 @@ import ch.protonmail.android.maildetail.presentation.model.Page
 import ch.protonmail.android.maildetail.presentation.model.PagedConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.PagedConversationDetailState
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
@@ -60,7 +61,7 @@ class PagedConversationDetailReducerTest(
                     Page.Conversation(CursorId(ConversationId("400"))),
                     Page.Conversation(CursorId(ConversationId("300"), null)),
                     Page.Conversation(CursorId(ConversationId("200")))
-                )
+                ).toImmutableList()
             ),
             NavigationArgs(
                 singleMessageMode = false,
@@ -96,7 +97,7 @@ class PagedConversationDetailReducerTest(
                                 Page.Conversation(CursorId(ConversationId("200"))),
                                 Page.Conversation(CursorId(ConversationId("300"))),
                                 Page.Conversation(CursorId(ConversationId("400")))
-                            )
+                            ).toImmutableList()
                         ),
                         navigationArgs = NavigationArgs(
                             singleMessageMode = false,
@@ -132,7 +133,7 @@ class PagedConversationDetailReducerTest(
                                 Page.Conversation(CursorId(ConversationId("200"))),
                                 Page.Conversation(CursorId(ConversationId("300"))),
                                 Page.Conversation(CursorId(ConversationId("400")))
-                            )
+                            ).toImmutableList()
                         ),
                         navigationArgs = NavigationArgs(
                             singleMessageMode = false,
@@ -160,7 +161,7 @@ class PagedConversationDetailReducerTest(
                                 Page.Conversation(CursorId(ConversationId("900"))),
                                 Page.Conversation(CursorId(ConversationId("500"))),
                                 Page.Conversation(CursorId(ConversationId("600")))
-                            ),
+                            ).toImmutableList(),
                             currentPageIndex = 1,
                             focusPageIndex = 1
                         )
@@ -182,7 +183,7 @@ class PagedConversationDetailReducerTest(
                             pages = listOf(
                                 Page.Conversation(CursorId(ConversationId("500"))),
                                 Page.Conversation(CursorId(ConversationId("600")))
-                            ),
+                            ).toImmutableList(),
                             currentPageIndex = 0,
                             focusPageIndex = 0
                         )
@@ -204,7 +205,7 @@ class PagedConversationDetailReducerTest(
                             pages = listOf(
                                 Page.Conversation(CursorId(ConversationId("600"))),
                                 Page.Conversation(CursorId(ConversationId("500")))
-                            ),
+                            ).toImmutableList(),
                             currentPageIndex = 1,
                             focusPageIndex = 1
                         )
@@ -247,7 +248,7 @@ class PagedConversationDetailReducerTest(
                             pages = listOf(
                                 Page.Conversation(CursorId(ConversationId("600"))),
                                 Page.Conversation(CursorId(ConversationId("500")))
-                            ),
+                            ).toImmutableList(),
                             currentPageIndex = 1
                         )
                     ),
@@ -258,7 +259,7 @@ class PagedConversationDetailReducerTest(
                             pages = listOf(
                                 Page.Conversation(CursorId(ConversationId("600"))),
                                 Page.Conversation(CursorId(ConversationId("500")))
-                            ),
+                            ).toImmutableList(),
                             currentPageIndex = 1,
                             exit = Effect.of(Unit)
                         )

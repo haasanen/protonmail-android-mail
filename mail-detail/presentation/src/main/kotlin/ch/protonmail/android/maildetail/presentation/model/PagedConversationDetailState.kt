@@ -24,7 +24,10 @@ import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
+@Stable
 sealed interface PagedConversationDetailState {
 
     object Loading : PagedConversationDetailState
@@ -38,6 +41,7 @@ sealed interface PagedConversationDetailState {
     ) : PagedConversationDetailState
 }
 
+@Stable
 data class NavigationArgs(
     val singleMessageMode: Boolean,
     val openedFromLocation: LabelId,
@@ -48,6 +52,7 @@ enum class Error {
     NETWORK, OTHER
 }
 
+@Stable
 sealed interface Page {
     data class Conversation(val cursorId: CursorId) : Page
     object Loading : Page
@@ -65,7 +70,7 @@ data class PagedConversationEffects(
 data class DynamicViewPagerState(
     val userScrollEnabled: Boolean = true,
     val currentPageIndex: Int? = null,
-    val pages: List<Page> = emptyList(),
+    val pages: ImmutableList<Page> = emptyList<Page>().toImmutableList(),
     val focusPageIndex: Int? = null,
     val pendingRemoval: Page? = null,
     val scrollToPage: Effect<Unit> = Effect.empty(),

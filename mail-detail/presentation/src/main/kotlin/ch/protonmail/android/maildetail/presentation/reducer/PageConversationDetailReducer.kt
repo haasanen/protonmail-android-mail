@@ -28,6 +28,7 @@ import ch.protonmail.android.maildetail.presentation.model.addPage
 import ch.protonmail.android.maildetail.presentation.model.currentPage
 import ch.protonmail.android.maildetail.presentation.model.exists
 import ch.protonmail.android.maildetail.presentation.model.nextPage
+import kotlinx.collections.immutable.toImmutableList
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -50,6 +51,7 @@ class PagedConversationDetailReducer @Inject constructor() {
                         .addPage(event.previousItem)
                         .addPage(event.currentItem)
                         .addPage(event.nextItem)
+                        .toImmutableList()
                 ).setFocusIndexes(event.previousItem.exists()),
                 navigationArgs = event.navigationArgs
             )
@@ -97,7 +99,8 @@ private fun reduceUpdatePage(
     pages = mutableListOf<Page>()
         .addPage(event.previousItem)
         .addPage(event.currentItem)
-        .addPage(event.nextItem),
+        .addPage(event.nextItem)
+        .toImmutableList(),
     userScrollEnabled = true,
     pendingRemoval = null
 ).setFocusIndexes(event.previousItem.exists()).apply {
