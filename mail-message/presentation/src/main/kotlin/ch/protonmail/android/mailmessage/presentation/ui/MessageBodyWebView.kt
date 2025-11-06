@@ -147,18 +147,19 @@ fun MessageBodyWebView(
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
-    var webView by remember { mutableStateOf<ZoomableWebView?>(null) }
+    var webView by remember(messageId) { mutableStateOf<ZoomableWebView?>(null) }
     val contentLoaded = remember(messageId) { mutableStateOf(false) }
 
     webView?.let {
-        LaunchedEffect(it, messageId) {
-            Timber.d("message-webview: setting initial value on webview (should happen only once!)")
-            it.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
-        }
+        val isInitialLoad = remember(messageId) { mutableStateOf(true) }
 
-        LaunchedEffect(messageBodyUiModel.messageBody, messageBodyUiModel.viewModePreference) {
-            if (contentLoaded.value) {
-                Timber.d("message-webview: reload webview data when the body or the view preference has changed")
+        LaunchedEffect(messageId, messageBodyUiModel.messageBody, messageBodyUiModel.viewModePreference) {
+            if (isInitialLoad.value) {
+                Timber.d("message-webview: setting initial value on webview ${it.hashCode()}")
+                it.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
+                isInitialLoad.value = false
+            } else if (contentLoaded.value) {
+                Timber.d("message-webview: reload webview data when body/view preference has changed ${it.hashCode()}")
                 it.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
             }
         }
