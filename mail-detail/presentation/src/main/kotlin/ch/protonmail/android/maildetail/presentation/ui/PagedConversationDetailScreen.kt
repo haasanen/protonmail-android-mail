@@ -267,7 +267,7 @@ private fun Pager(
         key = { index ->
             pages.getOrNull(index)?.let {
                 when (it) {
-                    is Page.Conversation -> it.cursorId.conversationId.id
+                    is Page.Conversation -> "${it.cursorId.conversationId}+${it.cursorId.messageId}"
                     else -> "page_$index"
                 }
             } ?: "page_$index"
