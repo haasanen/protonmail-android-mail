@@ -176,20 +176,11 @@ private fun ConversationPager(
         state.currentPageIndex?.let { pagerState.animateScrollToPage(it + 1) }
     }
 
-    LaunchedEffect(pagerState.isScrollInProgress) {
-        state.focusPageIndex?.let {
-            if (!pagerState.isScrollInProgress) {
-                // refocusing the pager in the middle so we can always swipe left or right
-                // for example if we swipe right to the next item, index is 2 and the pager thinks we are at the end
-                // and we can therefore not swipe right again.  So as we move to next we shift the pages left and set
-                // the focus page index to the new position of the page we are looking at. The pager instantly moves,
-                // our page is now at index 1 and we can swipe right again if we want
-                pagerState.scrollToPage(it)
-                if (pagerState.targetPage == state.focusPageIndex) {
-                    onPagerAction(PagedConversationDetailAction.ClearFocusPage)
-                }
-            } else {
-                Timber.d("conversation-pager pagerState scroll in progress can't focus ${state.focusPageIndex}")
+    LaunchedEffect(state.focusPageIndex, state.pages) {
+        state.focusPageIndex?.let { focusIndex ->
+            if (pagerState.currentPage != focusIndex && !pagerState.isScrollInProgress) {
+                pagerState.scrollToPage(focusIndex)
+                onPagerAction(PagedConversationDetailAction.ClearFocusPage)
             }
         }
     }
