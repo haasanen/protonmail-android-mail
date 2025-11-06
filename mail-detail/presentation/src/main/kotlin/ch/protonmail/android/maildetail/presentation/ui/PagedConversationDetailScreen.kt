@@ -35,7 +35,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -63,6 +62,7 @@ import ch.protonmail.android.maildetail.presentation.model.PagedConversationDeta
 import ch.protonmail.android.maildetail.presentation.model.PagedConversationDetailState
 import ch.protonmail.android.maildetail.presentation.viewmodel.PagedConversationDetailViewModel
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
+import timber.log.Timber
 
 @Composable
 fun PagedConversationDetailScreen(
@@ -164,15 +164,12 @@ private fun ConversationPager(
         pageCount = { state.pages.size }
     )
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { pagerState.settledPage }
-            .collect {
-                if (pagerState.settledPage == state.focusPageIndex) {
-                    onPagerAction(PagedConversationDetailAction.ClearFocusPage)
-                } else {
-                    onPagerAction(PagedConversationDetailAction.SetSettledPage(it))
-                }
-            }
+    LaunchedEffect(pagerState.settledPage) {
+        if (pagerState.settledPage == state.focusPageIndex) {
+            Timber.d("conversation-pager settled page is focused page ${state.focusPageIndex}")
+        } else {
+            onPagerAction(PagedConversationDetailAction.SetSettledPage(pagerState.settledPage))
+        }
     }
 
     ConsumableLaunchedEffect(state.scrollToPage) {
@@ -180,14 +177,19 @@ private fun ConversationPager(
     }
 
     LaunchedEffect(pagerState.isScrollInProgress) {
-        if (!pagerState.isScrollInProgress) {
-            state.focusPageIndex?.let {
+        state.focusPageIndex?.let {
+            if (!pagerState.isScrollInProgress) {
                 // refocusing the pager in the middle so we can always swipe left or right
                 // for example if we swipe right to the next item, index is 2 and the pager thinks we are at the end
                 // and we can therefore not swipe right again.  So as we move to next we shift the pages left and set
                 // the focus page index to the new position of the page we are looking at. The pager instantly moves,
                 // our page is now at index 1 and we can swipe right again if we want
                 pagerState.scrollToPage(it)
+                if (pagerState.targetPage == state.focusPageIndex) {
+                    onPagerAction(PagedConversationDetailAction.ClearFocusPage)
+                }
+            } else {
+                Timber.d("conversation-pager pagerState scroll in progress can't focus ${state.focusPageIndex}")
             }
         }
     }

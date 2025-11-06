@@ -28,6 +28,7 @@ import ch.protonmail.android.maildetail.presentation.model.addPage
 import ch.protonmail.android.maildetail.presentation.model.currentPage
 import ch.protonmail.android.maildetail.presentation.model.exists
 import ch.protonmail.android.maildetail.presentation.model.nextPage
+import timber.log.Timber
 import javax.inject.Inject
 
 class PagedConversationDetailReducer @Inject constructor() {
@@ -65,7 +66,9 @@ class PagedConversationDetailReducer @Inject constructor() {
             }
 
             PagedConversationDetailEvent.ClearFocusPage -> reducePagerState(currentState) {
-                it.copy(focusPageIndex = null)
+                it.copy(focusPageIndex = null).apply {
+                    Timber.d("conversation-pager reducer clear focus page ${it.focusPageIndex}")
+                }
             }
 
             PagedConversationDetailEvent.AutoAdvanceRequested -> reducePagerState(currentState) {
@@ -97,7 +100,9 @@ private fun reduceUpdatePage(
         .addPage(event.nextItem),
     userScrollEnabled = true,
     pendingRemoval = null
-).setFocusIndexes(event.previousItem.exists())
+).setFocusIndexes(event.previousItem.exists()).apply {
+    Timber.d("conversation-pager pager state updated $pages")
+}
 
 private fun reducePagerState(
     currentState: PagedConversationDetailState,
@@ -113,6 +118,7 @@ private fun reducePagerState(
 
 private fun DynamicViewPagerState.setFocusIndexes(hasPrevious: Boolean): DynamicViewPagerState {
     val newFocusIndex = if (!hasPrevious) 0 else 1
+    Timber.d("conversation-pager SETTING focus index is $newFocusIndex")
     return this.copy(
         currentPageIndex = newFocusIndex,
         focusPageIndex = newFocusIndex

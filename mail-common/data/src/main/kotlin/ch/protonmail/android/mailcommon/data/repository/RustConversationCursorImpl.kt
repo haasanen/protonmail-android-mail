@@ -63,6 +63,11 @@ class RustConversationCursorImpl private constructor(
         current = initialCurrent
         previous = initialPrevious?.recoverFromErrorIfNeeded()
         next = initialNext?.recoverFromErrorIfNeeded()
+        Timber.d(
+            "conversation-pager init " +
+                "prev $previous current $current  $next $next"
+        )
+
     }
 
     override suspend fun invalidatePrevious() {
@@ -97,6 +102,9 @@ class RustConversationCursorImpl private constructor(
                 // an error should not block the user from moving forwards past this cursor position
                 is Error,
                 is Cursor -> {
+                    if (next is Error) {
+                        Timber.d("conversation-pager result was an error")
+                    }
                     previous = current
                     current = next
                     // move forwards
@@ -104,6 +112,10 @@ class RustConversationCursorImpl private constructor(
                     // preload
                     next = null
                     next = conversationCursorWrapper.nextPage().recoverFromErrorIfNeeded()
+                    Timber.d(
+                        "conversation-pager next " +
+                            "prev $previous current $current next $next "
+                    )
                 }
             }
         }
@@ -134,6 +146,9 @@ class RustConversationCursorImpl private constructor(
                 // an error should not block the user from moving backwards past this cursor position
                 is Error,
                 is Cursor -> {
+                    if (previous is Error) {
+                        Timber.d("conversation-pager prev result was an error")
+                    }
                     next = current
                     current = previous
                     // move forwards
@@ -154,7 +169,11 @@ class RustConversationCursorImpl private constructor(
             // recoverable error
             Timber.d("conversation-pager recoverFromErrorIfNeeded next is null")
             null
-        } else this
+        } else this.apply {
+            if (this is Error) {
+                Timber.d("conversation-pager non recoverable error for page $this")
+            }
+        }
 
 
     override fun close() {
