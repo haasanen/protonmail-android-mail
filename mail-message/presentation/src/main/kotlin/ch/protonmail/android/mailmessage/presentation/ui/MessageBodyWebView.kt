@@ -86,16 +86,10 @@ import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewOperation
 import ch.protonmail.android.mailmessage.presentation.viewmodel.MessageBodyWebViewViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.take
 import timber.log.Timber
 
 @OptIn(FlowPreview::class)
@@ -194,8 +188,6 @@ fun MessageBodyWebView(
             // also listen for changes in content loaded, there can be multiple calls to this
             snapshotFlow { contentLoaded.value }
                 .filter { it }
-                .withDefaultIfTimeout(WEB_PAGE_CONTENT_LOAD_WAIT_LIMIT, true)
-
         ) { measuredHeight, isLoaded ->
             // in order to get the settled height after the webpage has loaded
             // For empty messages, we can get 0 height
@@ -420,26 +412,12 @@ object MessageBodyWebView {
     )
 }
 
-@OptIn(FlowPreview::class)
-fun <T> Flow<T>.withDefaultIfTimeout(timeoutMs: Long, valueIfTimeout: T): Flow<T> = merge(
-    this,
-    flow {
-        delay(timeoutMs)
-        emit(valueIfTimeout)
-    }.map {
-        Timber.d("message-webview: load finished was not called and exceeded maximum wait time")
-        it
-    }
-).take(1)
-
-
 object MessageBodyWebViewTestTags {
 
     const val WebView = "MessageBodyWebView"
 }
 
 private const val WEB_PAGE_CONTENT_LOAD_TIMEOUT = 250L
-private const val WEB_PAGE_CONTENT_LOAD_WAIT_LIMIT = 500L
 
 // Max constraint for WebView height. If the height is greater
 // than this value, we will not fix the height of the WebView or it will crash.
