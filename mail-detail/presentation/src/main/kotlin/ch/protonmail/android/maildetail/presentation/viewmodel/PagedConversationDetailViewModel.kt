@@ -49,7 +49,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
@@ -70,29 +74,55 @@ class PagedConversationDetailViewModel @Inject constructor(
 
     private val _effects = MutableStateFlow(PagedConversationEffects())
     val effects = _effects.asStateFlow()
-    private val mutableState = MutableStateFlow<PagedConversationDetailState>(PagedConversationDetailState.Loading)
-    val state: StateFlow<PagedConversationDetailState> = mutableState.asStateFlow()
-    private var conversationCursor: ConversationCursor? = null
 
+    private var conversationCursor: ConversationCursor? = null
+    private val conversationId = MutableStateFlow(requireConversationId())
+    private val mutableState = MutableStateFlow<PagedConversationDetailState>(PagedConversationDetailState.Loading)
+
+    val state: StateFlow<PagedConversationDetailState> = mutableState.asStateFlow()
+
+    private val cursorParamsFlow = combine(
+        observePrimaryUserId().filterNotNull(),
+        conversationId
+    ) { userId, convId ->
+        Pair(userId, convId)
+    }
+        .flatMapLatest { (userId, convId) ->
+            swipeNextRepository.observeSwipeNext(userId)
+                .map { swipeEnabledResult ->
+                    val swipeEnabled = swipeEnabledResult.getOrNull()?.enabled ?: false
+                    val autoAdvance = getAutoAdvance(userId)
+
+                    CursorParams(
+                        userId = userId,
+                        conversationId = convId,
+                        swipeEnabled = swipeEnabled,
+                        autoAdvance = autoAdvance
+                    )
+                }
+        }
 
     init {
         viewModelScope.launch {
-            observePrimaryUserId().first()?.let { userId ->
-                val swipeEnabledResult = swipeNextRepository.observeSwipeNext(userId).first()
-                val swipeEnabled = swipeEnabledResult.getOrNull()?.enabled ?: false
-                val autoAdvance = getAutoAdvance(userId)
-                getConversationCursor(
-                    singleMessageMode = requireSingleMessageMode(),
-                    conversationId = requireConversationId(),
-                    userId = userId,
-                    messageId = getInitialScrollToMessageId()?.id,
-                    viewModeIsConversationMode = requireViewModeModeIsConversation()
-                ).collect { state ->
-                    onCursor(swipeEnabled, autoAdvance, state)
+            cursorParamsFlow
+                .distinctUntilChanged()
+                .flatMapLatest { params ->
+                    getConversationCursor(
+                        singleMessageMode = requireSingleMessageMode(),
+                        conversationId = params.conversationId,
+                        userId = params.userId,
+                        messageId = getInitialScrollToMessageId()?.id,
+                        viewModeIsConversationMode = requireViewModeModeIsConversation()
+                    ).map { state ->
+                        Triple(params.swipeEnabled, params.autoAdvance, state)
+                    }
                 }
-            }
+                .collect { triple ->
+                    onCursor(triple.first, triple.second, triple.third)
+                }
         }
     }
+
 
     private fun onCursor(
         swipeEnabled: Boolean,
@@ -250,4 +280,11 @@ class PagedConversationDetailViewModel @Inject constructor(
             )
         }
     }
+
+    private data class CursorParams(
+        val userId: UserId,
+        val conversationId: ConversationId,
+        val swipeEnabled: Boolean,
+        val autoAdvance: Boolean
+    )
 }
