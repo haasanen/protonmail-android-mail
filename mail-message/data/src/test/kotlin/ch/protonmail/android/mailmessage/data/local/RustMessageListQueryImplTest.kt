@@ -443,7 +443,7 @@ class RustMessageListQueryImplTest {
     }
 
     @Test
-    fun `Append None then follow-up arrives after grace returns empty list`() = runTest {
+    fun `Append None then follow-up arrives after grace returns empty list and clears pending request`() = runTest {
         // Given
         val pageKey = PageKey.DefaultPageKey(labelId = inboxLabelId, pageToLoad = PageToLoad.First)
 
@@ -468,6 +468,7 @@ class RustMessageListQueryImplTest {
             coEvery { filterUnread(false) } just Runs
             coEvery { showSpamAndTrash(false) } just Runs
         }
+        coEvery { invalidationRepository.submit(PageInvalidationEvent.MessagesInvalidated) } just Runs
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
