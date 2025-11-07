@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
+import timber.log.Timber
 
 const val JAVASCRIPT_CALLBACK_INTERFACE_NAME = "MessageBodyInterface"
 
@@ -49,5 +50,10 @@ class JavascriptCallback(
     @JavascriptInterface
     fun onInlineImageTapped(contentId: String) {
         onInlineImageClicked(contentId)
+    }
+
+    @JavascriptInterface
+    fun onDebugLog(msg: String) {
+        Timber.tag("JavaScript").d(msg)
     }
 }

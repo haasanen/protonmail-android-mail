@@ -317,3 +317,10 @@ function compensateVisualViewportOffset() {
     applyOffsetCompensation();
 }
 compensateVisualViewportOffset();
+
+/*******************************************************************************
+ * Utility function to forward log messages to Kotlin
+ ******************************************************************************/
+function debugLog(message) {
+    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onDebugLog(message);
+}
