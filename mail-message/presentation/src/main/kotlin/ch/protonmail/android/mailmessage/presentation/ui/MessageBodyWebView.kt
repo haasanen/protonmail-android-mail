@@ -30,7 +30,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -73,8 +72,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailattachments.domain.model.AttachmentId
-import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -230,19 +227,6 @@ fun MessageBodyWebView(
     }
 
     Column(modifier) {
-        val attachmentsUiModel = messageBodyUiModel.attachments
-        if (attachmentsUiModel != null && attachmentsUiModel.attachments.isNotEmpty()) {
-            AttachmentList(
-                modifier = Modifier.background(color = ProtonTheme.colors.backgroundNorm),
-                messageAttachmentsUiModel = attachmentsUiModel,
-                actions = AttachmentList.Actions(
-                    onShowAllAttachments = actions.onShowAllAttachments,
-                    onAttachmentClicked = actions.onAttachmentClicked,
-                    onToggleExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode
-                )
-            )
-        }
-
         val webViewMaxHeight = if (messageBodyUiModel.shouldRestrictWebViewHeight) {
             WEB_VIEW_FIXED_MAX_HEIGHT_RESTRICTED
         } else {
@@ -474,10 +458,7 @@ object MessageBodyWebView {
         val onMessageBodyLinkClicked: (uri: Uri) -> Unit,
         val onMessageBodyLinkLongClicked: (uri: Uri) -> Unit,
         val onMessageBodyImageLongClicked: (uri: Uri) -> Unit,
-        val onShowAllAttachments: () -> Unit,
         val onExpandCollapseButtonCLicked: () -> Unit,
-        val onAttachmentClicked: (openMode: AttachmentOpenMode, attachmentId: AttachmentId) -> Unit,
-        val onToggleAttachmentsExpandCollapseMode: () -> Unit,
         val loadImage: (messageId: MessageId, url: String) -> MessageBodyImage?,
         val onPrint: (MessageId) -> Unit,
         val onDownloadImage: (messageId: MessageId, imageUrl: String) -> Unit,

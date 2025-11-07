@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.ui
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
 import ch.protonmail.android.design.compose.component.ProtonCompactBannerWithButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
@@ -43,6 +45,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
 import ch.protonmail.android.mailmessage.presentation.ui.ZoomableWebView
 import timber.log.Timber
@@ -95,6 +98,19 @@ fun MessageBody(
         }
     }
 
+    val attachmentsUiModel = messageBodyUiModel.attachments
+    if (attachmentsUiModel != null && attachmentsUiModel.attachments.isNotEmpty()) {
+        AttachmentList(
+            modifier = Modifier.background(color = ProtonTheme.colors.backgroundNorm),
+            messageAttachmentsUiModel = attachmentsUiModel,
+            actions = AttachmentList.Actions(
+                onShowAllAttachments = actions.onShowAllAttachments,
+                onAttachmentClicked = actions.onAttachmentClicked,
+                onToggleExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode
+            )
+        )
+    }
+
     if (hasWebView) {
         val webViewCache = remember(messageBodyUiModel.messageId) {
             mutableStateOf<ZoomableWebView?>(null)
@@ -111,10 +127,7 @@ fun MessageBody(
                 onMessageBodyLinkClicked = actions.onMessageBodyLinkClicked,
                 onMessageBodyLinkLongClicked = {}, // Deferred init to MessageBodyWebView.
                 onMessageBodyImageLongClicked = {}, // Deferred init to MessageBodyWebView.
-                onShowAllAttachments = actions.onShowAllAttachments,
-                onToggleAttachmentsExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode,
                 onExpandCollapseButtonCLicked = actions.onExpandCollapseButtonClicked,
-                onAttachmentClicked = actions.onAttachmentClicked,
                 loadImage = actions.loadImage,
                 onPrint = actions.onPrint,
                 onDownloadImage = actions.onDownloadImage,

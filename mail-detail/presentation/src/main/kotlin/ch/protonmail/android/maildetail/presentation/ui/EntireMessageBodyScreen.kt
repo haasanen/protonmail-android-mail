@@ -195,10 +195,7 @@ private fun MessageBodyWebView(
             onMessageBodyLinkClicked = onMessageBodyLinkClicked,
             onMessageBodyLinkLongClicked = {}, // Deferred init to MessageBodyWebView
             onMessageBodyImageLongClicked = {}, // Deferred init to MessageBodyWebView
-            onShowAllAttachments = {}, // Attachments not shown in this screen
             onExpandCollapseButtonCLicked = {}, // Button not shown, message is shown fully
-            onAttachmentClicked = { _, _ -> }, // Attachments not shown in this screen
-            onToggleAttachmentsExpandCollapseMode = {}, // Attachments not shown in this screen
             loadImage = loadImage,
             onPrint = {}, // Print action is not available in this screen
             onDownloadImage = onDownloadImage,
