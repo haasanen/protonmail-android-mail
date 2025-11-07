@@ -166,7 +166,7 @@ fun ConversationDetailScreen(
     topBarState: TopBarState
 ) {
     val viewModel = hiltViewModel<ConversationDetailViewModel, ConversationDetailViewModel.Factory>(
-        key = conversationId.id
+        key = conversationId.id + navigationArgs.initialScrollToMessageId + navigationArgs.singleMessageMode
     ) { factory ->
         factory.create(
             conversationId = conversationId,
@@ -190,7 +190,6 @@ fun ConversationDetailScreen(
         MessageTheme.Dark
     else
         MessageTheme.Light
-
     val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
     topBarState.messages.value = if (isSingleMessageMode) null else uiModel?.messageCount
     topBarState.title.value = uiModel?.subject ?: DetailScreenTopBar.NoTitle
