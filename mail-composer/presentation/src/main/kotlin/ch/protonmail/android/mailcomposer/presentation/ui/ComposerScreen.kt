@@ -390,7 +390,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 bottomSheetType.value = BottomSheetType.InlineImageActions(contentId)
                                 viewModel.submit(ComposerAction.InlineImageActionsRequested)
                             },
-                            onInlineImageAdded = { viewModel.submit(ComposerAction.AddAttachments(listOf(it))) }
+                            onInlineImageAdded = { viewModel.submit(ComposerAction.AddAttachments(listOf(it))) },
+                            onInlineImagePasted = {
+                                showFeatureMissingSnackbar()
+                            }
                         ),
                         senderEmail = mainState.sender.email,
                         draftType = mainState.draftType,

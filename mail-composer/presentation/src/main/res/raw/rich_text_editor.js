@@ -10,6 +10,47 @@ document.getElementById('$EDITOR_ID').addEventListener('input', function(){
     requestAnimationFrame(() => updateCaretPosition());
 });
 
+/* Listen for PASTE events to perform sanitization */
+document.getElementById('$EDITOR_ID').addEventListener('paste', function(event) {
+    debugLog("Paste event detected.");
+
+    // Intercept and handle paste ourselves
+    event.preventDefault();
+    event.stopPropagation();
+
+    const cd = event.clipboardData || event.originalEvent?.clipboardData || window.clipboardData;
+    if (!cd) {
+        debugLog("No clipboard data available on paste event.");
+        return;
+    }
+
+    const items = Array.from(cd.items || []);
+
+    // Handle image files
+    items.forEach(item => {
+        if (item.kind === 'file') {
+            handleFilePaste(item);
+        }
+    });
+
+    // Prefer HTML text over plain text, post only once
+    const htmlItem = items.find(item => item.kind === 'string' && item.type === 'text/html');
+    const plainItem = items.find(item => item.kind === 'string' && item.type === 'text/plain');
+    const chosenTextItem = htmlItem || plainItem;
+
+    if (chosenTextItem) {
+        handleTextPaste(chosenTextItem);
+    }
+
+    // Update caret position after paste
+    setTimeout(() => {
+        requestAnimationFrame(() => {
+            updateCaretPosition();
+        });
+    }, 50);
+
+});
+
 /* Listen for changes to the body where images are removed and dispatches them to KT */
 const removeInlineImageObserver = new MutationObserver(mutations => {
     mutations.forEach(mutation => {
@@ -237,4 +278,126 @@ compensateVisualViewportOffset();
  ******************************************************************************/
 function debugLog(message) {
     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onDebugLog(message);
+}
+
+
+/*******************************************************************************
+ * HTML Sanitizer object
+ ******************************************************************************/
+const HtmlSanitizer = {
+   /**
+    * Removes all `srcset` attributes from <img> tags.
+    *
+    * Rationale:
+    * Some pasted HTML (e.g., from Wikipedia) includes `srcset` attributes
+    * with scheme-relative URLs such as `//upload.wikimedia.org/...`., causing images
+    * to fail loading and appear as empty frames.
+    */
+    removeSrcSetAttribute(html) {
+        const regex = /(?<![\w-])srcset\s*=\s*(?:"[^"]*"|'[^']*')/gi;
+        return html.replace(regex, '');
+    },
+
+    /**
+     * Removes all inline style attributes,
+     */
+    removeStyleAttributes(html) {
+      const regex = /(?<![\w-])style\s*=\s*(?:"[^"]*"|'[^']*')/gi;
+      return html.replace(regex, '');
+    },
+
+    /**
+     * Performs full sanitization by removing both `srcset` and `style` attributes.
+     */
+    sanitize(html) {
+        return this.removeStyleAttributes(this.removeSrcSetAttribute(html));
+    }
+};
+
+/*******************************************************************************
+ * Functions to handle content pasting into the editor
+ ******************************************************************************/
+ function handleFilePaste(item) {
+     const file = item.getAsFile();
+     if (!file || !file.type || !file.type.startsWith("image/")) {
+         debugLog("Pasted file is not an image: " + (file ? file.type : "no file"));
+         return;
+     }
+
+     debugLog("Handling pasted image file of type: " + file.type);
+     const reader = new FileReader();
+     reader.onload = function(e) {
+         const result = e.target && e.target.result;
+         if (!result || typeof result !== 'string') {
+             debugLog("Image FileReader produced no data.");
+             return;
+         }
+
+         const base64data = result.split(',')[1];
+         debugLog("Image pasted, size (base64) = " + (base64data ? base64data.length : 0));
+
+         // Send image data to Android
+         $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onImagePasted(base64data);
+     };
+     reader.readAsDataURL(file);
+ }
+
+function handleTextPaste(item) {
+    item.getAsString(function(text) {
+        const rawText = text || "";
+        const sanitizedText = HtmlSanitizer.sanitize(rawText);
+        insertHtmlAtCurrentPosition(sanitizedText);
+    });
+}
+
+function insertHtmlAtCurrentPosition(html) {
+    const editor = document.getElementById('$EDITOR_ID');
+    const selection = window.getSelection();
+
+    if (!editor) {
+        debugLog("insertHtmlAtCurrentPosition: Editor not found.");
+        return;
+    }
+
+    // Ensure cursor is inside the editor
+    const editorHasCursor =
+        document.activeElement === editor &&
+        selection &&
+        selection.rangeCount > 0;
+
+    if (!editorHasCursor && selection) {
+        const range = document.createRange();
+        range.setStart(editor, 0);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
+    debugLog("Inserting sanitized HTML at current position. Length = " + html.length);
+
+    // Use the browser's built-in editing command to insert the provided HTML
+    document.execCommand('insertHTML', false, html);
+
+    // Dispatch an input event so that body update callback is invoked
+    editor.dispatchEvent(new Event('input'));
+
+    const allImages = editor.getElementsByTagName('img');
+    waitForImagesLoaded(allImages).then(() => {
+        requestAnimationFrame(() => {
+            debugLog("All pasted images loaded, updating caret position.");
+            updateCursorPosition();
+        });
+    });
+}
+
+function waitForImagesLoaded(images) {
+    return Promise.all(Array.from(images).map(img => {
+        if (img.complete) {
+            return Promise.resolve();
+        }
+        return new Promise(resolve => {
+            img.onload = resolve;
+            img.onerror = resolve;
+        });
+    }));
 }

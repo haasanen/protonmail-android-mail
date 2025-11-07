@@ -121,7 +121,8 @@ fun EditableMessageBodyWebView(
             },
             onCursorPositionChanged = ::onCursorPositionChanged,
             onInlineImageRemoved = webViewActions.onInlineImageRemoved,
-            onInlineImageClicked = webViewActions.onInlineImageClicked
+            onInlineImageClicked = webViewActions.onInlineImageClicked,
+            onInlineImagePasted = webViewActions.onInlineImagePasted
         )
     }
 
@@ -264,7 +265,8 @@ object EditableMessageBodyWebView {
         val onWebViewParamsChanged: (params: WebViewDrawingState) -> Unit,
         val onBuildWebView: (Context) -> WebView,
         val onInlineImageRemoved: (String) -> Unit,
-        val onInlineImageClicked: (String) -> Unit
+        val onInlineImageClicked: (String) -> Unit,
+        val onInlineImagePasted: (String) -> Unit
     )
 
     val contentMimeTypes = arrayOf("image/*")

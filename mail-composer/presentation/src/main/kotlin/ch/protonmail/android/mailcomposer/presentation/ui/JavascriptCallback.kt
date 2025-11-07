@@ -29,17 +29,20 @@ class JavascriptCallback(
     private val onMessageBodyChanged: (String) -> Unit,
     private val onCursorPositionChanged: (Float, Float) -> Unit,
     private val onInlineImageRemoved: (String) -> Unit,
-    private val onInlineImageClicked: (String) -> Unit
+    private val onInlineImageClicked: (String) -> Unit,
+    private val onInlineImagePasted: (String) -> Unit
 ) {
 
     @JavascriptInterface
     fun onBodyUpdated(body: String) {
         onMessageBodyChanged(body)
+        Timber.tag(TAG).d("Body updated, size: ${body.length} characters")
     }
 
     @JavascriptInterface
     fun onCaretPositionChanged(position: Float, lineHeight: Float) {
         onCursorPositionChanged(position, lineHeight)
+        Timber.tag(TAG).d("Caret position changed: $position")
     }
 
     @JavascriptInterface
@@ -53,7 +56,17 @@ class JavascriptCallback(
     }
 
     @JavascriptInterface
+    fun onImagePasted(base64ImageData: String) {
+        onInlineImagePasted(base64ImageData)
+        Timber.tag(TAG).d("Image pasted of size: ${base64ImageData.length} characters")
+    }
+
+    @JavascriptInterface
     fun onDebugLog(msg: String) {
-        Timber.tag("JavaScript").d(msg)
+        Timber.tag(TAG).d(msg)
+    }
+
+    companion object {
+        const val TAG = "JavaScript"
     }
 }
