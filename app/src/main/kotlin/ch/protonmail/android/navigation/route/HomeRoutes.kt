@@ -108,7 +108,7 @@ internal fun NavGraphBuilder.addConversationDetail(
                     // for the conversation view
                     isSingleMessageMode = singleMessageMode,
                     // for the message list grouping
-                    viewModeIsConversation = backStackEntry.arguments?.getBoolean(ViewModeIsConversation)!!,
+                    viewModeIsConversation = backStackEntry.arguments?.getString(ViewModeIsConversation)!!.toBoolean(),
                     entryPoint = ConversationDetailEntryPoint.valueOf(
                         backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
                     )
@@ -148,7 +148,7 @@ internal fun NavGraphBuilder.addConversationDetail(
                 ?.let(::MessageIdUiModel),
             openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
             // for the conversation view
-            singleMessageMode = backStackEntry.arguments?.getBoolean(IsSingleMessageMode)!!,
+            singleMessageMode = backStackEntry.arguments?.getString(IsSingleMessageMode)!!.toBoolean(),
             conversationEntryPoint = ConversationDetailEntryPoint.valueOf(
                 backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
             ),
