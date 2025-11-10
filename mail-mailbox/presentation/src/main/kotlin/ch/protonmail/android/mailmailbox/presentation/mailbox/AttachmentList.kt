@@ -65,7 +65,6 @@ fun AttachmentList(
 ) {
     SubcomposeLayout(
         modifier = modifier
-            .padding(top = ProtonDimens.Spacing.Small)
             .wrapContentSize()
     ) { constraints ->
 
@@ -267,10 +266,10 @@ private fun Attachment(
             .clickable { onAttachmentClicked(attachment.id) }
             .border(
                 width = ProtonDimens.OutlinedBorderSize,
-                color = ProtonTheme.colors.borderNorm,
+                color = ProtonTheme.colors.borderStrong,
                 shape = ProtonTheme.shapes.huge
             )
-            .padding(horizontal = ProtonDimens.Spacing.MediumLight, vertical = ProtonDimens.Spacing.Standard)
+            .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Compact)
             .widthIn(
                 min = with(LocalDensity.current) { minWidth.toDp() },
                 max = with(LocalDensity.current) { maxWidth.toDp() }
@@ -455,6 +454,7 @@ private data class FullWidthAttachmentInfo(
 )
 
 object PlusTextWidthCache {
+
     // To avoid recalculations
     private val cache = mutableMapOf<Int, Int>()
 
@@ -471,6 +471,7 @@ object PlusTextWidthCache {
 }
 
 object Attachment {
+
     private const val IconWidthDp = 16
     private const val IconPaddingDp = 6
     private const val TotalStartEndPaddingDp = 20

@@ -111,12 +111,12 @@ fun MailboxItem(
                 .padding(
                     start = ProtonDimens.Spacing.ModeratelyLarge,
                     end = ProtonDimens.Spacing.Large,
-                    top = ProtonDimens.Spacing.Compact,
-                    bottom = ProtonDimens.Spacing.Compact
+                    top = ProtonDimens.Spacing.Medium,
+                    bottom = ProtonDimens.Spacing.Medium
                 )
         ) {
-            val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Medium
-            val fontColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
+            val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Bold
+            val fontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
             val iconColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
             val timeFontColor = if (item.displaySnoozeReminder) ProtonTheme.colors.notificationWarning else fontColor
             val avatarActions = ParticipantAvatar.Actions(
@@ -137,8 +137,7 @@ fun MailboxItem(
             )
             Column(
                 modifier = Modifier.padding(
-                    start = ProtonDimens.Spacing.ModeratelyLarge,
-                    top = ProtonDimens.Spacing.Standard
+                    start = ProtonDimens.Spacing.Large
                 )
             ) {
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -171,7 +170,7 @@ fun MailboxItem(
 
                     Time(time = item.time, fontWeight = fontWeight, fontColor = timeFontColor)
                 }
-                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Tiny))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -179,7 +178,7 @@ fun MailboxItem(
                     LocationIcons(
                         iconResIds = item.locations,
                         iconColor = iconColor,
-                        modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
+                        modifier = Modifier.padding(end = ProtonDimens.Spacing.Tiny)
                     )
                     Row(
                         Modifier
@@ -238,8 +237,8 @@ fun MailboxItem(
                 if (item.attachments.isNotEmpty()) {
                     Row(
                         modifier = Modifier
-                            .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(top = ProtonDimens.Spacing.Standard),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         AttachmentList(
@@ -249,14 +248,15 @@ fun MailboxItem(
                         )
                     }
                 }
-
-                Row(
-                    modifier = Modifier
-                        .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Labels(labels = item.labels)
+                if (item.labels.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .padding(top = ProtonDimens.Spacing.Standard)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Labels(labels = item.labels)
+                    }
                 }
             }
         }
@@ -279,13 +279,22 @@ private fun ActionIcons(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (item.shouldShowRepliedIcon) {
-            SmallNonClickableIcon(R.drawable.ic_proton_arrow_up_and_left, iconColor = iconColor)
+            SmallNonClickableIcon(
+                modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
+                iconId = R.drawable.ic_proton_arrow_up_and_left, iconColor = iconColor
+            )
         }
         if (item.shouldShowRepliedAllIcon) {
-            SmallNonClickableIcon(R.drawable.ic_proton_arrows_up_and_left, iconColor = iconColor)
+            SmallNonClickableIcon(
+                modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
+                iconId = R.drawable.ic_proton_arrows_up_and_left, iconColor = iconColor
+            )
         }
         if (item.shouldShowForwardedIcon) {
-            SmallNonClickableIcon(R.drawable.ic_proton_arrow_right, iconColor = iconColor)
+            SmallNonClickableIcon(
+                modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
+                iconId = R.drawable.ic_proton_arrow_right, iconColor = iconColor
+            )
         }
     }
 }
@@ -355,7 +364,9 @@ private fun LocationIcons(
     ) {
         iconResIds.forEach {
             SmallNonClickableIcon(
-                modifier = Modifier.semantics { tintColor = it.color },
+                modifier = Modifier
+                    .padding(end = ProtonDimens.Spacing.Tiny)
+                    .semantics { tintColor = it.color },
                 iconId = it.icon,
                 iconColor = it.color ?: iconColor
             )

@@ -56,7 +56,6 @@ fun LabelsList(
 ) {
     SubcomposeLayout(
         modifier = modifier
-            .padding(top = ProtonDimens.Spacing.Tiny)
             .wrapContentSize()
     ) { constraints ->
 

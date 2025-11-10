@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -256,7 +255,7 @@ private fun SenderInitialsAvatar(
                 .testTag(ch.protonmail.android.mailcommon.presentation.compose.AvatarTestTags.AvatarText),
             textAlign = TextAlign.Center,
             text = initials,
-            style = ProtonTheme.typography.bodyLargeNorm,
+            style = ProtonTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
 
