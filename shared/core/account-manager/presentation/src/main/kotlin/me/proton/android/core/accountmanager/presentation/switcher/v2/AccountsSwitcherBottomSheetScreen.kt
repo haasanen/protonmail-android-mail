@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -113,13 +114,19 @@ fun AccountsSwitcherBottomSheetScreen(
                         onEvent = onEvent
                     )
 
+                    Spacer(Modifier.size(ProtonDimens.Spacing.Large))
+
                     OtherAccountsSection(
                         signedInAccounts = state.signedInAccounts.filterNot { it is AccountListItem.Ready.Primary },
                         signedOutAccounts = state.disabledAccounts,
                         onEvent = onEvent
                     )
 
-                    ManageAccountsOnDeviceButton(modifier = modifier, onEvent = onEvent)
+                    Spacer(Modifier.size(ProtonDimens.Spacing.Large))
+
+                    Options(
+                        onEvent = onEvent
+                    )
 
                     Spacer(
                         modifier = Modifier.height(
@@ -144,8 +151,7 @@ private fun CurrentAccountSection(
 ) {
     Column(
         modifier = modifier
-            .padding(horizontal = ProtonDimens.Spacing.Standard)
-            .padding(bottom = ProtonDimens.Spacing.Large),
+            .padding(horizontal = ProtonDimens.Spacing.Standard),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -232,8 +238,8 @@ private fun OtherAccountsSection(
 ) {
     if (signedInAccounts.isNotEmpty() || signedOutAccounts.isNotEmpty()) {
         Text(
-            color = LocalColors.current.textHint,
-            style = LocalTypography.current.titleSmall,
+            color = LocalColors.current.textNorm,
+            style = LocalTypography.current.titleMedium,
             textAlign = TextAlign.Start,
             text = stringResource(R.string.manage_accounts_switch_to),
             modifier = Modifier
@@ -267,7 +273,6 @@ private fun OtherAccountsSection(
                     onEvent = onEvent
                 )
             }
-            AddAnotherAccountButton(modifier = modifier, onEvent = onEvent)
         }
     }
 }
@@ -301,25 +306,53 @@ private fun SignedOutAccountRow(
 }
 
 @Composable
-private fun ManageAccountsOnDeviceButton(modifier: Modifier, onEvent: (AccountSwitchEvent) -> Unit) {
+private fun Options(modifier: Modifier = Modifier, onEvent: (AccountSwitchEvent) -> Unit) {
+    Text(
+        color = LocalColors.current.textNorm,
+        style = LocalTypography.current.titleMedium,
+        textAlign = TextAlign.Start,
+        text = stringResource(R.string.manage_accounts_options),
+        modifier = Modifier
+            .padding(
+                bottom = ProtonDimens.Spacing.Medium,
+                top = ProtonDimens.Spacing.Standard,
+                start = ProtonDimens.Spacing.Medium
+            )
+            .fillMaxWidth()
+    )
     Card(
         shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
         modifier = modifier
-            .padding(ProtonDimens.Spacing.Medium)
+            .padding(horizontal = ProtonDimens.Spacing.Medium)
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(),
-        colors = CardDefaults.cardColors().copy(containerColor = ProtonTheme.colors.backgroundInvertedSecondary)
-    ) {
-        ButtonWithIconAndText(
-            text = R.string.manage_accounts_on_device,
-            icon = R.drawable.ic_proton_sliders,
-            onClick = { onEvent(AccountSwitchEvent.OnManageAccounts) }
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
         )
+    ) {
+        Column(modifier = modifier) {
+            AddAnotherAccountButton(onEvent = onEvent)
+
+            HorizontalDivider(thickness = 1.dp, color = ProtonTheme.colors.separatorNorm)
+
+            ManageAccountsOnDeviceButton(onEvent = onEvent)
+
+            HorizontalDivider(thickness = 1.dp, color = ProtonTheme.colors.separatorNorm)
+        }
     }
 }
 
 @Composable
-private fun AddAnotherAccountButton(modifier: Modifier, onEvent: (AccountSwitchEvent) -> Unit) {
+private fun ManageAccountsOnDeviceButton(modifier: Modifier = Modifier, onEvent: (AccountSwitchEvent) -> Unit) {
+    ButtonWithIconAndText(
+        modifier = modifier,
+        text = R.string.manage_accounts_on_device,
+        icon = R.drawable.ic_proton_sliders,
+        onClick = { onEvent(AccountSwitchEvent.OnManageAccounts) }
+    )
+}
+
+@Composable
+private fun AddAnotherAccountButton(modifier: Modifier = Modifier, onEvent: (AccountSwitchEvent) -> Unit) {
     ButtonWithIconAndText(
         modifier = modifier,
         text = R.string.add_another_account,

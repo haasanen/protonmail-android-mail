@@ -32,4 +32,5 @@
     <string name="manage_accounts_on_device">Manage accounts on this device</string>
     <string name="add_another_account">Add another account</string>
     <string name="account_switcher_no_initials">NA</string>
+    <string name="manage_accounts_options">Options</string>
 </resources>
