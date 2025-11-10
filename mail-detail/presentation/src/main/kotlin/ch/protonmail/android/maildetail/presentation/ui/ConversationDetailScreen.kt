@@ -43,7 +43,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -67,7 +66,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -111,6 +109,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.ConversationTopBarState
 import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
@@ -163,7 +162,8 @@ fun ConversationDetailScreen(
     actions: ConversationDetail.Actions,
     conversationId: ConversationId,
     navigationArgs: ConversationDetail.NavigationArgs,
-    topBarState: TopBarState
+    topBarState: ConversationTopBarState,
+    isDirectionForwards: () -> Boolean
 ) {
     val viewModel = hiltViewModel<ConversationDetailViewModel, ConversationDetailViewModel.Factory>(
         key = conversationId.id + navigationArgs.initialScrollToMessageId + navigationArgs.singleMessageMode
@@ -501,6 +501,7 @@ fun ConversationDetailScreen(
             state = state,
             topBarState = topBarState,
             scrollToMessageId = state.scrollToMessage?.id,
+            isDirectionForwards = isDirectionForwards,
             actions = ConversationDetailScreen.Actions(
                 onExit = actions.onExit,
                 onExitWithError = {
@@ -657,7 +658,8 @@ fun ConversationDetailScreen(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     scrollToMessageId: String?,
-    topBarState: TopBarState
+    topBarState: ConversationTopBarState,
+    isDirectionForwards: () -> Boolean
 ) {
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
@@ -854,16 +856,23 @@ fun ConversationDetailScreen(
                         bodyImageSaver(BodyImageUiModel(imageUrl, messageId))
                     }
                 )
+                val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
+
                 MessagesContentWithHiddenEdges(
+                    modifier = modifier,
                     uiModels = state.messagesState.messages,
+                    subject = uiModel?.subject ?: DetailScreenTopBar.NoTitle,
                     hiddenMessagesBannerState = state.hiddenMessagesBannerState,
                     parentPadding = padding,
                     innerPadding = innerPadding,
                     scrollToMessageId = scrollToMessageId,
                     actions = conversationDetailItemActions,
                     onHiddenMessagesBannerClick = actions.onHiddenMessagesBannerClick,
-                    paddingOffsetDp = topBarState.scrollBehavior.state.heightOffset.pxToDp(),
-                    conversationKey = state.conversationId()
+                    conversationKey = state.conversationId(),
+                    isDirectionForwards = isDirectionForwards,
+                    onSubjectScrolled = { alpha ->
+                        topBarState.updateSubjectAlpha(alpha)
+                    }
                 )
             }
 
@@ -881,8 +890,10 @@ fun ConversationDetailScreen(
 }
 
 @Composable
+@Suppress("UseComposableActions")
 fun MessagesContentWithHiddenEdges(
     uiModels: ImmutableList<ConversationDetailMessageUiModel>,
+    subject: String,
     hiddenMessagesBannerState: HiddenMessagesBannerState,
     parentPadding: PaddingValues,
     innerPadding: PaddingValues,
@@ -890,22 +901,25 @@ fun MessagesContentWithHiddenEdges(
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
     onHiddenMessagesBannerClick: () -> Unit,
-    paddingOffsetDp: Dp = 0f.dp,
-    conversationKey: String
+    conversationKey: String,
+    isDirectionForwards: () -> Boolean,
+    onSubjectScrolled: (Float) -> Unit
 ) {
 
     Box(modifier = Modifier.fillMaxWidth()) {
         MessagesContent(
             modifier = modifier,
             uiModels = uiModels,
+            subject = subject,
             hiddenMessagesBannerState = hiddenMessagesBannerState,
             parentPadding = parentPadding,
             innerPadding = innerPadding,
             scrollToMessageId = scrollToMessageId,
             actions = actions,
             onHiddenMessagesBannerClick = onHiddenMessagesBannerClick,
-            paddingOffsetDp = paddingOffsetDp,
-            conversationId = conversationKey
+            conversationId = conversationKey,
+            isDirectionForwards = isDirectionForwards,
+            onSubjectScrolled = onSubjectScrolled
         )
 
         // Cover left and right edges
@@ -931,9 +945,10 @@ fun MessagesContentWithHiddenEdges(
     ExperimentalAnimationApi::class
 )
 @Composable
-@Suppress("LongParameterList", "ComplexMethod")
+@Suppress("LongParameterList", "ComplexMethod", "UseComposableActions")
 private fun MessagesContent(
     uiModels: ImmutableList<ConversationDetailMessageUiModel>,
+    subject: String,
     hiddenMessagesBannerState: HiddenMessagesBannerState,
     parentPadding: PaddingValues,
     innerPadding: PaddingValues,
@@ -941,27 +956,21 @@ private fun MessagesContent(
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
     onHiddenMessagesBannerClick: () -> Unit,
-    paddingOffsetDp: Dp = 0f.dp,
-    conversationId: String
+    conversationId: String,
+    isDirectionForwards: () -> Boolean,
+    onSubjectScrolled: (Float) -> Unit
 ) {
     val listState = rememberLazyListState()
     var webContentLoaded by remember(conversationId) { mutableIntStateOf(0) }
     val loadedItemsHeight = remember(conversationId) { mutableStateMapOf<String, Int>() }
 
     val layoutDirection = LocalLayoutDirection.current
-    val contentPadding =
-        PaddingValues(
-            start = parentPadding.calculateStartPadding(layoutDirection),
-            end = parentPadding.calculateEndPadding(layoutDirection),
-            top = (
-                ProtonDimens.Spacing.Standard + paddingOffsetDp + parentPadding.calculateTopPadding()
-                ).coerceAtLeast(0f.dp),
-            // for bottom use inner-padding not parent because this screen owns the bottom bar
-            bottom = (innerPadding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny).coerceAtLeast(
-                0f.dp
-            )
-        )
-
+    val contentPadding = PaddingValues(
+        start = parentPadding.calculateStartPadding(layoutDirection),
+        end = parentPadding.calculateEndPadding(layoutDirection),
+        top = ProtonDimens.Spacing.Standard + parentPadding.calculateTopPadding(),
+        bottom = (innerPadding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny).coerceAtLeast(0f.dp)
+    )
 
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
@@ -970,7 +979,30 @@ private fun MessagesContent(
 
     var scrollToIndex = remember(scrollToMessageId, uiModels, conversationId) {
         if (scrollToMessageId == null) return@remember null
-        else uiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }.takeIf { it > -1 }
+        else uiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
+            .takeIf { it > -1 }
+            ?.let { it + 1 } // Add 1 to account for subject header
+    }
+
+    // Calculate subject visibility based on scroll
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val firstVisibleItemIndex = listState.firstVisibleItemIndex
+            val firstVisibleItemScrollOffset = listState.firstVisibleItemScrollOffset
+
+            when {
+                // Subject header is index 0
+                firstVisibleItemIndex == 0 -> {
+                    // Calculate alpha based on how much subject is scrolled
+                    val subjectHeight = itemsHeight[0] ?: return@snapshotFlow 0f
+                    (firstVisibleItemScrollOffset.toFloat() / subjectHeight).coerceIn(0f, 1f)
+                }
+
+                else -> 1f
+            }
+        }.collect { alpha ->
+            onSubjectScrolled(alpha)
+        }
     }
 
     LaunchedEffect(key1 = scrollToIndex, key2 = webContentLoaded, key3 = conversationId) {
@@ -1084,6 +1116,17 @@ private fun MessagesContent(
         verticalArrangement = Arrangement.spacedBy(-MailDimens.ConversationCollapseHeaderOverlapHeight),
         state = listState
     ) {
+        item(key = "subject_header") {
+            ConversationSubjectHeader(
+                subject = subject,
+                modifier = Modifier
+                    .onSizeChanged {
+                        itemsHeight[0] = it.height
+                    }
+                    .padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight), // Subject does NOT stack
+                isDirectionForwards = isDirectionForwards
+            )
+        }
 
         when (hiddenMessagesBannerState) {
             is HiddenMessagesBannerState.Shown -> {
@@ -1129,7 +1172,11 @@ private fun MessagesContent(
                         }
                     }
                 }.onSizeChanged {
-                    itemsHeight[index] = it.height
+                    val adjustedIndex = when (hiddenMessagesBannerState) {
+                        is HiddenMessagesBannerState.Shown -> index + 2 // subject + banner + messages
+                        is HiddenMessagesBannerState.Hidden -> index + 1 // subject + messages
+                    }
+                    itemsHeight[adjustedIndex] = it.height
                 },
                 onMessageBodyLoadFinished = { messageId, height ->
                     loadedItemsHeight[messageId.id] = height
@@ -1140,7 +1187,6 @@ private fun MessagesContent(
                 },
                 previouslyLoadedHeight = rememberCachedHeight,
                 finishedResizing = itemFinishedResizing
-
             )
         }
     }
@@ -1318,15 +1364,14 @@ private fun ConversationDetailScreenPreview(
     @PreviewParameter(ConversationDetailsPreviewProvider::class) state: ConversationDetailState
 ) {
     ProtonTheme {
-        ProtonTheme {
-            ConversationDetailScreen(
-                padding = PaddingValues(),
-                topBarState = TopBarState(TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)),
-                state = state,
-                actions = ConversationDetailScreen.Actions.Empty,
-                scrollToMessageId = null
-            )
-        }
+        ConversationDetailScreen(
+            padding = PaddingValues(),
+            topBarState = ConversationTopBarState(),
+            state = state,
+            actions = ConversationDetailScreen.Actions.Empty,
+            scrollToMessageId = null,
+            isDirectionForwards = { true }
+        )
     }
 }
 

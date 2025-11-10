@@ -28,8 +28,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,8 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -55,6 +51,7 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
+import ch.protonmail.android.maildetail.presentation.model.ConversationTopBarState
 import ch.protonmail.android.maildetail.presentation.model.DynamicViewPagerState
 import ch.protonmail.android.maildetail.presentation.model.Error
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
@@ -188,20 +185,14 @@ private fun ConversationPager(
     }
 
     val snackbarHostState = remember { ProtonSnackbarHostState() }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)
-    // When SubjectHeader is first time composed, we need to get the its actual height to be able to calculate yOffset
-    // for collapsing effect
-    val subjectHeaderSizeCallback: (Int) -> Unit = {
-        scrollBehavior.state.heightOffsetLimit = -it.toFloat()
-    }
 
-    var currentTopBarState by remember { mutableStateOf(TopBarState(scrollBehavior)) }
-    val onTopBarStateUpdated = { state: TopBarState ->
-        // update the state to the current visible page
+    var currentTopBarState by remember { mutableStateOf(ConversationTopBarState()) }
+    val onTopBarStateUpdated = { state: ConversationTopBarState ->
         currentTopBarState = state
     }
+
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         containerColor = ProtonTheme.colors.backgroundNorm,
         snackbarHost = {
             DismissableSnackbarHost(
@@ -211,21 +202,15 @@ private fun ConversationPager(
         },
         topBar = {
             DetailScreenTopBar(
-                modifier = Modifier
-                    .graphicsLayer {
-                        translationY = currentTopBarState.scrollBehavior.state.heightOffset / 2f
-                    },
                 title = currentTopBarState.title.value,
                 isStarred = currentTopBarState.isStarred.value,
                 messageCount = currentTopBarState.messages.value,
+                subjectAlpha = currentTopBarState.subjectAlpha.floatValue,
                 actions = DetailScreenTopBar.Actions(
                     onBackClick = onTopBarExit,
                     onStarClick = { currentTopBarState.onStarClick() },
                     onUnStarClick = { currentTopBarState.onStarUnClick() }
-                ),
-                subjectHeaderSizeCallback = subjectHeaderSizeCallback,
-                topAppBarState = currentTopBarState.scrollBehavior.state,
-                isDirectionForwards = { pagerState.lastScrolledForward }
+                )
             )
         }
     ) { innerPadding ->
@@ -241,7 +226,7 @@ private fun ConversationPager(
             conversationDetailNavigationArgs = conversationDetailScreenNavArgs,
             onTopBarStateUpdated = onTopBarStateUpdated,
             canScroll = state.userScrollEnabled && swipeEnabled,
-            scrollBehavior = scrollBehavior
+            isDirectionForwards = { pagerState.lastScrolledForward }
         )
     }
 
@@ -257,8 +242,8 @@ private fun Pager(
     conversationDetailNavigationArgs: ConversationDetail.NavigationArgs,
     pages: ImmutableList<Page>,
     canScroll: Boolean,
-    scrollBehavior: TopAppBarScrollBehavior,
-    onTopBarStateUpdated: (TopBarState) -> Unit
+    onTopBarStateUpdated: (ConversationTopBarState) -> Unit,
+    isDirectionForwards: () -> Boolean
 ) {
     HorizontalPager(
         modifier = modifier,
@@ -279,24 +264,24 @@ private fun Pager(
 
         when (item) {
             is Page.Conversation -> {
-                val topBarHostState = remember { TopBarState(scrollBehavior) }
+                val topBarHostState = remember { ConversationTopBarState() }
                 if (page == pagerState.targetPage) {
                     onTopBarStateUpdated(topBarHostState)
                 }
-                Page(
+                PageUpdated(
                     innerPadding = innerPadding,
                     topBarHostState = topBarHostState,
                     conversationActions = conversationActions,
                     navigationArgs = conversationDetailNavigationArgs.copy(
                         initialScrollToMessageId = item.cursorId.messageId?.let { MessageIdUiModel(it) }
                     ),
-                    conversationId = item.cursorId.conversationId
+                    conversationId = item.cursorId.conversationId,
+                    isDirectionForwards = isDirectionForwards
                 )
             }
 
-            Page.End -> {
-                // should be handled by indexing to never reach the end page (view pager can't scroll further)
-            }
+            // should be handled by indexing to never reach the end page (view pager can't scroll further)
+            Page.End -> Unit
 
             Page.Error -> {
                 Box(
@@ -316,19 +301,21 @@ private fun Pager(
 }
 
 @Composable
-private fun Page(
+private fun PageUpdated(
     innerPadding: PaddingValues,
-    topBarHostState: TopBarState,
+    topBarHostState: ConversationTopBarState,
     conversationActions: ConversationDetail.Actions,
     navigationArgs: ConversationDetail.NavigationArgs,
-    conversationId: ConversationId
+    conversationId: ConversationId,
+    isDirectionForwards: () -> Boolean
 ) {
     ConversationDetailScreen(
         padding = innerPadding,
         actions = conversationActions,
         conversationId = conversationId,
         navigationArgs = navigationArgs,
-        topBarState = topBarHostState
+        topBarState = topBarHostState,
+        isDirectionForwards = isDirectionForwards
     )
 }
 
