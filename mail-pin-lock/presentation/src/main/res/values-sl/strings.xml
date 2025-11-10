@@ -27,7 +27,7 @@
   <string name="mail_pinlock_settings_new_pin_topbar">Nastavi novo kodo PIN</string>
   <string name="mail_pinlock_settings_new_pin_title">Nova koda PIN</string>
   <string name="mail_pinlock_settings_new_pin_description">Vnesite PIN, dolg med 4 in 21 številkami.</string>
-  <string name="mail_pinlock_settings_confirm_pin_topbar">Potrdi PIN</string>
+  <string name="mail_pinlock_settings_confirm_pin_topbar">Potrdite PIN</string>
   <string name="mail_pinlock_settings_confirm_pin_title">Ponovite PIN</string>
   <string name="mail_pinlock_settings_confirm_pin_description">Ponovno vnesite svoj PIN, da se prepričate, da je pravilen.</string>
   <string name="mail_pinlock_settings_verify_pin_topbar">Vnesite PIN</string>

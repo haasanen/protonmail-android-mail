@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="one">%d seleccionat</item>
     <item quantity="other">%d seleccionats</item>
@@ -59,7 +59,7 @@
   <string name="message_link_long_click_share">Compartir enllaç</string>
   <string name="message_link_long_click_share_via">Compartir l\'enllaç a través de</string>
   <!-- Message body image actions -->
-  <string name="message_image_long_click_download">Descarregar la imatge</string>
+  <string name="message_image_long_click_download">Descarrega la imatge</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Copia l\'adreça</string>
   <string name="contact_actions_copy_address_description">Copia l\'adreça del contacte</string>
@@ -73,8 +73,13 @@
   <string name="contact_actions_add_contact_description">Desa aquest destinatari com a contacte</string>
   <string name="contact_actions_block_contact">Bloca aquest contacte</string>
   <string name="contact_actions_block_contact_description">Bloca aquest contacte</string>
-  <string name="contact_actions_block_address">Bloquegeu aquesta adreça</string>
-  <string name="contact_actions_block_address_description">Bloquegeu aquesta adreça</string>
+  <string name="contact_actions_block_contact_dialog_text">Els correus electrònics de <xliff:g id="email">%1$s</xliff:g> ja no es lliuraran i s\'eliminaran permanentment. Podeu gestionar les adreces de correu electrònic blocades a les preferències.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Bloqueja</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Cancel·la</string>
+  <string name="contact_actions_unblock_contact">Desbloquegeu aquest contacte</string>
+  <string name="contact_actions_unblock_contact_description">Desbloquegeu aquest contacte</string>
+  <string name="contact_actions_block_address">Bloca aquesta adreça</string>
+  <string name="contact_actions_block_address_description">Bloca aquesta adreça</string>
   <string name="contact_actions_unblock_address">Desbloquegeu aquesta adreça</string>
   <string name="contact_actions_unblock_address_description">Desbloquegeu aquesta adreça</string>
   <string name="contact_actions_view_contact_details">Mostra el detalls del contacte</string>

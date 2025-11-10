@@ -48,7 +48,7 @@
   <string name="mailbox_message_scheduling">Programmazione dell\'invio in corso</string>
   <string name="mailbox_message_scheduling_offline">Nessuna connessione a Internet. Programmazione dell\'invio sospesa.</string>
   <string name="mailbox_message_scheduled_for_sending_success">Invio programmato per il %1$s</string>
-  <string name="launcher_alert_duplicate_account_description">L\'utente ha già effettuato l\'accesso</string>
+  <string name="launcher_alert_duplicate_account_description">Account aggiunto in precedenza</string>
   <string name="settings_change_icon_title">Icona dell\'app</string>
   <string name="settings_change_icon_description">Maschera l\'app di Proton Mail con un\'icona discreta. Il nome e l\'icona classica di Proton Mail verranno comunque mostrati nelle notifiche.</string>
   <string name="settings_change_icon_confirmation_title">Cambia l\'icona</string>

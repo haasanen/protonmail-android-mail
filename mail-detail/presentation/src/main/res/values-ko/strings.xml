@@ -114,8 +114,8 @@
   <string name="message_report_phishing_dialog_cancel_button">취소</string>
   <string name="open_on_protoncalendar_banner_title">Proton Calendar에서 열기</string>
   <string name="open_on_protoncalendar_banner_description">안전하게 암호화된 캘린더</string>
-  <string name="trashed_messages_banner">Show trashed messages in this conversation.</string>
-  <string name="non_trashed_messages_banner">Show non-trashed messages in this conversation.</string>
+  <string name="trashed_messages_banner">이 대화에서 휴지통에 들어간 메시지 보기.</string>
+  <string name="non_trashed_messages_banner">이 대화에서 휴지통에 없는 메시지 보기.</string>
   <string name="recipient_me">나</string>
   <string name="message_details_header_from">보낸 사람</string>
   <string name="message_details_header_to">받는 사람</string>
@@ -162,7 +162,7 @@
   <string name="rsvp_widget_button_retry">다시 시도</string>
   <string name="rsvp_widget_error_answering">해당 이벤트에 회신하는 도중 오류가 발생했습니다.</string>
   <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar에서 열기</string>
-  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Failed to open in Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Proton Calendar에서 열지 못했습니다</string>
   <string name="rsvp_widget_copy_address">주소 복사하기</string>
   <string name="rsvp_widget_message">메시지</string>
   <string name="snooze_message_snoozed_until_banner_title">방해금지 종료</string>
@@ -175,6 +175,6 @@
   <string name="already_unsubscribed_banner_message">이 메일리스트에서 구독이 취소되었습니다.</string>
   <string name="error_unsubscribe_newsletter">뉴스레터 구독 해지에 실패했습니다.</string>
   <string name="detail_error_loading_single_message">메시지 불러오기 실패</string>
-  <string name="error_downloading_image">Failed to download image</string>
-  <string name="image_downloaded_successfully">Image downloaded</string>
+  <string name="error_downloading_image">이미지 다운로드 실패</string>
+  <string name="image_downloaded_successfully">이미지 다운로드됨</string>
 </resources>

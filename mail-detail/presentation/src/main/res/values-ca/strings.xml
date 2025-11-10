@@ -116,8 +116,8 @@
   <string name="message_report_phishing_dialog_cancel_button">Cancel·la</string>
   <string name="open_on_protoncalendar_banner_title">Obre a Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Calendari segur xifrat</string>
-  <string name="trashed_messages_banner">Mostra els missatges esborrats d\'aquesta conversa.</string>
-  <string name="non_trashed_messages_banner">Mostra els missatges no esborrats d\'aquesta conversa.</string>
+  <string name="trashed_messages_banner">Mostra els missatges esborrats en aquesta conversa.</string>
+  <string name="non_trashed_messages_banner">Mostra els missatges no esborrats en aquesta conversa.</string>
   <string name="recipient_me">jo</string>
   <string name="message_details_header_from">De</string>
   <string name="message_details_header_to">Per a</string>
@@ -153,8 +153,8 @@
   <string name="rsvp_widget_event_cancelled">Esdeveniment <b>cancel·lat</b></string>
   <string name="rsvp_widget_invite_outdated">Aquesta invitació ha caducat</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">S\'ha cancel·lat l\'esdeveniment. Aquesta invitació està caducada.</string>
-  <string name="rsvp_widget_offline_invite_outdated">Esteu fora de línia. La informació mostrada pot estar desfasada.</string>
-  <string name="rsvp_widget_address_is_incorrect">No es pot fer servir aquesta adreça per respondre. Si us plau, actualitzeu la informació del vostre compte.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Esteu fora de línia. La informació mostrada pot estar desactualitzada.</string>
+  <string name="rsvp_widget_address_is_incorrect">L\'adreça no es pot utilitzar per a respondre. Actualitzeu la informació del compte.</string>
   <string name="rsvp_widget_user_is_organizer">Sou l\'organitzador.</string>
   <string name="rsvp_widget_user_is_not_invited">No podeu respondre a les invitacions d\'esdeveniments si no formeu part de la llista d\'assistents en aquell moment.</string>
   <string name="rsvp_widget_event_does_not_exist">Aquest esdeveniment no és al calendari, per tant, no hi podeu respondre.</string>
@@ -165,7 +165,7 @@
   <string name="rsvp_widget_button_retry">Torna-ho a provar</string>
   <string name="rsvp_widget_error_answering">S\'ha produït un error en respondre a aquest esdeveniment</string>
   <string name="rsvp_widget_open_in_proton_calendar">Obre al Proton Calendar</string>
-  <string name="rsvp_widget_failed_to_open_in_proton_calendar">No s\'ha pogut obrir a Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">No s\'ha pogut obrir al Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Copia l\'adreça</string>
   <string name="rsvp_widget_message">Missatge</string>
   <string name="snooze_message_snoozed_until_banner_title">Ajornat fins a</string>

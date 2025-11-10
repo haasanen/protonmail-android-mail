@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="one">%d valt</item>
     <item quantity="other">%d valda</item>
@@ -73,6 +73,11 @@
   <string name="contact_actions_add_contact_description">Spara denna mottagare som en kontakt</string>
   <string name="contact_actions_block_contact">Blockera denna kontakt</string>
   <string name="contact_actions_block_contact_description">Blockera denna kontakt</string>
+  <string name="contact_actions_block_contact_dialog_text">E-post från <xliff:g id="email">%1$s</xliff:g> kommer inte längre att levereras och kommer att tas bort permanent. Du kan hantera blockerade e-postadresser i inställningarna.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Blockera</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Avbryt</string>
+  <string name="contact_actions_unblock_contact">Avblockera denna kontakt</string>
+  <string name="contact_actions_unblock_contact_description">Avblockera denna kontakt</string>
   <string name="contact_actions_block_address">Blockera denna adress</string>
   <string name="contact_actions_block_address_description">Blockera denna adress</string>
   <string name="contact_actions_unblock_address">Avblockera denna adress</string>

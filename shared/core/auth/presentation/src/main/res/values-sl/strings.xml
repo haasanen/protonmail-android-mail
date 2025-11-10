@@ -152,7 +152,7 @@
   <string name="settings_save_main_password">Shrani novo glavno geslo</string>
   <string name="settings_password_management_tab_main_password">Glavno geslo</string>
   <string name="settings_password_management_tab_second_password">Drugo geslo</string>
-  <string name="settings_password_management_change_password_note">Če želite spremeniti katero koli od svojih gesel, morate poznati svoje glavno geslo. </string>
+  <string name="settings_password_management_change_password_note">Če želite spremeniti katero koli od svojih gesel, morate poznati svoje glavno geslo.\u0020</string>
   <string name="settings_password_management_forgot_main_password">Ste pozabili svoje glavno geslo?</string>
   <string name="settings_password_management_header">Spremeni geslo</string>
   <string name="settings_password_management_cannot_change_password">Ne morete spremeniti svojega varnostnega gesla. Obrnite se na svojega skrbnika.</string>

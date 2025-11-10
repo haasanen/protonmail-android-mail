@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="one">Selectate: %d</item>
     <item quantity="few">Selectate: %d</item>
@@ -75,6 +75,11 @@
   <string name="contact_actions_add_contact_description">Salvare acest destinatar în contacte.</string>
   <string name="contact_actions_block_contact">Blocare acest contact</string>
   <string name="contact_actions_block_contact_description">Blocare acest contact</string>
+  <string name="contact_actions_block_contact_dialog_text">Mesajele de la <xliff:g id="email">%1$s</xliff:g> nu vor mai fi livrate și vor fi șterse definitiv. Puteți gestiona adresele de e-mail blocate în setări.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Blocare</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Anulare</string>
+  <string name="contact_actions_unblock_contact">Deblocare acest contact</string>
+  <string name="contact_actions_unblock_contact_description">Deblocare acest contact</string>
   <string name="contact_actions_block_address">Blocați această adresă</string>
   <string name="contact_actions_block_address_description">Blocați această adresă</string>
   <string name="contact_actions_unblock_address">Deblocare această adresă</string>

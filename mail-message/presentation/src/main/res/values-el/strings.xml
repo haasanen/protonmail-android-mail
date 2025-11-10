@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="one">%d Επιλεγμένο</item>
     <item quantity="other">%d Επιλεγμένα</item>
@@ -73,6 +73,11 @@
   <string name="contact_actions_add_contact_description">Αποθήκευση αυτού του παραλήπτη ως επαφή</string>
   <string name="contact_actions_block_contact">Αποκλεισμός αυτής της επαφής</string>
   <string name="contact_actions_block_contact_description">Αποκλεισμός αυτής της επαφής</string>
+  <string name="contact_actions_block_contact_dialog_text">Μηνύματα ηλεκτρονικού ταχυδρομείου από το <xliff:g id="email">%1$s</xliff:g> δε θα παραδοθούν και θα διαγραφούν οριστικά. Μπορείτε να διαχειριστείτε τις αποκλεισμένες ηλεκτρονικές διευθύνσεις στις ρυθμίσεις.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Αποκλεισμός</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Ακύρωση</string>
+  <string name="contact_actions_unblock_contact">Άρση αποκλεισμού αυτής της επαφής</string>
+  <string name="contact_actions_unblock_contact_description">Άρση αποκλεισμού αυτής της επαφής</string>
   <string name="contact_actions_block_address">Αποκλεισμός αυτής της διεύθυνσης</string>
   <string name="contact_actions_block_address_description">Αποκλεισμός αυτής της διεύθυνσης</string>
   <string name="contact_actions_unblock_address">Ξεμπλοκάρισμα αυτής της διεύθυνσης</string>

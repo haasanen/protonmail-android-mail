@@ -75,7 +75,7 @@
   <string name="mail_settings_app_customization_signature_header">Signatures</string>
   <string name="mail_settings_app_customization_email_signature_header">Signatura de correu electrònic</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Signatura mòbil</string>
-  <string name="mail_settings_app_customization_email_signature_explanation">La vostra signatura de correu electrònic, que s\'afegirà automàticament a tots els correus que envieu.</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">La signatura de correu electrònic, que s\'afegeix automàticament a tots els correus electrònics que envieu.</string>
   <string name="mail_settings_app_customization_mobile_signature_explanation">Signatura addicional afegida als correus electrònics enviats des d\'aquest dispositiu.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Activada</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Desactivada</string>
@@ -138,7 +138,7 @@
   <string name="mail_settings_custom_toolbar_message_view_description">Aquesta barra d\'eines es manté visible mentre es llegeixen missatges</string>
   <string name="mail_settings_custom_toolbar_conversation_view_title">Barra d\'eines de conversa</string>
   <string name="mail_settings_custom_toolbar_conversation_view_description">Aquesta barra d\'eines es manté visible mentre es llegeixen missatges</string>
-  <string name="mail_settings_custom_toolbar_edit_actions">Accions d\'edició</string>
+  <string name="mail_settings_custom_toolbar_edit_actions">Edita les accions</string>
   <string name="mail_settings_custom_toolbar_set_actions">Accions de la barra d\'eines</string>
   <string name="mail_settings_custom_toolbar_remaining_actions">Accions disponibles</string>
   <string name="mail_settings_custom_toolbar_nav_title_list">Edita la barra d\'eines de la llista</string>

@@ -26,7 +26,7 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Neteja la consulta de cerca</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Introduïu la consulta de cerca</string>
   <string name="filter_unread_button_text">No llegits</string>
-  <string name="include_spam_trash_text">Incloeu-hi el Correu brossa i la Paperera</string>
+  <string name="include_spam_trash_text">Inclou el correu brossa/paperera</string>
   <plurals name="mailbox_toolbar_selected_count">
     <item quantity="one">%d seleccionat</item>
     <item quantity="other">%d seleccionats</item>
@@ -35,7 +35,7 @@
   <string name="mailbox_default_sender">(Cap remitent)</string>
   <string name="mailbox_error_message_offline">Esteu fora de línia. No s\'han pogut recuperar els elements.</string>
   <string name="mailbox_error_message_generic">No s\'ha pogut carregar la bústia de correu</string>
-  <string name="mailbox_error_message_user_session">No es pot carregar la sessió. Comproveu la connexió i torneu-ho a provar.</string>
+  <string name="mailbox_error_message_user_session">No es pot carregar la sessió. Comproveu la vostra connexió i torneu-ho a provar.</string>
   <string name="mailbox_error_message_unexpected">Alguna cosa ha anat malament</string>
   <string name="mailbox_is_empty_title">Cap missatge</string>
   <string name="trash_is_empty_title">No hi ha res a la paperera</string>

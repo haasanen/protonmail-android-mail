@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="one">%d seçilmiş</item>
     <item quantity="other">%d seçilmiş</item>
@@ -73,8 +73,11 @@
   <string name="contact_actions_add_contact_description">Bu alıcıyı kişi olarak kaydet</string>
   <string name="contact_actions_block_contact">Bu kişiyi engelle</string>
   <string name="contact_actions_block_contact_description">Bu kişiyi engelle</string>
-  <string name="contact_actions_unblock_contact">Bu kişinin engellemesini kaldır</string>
-  <string name="contact_actions_unblock_contact_description">Bu kişinin engellemesini kaldır</string>
+  <string name="contact_actions_block_contact_dialog_text"><xliff:g id="email">%1$s</xliff:g> adresinden gelen e-postalar artık teslim edilmeyecek ve kalıcı olarak silinecek. Engellenen e-posta adreslerini ayarlar bölümünden yönetebilirsiniz.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Engelle</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">İptal</string>
+  <string name="contact_actions_unblock_contact">Bu kişinin engellenmesini kaldır</string>
+  <string name="contact_actions_unblock_contact_description">Bu kişinin engellenmesini kaldır</string>
   <string name="contact_actions_block_address">Bu adresi engelle</string>
   <string name="contact_actions_block_address_description">Bu adresi engelle</string>
   <string name="contact_actions_unblock_address">Bu adresin engellemesini kaldır</string>

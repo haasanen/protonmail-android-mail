@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="other">%d個が選択済み</item>
   </plurals>
@@ -71,6 +71,11 @@
   <string name="contact_actions_add_contact_description">この宛先を連絡先として保存</string>
   <string name="contact_actions_block_contact">この連絡先をブロック</string>
   <string name="contact_actions_block_contact_description">この連絡先をブロック</string>
+  <string name="contact_actions_block_contact_dialog_text">Emails from <xliff:g id="email">%1$s</xliff:g> will no longer be delivered and will be permanently deleted. You can manage blocked email addresses in the settings.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Block</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Cancel</string>
+  <string name="contact_actions_unblock_contact">Unblock this contact</string>
+  <string name="contact_actions_unblock_contact_description">Unblock this contact</string>
   <string name="contact_actions_block_address">このアドレスをブロック</string>
   <string name="contact_actions_block_address_description">このアドレスをブロック</string>
   <string name="contact_actions_unblock_address">このアドレスのブロックを解除</string>

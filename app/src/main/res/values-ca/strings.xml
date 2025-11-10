@@ -24,7 +24,7 @@
   <string name="app_icon_name_notes">Notes</string>
   <string name="app_icon_name_calculator">Calculadora</string>
   <string name="dialog_sign_out_account_title">Tanca la sessió</string>
-  <string name="dialog_sign_out_account_description">Les dades associades al vostre compte es mantindran en aquest dispositiu tret que decidiu eliminar-les.</string>
+  <string name="dialog_sign_out_account_description">Les dades associades al compte es mantindran en aquest dispositiu tret que decidiu eliminar-les.</string>
   <string name="dialog_sign_out_account_confirm">Tanca la sessió</string>
   <string name="dialog_sign_out_account_cancel">Cancel·la</string>
   <string name="dialog_remove_account_title">Voleu esborrar el compte?</string>
@@ -52,7 +52,7 @@
   <string name="settings_change_icon_title">Icona de l\'aplicació</string>
   <string name="settings_change_icon_description">Opteu per una icona discreta per a l\'aplicació de Proton Mail. Les notificacions encara mostraran el nom i la icona de Proton Mail per defecte.</string>
   <string name="settings_change_icon_confirmation_title">Voleu canviar la icona de l\'aplicació?</string>
-  <string name="settings_change_icon_confirmation_details">Això farà que l\'aplicació de Proton Mail es tanqui i es descartin totes les notificacions.\n\nPer reiniciar Proton Mail, només cal que toqueu la nova icona de l\'aplicació.</string>
+  <string name="settings_change_icon_confirmation_details">Això farà que es tanqui l\'aplicació del Proton Mail i que es descartin totes les notificacions.\n\nPer a reiniciar el Proton Mail, només cal que toqueu la icona de la nova aplicació.</string>
   <string name="settings_change_icon_action_cancel">Cancel·la</string>
   <string name="settings_change_icon_change_icon">Canvia la icona</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>

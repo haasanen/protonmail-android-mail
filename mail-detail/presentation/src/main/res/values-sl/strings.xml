@@ -171,7 +171,7 @@
   <string name="rsvp_widget_button_retry">Poskusite znova</string>
   <string name="rsvp_widget_error_answering">Pri odgovarjanju na ta dogodek je prišlo do napake</string>
   <string name="rsvp_widget_open_in_proton_calendar">Odpri v Proton Calendar</string>
-  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Odpiranje v Koledarju Proton ni uspelo</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Odpiranje v Proton Calendar ni uspelo</string>
   <string name="rsvp_widget_copy_address">Kopiraj naslov</string>
   <string name="rsvp_widget_message">Piši</string>
   <string name="snooze_message_snoozed_until_banner_title">Dremež do</string>

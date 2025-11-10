@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="one">%d sélectionné</item>
     <item quantity="other">%d sélectionnés</item>
@@ -73,6 +73,11 @@
   <string name="contact_actions_add_contact_description">Enregistrer ce destinataire comme contact.</string>
   <string name="contact_actions_block_contact">Bloquer ce contact</string>
   <string name="contact_actions_block_contact_description">Bloquer ce contact</string>
+  <string name="contact_actions_block_contact_dialog_text">Les messages de <xliff:g id="email">%1$s</xliff:g> ne seront plus distribués et seront définitivement supprimés. Vous pouvez gérer les adresses e-mail bloquées dans les paramètres.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Bloquer</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Annuler</string>
+  <string name="contact_actions_unblock_contact">Débloquer ce contact</string>
+  <string name="contact_actions_unblock_contact_description">Débloquer ce contact</string>
   <string name="contact_actions_block_address">Bloquer cette adresse</string>
   <string name="contact_actions_block_address_description">Bloquer cette adresse</string>
   <string name="contact_actions_unblock_address">Débloquer cette adresse</string>

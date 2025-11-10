@@ -20,7 +20,7 @@
   <string name="edm_code_not_recognized">Koda ni prepoznana. Poskusite znova.</string>
   <string name="edm_code_verifying">Preverjanje …</string>
   <string name="edm_missing_camera_permission_headline">Dovoli dostop do kamere</string>
-  <string name="edm_missing_camera_permission_body">Če se želite prijaviti s kodo QR, morate aplikaciji %1$s omogočiti dostopati do fotoaparata. To lahko storite v nastavitvah naprave.</string>
+  <string name="edm_missing_camera_permission_body">Če se želite prijaviti s kodo QR, morate aplikaciji %1$s omogočiti dostop do kamere. To lahko storite v nastavitvah naprave.</string>
   <string name="edm_missing_camera_permission_footer">Vedno imate nadzor: to lahko kadar koli spremenite v nastavitvah svoje naprave.</string>
   <string name="edm_missing_camera_permission_settings">Nastavitve</string>
   <string name="intro_origin_sign_in_title">Prijava v drugi napravi</string>

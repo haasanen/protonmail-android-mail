@@ -49,12 +49,12 @@
   <string name="mailbox_message_scheduling_offline">Офлайн: сообщение в очереди на планирование</string>
   <string name="mailbox_message_scheduled_for_sending_success">Это сообщение будет отправлено %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Пользователь уже вошёл</string>
-  <string name="settings_change_icon_title">Значок приложения</string>
+  <string name="settings_change_icon_title">Иконка приложения</string>
   <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
-  <string name="settings_change_icon_confirmation_title">Изменить значок приложения</string>
+  <string name="settings_change_icon_confirmation_title">Изменить иконку приложения</string>
   <string name="settings_change_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
   <string name="settings_change_icon_action_cancel">Отменить</string>
-  <string name="settings_change_icon_change_icon">Изменить значок</string>
+  <string name="settings_change_icon_change_icon">Изменить иконку</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Discreet app icon</string>
+  <string name="settings_change_icon_header_discreet">Незаметный значок приложения</string>
 </resources>

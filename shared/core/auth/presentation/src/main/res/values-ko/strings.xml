@@ -123,7 +123,7 @@
   <string name="auth_fido_security_keys_learn_more">더 알아보기</string>
   <string name="auth_user_check_delinquent_error">사용자의 계정이 현재 연체된 요금으로 인해 대기 상태입니다.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="other">최대 무료 계정 수 %d개가 초과되었습니다.</item>
   </plurals>
   <string name="common_error_something_went_wrong">문제가 발생했습니다. 다시 시도해 주세요.</string>
   <string name="auth_fido_config_error">저장된 키 불러오기 오류</string>

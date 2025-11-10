@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="other">已选择 %d 项</item>
   </plurals>
@@ -71,6 +71,11 @@
   <string name="contact_actions_add_contact_description">将此收件人另存为联系人</string>
   <string name="contact_actions_block_contact">屏蔽此联系人</string>
   <string name="contact_actions_block_contact_description">屏蔽此联系人</string>
+  <string name="contact_actions_block_contact_dialog_text">Emails from <xliff:g id="email">%1$s</xliff:g> will no longer be delivered and will be permanently deleted. You can manage blocked email addresses in the settings.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Block</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Cancel</string>
+  <string name="contact_actions_unblock_contact">Unblock this contact</string>
+  <string name="contact_actions_unblock_contact_description">Unblock this contact</string>
   <string name="contact_actions_block_address">屏蔽此地址</string>
   <string name="contact_actions_block_address_description">屏蔽此地址</string>
   <string name="contact_actions_unblock_address">取消屏蔽此地址</string>

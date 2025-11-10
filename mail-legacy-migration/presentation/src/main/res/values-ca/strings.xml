@@ -18,5 +18,5 @@
   -->
 <resources>
   <string name="loading_mailbox">S\'està carregant la bústia de correu…</string>
-  <string name="loading_mailbox_subtitle">Gairebé hi som. Gràcies per la vostra paciència!</string>
+  <string name="loading_mailbox_subtitle">Gairebé hi som. Gràcies per la paciència!</string>
 </resources>

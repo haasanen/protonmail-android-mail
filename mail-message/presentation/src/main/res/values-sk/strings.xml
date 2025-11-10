@@ -16,7 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <plurals name="selected_count_title">
     <item quantity="one">Vybrané: %d</item>
     <item quantity="few">Vybrané: %d</item>
@@ -77,6 +77,11 @@
   <string name="contact_actions_add_contact_description">Uložiť tohto príjemcu ako kontakt</string>
   <string name="contact_actions_block_contact">Zablokovať tento kontakt</string>
   <string name="contact_actions_block_contact_description">Zablokovať tento kontakt</string>
+  <string name="contact_actions_block_contact_dialog_text">Emaily od <xliff:g id="email">%1$s</xliff:g> už nebudú doručované a budú trvalo vymazané. Zablokované emailové adresy môžete spravovať v nastaveniach.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Blokovať</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Zrušiť</string>
+  <string name="contact_actions_unblock_contact">Odblokovať tento kontakt</string>
+  <string name="contact_actions_unblock_contact_description">Odblokovať tento kontakt</string>
   <string name="contact_actions_block_address">Zablokovať túto adresu</string>
   <string name="contact_actions_block_address_description">Zablokovať túto adresu</string>
   <string name="contact_actions_unblock_address">Odblokovať túto adresu</string>

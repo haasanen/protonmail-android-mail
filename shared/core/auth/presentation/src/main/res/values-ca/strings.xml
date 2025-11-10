@@ -129,7 +129,7 @@
   <string name="common_error_something_went_wrong">Alguna cosa ha anat malament. Torneu-ho a provar.</string>
   <string name="auth_fido_config_error">S\'ha produït un error en recuperar les claus emmagatzemades.</string>
   <string name="auth_fido_reading_key_error">S\'ha produït un error en llegir la clau de seguretat.</string>
-  <string name="auth_fido_submit_key_error">S\'ha produït un error en l\'enviament de dades de la clau.</string>
+  <string name="auth_fido_submit_key_error">S\'ha produït un error en enviar les dades de la clau.</string>
   <string name="auth_fido_reading_key_progress">S\'està llegint la clau de seguretat.</string>
   <string name="auth_fido_authenticating_in_progress">S\'està autenticant amb la clau de seguretat.</string>
   <string name="auth_fido_security_key">Clau de seguretat</string>
@@ -168,5 +168,5 @@
   <string name="settings_password_error_invalid_recovery">Codi 2FA incorrecte. Torneu-ho a provar.</string>
   <string name="settings_password_error_2fa_reused">El codi ja s\'ha utilitzat. Proveu un codi diferent.</string>
   <string name="settings_password_general_error">S\'ha produït un error.</string>
-  <string name="proton_error_non_processable_actions">Una o més accions no s\'han pogut processar. Tanqueu la sessió i torneu-la a iniciar al vostre compte.</string>
+  <string name="proton_error_non_processable_actions">No es poden processar una o més accions. Tanqueu la sessió i torneu-la a iniciar.</string>
 </resources>
