@@ -66,11 +66,11 @@ class EphemeralMailboxCursorRepository @Inject constructor(
     override fun setEphemeralCursor(conversationCursor: ConversationCursor) {
         initialised = true
         _cursorState.value = conversationCursor
-
     }
 
     private fun cleanup() {
         Timber.d("conversation-cursor being cleaned up")
+        initialised = false
         _cursorState.value?.close()
         _cursorState.value = null
     }

@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.CursorId
+import ch.protonmail.android.mailcommon.domain.model.CursorResult
 import ch.protonmail.android.mailcommon.domain.model.EphemeralMailboxCursor
 import ch.protonmail.android.mailcommon.domain.repository.EphemeralMailboxCursorRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.SetEphemeralMailboxCursor
@@ -46,14 +47,27 @@ class GetConversationCursor @Inject constructor(
         viewModeIsConversationMode: Boolean
     ) = cursorRepository.observeCursor()
         .map { state ->
-            if (state == null || state == EphemeralMailboxCursor.NotInitalised) {
+            val shouldInitializeCursor = state == null ||
+                state == EphemeralMailboxCursor.NotInitalised ||
+                isCursorForDifferentConversation(state, conversationId)
+
+            if (shouldInitializeCursor) {
                 setEphemeralMailboxCursor(
                     userId, viewModeIsConversationMode,
-                    CursorId(conversationId, null)
+                    CursorId(conversationId, messageId)
                 )
                 EphemeralMailboxCursor.Initialising
             } else {
                 state
             }
         }
+
+    private fun isCursorForDifferentConversation(
+        state: EphemeralMailboxCursor,
+        newConversationId: ConversationId
+    ): Boolean {
+        return state is EphemeralMailboxCursor.Data &&
+            state.cursor.current is CursorResult.Cursor &&
+            (state.cursor.current as CursorResult.Cursor).conversationId != newConversationId
+    }
 }
