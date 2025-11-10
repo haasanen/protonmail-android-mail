@@ -85,11 +85,4 @@ interface LabelRepository {
 
     suspend fun resolveLocalIdBySystemLabel(userId: UserId, labelId: SystemLabelId): Either<DataError, LabelId>
 
-
-    /**
-     * Mark local data as stale for [userId], by [type].
-     *
-     * Note: Repository will refresh data asap.
-     */
-    fun markAsStale(userId: UserId, type: LabelType)
 }

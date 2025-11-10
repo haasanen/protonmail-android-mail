@@ -99,10 +99,6 @@ class RustLabelRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun markAsStale(userId: UserId, type: LabelType) {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun resolveSystemLabel(userId: UserId, labelId: LabelId): Either<DataError, SystemLabelId> {
         return labelDataSource.resolveSystemLabelByLocalId(userId = userId, labelId = labelId.toLocalLabelId()).map {
             it.toSystemLabel()
