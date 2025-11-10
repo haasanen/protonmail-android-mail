@@ -3,7 +3,7 @@
  * Event listeners
  ******************************************************************************/
 /* Listen for changes to the body and dispatches them to KT */
-document.getElementById('$EDITOR_ID').addEventListener('input', function(){
+document.getElementById('$EDITOR_ID').addEventListener('input', function () {
     var body = document.getElementById('$EDITOR_ID').innerHTML
     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
 
@@ -11,7 +11,7 @@ document.getElementById('$EDITOR_ID').addEventListener('input', function(){
 });
 
 /* Listen for PASTE events to perform sanitization */
-document.getElementById('$EDITOR_ID').addEventListener('paste', function(event) {
+document.getElementById('$EDITOR_ID').addEventListener('paste', function (event) {
     debugLog("Paste event detected.");
 
     // Intercept and handle paste ourselves
@@ -70,7 +70,7 @@ const removeInlineImageObserver = new MutationObserver(mutations => {
 removeInlineImageObserver.observe(document.getElementById('$EDITOR_ID'), {childList: true, subtree: true});
 
 /* Listen for taps on images in the body that contains a "cid" (inline images) and dispatches the event to KT */
-document.getElementById('$EDITOR_ID').addEventListener('click', function(event) {
+document.getElementById('$EDITOR_ID').addEventListener('click', function (event) {
     if (event.target.nodeName === 'IMG') {
         const src = event.target.getAttribute('src');
         if (src && src.startsWith('cid:')) {
@@ -134,20 +134,20 @@ function updateCaretPosition() {
             const lineHeightValue = lineHeight.replace(/[^\d.]/g, '');
             // Add another check to ensure parsing is possible
             if (lineHeightValue) {
-                 parsedLineHeight = parseFloat(lineHeightValue) * parsedLineHeightFactor;
+                parsedLineHeight = parseFloat(lineHeightValue) * parsedLineHeightFactor;
             }
         } else {
             // Handle 'normal' line height - still using 1.2 * font-size.
             const fontSize = window.getComputedStyle(span).fontSize;
             const fontSizeValue = fontSize.replace(/[^\d.]/g, '');
-             if (fontSizeValue) {
-                 parsedLineHeight = parseFloat(fontSizeValue) * parsedLineHeightFactor;
-             }
+            if (fontSizeValue) {
+                parsedLineHeight = parseFloat(fontSizeValue) * parsedLineHeightFactor;
+            }
         }
 
         // Remove the temporary span element using its parent node
         if (span.parentNode) {
-             span.parentNode.removeChild(span);
+            span.parentNode.removeChild(span);
         }
 
         // Restore the original selection (caret position)
@@ -166,8 +166,8 @@ function updateCaretPosition() {
 
 /*******************************************************************************
  * Enhanced ProtonMail Quote Toggle Handler - START
-*******************************************************************************/
-document.addEventListener('click', function(e) {
+ *******************************************************************************/
+document.addEventListener('click', function (e) {
     const quote = e.target.closest('.protonmail_quote');
     if (quote) {
         const parentQuote = quote.parentElement?.closest('.protonmail_quote');
@@ -180,7 +180,7 @@ document.addEventListener('click', function(e) {
 });
 
 // Handle Enter key to keep quotes at the bottom
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
@@ -222,7 +222,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Handle selection changes (prevents from auto-expanding and glitching)
-document.addEventListener('selectionchange', function() {
+document.addEventListener('selectionchange', function () {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
@@ -249,7 +249,7 @@ document.addEventListener('selectionchange', function() {
 
 /*******************************************************************************
  * Enhanced ProtonMail Quote Toggle Handler - END
-*******************************************************************************/
+ *******************************************************************************/
 
 /*******************************************************************************
  * Public functions invoked by kotlin through webview evaluate javascript method
@@ -331,6 +331,7 @@ function stripInlineImage(contentId) {
  * `padding-top` via a CSS custom property (`--vv-top-inset`).
  * This visually shifts the page content down so that the real top text becomes
  * visible again inside the viewport. Please ensure the CSS custom property is defined.
+ *
  ******************************************************************************/
 function compensateVisualViewportOffset() {
     // Visual viewport is not supported on this browser; nothing to fix.
@@ -357,6 +358,7 @@ function compensateVisualViewportOffset() {
     // Initial compensation
     applyOffsetCompensation();
 }
+
 compensateVisualViewportOffset();
 
 /*******************************************************************************
@@ -370,14 +372,14 @@ function debugLog(message) {
  * HTML Sanitizer object
  ******************************************************************************/
 const HtmlSanitizer = {
-   /**
-    * Removes all `srcset` attributes from <img> tags.
-    *
-    * Rationale:
-    * Some pasted HTML (e.g., from Wikipedia) includes `srcset` attributes
-    * with scheme-relative URLs such as `//upload.wikimedia.org/...`., causing images
-    * to fail loading and appear as empty frames.
-    */
+    /**
+     * Removes all `srcset` attributes from <img> tags.
+     *
+     * Rationale:
+     * Some pasted HTML (e.g., from Wikipedia) includes `srcset` attributes
+     * with scheme-relative URLs such as `//upload.wikimedia.org/...`., causing images
+     * to fail loading and appear as empty frames.
+     */
     removeSrcSetAttribute(html) {
         const regex = /(?<![\w-])srcset\s*=\s*(?:"[^"]*"|'[^']*')/gi;
         return html.replace(regex, '');
@@ -387,8 +389,8 @@ const HtmlSanitizer = {
      * Removes all inline style attributes,
      */
     removeStyleAttributes(html) {
-      const regex = /(?<![\w-])style\s*=\s*(?:"[^"]*"|'[^']*')/gi;
-      return html.replace(regex, '');
+        const regex = /(?<![\w-])style\s*=\s*(?:"[^"]*"|'[^']*')/gi;
+        return html.replace(regex, '');
     },
 
     /**
@@ -402,38 +404,38 @@ const HtmlSanitizer = {
 /*******************************************************************************
  * Functions to handle content pasting into the editor
  ******************************************************************************/
- function handleFilePaste(item) {
-     const file = item.getAsFile();
-     if (!file || !file.type || !file.type.startsWith("image/")) {
-         debugLog("Pasted file is not an image: " + (file ? file.type : "no file"));
-         return;
-     }
+function handleFilePaste(item) {
+    const file = item.getAsFile();
+    if (!file || !file.type || !file.type.startsWith("image/")) {
+        debugLog("Pasted file is not an image: " + (file ? file.type : "no file"));
+        return;
+    }
 
-     debugLog("Handling pasted image file of type: " + file.type);
-     const reader = new FileReader();
-     reader.onload = function(e) {
-         const result = e.target && e.target.result;
-         if (!result || typeof result !== 'string') {
-             debugLog("Image FileReader produced no data.");
-             return;
-         }
+    debugLog("Handling pasted image file of type: " + file.type);
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const result = e.target && e.target.result;
+        if (!result || typeof result !== 'string') {
+            debugLog("Image FileReader produced no data.");
+            return;
+        }
 
-         const base64data = result.split(',')[1];
-         debugLog("Image pasted, size (base64) = " + (base64data ? base64data.length : 0));
+        const base64data = result.split(',')[1];
+        debugLog("Image pasted, size (base64) = " + (base64data ? base64data.length : 0));
 
-         // Send image data to Android
-         $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onImagePasted(base64data);
-     };
-     reader.readAsDataURL(file);
- }
+        // Send image data to Android
+        $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onImagePasted(base64data);
+    };
+    reader.readAsDataURL(file);
+}
 
- function handleTextPaste(item) {
-     item.getAsString(function(text) {
-         const rawText = text || "";
-         const sanitizedText = HtmlSanitizer.sanitize(rawText);
-         insertHtmlAtCurrentPosition(sanitizedText);
-     });
- }
+function handleTextPaste(item) {
+    item.getAsString(function (text) {
+        const rawText = text || "";
+        const sanitizedText = HtmlSanitizer.sanitize(rawText);
+        insertHtmlAtCurrentPosition(sanitizedText);
+    });
+}
 
 function insertHtmlAtCurrentPosition(html) {
     const editor = document.getElementById('$EDITOR_ID');
