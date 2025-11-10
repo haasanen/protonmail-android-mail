@@ -163,7 +163,7 @@ fun ConversationDetailScreenLegacy(
     conversationEntryPoint: ConversationDetailEntryPoint
 ) {
     val viewModel = hiltViewModel<ConversationDetailViewModel, ConversationDetailViewModel.Factory>(
-        key = conversationId.id
+        key = conversationId.id + initialScrollToMessageId + singleMessageMode
     ) { factory ->
         factory.create(
             conversationId = conversationId,
