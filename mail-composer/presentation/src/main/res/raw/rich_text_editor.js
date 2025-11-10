@@ -7,7 +7,9 @@ document.getElementById('$EDITOR_ID').addEventListener('input', function () {
     var body = document.getElementById('$EDITOR_ID').innerHTML
     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
 
-    requestAnimationFrame(() => updateCaretPosition());
+    requestAnimationFrame(() => {
+        CaretPositionUpdater.scheduleUpdate();
+    });
 });
 
 /* Listen for PASTE events to perform sanitization */
@@ -45,7 +47,7 @@ document.getElementById('$EDITOR_ID').addEventListener('paste', function (event)
     // Update caret position after paste
     setTimeout(() => {
         requestAnimationFrame(() => {
-            updateCaretPosition();
+            CaretPositionUpdater.scheduleUpdate();
         });
     }, 50);
 
@@ -84,9 +86,13 @@ document.getElementById('$EDITOR_ID').addEventListener('click', function (event)
 /* Observes the cursor position and notifies kotlin through js interface. Invoked at script init (bottom of this file).*/
 function trackCursorPosition() {
     var editor = document.getElementById('$EDITOR_ID');
+    editor.addEventListener('keyup', (e) => {
+        CaretPositionUpdater.scheduleUpdate();
+    });
 
-    editor.addEventListener('keyup', updateCaretPosition);
-    editor.addEventListener('click', updateCaretPosition);
+    editor.addEventListener('click', (e) => {
+        CaretPositionUpdater.scheduleUpdate();
+    });
 
     let touchStartTime = 0;
 
@@ -97,11 +103,31 @@ function trackCursorPosition() {
     editor.addEventListener('touchend', (e) => {
         // This bit is required to allow the "native" long press to be triggered (for context menu in Android)
         if (Date.now() - touchStartTime < 500) {
-            updateCaretPosition();
+            CaretPositionUpdater.scheduleUpdate();
         }
     });
 }
+
 trackCursorPosition();
+
+/*******************************************************************************
+ * Debounces calls to updateCaretPosition() to avoid redundant layout reads
+ * and reduce visible jitter when multiple events (input, keyup, touchend)
+ * fire close together.
+ ******************************************************************************/
+const CaretPositionUpdater = {
+    debounceTimer: null,
+    DEBOUNCE_DELAY_MS: 50,
+
+    scheduleUpdate() {
+        if (this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
+        }
+        this.debounceTimer = setTimeout(() => {
+            updateCaretPosition();
+        }, this.DEBOUNCE_DELAY_MS);
+    }
+};
 
 function updateCaretPosition() {
     var editor = document.getElementById('$EDITOR_ID');
@@ -387,7 +413,7 @@ function insertHtmlAtCurrentPosition(html) {
     waitForImagesLoaded(allImages).then(() => {
         requestAnimationFrame(() => {
             debugLog("All pasted images loaded, updating caret position.");
-            updateCursorPosition();
+            CaretPositionUpdater.scheduleUpdate();
         });
     });
 }
