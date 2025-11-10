@@ -575,9 +575,12 @@ class ConversationDetailViewModel @AssistedInject constructor(
                     },
                     ifRight = {
                         ConversationDetailEvent.ConversationData(
-                            conversationMetadataMapper.toUiModel(it),
-                            it.hiddenMessagesBanner,
-                            showAllMessages
+                            conversationUiModel = conversationMetadataMapper.toUiModel(it),
+                            hiddenMessagesBanner = it.hiddenMessagesBanner.takeIf {
+                                // In single message mode, don't pass the hiddenMessagesBanner
+                                isSingleMessageModeEnabled.not()
+                            },
+                            showAllMessages = showAllMessages
                         )
                     }
                 )
