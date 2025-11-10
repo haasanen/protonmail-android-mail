@@ -125,6 +125,8 @@ fun AccountsSwitcherBottomSheetScreen(
                     Spacer(Modifier.size(ProtonDimens.Spacing.Large))
 
                     Options(
+                        currentAccount = state.signedInAccounts.filterIsInstance<AccountListItem.Ready.Primary>()
+                            .first(),
                         onEvent = onEvent
                     )
 
@@ -306,7 +308,11 @@ private fun SignedOutAccountRow(
 }
 
 @Composable
-private fun Options(modifier: Modifier = Modifier, onEvent: (AccountSwitchEvent) -> Unit) {
+private fun Options(
+    modifier: Modifier = Modifier,
+    currentAccount: AccountListItem,
+    onEvent: (AccountSwitchEvent) -> Unit
+) {
     Text(
         color = LocalColors.current.textNorm,
         style = LocalTypography.current.titleMedium,
@@ -337,8 +343,24 @@ private fun Options(modifier: Modifier = Modifier, onEvent: (AccountSwitchEvent)
             ManageAccountsOnDeviceButton(onEvent = onEvent)
 
             HorizontalDivider(thickness = 1.dp, color = ProtonTheme.colors.separatorNorm)
+
+            SignOutButton(currentAccount = currentAccount, onEvent = onEvent)
         }
     }
+}
+
+@Composable
+private fun SignOutButton(
+    modifier: Modifier = Modifier,
+    currentAccount: AccountListItem,
+    onEvent: (AccountSwitchEvent) -> Unit
+) {
+    ButtonWithIconAndText(
+        modifier = modifier,
+        text = R.string.account_switcher_sign_out,
+        icon = R.drawable.ic_sign_out,
+        onClick = { onEvent(AccountSwitchEvent.OnSignOut(currentAccount.accountItem.userId)) }
+    )
 }
 
 @Composable
