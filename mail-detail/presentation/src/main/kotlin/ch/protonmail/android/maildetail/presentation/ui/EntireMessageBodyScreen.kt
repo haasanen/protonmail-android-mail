@@ -145,31 +145,35 @@ fun EntireMessageBodyScreen(
     ) { padding ->
         when (val messageBodyState = state.messageBodyState) {
             is MessageBodyState.Loading -> ProtonCenteredProgress()
-            is MessageBodyState.Data -> MessageBodyWebView(
+            is MessageBodyState.Data -> EntireMessageBodyWebView(
                 modifier = Modifier.padding(padding),
                 messageBodyUiModel = messageBodyState.messageBodyUiModel,
-                onMessageBodyLinkClicked = {
-                    viewModel.submit(EntireMessageBodyAction.MessageBodyLinkClicked(it))
-                },
-                loadImage = { messageId, url ->
-                    viewModel.loadImage(messageId, url)
-                },
-                onDownloadImage = { messageId, url ->
-                    bodyImageSaver(BodyImageUiModel(url, messageId))
-                }
+                actions = EntireMessageBodyWebView.Actions(
+                    onMessageBodyLinkClicked = {
+                        viewModel.submit(EntireMessageBodyAction.MessageBodyLinkClicked(it))
+                    },
+                    loadImage = { messageId, url ->
+                        viewModel.loadImage(messageId, url)
+                    },
+                    onDownloadImage = { messageId, url ->
+                        bodyImageSaver(BodyImageUiModel(url, messageId))
+                    }
+                )
             )
-            is MessageBodyState.Error.Decryption -> MessageBodyWebView(
+            is MessageBodyState.Error.Decryption -> EntireMessageBodyWebView(
                 modifier = Modifier.padding(padding),
                 messageBodyUiModel = messageBodyState.encryptedMessageBody,
-                onMessageBodyLinkClicked = {
-                    viewModel.submit(EntireMessageBodyAction.MessageBodyLinkClicked(it))
-                },
-                loadImage = { messageId, url ->
-                    viewModel.loadImage(messageId, url)
-                },
-                onDownloadImage = { messageId, url ->
-                    bodyImageSaver(BodyImageUiModel(url, messageId))
-                }
+                actions = EntireMessageBodyWebView.Actions(
+                    onMessageBodyLinkClicked = {
+                        viewModel.submit(EntireMessageBodyAction.MessageBodyLinkClicked(it))
+                    },
+                    loadImage = { messageId, url ->
+                        viewModel.loadImage(messageId, url)
+                    },
+                    onDownloadImage = { messageId, url ->
+                        bodyImageSaver(BodyImageUiModel(url, messageId))
+                    }
+                )
             )
             is MessageBodyState.Error.Data -> ProtonErrorMessage(
                 modifier = Modifier.padding(padding),
@@ -180,25 +184,23 @@ fun EntireMessageBodyScreen(
 }
 
 @Composable
-private fun MessageBodyWebView(
+private fun EntireMessageBodyWebView(
     modifier: Modifier,
     messageBodyUiModel: MessageBodyUiModel,
-    onMessageBodyLinkClicked: (Uri) -> Unit,
-    loadImage: (MessageId, String) -> MessageBodyImage?,
-    onDownloadImage: (MessageId, String) -> Unit
+    actions: EntireMessageBodyWebView.Actions
 ) {
     val webViewCache = remember { mutableStateOf<ZoomableWebView?>(null) }
     MessageBodyWebView(
         modifier = modifier,
         messageBodyUiModel = messageBodyUiModel,
         webViewActions = MessageBodyWebView.Actions(
-            onMessageBodyLinkClicked = onMessageBodyLinkClicked,
+            onMessageBodyLinkClicked = actions.onMessageBodyLinkClicked,
             onMessageBodyLinkLongClicked = {}, // Deferred init to MessageBodyWebView
             onMessageBodyImageLongClicked = {}, // Deferred init to MessageBodyWebView
             onExpandCollapseButtonCLicked = {}, // Button not shown, message is shown fully
-            loadImage = loadImage,
+            loadImage = actions.loadImage,
             onPrint = {}, // Print action is not available in this screen
-            onDownloadImage = onDownloadImage,
+            onDownloadImage = actions.onDownloadImage,
             onViewEntireMessageClicked = { _, _, _, _ -> } // Button won't be shown
         ),
         shouldAllowViewingEntireMessage = false,
@@ -227,5 +229,14 @@ object EntireMessageBodyScreen {
         val shouldShowEmbeddedImages: Boolean,
         val shouldShowRemoteContent: Boolean,
         val viewModePreference: ViewModePreference
+    )
+}
+
+object EntireMessageBodyWebView {
+
+    data class Actions(
+        val onMessageBodyLinkClicked: (Uri) -> Unit,
+        val loadImage: (MessageId, String) -> MessageBodyImage?,
+        val onDownloadImage: (MessageId, String) -> Unit
     )
 }
