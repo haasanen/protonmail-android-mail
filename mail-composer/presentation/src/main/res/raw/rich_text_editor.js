@@ -97,6 +97,12 @@ function trackCursorPosition() {
     });
 
     editor.addEventListener('click', (e) => {
+        // Ignore clicks on images to avoid caret jumps when tapping inline images
+        const isImageClick = e.target && e.target.closest('img');
+        if (isImageClick) {
+            debugLog("Ignoring click on image");
+            return;
+        }
         CaretPositionUpdater.scheduleUpdate();
     });
 
