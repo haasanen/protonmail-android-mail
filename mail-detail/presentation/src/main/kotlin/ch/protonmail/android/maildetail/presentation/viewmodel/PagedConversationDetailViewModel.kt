@@ -75,7 +75,12 @@ class PagedConversationDetailViewModel @Inject constructor(
     val effects = _effects.asStateFlow()
 
     private var conversationCursor: ConversationCursor? = null
-    private val conversationId = MutableStateFlow(requireConversationId())
+
+    private val conversationId = savedStateHandle.getStateFlow(
+        ConversationDetailScreen.ConversationIdKey,
+        requireConversationId().id
+    ).map { ConversationId(it) }
+
     private val mutableState = MutableStateFlow<PagedConversationDetailState>(PagedConversationDetailState.Loading)
 
     val state: StateFlow<PagedConversationDetailState> = mutableState.asStateFlow()
