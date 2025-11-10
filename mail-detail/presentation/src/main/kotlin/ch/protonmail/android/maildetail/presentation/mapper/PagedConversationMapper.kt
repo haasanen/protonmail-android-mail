@@ -18,16 +18,13 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import ch.protonmail.android.mailcommon.domain.model.Cursor
 import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.CursorResult
-import ch.protonmail.android.mailcommon.domain.model.End
 import ch.protonmail.android.maildetail.presentation.model.Page
-import ch.protonmail.android.mailcommon.domain.model.Error as CursorError
 
 fun CursorResult?.toPage() = when (this) {
     null -> Page.Loading
-    End -> Page.End
-    is Cursor -> Page.Conversation(CursorId(this.conversationId, this.subItemId))
-    is CursorError -> Page.Error
+    CursorResult.End -> Page.End
+    is CursorResult.Cursor -> Page.Conversation(CursorId(this.conversationId, this.subItemId))
+    is CursorResult.Error -> Page.Error
 }

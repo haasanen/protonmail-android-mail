@@ -18,7 +18,8 @@
 
 package ch.protonmail.android.mailcommon.domain.model
 
-sealed interface CursorResult
-data class Cursor(val conversationId: ConversationId, val subItemId: String? = null) : CursorResult
-object End : CursorResult
-data class Error(val conversationCursorError: ConversationCursorError) : CursorResult
+sealed interface CursorResult {
+    data class Cursor(val conversationId: ConversationId, val subItemId: String? = null) : CursorResult
+    object End : CursorResult
+    data class Error(val conversationCursorError: ConversationCursorError) : CursorResult
+}

@@ -19,11 +19,8 @@
 package ch.protonmail.android.mailcommon.data.repository
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError
-import ch.protonmail.android.mailcommon.domain.model.Cursor
 import ch.protonmail.android.mailcommon.domain.model.CursorId
 import ch.protonmail.android.mailcommon.domain.model.CursorResult
-import ch.protonmail.android.mailcommon.domain.model.End
-import ch.protonmail.android.mailcommon.domain.model.Error
 import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -80,7 +77,7 @@ class RustConversationCursorImpl private constructor(
     override suspend fun moveForward() {
         mutex.withLock {
             when (next) {
-                is End -> {
+                is CursorResult.End -> {
                     Timber.d("conversation-pager forward no more conversations left to scroll to")
                     previous = current
                     current = next
@@ -100,9 +97,9 @@ class RustConversationCursorImpl private constructor(
                 }
 
                 // an error should not block the user from moving forwards past this cursor position
-                is Error,
-                is Cursor -> {
-                    if (next is Error) {
+                is CursorResult.Error,
+                is CursorResult.Cursor -> {
+                    if (next is CursorResult.Error) {
                         Timber.d("conversation-pager result was an error")
                     }
                     previous = current
@@ -124,7 +121,7 @@ class RustConversationCursorImpl private constructor(
     override suspend fun moveBackward() {
         mutex.withLock {
             when (previous) {
-                is End -> {
+                is CursorResult.End -> {
                     Timber.d("conversation-pager no more backwards conversations left to scroll to")
                     next = current
                     current = previous
@@ -144,9 +141,9 @@ class RustConversationCursorImpl private constructor(
                 }
 
                 // an error should not block the user from moving backwards past this cursor position
-                is Error,
-                is Cursor -> {
-                    if (previous is Error) {
+                is CursorResult.Error,
+                is CursorResult.Cursor -> {
+                    if (previous is CursorResult.Error) {
                         Timber.d("conversation-pager prev result was an error")
                     }
                     next = current
@@ -165,12 +162,12 @@ class RustConversationCursorImpl private constructor(
      * If error is network set result to null so that we can retry the load when the user moves the cursor
      */
     private fun CursorResult.recoverFromErrorIfNeeded() =
-        if (this is Error && this.conversationCursorError == ConversationCursorError.Offline) {
+        if (this is CursorResult.Error && this.conversationCursorError == ConversationCursorError.Offline) {
             // recoverable error
             Timber.d("conversation-pager recoverFromErrorIfNeeded next is null")
             null
         } else this.apply {
-            if (this is Error) {
+            if (this is CursorResult.Error) {
                 Timber.d("conversation-pager non recoverable error for page $this")
             }
         }
@@ -186,7 +183,7 @@ class RustConversationCursorImpl private constructor(
             firstPage: CursorId,
             conversationCursorWrapper: ConversationCursorWrapper
         ): RustConversationCursorImpl {
-            val current = Cursor(firstPage.conversationId, firstPage.messageId)
+            val current = CursorResult.Cursor(firstPage.conversationId, firstPage.messageId)
             val previous = conversationCursorWrapper.previousPage()
             val next = conversationCursorWrapper.nextPage()
             return RustConversationCursorImpl(

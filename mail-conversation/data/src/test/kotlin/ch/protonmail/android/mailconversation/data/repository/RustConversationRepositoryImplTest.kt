@@ -24,8 +24,8 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.repository.RustConversationCursorImpl
 import ch.protonmail.android.mailcommon.data.wrapper.ConversationCursor
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.Cursor
 import ch.protonmail.android.mailcommon.domain.model.CursorId
+import ch.protonmail.android.mailcommon.domain.model.CursorResult
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
@@ -269,8 +269,8 @@ class RustConversationRepositoryImplTest {
     fun `when getConversationCursor returns a cursor with the first conversationId`() = runTest {
         // Given
         val conversationCursor = mockk<ConversationCursor> {
-            every { previousPage() } returns Cursor(ConversationId("200"))
-            coEvery { nextPage() } returns Cursor(ConversationId("300"))
+            every { previousPage() } returns CursorResult.Cursor(ConversationId("200"))
+            coEvery { nextPage() } returns CursorResult.Cursor(ConversationId("300"))
         }
         val firstPage = Id(100.toULong())
         coEvery {
@@ -290,15 +290,18 @@ class RustConversationRepositoryImplTest {
         // Then
         Assert.assertTrue(result.isRight())
         Assert.assertTrue(result.getOrNull() is RustConversationCursorImpl)
-        Assert.assertEquals(ConversationId("100"), (result.getOrNull()?.current as? Cursor)?.conversationId)
+        Assert.assertEquals(
+            ConversationId("100"),
+            (result.getOrNull()?.current as? CursorResult.Cursor)?.conversationId
+        )
     }
 
     @Test
     fun `when unreadFilterEnabled is true then getConversationCursor returns a cursor for unread messages`() = runTest {
         // Given
         val conversationCursor = mockk<ConversationCursor> {
-            every { previousPage() } returns Cursor(ConversationId("200"))
-            coEvery { nextPage() } returns Cursor(ConversationId("300"))
+            every { previousPage() } returns CursorResult.Cursor(ConversationId("200"))
+            coEvery { nextPage() } returns CursorResult.Cursor(ConversationId("300"))
         }
         val firstPage = Id(100.toULong())
         coEvery {

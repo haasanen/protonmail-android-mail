@@ -18,22 +18,21 @@
 
 package ch.protonmail.android.mailmessage.data.wrapper
 
-import ch.protonmail.android.mailcommon.domain.model.Cursor
-import ch.protonmail.android.mailcommon.domain.model.End
+import ch.protonmail.android.mailcommon.domain.model.CursorResult
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.MailMessageCursor
 import uniffi.proton_mail_uniffi.MailMessageCursorFetchNextResult
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.NextMailCursorMessage
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-class MailMessageCursorWrapperTest {
+internal class MailMessageCursorWrapperTest {
 
     private val mailMessageCursor = mockk<MailMessageCursor>()
     private val sut = MailMessageCursorWrapper(mailMessageCursor)
@@ -47,7 +46,7 @@ class MailMessageCursorWrapperTest {
         coEvery { mailMessageCursor.fetchNext() } returns MailMessageCursorFetchNextResult.Ok(mockMessage)
 
         val result = sut.nextPage()
-        Assert.assertEquals(result, End)
+        assertEquals(result, CursorResult.End)
         coVerify(exactly = 0) { mailMessageCursor.fetchNext() }
     }
 
@@ -61,7 +60,7 @@ class MailMessageCursorWrapperTest {
         coEvery { mailMessageCursor.fetchNext() } returns MailMessageCursorFetchNextResult.Ok(mockMessage)
 
         val result = sut.nextPage()
-        Assert.assertEquals((result as Cursor).conversationId.id, "2")
+        assertEquals((result as CursorResult.Cursor).conversationId.id, "2")
         coVerify { mailMessageCursor.fetchNext() }
     }
 
@@ -73,7 +72,7 @@ class MailMessageCursorWrapperTest {
         coEvery { mailMessageCursor.peekNext() } returns NextMailCursorMessage.Some(mockMessage)
 
         val result = sut.nextPage()
-        Assert.assertEquals((result as Cursor).conversationId.id, "2")
+        assertEquals((result as CursorResult.Cursor).conversationId.id, "2")
         coVerify(exactly = 0) { mailMessageCursor.fetchNext() }
     }
 }

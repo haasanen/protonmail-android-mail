@@ -26,8 +26,8 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.repository.RustConversationCursorImpl
 import ch.protonmail.android.mailcommon.data.wrapper.ConversationCursor
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.Cursor
 import ch.protonmail.android.mailcommon.domain.model.CursorId
+import ch.protonmail.android.mailcommon.domain.model.CursorResult
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
@@ -55,10 +55,10 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import org.junit.Assert
-import org.junit.Test
 import uniffi.proton_mail_uniffi.Id
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 internal class RustMessageRepositoryImplTest {
 
@@ -181,8 +181,8 @@ internal class RustMessageRepositoryImplTest {
     fun `when getConversationCursor returns a cursor with the first messsageId`() = runTest {
         // Given
         val conversationCursor = mockk<ConversationCursor> {
-            every { previousPage() } returns Cursor(ConversationId("200"))
-            coEvery { nextPage() } returns Cursor(ConversationId("300"))
+            every { previousPage() } returns CursorResult.Cursor(ConversationId("200"))
+            coEvery { nextPage() } returns CursorResult.Cursor(ConversationId("300"))
         }
         val firstPage = Id(100.toULong())
         coEvery {
@@ -200,9 +200,9 @@ internal class RustMessageRepositoryImplTest {
         )
 
         // Then
-        Assert.assertTrue(result.isRight())
-        Assert.assertTrue(result.getOrNull() is RustConversationCursorImpl)
-        Assert.assertEquals("100", (result.getOrNull()?.current as? Cursor)?.conversationId?.id)
+        assertTrue(result.isRight())
+        assertTrue(result.getOrNull() is RustConversationCursorImpl)
+        assertEquals("100", (result.getOrNull()?.current as? CursorResult.Cursor)?.conversationId?.id)
     }
 
     @Test
