@@ -87,6 +87,12 @@ document.getElementById('$EDITOR_ID').addEventListener('click', function (event)
 function trackCursorPosition() {
     var editor = document.getElementById('$EDITOR_ID');
     editor.addEventListener('keyup', (e) => {
+        // Let the 'input' + requestAnimationFrame path handle Enter,
+        // to prevent double caret updates that cause a visible jitter
+        // when inserting a new line (layout still settling).
+        if (e.key === 'Enter') {
+            return;
+        }
         CaretPositionUpdater.scheduleUpdate();
     });
 
