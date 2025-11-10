@@ -307,11 +307,15 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 var visibleHeaderHeightPx by remember { mutableStateOf(0f) }
                 var visibleWebViewHeightPx by remember { mutableStateOf(0f) }
                 var headerHeightPx by remember { mutableStateOf(0f) }
+                var viewportCoordinateAlignmentEnabled by remember { mutableStateOf(true) }
 
                 val scrollManager = remember {
                     EditorScrollManager(
                         scope = coroutineScope,
-                        onUpdateScroll = { coroutineScope.launch { scrollState.scrollTo(it.roundToInt()) } }
+                        onUpdateScroll = { coroutineScope.launch { scrollState.scrollTo(it.roundToInt()) } },
+                        onToggleViewportAlignment = { enabled ->
+                            viewportCoordinateAlignmentEnabled = enabled
+                        }
                     )
                 }
 
@@ -406,7 +410,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         formHeightPx = formHeightPx,
                         injectInlineAttachments = effectsState.injectInlineAttachments,
                         stripInlineAttachment = effectsState.stripInlineAttachment,
-                        refreshBody = effectsState.refreshBody
+                        refreshBody = effectsState.refreshBody,
+                        viewportCoordinateAlignmentEnabled = viewportCoordinateAlignmentEnabled
                     )
                 }
             }

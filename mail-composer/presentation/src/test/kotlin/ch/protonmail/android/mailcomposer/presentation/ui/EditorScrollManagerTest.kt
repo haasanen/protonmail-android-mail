@@ -30,11 +30,13 @@ class EditorScrollManagerTest {
     private val defaultLineHeightPx = 20f
 
     private val onUpdateScroll: (Float) -> Unit = mockk(relaxed = true)
+    private val onToggleViewportAlignment: (Boolean) -> Unit = mockk(relaxed = true)
 
     private val editorScrollManager =
         EditorScrollManager(
             scope = scope,
-            onUpdateScroll = onUpdateScroll
+            onUpdateScroll = onUpdateScroll,
+            onToggleViewportAlignment = onToggleViewportAlignment
         )
 
     private fun emitScreenMeasures(screenMeasures: ComposeScreenMeasures) {

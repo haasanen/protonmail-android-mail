@@ -35,3 +35,9 @@ data class ComposeScreenMeasures(
         )
     }
 }
+
+/**
+ * Returns true if the current scroll position is less than the visible height of the WebView.
+ * This can be used to determine whether the editor is "near the top" of the screen.
+ */
+fun ComposeScreenMeasures.isScrollNearTop(): Boolean = scrollValuePx < visibleWebViewHeightPx

@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 import ch.protonmail.android.mailcomposer.presentation.model.editor.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.editor.WebViewDrawingState
 import ch.protonmail.android.mailcomposer.presentation.model.editor.centerPx
+import ch.protonmail.android.mailcomposer.presentation.model.editor.isScrollNearTop
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
@@ -36,8 +37,11 @@ import kotlin.math.abs
 @OptIn(FlowPreview::class)
 class EditorScrollManager(
     private val scope: CoroutineScope,
-    private val onUpdateScroll: (Float) -> Unit
+    private val onUpdateScroll: (Float) -> Unit,
+    private val onToggleViewportAlignment: (Boolean) -> Unit
 ) {
+
+    private var lastNearTopState: Boolean? = null
 
     private var previousWebViewHeightPx = 0f
 
@@ -83,6 +87,13 @@ class EditorScrollManager(
 
     fun onScreenMeasuresChanged(screenMeasures: ComposeScreenMeasures) {
         screenMeasuresFlow.value = screenMeasures
+
+        val isNearTop = screenMeasures.isScrollNearTop()
+
+        if (isNearTop != lastNearTopState) {
+            lastNearTopState = isNearTop
+            onToggleViewportAlignment(isNearTop)
+        }
     }
 
     fun onWebViewMeasuresChanged(webViewDrawingState: WebViewDrawingState) {

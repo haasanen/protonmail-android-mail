@@ -73,7 +73,8 @@ fun EditableMessageBodyWebView(
     injectInlineAttachments: Effect<List<String>>,
     stripInlineAttachment: Effect<String>,
     refreshBody: Effect<DraftDisplayBodyUiModel>,
-    webViewActions: EditableMessageBodyWebView.Actions
+    webViewActions: EditableMessageBodyWebView.Actions,
+    viewportCoordinateAlignmentEnabled: Boolean
 ) {
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -153,9 +154,20 @@ fun EditableMessageBodyWebView(
         }
         LaunchedEffect(wv) {
             Timber.d("editor-webview: setting initial value on webview")
-            wv.loadDataWithBaseURL(null, messageBodyUiModel.value, MimeType.Html.value, "utf-8", null)
+            wv.loadDataWithBaseURL(
+                null,
+                messageBodyUiModel.value, MimeType.Html.value, "utf-8", null
+            )
 
             wv.ignoreLongTapOnImages()
+        }
+
+        LaunchedEffect(wv, viewportCoordinateAlignmentEnabled) {
+            wv.evaluateJavascript(
+                "window.EditorViewportState.setViewportCoordinateAlignmentEnabled(" +
+                    "$viewportCoordinateAlignmentEnabled);",
+                null
+            )
         }
 
         ConsumableLaunchedEffect(stripInlineAttachment) { contentId ->
@@ -167,7 +179,10 @@ fun EditableMessageBodyWebView(
 
         ConsumableLaunchedEffect(refreshBody) { refreshedBody ->
             Timber.d("editor-webview: requested to refresh the draft body...")
-            wv.loadDataWithBaseURL(null, refreshedBody.value, MimeType.Html.value, "utf-8", null)
+            wv.loadDataWithBaseURL(
+                null,
+                refreshedBody.value, MimeType.Html.value, "utf-8", null
+            )
         }
 
         if (contentLoadingFinished.value) {

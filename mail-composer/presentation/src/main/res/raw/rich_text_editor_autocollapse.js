@@ -194,11 +194,22 @@ function updateCaretPosition() {
 
         const density = window.devicePixelRatio || 1.0;
 
+        const coordinateAlignment =
+            window.EditorViewportState
+                ? window.EditorViewportState.getCoordinateAlignmentAmount()
+                : 0;
+
+        const unalignedCaretPositionPx = (rect.top - editor.getBoundingClientRect().top) * density;
+        const alignedCaretPositionPx = unalignedCaretPositionPx - (coordinateAlignment * density);
+        debugLog(
+            "Reporting caret position change, " +
+            "unalignedCaretPositionPx = " + Math.round(unalignedCaretPositionPx) + ", " +
+            "alignedCaretPositionPx = " + Math.round(alignedCaretPositionPx)
+        );
         // Calculate the height of the caret position relative to the inputDiv
-        const caretPosition = rect.top - editor.getBoundingClientRect().top;
         $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(
-          caretPosition * density,
-          parsedLineHeight * density);
+            alignedCaretPositionPx,
+            parsedLineHeight * density);
     }
 }
 
@@ -356,6 +367,45 @@ function stripInlineImage(contentId) {
 }
 
 /*******************************************************************************
+ * Global editor viewport state
+ * (toggled by Kotlin to enable/disable visual viewport coordinate alignment)
+ ******************************************************************************/
+window.EditorViewportState = {
+    viewportCoordinateAlignmentEnabled: true,
+
+    // The last padding actually applied to align the viewport coordinates
+    lastAppliedPadding: 0,
+
+    // This function is called by Kotlin to enable/disable viewport coordinate alignment
+    setViewportCoordinateAlignmentEnabled(flag) {
+        this.viewportCoordinateAlignmentEnabled = !!flag;
+        debugLog("Viewport coordinate alignment enabled = " + this.viewportCoordinateAlignmentEnabled);
+    },
+
+    isCoordinateAlignmentEnabled() {
+        return this.viewportCoordinateAlignmentEnabled;
+    },
+
+    setAppliedPadding(paddingPx) {
+        this.lastAppliedPadding = paddingPx || 0;
+    },
+
+    /**
+     * Returns required coordinate alignment amount so that Kotlin vs JS caret positions match each other
+     * This actually defines how much the viewport has moved relative to the last padding we actually
+     * applied to the document.
+     *
+     * When alignment is disabled (in order to prevent scroll jumps), this value can be > 0 and we can use it
+     * to adjust caret coordinates without touching layout.
+     */
+    getCoordinateAlignmentAmount() {
+        const topCssPadding = Math.round(window.visualViewport.offsetTop || 0);
+
+        return topCssPadding - this.lastAppliedPadding;
+    }
+};
+
+/*******************************************************************************
  * This function compensates for the visual viewport’s vertical offset
  * by applying CSS padding.
  *
@@ -375,23 +425,31 @@ function compensateVisualViewportOffset() {
     // Visual viewport is not supported on this browser; nothing to fix.
     if (!window.visualViewport) return;
 
-    let lastPadding = 0;
-    const MIN_OFFSET_CHANGE_PX = 2;
+    const MIN_OFFSET_CHANGE_PX = 8;
 
     function applyOffsetCompensation() {
         const topCssPadding = Math.round(window.visualViewport.offsetTop || 0);
+
+        if (!EditorViewportState.viewportCoordinateAlignmentEnabled) {
+            return;
+        }
+
+        const lastPadding = window.EditorViewportState.lastAppliedPadding;
 
         // Update only if the value changed meaningfully
         if (Math.abs(topCssPadding - lastPadding) > MIN_OFFSET_CHANGE_PX) {
             document.documentElement.style.setProperty('--vv-top-inset', topCssPadding + 'px');
             document.body.style.paddingTop = 'var(--vv-top-inset)';
-            lastPadding = topCssPadding;
+
+            window.EditorViewportState.setAppliedPadding(topCssPadding);
+
+            debugLog("Applied visual viewport top offset compensation: " + topCssPadding + "Css px");
         }
     }
 
     // Keep padding in sync with viewport movements/resizes
-    window.visualViewport.addEventListener('scroll', applyOffsetCompensation, { passive: true });
-    window.visualViewport.addEventListener('resize', applyOffsetCompensation, { passive: true });
+    window.visualViewport.addEventListener('scroll', applyOffsetCompensation, {passive: true});
+    window.visualViewport.addEventListener('resize', applyOffsetCompensation, {passive: true});
 
     // Initial compensation
     applyOffsetCompensation();

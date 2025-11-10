@@ -87,7 +87,8 @@ internal fun ComposerForm(
     injectInlineAttachments: Effect<List<String>>,
     stripInlineAttachment: Effect<String>,
     modifier: Modifier = Modifier,
-    refreshBody: Effect<DraftDisplayBodyUiModel>
+    refreshBody: Effect<DraftDisplayBodyUiModel>,
+    viewportCoordinateAlignmentEnabled: Boolean
 ) {
 
     val recipientsViewModel = hiltViewModel<RecipientsViewModel, RecipientsViewModel.Factory> { factory ->
@@ -222,7 +223,8 @@ internal fun ComposerForm(
                                 .onGloballyPositioned { coordinates ->
                                     val webViewBounds = coordinates.boundsInWindow()
                                     actions.onWebViewPositioned(webViewBounds)
-                                }
+                                },
+                            viewportCoordinateAlignmentEnabled = viewportCoordinateAlignmentEnabled
                         )
                     }
                 }
