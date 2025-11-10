@@ -49,7 +49,7 @@ class GetConversationCursor @Inject constructor(
             if (state == null || state == EphemeralMailboxCursor.NotInitalised) {
                 setEphemeralMailboxCursor(
                     userId, viewModeIsConversationMode,
-                    CursorId(conversationId, messageId)
+                    CursorId(conversationId, null)
                 )
                 EphemeralMailboxCursor.Initialising
             } else {

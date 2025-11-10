@@ -20,39 +20,37 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.Cursor
 import ch.protonmail.android.mailcommon.domain.model.CursorId
-import ch.protonmail.android.mailcommon.domain.model.End
-import ch.protonmail.android.mailcommon.domain.model.Error
+import ch.protonmail.android.mailcommon.domain.model.CursorResult
 import ch.protonmail.android.maildetail.presentation.model.Page
-import org.junit.Assert
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class PagedConversationMapperTest {
 
     @Test
     fun `when cursor result is null then return loading`() {
-        Assert.assertEquals(Page.Loading, null.toPage())
+        assertEquals(Page.Loading, null.toPage())
     }
 
     @Test
     fun `when cursor result is End then return End`() {
-        Assert.assertEquals(Page.End, End.toPage())
+        assertEquals(Page.End, CursorResult.End.toPage())
     }
 
     @Test
     fun `when cursor result is Cursor then return Conversation`() {
-        Assert.assertEquals(
+        assertEquals(
             Page.Conversation(CursorId(ConversationId("1"), "2")),
-            Cursor(ConversationId("1"), "2").toPage()
+            CursorResult.Cursor(ConversationId("1"), "2").toPage()
         )
     }
 
     @Test
     fun `when cursor result is Error then return Error`() {
-        Assert.assertEquals(
+        assertEquals(
             Page.Error,
-            Error(ConversationCursorError.Offline).toPage()
+            CursorResult.Error(ConversationCursorError.Offline).toPage()
         )
     }
 }

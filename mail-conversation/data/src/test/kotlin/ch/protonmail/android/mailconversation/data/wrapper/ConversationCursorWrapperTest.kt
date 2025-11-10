@@ -18,8 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.wrapper
 
-import ch.protonmail.android.mailcommon.domain.model.Cursor
-import ch.protonmail.android.mailcommon.domain.model.End
+import ch.protonmail.android.mailcommon.domain.model.CursorResult
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -33,7 +32,7 @@ import uniffi.proton_mail_uniffi.MailConversationCursor
 import uniffi.proton_mail_uniffi.MailConversationCursorFetchNextResult
 import uniffi.proton_mail_uniffi.NextMailCursorConversation
 
-class ConversationCursorWrapperTest {
+internal class ConversationCursorWrapperTest {
 
     private val conversationCursor = mockk<MailConversationCursor>()
     private val sut = ConversationCursorWrapper(conversationCursor)
@@ -47,7 +46,7 @@ class ConversationCursorWrapperTest {
         coEvery { conversationCursor.fetchNext() } returns MailConversationCursorFetchNextResult.Ok(mockMessage)
 
         val result = sut.nextPage()
-        Assert.assertEquals(result, End)
+        Assert.assertEquals(result, CursorResult.End)
         coVerify(exactly = 0) { conversationCursor.fetchNext() }
     }
 
@@ -60,7 +59,7 @@ class ConversationCursorWrapperTest {
         coEvery { conversationCursor.fetchNext() } returns MailConversationCursorFetchNextResult.Ok(mockMessage)
 
         val result = sut.nextPage()
-        Assert.assertEquals((result as Cursor).conversationId.id, "1")
+        Assert.assertEquals((result as CursorResult.Cursor).conversationId.id, "1")
         coVerify { conversationCursor.fetchNext() }
     }
 
@@ -71,7 +70,7 @@ class ConversationCursorWrapperTest {
         coEvery { conversationCursor.peekNext() } returns NextMailCursorConversation.Some(mockMessage)
 
         val result = sut.nextPage()
-        Assert.assertEquals((result as Cursor).conversationId.id, "1")
+        Assert.assertEquals((result as CursorResult.Cursor).conversationId.id, "1")
         coVerify(exactly = 0) { conversationCursor.fetchNext() }
     }
 }

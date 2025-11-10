@@ -19,10 +19,7 @@
 package ch.protonmail.android.mailmessage.data.wrapper
 
 import ch.protonmail.android.mailcommon.data.wrapper.ConversationCursor
-import ch.protonmail.android.mailcommon.domain.model.Cursor
 import ch.protonmail.android.mailcommon.domain.model.CursorResult
-import ch.protonmail.android.mailcommon.domain.model.End
-import ch.protonmail.android.mailcommon.domain.model.Error
 import ch.protonmail.android.mailmessage.data.mapper.toConversationCursorError
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
@@ -37,21 +34,23 @@ class MailMessageCursorWrapper(private val cursor: MailMessageCursor) : Conversa
         val result =
             cursor.peekNext()
     ) {
-        is NextMailCursorMessage.None -> End
+        is NextMailCursorMessage.None -> CursorResult.End
         is NextMailCursorMessage.Maybe -> {
             // not available sync, try the async fetch
             when (
                 val asyncResult = cursor.fetchNext()
             ) {
-                is MailMessageCursorFetchNextResult.Error -> Error(asyncResult.v1.toConversationCursorError())
-                is MailMessageCursorFetchNextResult.Ok -> asyncResult.v1?.toCursor() ?: End
+                is MailMessageCursorFetchNextResult.Error ->
+                    CursorResult.Error(asyncResult.v1.toConversationCursorError())
+
+                is MailMessageCursorFetchNextResult.Ok -> asyncResult.v1?.toCursor() ?: CursorResult.End
             }
         }
 
         is NextMailCursorMessage.Some -> result.v1.toCursor()
     }
 
-    override fun previousPage(): CursorResult = cursor.peekPrev()?.toCursor() ?: End
+    override fun previousPage(): CursorResult = cursor.peekPrev()?.toCursor() ?: CursorResult.End
 
     override fun goForwards() = cursor.gotoNext()
     override fun goBackwards() = cursor.gotoPrev()
@@ -60,5 +59,6 @@ class MailMessageCursorWrapper(private val cursor: MailMessageCursor) : Conversa
         cursor.close()
     }
 
-    private fun Message.toCursor() = Cursor(this.conversationId.toConversationId(), this.id.toMessageId().id)
+    private fun Message.toCursor() =
+        CursorResult.Cursor(this.conversationId.toConversationId(), this.id.toMessageId().id)
 }
