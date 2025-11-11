@@ -45,6 +45,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -113,6 +114,7 @@ import ch.protonmail.android.maildetail.presentation.ui.dialog.BlockSenderDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
+import ch.protonmail.android.maildetail.presentation.ui.localcomposition.LocalIsLastMessageAutoExpandEnabled
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
@@ -177,6 +179,7 @@ fun ConversationDetailScreenLegacy(
     val isSystemBackButtonClickEnabled = remember { mutableStateOf(true) }
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val isSingleMessageMode = viewModel.isSingleMessageModeEnabled
+    val isLastMessageAutoExpandEnabled by viewModel.autoExpandLastMessageEnabled.collectAsStateWithLifecycle()
 
     val topBarState by remember { mutableStateOf(ConversationTopBarState()) }
 
@@ -491,162 +494,170 @@ fun ConversationDetailScreenLegacy(
             }
         }
     ) {
-        ConversationDetailScreenLegacy(
-            modifier = modifier,
-            state = state,
-            topBarState = topBarState,
-            actions = ConversationDetailScreen.Actions(
-                onExit = actions.onExit,
-                onExitWithError = {
-                    actions.showSnackbar(it, ProtonSnackbarType.ERROR)
-                    actions.onExit(null)
-                },
-                onStarClick = { viewModel.submit(ConversationDetailViewAction.Star) },
-                onTrashClick = { viewModel.submit(ConversationDetailViewAction.MoveToTrash) },
-                onDeleteClick = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
-                onArchiveClick = { viewModel.submit(ConversationDetailViewAction.MoveToArchive) },
-                onSpamClick = { viewModel.submit(ConversationDetailViewAction.MoveToSpam) },
-                onUnStarClick = { viewModel.submit(ConversationDetailViewAction.UnStar) },
-                onReadClick = { viewModel.submit(ConversationDetailViewAction.MarkRead) },
-                onUnreadClick = { viewModel.submit(ConversationDetailViewAction.MarkUnread) },
-                onMoveToClick = { viewModel.submit(ConversationDetailViewAction.RequestConversationMoveToBottomSheet) },
-                onMoveToInboxClick = { viewModel.submit(ConversationDetailViewAction.MoveToInbox) },
-                onLabelAsClick = {
-                    viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
-                },
-                onMoreActionsClick = {
-                    viewModel.submit(
-                        ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet(
-                            MoreActionsBottomSheetEntryPoint.BottomBar
+        CompositionLocalProvider(LocalIsLastMessageAutoExpandEnabled provides isLastMessageAutoExpandEnabled) {
+            ConversationDetailScreenLegacy(
+                modifier = modifier,
+                state = state,
+                topBarState = topBarState,
+                actions = ConversationDetailScreen.Actions(
+                    onExit = actions.onExit,
+                    onExitWithError = {
+                        actions.showSnackbar(it, ProtonSnackbarType.ERROR)
+                        actions.onExit(null)
+                    },
+                    onStarClick = { viewModel.submit(ConversationDetailViewAction.Star) },
+                    onTrashClick = { viewModel.submit(ConversationDetailViewAction.MoveToTrash) },
+                    onDeleteClick = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
+                    onArchiveClick = { viewModel.submit(ConversationDetailViewAction.MoveToArchive) },
+                    onSpamClick = { viewModel.submit(ConversationDetailViewAction.MoveToSpam) },
+                    onUnStarClick = { viewModel.submit(ConversationDetailViewAction.UnStar) },
+                    onReadClick = { viewModel.submit(ConversationDetailViewAction.MarkRead) },
+                    onUnreadClick = { viewModel.submit(ConversationDetailViewAction.MarkUnread) },
+                    onMoveToClick = {
+                        viewModel.submit(ConversationDetailViewAction.RequestConversationMoveToBottomSheet)
+                    },
+                    onMoveToInboxClick = { viewModel.submit(ConversationDetailViewAction.MoveToInbox) },
+                    onLabelAsClick = {
+                        viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
+                    },
+                    onMoreActionsClick = {
+                        viewModel.submit(
+                            ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet(
+                                MoreActionsBottomSheetEntryPoint.BottomBar
+                            )
                         )
-                    )
-                },
-                onExpandMessage = { viewModel.submit(ConversationDetailViewAction.ExpandMessage(it)) },
-                onCollapseMessage = { viewModel.submit(ConversationDetailViewAction.CollapseMessage(it)) },
-                onMessageBodyLinkClicked = { messageId, uri ->
-                    viewModel.submit(ConversationDetailViewAction.MessageBodyLinkClicked(messageId, uri))
-                },
-                onOpenMessageBodyLink = actions.openMessageBodyLink,
-                onRequestScrollTo = { viewModel.submit(ConversationDetailViewAction.RequestScrollTo(it)) },
-                onShowAllAttachmentsForMessage = {
-                    viewModel.submit(ConversationDetailViewAction.ShowAllAttachmentsForMessage(it))
-                },
-                onAttachmentClicked = { openMode, messageId, attachmentId ->
-                    viewModel.submit(
-                        ConversationDetailViewAction.OnAttachmentClicked(openMode, messageId, attachmentId)
-                    )
-                },
-                onToggleAttachmentsExpandCollapseMode = {
-                    viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseAttachmentList(it))
-                },
-                handleProtonCalendarRequest = actions.handleProtonCalendarRequest,
-                showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
-                loadImage = { messageId, url -> viewModel.loadImage(messageId, url) },
-                onReply = {
-                    actions.onReply(it)
-                },
-                onReplyAll = {
-                    actions.onReplyAll(it)
-                },
-                onForward = {
-                    actions.onForward(it)
-                },
-                onScrollRequestCompleted = { viewModel.submit(ConversationDetailViewAction.ScrollRequestCompleted) },
-                onDoNotAskLinkConfirmationAgain = {
-                    viewModel.submit(ConversationDetailViewAction.DoNotAskLinkConfirmationAgain)
-                },
-                onBodyExpandCollapseButtonClicked = {
-                    viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseMessageBody(it))
-                },
-                onMoreMessageActionsClick = { messageId, themeOptions ->
-                    viewModel.submit(
-                        action = ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                            messageId = messageId,
-                            themeOptions = themeOptions,
-                            entryPoint = MoreActionsBottomSheetEntryPoint.MessageHeader
+                    },
+                    onExpandMessage = { viewModel.submit(ConversationDetailViewAction.ExpandMessage(it)) },
+                    onCollapseMessage = { viewModel.submit(ConversationDetailViewAction.CollapseMessage(it)) },
+                    onMessageBodyLinkClicked = { messageId, uri ->
+                        viewModel.submit(ConversationDetailViewAction.MessageBodyLinkClicked(messageId, uri))
+                    },
+                    onOpenMessageBodyLink = actions.openMessageBodyLink,
+                    onRequestScrollTo = { viewModel.submit(ConversationDetailViewAction.RequestScrollTo(it)) },
+                    onShowAllAttachmentsForMessage = {
+                        viewModel.submit(ConversationDetailViewAction.ShowAllAttachmentsForMessage(it))
+                    },
+                    onAttachmentClicked = { openMode, messageId, attachmentId ->
+                        viewModel.submit(
+                            ConversationDetailViewAction.OnAttachmentClicked(openMode, messageId, attachmentId)
                         )
-                    )
-                },
-                onLoadRemoteContent = {
-                    viewModel.submit(ConversationDetailViewAction.LoadRemoteContent(MessageIdUiModel(it.id)))
-                },
-                onLoadEmbeddedImages = {
-                    viewModel.submit(ConversationDetailViewAction.ShowEmbeddedImages(MessageIdUiModel(it.id)))
-                },
-                onLoadRemoteAndEmbeddedContent = {
-                    viewModel.submit(ConversationDetailViewAction.LoadRemoteAndEmbeddedContent(MessageIdUiModel(it.id)))
-                },
-                onOpenInProtonCalendar = {
-                    viewModel.submit(ConversationDetailViewAction.OpenInProtonCalendar(MessageId(it.id)))
-                },
-                onPrint = { viewModel.submit(ConversationDetailViewAction.PrintMessage(context, it)) },
-                onAvatarClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
-                    viewModel.submit(
-                        ConversationDetailViewAction.RequestContactActionsBottomSheet(
-                            participantUiModel,
-                            avatarUiModel,
-                            messageIdUiModel
+                    },
+                    onToggleAttachmentsExpandCollapseMode = {
+                        viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseAttachmentList(it))
+                    },
+                    handleProtonCalendarRequest = actions.handleProtonCalendarRequest,
+                    showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
+                    loadImage = { messageId, url -> viewModel.loadImage(messageId, url) },
+                    onReply = {
+                        actions.onReply(it)
+                    },
+                    onReplyAll = {
+                        actions.onReplyAll(it)
+                    },
+                    onForward = {
+                        actions.onForward(it)
+                    },
+                    onScrollRequestCompleted = {
+                        viewModel.submit(ConversationDetailViewAction.ScrollRequestCompleted)
+                    },
+                    onDoNotAskLinkConfirmationAgain = {
+                        viewModel.submit(ConversationDetailViewAction.DoNotAskLinkConfirmationAgain)
+                    },
+                    onBodyExpandCollapseButtonClicked = {
+                        viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseMessageBody(it))
+                    },
+                    onMoreMessageActionsClick = { messageId, themeOptions ->
+                        viewModel.submit(
+                            action = ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                                messageId = messageId,
+                                themeOptions = themeOptions,
+                                entryPoint = MoreActionsBottomSheetEntryPoint.MessageHeader
+                            )
                         )
-                    )
-                },
-                onAvatarImageLoadRequested = { avatarUiModel ->
-                    viewModel.submit(ConversationDetailViewAction.OnAvatarImageLoadRequested(avatarUiModel))
-                },
-                onOpenComposer = { actions.openComposerForDraftMessage(MessageId(it.id)) },
-                onParticipantClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
-                    viewModel.submit(
-                        ConversationDetailViewAction.RequestContactActionsBottomSheet(
-                            participantUiModel,
-                            avatarUiModel,
-                            messageIdUiModel
+                    },
+                    onLoadRemoteContent = {
+                        viewModel.submit(ConversationDetailViewAction.LoadRemoteContent(MessageIdUiModel(it.id)))
+                    },
+                    onLoadEmbeddedImages = {
+                        viewModel.submit(ConversationDetailViewAction.ShowEmbeddedImages(MessageIdUiModel(it.id)))
+                    },
+                    onLoadRemoteAndEmbeddedContent = {
+                        viewModel.submit(
+                            ConversationDetailViewAction.LoadRemoteAndEmbeddedContent(MessageIdUiModel(it.id))
                         )
-                    )
-                },
-                onHiddenMessagesBannerClick = {
-                    viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
-                },
-                onMarkMessageAsLegitimate = { messageId, isPhishing ->
-                    viewModel.submit(
-                        ConversationDetailViewAction.MarkMessageAsLegitimate(MessageId(messageId.id), isPhishing)
-                    )
-                },
-                onUnblockSender = { messageId, email ->
-                    viewModel.submit(ConversationDetailViewAction.UnblockSender(messageId, email))
-                },
-                onEditScheduleSendMessage = { messageId ->
-                    viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessageRequested(messageId))
-                },
-                onExitWithOpenInComposer = {
-                    actions.onExitWithOpenInComposer(MessageId(it.id))
-                },
-                onRetryRsvpEventLoading = {
-                    viewModel.submit(ConversationDetailViewAction.RetryRsvpEventLoading(MessageId(it.id)))
-                },
-                onAnswerRsvpEvent = { messageId, answer ->
-                    viewModel.submit(ConversationDetailViewAction.AnswerRsvpEvent(MessageId(messageId.id), answer))
-                },
-                onMessage = actions.onComposeNewMessage,
-                onUnsnoozeMessage = {
-                    viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested)
-                },
-                onSnooze = { viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet) },
-                onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged,
-                onUnsubscribeFromNewsletter = {
-                    viewModel.submit(ConversationDetailViewAction.UnsubscribeFromNewsletter(MessageId(it.id)))
-                },
-                onReportPhishing = { messageId ->
-                    viewModel.submit(ConversationDetailViewAction.ReportPhishing(messageId))
-                }
-            ),
-            scrollToMessageId = state.scrollToMessage?.id
-        )
+                    },
+                    onOpenInProtonCalendar = {
+                        viewModel.submit(ConversationDetailViewAction.OpenInProtonCalendar(MessageId(it.id)))
+                    },
+                    onPrint = { viewModel.submit(ConversationDetailViewAction.PrintMessage(context, it)) },
+                    onAvatarClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
+                        viewModel.submit(
+                            ConversationDetailViewAction.RequestContactActionsBottomSheet(
+                                participantUiModel,
+                                avatarUiModel,
+                                messageIdUiModel
+                            )
+                        )
+                    },
+                    onAvatarImageLoadRequested = { avatarUiModel ->
+                        viewModel.submit(ConversationDetailViewAction.OnAvatarImageLoadRequested(avatarUiModel))
+                    },
+                    onOpenComposer = { actions.openComposerForDraftMessage(MessageId(it.id)) },
+                    onParticipantClicked = { participantUiModel, avatarUiModel, messageIdUiModel ->
+                        viewModel.submit(
+                            ConversationDetailViewAction.RequestContactActionsBottomSheet(
+                                participantUiModel,
+                                avatarUiModel,
+                                messageIdUiModel
+                            )
+                        )
+                    },
+                    onHiddenMessagesBannerClick = {
+                        viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
+                    },
+                    onMarkMessageAsLegitimate = { messageId, isPhishing ->
+                        viewModel.submit(
+                            ConversationDetailViewAction.MarkMessageAsLegitimate(MessageId(messageId.id), isPhishing)
+                        )
+                    },
+                    onUnblockSender = { messageId, email ->
+                        viewModel.submit(ConversationDetailViewAction.UnblockSender(messageId, email))
+                    },
+                    onEditScheduleSendMessage = { messageId ->
+                        viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessageRequested(messageId))
+                    },
+                    onExitWithOpenInComposer = {
+                        actions.onExitWithOpenInComposer(MessageId(it.id))
+                    },
+                    onRetryRsvpEventLoading = {
+                        viewModel.submit(ConversationDetailViewAction.RetryRsvpEventLoading(MessageId(it.id)))
+                    },
+                    onAnswerRsvpEvent = { messageId, answer ->
+                        viewModel.submit(ConversationDetailViewAction.AnswerRsvpEvent(MessageId(messageId.id), answer))
+                    },
+                    onMessage = actions.onComposeNewMessage,
+                    onUnsnoozeMessage = {
+                        viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested)
+                    },
+                    onSnooze = { viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet) },
+                    onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged,
+                    onUnsubscribeFromNewsletter = {
+                        viewModel.submit(ConversationDetailViewAction.UnsubscribeFromNewsletter(MessageId(it.id)))
+                    },
+                    onReportPhishing = { messageId ->
+                        viewModel.submit(ConversationDetailViewAction.ReportPhishing(messageId))
+                    }
+                ),
+                scrollToMessageId = state.scrollToMessage?.id
+            )
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("LongMethod", "ComplexMethod")
 @Composable
-fun ConversationDetailScreenLegacy(
+private fun ConversationDetailScreenLegacy(
     state: ConversationDetailState,
     actions: ConversationDetailScreen.Actions,
     modifier: Modifier = Modifier,
@@ -1000,6 +1011,21 @@ private fun MessagesContent(
             }
         }.collect { alpha ->
             onSubjectScrolled(alpha)
+        }
+    }
+
+    // Automatically expand the last message on opening/uiModels size changed
+    val isAutoExpandEnabled = LocalIsLastMessageAutoExpandEnabled.current
+    LaunchedEffect(uiModels.size) {
+        if (!isAutoExpandEnabled) return@LaunchedEffect
+
+        val lastMessage = uiModels.lastOrNull()
+        val shouldAutoExpandLastMessage = lastMessage is ConversationDetailMessageUiModel.Collapsed &&
+            lastMessage.messageId.id != scrollToMessageId &&
+            lastMessage.isDraft.not()
+
+        if (shouldAutoExpandLastMessage) {
+            actions.onExpand(lastMessage.messageId)
         }
     }
 

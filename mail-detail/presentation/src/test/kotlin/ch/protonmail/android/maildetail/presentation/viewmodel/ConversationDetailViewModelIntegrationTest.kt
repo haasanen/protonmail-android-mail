@@ -143,6 +143,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDupli
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
@@ -494,6 +495,10 @@ internal class ConversationDetailViewModelIntegrationTest {
 
     private val resolveSystemLabelId = mockk<ResolveSystemLabelId> {
         coEvery { this@mockk(any(), any()) } returns SystemLabelId.Inbox.right()
+    }
+
+    private val isAutoExpandEnabled = mockk<FeatureFlag<Boolean>> {
+        coEvery { this@mockk.get() } returns true
     }
 
     private val testDispatcher: TestDispatcher by lazy { StandardTestDispatcher() }
@@ -2564,7 +2569,8 @@ internal class ConversationDetailViewModelIntegrationTest {
         isSingleMessageModeEnabled = false,
         initialScrollToMessageId = scrollToMessageId?.let { MessageIdUiModel(scrollToMessageId) },
         openedFromLocation = filterByLocationLabelId,
-        conversationEntryPoint = ConversationDetailEntryPoint.Mailbox
+        conversationEntryPoint = ConversationDetailEntryPoint.Mailbox,
+        isAutoExpandEnabled = isAutoExpandEnabled
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

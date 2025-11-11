@@ -28,6 +28,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoro
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave1Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
@@ -35,6 +36,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSwipeAutoAdvan
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
 import ch.protonmail.android.mailfeatureflags.domain.model.ComposerAutoCollapseQuotedText
+import ch.protonmail.android.mailfeatureflags.domain.model.ConversationDetailAutoExpandLastMessageEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Enabled
@@ -68,6 +70,17 @@ object FeatureFlagsModule {
     @IsMessageDetailEnabled
     fun provideMessageDetailEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(MessageDetailEnabled.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideAutoExpandLastMessageConvoDef(): FeatureFlagDefinition = ConversationDetailAutoExpandLastMessageEnabled
+
+    @Provides
+    @Singleton
+    @IsLastMessageAutoExpandEnabled
+    fun provideAutoExpandLastMessageConvoEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(ConversationDetailAutoExpandLastMessageEnabled.key, false)
 
     @Provides
     @IntoSet

@@ -96,6 +96,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBotto
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
@@ -350,6 +351,10 @@ class ConversationDetailViewModelTest {
 
     private val executeWhenOnline = mockk<ExecuteWhenOnline>(relaxed = true)
 
+    private val isAutoExpandEnabled = mockk<FeatureFlag<Boolean>> {
+        coEvery { this@mockk.get() } returns true
+    }
+
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
     }
@@ -413,7 +418,8 @@ class ConversationDetailViewModelTest {
         initialScrollToMessageId = null,
         openedFromLocation = labelId,
         isMessageSenderBlocked = isMessageSenderBlocked,
-        conversationEntryPoint = ConversationDetailEntryPoint.Mailbox
+        conversationEntryPoint = ConversationDetailEntryPoint.Mailbox,
+        isAutoExpandEnabled = isAutoExpandEnabled
     )
 
     @BeforeTest

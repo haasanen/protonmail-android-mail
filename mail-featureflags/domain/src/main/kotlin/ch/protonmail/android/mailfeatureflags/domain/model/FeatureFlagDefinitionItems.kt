@@ -74,6 +74,14 @@ data object ComposerAutoCollapseQuotedText : FeatureFlagDefinition(
     defaultValue = false
 )
 
+data object ConversationDetailAutoExpandLastMessageEnabled : FeatureFlagDefinition(
+    key = "MailAndroidV7LastMessageAutoExpand",
+    name = "Auto expand last message in convo details",
+    category = FeatureFlagCategory.Details,
+    description = "Automatically expands the last non-draft message in the conversation details",
+    defaultValue = false
+)
+
 data object MessageDetailEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7MessageDetail",
     name = "View Single Message Detail",

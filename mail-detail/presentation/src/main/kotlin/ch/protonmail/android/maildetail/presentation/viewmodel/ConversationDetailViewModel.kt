@@ -99,6 +99,8 @@ import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDupli
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -234,7 +236,8 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val unsubscribeFromNewsletter: UnsubscribeFromNewsletter,
     private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
     private val executeWhenOnline: ExecuteWhenOnline,
-    private val resolveSystemLabelId: ResolveSystemLabelId
+    private val resolveSystemLabelId: ResolveSystemLabelId,
+    @IsLastMessageAutoExpandEnabled private val isAutoExpandEnabled: FeatureFlag<Boolean>
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -268,6 +271,14 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val showAllMessages = MutableStateFlow(false)
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
+
+    val autoExpandLastMessageEnabled: StateFlow<Boolean> = flow {
+        emit(isAutoExpandEnabled.get())
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = false
+    )
 
     private val jobs = CopyOnWriteArrayList<Job>()
 
