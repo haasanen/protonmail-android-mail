@@ -19,10 +19,15 @@
 package ch.protonmail.android.mailonboarding.dagger
 
 import android.content.Context
+import ch.protonmail.android.mailonboarding.data.AccountsTooltipDataStoreProvider
 import ch.protonmail.android.mailonboarding.data.OnboardingDataStoreProvider
+import ch.protonmail.android.mailonboarding.data.local.AccountsTooltipLocalDataSource
+import ch.protonmail.android.mailonboarding.data.local.AccountsTooltipLocalDataSourceImpl
 import ch.protonmail.android.mailonboarding.data.local.OnboardingLocalDataSource
 import ch.protonmail.android.mailonboarding.data.local.OnboardingLocalDataSourceImpl
+import ch.protonmail.android.mailonboarding.data.repository.AccountsTooltipRepositoryImpl
 import ch.protonmail.android.mailonboarding.data.repository.OnboardingRepositoryImpl
+import ch.protonmail.android.mailonboarding.domain.repository.AccountsTooltipRepository
 import ch.protonmail.android.mailonboarding.domain.repository.OnboardingRepository
 import dagger.Binds
 import dagger.Module
@@ -42,6 +47,12 @@ object OnboardingModule {
     fun provideDataStoreProvider(@ApplicationContext context: Context): OnboardingDataStoreProvider =
         OnboardingDataStoreProvider(context)
 
+    @Provides
+    @Singleton
+    fun provideAccountHighlightDataStoreProvider(
+        @ApplicationContext context: Context
+    ): AccountsTooltipDataStoreProvider = AccountsTooltipDataStoreProvider(context)
+
     @Module
     @InstallIn(SingletonComponent::class)
     internal interface BindsModule {
@@ -53,5 +64,15 @@ object OnboardingModule {
         @Binds
         @Reusable
         fun bindsOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
+
+        @Binds
+        @Reusable
+        fun bindsAccountsHighlightLocalDataSource(
+            impl: AccountsTooltipLocalDataSourceImpl
+        ): AccountsTooltipLocalDataSource
+
+        @Binds
+        @Reusable
+        fun bindsAccountsHighlightRepository(impl: AccountsTooltipRepositoryImpl): AccountsTooltipRepository
     }
 }
