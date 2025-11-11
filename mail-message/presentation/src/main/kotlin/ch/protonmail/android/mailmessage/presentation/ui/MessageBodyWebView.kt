@@ -47,6 +47,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -194,6 +195,16 @@ fun MessageBodyWebView(
             measuredHeight
         }.collectLatest { height ->
             onMessageBodyLoaded(messageId, height)
+        }
+    }
+
+    DisposableEffect(messageId) {
+        onDispose {
+            webView.apply {
+                loadUrl("about:blank")
+                stopLoading()
+                destroy()
+            }
         }
     }
 
