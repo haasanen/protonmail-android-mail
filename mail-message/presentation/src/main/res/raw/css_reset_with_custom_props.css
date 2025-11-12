@@ -206,4 +206,8 @@ div[role="textbox"]{
     --cursor-color: #7777F8;
     padding: 1rem;
   }
+
+  .protonmail_signature_block-user > div[style*="background-color: #fff"] {
+    background-color: #191927 !important
+  }
 }
