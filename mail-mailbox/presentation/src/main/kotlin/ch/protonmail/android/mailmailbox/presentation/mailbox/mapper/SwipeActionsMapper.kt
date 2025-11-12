@@ -20,13 +20,14 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.maillabel.domain.extension.isOutbox
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeUiModel
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import javax.inject.Inject
 
@@ -58,36 +59,43 @@ class SwipeActionsMapper @Inject constructor() {
             descriptionRes = R.string.mail_settings_swipe_action_none_description,
             color = { ProtonTheme.colors.notificationNorm }
         )
+
         SwipeAction.Trash -> ActionConfig(
             iconRes = R.drawable.ic_proton_trash,
             descriptionRes = R.string.mail_settings_swipe_action_trash_description,
             color = { ProtonTheme.colors.notificationError }
         )
+
         SwipeAction.Spam -> ActionConfig(
             iconRes = R.drawable.ic_proton_fire,
             descriptionRes = R.string.mail_settings_swipe_action_spam_description,
             color = { ProtonTheme.colors.notificationWarning }
         )
+
         SwipeAction.Star -> ActionConfig(
             iconRes = R.drawable.ic_proton_star,
             descriptionRes = R.string.mail_settings_swipe_action_star_description,
             color = { ProtonTheme.colors.starSelected }
         )
+
         SwipeAction.Archive -> ActionConfig(
             iconRes = R.drawable.ic_proton_archive_box,
             descriptionRes = R.string.mail_settings_swipe_action_archive_description,
             color = { ProtonTheme.colors.notificationSuccess }
         )
+
         SwipeAction.MarkRead -> ActionConfig(
             iconRes = R.drawable.ic_proton_envelope_dot,
             descriptionRes = R.string.mail_settings_swipe_action_read_description,
             color = { ProtonTheme.colors.brandMinus10 }
         )
+
         SwipeAction.LabelAs -> ActionConfig(
             iconRes = R.drawable.ic_proton_tag,
             descriptionRes = R.string.mail_settings_swipe_action_label_as_description,
             color = { ProtonTheme.colors.brandMinus10 }
         )
+
         SwipeAction.MoveTo -> ActionConfig(
             iconRes = R.drawable.ic_proton_folder_arrow_in,
             descriptionRes = R.string.mail_settings_swipe_action_move_to_description,
@@ -110,7 +118,7 @@ class SwipeActionsMapper @Inject constructor() {
         SwipeAction.Spam -> labelId != SystemLabelId.Spam.labelId
         SwipeAction.Archive -> labelId != SystemLabelId.Archive.labelId
         else -> true
-    }
+    } && labelId.isOutbox().not()
 
     private data class ActionConfig(
         val iconRes: Int,

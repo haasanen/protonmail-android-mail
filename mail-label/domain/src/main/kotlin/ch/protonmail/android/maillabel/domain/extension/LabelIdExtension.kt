@@ -24,3 +24,5 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 fun LabelId.isTrash() = this == SystemLabelId.Trash.labelId
 
 fun LabelId.isSpam() = this == SystemLabelId.Spam.labelId
+
+fun LabelId.isOutbox() = this == SystemLabelId.Outbox.labelId

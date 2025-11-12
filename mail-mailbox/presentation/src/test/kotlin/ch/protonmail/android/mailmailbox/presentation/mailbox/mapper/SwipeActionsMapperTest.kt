@@ -239,6 +239,30 @@ class SwipeActionsMapperTest(
                         isEnabled = true
                     )
                 )
+            ),
+            TestInput(
+                input = SystemLabelId.Outbox.labelId to SwipeActionsPreference(
+                    swipeLeft = SwipeAction.MoveTo,
+                    swipeRight = SwipeAction.Star
+                ),
+                expected = SwipeActionsUiModel(
+                    end = SwipeUiModel(
+                        swipeAction = SwipeAction.MoveTo,
+                        icon = R.drawable.ic_proton_folder_arrow_in,
+                        descriptionRes = R.string.mail_settings_swipe_action_move_to_description,
+                        getColor = { ProtonTheme.colors.notificationNorm },
+                        staysDismissed = false,
+                        isEnabled = false
+                    ),
+                    start = SwipeUiModel(
+                        swipeAction = SwipeAction.Star,
+                        icon = R.drawable.ic_proton_star,
+                        descriptionRes = R.string.mail_settings_swipe_action_star_description,
+                        getColor = { ProtonTheme.colors.notificationWarning },
+                        staysDismissed = false,
+                        isEnabled = false
+                    )
+                )
             )
         )
 
