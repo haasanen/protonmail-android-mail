@@ -22,6 +22,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
+import dagger.Lazy
 import jakarta.inject.Inject
 import me.proton.core.crypto.common.keystore.EncryptedByteArray
 import me.proton.core.crypto.common.keystore.KeyStoreCrypto
@@ -31,9 +32,11 @@ import me.proton.core.user.domain.entity.AddressId
 
 @Suppress("MultilineRawStringIndentation", "MagicNumber")
 class LegacyDbReader @Inject constructor(
-    private val db: SupportSQLiteDatabase,
+    private val legacyDb: Lazy<SupportSQLiteDatabase>,
     private val keyStoreCrypto: KeyStoreCrypto
 ) {
+
+    private val db by lazy { legacyDb.get() }
 
     fun readAuthenticatedSessions(): List<LegacySessionInfo> {
         val cursor = db.query(SQL_READ_AUTHENTICATED_SESSIONS)
