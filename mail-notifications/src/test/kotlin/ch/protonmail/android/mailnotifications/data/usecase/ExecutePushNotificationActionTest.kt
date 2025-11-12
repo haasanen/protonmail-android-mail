@@ -20,7 +20,8 @@ package ch.protonmail.android.mailnotifications.data.usecase
 
 import ch.protonmail.android.mailnotifications.data.model.QuickActionPayloadData
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
+import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -30,9 +31,13 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
-import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionGetSessionsResult
 import uniffi.proton_mail_uniffi.PushNotificationQuickAction
 import uniffi.proton_mail_uniffi.RemoteId
+import uniffi.proton_mail_uniffi.SessionReason
+import uniffi.proton_mail_uniffi.StoredSession
+import uniffi.proton_mail_uniffi.UserSessionError
 import uniffi.proton_mail_uniffi.VoidActionResult
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -41,17 +46,23 @@ import kotlin.test.assertTrue
 
 internal class ExecutePushNotificationActionTest {
 
-    private val userSession = mockk<MailUserSession>()
+    private val storedSession = mockk<StoredSession> {
+        coEvery { this@mockk.userId() } returns userId.toLocalUserId()
+    }
+    private val mailSession = mockk<MailSession> {
+        coEvery { this@mockk.getSessions() } returns
+            MailSessionGetSessionsResult.Ok(listOf(storedSession))
+    }
 
-    private val userSessionRepo = mockk<UserSessionRepository> {
-        coEvery { this@mockk.getUserSession(userId)?.getRustUserSession() } returns userSession
+    private val mailSessionRepo = mockk<MailSessionRepository> {
+        coEvery { this@mockk.getMailSession().getRustMailSession() } returns mailSession
     }
 
     private lateinit var executePushNotificationAction: ExecutePushNotificationAction
 
     @BeforeTest
     fun setup() {
-        executePushNotificationAction = ExecutePushNotificationAction(userSessionRepo)
+        executePushNotificationAction = ExecutePushNotificationAction(mailSessionRepo)
     }
 
     @AfterTest
@@ -66,7 +77,7 @@ internal class ExecutePushNotificationActionTest {
         val expectedRustAction = PushNotificationQuickAction.MarkAsRead(RemoteId(remoteId))
 
         coEvery {
-            userSession.executeNotificationQuickAction(any<PushNotificationQuickAction>())
+            mailSession.executeNotificationQuickAction(storedSession, any<PushNotificationQuickAction>(), null)
         } returns VoidActionResult.Ok
 
         // When
@@ -74,8 +85,9 @@ internal class ExecutePushNotificationActionTest {
 
         // Then
         assertTrue(result.isRight())
-        coVerify(exactly = 1) { userSession.executeNotificationQuickAction(expectedRustAction) }
-        confirmVerified(userSession)
+        coVerify(exactly = 1) { mailSession.executeNotificationQuickAction(storedSession, expectedRustAction, null) }
+        coVerify { mailSession.getSessions() }
+        confirmVerified(mailSession)
     }
 
     @Test
@@ -85,7 +97,7 @@ internal class ExecutePushNotificationActionTest {
         val expectedRustAction = PushNotificationQuickAction.MoveToArchive(RemoteId(remoteId))
 
         coEvery {
-            userSession.executeNotificationQuickAction(any<PushNotificationQuickAction>())
+            mailSession.executeNotificationQuickAction(storedSession, any<PushNotificationQuickAction>(), null)
         } returns VoidActionResult.Ok
 
         // When
@@ -93,8 +105,9 @@ internal class ExecutePushNotificationActionTest {
 
         // Then
         assertTrue(result.isRight())
-        coVerify(exactly = 1) { userSession.executeNotificationQuickAction(expectedRustAction) }
-        confirmVerified(userSession)
+        coVerify(exactly = 1) { mailSession.executeNotificationQuickAction(storedSession, expectedRustAction, null) }
+        coVerify { mailSession.getSessions() }
+        confirmVerified(mailSession)
     }
 
     @Test
@@ -104,7 +117,7 @@ internal class ExecutePushNotificationActionTest {
         val expectedRustAction = PushNotificationQuickAction.MoveToTrash(RemoteId(remoteId))
 
         coEvery {
-            userSession.executeNotificationQuickAction(any<PushNotificationQuickAction>())
+            mailSession.executeNotificationQuickAction(storedSession, any<PushNotificationQuickAction>(), null)
         } returns VoidActionResult.Ok
 
         // When
@@ -112,8 +125,9 @@ internal class ExecutePushNotificationActionTest {
 
         // Then
         assertTrue(result.isRight())
-        coVerify(exactly = 1) { userSession.executeNotificationQuickAction(expectedRustAction) }
-        confirmVerified(userSession)
+        coVerify(exactly = 1) { mailSession.executeNotificationQuickAction(storedSession, expectedRustAction, null) }
+        coVerify { mailSession.getSessions() }
+        confirmVerified(mailSession)
     }
 
     @Test
@@ -123,7 +137,7 @@ internal class ExecutePushNotificationActionTest {
         val expectedRustAction = PushNotificationQuickAction.MoveToTrash(RemoteId(remoteId))
 
         coEvery {
-            userSession.executeNotificationQuickAction(any<PushNotificationQuickAction>())
+            mailSession.executeNotificationQuickAction(storedSession, any<PushNotificationQuickAction>(), null)
         } returns VoidActionResult.Error(ActionError.Reason(ActionErrorReason.UNKNOWN_MESSAGE))
 
         // When
@@ -132,8 +146,9 @@ internal class ExecutePushNotificationActionTest {
         // Then
         assertTrue(result.isLeft())
         assertTrue(result.swap().getOrNull() is QuickActionPushError.Error)
-        coVerify(exactly = 1) { userSession.executeNotificationQuickAction(expectedRustAction) }
-        confirmVerified(userSession)
+        coVerify(exactly = 1) { mailSession.executeNotificationQuickAction(storedSession, expectedRustAction, null) }
+        coVerify { mailSession.getSessions() }
+        confirmVerified(mailSession)
     }
 
     @Test
@@ -141,15 +156,18 @@ internal class ExecutePushNotificationActionTest {
         // Given
         val payload = QuickActionPayloadData(userId, remoteId, LocalNotificationAction.MoveTo.Trash)
 
-        coEvery { userSessionRepo.getUserSession(userId)?.getRustUserSession() } returns null
+        coEvery { mailSession.getSessions() } returns MailSessionGetSessionsResult.Error(
+            UserSessionError.Reason(SessionReason.UnknownLabel)
+        )
 
         // When
         val result = executePushNotificationAction(payload)
 
         // Then
         assertTrue(result.isLeft())
-        assertTrue(result.swap().getOrNull() is QuickActionPushError.NoUserSession)
-        confirmVerified(userSession)
+        assertTrue(result.swap().getOrNull() is QuickActionPushError.NoMailSession)
+        coVerify { mailSession.getSessions() }
+        confirmVerified(mailSession)
     }
 
     private companion object {

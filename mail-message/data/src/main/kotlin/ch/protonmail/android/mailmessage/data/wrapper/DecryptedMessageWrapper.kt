@@ -30,6 +30,7 @@ import uniffi.proton_mail_uniffi.AttachmentDataResult
 import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.BodyOutputResult
 import uniffi.proton_mail_uniffi.DecryptedMessage
+import uniffi.proton_mail_uniffi.ImagePolicy
 import uniffi.proton_mail_uniffi.TransformOpts
 import uniffi.proton_mail_uniffi.VoidActionResult
 
@@ -42,7 +43,7 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
         }
 
     suspend fun loadImage(url: String): Either<DataError, LocalAttachmentData> =
-        when (val result = decryptedMessage.loadImage(url)) {
+        when (val result = decryptedMessage.loadImage(url, ImagePolicy.SAFE)) {
             is AttachmentDataResult.Error -> {
                 Timber.d("DecryptedMessageWrapper: Failed to load image: $url: ${result.v1}")
                 result.v1.toDataError().left()
