@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +62,10 @@ import ch.protonmail.android.maildetail.presentation.model.PagedConversationDeta
 import ch.protonmail.android.maildetail.presentation.viewmodel.PagedConversationDetailViewModel
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 @Composable
@@ -163,11 +168,23 @@ private fun ConversationPager(
         pageCount = { state.pages.size }
     )
 
-    LaunchedEffect(pagerState.settledPage) {
-        if (pagerState.settledPage == state.focusPageIndex) {
-            Timber.d("conversation-pager settled page is focused page ${state.focusPageIndex}")
-        } else {
-            onPagerAction(PagedConversationDetailAction.SetSettledPage(pagerState.settledPage))
+    var stablePagerCurrentIndex by remember { mutableStateOf(pagerState.currentPage) }
+
+    LaunchedEffect(state.focusPageIndex) {
+        pagerState.stablePositionIndexFlow().collect { stablePositionIndex ->
+            if (stablePositionIndex == state.focusPageIndex) {
+                Timber.d(
+                    "Pager settled at $stablePositionIndex, same as focusPageIndex=${state.focusPageIndex}, no-op!"
+                )
+            } else {
+                Timber.d(
+                    "Pager settled at $stablePositionIndex " +
+                        "different from focusPageIndex=${state.focusPageIndex}"
+                )
+                onPagerAction(PagedConversationDetailAction.SetSettledPage(stablePositionIndex))
+            }
+
+            stablePagerCurrentIndex = stablePositionIndex
         }
     }
 
@@ -175,11 +192,13 @@ private fun ConversationPager(
         state.currentPageIndex?.let { pagerState.animateScrollToPage(it + 1) }
     }
 
-    LaunchedEffect(state.focusPageIndex, state.pages) {
+    LaunchedEffect(state.focusPageIndex, stablePagerCurrentIndex, state.pages) {
         state.focusPageIndex?.let { focusIndex ->
-            if (pagerState.currentPage != focusIndex && !pagerState.isScrollInProgress) {
-                pagerState.scrollToPage(focusIndex)
+            if (stablePagerCurrentIndex != state.focusPageIndex) {
+                // Use non-suspend scroll function to jump to focus index.
+                pagerState.requestScrollToPage(focusIndex)
                 onPagerAction(PagedConversationDetailAction.ClearFocusPage)
+                Timber.d("Pager did not settled at focus page $focusIndex, jump scrolling to it")
             }
         }
     }
@@ -324,3 +343,27 @@ object PagedConversationDetailScreen {
     const val ViewModeIsConversation = "View mode"
 }
 
+internal data class PagerStateSnapshot(
+    val currentPage: Int,
+    val settledPage: Int,
+    val targetPage: Int,
+    val isScrollInProgress: Boolean
+)
+
+internal fun PagerStateSnapshot.isPositionStabled(): Boolean {
+    return !isScrollInProgress &&
+        currentPage == settledPage &&
+        currentPage == targetPage
+}
+
+internal fun PagerState.stablePositionIndexFlow(): Flow<Int> = snapshotFlow {
+    PagerStateSnapshot(
+        currentPage = currentPage,
+        settledPage = settledPage,
+        targetPage = targetPage,
+        isScrollInProgress = isScrollInProgress
+    )
+}
+    .filter { it.isPositionStabled() }
+    .map { it.currentPage }
+    .distinctUntilChanged()
