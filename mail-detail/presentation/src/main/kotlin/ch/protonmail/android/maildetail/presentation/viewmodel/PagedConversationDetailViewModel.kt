@@ -56,6 +56,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -75,6 +77,7 @@ class PagedConversationDetailViewModel @Inject constructor(
     val effects = _effects.asStateFlow()
 
     private var conversationCursor: ConversationCursor? = null
+    private val cursorMutex = Mutex()
 
     private val conversationId = savedStateHandle.getStateFlow(
         ConversationDetailScreen.ConversationIdKey,
@@ -127,7 +130,7 @@ class PagedConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun onCursor(
+    private suspend fun onCursor(
         swipeEnabled: Boolean,
         autoAdvance: Boolean,
         cursorState: EphemeralMailboxCursor?
@@ -145,7 +148,11 @@ class PagedConversationDetailViewModel @Inject constructor(
 
             is EphemeralMailboxCursor.Data -> {
                 val cursor = cursorState.cursor
-                conversationCursor = cursor
+
+                cursorMutex.withLock {
+                    conversationCursor = cursor
+                }
+
                 emitNewStateFor(
                     PagedConversationDetailEvent.Ready(
                         swipeEnabled = swipeEnabled,
@@ -234,7 +241,11 @@ class PagedConversationDetailViewModel @Inject constructor(
         )
 
     override fun onCleared() {
-        conversationCursor?.close()
+        viewModelScope.launch {
+            cursorMutex.withLock {
+                conversationCursor = null
+            }
+        }
         super.onCleared()
     }
 
@@ -274,13 +285,16 @@ class PagedConversationDetailViewModel @Inject constructor(
     }
 
     private suspend fun guardCursor(block: suspend (cursor: ConversationCursor) -> Unit) {
-        if (conversationCursor != null) {
-            block(conversationCursor!!)
-        } else {
-            Timber.w(
-                "conversation-cursor PagedConversationDetailViewModel" +
-                    " guardCursor received a null cursor and couldn't execute block"
-            )
+        cursorMutex.withLock {
+            val cursor = conversationCursor
+            if (cursor != null) {
+                block(cursor)
+            } else {
+                Timber.w(
+                    "conversation-cursor PagedConversationDetailViewModel" +
+                        " guardCursor received a null cursor and couldn't execute block"
+                )
+            }
         }
     }
 
