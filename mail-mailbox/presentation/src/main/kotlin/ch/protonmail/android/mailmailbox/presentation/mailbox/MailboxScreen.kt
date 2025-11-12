@@ -82,7 +82,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -164,6 +166,9 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
+import ch.protonmail.android.mailonboarding.presentation.model.AccountsTooltipState
+import ch.protonmail.android.mailonboarding.presentation.ui.AccountsTooltip
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.AccountsTooltipViewModel
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
@@ -184,9 +189,11 @@ fun MailboxScreen(
     actions: MailboxScreen.Actions,
     onEvent: (AccountSwitchEvent) -> Unit,
     viewModel: MailboxViewModel = hiltViewModel(),
+    accountsTooltipViewModel: AccountsTooltipViewModel = hiltViewModel(),
     fabHostState: ProtonFabHostState
 ) {
     val mailboxState = viewModel.state.collectAsStateWithLifecycle().value
+    val accountsTooltipState by accountsTooltipViewModel.state.collectAsStateWithLifecycle()
 
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -423,6 +430,7 @@ fun MailboxScreen(
     ) {
         MailboxScreen(
             mailboxState = mailboxState,
+            accountsTooltipState = accountsTooltipState,
             fabHostState = fabHostState,
             mailboxListItems = mailboxListItems,
             actions = completeActions,
@@ -434,6 +442,7 @@ fun MailboxScreen(
 @Composable
 fun MailboxScreen(
     mailboxState: MailboxState,
+    accountsTooltipState: AccountsTooltipState,
     fabHostState: ProtonFabHostState,
     mailboxListItems: LazyPagingItems<MailboxItemUiModel>,
     actions: MailboxScreen.Actions,
@@ -501,13 +510,19 @@ fun MailboxScreen(
         contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
         topBar = {
             val localDensity = LocalDensity.current
+            var topAppBarBounds by remember { mutableStateOf<Rect?>(null) }
+
             Column(
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
                         rememberTopBarHeight.value = with(localDensity) { coordinates.size.height.toDp() }
                     }
             ) {
+
                 MailboxTopAppBar(
+                    modifier = Modifier.onGloballyPositioned {
+                        topAppBarBounds = it.boundsInParent()
+                    },
                     state = mailboxState.topAppBarState,
                     actions = MailboxTopAppBar.Actions(
                         onOpenMenu = actions.openDrawerMenu,
@@ -528,6 +543,10 @@ fun MailboxScreen(
                     state = mailboxState,
                     actions = stickyHeaderActions
                 )
+            }
+
+            if (accountsTooltipState == AccountsTooltipState.Show) {
+                AccountsTooltip(anchorBounds = topAppBarBounds)
             }
         },
         bottomBar = {
@@ -1343,6 +1362,7 @@ private fun MailboxScreenPreview(@PreviewParameter(MailboxPreviewProvider::class
         MailboxScreen(
             mailboxListItems = mailboxPreview.items.collectAsLazyPagingItems(),
             mailboxState = mailboxPreview.state,
+            accountsTooltipState = AccountsTooltipState.Loading,
             fabHostState = ProtonFabHostState(),
             actions = MailboxScreen.Actions.Empty
         )

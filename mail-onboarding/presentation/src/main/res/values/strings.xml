@@ -33,4 +33,7 @@
     <string name="onboarding_close_content_description">Close</string>
 
     <string name="empty" translatable="false"></string>
+
+    <string name="accounts_new_location_tooltip">A New Home for Your Accounts</string>
+    <string name="accounts_new_location_tooltip_description">The account switcher has moved! You can now switch accounts, log out, and manage your account settings - all from one convenient place.</string>
 </resources>

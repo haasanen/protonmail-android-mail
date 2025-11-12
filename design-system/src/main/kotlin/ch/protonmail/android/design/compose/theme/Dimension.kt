@@ -44,6 +44,9 @@ object ProtonDimens {
     val sideBarMaximumWidth = 320.dp
     val sideBarHeaderHeight = 90.dp
 
+    val AccountsTooltipArrowWidth = 15.dp
+    val AccountsTooltipArrowHeight = 10.dp
+
     object Spacing {
 
         val ExtraTiny = 1.dp
