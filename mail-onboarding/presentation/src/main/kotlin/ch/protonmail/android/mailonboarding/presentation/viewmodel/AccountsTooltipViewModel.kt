@@ -20,6 +20,7 @@ package ch.protonmail.android.mailonboarding.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailonboarding.domain.usecase.MarkAccountTooltipAsSeen
 import ch.protonmail.android.mailonboarding.domain.usecase.ObserveAccountsTooltip
 import ch.protonmail.android.mailonboarding.presentation.model.AccountsTooltipState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,11 +28,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AccountsTooltipViewModel @Inject constructor(
-    observeAccountsTooltip: ObserveAccountsTooltip
+    observeAccountsTooltip: ObserveAccountsTooltip,
+    private val markAccountTooltipAsSeen: MarkAccountTooltipAsSeen
 ) : ViewModel() {
 
     val state: StateFlow<AccountsTooltipState> = observeAccountsTooltip().map { preferenceEither ->
@@ -44,4 +47,10 @@ class AccountsTooltipViewModel @Inject constructor(
         started = SharingStarted.Lazily,
         initialValue = AccountsTooltipState.Loading
     )
+
+    fun onDismiss() {
+        viewModelScope.launch {
+            markAccountTooltipAsSeen()
+        }
+    }
 }

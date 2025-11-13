@@ -49,7 +49,11 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailonboarding.presentation.R
 
 @Composable
-fun AccountsTooltip(modifier: Modifier = Modifier, anchorBounds: Rect?) {
+fun AccountsTooltip(
+    modifier: Modifier = Modifier,
+    anchorBounds: Rect?,
+    onDismiss: () -> Unit
+) {
 
     TooltipBox(modifier, anchorBounds) {
         Row(
@@ -62,7 +66,7 @@ fun AccountsTooltip(modifier: Modifier = Modifier, anchorBounds: Rect?) {
 
             ToolTipText(Modifier.weight(2f, true))
 
-            CloseIcon()
+            CloseIcon(onClose = onDismiss)
         }
     }
 }
@@ -146,7 +150,7 @@ private fun ToolTipText(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun CloseIcon(modifier: Modifier = Modifier) {
+private fun CloseIcon(modifier: Modifier = Modifier, onClose: () -> Unit) {
     Box(
         modifier = modifier
             .padding(ProtonDimens.Spacing.Medium)
@@ -156,7 +160,7 @@ private fun CloseIcon(modifier: Modifier = Modifier) {
                 ),
                 shape = RoundedCornerShape(percent = 100)
             )
-            .clickable(true, onClick = {})
+            .clickable(true, onClick = onClose)
     ) {
         Icon(
             modifier = Modifier
@@ -173,6 +177,7 @@ private fun CloseIcon(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewAccountsTooltip() {
     AccountsTooltip(
-        anchorBounds = null
+        anchorBounds = null,
+        onDismiss = {}
     )
 }

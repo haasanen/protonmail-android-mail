@@ -291,7 +291,8 @@ fun MailboxScreen(
         onClearAllConfirmed = { viewModel.submit(MailboxViewAction.ClearAllConfirmed) },
         onClearAllDismissed = { viewModel.submit(MailboxViewAction.ClearAllDismissed) },
         onSnooze = { viewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet) },
-        validateUserSession = { viewModel.submit(MailboxViewAction.ValidateUserSession) }
+        validateUserSession = { viewModel.submit(MailboxViewAction.ValidateUserSession) },
+        onDismissAccountsTooltip = { accountsTooltipViewModel.onDismiss() }
     )
 
     val lifecycle = LocalLifecycleOwner.current
@@ -546,7 +547,7 @@ fun MailboxScreen(
             }
 
             if (accountsTooltipState == AccountsTooltipState.Show) {
-                AccountsTooltip(anchorBounds = topAppBarBounds)
+                AccountsTooltip(anchorBounds = topAppBarBounds, onDismiss = actions.onDismissAccountsTooltip)
             }
         },
         bottomBar = {
@@ -1280,7 +1281,8 @@ object MailboxScreen {
         val onSnooze: () -> Unit,
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onCustomizeToolbar: () -> Unit,
-        val validateUserSession: () -> Unit
+        val validateUserSession: () -> Unit,
+        val onDismissAccountsTooltip: () -> Unit
     ) {
 
         companion object {
@@ -1344,7 +1346,8 @@ object MailboxScreen {
                 onSnooze = {},
                 onCustomizeToolbar = {},
                 onActionBarVisibilityChanged = {},
-                validateUserSession = {}
+                validateUserSession = {},
+                onDismissAccountsTooltip = {}
             )
         }
     }
