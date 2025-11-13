@@ -36,6 +36,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUi
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
@@ -105,7 +106,8 @@ class MessageDetailHeaderUiModelMapperTest {
         encryptionInfo = "End-to-end encrypted and signed message",
         messageIdUiModel = MessageIdUiModel(message.messageId.id),
         themeOverride = null,
-        shouldShowQuickReply = true
+        shouldShowQuickReply = true,
+        hasMoreActions = true
     )
 
     private val colorMapper: ColorMapper = mockk {
@@ -151,6 +153,8 @@ class MessageDetailHeaderUiModelMapperTest {
         avatarImageUiModelMapper = avatarImageUiModelMapper
     )
 
+    private val labelId = LabelIdSample.Inbox
+
     @BeforeTest
     fun setUp() {
         mockkStatic(Formatter::class)
@@ -169,7 +173,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = message,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = labelId
         )
         // Then
         assertEquals(expectedResult, result)
@@ -188,7 +193,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = message,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = labelId
         )
         // Then
         assertEquals(expectedResult, result)
@@ -204,7 +210,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = message,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = labelId
         )
         // Then
         assertEquals(expectedResult, result)
@@ -228,7 +235,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = message,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = labelId
         )
         // Then
         assertEquals(expectedResult, result)
@@ -256,7 +264,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = input,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = avatarImageState,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = labelId
         )
 
         // Then
@@ -276,7 +285,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = input,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = labelId
         )
 
         // Then
@@ -296,7 +306,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = input,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = labelId
         )
 
         // Then
@@ -310,7 +321,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = message,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable,
-            viewModePreference = ViewModePreference.LightMode
+            viewModePreference = ViewModePreference.LightMode,
+            labelId = labelId
         )
 
         // Then
@@ -324,7 +336,8 @@ class MessageDetailHeaderUiModelMapperTest {
             message = message,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable,
-            viewModePreference = ViewModePreference.DarkMode
+            viewModePreference = ViewModePreference.DarkMode,
+            labelId = labelId
         )
 
         // Then

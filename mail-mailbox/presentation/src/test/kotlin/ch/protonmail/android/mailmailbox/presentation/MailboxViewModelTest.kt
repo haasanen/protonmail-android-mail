@@ -448,7 +448,7 @@ internal class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 any(),
-                MailboxEvent.NewLabelSelected(expectedMailLabel, expectedCount)
+                MailboxEvent.NewLabelSelected(expectedMailLabel, expectedMailLabel.systemLabelId.labelId, expectedCount)
             )
         } returns expectedState
         returnExpectedStateForBottomBarEvent(expectedState = expectedState)
@@ -489,7 +489,7 @@ internal class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 any(),
-                MailboxEvent.NewLabelSelected(expectedMailLabel, expectedCount)
+                MailboxEvent.NewLabelSelected(expectedMailLabel, expectedMailLabel.systemLabelId.labelId, expectedCount)
             )
         } returns intermediateState
         returnExpectedStateForBottomBarEvent(expectedState = expectedState)
@@ -562,7 +562,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         val expectedSwipeActions = SwipeActionsUiModel(
@@ -579,7 +580,8 @@ internal class MailboxViewModelTest {
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         val mailLabelsFlow = MutableStateFlow(
@@ -598,7 +600,13 @@ internal class MailboxViewModelTest {
         every { observeSelectedMailLabelId() } returns currentLocationFlow
 
         every {
-            mailboxReducer.newStateFrom(any(), MailboxEvent.NewLabelSelected(modifiedMailLabel, null))
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.NewLabelSelected(
+                    modifiedMailLabel,
+                    modifiedMailLabel.id.labelId, null
+                )
+            )
         } returns expectedState
         every {
             mailboxReducer.newStateFrom(expectedState, MailboxEvent.SwipeActionsChanged(expectedSwipeActions))
@@ -632,7 +640,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         val expectedSwipeActions = SwipeActionsUiModel(
@@ -649,7 +658,8 @@ internal class MailboxViewModelTest {
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         val mailLabelsFlow = MutableStateFlow(
@@ -674,7 +684,13 @@ internal class MailboxViewModelTest {
         expectedTrashSpamFilterStateChange(expectedState)
 
         every {
-            mailboxReducer.newStateFrom(any(), MailboxEvent.NewLabelSelected(initialMailLabel, null))
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.NewLabelSelected(
+                    initialMailLabel,
+                    initialMailLabel.id.labelId, null
+                )
+            )
         } returns expectedState
 
         every {
@@ -1138,6 +1154,7 @@ internal class MailboxViewModelTest {
                 initialMailboxState,
                 MailboxEvent.NewLabelSelected(
                     MailLabelTestData.spamSystemLabel,
+                    MailLabelTestData.spamSystemLabel.systemLabelId.labelId,
                     UnreadCountersTestData.labelToCounterMap[MailLabelTestData.spamSystemLabel.id.labelId]!!
                 )
             )
@@ -1379,7 +1396,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         every {
@@ -1411,7 +1429,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         every {
@@ -1443,7 +1462,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         val stateRefreshCompleted = expectedState.copy(
@@ -1581,6 +1601,7 @@ internal class MailboxViewModelTest {
                 expectedMailBoxState,
                 MailboxEvent.NewLabelSelected(
                     inboxLabel,
+                    inboxLabel.systemLabelId.labelId,
                     UnreadCountersTestData.labelToCounterMap[inboxLabel.id.labelId]!!
                 )
             )
@@ -3006,7 +3027,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             ),
             unreadFilterState = UnreadFilterState.Data(
                 numUnread = UnreadCountersTestData.labelToCounterMap[initialLocationMailLabelId.labelId]!!,
@@ -3029,7 +3051,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NewSearch,
                 shouldShowFab = false,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         every {
@@ -3062,7 +3085,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         every {
@@ -3096,7 +3120,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchLoading,
                 shouldShowFab = false,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         every {
@@ -3129,7 +3154,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchData,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                selectionModeEnabled = true
             )
         )
         every {

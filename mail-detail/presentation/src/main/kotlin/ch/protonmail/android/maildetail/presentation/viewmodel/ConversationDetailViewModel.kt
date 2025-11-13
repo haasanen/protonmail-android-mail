@@ -710,12 +710,16 @@ class ConversationDetailViewModel @AssistedInject constructor(
             val attachmentListExpandCollapseMode = currentViewState.attachmentsListExpandCollapseMode[message.messageId]
             val rsvpEventState = currentViewState.rsvpEvents[message.messageId]
             when (val viewState = currentViewState.messagesState[message.messageId]) {
-                is InMemoryConversationStateRepository.MessageState.Expanding ->
+                is InMemoryConversationStateRepository.MessageState.Expanding -> {
+                    Timber.d("SEREN build expanding message $message")
                     buildExpandingMessage(
                         buildCollapsedMessage(message, avatarImageState, primaryUserAddress)
                     )
+                }
+
 
                 is InMemoryConversationStateRepository.MessageState.Expanded -> {
+                    Timber.d("SEREN build expanded message $message")
                     buildExpandedMessage(
                         message,
                         avatarImageState,
@@ -728,6 +732,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 }
 
                 else -> {
+                    Timber.d("SEREN build collapsed message $message")
                     buildCollapsedMessage(message, avatarImageState, primaryUserAddress)
                 }
             }

@@ -199,7 +199,8 @@ internal class MailboxReducerTest(
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModel.Empty
+                avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                selectionModeEnabled = true
             ),
             topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
                 currentLabelName = spamLabel.text(),
@@ -534,6 +535,7 @@ internal class MailboxReducerTest(
             TestInput(
                 MailboxEvent.NewLabelSelected(
                     selectedLabel = MailLabelTestData.dynamicSystemLabels.first(),
+                    resolvedLabelId = MailLabelTestData.dynamicSystemLabels.first().systemLabelId.labelId,
                     selectedLabelCount = UnreadCountersTestData.systemUnreadCounters.first().count
                 ),
                 shouldReduceMailboxListState = true,
@@ -547,7 +549,10 @@ internal class MailboxReducerTest(
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
-                MailboxEvent.SelectedLabelChanged(MailLabelTestData.dynamicSystemLabels.first()),
+                MailboxEvent.SelectedLabelChanged(
+                    MailLabelTestData.dynamicSystemLabels.first(),
+                    MailLabelTestData.dynamicSystemLabels.first().systemLabelId.labelId
+                ),
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,

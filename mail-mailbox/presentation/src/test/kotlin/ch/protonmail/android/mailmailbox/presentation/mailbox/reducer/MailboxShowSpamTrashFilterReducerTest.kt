@@ -52,19 +52,19 @@ internal class MailboxShowSpamTrashFilterReducerTest(
             arrayOf(
                 "New label selected on loading",
                 ShowSpamTrashIncludeFilterState.Loading,
-                MailboxEvent.NewLabelSelected(mockk(), null),
+                MailboxEvent.NewLabelSelected(mockk(), mockk(), null),
                 ShowSpamTrashIncludeFilterState.Loading
             ),
             arrayOf(
                 "New label selected on hidden",
                 ShowSpamTrashIncludeFilterState.Data.Hidden,
-                MailboxEvent.NewLabelSelected(mockk(), null),
+                MailboxEvent.NewLabelSelected(mockk(), mockk(), null),
                 ShowSpamTrashIncludeFilterState.Data.Hidden
             ),
             arrayOf(
                 "New label selected on shown",
                 ShowSpamTrashIncludeFilterState.Data.Shown(true),
-                MailboxEvent.NewLabelSelected(mockk(), null),
+                MailboxEvent.NewLabelSelected(mockk(), mockk(), null),
                 ShowSpamTrashIncludeFilterState.Data.Hidden
             ),
             arrayOf(

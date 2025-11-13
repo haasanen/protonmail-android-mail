@@ -86,7 +86,8 @@ object MessageDetailHeaderUiModelTestData {
         encryptionInfo = "End-to-end encrypted and signed message",
         messageIdUiModel = MessageIdUiModel("id"),
         themeOverride = null,
-        shouldShowQuickReply = true
+        shouldShowQuickReply = true,
+        hasMoreActions = true
     )
 
     fun buildParticipant(
