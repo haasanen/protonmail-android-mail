@@ -18,9 +18,13 @@
 
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
+import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.usecase.GenerateCspNonce
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 internal const val EDITOR_ID = "EditorId"
@@ -28,14 +32,18 @@ internal const val EDITOR_ID = "EditorId"
 class BuildDraftDisplayBody @Inject constructor(
     private val getCustomCss: GetCustomCss,
     private val getCustomJs: GetCustomJs,
-    private val generateCspNonce: GenerateCspNonce
+    private val generateCspNonce: GenerateCspNonce,
+    @AppScope private val coroutineScope: CoroutineScope
 ) {
+
+    private val cssAndJs: Deferred<Pair<String, String>> = coroutineScope.async {
+        getCustomCss() to getCustomJs()
+    }
 
     suspend operator fun invoke(draftBody: DraftBody): DraftDisplayBodyUiModel {
         val bodyContent = draftBody.value
         val cspNonce = generateCspNonce()
-        val css = getCustomCss()
-        val javascript = getCustomJs()
+        val (css, javascript) = cssAndJs.await()
 
         return buildHtmlTemplate(bodyContent, css, javascript, cspNonce.value)
     }
@@ -75,5 +83,4 @@ class BuildDraftDisplayBody @Inject constructor(
 
         return DraftDisplayBodyUiModel(html)
     }
-
 }

@@ -4,20 +4,29 @@ import ch.protonmail.android.mailcomposer.domain.model.CspNonce
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.usecase.GenerateCspNonce
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class BuildDraftDisplayBodyTest {
+internal class BuildDraftDisplayBodyTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+    private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
     private val getCustomCss: GetCustomCss = mockk()
     private val getCustomJs: GetCustomJs = mockk()
     private val generateCspNonce: GenerateCspNonce = mockk()
 
-    private val buildDraftDisplayBody = BuildDraftDisplayBody(getCustomCss, getCustomJs, generateCspNonce)
+    private val buildDraftDisplayBody by lazy {
+        BuildDraftDisplayBody(getCustomCss, getCustomJs, generateCspNonce, testCoroutineScope)
+    }
 
     @Test
     fun `returns html template with injected css and javascript`() = runTest {
