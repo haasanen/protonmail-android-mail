@@ -36,13 +36,11 @@ class JavascriptCallback(
     @JavascriptInterface
     fun onBodyUpdated(body: String) {
         onMessageBodyChanged(body)
-        Timber.tag(TAG).d("Body updated, size: ${body.length} characters")
     }
 
     @JavascriptInterface
     fun onCaretPositionChanged(position: Float, lineHeight: Float) {
         onCursorPositionChanged(position, lineHeight)
-        Timber.tag(TAG).d("Caret position changed: $position")
     }
 
     @JavascriptInterface
@@ -58,7 +56,6 @@ class JavascriptCallback(
     @JavascriptInterface
     fun onImagePasted(base64ImageData: String) {
         onInlineImagePasted(base64ImageData)
-        Timber.tag(TAG).d("Image pasted of size: ${base64ImageData.length} characters")
     }
 
     @JavascriptInterface
