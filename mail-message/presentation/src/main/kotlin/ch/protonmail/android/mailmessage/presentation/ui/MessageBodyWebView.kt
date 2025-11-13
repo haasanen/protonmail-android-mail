@@ -166,9 +166,18 @@ fun MessageBodyWebView(
                 }
             }
 
+            // Kept only for logging/debugging.
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 Timber.d("message-webview: onPageFinished")
+            }
+
+            // Using onPageCommitVisible improves perceived loading time since
+            // onPageFinished fires much later (after most resources load), delaying
+            // when the WebView can be shown.
+            override fun onPageCommitVisible(view: WebView?, url: String?) {
+                super.onPageCommitVisible(view, url)
+                Timber.d("message-webview: onPageCommitVisible")
                 contentLoaded.value = true
             }
         }
