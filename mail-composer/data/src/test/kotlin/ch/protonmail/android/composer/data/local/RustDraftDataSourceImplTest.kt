@@ -14,6 +14,7 @@ import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDataErrorOther
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
@@ -33,6 +34,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -673,12 +675,12 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `load image returns DataError when unsuccessful`() = runTest {
         // Given
-        val expected = DataError.Remote.NoNetwork
+        val expected = AttachmentDataError.Other(DataError.Remote.NoNetwork)
         val cid = "image-content-id"
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.loadImage(cid) } returns AttachmentDataResult.Error(
-            ProtonError.Network
+            LocalAttachmentDataErrorOther(ProtonError.Network)
         )
 
         // When

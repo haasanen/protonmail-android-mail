@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,17 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.usecase
+package ch.protonmail.android.mailmessage.data.mapper
 
-import arrow.core.Either
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDataError
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDataErrorOther
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDataErrorProxyFailed
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
-import javax.inject.Inject
 
-class LoadMessageBodyImage @Inject constructor(
-    private val draftRepository: DraftRepository
-) {
-
-    operator fun invoke(url: String): Either<AttachmentDataError, MessageBodyImage> = draftRepository.loadImage(url)
+fun LocalAttachmentDataError.toAttachmentDataError() = when (this) {
+    is LocalAttachmentDataErrorProxyFailed -> AttachmentDataError.ProxyFailed
+    is LocalAttachmentDataErrorOther -> AttachmentDataError.Other(this.v1.toDataError())
 }

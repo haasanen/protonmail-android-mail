@@ -23,6 +23,7 @@ import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AppSettings
 import uniffi.proton_mail_uniffi.AppSettingsDiff
 import uniffi.proton_mail_uniffi.AttachmentData
+import uniffi.proton_mail_uniffi.AttachmentDataError
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AutoDeleteBanner
@@ -239,4 +240,7 @@ typealias LocalRsvpAnswer = RsvpAnswer
 typealias LocalMobileSignatureStatus = MobileSignatureStatus
 typealias LocalMobileSignature = MobileSignature
 typealias LocalHiddenMessagesBanner = HiddenMessagesBanner
+typealias LocalAttachmentDataError = AttachmentDataError
+typealias LocalAttachmentDataErrorProxyFailed = AttachmentDataError.ProxyFailed
+typealias LocalAttachmentDataErrorOther = AttachmentDataError.Other
 

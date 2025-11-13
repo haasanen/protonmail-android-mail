@@ -37,6 +37,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.model.ValidatedRecipients
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
@@ -76,7 +77,7 @@ interface RustDraftDataSource {
     suspend fun validateSendWithExpiration(): Either<DataError, DraftRecipientExpirationFeatureReport>
     suspend fun validateDraftSenderAddress(): DraftAddressValidationResult?
 
-    fun loadImage(url: String): Either<DataError, LocalAttachmentData>
+    fun loadImage(url: String): Either<AttachmentDataError, LocalAttachmentData>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>
 
     /**

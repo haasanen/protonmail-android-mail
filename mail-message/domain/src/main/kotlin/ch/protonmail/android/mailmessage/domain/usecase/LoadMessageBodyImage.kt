@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
@@ -34,6 +34,6 @@ class LoadMessageBodyImage @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         url: String
-    ): Either<DataError, MessageBodyImage> = messageBodyRepository.loadImage(userId, messageId, url)
+    ): Either<AttachmentDataError, MessageBodyImage> = messageBodyRepository.loadImage(userId, messageId, url)
 
 }

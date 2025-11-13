@@ -24,8 +24,8 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentErrorResult
 import ch.protonmail.android.mailattachments.presentation.ExternalAttachmentsHandler
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.LoadMessageBodyImage
@@ -117,7 +117,7 @@ internal class MessageBodyImageSaverViewModelTest {
                 MessageIdSample.MessageWithAttachments,
                 testImageUrl
             )
-        } returns mockk<DataError>().left()
+        } returns mockk<AttachmentDataError>().left()
 
         // When + Then
         viewModel.saveState.test {

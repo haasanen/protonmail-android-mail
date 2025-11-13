@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import uniffi.proton_mail_uniffi.Draft
 import uniffi.proton_mail_uniffi.DraftExpirationTime
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
+import uniffi.proton_mail_uniffi.ImagePolicy
 import uniffi.proton_mail_uniffi.UnixTimestamp
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
@@ -31,7 +32,7 @@ class DraftWrapper(private val rustDraft: Draft) {
 
     fun attachmentList(): AttachmentsWrapper = AttachmentsWrapper(rustDraft.attachmentList())
 
-    fun loadImage(url: String) = rustDraft.loadImageSync(url)
+    fun loadImage(url: String) = rustDraft.loadImageSync(url, ImagePolicy.SAFE)
 
     fun subject(): String = rustDraft.subject()
 

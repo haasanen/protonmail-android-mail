@@ -16,6 +16,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -290,13 +291,13 @@ class DraftRepositoryImplTest {
     fun `returns error when load image failed`() = runTest {
         // Given
         val url = "url"
-        every { draftDataSource.loadImage(url) } returns DataError.Local.CryptoError.left()
+        every { draftDataSource.loadImage(url) } returns AttachmentDataError.Other(DataError.Local.CryptoError).left()
 
         // When
         val actual = draftRepository.loadImage(url)
 
         // Then
-        assertEquals(DataError.Local.CryptoError.left(), actual)
+        assertEquals(AttachmentDataError.Other(DataError.Local.CryptoError).left(), actual)
     }
 
     @Test

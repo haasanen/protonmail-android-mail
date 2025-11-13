@@ -26,7 +26,6 @@ import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.DraftCreateMode
-import uniffi.proton_mail_uniffi.ImagePolicy
 import uniffi.proton_mail_uniffi.NewDraftResult
 import uniffi.proton_mail_uniffi.newDraft
 import javax.inject.Inject
@@ -37,7 +36,7 @@ class CreateRustDraft @Inject constructor() {
         mailSession: MailUserSessionWrapper,
         createMode: DraftCreateMode
     ): Either<OpenDraftError, DraftWrapper> =
-        when (val result = newDraft(mailSession.getRustUserSession(), createMode, ImagePolicy.SAFE)) {
+        when (val result = newDraft(mailSession.getRustUserSession(), createMode)) {
             is NewDraftResult.Error -> result.v1.toOpenDraftError().left()
             is NewDraftResult.Ok -> DraftWrapper(result.v1).right()
         }

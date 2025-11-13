@@ -30,6 +30,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalThemeOptions
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import kotlinx.coroutines.CoroutineDispatcher
@@ -75,14 +76,17 @@ class RustMessageBodyDataSource @Inject constructor(
         userId: UserId,
         messageId: LocalMessageId,
         url: String
-    ): Either<DataError, LocalAttachmentData> = withContext(ioDispatcher) {
+    ): Either<AttachmentDataError, LocalAttachmentData> = withContext(ioDispatcher) {
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
         val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-            ?: return@withContext DataError.Local.IllegalStateError.left()
+            ?: return@withContext AttachmentDataError.Other(DataError.Local.IllegalStateError).left()
 
         return@withContext createRustMessageBodyAccessor(mailbox, messageId)
-            .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
+            .mapLeft {
+                Timber.e("rust-message: Failed to build message body accessor $it")
+                AttachmentDataError.Other(it)
+            }
             .flatMap { decryptedMessage ->
                 decryptedMessage.loadImage(url)
             }

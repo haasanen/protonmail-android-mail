@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.MessageBodyDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
@@ -46,11 +47,12 @@ class RustMessageBodyRepository @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         url: String
-    ): Either<DataError, MessageBodyImage> = messageBodyDataSource.loadImage(userId, messageId.toLocalMessageId(), url)
-        .map { localAttachmentData ->
-            Timber.d("RustMessage: Loaded image: $url; mime ${localAttachmentData.mime};")
-            MessageBodyImage(localAttachmentData.data, localAttachmentData.mime)
-        }
+    ): Either<AttachmentDataError, MessageBodyImage> =
+        messageBodyDataSource.loadImage(userId, messageId.toLocalMessageId(), url)
+            .map { localAttachmentData ->
+                Timber.d("RustMessage: Loaded image: $url; mime ${localAttachmentData.mime};")
+                MessageBodyImage(localAttachmentData.data, localAttachmentData.mime)
+            }
 
     override suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         messageBodyDataSource.unsubscribeFromNewsletter(userId, messageId.toLocalMessageId())

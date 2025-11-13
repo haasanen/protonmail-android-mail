@@ -43,6 +43,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.model.ValidatedRecipients
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -61,7 +62,7 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun getMessageId(): Either<DataError, MessageId> = draftDataSource.getMessageId()
 
-    override fun loadImage(url: String): Either<DataError, MessageBodyImage> =
+    override fun loadImage(url: String): Either<AttachmentDataError, MessageBodyImage> =
         draftDataSource.loadImage(url).map { it.toMessageBodyImage() }
 
     override suspend fun openDraft(

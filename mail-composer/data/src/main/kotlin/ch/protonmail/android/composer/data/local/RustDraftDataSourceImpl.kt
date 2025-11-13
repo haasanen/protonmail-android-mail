@@ -64,8 +64,10 @@ import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.model.ValidatedRecipients
+import ch.protonmail.android.mailmessage.data.mapper.toAttachmentDataError
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -265,9 +267,9 @@ class RustDraftDataSourceImpl @Inject constructor(
         return wrapper.attachmentList().right()
     }
 
-    override fun loadImage(url: String): Either<DataError, LocalAttachmentData> =
+    override fun loadImage(url: String): Either<AttachmentDataError, LocalAttachmentData> =
         when (val result = draftCache.get().loadImage(url)) {
-            is AttachmentDataResult.Error -> result.v1.toDataError().left()
+            is AttachmentDataResult.Error -> result.v1.toAttachmentDataError().left()
             is AttachmentDataResult.Ok -> result.v1.right()
         }
 

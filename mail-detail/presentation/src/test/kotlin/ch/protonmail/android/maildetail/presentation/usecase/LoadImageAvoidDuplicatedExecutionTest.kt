@@ -22,6 +22,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.LoadMessageBodyImage
@@ -66,7 +67,7 @@ class LoadImageAvoidDuplicatedExecutionTest {
         // Given
         coEvery {
             loadMessageBodyImage(userId, messageId, url)
-        } returns DataError.Local.NoDataCached.left()
+        } returns AttachmentDataError.Other(DataError.Local.NoDataCached).left()
 
         // When
         val result = loadImageAvoidDuplicatedExecution(userId, messageId, url, coroutineContext)

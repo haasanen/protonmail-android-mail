@@ -27,6 +27,7 @@ import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -148,16 +149,15 @@ class RustMessageBodyDataSourceTest {
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
-        val expectedError = DataError.Local.NoDataCached
         coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
-        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns expectedError.left()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns DataError.Local.NoDataCached.left()
 
         // When
         val result = dataSource.loadImage(userId, messageId, "url")
 
         // Then
         coVerify { rustMailboxFactory.createAllMail(userId) }
-        assertEquals(expectedError.left(), result)
+        assertEquals(AttachmentDataError.Other(DataError.Local.NoDataCached).left(), result)
     }
 
     @Test

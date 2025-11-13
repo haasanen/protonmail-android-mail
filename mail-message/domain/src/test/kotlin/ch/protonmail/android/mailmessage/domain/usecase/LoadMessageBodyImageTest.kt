@@ -22,6 +22,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -59,12 +60,12 @@ class LoadMessageBodyImageTest {
     fun `returns error when loading image fails`() = runTest {
         // Given
         coEvery { messageBodyRepository.loadImage(userId, messageId, url) } returns
-            DataError.Local.NoDataCached.left()
+            AttachmentDataError.Other(DataError.Local.NoDataCached).left()
 
         // When
         val actual = loadMessageBodyImage(userId, messageId, url)
 
         // Then
-        assertEquals(DataError.Local.NoDataCached.left(), actual)
+        assertEquals(AttachmentDataError.Other(DataError.Local.NoDataCached).left(), actual)
     }
 }
