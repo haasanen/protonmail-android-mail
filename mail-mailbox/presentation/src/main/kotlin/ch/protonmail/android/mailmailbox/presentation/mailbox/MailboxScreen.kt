@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawn
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -546,8 +547,10 @@ fun MailboxScreen(
                 )
             }
 
-            if (accountsTooltipState == AccountsTooltipState.Show) {
-                AccountsTooltip(anchorBounds = topAppBarBounds, onDismiss = actions.onDismissAccountsTooltip)
+            Crossfade(accountsTooltipState) { state ->
+                if (state == AccountsTooltipState.Show) {
+                    AccountsTooltip(anchorBounds = topAppBarBounds, onDismiss = actions.onDismissAccountsTooltip)
+                }
             }
         },
         bottomBar = {
