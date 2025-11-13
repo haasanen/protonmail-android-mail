@@ -28,7 +28,9 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
+import ch.protonmail.android.maillabel.domain.extension.isOutbox
 import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
@@ -58,7 +60,8 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
         message: Message,
         primaryUserAddress: String?,
         avatarImageState: AvatarImageState,
-        viewModePreference: ViewModePreference
+        viewModePreference: ViewModePreference,
+        labelId: LabelId
     ): MessageDetailHeaderUiModel {
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(message.isDraft, message.avatarInformation, message.sender),
@@ -92,7 +95,8 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             encryptionInfo = "End-to-end encrypted and signed message",
             messageIdUiModel = toMessageUiModel(message.messageId),
             themeOverride = viewModePreference.toThemeOverride(),
-            shouldShowQuickReply = message.isReplyAllowed
+            shouldShowQuickReply = message.isReplyAllowed,
+            hasMoreActions = labelId.actionsEnabled()
         )
     }
 
@@ -119,4 +123,5 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
 
     private fun toMessageUiModel(messageId: MessageId) = MessageIdUiModel(messageId.id)
 
+    private fun LabelId.actionsEnabled() = this.isOutbox().not()
 }

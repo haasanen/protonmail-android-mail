@@ -75,13 +75,18 @@ fun MailboxItem(
     item: MailboxItemUiModel,
     avatarImageUiModel: AvatarImageUiModel,
     selectionMode: Boolean = false,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
+    isSelectable: Boolean = true
 ) {
     Box(
         modifier = modifier
             .combinedClickable(
                 onClick = { actions.onItemClicked(item) },
-                onLongClick = { actions.onItemLongClicked(item) }
+                onLongClick = {
+                    if (isSelectable) {
+                        actions.onItemLongClicked(item)
+                    }
+                }
             )
             .semantics { isItemRead = item.isRead }
             .padding(start = ProtonDimens.Spacing.Tiny)

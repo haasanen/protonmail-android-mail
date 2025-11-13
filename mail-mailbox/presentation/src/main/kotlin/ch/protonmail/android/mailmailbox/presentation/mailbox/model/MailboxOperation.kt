@@ -255,11 +255,13 @@ internal sealed interface MailboxEvent : MailboxOperation {
 
     data class NewLabelSelected(
         val selectedLabel: MailLabel,
+        val resolvedLabelId: LabelId,
         val selectedLabelCount: Int?
     ) : MailboxEvent, AffectingTopAppBar, AffectingUnreadFilter, AffectingMailboxList, AffectingShowSpamTrashFilter
 
     data class SelectedLabelChanged(
-        val selectedLabel: MailLabel
+        val selectedLabel: MailLabel,
+        val resolvedLabelId: LabelId
     ) : MailboxEvent, AffectingTopAppBar, AffectingMailboxList
 
     data class SelectedLabelCountChanged(

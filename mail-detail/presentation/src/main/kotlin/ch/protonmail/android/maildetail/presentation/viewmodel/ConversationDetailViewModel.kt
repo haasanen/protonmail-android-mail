@@ -101,6 +101,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfigur
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
+import ch.protonmail.android.maillabel.domain.extension.isOutbox
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -721,7 +722,8 @@ class ConversationDetailViewModel @AssistedInject constructor(
                         primaryUserAddress,
                         viewState.decryptedBody,
                         attachmentListExpandCollapseMode,
-                        rsvpEventState
+                        rsvpEventState,
+                        openedFromLocation
                     )
                 }
 
@@ -770,14 +772,16 @@ class ConversationDetailViewModel @AssistedInject constructor(
         primaryUserAddress: String?,
         decryptedBody: DecryptedMessageBody,
         attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?,
-        rsvpEvent: InMemoryConversationStateRepository.RsvpEventState?
+        rsvpEvent: InMemoryConversationStateRepository.RsvpEventState?,
+        labelId: LabelId
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
         message,
         avatarImageState,
         primaryUserAddress,
         decryptedBody,
         attachmentListExpandCollapseMode,
-        rsvpEvent
+        rsvpEvent,
+        labelId.resolveLabelIdOrNull().orDefault()
     )
 
     @Suppress("LongMethod")
@@ -792,6 +796,11 @@ class ConversationDetailViewModel @AssistedInject constructor(
         val labelId = openedFromLocation
         val themeOptions = MessageThemeOptions(MessageTheme.Dark)
 
+        if (labelId.resolveLabelIdOrNull().orDefault().isOutbox()) {
+            return@flatMapLatest flowOf(
+                ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.HideBottomSheet)
+            )
+        }
         if (isSingleMessageModeEnabled) {
             val messageId = initialScrollToMessageId?.let { MessageId(it.id) }
             if (messageId == null) {
@@ -1750,14 +1759,15 @@ class ConversationDetailViewModel @AssistedInject constructor(
      * This is required as when the message is opened from the AllMail folder (not Almost All Mail)
      * the "Hidden messages" banner is not returned by Rust and the value should always be `true`.
      */
-    private suspend fun resolveInitialShowAll(): Boolean {
-        val label = resolveSystemLabelId(
-            userId = primaryUserId.first(),
-            labelId = openedFromLocation
-        ).getOrNull() ?: return false
+    private suspend fun resolveInitialShowAll(): Boolean =
+        openedFromLocation.resolveLabelIdOrNull() == SystemLabelId.AllMail
 
-        return label == SystemLabelId.AllMail
-    }
+    private suspend fun LabelId.resolveLabelIdOrNull() = resolveSystemLabelId(
+        userId = primaryUserId.first(),
+        labelId = openedFromLocation
+    ).getOrNull()
+
+    private fun SystemLabelId?.orDefault() = this?.labelId ?: SystemLabelId.AllMail.labelId
 
     /**
      * A helper function that allows to perform actions that eventually cause the user to leave the screen, while

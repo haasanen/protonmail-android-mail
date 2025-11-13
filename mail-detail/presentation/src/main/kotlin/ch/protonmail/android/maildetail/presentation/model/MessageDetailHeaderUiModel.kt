@@ -49,5 +49,6 @@ data class MessageDetailHeaderUiModel(
     val encryptionInfo: String,
     val messageIdUiModel: MessageIdUiModel,
     val themeOverride: MessageTheme?,
-    val shouldShowQuickReply: Boolean
+    val shouldShowQuickReply: Boolean,
+    val hasMoreActions: Boolean
 )

@@ -93,6 +93,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSn
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
@@ -798,39 +799,41 @@ private fun ConversationDetailScreenLegacy(
             )
         },
         bottomBar = {
-            BottomActionBar(
-                state = state.bottomBarState,
-                viewActionCallbacks = BottomActionBar.Actions(
-                    onMarkRead = actions.onReadClick,
-                    onMarkUnread = actions.onUnreadClick,
-                    onStar = actions.onStarClick,
-                    onUnstar = actions.onUnStarClick,
-                    onMove = actions.onMoveToClick,
-                    onLabel = actions.onLabelAsClick,
-                    onTrash = actions.onTrashClick,
-                    onDelete = actions.onDeleteClick,
-                    onArchive = actions.onArchiveClick,
-                    onSpam = actions.onSpamClick,
-                    onMoveToInbox = actions.onMoveToInboxClick,
-                    onViewInLightMode = { Timber.d("conversation onViewInLightMode clicked") },
-                    onViewInDarkMode = { Timber.d("conversation onViewInDarkMode clicked") },
-                    onPrint = { rawId -> actions.onPrint(MessageId(rawId)) },
-                    onViewHeaders = actions.showFeatureMissingSnackbar,
-                    onViewHtml = actions.showFeatureMissingSnackbar,
-                    onReportPhishing = { rawId -> actions.onReportPhishing(MessageId(rawId)) },
-                    onRemind = { Timber.d("conversation onRemind clicked") },
-                    onSavePdf = { Timber.d("conversation onSavePdf clicked") },
-                    onSenderEmail = { Timber.d("conversation onSenderEmail clicked") },
-                    onSaveAttachments = { Timber.d("conversation onSaveAttachments clicked") },
-                    onMore = actions.onMoreActionsClick,
-                    onCustomizeToolbar = { Timber.d("conversation onCustomizeToolbar clicked") },
-                    onSnooze = actions.onSnooze,
-                    onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged,
-                    onReply = { rawId -> actions.onReply(MessageId(rawId)) },
-                    onReplyAll = { rawId -> actions.onReplyAll(MessageId(rawId)) },
-                    onForward = { rawId -> actions.onForward(MessageId(rawId)) }
+            if (state.bottomBarState is BottomBarState.Data.Shown) {
+                BottomActionBar(
+                    state = state.bottomBarState,
+                    viewActionCallbacks = BottomActionBar.Actions(
+                        onMarkRead = actions.onReadClick,
+                        onMarkUnread = actions.onUnreadClick,
+                        onStar = actions.onStarClick,
+                        onUnstar = actions.onUnStarClick,
+                        onMove = actions.onMoveToClick,
+                        onLabel = actions.onLabelAsClick,
+                        onTrash = actions.onTrashClick,
+                        onDelete = actions.onDeleteClick,
+                        onArchive = actions.onArchiveClick,
+                        onSpam = actions.onSpamClick,
+                        onMoveToInbox = actions.onMoveToInboxClick,
+                        onViewInLightMode = { Timber.d("conversation onViewInLightMode clicked") },
+                        onViewInDarkMode = { Timber.d("conversation onViewInDarkMode clicked") },
+                        onPrint = { rawId -> actions.onPrint(MessageId(rawId)) },
+                        onViewHeaders = actions.showFeatureMissingSnackbar,
+                        onViewHtml = actions.showFeatureMissingSnackbar,
+                        onReportPhishing = { rawId -> actions.onReportPhishing(MessageId(rawId)) },
+                        onRemind = { Timber.d("conversation onRemind clicked") },
+                        onSavePdf = { Timber.d("conversation onSavePdf clicked") },
+                        onSenderEmail = { Timber.d("conversation onSenderEmail clicked") },
+                        onSaveAttachments = { Timber.d("conversation onSaveAttachments clicked") },
+                        onMore = actions.onMoreActionsClick,
+                        onCustomizeToolbar = { Timber.d("conversation onCustomizeToolbar clicked") },
+                        onSnooze = actions.onSnooze,
+                        onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged,
+                        onReply = { rawId -> actions.onReply(MessageId(rawId)) },
+                        onReplyAll = { rawId -> actions.onReplyAll(MessageId(rawId)) },
+                        onForward = { rawId -> actions.onForward(MessageId(rawId)) }
+                    )
                 )
-            )
+            }
         }
     ) { innerPadding ->
         when (state.messagesState) {

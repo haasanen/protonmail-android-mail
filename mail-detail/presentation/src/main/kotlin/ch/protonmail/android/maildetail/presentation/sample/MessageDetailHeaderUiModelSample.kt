@@ -64,6 +64,7 @@ object MessageDetailHeaderUiModelSample {
         encryptionInfo = "",
         messageIdUiModel = MessageIdUiModel("id"),
         themeOverride = null,
-        shouldShowQuickReply = true
+        shouldShowQuickReply = true,
+        hasMoreActions = true
     )
 }

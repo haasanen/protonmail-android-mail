@@ -28,6 +28,7 @@ import ch.protonmail.android.maildetail.presentation.mapper.rsvp.RsvpEventUiMode
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
@@ -93,7 +94,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         primaryUserAddress: String?,
         decryptedMessageBody: DecryptedMessageBody,
         attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?,
-        rsvpEventState: InMemoryConversationStateRepository.RsvpEventState?
+        rsvpEventState: InMemoryConversationStateRepository.RsvpEventState?,
+        labelId: LabelId
     ): ConversationDetailMessageUiModel.Expanded {
 
         return ConversationDetailMessageUiModel.Expanded(
@@ -103,7 +105,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 message,
                 primaryUserAddress,
                 avatarImageState,
-                decryptedMessageBody.transformations.messageThemeOptions?.themeOverride.toViewModePreference()
+                decryptedMessageBody.transformations.messageThemeOptions?.themeOverride.toViewModePreference(),
+                labelId
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageRsvpWidgetUiModel = toRsvpWidgetUiModel(rsvpEventState, decryptedMessageBody.hasCalendarInvite),
@@ -117,7 +120,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     fun toUiModel(
         messageUiModel: ConversationDetailMessageUiModel.Expanded,
         message: Message,
-        avatarImageState: AvatarImageState
+        avatarImageState: AvatarImageState,
+        labelId: LabelId
     ): ConversationDetailMessageUiModel.Expanded {
         return messageUiModel.copy(
             isUnread = message.isUnread,
@@ -125,7 +129,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 message,
                 null,
                 avatarImageState,
-                messageUiModel.messageBodyUiModel.viewModePreference
+                messageUiModel.messageBodyUiModel.viewModePreference,
+                labelId
             )
         )
     }
@@ -148,6 +153,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 is InMemoryConversationStateRepository.RsvpEventState.Shown -> RsvpWidgetUiModel.Shown(
                     rsvpEventUiModelMapper.toUiModel(rsvpEventState.rsvpEvent)
                 )
+
                 is InMemoryConversationStateRepository.RsvpEventState.Answering -> RsvpWidgetUiModel.Shown(
                     rsvpEventUiModelMapper.toUiModel(rsvpEventState.rsvpEvent, rsvpEventState.answer)
                 )

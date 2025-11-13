@@ -227,7 +227,12 @@ class MailboxViewModel @Inject constructor(
         observeCurrentMailLabel()
             .onEach { currentMailLabel ->
                 currentMailLabel?.let {
-                    emitNewStateFrom(MailboxEvent.SelectedLabelChanged(currentMailLabel))
+                    emitNewStateFrom(
+                        MailboxEvent.SelectedLabelChanged(
+                            currentMailLabel,
+                            currentMailLabel.resolveId()
+                        )
+                    )
                 }
             }
             .filterNotNull()
@@ -240,7 +245,12 @@ class MailboxViewModel @Inject constructor(
             }
             .onEach { (currentMailLabel, currentLabelCount, _) ->
                 itemIds.clear()
-                emitNewStateFrom(MailboxEvent.NewLabelSelected(currentMailLabel, currentLabelCount))
+                emitNewStateFrom(
+                    MailboxEvent.NewLabelSelected(
+                        currentMailLabel,
+                        currentMailLabel.resolveId(), currentLabelCount
+                    )
+                )
             }
             .flatMapLatest { (currentMailLabel, _, userId) ->
                 handleSwipeActionPreferences(userId, currentMailLabel)
@@ -323,14 +333,16 @@ class MailboxViewModel @Inject constructor(
     private fun handleSwipeActionPreferences(userId: UserId, currentMailLabel: MailLabel): Flow<MailboxEvent> {
         return observeSwipeActionsPreference(userId)
             .map { swipeActionsPreference ->
-                val currentMailLabelId = when (currentMailLabel) {
-                    is MailLabel.Custom -> currentMailLabel.id.labelId
-                    is MailLabel.System -> currentMailLabel.systemLabelId.labelId
-                }
-                val swipeActions = swipeActionsMapper(currentMailLabelId, swipeActionsPreference)
+                val swipeActions = swipeActionsMapper(currentMailLabel.resolveId(), swipeActionsPreference)
                 MailboxEvent.SwipeActionsChanged(swipeActions)
             }
             .distinctUntilChanged()
+    }
+
+    // should this be using the current method or ResolveSystemLabelId
+    private fun MailLabel.resolveId() = when (this) {
+        is MailLabel.Custom -> this.id.labelId
+        is MailLabel.System -> this.systemLabelId.labelId
     }
 
     @SuppressWarnings("ComplexMethod", "LongMethod")

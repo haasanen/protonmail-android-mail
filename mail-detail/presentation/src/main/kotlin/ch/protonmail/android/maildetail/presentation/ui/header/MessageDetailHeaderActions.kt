@@ -52,15 +52,17 @@ fun MessageDetailHeaderActions(
             }
         }
 
-        MoreActionButton(action = {
-            actions.onMore(
-                MessageId(uiModel.messageIdUiModel.id),
-                MessageThemeOptions(
-                    currentTheme = if (isSystemInDarkTheme) MessageTheme.Dark else MessageTheme.Light,
-                    themeOverride = uiModel.themeOverride
+        if (uiModel.hasMoreActions) {
+            MoreActionButton(action = {
+                actions.onMore(
+                    MessageId(uiModel.messageIdUiModel.id),
+                    MessageThemeOptions(
+                        currentTheme = if (isSystemInDarkTheme) MessageTheme.Dark else MessageTheme.Light,
+                        themeOverride = uiModel.themeOverride
+                    )
                 )
-            )
-        })
+            })
+        }
     }
 }
 

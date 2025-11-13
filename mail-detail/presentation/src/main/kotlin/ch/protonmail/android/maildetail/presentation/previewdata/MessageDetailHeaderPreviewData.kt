@@ -92,7 +92,8 @@ object MessageDetailHeaderPreviewData {
         encryptionInfo = "End-to-end encrypted and signed message",
         messageIdUiModel = MessageIdUiModel("string"),
         themeOverride = null,
-        shouldShowQuickReply = true
+        shouldShowQuickReply = true,
+        hasMoreActions = true
     )
 
     val WithLabels = WithoutLabels.copy(
