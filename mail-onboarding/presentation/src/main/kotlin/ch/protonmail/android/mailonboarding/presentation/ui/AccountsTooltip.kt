@@ -22,6 +22,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,11 +51,33 @@ import ch.protonmail.android.mailonboarding.presentation.R
 @Composable
 fun AccountsTooltip(modifier: Modifier = Modifier, anchorBounds: Rect?) {
 
+    TooltipBox(modifier, anchorBounds) {
+        Row(
+            modifier = Modifier
+                .clickable(enabled = false, onClick = {})
+                .fillMaxWidth()
+        ) {
+
+            SparkleIcon()
+
+            ToolTipText(Modifier.weight(2f, true))
+
+            CloseIcon()
+        }
+    }
+}
+
+@Composable
+private fun TooltipBox(
+    modifier: Modifier = Modifier,
+    anchorBounds: Rect?,
+    content: @Composable BoxScope.() -> Unit
+) {
     val offsetY = anchorBounds?.bottom ?: 0f
     val tooltipShape = TooltipShape(offset = 120)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(ProtonDimens.Spacing.Standard)
             .fillMaxWidth()
             .offset { IntOffset(0, offsetY.toInt()) }
@@ -73,72 +96,76 @@ fun AccountsTooltip(modifier: Modifier = Modifier, anchorBounds: Rect?) {
                 color = ProtonTheme.colors.backgroundNorm,
                 shape = tooltipShape
             )
+            .clickable(true, onClick = {}),
+        content = content
+    )
+}
+
+@Composable
+private fun SparkleIcon(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .padding(ProtonDimens.Spacing.Medium)
+            .background(
+                color = ProtonTheme.colors.interactionBrandWeakNorm,
+                shape = ProtonTheme.shapes.large
+            )
+    ) {
+        Icon(
+            modifier = modifier
+                .padding(ProtonDimens.Spacing.Standard)
+                .size(ProtonDimens.IconSize.Medium),
+            painter = painterResource(R.drawable.sparkles),
+            contentDescription = null,
+            tint = ProtonTheme.colors.iconAccent
+        )
+    }
+}
+
+@Composable
+private fun ToolTipText(modifier: Modifier = Modifier) {
+    Column(
+        modifier
+            .padding(vertical = ProtonDimens.Spacing.Medium)
+    ) {
+        Text(
+            text = stringResource(R.string.accounts_new_location_tooltip),
+            style = ProtonTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+
+        )
+
+        Spacer(Modifier.size(ProtonDimens.Spacing.Small))
+
+        Text(
+            text = stringResource(R.string.accounts_new_location_tooltip_description),
+            style = ProtonTheme.typography.bodyMediumWeak
+        )
+
+        Spacer(Modifier.size(ProtonDimens.Spacing.Medium))
+    }
+}
+
+@Composable
+private fun CloseIcon(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .padding(ProtonDimens.Spacing.Medium)
+            .background(
+                color = ProtonTheme.colors.shade40.copy(
+                    alpha = .6f
+                ),
+                shape = RoundedCornerShape(percent = 100)
+            )
             .clickable(true, onClick = {})
     ) {
-        Row(
+        Icon(
             modifier = Modifier
-                .clickable(enabled = false, onClick = {})
-                .fillMaxWidth()
-        ) {
-
-            Box(
-                modifier = Modifier
-                    .padding(ProtonDimens.Spacing.Medium)
-                    .background(
-                        color = ProtonTheme.colors.interactionBrandWeakNorm,
-                        shape = ProtonTheme.shapes.large
-                    )
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(ProtonDimens.Spacing.Standard)
-                        .size(ProtonDimens.IconSize.Medium),
-                    painter = painterResource(R.drawable.sparkles),
-                    contentDescription = null,
-                    tint = ProtonTheme.colors.iconAccent
-                )
-            }
-
-            Column(
-                Modifier
-                    .padding(vertical = ProtonDimens.Spacing.Medium)
-                    .weight(2f, true)
-            ) {
-                Text(
-                    text = stringResource(R.string.accounts_new_location_tooltip),
-                    style = ProtonTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-
-                )
-
-                Spacer(Modifier.size(ProtonDimens.Spacing.Small))
-
-                Text(
-                    text = stringResource(R.string.accounts_new_location_tooltip_description),
-                    style = ProtonTheme.typography.bodyMediumWeak
-                )
-
-                Spacer(Modifier.size(ProtonDimens.Spacing.Medium))
-            }
-
-            Box(
-                modifier = Modifier
-                    .padding(ProtonDimens.Spacing.Medium)
-                    .background(
-                        color = ProtonTheme.colors.shade40,
-                        shape = RoundedCornerShape(percent = 100)
-                    )
-                    .clickable(true, onClick = {})
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(ProtonDimens.Spacing.Tiny)
-                        .size(ProtonDimens.IconSize.Medium),
-                    painter = painterResource(R.drawable.ic_close),
-                    contentDescription = null,
-                    tint = ProtonTheme.colors.shade60
-                )
-            }
-        }
+                .padding(ProtonDimens.Spacing.Tiny)
+                .size(ProtonDimens.IconSize.Medium),
+            painter = painterResource(R.drawable.ic_proton_close_filled),
+            contentDescription = null,
+            tint = ProtonTheme.colors.shade60
+        )
     }
 }
 
