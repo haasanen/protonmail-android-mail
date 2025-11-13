@@ -2242,6 +2242,55 @@ class ConversationDetailViewModelTest {
         }
     }
 
+    @Test
+    fun `verify a label of outbox will emit bottombar hidden state`() = runTest {
+        // Given
+        val labelId = SystemLabelId.Outbox.labelId
+        val viewModel = createViewModel(labelId)
+        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
+
+        coEvery { resolveSystemLabelId(any(), LabelIdSample.Outbox) } returns SystemLabelId.Outbox.right()
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                message = any(),
+                avatarImageState = any(),
+                primaryUserAddress = primaryUserAddress,
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null,
+                rsvpEventState = null,
+                labelId = labelId
+            )
+        } returns messages.first()
+        val actions = listOf(Action.Archive)
+        val actionUiModels = listOf(ActionUiModelTestData.archive).toImmutableList()
+
+        val expected = initialState.copy(
+            bottomBarState = BottomBarState.Data.Hidden(
+                BottomBarTarget.Conversation, actionUiModels
+            )
+        )
+        coEvery {
+            observeDetailBottomBarActions(
+                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any(), any()
+            )
+        } returns flowOf(actions.right())
+        coEvery {
+            reducer.newStateFrom(
+                currentState = initialState,
+                operation = ofType<ConversationDetailEvent.ConversationBottomBarEvent>()
+            )
+        } returns expected
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+
+            // Then
+            assertEquals(expected.bottomBarState, awaitItem().bottomBarState)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     private fun setupLinkClickState(messageId: MessageIdUiModel, link: Uri) {
         coEvery {
             reducer.newStateFrom(

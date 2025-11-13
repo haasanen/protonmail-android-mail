@@ -35,6 +35,7 @@ object LabelIdSample {
     val LabelFriends = LabelId("LabelFriends")
     val Inbox = LabelId("0")
     val News = LabelId("news")
+    val Outbox = LabelId("9")
     val Starred = LabelId("10")
     val Trash = LabelId("3")
     val Spam = LabelId("4")

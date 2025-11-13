@@ -343,4 +343,33 @@ class MessageDetailHeaderUiModelMapperTest {
         // Then
         assertEquals(MessageTheme.Dark, result.themeOverride)
     }
+
+    @Test
+    fun `map label is outbox then has more actions is false`() = runTest {
+        // When
+        val result = messageDetailHeaderUiModelMapper.toUiModel(
+            message = message,
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = LabelIdSample.Outbox
+        )
+        // Then
+        assertFalse(result.hasMoreActions)
+    }
+
+    @Test
+    fun `map label is not outbox then has more actions is true`() = runTest {
+        // When
+        val result = messageDetailHeaderUiModelMapper.toUiModel(
+            message = message,
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.ThemeDefault,
+            labelId = labelId
+        )
+        // Then
+        assertTrue(result.hasMoreActions)
+    }
+
 }
