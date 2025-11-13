@@ -16,13 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.presentation.viewmodel
+package ch.protonmail.android.mailtooltip.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailonboarding.domain.usecase.MarkAccountTooltipAsSeen
-import ch.protonmail.android.mailonboarding.domain.usecase.ObserveAccountsTooltip
-import ch.protonmail.android.mailonboarding.presentation.model.AccountsTooltipState
+import ch.protonmail.android.mailtooltip.domain.usecase.MarkAccountTooltipAsSeen
+import ch.protonmail.android.mailtooltip.domain.usecase.ObserveAccountsTooltip
+import ch.protonmail.android.mailtooltip.presentation.model.AccountsTooltipState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

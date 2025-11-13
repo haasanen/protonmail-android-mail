@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.presentation.ui
+package ch.protonmail.android.mailtooltip.presentation.ui
 
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -67,7 +67,7 @@ class TooltipShape(val offset: Int) : Shape {
         )
         lineTo(size.width, size.height - arrowHeight - radius)
         arcTo(
-            rect = androidx.compose.ui.geometry.Rect(
+            rect = Rect(
                 left = size.width - 2 * radius,
                 top = size.height - arrowHeight - 2 * radius,
                 right = size.width,
@@ -79,7 +79,7 @@ class TooltipShape(val offset: Int) : Shape {
         )
         lineTo(radius, size.height - arrowHeight)
         arcTo(
-            rect = androidx.compose.ui.geometry.Rect(
+            rect = Rect(
                 left = 0f,
                 top = size.height - arrowHeight - 2 * radius,
                 right = 2 * radius,
@@ -91,7 +91,7 @@ class TooltipShape(val offset: Int) : Shape {
         )
         lineTo(0f, radius)
         arcTo(
-            rect = androidx.compose.ui.geometry.Rect(
+            rect = Rect(
                 left = 0f,
                 top = 0f,
                 right = 2 * radius,

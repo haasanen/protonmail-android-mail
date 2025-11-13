@@ -16,17 +16,25 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.domain.usecase
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    id("app-config-plugin")
+}
 
-import ch.protonmail.android.mailonboarding.domain.model.AccountsTooltipPreference
-import ch.protonmail.android.mailonboarding.domain.repository.AccountsTooltipRepository
-import javax.inject.Inject
+android {
+    namespace = "ch.protonmail.android.mailtooltip"
+    compileSdk = AppConfiguration.compileSdk.get()
 
-class MarkAccountTooltipAsSeen @Inject constructor(
-    private val accountsTooltipRepository: AccountsTooltipRepository
-) {
+    defaultConfig {
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
+    }
+}
 
-    suspend operator fun invoke() = accountsTooltipRepository.save(
-        AccountsTooltipPreference(display = false)
-    )
+dependencies {
+    api(project(":mail-tooltip:dagger"))
+    api(project(":mail-tooltip:data"))
+    api(project(":mail-tooltip:domain"))
+    api(project(":mail-tooltip:presentation"))
 }

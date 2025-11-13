@@ -16,14 +16,25 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.domain.usecase
+package ch.protonmail.android.mailtooltip.data
 
-import ch.protonmail.android.mailonboarding.domain.repository.AccountsTooltipRepository
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import javax.inject.Inject
 
-class ObserveAccountsTooltip @Inject constructor(
-    private val accountsTooltipRepository: AccountsTooltipRepository
+class AccountsTooltipDataStoreProvider @Inject constructor(
+    context: Context
 ) {
 
-    operator fun invoke() = accountsTooltipRepository.observe()
+    private val Context.accountsHighlightDataStore: DataStore<Preferences> by preferencesDataStore(
+        name = "accountsHighlightPrefDataStore"
+    )
+    val accountsHighlightDataStore = context.accountsHighlightDataStore
+
+    internal companion object {
+
+        const val SHOW_ACCOUNTS_TOOLTIP_KEY = "ShouldDisplayV7AccountsTooltipPrefKey"
+    }
 }

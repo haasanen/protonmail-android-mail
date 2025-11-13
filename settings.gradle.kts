@@ -137,6 +137,11 @@ include(":mail-session:data")
 include(":mail-session:domain")
 include(":mail-session:presentation")
 
+include(":mail-tooltip:dagger")
+include(":mail-tooltip:data")
+include(":mail-tooltip:domain")
+include(":mail-tooltip:presentation")
+
 include(":mail-upselling:dagger")
 include(":mail-upselling:data")
 include(":mail-upselling:domain")

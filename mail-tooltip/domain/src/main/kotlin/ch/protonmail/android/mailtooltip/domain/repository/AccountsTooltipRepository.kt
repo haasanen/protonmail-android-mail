@@ -16,10 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.presentation.model
+package ch.protonmail.android.mailtooltip.domain.repository
 
-sealed interface AccountsTooltipState {
-    data object Show : AccountsTooltipState
-    data object Hide : AccountsTooltipState
-    data object Loading : AccountsTooltipState
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.PreferencesError
+import ch.protonmail.android.mailtooltip.domain.model.AccountsTooltipPreference
+import kotlinx.coroutines.flow.Flow
+
+interface AccountsTooltipRepository {
+
+    fun observe(): Flow<Either<PreferencesError, AccountsTooltipPreference>>
+
+    suspend fun save(preference: AccountsTooltipPreference): Either<PreferencesError, Unit>
 }

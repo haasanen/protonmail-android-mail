@@ -22,20 +22,18 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    id("kotlin-parcelize")
-    id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
 
 android {
-    namespace = "ch.protonmail.android.mailmailbox.presentation"
+    namespace = "ch.protonmail.android.mailtooltip.presentation"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
         minSdk = AppConfiguration.minSdk.get()
-        lint.targetSdk = AppConfiguration.targetSdk.get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
 
     compileOptions {
@@ -54,63 +52,28 @@ android {
     }
 
     packaging {
-        resources.excludes.add("MANIFEST.MF")
-        resources.excludes.add("META-INF/LICENSE*")
         resources.excludes.add("META-INF/licenses/**")
+        resources.excludes.add("META-INF/LICENSE*")
         resources.excludes.add("META-INF/AL2.0")
         resources.excludes.add("META-INF/LGPL2.1")
     }
 }
 
-kapt {
-    correctErrorTypes = true
-}
-
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
-
-    implementation(libs.bundles.module.presentation)
-    implementation(libs.bundles.compose)
-    implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.paging.compose)
-    implementation(libs.proton.core.mailSettings.domain)
-    implementation(libs.proton.core.user.domain)
-
-    implementation(project(":mail-attachments:domain"))
-    implementation(project(":mail-attachments:presentation"))
-    implementation(project(":mail-common:domain"))
-    implementation(project(":mail-common:presentation"))
-    implementation(project(":mail-conversation:domain"))
-    implementation(project(":mail-label:domain"))
-    implementation(project(":mail-label:presentation"))
-    implementation(project(":mail-mailbox:domain"))
-    implementation(project(":mail-message:domain"))
-    implementation(project(":mail-message:presentation"))
-    implementation(project(":mail-tooltip:presentation"))
-    implementation(project(":mail-pagination:domain"))
-    implementation(project(":mail-pagination:presentation"))
-    implementation(project(":mail-session:domain"))
-    implementation(project(":mail-settings:domain"))
-    implementation(project(":mail-settings:presentation"))
-    implementation(project(":mail-upselling:domain"))
-    implementation(project(":mail-upselling:presentation"))
-    implementation(project(":mail-snooze:presentation"))
-    implementation(project(":mail-snooze:domain"))
-    implementation(project(":uicomponents"))
-    implementation(project(":design-system"))
-    implementation(project(":presentation-compose"))
-    implementation(project(":shared:core:account-manager:domain"))
-    implementation(project(":shared:core:account-manager:presentation"))
-
-    implementation(libs.lottie.compose)
-
     debugImplementation(libs.bundles.compose.debug)
 
+    implementation(libs.bundles.module.presentation)
+    implementation(libs.proton.core.user.domain)
+
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-common:presentation"))
+    implementation(project(":mail-tooltip:domain"))
+    implementation(project(":uicomponents"))
+
     testImplementation(libs.bundles.test)
-    testImplementation(libs.androidx.paging.testing)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
-
-    androidTestImplementation(libs.bundles.test.androidTest)
-    androidTestImplementation(project(":test:annotations"))
+    implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
 }

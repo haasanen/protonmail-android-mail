@@ -16,8 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.domain.model
+package ch.protonmail.android.mailtooltip.presentation.model
 
-data class AccountsTooltipPreference(
-    val display: Boolean
-)
+sealed interface AccountsTooltipState {
+    data object Show : AccountsTooltipState
+    data object Hide : AccountsTooltipState
+    data object Loading : AccountsTooltipState
+}

@@ -167,11 +167,11 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
-import ch.protonmail.android.mailonboarding.presentation.model.AccountsTooltipState
-import ch.protonmail.android.mailonboarding.presentation.ui.AccountsTooltip
-import ch.protonmail.android.mailonboarding.presentation.viewmodel.AccountsTooltipViewModel
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
+import ch.protonmail.android.mailtooltip.presentation.model.AccountsTooltipState
+import ch.protonmail.android.mailtooltip.presentation.ui.AccountsTooltip
+import ch.protonmail.android.mailtooltip.presentation.viewmodel.AccountsTooltipViewModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.fab.LazyFab

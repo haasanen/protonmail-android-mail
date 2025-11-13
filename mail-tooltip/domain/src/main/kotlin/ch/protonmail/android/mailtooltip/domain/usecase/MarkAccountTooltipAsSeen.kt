@@ -16,16 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.data.local
+package ch.protonmail.android.mailtooltip.domain.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.PreferencesError
-import ch.protonmail.android.mailonboarding.domain.model.AccountsTooltipPreference
-import kotlinx.coroutines.flow.Flow
+import ch.protonmail.android.mailtooltip.domain.model.AccountsTooltipPreference
+import ch.protonmail.android.mailtooltip.domain.repository.AccountsTooltipRepository
+import javax.inject.Inject
 
-interface AccountsTooltipLocalDataSource {
+class MarkAccountTooltipAsSeen @Inject constructor(
+    private val accountsTooltipRepository: AccountsTooltipRepository
+) {
 
-    fun observe(): Flow<Either<PreferencesError, AccountsTooltipPreference>>
-
-    suspend fun save(preference: AccountsTooltipPreference): Either<PreferencesError, Unit>
+    suspend operator fun invoke() = accountsTooltipRepository.save(
+        AccountsTooltipPreference(display = false)
+    )
 }

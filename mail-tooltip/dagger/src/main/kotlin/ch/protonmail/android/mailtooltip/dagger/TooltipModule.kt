@@ -16,14 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.dagger
+package ch.protonmail.android.mailtooltip.dagger
 
 import android.content.Context
-import ch.protonmail.android.mailonboarding.data.OnboardingDataStoreProvider
-import ch.protonmail.android.mailonboarding.data.local.OnboardingLocalDataSource
-import ch.protonmail.android.mailonboarding.data.local.OnboardingLocalDataSourceImpl
-import ch.protonmail.android.mailonboarding.data.repository.OnboardingRepositoryImpl
-import ch.protonmail.android.mailonboarding.domain.repository.OnboardingRepository
+import ch.protonmail.android.mailtooltip.data.AccountsTooltipDataStoreProvider
+import ch.protonmail.android.mailtooltip.data.local.AccountsTooltipLocalDataSource
+import ch.protonmail.android.mailtooltip.data.local.AccountsTooltipLocalDataSourceImpl
+import ch.protonmail.android.mailtooltip.data.repository.AccountsTooltipRepositoryImpl
+import ch.protonmail.android.mailtooltip.domain.repository.AccountsTooltipRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -33,14 +33,15 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module(includes = [OnboardingModule.BindsModule::class])
+@Module(includes = [TooltipModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
-object OnboardingModule {
+object TooltipModule {
 
     @Provides
     @Singleton
-    fun provideDataStoreProvider(@ApplicationContext context: Context): OnboardingDataStoreProvider =
-        OnboardingDataStoreProvider(context)
+    fun provideAccountHighlightDataStoreProvider(
+        @ApplicationContext context: Context
+    ): AccountsTooltipDataStoreProvider = AccountsTooltipDataStoreProvider(context)
 
     @Module
     @InstallIn(SingletonComponent::class)
@@ -48,10 +49,12 @@ object OnboardingModule {
 
         @Binds
         @Reusable
-        fun bindsOnboardingLocalDataSource(impl: OnboardingLocalDataSourceImpl): OnboardingLocalDataSource
+        fun bindsAccountsHighlightLocalDataSource(
+            impl: AccountsTooltipLocalDataSourceImpl
+        ): AccountsTooltipLocalDataSource
 
         @Binds
         @Reusable
-        fun bindsOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
+        fun bindsAccountsHighlightRepository(impl: AccountsTooltipRepositoryImpl): AccountsTooltipRepository
     }
 }

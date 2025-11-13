@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.presentation.ui
+package ch.protonmail.android.mailtooltip.presentation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -57,7 +57,7 @@ import androidx.compose.ui.window.PopupProperties
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.mailonboarding.presentation.R
+import ch.protonmail.android.mailtooltip.presentation.R
 import kotlin.math.max
 
 @Composable

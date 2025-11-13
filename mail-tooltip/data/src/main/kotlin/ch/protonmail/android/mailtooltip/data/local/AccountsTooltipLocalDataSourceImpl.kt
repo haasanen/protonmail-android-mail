@@ -16,15 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailonboarding.data.local
+package ch.protonmail.android.mailtooltip.data.local
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.data.mapper.safeData
 import ch.protonmail.android.mailcommon.data.mapper.safeEdit
 import ch.protonmail.android.mailcommon.domain.model.PreferencesError
-import ch.protonmail.android.mailonboarding.data.AccountsTooltipDataStoreProvider
-import ch.protonmail.android.mailonboarding.domain.model.AccountsTooltipPreference
+import ch.protonmail.android.mailtooltip.data.AccountsTooltipDataStoreProvider
+import ch.protonmail.android.mailtooltip.domain.model.AccountsTooltipPreference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
