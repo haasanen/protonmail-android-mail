@@ -32,6 +32,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -41,6 +43,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,6 +58,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailonboarding.presentation.R
+import kotlin.math.max
 
 @Composable
 fun AccountsTooltip(
@@ -60,21 +66,23 @@ fun AccountsTooltip(
     anchorBounds: Rect?,
     onDismiss: () -> Unit
 ) {
+    val insets = getSystemBarsInsets()
+    val screenWidthPx = LocalWindowInfo.current.containerSize.width
 
-    val offsetY = anchorBounds?.bottom ?: 0f
+    val offsetY = anchorBounds?.bottom?.toInt() ?: 0
+    val offsetX = insets.start
+
+    // Use the valid inset twice as one of the two is 0 when in landscape
+    val maxPopupWidthPx = screenWidthPx - max(insets.start, insets.end) * 2
 
     Popup(
         alignment = Alignment.TopStart,
-        offset = IntOffset(x = 0, y = offsetY.toInt()),
+        offset = IntOffset(x = offsetX, y = offsetY),
         onDismissRequest = onDismiss,
         properties = PopupProperties(focusable = false)
     ) {
-        TooltipBox(modifier) {
-            Row(
-                modifier = Modifier
-                    .clickable(enabled = false, onClick = {})
-                    .fillMaxWidth()
-            ) {
+        TooltipBox(modifier, maxPopupWidthPx) {
+            Row(modifier = Modifier.fillMaxWidth()) {
 
                 SparkleIcon()
 
@@ -87,12 +95,19 @@ fun AccountsTooltip(
 }
 
 @Composable
-private fun TooltipBox(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
+private fun TooltipBox(
+    modifier: Modifier = Modifier,
+    maxWidthPx: Int,
+    content: @Composable BoxScope.() -> Unit
+) {
+    val density = LocalDensity.current
     val tooltipShape = TooltipShape(offset = 120)
+
     Box(
         modifier = modifier
+            .widthIn(max = with(density) { maxWidthPx.toDp() })
             .padding(ProtonDimens.Spacing.Standard)
-            .fillMaxWidth()
+            .padding(WindowInsets.navigationBars.asPaddingValues())
             .clip(tooltipShape)
             .border(
                 width = 1.dp,
@@ -118,7 +133,7 @@ private fun TooltipBox(modifier: Modifier = Modifier, content: @Composable BoxSc
 private fun SparkleIcon(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .padding(ProtonDimens.Spacing.Medium)
+            .padding(ProtonDimens.Spacing.Large)
             .background(
                 color = ProtonTheme.colors.interactionBrandWeakNorm,
                 shape = ProtonTheme.shapes.large
@@ -181,6 +196,29 @@ private fun CloseIcon(modifier: Modifier = Modifier, onClose: () -> Unit) {
         )
     }
 }
+
+@Composable
+private fun getSystemBarsInsets(): InsetsPx {
+    val insets = WindowInsets.systemBars
+    val density = LocalDensity.current
+    val layoutDir = LocalLayoutDirection.current
+
+    return with(density) {
+        InsetsPx(
+            top = insets.getTop(density),
+            bottom = insets.getBottom(density),
+            start = insets.getLeft(density, layoutDir),
+            end = insets.getRight(density, layoutDir)
+        )
+    }
+}
+
+private data class InsetsPx(
+    val top: Int,
+    val bottom: Int,
+    val start: Int,
+    val end: Int
+)
 
 @Preview
 @Composable
