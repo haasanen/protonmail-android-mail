@@ -22,7 +22,6 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
 import ch.protonmail.android.mailcommon.data.file.isExternal
@@ -115,22 +114,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Navigate to Drafts only when:
-     * - we are outside of Mailbox
-     * - we are in Mailbox but not in Drafts
-     */
-    fun shouldNavigateToDraftsOnSendingFailure(currentNavDestination: NavDestination?): Boolean =
-        currentNavDestination?.route != Destination.Screen.Mailbox.route
-
-    fun navigateToDrafts(navController: NavController) {
-        if (navController.currentDestination?.route != Destination.Screen.Mailbox.route) {
-            navController.popBackStack(Destination.Screen.Mailbox.route, inclusive = false)
-        }
-        Timber.e("Not navigating to drafts, missing implementation")
-        // Removed with dynamic system labels feature. Need to observe mail labels to know what's draft location ID
-        // in order to navigate
-//        selectedMailLabelId.set()
+    fun navigateToDraft(messageId: MessageId) {
+        navigateToDraftInComposer(messageId)
     }
 
     fun discardDraft(messageId: MessageId) {

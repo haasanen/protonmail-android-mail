@@ -329,16 +329,15 @@ fun Home(
 
     val context = LocalContext.current
     val errorSendingMessageActionText = stringResource(id = R.string.mailbox_message_sending_error_action)
-    fun showErrorSendingMessageSnackbar(reason: SendErrorReason) = scope.launch {
-        val shouldShowAction = viewModel.shouldNavigateToDraftsOnSendingFailure(navController.currentDestination)
+    fun showErrorSendingMessageSnackbar(messageId: MessageId, reason: SendErrorReason) = scope.launch {
         val result = snackbarHost.showSnackbar(
             type = ProtonSnackbarType.ERROR,
             message = SendErrorReasonMapper.toSendErrorMessage(context, reason),
-            actionLabel = if (shouldShowAction) errorSendingMessageActionText else null,
-            duration = if (shouldShowAction) SnackbarDuration.Long else SnackbarDuration.Short
+            actionLabel = errorSendingMessageActionText,
+            duration = SnackbarDuration.Long
         )
         when (result) {
-            SnackbarResult.ActionPerformed -> viewModel.navigateToDrafts(navController)
+            SnackbarResult.ActionPerformed -> viewModel.navigateToDraft(messageId)
             SnackbarResult.Dismissed -> Unit
         }
     }
@@ -357,7 +356,8 @@ fun Home(
                 viewModel.confirmMessageAsSeen(sendingStatus.messageId)
             }
 
-            is MessageSendingStatus.SendMessageError -> showErrorSendingMessageSnackbar(sendingStatus.reason)
+            is MessageSendingStatus.SendMessageError ->
+                showErrorSendingMessageSnackbar(sendingStatus.messageId, sendingStatus.reason)
             is MessageSendingStatus.NoStatus -> {}
             is MessageSendingStatus.MessageSentUndoable -> {
                 showMessageSentWithUndoSnackbar(sendingStatus.messageId)
