@@ -998,12 +998,6 @@ private fun MailboxItemsList(
                                 listDataState.selectedMailboxItems.any { it.id == item.id }
 
                             else -> false
-                        },
-                        isSelectable = when (listDataState) {
-                            is MailboxListState.Data.ViewMode ->
-                                listDataState.selectionModeEnabled
-
-                            else -> true
                         }
                     )
                 }

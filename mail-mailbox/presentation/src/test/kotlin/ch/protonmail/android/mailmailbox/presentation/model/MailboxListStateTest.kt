@@ -53,8 +53,7 @@ class MailboxListStateTest {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.SearchLoading,
             shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty,
-            selectionModeEnabled = true
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         )
         Assert.assertFalse(state.hasClearableOperations())
     }
@@ -73,8 +72,7 @@ class MailboxListStateTest {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
             shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty,
-            selectionModeEnabled = true
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         )
         Assert.assertTrue(state.hasClearableOperations())
     }

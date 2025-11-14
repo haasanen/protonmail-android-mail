@@ -102,6 +102,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.extension.isOutbox
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -711,7 +712,6 @@ class ConversationDetailViewModel @AssistedInject constructor(
             val rsvpEventState = currentViewState.rsvpEvents[message.messageId]
             when (val viewState = currentViewState.messagesState[message.messageId]) {
                 is InMemoryConversationStateRepository.MessageState.Expanding -> {
-                    Timber.d("SEREN build expanding message $message")
                     buildExpandingMessage(
                         buildCollapsedMessage(message, avatarImageState, primaryUserAddress)
                     )
@@ -719,20 +719,17 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
 
                 is InMemoryConversationStateRepository.MessageState.Expanded -> {
-                    Timber.d("SEREN build expanded message $message")
                     buildExpandedMessage(
                         message,
                         avatarImageState,
                         primaryUserAddress,
                         viewState.decryptedBody,
                         attachmentListExpandCollapseMode,
-                        rsvpEventState,
-                        openedFromLocation
+                        rsvpEventState
                     )
                 }
 
                 else -> {
-                    Timber.d("SEREN build collapsed message $message")
                     buildCollapsedMessage(message, avatarImageState, primaryUserAddress)
                 }
             }
@@ -777,8 +774,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
         primaryUserAddress: String?,
         decryptedBody: DecryptedMessageBody,
         attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?,
-        rsvpEvent: InMemoryConversationStateRepository.RsvpEventState?,
-        labelId: LabelId
+        rsvpEvent: InMemoryConversationStateRepository.RsvpEventState?
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
         message,
         avatarImageState,
@@ -786,8 +782,16 @@ class ConversationDetailViewModel @AssistedInject constructor(
         decryptedBody,
         attachmentListExpandCollapseMode,
         rsvpEvent,
-        labelId.resolveLabelIdOrNull().orDefault()
+        message.exclusiveLocation.toLabel()
     )
+
+    private suspend fun ExclusiveLocation.toLabel(): LabelId {
+        val resolved = (this as? ExclusiveLocation.System)?.labelId?.let {
+            resolveSystemLabelId(primaryUserId.first(), it).getOrNull()
+        }
+        return resolved.orDefault()
+    }
+
 
     @Suppress("LongMethod")
     private fun observeBottomBarActions(conversationId: ConversationId) = combine(

@@ -89,8 +89,7 @@ object MailboxStateSampleData {
             ),
             searchState = MailboxSearchStateSampleData.NotSearching,
             shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty,
-            selectionModeEnabled = true
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
             currentLabelName = inboxDynamicLabel.text(),
@@ -127,8 +126,7 @@ object MailboxStateSampleData {
             ),
             searchState = MailboxSearchStateSampleData.NotSearching,
             shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty,
-            selectionModeEnabled = true
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
             currentLabelName = allMailDynamicLabel.text(),

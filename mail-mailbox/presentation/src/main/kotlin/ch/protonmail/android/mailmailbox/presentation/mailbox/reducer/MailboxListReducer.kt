@@ -20,8 +20,6 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maillabel.domain.extension.isOutbox
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
@@ -258,8 +256,7 @@ class MailboxListReducer @Inject constructor(
                 avatarImagesUiModel = AvatarImagesUiModel.Empty,
                 attachmentOpeningStarted = Effect.empty(),
                 displayAttachment = Effect.empty(),
-                displayAttachmentError = Effect.empty(),
-                selectionModeEnabled = operation.resolvedLabelId.selectionModeEnabled()
+                displayAttachmentError = Effect.empty()
             )
 
             is MailboxListState.Data.SelectionMode -> currentState.copy(
@@ -267,8 +264,7 @@ class MailboxListReducer @Inject constructor(
             )
 
             is MailboxListState.Data.ViewMode -> currentState.copy(
-                currentMailLabel = currentMailLabel,
-                selectionModeEnabled = operation.resolvedLabelId.selectionModeEnabled()
+                currentMailLabel = currentMailLabel
             )
         }
     }
@@ -292,14 +288,12 @@ class MailboxListReducer @Inject constructor(
                 avatarImagesUiModel = AvatarImagesUiModel.Empty,
                 attachmentOpeningStarted = Effect.empty(),
                 displayAttachment = Effect.empty(),
-                displayAttachmentError = Effect.empty(),
-                selectionModeEnabled = operation.resolvedLabelId.selectionModeEnabled()
+                displayAttachmentError = Effect.empty()
             )
 
             is MailboxListState.Data.ViewMode -> currentState.copy(
                 currentMailLabel = currentMailLabel,
-                scrollToMailboxTop = Effect.of(currentMailLabel.id),
-                selectionModeEnabled = operation.resolvedLabelId.selectionModeEnabled()
+                scrollToMailboxTop = Effect.of(currentMailLabel.id)
             )
 
             is MailboxListState.Data.SelectionMode -> currentState.copy(
@@ -307,8 +301,6 @@ class MailboxListReducer @Inject constructor(
             )
         }
     }
-
-    private fun LabelId.selectionModeEnabled() = this.isOutbox().not()
 
     private fun reduceSwipeActionsChanged(
         operation: MailboxEvent.SwipeActionsChanged,
@@ -408,8 +400,7 @@ class MailboxListReducer @Inject constructor(
             avatarImagesUiModel = currentState.avatarImagesUiModel,
             attachmentOpeningStarted = Effect.empty(),
             displayAttachment = Effect.empty(),
-            displayAttachmentError = Effect.empty(),
-            selectionModeEnabled = true
+            displayAttachmentError = Effect.empty()
         )
 
         else -> currentState

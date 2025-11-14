@@ -58,6 +58,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.TerminateConversationPaginator
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
+import ch.protonmail.android.maillabel.domain.extension.isOutbox
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -229,8 +230,7 @@ class MailboxViewModel @Inject constructor(
                 currentMailLabel?.let {
                     emitNewStateFrom(
                         MailboxEvent.SelectedLabelChanged(
-                            currentMailLabel,
-                            currentMailLabel.resolveId()
+                            currentMailLabel
                         )
                     )
                 }
@@ -247,8 +247,7 @@ class MailboxViewModel @Inject constructor(
                 itemIds.clear()
                 emitNewStateFrom(
                     MailboxEvent.NewLabelSelected(
-                        currentMailLabel,
-                        currentMailLabel.resolveId(), currentLabelCount
+                        currentMailLabel, currentLabelCount
                     )
                 )
             }
@@ -339,7 +338,6 @@ class MailboxViewModel @Inject constructor(
             .distinctUntilChanged()
     }
 
-    // should this be using the current method or ResolveSystemLabelId
     private fun MailLabel.resolveId() = when (this) {
         is MailLabel.Custom -> this.id.labelId
         is MailLabel.System -> this.systemLabelId.labelId
@@ -582,11 +580,19 @@ class MailboxViewModel @Inject constructor(
     }
 
     private fun enterSelectionMode(item: MailboxItemUiModel) {
-        when (val state = state.value.mailboxListState) {
-            is MailboxListState.Data.ViewMode -> emitNewStateFrom(MailboxEvent.EnterSelectionMode(item))
-            else -> Timber.d("Cannot enter selection mode from state: $state")
+        val state = state.value.mailboxListState
+        if (state is MailboxListState.Data.ViewMode && state.currentMailLabel.resolveId()
+                .selectionModeEnabledForLabel()
+        ) {
+            emitNewStateFrom(
+                MailboxEvent.EnterSelectionMode(item)
+            )
+        } else {
+            Timber.d("Cannot enter selection mode from state: $state")
         }
     }
+
+    private fun LabelId.selectionModeEnabledForLabel() = this.isOutbox().not()
 
     /**
      * Creates a [MailboxPagerFactory] and observes the emitted paging data. The Pager is re-created, when:
@@ -1313,8 +1319,8 @@ class MailboxViewModel @Inject constructor(
     }
 
     // A user can be logged in but not have a valid user session, in this case the app can't function.  User sessions
-    // are cached, but in rare cases such as migration RUST will not have even cached the session and therefore network
-    // connection is obligatory and we MUST load the session before the app can recover
+// are cached, but in rare cases such as migration RUST will not have even cached the session and therefore network
+// connection is obligatory and we MUST load the session before the app can recover
     private suspend fun handleValidateUserSession() {
         if (state.value.mailboxListState is MailboxListState.Loading && !getUserHasValidSession()) {
             emitNewStateFrom(MailboxEvent.CouldNotLoadUserSession)

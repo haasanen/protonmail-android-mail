@@ -52,8 +52,7 @@ sealed interface MailboxListState {
             val refreshErrorEffect: Effect<Unit>,
             val displayAttachment: Effect<OpenAttachmentIntentValues> = Effect.empty(),
             val displayAttachmentError: Effect<TextUiModel> = Effect.empty(),
-            val attachmentOpeningStarted: Effect<TextUiModel> = Effect.empty(),
-            val selectionModeEnabled: Boolean
+            val attachmentOpeningStarted: Effect<TextUiModel> = Effect.empty()
         ) : Data {
 
             fun isInInboxLabel() = (currentMailLabel as? MailLabel.System)?.systemLabelId == SystemLabelId.Inbox

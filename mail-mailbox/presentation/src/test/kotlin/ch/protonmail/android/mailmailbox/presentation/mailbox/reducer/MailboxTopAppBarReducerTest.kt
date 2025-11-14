@@ -79,16 +79,12 @@ internal class MailboxTopAppBarReducerTest(
             ),
             TestInput(
                 currentState = MailboxTopAppBarState.Loading,
-                operation = MailboxEvent.NewLabelSelected(
-                    inboxLabel,
-                    inboxLabel.systemLabelId.labelId,
-                    selectedLabelCount = 42
-                ),
+                operation = MailboxEvent.NewLabelSelected(inboxLabel, selectedLabelCount = 42),
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), null)
             ),
             TestInput(
                 currentState = MailboxTopAppBarState.Loading,
-                operation = MailboxEvent.SelectedLabelChanged(inboxLabel, inboxLabel.systemLabelId.labelId),
+                operation = MailboxEvent.SelectedLabelChanged(inboxLabel),
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), null)
             ),
             TestInput(
@@ -120,16 +116,12 @@ internal class MailboxTopAppBarReducerTest(
             ),
             TestInput(
                 currentState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem),
-                operation = MailboxEvent.NewLabelSelected(
-                    trashLabel,
-                    trashLabel.systemLabelId.labelId,
-                    selectedLabelCount = 42
-                ),
+                operation = MailboxEvent.NewLabelSelected(trashLabel, selectedLabelCount = 42),
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(trashLabel.text(), avatarItem)
             ),
             TestInput(
                 currentState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem),
-                operation = MailboxEvent.SelectedLabelChanged(trashLabel, trashLabel.systemLabelId.labelId),
+                operation = MailboxEvent.SelectedLabelChanged(trashLabel),
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(trashLabel.text(), avatarItem)
             ),
             TestInput(
@@ -203,11 +195,7 @@ internal class MailboxTopAppBarReducerTest(
                     avatarItem,
                     selectedCount = 42
                 ),
-                operation = MailboxEvent.NewLabelSelected(
-                    trashLabel,
-                    trashLabel.systemLabelId.labelId,
-                    selectedLabelCount = 42
-                ),
+                operation = MailboxEvent.NewLabelSelected(trashLabel, selectedLabelCount = 42),
                 expectedState = SelectionMode(
                     trashLabel.text(),
                     avatarItem,
@@ -220,7 +208,7 @@ internal class MailboxTopAppBarReducerTest(
                     avatarItem,
                     selectedCount = 42
                 ),
-                operation = MailboxEvent.SelectedLabelChanged(trashLabel, trashLabel.systemLabelId.labelId),
+                operation = MailboxEvent.SelectedLabelChanged(trashLabel),
                 expectedState = SelectionMode(
                     trashLabel.text(),
                     avatarItem,
@@ -379,11 +367,7 @@ internal class MailboxTopAppBarReducerTest(
                     avatarItem,
                     searchQuery = EMPTY_STRING
                 ),
-                operation = MailboxEvent.NewLabelSelected(
-                    trashLabel,
-                    trashLabel.systemLabelId.labelId,
-                    selectedLabelCount = 42
-                ),
+                operation = MailboxEvent.NewLabelSelected(trashLabel, selectedLabelCount = 42),
                 expectedState = MailboxTopAppBarState.Data.SearchMode(
                     trashLabel.text(),
                     avatarItem,
@@ -396,7 +380,7 @@ internal class MailboxTopAppBarReducerTest(
                     avatarItem,
                     searchQuery = EMPTY_STRING
                 ),
-                operation = MailboxEvent.SelectedLabelChanged(trashLabel, trashLabel.systemLabelId.labelId),
+                operation = MailboxEvent.SelectedLabelChanged(trashLabel),
                 expectedState = MailboxTopAppBarState.Data.SearchMode(
                     trashLabel.text(),
                     avatarItem,
