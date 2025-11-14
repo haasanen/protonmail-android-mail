@@ -53,5 +53,4 @@ dependencies {
     implementation(libs.bundles.module.data)
 
     testImplementation(libs.bundles.test)
-    testImplementation(project(":test:utils"))
 }
