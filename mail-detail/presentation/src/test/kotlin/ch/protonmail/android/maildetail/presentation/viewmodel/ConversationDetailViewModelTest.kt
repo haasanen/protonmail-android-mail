@@ -306,7 +306,6 @@ class ConversationDetailViewModelTest {
         )
     }
 
-    private val labelId = LabelIdSample.Inbox
     private val updateLinkConfirmationSetting = mockk<UpdateLinkConfirmationSetting>()
 
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
@@ -552,7 +551,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns InvoiceWithLabelExpanded
 
@@ -727,7 +726,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
         val actions = listOf(Action.Archive)
@@ -775,7 +774,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
         coEvery {
@@ -1323,7 +1322,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
         coEvery {
@@ -1366,7 +1365,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
 
@@ -1416,7 +1415,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
 
@@ -1466,7 +1465,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
 
@@ -1516,7 +1515,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
 
@@ -1567,7 +1566,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
 
@@ -1595,7 +1594,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
         val participant = Participant(
@@ -1837,7 +1836,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
         coEvery {
@@ -1893,7 +1892,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
 
@@ -2173,7 +2172,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = any()
+                primaryUserId = userId
             )
         } returns
             InvoiceWithLabelExpanded
@@ -2258,7 +2257,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any(),
                 attachmentListExpandCollapseMode = null,
                 rsvpEventState = null,
-                labelId = labelId
+                primaryUserId = userId
             )
         } returns messages.first()
         val actions = listOf(Action.Archive)

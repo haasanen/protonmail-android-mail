@@ -102,7 +102,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.extension.isOutbox
-import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -782,16 +781,8 @@ class ConversationDetailViewModel @AssistedInject constructor(
         decryptedBody,
         attachmentListExpandCollapseMode,
         rsvpEvent,
-        message.exclusiveLocation.toLabel()
+        primaryUserId.first()
     )
-
-    private suspend fun ExclusiveLocation.toLabel(): LabelId {
-        val resolved = (this as? ExclusiveLocation.System)?.labelId?.let {
-            resolveSystemLabelId(primaryUserId.first(), it).getOrNull()
-        }
-        return resolved.orDefault()
-    }
-
 
     @Suppress("LongMethod")
     private fun observeBottomBarActions(conversationId: ConversationId) = combine(
@@ -805,7 +796,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
         val labelId = openedFromLocation
         val themeOptions = MessageThemeOptions(MessageTheme.Dark)
 
-        if (labelId.resolveLabelIdOrNull().orDefault().isOutbox()) {
+        if (resolveLabelIdOrNull()?.labelId?.isOutbox() == true) {
             return@flatMapLatest flowOf(
                 ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.HideBottomSheet)
             )
@@ -864,6 +855,10 @@ class ConversationDetailViewModel @AssistedInject constructor(
         }
         .launchIn(viewModelScope)
 
+    private suspend fun resolveLabelIdOrNull() = resolveSystemLabelId(
+        userId = primaryUserId.first(),
+        labelId = openedFromLocation
+    ).getOrNull()
 
     private fun showContactActionsBottomSheetAndLoadData(
         action: ConversationDetailViewAction.RequestContactActionsBottomSheet
@@ -1768,15 +1763,14 @@ class ConversationDetailViewModel @AssistedInject constructor(
      * This is required as when the message is opened from the AllMail folder (not Almost All Mail)
      * the "Hidden messages" banner is not returned by Rust and the value should always be `true`.
      */
-    private suspend fun resolveInitialShowAll(): Boolean =
-        openedFromLocation.resolveLabelIdOrNull() == SystemLabelId.AllMail
+    private suspend fun resolveInitialShowAll(): Boolean {
+        val label = resolveSystemLabelId(
+            userId = primaryUserId.first(),
+            labelId = openedFromLocation
+        ).getOrNull() ?: return false
 
-    private suspend fun LabelId.resolveLabelIdOrNull() = resolveSystemLabelId(
-        userId = primaryUserId.first(),
-        labelId = openedFromLocation
-    ).getOrNull()
-
-    private fun SystemLabelId?.orDefault() = this?.labelId ?: SystemLabelId.AllMail.labelId
+        return label == SystemLabelId.AllMail
+    }
 
     /**
      * A helper function that allows to perform actions that eventually cause the user to leave the screen, while

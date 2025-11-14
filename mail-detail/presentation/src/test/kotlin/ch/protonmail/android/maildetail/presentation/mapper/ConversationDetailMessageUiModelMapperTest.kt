@@ -20,7 +20,9 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import java.util.UUID
 import android.text.format.Formatter
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
@@ -36,7 +38,8 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.sample.MessageDetailBodyUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.MessageLocationUiModelSample
 import ch.protonmail.android.maildetail.presentation.viewmodel.EmailBodyTestSamples
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
@@ -100,6 +103,9 @@ internal class ConversationDetailMessageUiModelMapperTest {
     private val avatarImageUiModelMapper: AvatarImageUiModelMapper = mockk {
         every { this@mockk.toUiModel(avatarImageState = any()) } returns AvatarImageUiModel.NoImageAvailable
     }
+    private val resolveSystemLabelId: ResolveSystemLabelId = mockk {
+        coEvery { this@mockk(userId = any(), labelId = any()) } returns SystemLabelId.Inbox.right()
+    }
     private val messageDetailHeaderUiModelMapper = spyk(
         MessageDetailHeaderUiModelMapper(
             colorMapper = colorMapper,
@@ -118,7 +124,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         every { toUiModel(any()) } returns messageBannersUiModel
     }
 
-    private val labelId = LabelIdSample.Inbox
+    private val userId = UserIdSample.Primary
 
     private val messageBodyUiModel = MessageDetailBodyUiModelSample.build(
         messageBody = EmailBodyTestSamples.BodyWithoutQuotes
@@ -154,7 +160,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
         participantUiModelMapper = participantUiModelMapper,
         messageIdUiModelMapper = messageIdUiModelMapper,
         avatarImageUiModelMapper = avatarImageUiModelMapper,
-        rsvpEventUiModelMapper = rsvpEventUiModelMapper
+        rsvpEventUiModelMapper = rsvpEventUiModelMapper,
+        resolveSystemLabelId = resolveSystemLabelId
     )
 
     @BeforeTest
@@ -209,7 +216,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             decryptedMessageBody = decryptedMessageBody,
             attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
             rsvpEventState = null,
-            labelId = labelId
+            primaryUserId = userId
         )
 
         // then
@@ -217,8 +224,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         assertEquals(result.messageId.id, message.messageId.id)
         coVerify {
             messageDetailHeaderUiModelMapper.toUiModel(
-                message, primaryUserAddress, avatarImageState, ViewModePreference.ThemeDefault,
-                labelId
+                message, primaryUserAddress, avatarImageState, ViewModePreference.ThemeDefault, true
             )
         }
         coVerify {
@@ -355,7 +361,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             messageUiModel = previousMessage,
             message = message,
             avatarImageState = avatarImageState,
-            labelId = labelId
+            userId = userId
         )
 
         // Then
@@ -418,7 +424,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             decryptedMessageBody = decryptedMessageBody,
             attachmentListExpandCollapseMode = attachmentMode,
             rsvpEventState = null,
-            labelId = labelId
+            primaryUserId = userId
         )
 
         // Then
@@ -452,7 +458,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             decryptedMessageBody = decryptedMessageBody,
             attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
             rsvpEventState = InMemoryConversationStateRepository.RsvpEventState.Loading,
-            labelId = labelId
+            primaryUserId = userId
         )
 
         // then
@@ -482,7 +488,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             decryptedMessageBody = decryptedMessageBody,
             attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
             rsvpEventState = InMemoryConversationStateRepository.RsvpEventState.Error,
-            labelId = labelId
+            primaryUserId = userId
         )
 
         // then
@@ -515,7 +521,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             decryptedMessageBody = decryptedMessageBody,
             attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
             rsvpEventState = InMemoryConversationStateRepository.RsvpEventState.Shown(rsvpEvent),
-            labelId = labelId
+            primaryUserId = userId
         )
 
         // then
@@ -550,7 +556,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             decryptedMessageBody = decryptedMessageBody,
             attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
             rsvpEventState = InMemoryConversationStateRepository.RsvpEventState.Answering(rsvpEvent, rsvpAnswer),
-            labelId = labelId
+            primaryUserId = userId
         )
 
         // then

@@ -28,9 +28,7 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
-import ch.protonmail.android.maillabel.domain.extension.isOutbox
 import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
@@ -61,7 +59,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
         primaryUserAddress: String?,
         avatarImageState: AvatarImageState,
         viewModePreference: ViewModePreference,
-        labelId: LabelId
+        hasMoreActionsEnabled: Boolean
     ): MessageDetailHeaderUiModel {
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(message.isDraft, message.avatarInformation, message.sender),
@@ -96,7 +94,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             messageIdUiModel = toMessageUiModel(message.messageId),
             themeOverride = viewModePreference.toThemeOverride(),
             shouldShowQuickReply = message.isReplyAllowed,
-            hasMoreActions = labelId.actionsEnabled()
+            hasMoreActions = hasMoreActionsEnabled
         )
     }
 
@@ -122,6 +120,4 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
         }.toImmutableList()
 
     private fun toMessageUiModel(messageId: MessageId) = MessageIdUiModel(messageId.id)
-
-    private fun LabelId.actionsEnabled() = this.isOutbox().not()
 }

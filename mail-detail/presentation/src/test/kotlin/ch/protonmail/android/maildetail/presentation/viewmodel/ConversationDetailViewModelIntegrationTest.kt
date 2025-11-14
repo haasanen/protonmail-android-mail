@@ -433,6 +433,10 @@ internal class ConversationDetailViewModelIntegrationTest {
         every { this@mockk.mapToString(MailLabelText.TextRes(R.string.label_title_archive)) } returns "Archive"
     }
 
+    private val resolveSystemLabelId = mockk<ResolveSystemLabelId> {
+        coEvery { this@mockk(any(), any()) } returns SystemLabelId.Inbox.right()
+    }
+
     private val conversationMessageMapper = ConversationDetailMessageUiModelMapper(
         avatarUiModelMapper = DetailAvatarUiModelMapper(avatarInformationMapper),
         expirationTimeMapper = ExpirationTimeMapper(getCurrentEpochTimeDuration),
@@ -457,7 +461,8 @@ internal class ConversationDetailViewModelIntegrationTest {
         participantUiModelMapper = ParticipantUiModelMapper(resolveParticipantName),
         messageIdUiModelMapper = messageIdUiModelMapper,
         avatarImageUiModelMapper = avatarImageUiModelMapper,
-        rsvpEventUiModelMapper = rsvpEventUiModelMapper
+        rsvpEventUiModelMapper = rsvpEventUiModelMapper,
+        resolveSystemLabelId = resolveSystemLabelId
     )
 
     private val conversationMetadataMapper = ConversationDetailMetadataUiModelMapper()
@@ -491,10 +496,6 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val refreshToolbarSharedFlow = MutableSharedFlow<Unit>()
     private val toolbarRefreshSignal = mockk<ToolbarActionsRefreshSignal> {
         every { this@mockk.refreshEvents } returns refreshToolbarSharedFlow
-    }
-
-    private val resolveSystemLabelId = mockk<ResolveSystemLabelId> {
-        coEvery { this@mockk(any(), any()) } returns SystemLabelId.Inbox.right()
     }
 
     private val isAutoExpandEnabled = mockk<FeatureFlag<Boolean>> {

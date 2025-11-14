@@ -27,9 +27,11 @@ import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationSt
 import ch.protonmail.android.maildetail.presentation.mapper.rsvp.RsvpEventUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
+import ch.protonmail.android.maillabel.domain.extension.isOutbox
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
@@ -41,6 +43,7 @@ import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelM
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -58,7 +61,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     private val messageBodyUiModelMapper: MessageBodyUiModelMapper,
     private val participantUiModelMapper: ParticipantUiModelMapper,
     private val avatarImageUiModelMapper: AvatarImageUiModelMapper,
-    private val rsvpEventUiModelMapper: RsvpEventUiModelMapper
+    private val rsvpEventUiModelMapper: RsvpEventUiModelMapper,
+    private val resolveSystemLabelId: ResolveSystemLabelId
 ) {
 
     fun toUiModel(
@@ -95,7 +99,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         decryptedMessageBody: DecryptedMessageBody,
         attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?,
         rsvpEventState: InMemoryConversationStateRepository.RsvpEventState?,
-        labelId: LabelId
+        primaryUserId: UserId
     ): ConversationDetailMessageUiModel.Expanded {
 
         return ConversationDetailMessageUiModel.Expanded(
@@ -106,7 +110,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 primaryUserAddress,
                 avatarImageState,
                 decryptedMessageBody.transformations.messageThemeOptions?.themeOverride.toViewModePreference(),
-                labelId
+                getHasMoreActionsEnabled(userId = primaryUserId, message = message)
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageRsvpWidgetUiModel = toRsvpWidgetUiModel(rsvpEventState, decryptedMessageBody.hasCalendarInvite),
@@ -117,11 +121,11 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         )
     }
 
-    fun toUiModel(
+    suspend fun toUiModel(
         messageUiModel: ConversationDetailMessageUiModel.Expanded,
         message: Message,
         avatarImageState: AvatarImageState,
-        labelId: LabelId
+        userId: UserId
     ): ConversationDetailMessageUiModel.Expanded {
         return messageUiModel.copy(
             isUnread = message.isUnread,
@@ -130,7 +134,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 null,
                 avatarImageState,
                 messageUiModel.messageBodyUiModel.viewModePreference,
-                labelId
+                getHasMoreActionsEnabled(userId = userId, message = message)
             )
         )
     }
@@ -187,6 +191,11 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         }.toImmutableList()
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()
+
+    private suspend fun getHasMoreActionsEnabled(userId: UserId, message: Message) =
+        (message.exclusiveLocation as? ExclusiveLocation.System)?.labelId?.let {
+            resolveSystemLabelId(userId, it).getOrNull()?.labelId?.isOutbox()?.not() ?: true
+        } ?: true
 }
 
 fun MessageTheme?.toViewModePreference(): ViewModePreference {
@@ -196,3 +205,5 @@ fun MessageTheme?.toViewModePreference(): ViewModePreference {
         null -> ViewModePreference.ThemeDefault
     }
 }
+
+
