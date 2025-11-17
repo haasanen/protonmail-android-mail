@@ -47,6 +47,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -74,6 +75,7 @@ import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerBottomSheetContent
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.replaceText
+import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.editor.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
@@ -81,6 +83,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateMana
 import ch.protonmail.android.mailcomposer.presentation.model.isExpirationTimeSet
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
+import ch.protonmail.android.mailcomposer.presentation.ui.util.EdgeGuardNestedScrollConnection
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
@@ -347,10 +350,24 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     LoadingIndicator(preventBackNavigation = true)
                 }
 
+
+
+                val edgeGuard = remember(scrollState) {
+                    EdgeGuardNestedScrollConnection(scrollState)
+                }
+
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
                         .fillMaxSize()
+                        .then(
+                            if (mainState.draftType == DraftMimeType.PlainText) {
+                                // Edge-guard scroll only for plain-text drafts to prevent reverse-fling jumps
+                                Modifier.nestedScroll(edgeGuard)
+                            } else {
+                                Modifier
+                            }
+                        )
                         .verticalScroll(scrollState)
                         .onGloballyPositioned { coordinates ->
                             columnBounds = coordinates.boundsInWindow()
