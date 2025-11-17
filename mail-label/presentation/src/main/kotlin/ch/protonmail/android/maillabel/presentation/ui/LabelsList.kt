@@ -60,7 +60,7 @@ fun LabelsList(
     ) { constraints ->
 
         val labelsMeasurables = labels.map { label ->
-            label to subcompose(label.id) {
+            label to subcompose("label_${label.id}") {
                 Label(label = label)
             }.single()
         }
@@ -163,7 +163,7 @@ private fun SubcomposeMeasureScope.calculateCoordinates(
     }
 
     val placeablesCoordinates = if (notPlacedCount > 0) {
-        val plusSignPlaceable = subcompose(notPlacedCount) { PlusText(count = notPlacedCount) }
+        val plusSignPlaceable = subcompose("plus_$notPlacedCount") { PlusText(count = notPlacedCount) }
             .single()
             .measure(constraints)
 
@@ -183,7 +183,7 @@ private fun SubcomposeMeasureScope.calculateCoordinates(
 }
 
 private fun SubcomposeMeasureScope.measurePlusTextWidth(constraints: Constraints, charsLimit: Int) =
-    subcompose(charsLimit) { PlusText(count = charsLimit) }
+    subcompose("measure_$charsLimit") { PlusText(count = charsLimit) }
         .maxOf { it.measure(constraints).width }
 
 @Composable
