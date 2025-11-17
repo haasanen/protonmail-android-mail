@@ -56,7 +56,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
-import ch.protonmail.android.mailcomposer.presentation.model.editor.WebViewDrawingState
+import ch.protonmail.android.mailcomposer.presentation.model.editor.EditorViewDrawingState
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyPlainText
 import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyWebView
@@ -216,7 +216,7 @@ internal fun ComposerForm(
                             webViewActions = EditableMessageBodyWebView.Actions(
                                 loadImage = actions.loadImage,
                                 onMessageBodyChanged = actions.onBodyChanged,
-                                onWebViewParamsChanged = actions.onWebViewMeasuresChanged,
+                                onWebViewParamsChanged = actions.onEditorViewMeasuresChanged,
                                 onBuildWebView = onBuildWebView(webViewCache, actions.onInlineImageAdded),
                                 onInlineImageRemoved = actions.onInlineImageRemoved,
                                 onInlineImageClicked = actions.onInlineImageClicked,
@@ -227,7 +227,7 @@ internal fun ComposerForm(
                                 .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
                                 .onGloballyPositioned { coordinates ->
                                     val webViewBounds = coordinates.boundsInWindow()
-                                    actions.onWebViewPositioned(webViewBounds)
+                                    actions.onEditorViewPositioned(webViewBounds)
                                 },
                             viewportCoordinateAlignmentEnabled = viewportCoordinateAlignmentEnabled
                         )
@@ -279,9 +279,9 @@ internal object ComposerForm {
     data class Actions(
         val onChangeSender: () -> Unit,
         val onBodyChanged: (String) -> Unit,
-        val onWebViewMeasuresChanged: (WebViewDrawingState) -> Unit,
+        val onEditorViewMeasuresChanged: (EditorViewDrawingState) -> Unit,
         val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
-        val onWebViewPositioned: (boundsInWindow: Rect) -> Unit,
+        val onEditorViewPositioned: (boundsInWindow: Rect) -> Unit,
         val loadImage: (String) -> MessageBodyImage?,
         val onAttachmentRemoveRequested: (AttachmentId) -> Unit,
         val onInlineImageRemoved: (String) -> Unit,

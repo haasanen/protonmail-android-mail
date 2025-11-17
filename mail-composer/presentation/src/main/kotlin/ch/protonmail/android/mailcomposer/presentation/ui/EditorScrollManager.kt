@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import ch.protonmail.android.mailcomposer.presentation.model.editor.ComposeScreenMeasures
-import ch.protonmail.android.mailcomposer.presentation.model.editor.WebViewDrawingState
+import ch.protonmail.android.mailcomposer.presentation.model.editor.EditorViewDrawingState
 import ch.protonmail.android.mailcomposer.presentation.model.editor.centerPx
 import ch.protonmail.android.mailcomposer.presentation.model.editor.isScrollNearTop
 import kotlinx.coroutines.CoroutineScope
@@ -49,7 +49,7 @@ class EditorScrollManager(
 
     private data class EditorMeasures(
         val screenMeasures: ComposeScreenMeasures,
-        val webViewDrawingState: WebViewDrawingState
+        val editorViewDrawingState: EditorViewDrawingState
     )
 
     private data class EditorViewport(
@@ -60,7 +60,7 @@ class EditorScrollManager(
     private var previousEditorMeasures: EditorMeasures? = null
 
     private val screenMeasuresFlow = MutableStateFlow(ComposeScreenMeasures.Initial)
-    private val webMeasureEvents = MutableSharedFlow<WebViewDrawingState>(
+    private val webMeasureEvents = MutableSharedFlow<EditorViewDrawingState>(
         replay = 0,
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -109,22 +109,22 @@ class EditorScrollManager(
         }
     }
 
-    fun onWebViewMeasuresChanged(webViewDrawingState: WebViewDrawingState) {
-        webMeasureEvents.tryEmit(webViewDrawingState)
+    fun onWebViewMeasuresChanged(editorViewDrawingState: EditorViewDrawingState) {
+        webMeasureEvents.tryEmit(editorViewDrawingState)
     }
 
     private fun shouldProcessEditorMeasuresChange(previous: EditorMeasures?, current: EditorMeasures): Boolean {
         if (previous == null) return true
 
-        val contentChanged = previous.webViewDrawingState.bodyContentVersion !=
-            current.webViewDrawingState.bodyContentVersion
+        val contentChanged = previous.editorViewDrawingState.bodyContentVersion !=
+            current.editorViewDrawingState.bodyContentVersion
         val cursorPositionChanged =
             abs(
-                previous.webViewDrawingState.cursorPosition.topPx -
-                    current.webViewDrawingState.cursorPosition.topPx
+                previous.editorViewDrawingState.cursorPosition.topPx -
+                    current.editorViewDrawingState.cursorPosition.topPx
             ) > 1f
-        val keyboardBecameVisible = current.webViewDrawingState.isKeyboardVisible &&
-            !previous.webViewDrawingState.isKeyboardVisible
+        val keyboardBecameVisible = current.editorViewDrawingState.isKeyboardVisible &&
+            !previous.editorViewDrawingState.isKeyboardVisible
         val shouldProcess = contentChanged || cursorPositionChanged || keyboardBecameVisible
 
         if (shouldProcess) {
@@ -139,7 +139,7 @@ class EditorScrollManager(
     private fun processEditorMeasuresChanged(editorMeasures: EditorMeasures) {
         Timber.tag("composer-scroll").d("Processing editor measures change $editorMeasures")
 
-        val sizeDeltaDp = calculateWebViewSizeDelta(editorMeasures.webViewDrawingState)
+        val sizeDeltaDp = calculateWebViewSizeDelta(editorMeasures.editorViewDrawingState)
 
         if (cursorIsNotInFocus(editorMeasures)) {
             val scrollToCursor = calculateScrollToCursor(editorMeasures)
@@ -160,7 +160,7 @@ class EditorScrollManager(
 
     private fun calculateScrollToCursor(em: EditorMeasures): Float {
         val viewport = em.editorViewport()
-        val cursor = em.webViewDrawingState.cursorPosition
+        val cursor = em.editorViewDrawingState.cursorPosition
 
         val currentScroll = em.screenMeasures.scrollValuePx
 
@@ -170,7 +170,7 @@ class EditorScrollManager(
                 val delta = cursor.bottomPx - viewport.bottomPx
                 // Add safety distance since it was observed that sometimes cursor stays
                 // behind the keyboard when we just scroll the above delta amount
-                val safetyDistance = em.webViewDrawingState.lineHeightPx * 2f
+                val safetyDistance = em.editorViewDrawingState.lineHeightPx * 2f
                 (currentScroll + delta + safetyDistance).coerceAtLeast(0f)
             }
 
@@ -188,11 +188,11 @@ class EditorScrollManager(
         val viewport = em.editorViewport()
 
         val endOfLastLineArea = viewport.bottomPx
-        val startOfLastLineArea = (endOfLastLineArea - em.webViewDrawingState.lineHeightPx)
+        val startOfLastLineArea = (endOfLastLineArea - em.editorViewDrawingState.lineHeightPx)
             .coerceAtLeast(0f)
 
         val isCursorOnLastVisibleLine =
-            em.webViewDrawingState.cursorPosition.centerPx() in startOfLastLineArea..endOfLastLineArea
+            em.editorViewDrawingState.cursorPosition.centerPx() in startOfLastLineArea..endOfLastLineArea
 
         return isCursorOnLastVisibleLine
     }
@@ -200,7 +200,7 @@ class EditorScrollManager(
     private fun cursorIsNotInFocus(em: EditorMeasures): Boolean {
         // This is calculated in ComposerScreen through rect intersection between webview and column
         val viewport = em.editorViewport()
-        val cursor = em.webViewDrawingState.cursorPosition
+        val cursor = em.editorViewDrawingState.cursorPosition
         val cursorOverlapsViewport = cursor.topPx >= viewport.topPx && cursor.bottomPx <= viewport.bottomPx
 
         return !cursorOverlapsViewport
@@ -212,8 +212,8 @@ class EditorScrollManager(
     private fun getStartOfWebViewVisibleArea(screenMeasure: ComposeScreenMeasures) =
         (screenMeasure.scrollValuePx - screenMeasure.headerHeightPx).coerceAtLeast(0f)
 
-    private fun calculateWebViewSizeDelta(webViewDrawingState: WebViewDrawingState): Float {
-        val sizeDelta = (webViewDrawingState.heightPx - previousWebViewHeightPx).coerceAtLeast(0f)
+    private fun calculateWebViewSizeDelta(editorViewDrawingState: EditorViewDrawingState): Float {
+        val sizeDelta = (editorViewDrawingState.heightPx - previousWebViewHeightPx).coerceAtLeast(0f)
         if (sizeDelta > 0f) {
             Timber.tag("composer-scroll").d(
                 "size delta (previous webview height to new webview height: " +
@@ -221,7 +221,7 @@ class EditorScrollManager(
             )
         }
 
-        previousWebViewHeightPx = webViewDrawingState.heightPx
+        previousWebViewHeightPx = editorViewDrawingState.heightPx
         return sizeDelta
     }
 
@@ -229,7 +229,7 @@ class EditorScrollManager(
         val viewportTop = getStartOfWebViewVisibleArea(screenMeasures)
         val viewportHeight = getPortionOfVisibleWebView(screenMeasures)
 
-        val viewportBottom = (viewportTop + viewportHeight).coerceAtMost(webViewDrawingState.heightPx)
+        val viewportBottom = (viewportTop + viewportHeight).coerceAtMost(editorViewDrawingState.heightPx)
 
         return EditorViewport(
             topPx = viewportTop,

@@ -387,7 +387,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 bottomSheetType.value = BottomSheetType.ChangeSender
                                 viewModel.submit(ComposerAction.ChangeSender)
                             },
-                            onWebViewMeasuresChanged = { webViewParams ->
+                            onEditorViewMeasuresChanged = { webViewParams ->
                                 scrollManager.onWebViewMeasuresChanged(
                                     webViewParams
                                 )
@@ -397,7 +397,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 visibleHeaderHeightPx = visibleBounds.height.coerceAtLeast(0f)
                                 headerHeightPx = measuredHeight
                             },
-                            onWebViewPositioned = { boundsInWindow ->
+                            onEditorViewPositioned = { boundsInWindow ->
                                 val visibleBounds = boundsInWindow.intersect(columnBounds)
                                 visibleWebViewHeightPx = visibleBounds.height.coerceAtLeast(0f)
                             },

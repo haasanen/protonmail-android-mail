@@ -2,7 +2,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 
 import ch.protonmail.android.mailcomposer.presentation.model.editor.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.editor.CursorPosition
-import ch.protonmail.android.mailcomposer.presentation.model.editor.WebViewDrawingState
+import ch.protonmail.android.mailcomposer.presentation.model.editor.EditorViewDrawingState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -43,7 +43,7 @@ class EditorScrollManagerTest {
         editorScrollManager.onScreenMeasuresChanged(screenMeasures)
     }
 
-    private fun emitWebMeasures(webMeasures: WebViewDrawingState) {
+    private fun emitWebMeasures(webMeasures: EditorViewDrawingState) {
         editorScrollManager.onWebViewMeasuresChanged(webMeasures)
     }
 
@@ -53,7 +53,7 @@ class EditorScrollManagerTest {
         emitScreenMeasures(defaultScreenMeasures)
 
         // viewport: [0, 100], cursor: [150, 170]
-        val webMeasures = WebViewDrawingState(
+        val webMeasures = EditorViewDrawingState(
             heightPx = 300f,
             cursorPosition = CursorPosition(
                 topPx = 150f,
@@ -93,7 +93,7 @@ class EditorScrollManagerTest {
         emitScreenMeasures(screen)
 
         // cursor above viewport: [50, 70]
-        val webMeasures = WebViewDrawingState(
+        val webMeasures = EditorViewDrawingState(
             heightPx = 300f,
             cursorPosition = CursorPosition(
                 topPx = 50f,
@@ -127,7 +127,7 @@ class EditorScrollManagerTest {
         emitScreenMeasures(defaultScreenMeasures)
 
         // viewport: [0, 100], cursor: [40, 60] fully inside
-        val webMeasures = WebViewDrawingState(
+        val webMeasures = EditorViewDrawingState(
             heightPx = 300f,
             cursorPosition = CursorPosition(
                 topPx = 40f,
@@ -151,7 +151,7 @@ class EditorScrollManagerTest {
         // Given
         emitScreenMeasures(defaultScreenMeasures)
 
-        val webMeasures = WebViewDrawingState(
+        val webMeasures = EditorViewDrawingState(
             heightPx = 300f,
             cursorPosition = CursorPosition(
                 topPx = 150f,
@@ -180,7 +180,7 @@ class EditorScrollManagerTest {
         // Given
         emitScreenMeasures(defaultScreenMeasures)
 
-        val webMeasuresFirst = WebViewDrawingState(
+        val webMeasuresFirst = EditorViewDrawingState(
             heightPx = 300f,
             cursorPosition = CursorPosition(
                 topPx = 150f,
@@ -209,7 +209,7 @@ class EditorScrollManagerTest {
         emitScreenMeasures(defaultScreenMeasures)
 
         // cursor below viewport
-        val webMeasuresKeyboardHidden = WebViewDrawingState(
+        val webMeasuresKeyboardHidden = EditorViewDrawingState(
             heightPx = 300f,
             cursorPosition = CursorPosition(
                 topPx = 150f,
@@ -242,7 +242,7 @@ class EditorScrollManagerTest {
             )
         )
 
-        val firstMeasures = WebViewDrawingState(
+        val firstMeasures = EditorViewDrawingState(
             heightPx = 200f,
             cursorPosition = CursorPosition(
                 topPx = 80f,

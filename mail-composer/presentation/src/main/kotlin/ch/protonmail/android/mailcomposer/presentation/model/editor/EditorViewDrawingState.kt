@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model.editor
 
-data class WebViewDrawingState(
+data class EditorViewDrawingState(
     val heightPx: Float,
     val cursorPosition: CursorPosition,
     val lineHeightPx: Float,

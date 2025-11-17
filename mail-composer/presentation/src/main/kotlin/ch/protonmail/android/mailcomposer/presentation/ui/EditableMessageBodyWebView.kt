@@ -50,7 +50,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.editor.CursorPosition
-import ch.protonmail.android.mailcomposer.presentation.model.editor.WebViewDrawingState
+import ch.protonmail.android.mailcomposer.presentation.model.editor.EditorViewDrawingState
 import ch.protonmail.android.mailcomposer.presentation.ui.util.ComposerFocusUtils
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -89,7 +89,7 @@ fun EditableMessageBodyWebView(
 
     LaunchedEffect(key1 = webViewHeightPx, key2 = isKeyboardVisible) {
         webViewActions.onWebViewParamsChanged(
-            WebViewDrawingState(
+            EditorViewDrawingState(
                 heightPx = webViewHeightPx.toFloat(),
                 cursorPosition = currentCursorPosition,
                 lineHeightPx = currentLineHeightPx,
@@ -104,7 +104,7 @@ fun EditableMessageBodyWebView(
         currentLineHeightPx = lineHeightPx
 
         webViewActions.onWebViewParamsChanged(
-            WebViewDrawingState(
+            EditorViewDrawingState(
                 heightPx = webViewHeightPx.toFloat(),
                 cursorPosition = currentCursorPosition,
                 lineHeightPx = currentLineHeightPx,
@@ -277,7 +277,7 @@ object EditableMessageBodyWebView {
     data class Actions(
         val loadImage: (contentId: String) -> MessageBodyImage?,
         val onMessageBodyChanged: (body: String) -> Unit,
-        val onWebViewParamsChanged: (params: WebViewDrawingState) -> Unit,
+        val onWebViewParamsChanged: (params: EditorViewDrawingState) -> Unit,
         val onBuildWebView: (Context) -> WebView,
         val onInlineImageRemoved: (String) -> Unit,
         val onInlineImageClicked: (String) -> Unit,
