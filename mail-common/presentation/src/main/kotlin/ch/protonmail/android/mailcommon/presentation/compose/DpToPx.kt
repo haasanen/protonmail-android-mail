@@ -27,4 +27,7 @@ import kotlin.math.roundToInt
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.roundToPx() }
 
+@Composable
+fun Dp.dpToPxFloat(): Float = with(LocalDensity.current) { this@dpToPxFloat.toPx() }
+
 fun Dp.toPx(density: Density): Int = (this.value * density.density).roundToInt()
