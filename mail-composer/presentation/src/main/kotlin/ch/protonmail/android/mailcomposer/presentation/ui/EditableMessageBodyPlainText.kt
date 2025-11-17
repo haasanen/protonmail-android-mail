@@ -48,10 +48,10 @@ import ch.protonmail.android.mailcomposer.presentation.R
 fun EditableMessageBodyPlainText(
     modifier: Modifier = Modifier,
     bodyTextFieldState: TextFieldState,
-    shouldRequestFocus: Effect<Unit>
+    shouldRequestFocus: Effect<Unit>,
+    focusRequester: FocusRequester
 ) {
 
-    val focusRequester = remember { FocusRequester() }
     val shouldFocus = remember { mutableStateOf(false) }
 
     BasicTextField(
@@ -61,6 +61,7 @@ fun EditableMessageBodyPlainText(
             .onGloballyPositioned {
                 if (shouldFocus.value) {
                     focusRequester.requestFocus()
+                    shouldFocus.value = false
                 }
             }
             .focusRequester(focusRequester),

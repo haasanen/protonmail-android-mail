@@ -196,7 +196,8 @@ internal fun ComposerForm(
                         EditableMessageBodyPlainText(
                             modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large),
                             bodyTextFieldState = bodyTextFieldState,
-                            shouldRequestFocus = focusTextBody
+                            shouldRequestFocus = focusTextBody,
+                            focusRequester = fieldFocusRequesters.getValue(FocusedFieldType.BODY)
                         )
                     }
 
