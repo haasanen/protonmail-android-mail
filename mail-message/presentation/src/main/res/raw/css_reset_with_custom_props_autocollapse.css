@@ -254,6 +254,7 @@ div[role="textbox"]{
 
 /* Make quote containers undeletable - only for top-level collapsed quotes */
 .protonmail_quote:not(.protonmail_quote .protonmail_quote):not([data-expanded]) {
+    padding-top: 40px; /* Push text down so it becomes hidden */
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
