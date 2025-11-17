@@ -49,6 +49,7 @@
   <string name="mailbox_message_scheduling_offline">网络离线：邮件将稍后发送</string>
   <string name="mailbox_message_scheduled_for_sending_success">邮件将于 %1$s 发送</string>
   <string name="launcher_alert_duplicate_account_description">用户已登录</string>
+  <string name="home_event_loop_error_snackbar">We couldn\'t sync your mail. Try logging out and back in again. If that doesn\'t work, please submit a bug report.</string>
   <string name="settings_change_icon_title">应用图标</string>
   <string name="settings_change_icon_description">把 Proton Mail 应用的图标伪装成其他类型的应用。通知仍会显示默认的 Proton Mail 名称和图标。</string>
   <string name="settings_change_icon_confirmation_title">切换应用图标？</string>

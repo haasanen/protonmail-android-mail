@@ -32,4 +32,5 @@
   <string name="manage_accounts_on_device">Správa účtů v tomto zařízení</string>
   <string name="add_another_account">Přidejte jiný účet</string>
   <string name="account_switcher_no_initials">N/A</string>
+  <string name="manage_accounts_options">Možnosti</string>
 </resources>

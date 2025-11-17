@@ -32,4 +32,5 @@
   <string name="manage_accounts_on_device">이 기기에서 계정 관리</string>
   <string name="add_another_account">다른 계정 추가</string>
   <string name="account_switcher_no_initials">해당 없음</string>
+  <string name="manage_accounts_options">Options</string>
 </resources>

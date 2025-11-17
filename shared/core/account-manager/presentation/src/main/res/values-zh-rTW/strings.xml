@@ -32,4 +32,5 @@
   <string name="manage_accounts_on_device">在此裝置上管理帳號</string>
   <string name="add_another_account">新增其他帳號</string>
   <string name="account_switcher_no_initials">不適用</string>
+  <string name="manage_accounts_options">Options</string>
 </resources>

@@ -32,4 +32,5 @@
   <string name="manage_accounts_on_device">Διαχείριση λογαριασμών σε αυτήν τη συσκευή</string>
   <string name="add_another_account">Προσθήκη άλλου λογαριασμού</string>
   <string name="account_switcher_no_initials">ΧΑ</string>
+  <string name="manage_accounts_options">Επιλογές</string>
 </resources>

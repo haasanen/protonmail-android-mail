@@ -33,7 +33,7 @@
   <string name="auth_login_close">Bezárás</string>
   <string name="auth_login_help">Segítség</string>
   <string name="auth_sign_in">Bejelentkezés</string>
-  <string name="auth_login_username">Username or email</string>
+  <string name="auth_login_username">Felhasználónév vagy e-mail cím</string>
   <string name="auth_email">E-mail</string>
   <string name="auth_password">Jelszó</string>
   <string name="auth_username_placeholder">Felhasználónév vagy e-mail cím</string>
@@ -69,7 +69,7 @@
   <string name="auth_signup_username_assistive_text">A felhasználónév nem lehet üres.</string>
   <string name="auth_signup_email_assistive_text">Az e-mail nem lehet üres.</string>
   <string name="auth_signup_next">Következő</string>
-  <string name="auth_signup_username">Username</string>
+  <string name="auth_signup_username">Felhasználónév</string>
   <string name="auth_signup_create_password">Hozza létre jelszavát</string>
   <string name="auth_signup_password">Jelszó</string>
   <string name="auth_signup_repeat_password">Ismételje meg a jelszót</string>
@@ -109,7 +109,7 @@
   <string name="auth_signup_recovery_email_validation_error">Az e-mail-cím érvényesítése sikertelen.</string>
   <string name="auth_signup_recovery_phone_validation_error">A telefonszám érvényesítése sikertelen.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">A jelszavak nem egyeznek. Próbálja újra.</string>
-  <string name="auth_signup_general_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_general_error">Hiba történt. Próbálja meg újra.</string>
   <string name="auth_signup_countries_search">Ország keresése</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nem sikerült beállítani a felhasználót.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nem sikerült beállítani a címet.</string>

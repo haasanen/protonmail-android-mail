@@ -49,6 +49,7 @@
   <string name="mailbox_message_scheduling_offline">Ni povezave: sporočilo čaka na načrtovanje</string>
   <string name="mailbox_message_scheduled_for_sending_success">To sporočilo bo poslano %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Uporabnik je že prijavljen</string>
+  <string name="home_event_loop_error_snackbar">We couldn\'t sync your mail. Try logging out and back in again. If that doesn\'t work, please submit a bug report.</string>
   <string name="settings_change_icon_title">Ikona aplikacije</string>
   <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
   <string name="settings_change_icon_confirmation_title">Želite zamenjati ikono aplikacije?</string>

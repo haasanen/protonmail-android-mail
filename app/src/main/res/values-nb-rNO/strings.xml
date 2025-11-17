@@ -49,6 +49,7 @@
   <string name="mailbox_message_scheduling_offline">Frakoblet: melding satt i planleggingskø</string>
   <string name="mailbox_message_scheduled_for_sending_success">Denne meldingen vil bli sendt %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Brukeren er allerede logget på</string>
+  <string name="home_event_loop_error_snackbar">Vi kunne ikke synkronisere e-posten din. Prøv å logge av og på igjen. Hvis det ikke fungerer, send inn en feilrapport.</string>
   <string name="settings_change_icon_title">Appikon</string>
   <string name="settings_change_icon_description">Skjul Proton Mail-appen med et diskret ikon. Varsler vil fortsatt vise standardnavnet og -ikonet for Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">Endre appikon?</string>

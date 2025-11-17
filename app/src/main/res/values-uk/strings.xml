@@ -49,6 +49,7 @@
   <string name="mailbox_message_scheduling_offline">Ви поза мережею: повідомлення в черзі на планування</string>
   <string name="mailbox_message_scheduled_for_sending_success">Це повідомлення буде надіслано %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Користувач уже ввійшов</string>
+  <string name="home_event_loop_error_snackbar">We couldn\'t sync your mail. Try logging out and back in again. If that doesn\'t work, please submit a bug report.</string>
   <string name="settings_change_icon_title">Піктограма застосунку</string>
   <string name="settings_change_icon_description">Замаскуйте застосунок Proton Mail за допомогою стриманої піктограми. Сповіщення й надалі показуватимуться з типовою назвою та піктограмою Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">Змінити піктограму?</string>

@@ -32,4 +32,5 @@
   <string name="manage_accounts_on_device">Spravovať účty v tomto zariadení</string>
   <string name="add_another_account">Pridať ďalší účet</string>
   <string name="account_switcher_no_initials">NEDOST.</string>
+  <string name="manage_accounts_options">Nastavenia</string>
 </resources>

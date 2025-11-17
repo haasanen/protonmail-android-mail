@@ -32,4 +32,5 @@
   <string name="manage_accounts_on_device">Konten auf diesem Gerät verwalten</string>
   <string name="add_another_account">Weiteres Konto hinzufügen</string>
   <string name="account_switcher_no_initials">Nicht verfügbar</string>
+  <string name="manage_accounts_options">Optionen</string>
 </resources>

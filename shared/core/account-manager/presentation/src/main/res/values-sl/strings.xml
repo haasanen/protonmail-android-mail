@@ -32,4 +32,5 @@
   <string name="manage_accounts_on_device">Upravljajte račune v tej napravi</string>
   <string name="add_another_account">Dodaj drug račun</string>
   <string name="account_switcher_no_initials">Ni podatka</string>
+  <string name="manage_accounts_options">Options</string>
 </resources>

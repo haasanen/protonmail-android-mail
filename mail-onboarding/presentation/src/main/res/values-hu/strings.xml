@@ -19,7 +19,7 @@
 <resources>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Üdvözöljük a Proton Mailben, ahol az adatvédelem alapértelmezett</string>
-  <string name="onboarding_welcome_description">Enjoy encrypted messages, less spam, protection from phishing, and blocked trackers. Welcome to privacy.</string>
+  <string name="onboarding_welcome_description">Használja örömmel a titkosított üzeneteket, a hatékony levélszemét szűrést, az adathalászat elleni védelmet és a követők blokkolását. Üdvözöljük az adatvédelemben.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Fókusz a keze ügyében</string>
   <string name="onboarding_rebuilt_description">Töltsön kevesebb időt a rendszerezéssel és többet a tényleges feladatokkal. A beérkezett üzenetei úgy lettek kialakítva, hogy könnyebben navigálhatók legyenek, így gyorsabban megtalálhatja, ami fontos.</string>
