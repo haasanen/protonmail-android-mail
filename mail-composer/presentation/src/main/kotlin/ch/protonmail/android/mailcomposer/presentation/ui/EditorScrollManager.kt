@@ -28,8 +28,10 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.abs
@@ -63,13 +65,24 @@ class EditorScrollManager(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
+    private val visibleEditorHeightPxFlow = screenMeasuresFlow
+        .map { it.visibleWebViewHeightPx }
+        .distinctUntilChanged()
 
     init {
         scope.launch {
-            webMeasureEvents
-                .distinctUntilChanged()
+            combine(
+                webMeasureEvents.distinctUntilChanged(),
+                visibleEditorHeightPxFlow
+            ) { webMeasures, visibleHeightPx ->
+                // visibleHeightPx is only here to participate in distinct/debounce
+                webMeasures to visibleHeightPx
+            }
+                .distinctUntilChanged { old, new ->
+                    old.first == new.first && old.second == new.second
+                }
                 .debounce(WEB_SETTLE_DEBOUNCE_MS)
-                .collectLatest { webMeasures ->
+                .collectLatest { (webMeasures, _) ->
                     val screenMeasures = screenMeasuresFlow.value
                     val editorMeasures = EditorMeasures(screenMeasures, webMeasures)
 
@@ -201,10 +214,13 @@ class EditorScrollManager(
 
     private fun calculateWebViewSizeDelta(webViewDrawingState: WebViewDrawingState): Float {
         val sizeDelta = (webViewDrawingState.heightPx - previousWebViewHeightPx).coerceAtLeast(0f)
-        Timber.tag("composer-scroll").d(
-            "size delta (previous webview height to new webview height: " +
-                "$sizeDelta"
-        )
+        if (sizeDelta > 0f) {
+            Timber.tag("composer-scroll").d(
+                "size delta (previous webview height to new webview height: " +
+                    "$sizeDelta"
+            )
+        }
+
         previousWebViewHeightPx = webViewDrawingState.heightPx
         return sizeDelta
     }
