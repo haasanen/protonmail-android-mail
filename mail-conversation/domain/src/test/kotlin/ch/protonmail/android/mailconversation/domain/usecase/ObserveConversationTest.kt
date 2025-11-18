@@ -35,7 +35,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class ObserveConversationTest {
+internal class ObserveConversationTest {
 
     private val repository = mockk<ConversationRepository> {
         coEvery {
@@ -59,8 +59,15 @@ class ObserveConversationTest {
         val labelId = LabelId("3")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
         val showAll = false
-        coEvery { repository.observeConversation(userId, conversationId, labelId, entryPoint, showAll) } returns
-            flowOf(error.left())
+        coEvery {
+            repository.observeConversation(
+                userId,
+                conversationId,
+                labelId,
+                entryPoint,
+                showAll
+            )
+        } returns flowOf(error.left())
 
         // When
         observeConversation(userId, conversationId, labelId, entryPoint, showAll).test {
@@ -78,9 +85,9 @@ class ObserveConversationTest {
         val labelId = LabelId("3")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
         val showAll = false
-        coEvery { repository.observeConversation(userId, conversationId, labelId, entryPoint, showAll) } returns flowOf(
-            conversation.right()
-        )
+        coEvery {
+            repository.observeConversation(userId, conversationId, labelId, entryPoint, showAll)
+        } returns flowOf(conversation.right())
 
         // When
         observeConversation(userId, conversationId, labelId, entryPoint, showAll).test {
@@ -98,9 +105,9 @@ class ObserveConversationTest {
         val labelId = LabelId("3")
         val entryPoint = ConversationDetailEntryPoint.Mailbox
         val showAll = false
-        coEvery { repository.observeConversation(userId, conversationId, labelId, entryPoint, showAll) } returns flowOf(
-            conversation.right()
-        )
+        coEvery {
+            repository.observeConversation(userId, conversationId, labelId, entryPoint, showAll)
+        } returns flowOf(conversation.right())
 
         // When
         observeConversation(userId, conversationId, labelId, entryPoint, showAll).test {

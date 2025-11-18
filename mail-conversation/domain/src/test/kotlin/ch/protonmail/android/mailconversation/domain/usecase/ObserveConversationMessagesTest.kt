@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.domain.usecase
+package ch.protonmail.android.mailconversation.domain.usecase
 
 import app.cash.turbine.test
 import arrow.core.left
@@ -46,7 +46,7 @@ internal class ObserveConversationMessagesTest {
     )
     private val conversationRepository: ConversationRepository = mockk()
     private val observeConversationMessages = ObserveConversationMessages(
-        conversationRepository = conversationRepository
+        repository = conversationRepository
     )
 
     @Test

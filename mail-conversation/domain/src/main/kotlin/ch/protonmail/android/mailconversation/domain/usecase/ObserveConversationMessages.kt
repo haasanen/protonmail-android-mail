@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.domain.usecase
+package ch.protonmail.android.mailconversation.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -30,7 +30,7 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class ObserveConversationMessages @Inject constructor(
-    private val conversationRepository: ConversationRepository
+    private val repository: ConversationRepository
 ) {
 
     suspend operator fun invoke(
@@ -39,6 +39,11 @@ class ObserveConversationMessages @Inject constructor(
         labelId: LabelId,
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
-    ): Flow<Either<ConversationError, ConversationMessages>> =
-        conversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint, showAllMessages)
+    ): Flow<Either<ConversationError, ConversationMessages>> = repository.observeConversationMessages(
+        userId,
+        conversationId,
+        labelId,
+        entryPoint,
+        showAllMessages
+    )
 }

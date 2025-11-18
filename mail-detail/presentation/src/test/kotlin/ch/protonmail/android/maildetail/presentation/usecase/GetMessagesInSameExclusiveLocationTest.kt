@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
+import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.presentation.usecase.TestData.conversationId
 import ch.protonmail.android.maildetail.presentation.usecase.TestData.localLabelId
 import ch.protonmail.android.maildetail.presentation.usecase.TestData.messageId

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class ObserveConversation @Inject constructor(
-    private val conversationRepository: ConversationRepository
+    private val repository: ConversationRepository
 ) {
 
     suspend operator fun invoke(
@@ -39,6 +39,11 @@ class ObserveConversation @Inject constructor(
         labelId: LabelId,
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
-    ): Flow<Either<ConversationError, Conversation>> =
-        conversationRepository.observeConversation(userId, conversationId, labelId, entryPoint, showAllMessages)
+    ): Flow<Either<ConversationError, Conversation>> = repository.observeConversation(
+        userId,
+        conversationId,
+        labelId,
+        entryPoint,
+        showAllMessages
+    )
 }
