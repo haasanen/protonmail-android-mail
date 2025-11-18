@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
-import java.util.concurrent.CopyOnWriteArrayList
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,6 +27,7 @@ import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import arrow.core.toNonEmptyListOrNull
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
@@ -42,9 +42,10 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
+import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.entity.isOfflineError
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
-import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
+import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversationWithMessages
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
@@ -62,7 +63,6 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
@@ -151,8 +151,6 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -177,6 +175,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 
@@ -197,8 +196,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val markConversationAsUnread: MarkConversationAsUnread,
     private val moveConversation: MoveConversation,
     private val deleteConversations: DeleteConversations,
-    private val observeConversation: ObserveConversation,
-    private val observeConversationMessages: ObserveConversationMessages,
+    private val observeConversationWithMessages: ObserveConversationWithMessages,
     private val observeDetailActions: ObserveDetailBottomBarActions,
     private val reducer: ConversationDetailReducer,
     private val starConversations: StarConversations,
@@ -244,7 +242,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val primaryUserId = observePrimaryUserId()
         .stateIn(
             viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
             initialValue = null
         )
         .filterNotNull()
@@ -277,11 +275,9 @@ class ConversationDetailViewModel @AssistedInject constructor(
         emit(isAutoExpandEnabled.get())
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
         initialValue = false
     )
-
-    private val jobs = CopyOnWriteArrayList<Job>()
 
     init {
         Timber.d("Open detail screen for conversation ID: $conversationId")
@@ -293,27 +289,11 @@ class ConversationDetailViewModel @AssistedInject constructor(
         setupOfflineObserver()
     }
 
-    // This needs to go - see ET-4700
     private fun setupObservers() {
-        jobs.addAll(
-            listOf(
-                observeConversationMetadata(conversationId),
-                observeConversationMessages(conversationId),
-                observeBottomBarActions(conversationId),
-                observePrivacySettings(),
-                observeAttachments()
-            )
-        )
-    }
-
-    private suspend fun stopAllJobs() {
-        jobs.forEach { it.cancelAndJoin() }
-        jobs.clear()
-    }
-
-    private suspend fun restartAllJobs() {
-        stopAllJobs()
-        setupObservers()
+        observeConversationData(conversationId)
+        observeBottomBarActions(conversationId)
+        observePrivacySettings()
+        observeAttachments()
     }
 
     private fun setupOfflineObserver() {
@@ -332,194 +312,194 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
     @Suppress("LongMethod", "ComplexMethod")
     fun submit(action: ConversationDetailViewAction) {
-        when (action) {
-            is Star -> handleStarAction()
-            is UnStar -> handleUnStarAction()
-            is ConversationDetailViewAction.MarkRead -> markAsRead()
-            is MarkUnread -> handleMarkUnReadAction()
-            is MoveToTrash -> handleTrashAction()
-            is ConversationDetailViewAction.MoveToArchive -> handleArchiveAction()
-            is ConversationDetailViewAction.MoveToSpam -> handleSpamAction()
-            is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
-            is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
-            is ConversationDetailViewAction.RequestConversationMoveToBottomSheet ->
-                handleRequestMoveToBottomSheetAction()
+        viewModelScope.launch {
+            when (action) {
+                is Star -> handleStarAction()
+                is UnStar -> handleUnStarAction()
+                is ConversationDetailViewAction.MarkRead -> markAsRead()
+                is MarkUnread -> handleMarkUnReadAction()
+                is MoveToTrash -> handleTrashAction()
+                is ConversationDetailViewAction.MoveToArchive -> handleArchiveAction()
+                is ConversationDetailViewAction.MoveToSpam -> handleSpamAction()
+                is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
+                is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
+                is ConversationDetailViewAction.RequestConversationMoveToBottomSheet ->
+                    handleRequestMoveToBottomSheetAction()
 
-            is ConversationDetailViewAction.MoveToCompleted -> handleMoveToCompleted(action)
-            is MoveToInbox -> handleMoveToInboxAction()
-            is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet ->
-                handleRequestLabelAsBottomSheetAction()
+                is ConversationDetailViewAction.MoveToCompleted -> handleMoveToCompleted(action)
+                is MoveToInbox -> handleMoveToInboxAction()
+                is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet ->
+                    handleRequestLabelAsBottomSheetAction()
 
-            is ConversationDetailViewAction.RequestContactActionsBottomSheet ->
-                showContactActionsBottomSheetAndLoadData(action)
+                is ConversationDetailViewAction.RequestContactActionsBottomSheet ->
+                    showContactActionsBottomSheetAndLoadData(action)
 
-            is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet ->
-                showMessageMoreActionsBottomSheet(action)
+                is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet ->
+                    showMessageMoreActionsBottomSheet(action)
 
-            is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet ->
-                handleRequestMoreBottomSheetAction(action)
+                is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet ->
+                    handleRequestMoreBottomSheetAction(action)
 
-            is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet ->
-                requestMessageLabelAsBottomSheet(action)
+                is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet ->
+                    requestMessageLabelAsBottomSheet(action)
 
-            is ConversationDetailViewAction.RequestMessageMoveToBottomSheet ->
-                requestMessageMoveToBottomSheet(action)
+                is ConversationDetailViewAction.RequestMessageMoveToBottomSheet ->
+                    requestMessageMoveToBottomSheet(action)
 
-            is ConversationDetailViewAction.LabelAsCompleted -> handleLabelAsCompleted(action)
+                is ConversationDetailViewAction.LabelAsCompleted -> handleLabelAsCompleted(action)
 
-            is ExpandMessage -> onExpandMessage(action.messageId)
-            is CollapseMessage -> onCollapseMessage(action.messageId)
-            is DoNotAskLinkConfirmationAgain -> onDoNotAskLinkConfirmationChecked()
-            is ShowAllAttachmentsForMessage -> showAllAttachmentsForMessage(action.messageId)
-            is ConversationDetailViewAction.OnAttachmentClicked -> {
-                onOpenAttachmentClicked(action.openMode, action.attachmentId)
-            }
+                is ExpandMessage -> onExpandMessage(action.messageId)
+                is CollapseMessage -> onCollapseMessage(action.messageId)
+                is DoNotAskLinkConfirmationAgain -> onDoNotAskLinkConfirmationChecked()
+                is ShowAllAttachmentsForMessage -> showAllAttachmentsForMessage(action.messageId)
+                is ConversationDetailViewAction.OnAttachmentClicked ->
+                    onOpenAttachmentClicked(action.openMode, action.attachmentId)
 
-            is ConversationDetailViewAction.ExpandOrCollapseAttachmentList -> {
-                handleExpandOrCollapseAttachmentList(action.messageId)
-            }
 
-            is ConversationDetailViewAction.ReportPhishingConfirmed -> handleReportPhishingConfirmed(action)
-            is ConversationDetailViewAction.OpenInProtonCalendar -> handleOpenInProtonCalendar(action)
-            is ConversationDetailViewAction.MarkMessageUnread -> handleMarkMessageUnread(action)
-            is ConversationDetailViewAction.MoveMessage -> handleMoveMessage(action)
+                is ConversationDetailViewAction.ExpandOrCollapseAttachmentList ->
+                    handleExpandOrCollapseAttachmentList(action.messageId)
 
-            is ConversationDetailViewAction.StarMessage -> handleStarMessage(action)
-            is ConversationDetailViewAction.UnStarMessage -> handleUnStarMessage(action)
+                is ConversationDetailViewAction.ReportPhishingConfirmed -> handleReportPhishingConfirmed(action)
+                is ConversationDetailViewAction.OpenInProtonCalendar -> handleOpenInProtonCalendar(action)
+                is ConversationDetailViewAction.MarkMessageUnread -> handleMarkMessageUnread(action)
+                is ConversationDetailViewAction.MoveMessage -> handleMoveMessage(action)
 
-            is ConversationDetailViewAction.ChangeVisibilityOfMessages -> handleChangeVisibilityOfMessages()
+                is ConversationDetailViewAction.StarMessage -> handleStarMessage(action)
+                is ConversationDetailViewAction.UnStarMessage -> handleUnStarMessage(action)
 
-            is ConversationDetailViewAction.DeleteRequested -> handleDeleteRequestedAction()
-            is ConversationDetailViewAction.DeleteDialogDismissed,
-            is ConversationDetailViewAction.DeleteMessageRequested,
-            is ConversationDetailViewAction.DismissBottomSheet,
-            is MessageBodyLinkClicked,
-            is RequestScrollTo,
-            is ScrollRequestCompleted,
-            is ConversationDetailViewAction.ReportPhishing,
-            is ConversationDetailViewAction.ReportPhishingDismissed,
-            is ConversationDetailViewAction.BlockSender,
-            is ConversationDetailViewAction.BlockSenderDismissed,
-            is ConversationDetailViewAction.MarkMessageAsLegitimate,
-            is ConversationDetailViewAction.MarkMessageAsLegitimateDismissed,
-            is ConversationDetailViewAction.EditScheduleSendMessageDismissed,
-            is ConversationDetailViewAction.EditScheduleSendMessageRequested -> directlyHandleViewAction(action)
+                is ConversationDetailViewAction.ChangeVisibilityOfMessages -> handleChangeVisibilityOfMessages()
 
-            is ConversationDetailViewAction.SwitchViewMode -> handleSwitchViewMode(action)
+                is ConversationDetailViewAction.DeleteRequested -> handleDeleteRequestedAction()
+                is ConversationDetailViewAction.DeleteDialogDismissed,
+                is ConversationDetailViewAction.DeleteMessageRequested,
+                is ConversationDetailViewAction.DismissBottomSheet,
+                is MessageBodyLinkClicked,
+                is RequestScrollTo,
+                is ScrollRequestCompleted,
+                is ConversationDetailViewAction.ReportPhishing,
+                is ConversationDetailViewAction.ReportPhishingDismissed,
+                is ConversationDetailViewAction.BlockSender,
+                is ConversationDetailViewAction.BlockSenderDismissed,
+                is ConversationDetailViewAction.MarkMessageAsLegitimate,
+                is ConversationDetailViewAction.MarkMessageAsLegitimateDismissed,
+                is ConversationDetailViewAction.EditScheduleSendMessageDismissed,
+                is ConversationDetailViewAction.EditScheduleSendMessageRequested -> directlyHandleViewAction(action)
 
-            is ConversationDetailViewAction.OnAvatarImageLoadRequested ->
-                handleOnAvatarImageLoadRequested(action.avatar)
+                is ConversationDetailViewAction.SwitchViewMode -> handleSwitchViewMode(action)
 
-            is ConversationDetailViewAction.ShowEmbeddedImages -> viewModelScope.launch {
-                setOrRefreshMessageBody(
+                is ConversationDetailViewAction.OnAvatarImageLoadRequested ->
+                    handleOnAvatarImageLoadRequested(action.avatar)
+
+                is ConversationDetailViewAction.ShowEmbeddedImages -> setOrRefreshMessageBody(
                     messageId = action.messageId,
                     override = MessageBodyTransformationsOverride.LoadEmbeddedImages
                 )
-            }
 
-            is ConversationDetailViewAction.ExpandOrCollapseMessageBody -> viewModelScope.launch {
-                setOrRefreshMessageBody(
+                is ConversationDetailViewAction.ExpandOrCollapseMessageBody -> setOrRefreshMessageBody(
                     messageId = action.messageId,
                     override = MessageBodyTransformationsOverride.ToggleQuotedText
                 )
-            }
 
-            is ConversationDetailViewAction.LoadRemoteAndEmbeddedContent -> viewModelScope.launch {
-                setOrRefreshMessageBody(
+                is ConversationDetailViewAction.LoadRemoteAndEmbeddedContent -> setOrRefreshMessageBody(
                     messageId = action.messageId,
                     override = MessageBodyTransformationsOverride.LoadRemoteContentAndEmbeddedImages
                 )
-            }
 
-            is ConversationDetailViewAction.LoadRemoteContent -> viewModelScope.launch {
-                setOrRefreshMessageBody(
+                is ConversationDetailViewAction.LoadRemoteContent -> setOrRefreshMessageBody(
                     messageId = action.messageId,
                     override = MessageBodyTransformationsOverride.LoadRemoteContent
                 )
+
+                is ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed ->
+                    handleMarkMessageAsLegitimateConfirmed(action)
+
+                is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action)
+                is ConversationDetailViewAction.BlockSenderConfirmed -> handleBlockSenderConfirmed(action)
+                is ConversationDetailViewAction.EditScheduleSendMessageConfirmed ->
+                    handleEditScheduleSendMessage(action)
+
+                is ConversationDetailViewAction.PrintMessage -> handlePrintMessage(action.context, action.messageId)
+                is ConversationDetailViewAction.RetryRsvpEventLoading ->
+                    handleGetRsvpEvent(action.messageId, refresh = true)
+
+                is ConversationDetailViewAction.AnswerRsvpEvent -> handleAnswerRsvpEvent(
+                    action.messageId,
+                    action.answer
+                )
+
+                ConversationDetailViewAction.OnUnsnoozeConversationRequested -> handleUnsnoozeMessage()
+                is ConversationDetailViewAction.SnoozeDismissed -> handleSnoozeDismissedAction(action)
+
+                is ConversationDetailViewAction.SnoozeCompleted -> handleSnoozeCompletedAction(action)
+
+
+                is ConversationDetailViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet()
+                is ConversationDetailViewAction.UnsubscribeFromNewsletter ->
+                    handleUnsubscribeFromNewsletter(action.messageId)
             }
-
-            is ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed ->
-                handleMarkMessageAsLegitimateConfirmed(action)
-
-            is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action)
-            is ConversationDetailViewAction.BlockSenderConfirmed -> handleBlockSenderConfirmed(action)
-            is ConversationDetailViewAction.EditScheduleSendMessageConfirmed -> handleEditScheduleSendMessage(action)
-            is ConversationDetailViewAction.PrintMessage -> handlePrintMessage(action.context, action.messageId)
-            is ConversationDetailViewAction.RetryRsvpEventLoading ->
-                handleGetRsvpEvent(action.messageId, refresh = true)
-
-            is ConversationDetailViewAction.AnswerRsvpEvent -> handleAnswerRsvpEvent(action.messageId, action.answer)
-            ConversationDetailViewAction.OnUnsnoozeConversationRequested -> handleUnsnoozeMessage()
-            is ConversationDetailViewAction.SnoozeDismissed -> handleSnoozeDismissedAction(action)
-            is ConversationDetailViewAction.SnoozeCompleted -> handleSnoozeCompletedAction(action)
-            is ConversationDetailViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet()
-            is ConversationDetailViewAction.UnsubscribeFromNewsletter ->
-                handleUnsubscribeFromNewsletter(action.messageId)
         }
     }
 
-    private fun handlePrintMessage(context: Context, messageId: MessageId) {
+    private suspend fun handlePrintMessage(context: Context, messageId: MessageId) {
         val conversationState = state.value.conversationState
         val messagesState = state.value.messagesState
 
-        viewModelScope.launch {
-            if (
-                conversationState is ConversationDetailMetadataState.Data &&
-                messagesState is ConversationDetailsMessagesState.Data
-            ) {
-                messagesState.messages.find { it.messageId.id == messageId.id }?.let {
-                    if (it is ConversationDetailMessageUiModel.Expanded) {
-                        printMessage(
-                            context = context,
-                            subject = conversationState.conversationUiModel.subject,
-                            messageHeader = it.messageDetailHeaderUiModel,
-                            messageBody = it.messageBodyUiModel,
-                            loadEmbeddedImage = this@ConversationDetailViewModel::loadImage,
-                            printConfiguration = PrintConfiguration(
-                                showRemoteContent = !it.messageBodyUiModel.shouldShowRemoteContentBanner,
-                                showEmbeddedImages = !it.messageBodyUiModel.shouldShowEmbeddedImagesBanner
-                            )
+        if (
+            conversationState is ConversationDetailMetadataState.Data &&
+            messagesState is ConversationDetailsMessagesState.Data
+        ) {
+            messagesState.messages.find { it.messageId.id == messageId.id }?.let {
+                if (it is ConversationDetailMessageUiModel.Expanded) {
+                    printMessage(
+                        context = context,
+                        subject = conversationState.conversationUiModel.subject,
+                        messageHeader = it.messageDetailHeaderUiModel,
+                        messageBody = it.messageBodyUiModel,
+                        loadEmbeddedImage = this@ConversationDetailViewModel::loadImage,
+                        printConfiguration = PrintConfiguration(
+                            showRemoteContent = !it.messageBodyUiModel.shouldShowRemoteContentBanner,
+                            showEmbeddedImages = !it.messageBodyUiModel.shouldShowEmbeddedImagesBanner
                         )
-                    } else {
-                        Timber.e("Can't print a message that is not expanded")
-                    }
-                    emitNewStateFrom(ConversationDetailViewAction.DismissBottomSheet)
+                    )
+                } else {
+                    Timber.e("Can't print a message that is not expanded")
                 }
+                emitNewStateFrom(ConversationDetailViewAction.DismissBottomSheet)
             }
         }
     }
 
-    private fun handleSnoozeCompletedAction(action: ConversationDetailViewAction.SnoozeCompleted) =
-        viewModelScope.launch {
-            emitNewStateFrom(ConversationDetailEvent.ExitScreenWithMessage(action))
-        }
+    private suspend fun handleSnoozeCompletedAction(action: ConversationDetailViewAction.SnoozeCompleted) {
+        emitNewStateFrom(ConversationDetailEvent.ExitScreenWithMessage(action))
+    }
 
-    private fun handleSnoozeDismissedAction(action: ConversationDetailViewAction.SnoozeDismissed) =
-        viewModelScope.launch {
-            emitNewStateFrom(action)
-        }
 
-    private fun requestSnoozeBottomSheet() {
-        viewModelScope.launch {
-            val userId = primaryUserId.filterNotNull().first()
+    private suspend fun handleSnoozeDismissedAction(action: ConversationDetailViewAction.SnoozeDismissed) {
+        emitNewStateFrom(action)
+    }
+
+    private suspend fun requestSnoozeBottomSheet() {
+        withUserId { userId ->
             val selectedLabelId = openedFromLocation
             val event = SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(
                 userId = userId,
                 labelId = selectedLabelId,
                 itemIds = listOf(SnoozeConversationId(conversationId.id))
             )
-            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
+            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event)).right()
         }
     }
 
-    private fun handleEditScheduleSendMessage(action: ConversationDetailViewAction.EditScheduleSendMessageConfirmed) {
-        viewModelScope.launch {
-            emitNewStateFrom(action)
-            cancelScheduleSendMessage(primaryUserId.first(), MessageId(action.messageId.id))
+    private suspend fun handleEditScheduleSendMessage(
+        action: ConversationDetailViewAction.EditScheduleSendMessageConfirmed
+    ) {
+        emitNewStateFrom(action)
+        withUserId { userId ->
+            cancelScheduleSendMessage(userId, MessageId(action.messageId.id))
                 .onLeft { error ->
                     if (error.isOfflineError()) {
                         emitNewStateFrom(ConversationDetailEvent.OfflineErrorCancellingScheduleSend(action.messageId))
-                        return@launch
+                        return@onLeft
                     }
                     emitNewStateFrom(ConversationDetailEvent.ErrorCancellingScheduleSend(action.messageId))
                 }
@@ -527,16 +507,13 @@ class ConversationDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSwitchViewMode(action: ConversationDetailViewAction.SwitchViewMode) {
-        viewModelScope.launch {
-            val overrideTheme = when (action.overrideTheme) {
-                MessageTheme.Light -> MessageBodyTransformationsOverride.ViewInLightMode(action.currentTheme)
-                MessageTheme.Dark -> MessageBodyTransformationsOverride.ViewInDarkMode(action.currentTheme)
-            }
-            emitNewStateFrom(action)
-            setOrRefreshMessageBody(MessageIdUiModel(action.messageId.id), overrideTheme)
+    private suspend fun handleSwitchViewMode(action: ConversationDetailViewAction.SwitchViewMode) {
+        val overrideTheme = when (action.overrideTheme) {
+            MessageTheme.Light -> MessageBodyTransformationsOverride.ViewInLightMode(action.currentTheme)
+            MessageTheme.Dark -> MessageBodyTransformationsOverride.ViewInDarkMode(action.currentTheme)
         }
-
+        emitNewStateFrom(action)
+        setOrRefreshMessageBody(MessageIdUiModel(action.messageId.id), overrideTheme)
     }
 
     fun loadImage(messageId: MessageId?, url: String) = messageId?.let {
@@ -567,49 +544,11 @@ class ConversationDetailViewModel @AssistedInject constructor(
         .restartableOn(reloadSignal)
         .launchIn(viewModelScope)
 
-    private fun observeConversationMetadata(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
-        showAllMessages.flatMapLatest { showAllMessages ->
-            observeConversation(
-                userId,
-                conversationId,
-                openedFromLocation,
-                conversationEntryPoint,
-                showAllMessages
-            ).mapLatest { either ->
-                either.fold(
-                    ifLeft = {
-                        if (it.isOfflineError()) {
-                            signalOfflineError()
-                            ConversationDetailEvent.NoNetworkError
-                        } else {
-                            ConversationDetailEvent.ErrorLoadingConversation
-                        }
-                    },
-                    ifRight = {
-                        ConversationDetailEvent.ConversationData(
-                            conversationUiModel = conversationMetadataMapper.toUiModel(it),
-                            hiddenMessagesBanner = it.hiddenMessagesBanner.takeIf {
-                                // In single message mode, don't pass the hiddenMessagesBanner
-                                isSingleMessageModeEnabled.not()
-                            },
-                            showAllMessages = showAllMessages
-                        )
-                    }
-                )
-            }
-        }
-    }
-        .restartableOn(reloadSignal)
-        .onEach { event ->
-            emitNewStateFrom(event)
-        }
-        .launchIn(viewModelScope)
-
     @Suppress("LongMethod")
-    private fun observeConversationMessages(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
+    private fun observeConversationData(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
         showAllMessages.flatMapLatest { showAllMessages ->
             combine(
-                observeConversationMessages(
+                observeConversationWithMessages(
                     userId,
                     conversationId,
                     openedFromLocation,
@@ -619,28 +558,57 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 observeConversationViewState(),
                 observePrimaryUserAddress(),
                 observeAvatarImageStates()
-            ) { messagesEither, conversationViewState, primaryUserAddress, avatarImageStates ->
-                val conversationMessages = messagesEither.getOrElse {
-                    return@combine if (it.isOfflineError()) {
-                        signalOfflineError()
-                        ConversationDetailEvent.NoNetworkError
-                    } else {
-                        ConversationDetailEvent.ErrorLoadingMessages
+            ) { conversationWithMessagesEither, conversationViewState, primaryUserAddress, avatarImageStates ->
+
+                val conversationWithMessages = conversationWithMessagesEither.getOrElse { error ->
+                    return@combine when {
+                        error.isOfflineError() -> {
+                            signalOfflineError()
+                            ConversationDataLoadingResult.Error(
+                                metadataEvent = ConversationDetailEvent.NoNetworkError,
+                                messagesEvent = ConversationDetailEvent.NoNetworkError
+                            )
+                        }
+
+                        error is ConversationError.ConvoWithNoMessages ||
+                            error is ConversationError.NullValueReturned -> {
+                            ConversationDataLoadingResult.Exit
+                        }
+
+                        else -> {
+                            ConversationDataLoadingResult.Error(
+                                metadataEvent = ConversationDetailEvent.ErrorLoadingConversation,
+                                messagesEvent = ConversationDetailEvent.ErrorLoadingMessages
+                            )
+                        }
                     }
                 }
 
+                // Build metadata event
+                val metadataEvent = ConversationDetailEvent.ConversationData(
+                    conversationUiModel = conversationMetadataMapper.toUiModel(conversationWithMessages.conversation),
+                    hiddenMessagesBanner = conversationWithMessages.conversation.hiddenMessagesBanner.takeIf {
+                        isSingleMessageModeEnabled.not()
+                    },
+                    showAllMessages = showAllMessages
+                )
+
+                // Filter messages for single message mode
                 val displayMessages = when {
                     isSingleMessageModeEnabled -> {
-                        val message = conversationMessages.filterMessage(initialScrollToMessageId)
+                        val message = conversationWithMessages.messages.filterMessage(initialScrollToMessageId)
                         if (message == null) {
                             Timber.tag("SingleMessageMode")
                                 .w("single message requested, message is not in convo $initialScrollToMessageId")
-                            return@combine ConversationDetailEvent.ErrorLoadingSingleMessage
+                            return@combine ConversationDataLoadingResult.Error(
+                                metadataEvent = metadataEvent,
+                                messagesEvent = ConversationDetailEvent.ErrorLoadingSingleMessage
+                            )
                         }
                         message
                     }
 
-                    else -> conversationMessages.messages
+                    else -> conversationWithMessages.messages.messages
                 }
 
                 val messagesUiModels = buildMessagesUiModels(
@@ -651,22 +619,29 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 ).toImmutableList()
 
                 val initialScrollTo = initialScrollToMessageId
-                    ?: conversationMessages.messageIdToOpen
+                    ?: conversationWithMessages.messages.messageIdToOpen
                         .let { messageIdUiModelMapper.toUiModel(it) }
-                if (stateIsLoadingOrOffline() && allCollapsed(conversationViewState.messagesState)) {
-                    ConversationDetailEvent.MessagesData(
-                        messagesUiModels,
-                        initialScrollTo,
-                        openedFromLocation
-                    )
-                } else {
-                    val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
-                    ConversationDetailEvent.MessagesData(
-                        messagesUiModels,
-                        requestScrollTo,
-                        openedFromLocation
-                    )
-                }
+
+                val messagesEvent =
+                    if (stateIsLoadingOrOffline() && allCollapsed(conversationViewState.messagesState)) {
+                        ConversationDetailEvent.MessagesData(
+                            messagesUiModels,
+                            initialScrollTo,
+                            openedFromLocation
+                        )
+                    } else {
+                        val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
+                        ConversationDetailEvent.MessagesData(
+                            messagesUiModels,
+                            requestScrollTo,
+                            openedFromLocation
+                        )
+                    }
+
+                ConversationDataLoadingResult.Success(
+                    conversationData = metadataEvent,
+                    messagesData = messagesEvent
+                )
             }
         }
     }
@@ -674,10 +649,45 @@ class ConversationDetailViewModel @AssistedInject constructor(
         .distinctUntilChanged()
         .flowOn(ioDispatcher)
         .restartableOn(reloadSignal)
-        .onEach { event ->
-            emitNewStateFrom(event)
+        .onEach { result ->
+            // Here, we emit both metadata and messages events together, as they represent
+            // a single logical update of conversation data.
+            //
+            // Bundling them in a single event becomes rather messy due to the `Affecting..Component`
+            // interfaces in the reducers.
+            // Given that the emissions are sequential and ordering is respected, it's safe to emit this way.
+            when (result) {
+                is ConversationDataLoadingResult.Success -> {
+                    emitNewStateFrom(result.conversationData)
+                    emitNewStateFrom(result.messagesData)
+                }
+
+                is ConversationDataLoadingResult.Error -> {
+                    emitNewStateFrom(result.metadataEvent)
+                    emitNewStateFrom(result.messagesEvent)
+                }
+
+                is ConversationDataLoadingResult.Exit -> {
+                    emitNewStateFrom(ConversationDetailEvent.ExitScreen)
+                }
+            }
         }
         .launchIn(viewModelScope)
+
+    private sealed class ConversationDataLoadingResult {
+
+        data class Success(
+            val conversationData: ConversationDetailEvent.ConversationData,
+            val messagesData: ConversationDetailEvent.MessagesData
+        ) : ConversationDataLoadingResult()
+
+        data class Error(
+            val metadataEvent: ConversationDetailEvent,
+            val messagesEvent: ConversationDetailEvent
+        ) : ConversationDataLoadingResult()
+
+        data object Exit : ConversationDataLoadingResult()
+    }
 
     private fun ConversationMessages.filterMessage(idUiModel: MessageIdUiModel?) = this.messages
         .filter { it.messageId.id == idUiModel?.id }
@@ -715,7 +725,6 @@ class ConversationDetailViewModel @AssistedInject constructor(
                         buildCollapsedMessage(message, avatarImageState, primaryUserAddress)
                     )
                 }
-
 
                 is InMemoryConversationStateRepository.MessageState.Expanded -> {
                     buildExpandedMessage(
@@ -860,231 +869,206 @@ class ConversationDetailViewModel @AssistedInject constructor(
         labelId = openedFromLocation
     ).getOrNull()
 
-    private fun showContactActionsBottomSheetAndLoadData(
+    private suspend fun showContactActionsBottomSheetAndLoadData(
         action: ConversationDetailViewAction.RequestContactActionsBottomSheet
     ) {
-        viewModelScope.launch {
-            emitNewStateFrom(action)
+        emitNewStateFrom(action)
 
-            val userId = primaryUserId.first()
-            val contact = findContactByEmail(userId, action.participant.participantAddress)
+        val userId = primaryUserId.first()
+        val contact = findContactByEmail(userId, action.participant.participantAddress)
 
-            val primaryUserAddress = observePrimaryUserAddress().first()
-            val isPrimaryUserAddress = primaryUserAddress == action.participant.participantAddress
+        val primaryUserAddress = observePrimaryUserAddress().first()
+        val isPrimaryUserAddress = primaryUserAddress == action.participant.participantAddress
 
-            val senderBlocked = action.messageId?.let { isMessageSenderBlocked(userId, MessageId(it.id)) } ?: false
+        val senderBlocked = action.messageId?.let { isMessageSenderBlocked(userId, MessageId(it.id)) } ?: false
 
-            val event = ConversationDetailEvent.ConversationBottomSheetEvent(
-                ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
-                    participant = Participant(
-                        address = action.participant.participantAddress,
-                        name = action.participant.participantName
-                    ),
-                    avatarUiModel = action.avatarUiModel,
-                    contactId = contact?.id,
-                    origin = action.messageId?.let {
-                        ContactActionsBottomSheetState.Origin.MessageDetails(
-                            MessageId(action.messageId.id)
-                        )
-                    } ?: ContactActionsBottomSheetState.Origin.Unknown,
-                    isSenderBlocked = senderBlocked,
-                    isPrimaryUserAddress = isPrimaryUserAddress
-                )
+        val event = ConversationDetailEvent.ConversationBottomSheetEvent(
+            ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
+                participant = Participant(
+                    address = action.participant.participantAddress,
+                    name = action.participant.participantName
+                ),
+                avatarUiModel = action.avatarUiModel,
+                contactId = contact?.id,
+                origin = action.messageId?.let {
+                    ContactActionsBottomSheetState.Origin.MessageDetails(
+                        MessageId(action.messageId.id)
+                    )
+                } ?: ContactActionsBottomSheetState.Origin.Unknown,
+                isSenderBlocked = senderBlocked,
+                isPrimaryUserAddress = isPrimaryUserAddress
             )
-            emitNewStateFrom(event)
+        )
+        emitNewStateFrom(event)
+    }
+
+    private suspend fun handleRequestMoveToBottomSheetAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            requestMessageMoveToBottomSheet(
+                ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId)
+            )
+        } else {
+            requestConversationMoveToBottomSheet(
+                ConversationDetailViewAction.RequestConversationMoveToBottomSheet
+            )
         }
     }
 
-    private fun handleRequestMoveToBottomSheetAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                requestMessageMoveToBottomSheet(
-                    ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId)
-                )
-            } else {
-                requestConversationMoveToBottomSheet(
-                    ConversationDetailViewAction.RequestConversationMoveToBottomSheet
-                )
-            }
-        }
-    }
-
-    private fun requestConversationMoveToBottomSheet(
+    private suspend fun requestConversationMoveToBottomSheet(
         operation: ConversationDetailViewAction.RequestConversationMoveToBottomSheet
     ) {
-        viewModelScope.launch {
-            emitNewStateFrom(operation)
+        emitNewStateFrom(operation)
 
-            val event = MoveToBottomSheetState.MoveToBottomSheetEvent.Ready(
-                userId = primaryUserId.first(),
-                currentLabel = openedFromLocation,
-                itemIds = listOf(MoveToItemId(conversationId.id)),
-                entryPoint = MoveToBottomSheetEntryPoint.Conversation
-            )
+        val event = MoveToBottomSheetState.MoveToBottomSheetEvent.Ready(
+            userId = primaryUserId.first(),
+            currentLabel = openedFromLocation,
+            itemIds = listOf(MoveToItemId(conversationId.id)),
+            entryPoint = MoveToBottomSheetEntryPoint.Conversation
+        )
 
-            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
-        }
+        emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
     }
 
-    private fun requestMessageMoveToBottomSheet(
+    private suspend fun requestMessageMoveToBottomSheet(
         operation: ConversationDetailViewAction.RequestMessageMoveToBottomSheet
     ) {
-        viewModelScope.launch {
-            emitNewStateFrom(operation)
+        emitNewStateFrom(operation)
 
-            val userId = primaryUserId.first()
-            val isLastMessageInLocation = isLastMessageInLocation(
-                userId, conversationId,
-                operation.messageId,
-                openedFromLocation
+        val userId = primaryUserId.first()
+        val isLastMessageInLocation = isLastMessageInLocation(
+            userId, conversationId,
+            operation.messageId,
+            openedFromLocation
+        )
+
+        val event = MoveToBottomSheetState.MoveToBottomSheetEvent.Ready(
+            userId = primaryUserId.first(),
+            currentLabel = openedFromLocation,
+            itemIds = listOf(MoveToItemId(operation.messageId.id)),
+            entryPoint = MoveToBottomSheetEntryPoint.Message(operation.messageId, isLastMessageInLocation)
+        )
+
+        emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
+    }
+
+    private suspend fun handleRequestLabelAsBottomSheetAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            requestMessageLabelAsBottomSheet(
+                ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(messageId)
             )
-
-            val event = MoveToBottomSheetState.MoveToBottomSheetEvent.Ready(
-                userId = primaryUserId.first(),
-                currentLabel = openedFromLocation,
-                itemIds = listOf(MoveToItemId(operation.messageId.id)),
-                entryPoint = MoveToBottomSheetEntryPoint.Message(operation.messageId, isLastMessageInLocation)
+        } else {
+            requestConversationLabelAsBottomSheet(
+                ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
             )
-
-            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
         }
     }
 
-    private fun handleRequestLabelAsBottomSheetAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                requestMessageLabelAsBottomSheet(
-                    ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(messageId)
-                )
-            } else {
-                requestConversationLabelAsBottomSheet(
-                    ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
-                )
-            }
-        }
-    }
-
-    private fun requestConversationLabelAsBottomSheet(
+    private suspend fun requestConversationLabelAsBottomSheet(
         operation: ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
     ) {
-        viewModelScope.launch {
-            emitNewStateFrom(operation)
+        emitNewStateFrom(operation)
 
-            val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready(
-                userId = primaryUserId.first(),
-                currentLabel = openedFromLocation,
-                itemIds = listOf(LabelAsItemId(conversationId.id)),
-                entryPoint = LabelAsBottomSheetEntryPoint.Conversation
-            )
+        val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready(
+            userId = primaryUserId.first(),
+            currentLabel = openedFromLocation,
+            itemIds = listOf(LabelAsItemId(conversationId.id)),
+            entryPoint = LabelAsBottomSheetEntryPoint.Conversation
+        )
 
-            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
-        }
+        emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
     }
 
-    private fun requestMessageLabelAsBottomSheet(
+    private suspend fun requestMessageLabelAsBottomSheet(
         operation: ConversationDetailViewAction.RequestMessageLabelAsBottomSheet
     ) {
-        viewModelScope.launch {
-            val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready(
-                userId = primaryUserId.first(),
-                currentLabel = openedFromLocation,
-                itemIds = listOf(LabelAsItemId(operation.messageId.id)),
-                entryPoint = LabelAsBottomSheetEntryPoint.Message(operation.messageId)
-            )
+        val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready(
+            userId = primaryUserId.first(),
+            currentLabel = openedFromLocation,
+            itemIds = listOf(LabelAsItemId(operation.messageId.id)),
+            entryPoint = LabelAsBottomSheetEntryPoint.Message(operation.messageId)
+        )
 
-            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
-        }
+        emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
     }
 
-    private fun handleLabelAsCompleted(operation: ConversationDetailViewAction.LabelAsCompleted) {
-        viewModelScope.launch {
-            val event = if (operation.wasArchived) {
-                ConversationDetailEvent.ExitScreenWithMessage(operation)
-            } else {
-                operation
-            }
-
-            emitNewStateFrom(event)
+    private suspend fun handleLabelAsCompleted(operation: ConversationDetailViewAction.LabelAsCompleted) {
+        val event = if (operation.wasArchived) {
+            ConversationDetailEvent.ExitScreenWithMessage(operation)
+        } else {
+            operation
         }
+
+        emitNewStateFrom(event)
     }
 
-    private fun handleMoveToCompleted(operation: ConversationDetailViewAction.MoveToCompleted) {
-        viewModelScope.launch {
-            val shouldExit = when (val entryPoint = operation.entryPoint) {
-                is MoveToBottomSheetEntryPoint.Message ->
-                    entryPoint.isLastInCurrentLocation || isSingleMessageModeEnabled
+    private suspend fun handleMoveToCompleted(operation: ConversationDetailViewAction.MoveToCompleted) {
+        val shouldExit = when (val entryPoint = operation.entryPoint) {
+            is MoveToBottomSheetEntryPoint.Message ->
+                entryPoint.isLastInCurrentLocation || isSingleMessageModeEnabled
 
-                is MoveToBottomSheetEntryPoint.Conversation -> true
-                else -> false
-            }
-
-            val event = if (shouldExit) ConversationDetailEvent.ExitScreenWithMessage(operation) else operation
-
-            emitNewStateFrom(event)
+            is MoveToBottomSheetEntryPoint.Conversation -> true
+            else -> false
         }
+
+        val event = if (shouldExit) ConversationDetailEvent.ExitScreenWithMessage(operation) else operation
+
+        emitNewStateFrom(event)
     }
 
-    private fun showMessageMoreActionsBottomSheet(
+    private suspend fun showMessageMoreActionsBottomSheet(
         initialEvent: ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet
     ) {
-        viewModelScope.launch {
-            emitNewStateFrom(initialEvent)
+        emitNewStateFrom(initialEvent)
 
-            val userId = primaryUserId.first()
-            val labelId = openedFromLocation
+        val userId = primaryUserId.first()
+        val labelId = openedFromLocation
 
-            val moreActions = getMoreActionsBottomSheetData.forMessage(
-                userId,
-                labelId,
-                initialEvent.messageId,
-                initialEvent.themeOptions,
-                initialEvent.entryPoint
-            )
-                ?: return@launch
-            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
-        }
+        val moreActions = getMoreActionsBottomSheetData.forMessage(
+            userId,
+            labelId,
+            initialEvent.messageId,
+            initialEvent.themeOptions,
+            initialEvent.entryPoint
+        )
+            ?: return
+        emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
     }
 
-    private fun handleRequestMoreBottomSheetAction(
+    private suspend fun handleRequestMoreBottomSheetAction(
         action: ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet
     ) {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                showMessageMoreActionsBottomSheet(
-                    initialEvent = ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                        messageId = messageId,
-                        themeOptions = MessageThemeOptions(MessageTheme.Dark),
-                        entryPoint = action.entryPoint
-                    )
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            showMessageMoreActionsBottomSheet(
+                initialEvent = ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                    messageId = messageId,
+                    themeOptions = MessageThemeOptions(MessageTheme.Dark),
+                    entryPoint = action.entryPoint
                 )
-            } else {
-                showConversationMoreActionsBottomSheet(action)
-            }
+            )
+        } else {
+            showConversationMoreActionsBottomSheet(action)
         }
     }
 
-    private fun showConversationMoreActionsBottomSheet(
+    private suspend fun showConversationMoreActionsBottomSheet(
         initialEvent: ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet
     ) {
-        viewModelScope.launch {
-            Timber.d("more-actions: requesting bottomsheet for convo")
-            emitNewStateFrom(initialEvent)
+        emitNewStateFrom(initialEvent)
 
-            val userId = primaryUserId.first()
-            val labelId = openedFromLocation
-            val moreActions = getMoreActionsBottomSheetData.forConversation(
-                userId,
-                labelId,
-                conversationId,
-                conversationEntryPoint,
-                showAllMessages.value
-            ) ?: return@launch
+        val userId = primaryUserId.first()
+        val labelId = openedFromLocation
+        val moreActions = getMoreActionsBottomSheetData.forConversation(
+            userId,
+            labelId,
+            conversationId,
+            conversationEntryPoint,
+            showAllMessages.value
+        ) ?: return
 
-            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
-        }
+        emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
     }
 
     private suspend fun emitNewStateFrom(event: ConversationDetailOperation) {
@@ -1092,190 +1076,163 @@ class ConversationDetailViewModel @AssistedInject constructor(
         mutableDetailState.update { newState }
     }
 
-    private fun handleMarkUnReadAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                handleMarkMessageUnread(ConversationDetailViewAction.MarkMessageUnread(messageId))
+    private suspend fun handleMarkUnReadAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            handleMarkMessageUnread(ConversationDetailViewAction.MarkMessageUnread(messageId))
+        } else {
+            markAsUnread()
+        }
+    }
+
+    private suspend fun markAsRead() {
+        withUserId { userId ->
+            markConversationAsRead(userId, openedFromLocation, conversationId)
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorMarkingAsRead) }
+                .onRight { emitNewStateFrom(ConversationDetailEvent.ExitScreen) }
+        }
+    }
+
+    private suspend fun markAsUnread() {
+        withUserId { userId ->
+            markConversationAsUnread(userId, openedFromLocation, conversationId)
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorMarkingAsUnread) }
+                .onRight { emitNewStateFrom(ConversationDetailEvent.ExitScreen) }
+        }
+    }
+
+    private suspend fun handleTrashAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Trash(messageId))
+        } else {
+            moveConversationToTrash()
+        }
+    }
+
+    private suspend fun moveConversationToTrash() {
+        withUserId { userId ->
+            moveConversation(userId, conversationId, SystemLabelId.Trash)
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorMovingToTrash) }
+                .onRight { emitNewStateFrom(ConversationDetailEvent.ExitScreenWithMessage(MoveToTrash)) }
+        }
+    }
+
+    private suspend fun handleSpamAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Spam(messageId))
+        } else {
+            moveConversationToSpam()
+        }
+    }
+
+    private suspend fun moveConversationToSpam() {
+        withUserId { userId ->
+            moveConversation(userId, conversationId, SystemLabelId.Spam)
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorMovingConversation) }
+                .onRight {
+                    emitNewStateFrom(
+                        ConversationDetailEvent.ExitScreenWithMessage(ConversationDetailViewAction.MoveToSpam)
+                    )
+                }
+        }
+    }
+
+    private suspend fun handleArchiveAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Archive(messageId))
+        } else {
+            moveConversationToArchive()
+        }
+    }
+
+    private suspend fun moveConversationToArchive() {
+        withUserId { userId ->
+            moveConversation(userId, conversationId, SystemLabelId.Archive)
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorMovingConversation) }
+                .onRight {
+                    emitNewStateFrom(
+                        ConversationDetailEvent.ExitScreenWithMessage(ConversationDetailViewAction.MoveToArchive)
+                    )
+                }
+        }
+    }
+
+    private suspend fun handleStarAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            handleStarMessage(ConversationDetailViewAction.StarMessage(messageId))
+        } else {
+            starConversation()
+        }
+    }
+
+    private suspend fun starConversation() {
+        withUserId { userId ->
+            starConversations(userId, listOf(conversationId))
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorAddStar) }
+                .onRight { emitNewStateFrom(ConversationDetailViewAction.Star) }
+        }
+    }
+
+    private suspend fun handleUnStarAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            handleUnStarMessage(ConversationDetailViewAction.UnStarMessage(messageId))
+        } else {
+            unStarConversation()
+        }
+    }
+
+    private suspend fun unStarConversation() {
+        withUserId { userId ->
+            val isStarredLocation = resolveSystemLabelId(userId, openedFromLocation)
+                .getOrNull() == SystemLabelId.Starred
+
+            val successEvent = if (isStarredLocation) {
+                ConversationDetailEvent.ExitScreen
             } else {
-                markAsUnread()
+                ConversationDetailViewAction.UnStar
             }
+            unStarConversations(userId, listOf(conversationId))
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorRemoveStar) }
+                .onRight { emitNewStateFrom(successEvent) }
         }
     }
 
-    private fun markAsRead() {
-        viewModelScope.launch {
-            performSafeExitAction(
-                onLeft = ConversationDetailEvent.ErrorMarkingAsRead,
-                onRight = ConversationDetailEvent.ExitScreen
-            ) { userId ->
-                markConversationAsRead(userId, openedFromLocation, conversationId)
-            }
+    private suspend fun handleMoveToInboxAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Inbox(messageId))
+        } else {
+            moveConversationToInbox()
         }
     }
 
-    private fun markAsUnread() {
-        viewModelScope.launch {
-            performSafeExitAction(
-                onLeft = ConversationDetailEvent.ErrorMarkingAsUnread,
-                onRight = ConversationDetailEvent.ExitScreen
-            ) { userId ->
-                markConversationAsUnread(userId, openedFromLocation, conversationId)
-            }
+    private suspend fun moveConversationToInbox() {
+        withUserId { userId ->
+            moveConversation(userId, conversationId, SystemLabelId.Inbox)
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorMovingConversation) }
+                .onRight { emitNewStateFrom(ConversationDetailEvent.ExitScreenWithMessage(MoveToInbox)) }
         }
     }
 
-    private fun handleTrashAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Trash(messageId))
-            } else {
-                moveConversationToTrash()
-            }
+    private suspend fun handleDeleteRequestedAction() {
+        if (isSingleMessageModeEnabled) {
+            val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return
+            emitNewStateFrom(ConversationDetailViewAction.DeleteMessageRequested(messageId))
+        } else {
+            emitNewStateFrom(ConversationDetailViewAction.DeleteRequested)
         }
     }
 
-    private fun moveConversationToTrash() {
-        viewModelScope.launch {
-            performSafeExitAction(
-                onLeft = ConversationDetailEvent.ErrorMovingToTrash,
-                onRight = ConversationDetailEvent.ExitScreenWithMessage(MoveToTrash)
-            ) { userId ->
-                moveConversation(userId, conversationId, SystemLabelId.Trash)
-            }
-        }
-    }
+    private suspend fun handleDeleteMessageConfirmed(action: ConversationDetailViewAction.DeleteMessageConfirmed) {
+        emitNewStateFrom(action)
 
-    private fun handleSpamAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Spam(messageId))
-            } else {
-                moveConversationToSpam()
-            }
-        }
-    }
-
-    private fun moveConversationToSpam() {
-        viewModelScope.launch {
-            performSafeExitAction(
-                onLeft = ConversationDetailEvent.ErrorMovingConversation,
-                onRight = ConversationDetailEvent.ExitScreenWithMessage(ConversationDetailViewAction.MoveToSpam)
-            ) { userId ->
-                moveConversation(userId, conversationId, SystemLabelId.Spam)
-            }
-        }
-    }
-
-    private fun handleArchiveAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Archive(messageId))
-            } else {
-                moveConversationToArchive()
-            }
-        }
-    }
-
-    private fun moveConversationToArchive() {
-        viewModelScope.launch {
-            performSafeExitAction(
-                onLeft = ConversationDetailEvent.ErrorMovingConversation,
-                onRight = ConversationDetailEvent.ExitScreenWithMessage(
-                    ConversationDetailViewAction.MoveToArchive
-                )
-            ) { userId ->
-                moveConversation(userId, conversationId, SystemLabelId.Archive)
-            }
-        }
-    }
-
-    private fun handleStarAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                handleStarMessage(ConversationDetailViewAction.StarMessage(messageId))
-            } else {
-                starConversation()
-            }
-        }
-    }
-
-    private fun starConversation() {
-        primaryUserId.mapLatest { userId ->
-            starConversations(userId, listOf(conversationId)).fold(
-                ifLeft = { ConversationDetailEvent.ErrorAddStar },
-                ifRight = { Star }
-            )
-        }.onEach { event ->
-            emitNewStateFrom(event)
-        }.launchIn(viewModelScope)
-    }
-
-    private fun handleUnStarAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                handleUnStarMessage(ConversationDetailViewAction.UnStarMessage(messageId))
-            } else {
-                unStarConversation()
-            }
-        }
-    }
-
-    private fun unStarConversation() {
-        primaryUserId.mapLatest { userId ->
-            unStarConversations(userId, listOf(conversationId)).fold(
-                ifLeft = { ConversationDetailEvent.ErrorRemoveStar },
-                ifRight = { UnStar }
-            )
-        }.onEach { event ->
-            emitNewStateFrom(event)
-        }.launchIn(viewModelScope)
-    }
-
-    private fun handleMoveToInboxAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                handleMoveMessage(ConversationDetailViewAction.MoveMessage.System.Inbox(messageId))
-            } else {
-                moveConversationToInbox()
-            }
-        }
-    }
-
-    private fun moveConversationToInbox() {
-        viewModelScope.launch {
-            performSafeExitAction(
-                onLeft = ConversationDetailEvent.ErrorMovingConversation,
-                onRight = ConversationDetailEvent.ExitScreenWithMessage(MoveToInbox)
-            ) { userId ->
-                moveConversation(userId, conversationId, SystemLabelId.Inbox)
-            }
-        }
-    }
-
-    private fun handleDeleteRequestedAction() {
-        viewModelScope.launch {
-            if (isSingleMessageModeEnabled) {
-                val messageId = initialScrollToMessageId?.let { MessageId(it.id) } ?: return@launch
-                emitNewStateFrom(ConversationDetailViewAction.DeleteMessageRequested(messageId))
-            } else {
-                emitNewStateFrom(ConversationDetailViewAction.DeleteRequested)
-            }
-        }
-    }
-
-    private fun handleDeleteMessageConfirmed(action: ConversationDetailViewAction.DeleteMessageConfirmed) {
-        viewModelScope.launch {
-            emitNewStateFrom(action)
+        withUserId { userId ->
             val currentLabelId = openedFromLocation
-            val userId = primaryUserId.first()
-
             val shouldExitScreen = isSingleMessageModeEnabled ||
                 isLastMessageInLocation(
                     userId,
@@ -1284,8 +1241,8 @@ class ConversationDetailViewModel @AssistedInject constructor(
                     openedFromLocation
                 )
 
-            deleteMessages(primaryUserId.first(), listOf(action.messageId), currentLabelId)
-                .onLeft { ConversationDetailEvent.ErrorDeletingMessage }
+            deleteMessages(userId, listOf(action.messageId), currentLabelId)
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorDeletingMessage) }
                 .onRight {
                     if (shouldExitScreen) {
                         val event = ConversationDetailEvent.ExitScreenWithMessage(
@@ -1297,30 +1254,22 @@ class ConversationDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleDeleteConfirmed(action: ConversationDetailViewAction) {
-        viewModelScope.launch {
-            // We manually cancel the observations since the following deletion calls cause all the observers
-            // to emit, which could lead to race conditions as the observers re-insert the conversation and/or
-            // the messages in the DB on late changes, making the entry still re-appear in the mailbox list.
-            performSafeExitAction(
-                onLeft = ConversationDetailEvent.ErrorDeletingConversation,
-                onRight = ConversationDetailEvent.ExitScreenWithMessage(action)
-            ) { _ ->
-                deleteConversations(primaryUserId.first(), listOf(conversationId))
-            }
+    private suspend fun handleDeleteConfirmed(action: ConversationDetailViewAction) {
+        withUserId { userId ->
+            deleteConversations(userId, listOf(conversationId))
+                .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorDeletingConversation) }
+                .onRight { emitNewStateFrom(ConversationDetailEvent.ExitScreenWithMessage(action)) }
         }
     }
 
-    private fun directlyHandleViewAction(action: ConversationDetailViewAction) {
-        viewModelScope.launch { emitNewStateFrom(action) }
+    private suspend fun directlyHandleViewAction(action: ConversationDetailViewAction) {
+        emitNewStateFrom(action)
     }
 
-    private fun onExpandMessage(messageId: MessageIdUiModel) {
-        viewModelScope.launch(ioDispatcher) {
-            val domainMsgId = MessageId(messageId.id)
-            messageViewStateCache.setExpanding(domainMsgId)
-            setOrRefreshMessageBody(messageId)
-        }
+    private suspend fun onExpandMessage(messageId: MessageIdUiModel) = withContext(ioDispatcher) {
+        val domainMsgId = MessageId(messageId.id)
+        messageViewStateCache.setExpanding(domainMsgId)
+        setOrRefreshMessageBody(messageId)
     }
 
     private suspend fun setOrRefreshMessageBody(
@@ -1366,17 +1315,15 @@ class ConversationDetailViewModel @AssistedInject constructor(
             }
     }
 
-    private fun onCollapseMessage(messageId: MessageIdUiModel) {
-        viewModelScope.launch {
-            messageViewStateCache.setCollapsed(MessageId(messageId.id))
-            removeObservedAttachments(MessageId(messageId.id))
-        }
+    private suspend fun onCollapseMessage(messageId: MessageIdUiModel) {
+        messageViewStateCache.setCollapsed(MessageId(messageId.id))
+        removeObservedAttachments(MessageId(messageId.id))
     }
 
     private fun handleChangeVisibilityOfMessages() = showAllMessages.update { showAllMessages.value.not() }
 
-    private fun onDoNotAskLinkConfirmationChecked() {
-        viewModelScope.launch { updateLinkConfirmationSetting(false) }
+    private suspend fun onDoNotAskLinkConfirmationChecked() {
+        updateLinkConfirmationSetting(false)
     }
 
     private suspend fun emitMessageBodyDecryptError(error: GetMessageBodyError, messageId: MessageIdUiModel) {
@@ -1394,7 +1341,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
         emitNewStateFrom(errorState)
     }
 
-    private fun showAllAttachmentsForMessage(messageId: MessageIdUiModel) {
+    private suspend fun showAllAttachmentsForMessage(messageId: MessageIdUiModel) {
         val dataState = state.value.messagesState as? ConversationDetailsMessagesState.Data
         if (dataState == null) {
             Timber.e("Messages state is not data to perform show all attachments operation")
@@ -1415,37 +1362,37 @@ class ConversationDetailViewModel @AssistedInject constructor(
                         )
                     )
                 )
-                viewModelScope.launch { emitNewStateFrom(operation) }
+                emitNewStateFrom(operation)
             }
     }
 
-    private fun handleExpandOrCollapseAttachmentList(messageId: MessageIdUiModel) {
+    private suspend fun handleExpandOrCollapseAttachmentList(messageId: MessageIdUiModel) {
         val dataState = state.value.messagesState as? ConversationDetailsMessagesState.Data
         if (dataState == null) {
             Timber.e("Messages state is not data to perform expand or collapse attachments")
             return
         }
-        dataState.messages.firstOrNull { it.messageId == messageId }
-            ?.takeIf { it is ConversationDetailMessageUiModel.Expanded }
-            ?.let { it as ConversationDetailMessageUiModel.Expanded }
-            ?.let {
-                val attachmentGroupUiModel = it.messageBodyUiModel.attachments
-                attachmentGroupUiModel?.let {
-                    val expandCollapseMode = when {
-                        attachmentGroupUiModel.isExpandable().not() -> AttachmentListExpandCollapseMode.NotApplicable
-                        attachmentGroupUiModel.expandCollapseMode == AttachmentListExpandCollapseMode.Expanded ->
-                            AttachmentListExpandCollapseMode.Collapsed
 
-                        else -> AttachmentListExpandCollapseMode.Expanded
-                    }
-                    viewModelScope.launch {
-                        messageViewStateCache.updateAttachmentsExpandCollapseMode(
-                            MessageId(messageId.id),
-                            expandCollapseMode
-                        )
-                    }
-                }
-            }
+        val expandedMessage = dataState.messages
+            .firstOrNull { it.messageId == messageId }
+            as? ConversationDetailMessageUiModel.Expanded
+            ?: return // Not found or not expanded
+
+        val attachmentGroup = expandedMessage.messageBodyUiModel.attachments
+            ?: return // No attachments
+
+        val expandMode = when {
+            !attachmentGroup.isExpandable() -> AttachmentListExpandCollapseMode.NotApplicable
+            attachmentGroup.expandCollapseMode == AttachmentListExpandCollapseMode.Expanded ->
+                AttachmentListExpandCollapseMode.Collapsed
+
+            else -> AttachmentListExpandCollapseMode.Expanded
+        }
+
+        messageViewStateCache.updateAttachmentsExpandCollapseMode(
+            MessageId(messageId.id),
+            expandMode
+        )
     }
 
     private fun observeAttachments() = primaryUserId.flatMapLatest { userId ->
@@ -1463,16 +1410,14 @@ class ConversationDetailViewModel @AssistedInject constructor(
         .restartableOn(reloadSignal)
         .launchIn(viewModelScope)
 
-    private fun onOpenAttachmentClicked(openMode: AttachmentOpenMode, attachmentId: AttachmentId) {
-        viewModelScope.launch {
-            val userId = primaryUserId.first()
-            getAttachmentIntentValues(userId, openMode, attachmentId).fold(
-                ifLeft = {
+    private suspend fun onOpenAttachmentClicked(openMode: AttachmentOpenMode, attachmentId: AttachmentId) {
+        withUserId { userId ->
+            getAttachmentIntentValues(userId, openMode, attachmentId)
+                .onLeft {
                     Timber.d("Failed to download attachment: $it")
                     emitNewStateFrom(ConversationDetailEvent.ErrorGettingAttachment)
-                },
-                ifRight = { emitNewStateFrom(ConversationDetailEvent.OpenAttachmentEvent(it)) }
-            )
+                }
+                .onRight { emitNewStateFrom(ConversationDetailEvent.OpenAttachmentEvent(it)) }
         }
     }
 
@@ -1484,26 +1429,25 @@ class ConversationDetailViewModel @AssistedInject constructor(
         attachmentsState.update { it - MessageId(messageId.id) }
     }
 
-    private fun handleReportPhishingConfirmed(action: ConversationDetailViewAction.ReportPhishingConfirmed) {
-        viewModelScope.launch {
-            reportPhishingMessage(primaryUserId.first(), action.messageId)
+    private suspend fun handleReportPhishingConfirmed(action: ConversationDetailViewAction.ReportPhishingConfirmed) {
+        withUserId { userId ->
+            reportPhishingMessage(userId, action.messageId)
                 .onLeft { Timber.e("Error while reporting phishing message: $it") }
-            emitNewStateFrom(action)
         }
+
+        emitNewStateFrom(action)
     }
 
-    private fun handleOpenInProtonCalendar(action: ConversationDetailViewAction.OpenInProtonCalendar) {
-        viewModelScope.launch {
-            val isProtonCalendarInstalled = isProtonCalendarInstalled()
-            if (isProtonCalendarInstalled) {
-                val dataState = mutableDetailState.value.messagesState as? ConversationDetailsMessagesState.Data
-                dataState?.messages?.mapNotNull { it as? ConversationDetailMessageUiModel.Expanded }
-                    ?.first { it.messageId.id == action.messageId.id }
-                    ?.let { messageUiModel -> handleOpenInProtonCalendar(messageUiModel) }
-            } else {
-                val intent = OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
-                emitNewStateFrom(ConversationDetailEvent.HandleOpenProtonCalendarRequest(intent))
-            }
+    private suspend fun handleOpenInProtonCalendar(action: ConversationDetailViewAction.OpenInProtonCalendar) {
+        val isProtonCalendarInstalled = isProtonCalendarInstalled()
+        if (isProtonCalendarInstalled) {
+            val dataState = mutableDetailState.value.messagesState as? ConversationDetailsMessagesState.Data
+            dataState?.messages?.mapNotNull { it as? ConversationDetailMessageUiModel.Expanded }
+                ?.first { it.messageId.id == action.messageId.id }
+                ?.let { messageUiModel -> handleOpenInProtonCalendar(messageUiModel) }
+        } else {
+            val intent = OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
+            emitNewStateFrom(ConversationDetailEvent.HandleOpenProtonCalendarRequest(intent))
         }
     }
 
@@ -1567,24 +1511,22 @@ class ConversationDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleMarkMessageUnread(action: ConversationDetailViewAction.MarkMessageUnread) {
-        viewModelScope.launch {
+    private suspend fun handleMarkMessageUnread(action: ConversationDetailViewAction.MarkMessageUnread) {
+        withUserId { userId ->
             if (isSingleMessageConversation()) {
-                performSafeExitAction(
-                    onLeft = ConversationDetailEvent.ErrorMarkingAsUnread,
-                    onRight = ConversationDetailEvent.ExitScreen
-                ) { _ ->
-                    markMessageAsUnread(primaryUserId.first(), action.messageId)
-                }
+                markMessageAsUnread(userId, action.messageId)
+                    .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorMarkingAsUnread) }
+                    .onRight { emitNewStateFrom(ConversationDetailEvent.ExitScreen) }
             } else {
-                markMessageAsUnread(primaryUserId.first(), action.messageId)
-                onCollapseMessage(MessageIdUiModel(action.messageId.id))
-                emitNewStateFrom(action)
+                markMessageAsUnread(userId, action.messageId).onRight {
+                    onCollapseMessage(MessageIdUiModel(action.messageId.id))
+                    emitNewStateFrom(action)
+                }
             }
         }
     }
 
-    private fun handleMoveMessage(action: ConversationDetailViewAction.MoveMessage) = viewModelScope.launch {
+    private suspend fun handleMoveMessage(action: ConversationDetailViewAction.MoveMessage) {
         val mailLabelId = when (action) {
             is ConversationDetailViewAction.MoveMessage.CustomFolder -> MailLabelId.Custom.Folder(action.labelId)
             is ConversationDetailViewAction.MoveMessage.System -> MailLabelId.System(action.labelId.labelId)
@@ -1643,97 +1585,88 @@ class ConversationDetailViewModel @AssistedInject constructor(
         return messagesInSameLocation.size == 1
     }
 
-    private fun handleStarMessage(starAction: ConversationDetailViewAction.StarMessage) = viewModelScope.launch {
+    private suspend fun handleStarMessage(starAction: ConversationDetailViewAction.StarMessage) {
         starMessages(primaryUserId.first(), listOf(starAction.messageId))
         emitNewStateFrom(starAction)
     }
 
-    private fun handleUnStarMessage(unStarAction: ConversationDetailViewAction.UnStarMessage) = viewModelScope.launch {
+    private suspend fun handleUnStarMessage(unStarAction: ConversationDetailViewAction.UnStarMessage) {
         unStarMessages(primaryUserId.first(), listOf(unStarAction.messageId))
         emitNewStateFrom(unStarAction)
     }
 
     private fun handleOnAvatarImageLoadRequested(avatarUiModel: AvatarUiModel) {
         (avatarUiModel as? AvatarUiModel.ParticipantAvatar)?.let { avatar ->
-            viewModelScope.launch {
-                loadAvatarImage(avatar.address, avatar.bimiSelector)
-            }
+            loadAvatarImage(avatar.address, avatar.bimiSelector)
         }
     }
 
-    private fun handleMarkMessageAsLegitimateConfirmed(
+    private suspend fun handleMarkMessageAsLegitimateConfirmed(
         action: ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed
     ) {
-        viewModelScope.launch {
+        withUserId { userId ->
             markMessageAsLegitimate(
-                userId = primaryUserId.first(),
+                userId = userId,
                 messageId = action.messageId
-            ).fold(
-                ifLeft = { Timber.e("Failed to mark message ${action.messageId.id} as legitimate") },
-                ifRight = { setOrRefreshMessageBody(MessageIdUiModel(action.messageId.id)) }
             )
-            emitNewStateFrom(action)
-        }
-    }
-
-    private fun handleUnblockSender(action: ConversationDetailViewAction.UnblockSender) = viewModelScope.launch {
-        viewModelScope.launch {
-            unblockSender(
-                userId = primaryUserId.first(),
-                email = action.email
-            ).fold(
-                ifLeft = { Timber.e("Failed to unblock sender in message ${action.messageId?.id}") },
-                ifRight = { action.messageId?.let { setOrRefreshMessageBody(it) } }
-            )
-
-            emitNewStateFrom(action)
-        }
-    }
-
-    private fun handleBlockSenderConfirmed(action: ConversationDetailViewAction.BlockSenderConfirmed) =
-        viewModelScope.launch {
-            viewModelScope.launch {
-                blockSender(
-                    userId = primaryUserId.first(),
-                    email = action.email
-                ).fold(
-                    ifLeft = { Timber.e("Failed to block sender in message ${action.messageId?.id}") },
-                    ifRight = { action.messageId?.let { setOrRefreshMessageBody(it) } }
-                )
-
-                emitNewStateFrom(action)
-            }
-        }
-
-    private fun handleGetRsvpEvent(messageId: MessageId, refresh: Boolean) {
-        viewModelScope.launch {
-            messageViewStateCache.updateRsvpEventLoading(messageId, refresh)
-            getRsvpEvent(primaryUserId.first(), messageId).fold(
-                ifLeft = { messageViewStateCache.updateRsvpEventError(messageId) },
-                ifRight = { rsvpEvent ->
-                    messageViewStateCache.updateRsvpEventShown(messageId, rsvpEvent)
+                .onLeft { Timber.e("Failed to mark message ${action.messageId.id} as legitimate") }
+                .onRight {
+                    setOrRefreshMessageBody(MessageIdUiModel(action.messageId.id))
                 }
+
+        }
+        emitNewStateFrom(action)
+    }
+
+    private suspend fun handleUnblockSender(action: ConversationDetailViewAction.UnblockSender) {
+        withUserId { userId ->
+            unblockSender(
+                userId = userId,
+                email = action.email
             )
+                .onLeft { Timber.e("Failed to unblock sender in message ${action.messageId?.id}") }
+                .onRight { action.messageId?.let { setOrRefreshMessageBody(it) } }
         }
     }
 
-    private fun handleAnswerRsvpEvent(messageId: MessageId, answer: RsvpAnswer) {
-        viewModelScope.launch {
-            messageViewStateCache.updateRsvpEventAnswering(messageId, answer)
-            answerRsvpEvent(primaryUserId.first(), messageId, answer).onLeft {
-                emitNewStateFrom(ConversationDetailEvent.ErrorAnsweringRsvpEvent)
+    private suspend fun handleBlockSenderConfirmed(action: ConversationDetailViewAction.BlockSenderConfirmed) {
+        withUserId { userId ->
+            blockSender(
+                userId = userId,
+                email = action.email
+            )
+                .onLeft { Timber.e("Failed to block sender in message ${action.messageId?.id}") }
+                .onRight { action.messageId?.let { setOrRefreshMessageBody(it) } }
+
+        }
+        emitNewStateFrom(action)
+    }
+
+    private suspend fun handleGetRsvpEvent(messageId: MessageId, refresh: Boolean) {
+        messageViewStateCache.updateRsvpEventLoading(messageId, refresh)
+        getRsvpEvent(primaryUserId.first(), messageId).fold(
+            ifLeft = { messageViewStateCache.updateRsvpEventError(messageId) },
+            ifRight = { rsvpEvent ->
+                messageViewStateCache.updateRsvpEventShown(messageId, rsvpEvent)
             }
-            handleGetRsvpEvent(messageId, refresh = false)
-        }
+        )
     }
 
-    private fun handleUnsnoozeMessage() {
-        viewModelScope.launch {
+    private suspend fun handleAnswerRsvpEvent(messageId: MessageId, answer: RsvpAnswer) {
+        messageViewStateCache.updateRsvpEventAnswering(messageId, answer)
+        answerRsvpEvent(primaryUserId.first(), messageId, answer).onLeft {
+            emitNewStateFrom(ConversationDetailEvent.ErrorAnsweringRsvpEvent)
+        }
+        handleGetRsvpEvent(messageId, refresh = false)
+    }
+
+    private suspend fun handleUnsnoozeMessage() {
+        withUserId { userId ->
             snoozeRepository.unSnoozeConversation(
-                userId = primaryUserId.first(),
+                userId = userId,
                 labelId = openedFromLocation,
                 conversationIds = listOf(conversationId)
-            ).onLeft { error ->
+            ).onLeft { _ ->
                 emitNewStateFrom(ConversationDetailEvent.ErrorUnsnoozing)
             }.onRight {
                 emitNewStateFrom(
@@ -1745,16 +1678,14 @@ class ConversationDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleUnsubscribeFromNewsletter(messageId: MessageId) {
-        viewModelScope.launch {
-            unsubscribeFromNewsletter(primaryUserId.first(), messageId).fold(
-                ifLeft = {
-                    Timber.e("Failed to unsubscribe from newsletter in message ${messageId.id}")
-                    emitNewStateFrom(ConversationDetailEvent.ErrorUnsubscribingFromNewsletter)
-                },
-                ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
-            )
-        }
+    private suspend fun handleUnsubscribeFromNewsletter(messageId: MessageId) {
+        unsubscribeFromNewsletter(primaryUserId.first(), messageId).fold(
+            ifLeft = {
+                Timber.e("Failed to unsubscribe from newsletter in message ${messageId.id}")
+                emitNewStateFrom(ConversationDetailEvent.ErrorUnsubscribingFromNewsletter)
+            },
+            ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
+        )
     }
 
     /**
@@ -1772,33 +1703,9 @@ class ConversationDetailViewModel @AssistedInject constructor(
         return label == SystemLabelId.AllMail
     }
 
-    /**
-     * A helper function that allows to perform actions that eventually cause the user to leave the screen, while
-     * still making sure that observers are not being triggered during the execution of the action.
-     *
-     * At start, all observer jobs are stopped. If the [action] completes with success, they are not resumed as the
-     * [onRight] emitted operation is expected to cause a screen exit.
-     *
-     * In case the [action] fails, other than emitting [onLeft], the observation jobs will be restarted, as the user
-     * will still be in the Conversation Details screen.
-     */
-    private suspend fun performSafeExitAction(
-        onLeft: ConversationDetailOperation,
-        onRight: ConversationDetailOperation,
-        action: suspend (userId: UserId) -> Either<*, *>
-    ) {
-        stopAllJobs()
-
+    private suspend fun withUserId(block: suspend (userId: UserId) -> Either<*, *>) {
         val userId = primaryUserId.first()
-        val event = action(userId).fold(
-            ifLeft = {
-                restartAllJobs()
-                onLeft
-            },
-            ifRight = { onRight }
-        )
-
-        emitNewStateFrom(event)
+        block(userId)
     }
 
     private suspend fun signalOfflineError() {

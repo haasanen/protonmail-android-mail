@@ -1,20 +1,20 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
- * This file is part of Proton Technologies AG and Proton Mail.
- *
- * Proton Mail is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Proton Mail is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
- */
+* Copyright (c) 2022 Proton Technologies AG
+* This file is part of Proton Technologies AG and Proton Mail.
+*
+* Proton Mail is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* Proton Mail is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
@@ -67,10 +67,13 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
+import ch.protonmail.android.mailconversation.domain.entity.ConversationWithMessages
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
+import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversationMessages
+import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversationWithMessages
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar
@@ -88,7 +91,6 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
@@ -144,9 +146,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserA
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -204,8 +204,6 @@ import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.message.MessageThemeOptionsTestData
-import io.mockk.Called
-import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -253,37 +251,43 @@ internal class ConversationDetailViewModelIntegrationTest {
             this@mockk(userId = UserIdSample.Primary)
         } returns flowOf(emptyList<ContactMetadata.Contact>().right())
     }
-    private val observeConversationUseCase: ObserveConversation = mockk {
-        coEvery {
-            this@mockk(
-                UserIdSample.Primary,
-                ConversationIdSample.WeatherForecast,
-                filterByLocationLabelId,
-                conversationEntryPoint,
-                showAllMessages
-            )
-        } returns flowOf(ConversationSample.WeatherForecast.right())
+
+    private val observeConversation = mockk<ObserveConversation> {
+        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any(), any(), any()) } returns
+            flowOf(ConversationSample.WeatherForecast.right())
     }
+
+    private val observeConversationMessages = mockk<ObserveConversationMessages> {
+        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any(), any(), any()) } returns
+            flowOf(
+                ConversationMessages(
+                    messages = nonEmptyListOf(
+                        MessageSample.Invoice,
+                        MessageSample.UnreadInvoice
+                    ),
+                    messageIdToOpen = MessageSample.Invoice.messageId
+                ).right()
+            )
+    }
+
+    private val observeConversationWithMessagesUC = mockk<ObserveConversationWithMessages> {
+        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any(), any(), any()) } returns
+            flowOf(
+                ConversationWithMessages(
+                    conversation = ConversationSample.WeatherForecast,
+                    messages = ConversationMessages(
+                        messages = nonEmptyListOf(
+                            MessageSample.Invoice,
+                            MessageSample.UnreadInvoice
+                        ),
+                        messageIdToOpen = MessageSample.Invoice.messageId
+                    )
+                ).right()
+            )
+    }
+
     private val observeMessage = mockk<ObserveMessage>()
-    private val observeConversationMessages: ObserveConversationMessages = mockk {
-        coEvery {
-            this@mockk(
-                UserIdSample.Primary,
-                ConversationIdSample.WeatherForecast,
-                filterByLocationLabelId,
-                conversationEntryPoint,
-                showAllMessages
-            )
-        } returns flowOf(
-            ConversationMessages(
-                messages = nonEmptyListOf(
-                    MessageSample.Invoice,
-                    MessageSample.UnreadInvoice
-                ),
-                messageIdToOpen = MessageSample.Invoice.messageId
-            ).right()
-        )
-    }
+
     private val observeDetailBottomBarActions = mockk<ObserveDetailBottomBarActions> {
         coEvery {
             this@mockk(
@@ -388,7 +392,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         getMessageAvailableActions,
         getConversationAvailableActions,
         observeMessage,
-        observeConversationUseCase
+        observeConversation
     )
 
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
@@ -695,18 +699,24 @@ internal class ConversationDetailViewModelIntegrationTest {
         // Given
         val initialMessage = MessageSample.AugWeatherForecast.copy(customLabels = listOf(LabelSample.Label2021))
         val updatedMessage = initialMessage.copy(isUnread = true)
-        val updatedConversationWithLabels = ConversationMessages(
-            messages = nonEmptyListOf(updatedMessage),
-            messageIdToOpen = updatedMessage.messageId
+        val updatedConversationWithLabels = ConversationWithMessages(
+            conversation = ConversationSample.WeatherForecast,
+            messages = ConversationMessages(
+                messages = nonEmptyListOf(updatedMessage),
+                messageIdToOpen = updatedMessage.messageId
+            )
         )
 
         val conversationWithLabelsFlow = MutableStateFlow(
-            ConversationMessages(
-                messages = nonEmptyListOf(initialMessage),
-                messageIdToOpen = initialMessage.messageId
+            ConversationWithMessages(
+                conversation = ConversationSample.WeatherForecast,
+                messages = ConversationMessages(
+                    messages = nonEmptyListOf(initialMessage),
+                    messageIdToOpen = initialMessage.messageId
+                )
             ).right()
         )
-        val observeConversationMessagesMock = mockk<ObserveConversationMessages> {
+        val observeConversationMessagesMock = mockk<ObserveConversationWithMessages> {
             coEvery {
                 this@mockk(
                     userId,
@@ -729,7 +739,7 @@ internal class ConversationDetailViewModelIntegrationTest {
 
         // When
         buildConversationDetailViewModel(
-            observeConversationMessages = observeConversationMessagesMock
+            observeConversationWithMessages = observeConversationMessagesMock
         ).state.test {
             // The initial states
             skipItems(3)
@@ -769,7 +779,14 @@ internal class ConversationDetailViewModelIntegrationTest {
             ),
             expectedCollapsed.messageId
         )
-        coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+        } returns flowOf(
+            ConversationWithMessages(
+                conversation = ConversationSample.WeatherForecast,
+                messages = messages
+            ).right()
+        )
 
         // When
         buildConversationDetailViewModel().state.test {
@@ -799,7 +816,14 @@ internal class ConversationDetailViewModelIntegrationTest {
             ),
             expectedScrolledTo.messageId
         )
-        coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+        } returns flowOf(
+            ConversationWithMessages(
+                conversation = ConversationSample.WeatherForecast,
+                messages = messages
+            ).right()
+        )
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -908,7 +932,14 @@ internal class ConversationDetailViewModelIntegrationTest {
             ),
             defaultExpanded.messageId
         )
-        coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+        } returns flowOf(
+            ConversationWithMessages(
+                conversation = ConversationSample.WeatherForecast,
+                messages = messages
+            ).right()
+        )
 
         val viewModel = buildConversationDetailViewModel()
 
@@ -944,7 +975,9 @@ internal class ConversationDetailViewModelIntegrationTest {
             ),
             defaultExpanded.messageId
         )
-        coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+        } returns flowOf(ConversationWithMessages(ConversationSample.WeatherForecast, messages).right())
 
         val viewModel = buildConversationDetailViewModel()
 
@@ -1153,11 +1186,6 @@ internal class ConversationDetailViewModelIntegrationTest {
     fun `verify delete is executed when delete confirmed is called`() = runTest {
         // Given
         val expectedMessage = ActionResult.DefinitiveActionResult(TextUiModel(R.string.conversation_deleted))
-        coEvery {
-            observeConversationUseCase(userId, conversationId, any(), any(), any())
-        } returns flowOf(
-            ConversationSample.WeatherForecast.right()
-        )
         coEvery { deleteConversations(userId, listOf(conversationId)) } returns Unit.right()
 
         val viewModel = buildConversationDetailViewModel()
@@ -1236,7 +1264,14 @@ internal class ConversationDetailViewModelIntegrationTest {
             ),
             defaultExpanded.messageId
         )
-        coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+        } returns flowOf(
+            ConversationWithMessages(
+                conversation = ConversationSample.WeatherForecast,
+                messages = messages
+            ).right()
+        )
         coEvery { getDecryptedMessageBody.invoke(any(), any()) } coAnswers {
             // Add a delay, so we're able to receive the `Expanding` state.
             // Without it, we'd only get the final `Expanded` state.
@@ -1424,7 +1459,14 @@ internal class ConversationDetailViewModelIntegrationTest {
 
             val messageId = message.messageId
             val openMode = AttachmentOpenMode.Open
-            coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+            coEvery {
+                observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+            } returns flowOf(
+                ConversationWithMessages(
+                    conversation = ConversationSample.WeatherForecast,
+                    messages = messages
+                ).right()
+            )
             coEvery { getDecryptedMessageBody.invoke(userId, messageId) } returns DecryptedMessageBody(
                 messageId = messageId,
                 value = EmailBodyTestSamples.BodyWithoutQuotes,
@@ -1640,7 +1682,14 @@ internal class ConversationDetailViewModelIntegrationTest {
         )
         val labelId = SystemLabelId.Archive.labelId
         val messageId = MessageSample.Invoice.messageId
-        coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+        } returns flowOf(
+            ConversationWithMessages(
+                conversation = ConversationSample.WeatherForecast,
+                messages = messages
+            ).right()
+        )
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
@@ -1933,128 +1982,6 @@ internal class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    fun `when performing move to trash with success - should stop initial jobs and not restart them`() = runTest {
-        // Given
-        val expectedEffect = ActionResult.UndoableActionResult(TextUiModel(R.string.conversation_moved_to_trash))
-        val messages = nonEmptyListOf(
-            ConversationDetailMessageUiModelSample.invoiceExpandedWithAttachments(3)
-        )
-        val messageId = MessageId(messages.first().messageId.id)
-
-        coEvery { getDecryptedMessageBody.invoke(userId, any()) } returns DecryptedMessageBody(
-            messageId = messageId,
-            value = EmailBodyTestSamples.BodyWithoutQuotes,
-            mimeType = MimeType.Html,
-            isUnread = false,
-            hasQuotedText = false,
-            hasCalendarInvite = false,
-            banners = emptyList(),
-            attachments = listOf(
-                AttachmentMetadataSamples.Document,
-                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
-                AttachmentMetadataSamples.Invoice,
-                AttachmentMetadataSamples.Image
-            )
-        ).right()
-
-        coEvery { move.invoke(any(), any(), any<SystemLabelId>()) } returns Unit.right()
-        initGenericObserverMocks()
-        val viewModel = buildConversationDetailViewModel()
-
-        // When + Then
-        viewModel.state.test {
-            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
-            advanceUntilIdle()
-
-            clearMocks(
-                observeConversationUseCase,
-                observeConversationViewState,
-                observeDetailBottomBarActions,
-                observeContacts,
-                observePrivacySettings,
-                answers = false,
-                recordedCalls = true
-            )
-
-            viewModel.submit(ConversationDetailViewAction.MoveToTrash)
-            advanceUntilIdle()
-
-            verify {
-                observeConversationUseCase wasNot Called
-                observeConversationViewState wasNot Called
-                observeDetailBottomBarActions wasNot Called
-                observeContacts wasNot Called
-                observeConversationViewState wasNot Called
-                observePrivacySettings wasNot Called
-            }
-
-            val lastItem = expectMostRecentItem()
-            assertEquals(lastItem.exitScreenActionResult.consume(), expectedEffect)
-        }
-    }
-
-    @Test
-    fun `when performing move to trash with failure - should restart observation jobs`() = runTest {
-        // Given
-        val expectedEffect = TextUiModel(R.string.error_move_to_trash_failed)
-        val messages = nonEmptyListOf(
-            ConversationDetailMessageUiModelSample.invoiceExpandedWithAttachments(3)
-        )
-        val messageId = MessageId(messages.first().messageId.id)
-
-        coEvery { getDecryptedMessageBody.invoke(userId, any()) } returns DecryptedMessageBody(
-            messageId = messageId,
-            value = EmailBodyTestSamples.BodyWithoutQuotes,
-            mimeType = MimeType.Html,
-            isUnread = false,
-            hasQuotedText = false,
-            hasCalendarInvite = false,
-            banners = emptyList(),
-            attachments = listOf(
-                AttachmentMetadataSamples.Document,
-                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
-                AttachmentMetadataSamples.Invoice,
-                AttachmentMetadataSamples.Image
-            )
-        ).right()
-
-        initGenericObserverMocks()
-
-        val viewModel = buildConversationDetailViewModel()
-        coEvery { move.invoke(any(), any(), any<SystemLabelId>()) } returns DataError.Local.CryptoError.left()
-
-        // When + Then
-        viewModel.state.test {
-            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
-            advanceUntilIdle()
-
-            clearMocks(
-                observeConversationUseCase,
-                observeConversationViewState,
-                observeDetailBottomBarActions,
-                observeContacts,
-                observePrivacySettings,
-                answers = false,
-                recordedCalls = true
-            )
-
-            viewModel.submit(ConversationDetailViewAction.MoveToTrash)
-            advanceUntilIdle()
-
-            coVerify {
-                observeConversationUseCase(userId, conversationId, any(), any(), any())
-                observeConversationViewState()
-                observePrivacySettings(userId)
-            }
-
-            val state = expectMostRecentItem()
-            assertEquals(state.exitScreenActionResult, Effect.empty())
-            assertEquals(state.exitScreenEffect, Effect.empty())
-            assertEquals(state.error.consume(), expectedEffect)
-        }
-    }
-
-    @Test
     fun `should show confirmation dialog when marking a message as legitimate`() = runTest {
         // Given
         val messageId = MessageSample.Invoice.messageId
@@ -2071,7 +1998,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
 
         // When
-        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
+        val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
 
@@ -2109,7 +2036,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { markMessageAsLegitimate(userId, messageId) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
+        val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
 
@@ -2146,7 +2073,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { unblockSender(userId, email) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
+        val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
 
@@ -2181,7 +2108,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { reportPhishingMessage(userId, messageId) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
+        val viewModel = buildConversationDetailViewModel()
 
         viewModel.state.test {
             skipItems(3)
@@ -2208,12 +2135,19 @@ internal class ConversationDetailViewModelIntegrationTest {
             MessageSample.AugWeatherForecast.messageId
         )
         val labelId = SystemLabelId.Archive.labelId
-        coEvery { observeConversationMessages(userId, any(), labelId, any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            observeConversationWithMessagesUC(userId, any(), labelId, any(), any())
+        } returns flowOf(
+            ConversationWithMessages(
+                conversation = ConversationSample.WeatherForecast,
+                messages = messages
+            ).right()
+        )
         coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.AugWeatherForecast.right())
         coEvery { reportPhishingMessage(userId, messageId) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
+        val viewModel = buildConversationDetailViewModel()
 
         viewModel.state.test {
             skipItems(4)
@@ -2468,7 +2402,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery { unsubscribeFromNewsletter(userId, messageId) } returns Unit.right()
 
         // When
-        val viewModel = buildConversationDetailViewModel(openedFromLocation = labelId)
+        val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
 
@@ -2496,9 +2430,8 @@ internal class ConversationDetailViewModelIntegrationTest {
         moveConversation: MoveConversation = move,
         delete: DeleteConversations = deleteConversations,
         report: ReportPhishingMessage = reportPhishingMessage,
-        observeConversation: ObserveConversation = observeConversationUseCase,
-        observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveDetailBottomBarActions = observeDetailBottomBarActions,
+        observeConversationWithMessages: ObserveConversationWithMessages = observeConversationWithMessagesUC,
         detailReducer: ConversationDetailReducer = reducer,
         starMsg: StarMessages = starMessages,
         unStarMsg: UnStarMessages = unStarMessages,
@@ -2513,7 +2446,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         loadAvatarImg: LoadAvatarImage = loadAvatarImage,
         observeAvatarImgStates: ObserveAvatarImageStates = observeAvatarImageStates,
         executeOnOnline: ExecuteWhenOnline = executeWhenOnline,
-        openedFromLocation: LabelId = LabelIdSample.AllMail,
         scrollToMessageId: String? = null
     ) = ConversationDetailViewModel(
         observePrimaryUserId = observePrimaryUser,
@@ -2525,8 +2457,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         markConversationAsUnread = unread,
         moveConversation = moveConversation,
         deleteConversations = delete,
-        observeConversation = observeConversation,
-        observeConversationMessages = observeConversationMessages,
+        observeConversationWithMessages = observeConversationWithMessages,
         observeDetailActions = observeDetailActions,
         reducer = detailReducer,
         starConversations = star,
@@ -2589,36 +2520,5 @@ internal class ConversationDetailViewModelIntegrationTest {
     private suspend fun ReceiveTurbine<ConversationDetailState>.lastEmittedItem(): ConversationDetailState {
         val events = cancelAndConsumeRemainingEvents()
         return (events.last() as Event.Item).value
-    }
-
-    private fun initGenericObserverMocks() {
-        coEvery {
-            observeContacts(userId = UserIdSample.Primary)
-        } returns flowOf(emptyList<ContactMetadata.Contact>().right())
-        coEvery {
-            observeConversationUseCase(
-                UserIdSample.Primary, ConversationIdSample.WeatherForecast, any(), any(), any()
-            )
-        } returns flowOf(ConversationSample.WeatherForecast.right())
-        coEvery {
-            observeDetailBottomBarActions(
-                UserIdSample.Primary,
-                any(),
-                ConversationIdSample.WeatherForecast,
-                any(),
-                any()
-            )
-        } returns flowOf(
-            listOf(Action.Archive, Action.MarkUnread).right()
-        )
-        coEvery { observePrivacySettings.invoke(any()) } returns flowOf(
-            PrivacySettings(
-                autoShowRemoteContent = false,
-                autoShowEmbeddedImages = false,
-                preventTakingScreenshots = false,
-                requestLinkConfirmation = false,
-                allowBackgroundSync = false
-            ).right()
-        )
     }
 }
