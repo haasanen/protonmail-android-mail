@@ -35,6 +35,7 @@ import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.model.LocalConversationWithMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -48,7 +49,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -129,26 +129,7 @@ internal class RustConversationDataSourceImplTest {
     }
 
     @Test
-    fun `observe conversation should return the conversation for the given id`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val conversationId = LocalConversationIdSample.AugConversation
-        val localLabelId = LocalLabelId(3uL)
-        val entryPoint = ConversationDetailEntryPoint.PushNotification
-        val showAll = false
-        coEvery {
-            rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId, entryPoint, showAll)
-        } returns flowOf(LocalConversationTestData.AugConversation.right())
-
-        // When
-        val result = dataSource.observeConversation(userId, conversationId, localLabelId, entryPoint, showAll).first()
-
-        // Then
-        assertEquals(LocalConversationTestData.AugConversation.right(), result)
-    }
-
-    @Test
-    fun `observeConversationMessages should return conversation messages`() = runTest {
+    fun `observeConversationWithMessages should return conversation + messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationId(1uL)
@@ -157,27 +138,32 @@ internal class RustConversationDataSourceImplTest {
             LocalMessageTestData.SepWeatherForecast,
             LocalMessageTestData.OctWeatherForecast
         )
-        val localConversationMessages = LocalConversationMessages(
-            messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
-            messages = messages
+
+        val expectedResult = LocalConversationWithMessages(
+            conversation = LocalConversationTestData.AugConversation,
+            messages = LocalConversationMessages(
+                messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
+                messages = messages
+            )
         )
+
         val localLabelId = LocalLabelId(3uL)
         val entryPoint = ConversationDetailEntryPoint.PushNotification
         val showAll = false
         coEvery {
-            rustConversationDetailQuery.observeConversationMessages(
+            rustConversationDetailQuery.observeConversationWithMessages(
                 userId, conversationId, localLabelId, entryPoint, showAll
             )
-        } returns flowOf(localConversationMessages.right())
+        } returns flowOf(expectedResult.right())
 
         // When
-        dataSource.observeConversationMessages(userId, conversationId, localLabelId, entryPoint, showAll).test {
+        dataSource.observeConversationWithMessages(userId, conversationId, localLabelId, entryPoint, showAll).test {
 
             // Then
             val result = awaitItem()
-            assertEquals(localConversationMessages.right(), result)
+            assertEquals(expectedResult.right(), result)
             coVerify {
-                rustConversationDetailQuery.observeConversationMessages(
+                rustConversationDetailQuery.observeConversationWithMessages(
                     userId,
                     conversationId,
                     localLabelId,

@@ -27,11 +27,14 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageWatcher
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
@@ -75,14 +78,30 @@ class RustMessageQuery @Inject constructor(
         }
     }
 
-    suspend fun observeMessage(
-        session: MailUserSessionWrapper,
-        messageId: LocalMessageId
-    ): Flow<Either<DataError, Message>> {
-        initialiseOrUpdateWatcher(session, messageId)
+    fun observeMessage(session: MailUserSessionWrapper, messageId: LocalMessageId): Flow<Either<DataError, Message>> =
+        callbackFlow {
+            initialiseOrUpdateWatcher(session, messageId)
 
-        return messageStatusFlow
-    }
+            val job = launch {
+                messageStatusFlow.collect { value ->
+                    send(value)
+                }
+            }
+
+            awaitClose {
+                job.cancel()
+
+                // runBlocking here is fine, it's run on a non-main thread.
+                runBlocking {
+                    mutex.withLock {
+                        if (currentMessageId == messageId) {
+                            Timber.d("message called destroy on $messageId")
+                            destroy()
+                        }
+                    }
+                }
+            }
+        }
 
     private suspend fun initialiseOrUpdateWatcher(session: MailUserSessionWrapper, messageId: LocalMessageId) {
         mutex.withLock {
@@ -106,12 +125,11 @@ class RustMessageQuery @Inject constructor(
     }
 
     private fun destroy() {
-        Timber.d("destroy watcher for $currentMessageId")
+        Timber.d("destroy watcher for message $currentMessageId")
         messageWatcher?.handle?.destroy()
         messageWatcher = null
         currentMessageId = null
         messageMutableStatusFlow.value = null
     }
-
 }
 

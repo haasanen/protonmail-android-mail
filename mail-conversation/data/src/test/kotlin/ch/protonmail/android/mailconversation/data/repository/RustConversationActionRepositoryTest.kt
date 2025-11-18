@@ -22,7 +22,6 @@ import app.cash.turbine.test
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
@@ -37,6 +36,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
+import ch.protonmail.android.mailmessage.data.model.LocalConversationWithMessages
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelAsActionTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -329,7 +329,7 @@ internal class RustConversationActionRepositoryTest {
         val showAll = false
 
         coEvery {
-            rustConversationDataSource.observeConversation(
+            rustConversationDataSource.observeConversationWithMessages(
                 userId,
                 any(),
                 labelId.toLocalLabelId(),
@@ -375,7 +375,7 @@ internal class RustConversationActionRepositoryTest {
         } returns rustAvailableActions.right()
 
         coEvery {
-            rustConversationDataSource.observeConversation(
+            rustConversationDataSource.observeConversationWithMessages(
                 userId,
                 any(),
                 labelId.toLocalLabelId(),
@@ -383,7 +383,7 @@ internal class RustConversationActionRepositoryTest {
                 showAll
             )
         } returns
-            flowOf(mockk<LocalConversation>().right())
+            flowOf(mockk<LocalConversationWithMessages>().right())
 
         // When + Then
         rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)

@@ -34,6 +34,7 @@ import ch.protonmail.android.mailconversation.data.mapper.toConversationMessages
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationWithMessages
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -84,16 +85,15 @@ class RustConversationRepositoryImpl @Inject constructor(
         labelId: LabelId,
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
-    ): Flow<Either<ConversationError, Conversation>> = rustConversationDataSource
-        .observeConversation(
-            userId = userId,
-            conversationId = id.toLocalConversationId(),
-            labelId = labelId.toLocalLabelId(),
-            entryPoint = entryPoint,
-            showAllMessages = showAllMessages
-        )
-        .map { eitherFlow -> eitherFlow.map { it.toConversation() } }
-
+    ): Flow<Either<ConversationError, Conversation>> = rustConversationDataSource.observeConversationWithMessages(
+        userId,
+        id.toLocalConversationId(),
+        labelId.toLocalLabelId(),
+        entryPoint,
+        showAllMessages
+    ).map { either ->
+        either.map { it.conversation.toConversation() }
+    }
 
     override suspend fun observeConversationMessages(
         userId: UserId,
@@ -101,15 +101,41 @@ class RustConversationRepositoryImpl @Inject constructor(
         labelId: LabelId,
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
-    ): Flow<Either<ConversationError, ConversationMessages>> = rustConversationDataSource.observeConversationMessages(
-        userId = userId,
-        conversationId = conversationId.toLocalConversationId(),
-        labelId = labelId.toLocalLabelId(),
-        entryPoint = entryPoint,
-        showAllMessages = showAllMessages
-    ).map { eitherConversationMessages ->
-        eitherConversationMessages.flatMap { it.toConversationMessagesWithMessageToOpen() }
-    }
+    ): Flow<Either<ConversationError, ConversationMessages>> =
+        rustConversationDataSource.observeConversationWithMessages(
+            userId,
+            conversationId.toLocalConversationId(),
+            labelId.toLocalLabelId(),
+            entryPoint,
+            showAllMessages
+        ).map { either ->
+            either.flatMap { it.messages.toConversationMessagesWithMessageToOpen() }
+        }
+
+    override suspend fun observeConversationWithMessages(
+        userId: UserId,
+        conversationId: ConversationId,
+        labelId: LabelId,
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
+    ): Flow<Either<ConversationError, ConversationWithMessages>> =
+        rustConversationDataSource.observeConversationWithMessages(
+            userId,
+            conversationId.toLocalConversationId(),
+            labelId.toLocalLabelId(),
+            entryPoint,
+            showAllMessages
+        ).map { either ->
+            either.flatMap { localConversationWithMessages ->
+                localConversationWithMessages.messages.toConversationMessagesWithMessageToOpen()
+                    .map { conversationMessages ->
+                        ConversationWithMessages(
+                            conversation = localConversationWithMessages.conversation.toConversation(),
+                            messages = conversationMessages
+                        )
+                    }
+            }
+        }
 
     override suspend fun getConversationCursor(
         firstPage: CursorId,

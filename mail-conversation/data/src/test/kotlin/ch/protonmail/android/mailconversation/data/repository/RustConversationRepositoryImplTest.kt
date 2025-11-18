@@ -43,6 +43,7 @@ import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.model.LocalConversationWithMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
@@ -65,7 +66,7 @@ import org.junit.Test
 import uniffi.proton_mail_uniffi.Id
 import kotlin.test.assertEquals
 
-class RustConversationRepositoryImplTest {
+internal class RustConversationRepositoryImplTest {
 
     private val rustConversationDataSource = mockk<RustConversationDataSource>()
     private val undoRepository = mockk<UndoRepository>()
@@ -107,14 +108,16 @@ class RustConversationRepositoryImplTest {
         val entryPoint = ConversationDetailEntryPoint.Mailbox
         val showAll = false
         coEvery {
-            rustConversationDataSource.observeConversation(
+            rustConversationDataSource.observeConversationWithMessages(
                 userId,
                 any(),
                 labelId.toLocalLabelId(),
                 entryPoint,
                 showAll
             )
-        } returns flowOf(localConversation.right())
+        } returns flowOf(
+            LocalConversationWithMessages(conversation = localConversation, messages = mockk()).right()
+        )
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, labelId, entryPoint, showAll).test {
@@ -123,7 +126,7 @@ class RustConversationRepositoryImplTest {
             // Then
             assertEquals(expected, result)
             coVerify {
-                rustConversationDataSource.observeConversation(
+                rustConversationDataSource.observeConversationWithMessages(
                     userId,
                     any(),
                     labelId.toLocalLabelId(),
@@ -146,7 +149,7 @@ class RustConversationRepositoryImplTest {
         val showAll = false
 
         coEvery {
-            rustConversationDataSource.observeConversation(
+            rustConversationDataSource.observeConversationWithMessages(
                 userId,
                 any(),
                 labelId.toLocalLabelId(),
@@ -163,7 +166,7 @@ class RustConversationRepositoryImplTest {
             // Then
             assertEquals(null, result)
             coVerify {
-                rustConversationDataSource.observeConversation(
+                rustConversationDataSource.observeConversationWithMessages(
                     userId,
                     any(),
                     labelId.toLocalLabelId(),
@@ -196,14 +199,16 @@ class RustConversationRepositoryImplTest {
         val showAll = false
 
         coEvery {
-            rustConversationDataSource.observeConversationMessages(
+            rustConversationDataSource.observeConversationWithMessages(
                 userId,
                 conversationId.toLocalConversationId(),
                 labelId.toLocalLabelId(),
                 entryPoint,
                 showAll
             )
-        } returns flowOf(localConversationMessages.right())
+        } returns flowOf(
+            LocalConversationWithMessages(conversation = mockk(), messages = localConversationMessages).right()
+        )
 
         // When
         rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint, showAll)
@@ -213,7 +218,7 @@ class RustConversationRepositoryImplTest {
                 // Then
                 assertEquals(expectedConversationMessages, result)
                 coVerify {
-                    rustConversationDataSource.observeConversationMessages(
+                    rustConversationDataSource.observeConversationWithMessages(
                         userId,
                         conversationId.toLocalConversationId(),
                         labelId.toLocalLabelId(),
@@ -236,14 +241,22 @@ class RustConversationRepositoryImplTest {
         val showAll = false
 
         coEvery {
-            rustConversationDataSource.observeConversationMessages(
+            rustConversationDataSource.observeConversationWithMessages(
                 userId,
                 conversationId.toLocalConversationId(),
                 labelId.toLocalLabelId(),
                 entryPoint,
                 showAll
             )
-        } returns flowOf(LocalConversationMessages(LocalMessageIdSample.AugWeatherForecast, emptyList()).right())
+        } returns flowOf(
+            LocalConversationWithMessages(
+                conversation = mockk(),
+                messages = LocalConversationMessages(
+                    messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
+                    messages = emptyList()
+                )
+            ).right()
+        )
 
         // When
         rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint, showAll)
@@ -253,7 +266,7 @@ class RustConversationRepositoryImplTest {
                 // Then
                 assertEquals(expectedError, result)
                 coVerify {
-                    rustConversationDataSource.observeConversationMessages(
+                    rustConversationDataSource.observeConversationWithMessages(
                         userId,
                         conversationId.toLocalConversationId(),
                         labelId.toLocalLabelId(),

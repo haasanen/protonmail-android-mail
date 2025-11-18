@@ -37,7 +37,7 @@ import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEn
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.model.LocalConversationWithMessages
 import ch.protonmail.android.mailmessage.domain.model.toConversationCursorError
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
@@ -96,24 +96,14 @@ class RustConversationDataSourceImpl @Inject constructor(
         pageKey: PageKey.DefaultPageKey
     ): Either<PaginationError, List<LocalConversation>> = rustConversationsQuery.getConversations(userId, pageKey)
 
-    override suspend fun observeConversation(
+    override suspend fun observeConversationWithMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
-    ): Flow<Either<ConversationError, LocalConversation>> =
-        rustConversationDetailQuery.observeConversation(userId, conversationId, labelId, entryPoint, showAllMessages)
-            .flowOn(ioDispatcher)
-
-    override suspend fun observeConversationMessages(
-        userId: UserId,
-        conversationId: LocalConversationId,
-        labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint,
-        showAllMessages: Boolean
-    ): Flow<Either<ConversationError, LocalConversationMessages>> = rustConversationDetailQuery
-        .observeConversationMessages(userId, conversationId, labelId, entryPoint, showAllMessages)
+    ): Flow<Either<ConversationError, LocalConversationWithMessages>> = rustConversationDetailQuery
+        .observeConversationWithMessages(userId, conversationId, labelId, entryPoint, showAllMessages)
         .flowOn(ioDispatcher)
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) =

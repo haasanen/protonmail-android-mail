@@ -19,29 +19,21 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.model.LocalConversationWithMessages
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
 interface RustConversationDetailQuery {
-    suspend fun observeConversation(
-        userId: UserId,
-        conversationId: LocalConversationId,
-        labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint,
-        showAllMessages: Boolean
-    ): Flow<Either<ConversationError, LocalConversation>>
 
-    suspend fun observeConversationMessages(
+    suspend fun observeConversationWithMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
-    ): Flow<Either<ConversationError, LocalConversationMessages>>
+    ): Flow<Either<ConversationError, LocalConversationWithMessages>>
 }

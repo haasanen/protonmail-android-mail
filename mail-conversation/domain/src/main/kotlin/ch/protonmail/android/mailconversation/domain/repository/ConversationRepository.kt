@@ -27,9 +27,9 @@ import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
+import ch.protonmail.android.mailconversation.domain.entity.ConversationWithMessages
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
-import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
@@ -54,11 +54,6 @@ interface ConversationRepository {
         pageKey: PageKey.DefaultPageKey = PageKey.DefaultPageKey()
     ): Either<PaginationError, List<Conversation>>
 
-    /**
-     * Get a conversation.
-     * Returns any conversation data that is available locally right away.
-     * Message metadata is fetched and returned as available
-     */
     suspend fun observeConversation(
         userId: UserId,
         id: ConversationId,
@@ -67,9 +62,6 @@ interface ConversationRepository {
         showAllMessages: Boolean
     ): Flow<Either<ConversationError, Conversation>>
 
-    /**
-     * Get all the [Message]s metadata for a given [ConversationId], for [userId] from the local storage
-     */
     suspend fun observeConversationMessages(
         userId: UserId,
         conversationId: ConversationId,
@@ -77,6 +69,14 @@ interface ConversationRepository {
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
     ): Flow<Either<ConversationError, ConversationMessages>>
+
+    suspend fun observeConversationWithMessages(
+        userId: UserId,
+        conversationId: ConversationId,
+        labelId: LabelId,
+        entryPoint: ConversationDetailEntryPoint,
+        showAllMessages: Boolean
+    ): Flow<Either<ConversationError, ConversationWithMessages>>
 
     /**
      * Used to JIT swipe through conversations/ pages with methods exposed to get next and get previous and move to next

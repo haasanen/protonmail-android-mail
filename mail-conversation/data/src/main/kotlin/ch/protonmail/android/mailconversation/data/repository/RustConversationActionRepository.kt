@@ -111,7 +111,7 @@ class RustConversationActionRepository @Inject constructor(
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
     ): Flow<Either<DataError, AllBottomBarActions>> {
-        return rustConversationDataSource.observeConversation(
+        return rustConversationDataSource.observeConversationWithMessages(
             userId = userId,
             conversationId = conversationId.toLocalConversationId(),
             labelId = labelId.toLocalLabelId(),
@@ -123,7 +123,7 @@ class RustConversationActionRepository @Inject constructor(
                     Timber.w("Failed to observe bottomBar actions due to conversation error $error")
                     (error as? ConversationError.Other)?.error?.left() ?: DataError.Local.IllegalStateError.left()
                 },
-                ifRight = { conversation ->
+                ifRight = { _ ->
                     val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(
                         userId,
                         labelId.toLocalLabelId(),

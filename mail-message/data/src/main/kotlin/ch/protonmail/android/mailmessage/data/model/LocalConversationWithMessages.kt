@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailconversation.domain.entity
+package ch.protonmail.android.mailmessage.data.model
 
-import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 
-data class ConversationWithMessages(
-    val conversation: Conversation,
-    val messages: ConversationMessages
+data class LocalConversationWithMessages(
+    val conversation: LocalConversation,
+    val messages: LocalConversationMessages
 )

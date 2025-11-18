@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
@@ -30,6 +29,7 @@ import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEn
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.model.LocalConversationWithMessages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
@@ -61,64 +62,33 @@ class RustConversationDetailQueryImpl @Inject constructor(
     private var currentShowAllMessages: Boolean = false
 
     private val mutex = Mutex()
-    private val conversationMutableStatusFlow = MutableStateFlow<Either<ConversationError, LocalConversation>?>(null)
-    private val conversationStatusFlow = conversationMutableStatusFlow
+
+    private val conversationWithMessagesMutableFlow =
+        MutableStateFlow<Either<ConversationError, LocalConversationWithMessages>?>(null)
+    private val conversationWithMessagesFlow = conversationWithMessagesMutableFlow
         .asStateFlow()
         .filterNotNull()
 
-    private var conversationMessagesMutableStatusFlow =
-        MutableStateFlow<Either<ConversationError, LocalConversationMessages>?>(null)
-    private val conversationMessagesStatusFlow = conversationMessagesMutableStatusFlow
-        .asStateFlow()
-        .filterNotNull()
-
-    override suspend fun observeConversation(
+    override suspend fun observeConversationWithMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId,
         entryPoint: ConversationDetailEntryPoint,
         showAllMessages: Boolean
-    ): Flow<Either<ConversationError, LocalConversation>> = callbackFlow {
+    ): Flow<Either<ConversationError, LocalConversationWithMessages>> = callbackFlow {
         initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint, showAllMessages)
 
         val job = launch {
-            conversationStatusFlow.collect { value ->
+            conversationWithMessagesFlow.collect { value ->
                 send(value)
             }
         }
 
         awaitClose {
             job.cancel()
-            launch {
-                mutex.withLock {
-                    if (currentConversationId == conversationId) {
-                        Timber.d("conversation called destroy on $conversationId")
-                        destroy()
-                    }
-                }
-            }
-        }
-    }
 
-
-    override suspend fun observeConversationMessages(
-        userId: UserId,
-        conversationId: LocalConversationId,
-        labelId: LocalLabelId,
-        entryPoint: ConversationDetailEntryPoint,
-        showAllMessages: Boolean
-    ): Flow<Either<ConversationError, LocalConversationMessages>> = callbackFlow {
-        initialiseOrUpdateWatcher(userId, conversationId, labelId, entryPoint, showAllMessages)
-
-        val job = launch {
-            conversationMessagesStatusFlow.collect { value ->
-                send(value)
-            }
-        }
-
-        awaitClose {
-            job.cancel()
-            launch {
+            // runBlocking here is fine, it's run on a non-main thread.
+            runBlocking {
                 mutex.withLock {
                     if (currentConversationId == conversationId) {
                         Timber.d("conversation called destroy on $conversationId")
@@ -162,14 +132,15 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     conversationWatcher = it
                 }
 
-                conversationMutableStatusFlow.value = conversationEither.map { it.conversation }
-                conversationMessagesMutableStatusFlow.value = conversationEither.map {
-                    LocalConversationMessages(it.messageIdToOpen, it.messages)
+                conversationWithMessagesMutableFlow.value = conversationEither.map {
+                    LocalConversationWithMessages(
+                        conversation = it.conversation,
+                        messages = LocalConversationMessages(it.messageIdToOpen, it.messages)
+                    )
                 }
                 currentConversationId = conversationId
             }
         }
-
     }
 
     private fun conversationUpdatedCallback() = object : LiveQueryCallback {
@@ -201,9 +172,11 @@ class RustConversationDetailQueryImpl @Inject constructor(
                         Timber.w("Failed to update conversation messages, $it")
                     }
 
-                    conversationMutableStatusFlow.value = conversationEither.map { it.conversation }
-                    conversationMessagesMutableStatusFlow.value = conversationEither.map {
-                        LocalConversationMessages(it.messageIdToOpen, it.messages)
+                    conversationWithMessagesMutableFlow.value = conversationEither.map {
+                        LocalConversationWithMessages(
+                            conversation = it.conversation,
+                            messages = LocalConversationMessages(it.messageIdToOpen, it.messages)
+                        )
                     }
 
                     Timber.d("Conversation updated: $currentConversationId")
@@ -213,13 +186,12 @@ class RustConversationDetailQueryImpl @Inject constructor(
     }
 
     private fun destroy() {
-        Timber.d("destroy watcher for $currentConversationId")
+        Timber.d("destroy watcher for conversation $currentConversationId")
 
         conversationWatcher?.handle?.disconnect()
 
         conversationWatcher = null
         currentConversationId = null
-        conversationMessagesMutableStatusFlow.value = null
-        conversationMutableStatusFlow.value = null
+        conversationWithMessagesMutableFlow.value = null
     }
 }
