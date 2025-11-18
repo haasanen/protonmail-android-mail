@@ -25,6 +25,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -233,6 +234,23 @@ class ConversationDetailMessagesReducerTest(
                     messages = listOf(
                         ConversationDetailMessageUiModelSample.InvoiceExpendedWithScheduleSendBanner
                     ).toImmutableList()
+                )
+            ),
+            Input(
+                currentState = ConversationDetailsMessagesState.Data(messages = allMessagesFirstExpanded),
+                operation = ConversationDetailEvent.ErrorLoadingImageProxyFailed(
+                    MessageId(allMessages.first().messageId.id)
+                ),
+                expectedState = ConversationDetailsMessagesState.Data(
+                    messages = allMessagesFirstExpanded.map {
+                        if (it is ConversationDetailMessageUiModel.Expanded) {
+                            it.copy(
+                                messageBodyUiModel = it.messageBodyUiModel.copy(
+                                    shouldShowImagesFailedToLoadBanner = true
+                                )
+                            )
+                        } else it
+                    }.toImmutableList()
                 )
             )
         )

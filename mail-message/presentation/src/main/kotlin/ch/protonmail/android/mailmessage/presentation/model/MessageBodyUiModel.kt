@@ -29,6 +29,7 @@ data class MessageBodyUiModel(
     val mimeType: MimeTypeUiModel,
     val shouldShowEmbeddedImagesBanner: Boolean,
     val shouldShowRemoteContentBanner: Boolean,
+    val shouldShowImagesFailedToLoadBanner: Boolean,
     val shouldShowExpandCollapseButton: Boolean,
     val attachments: AttachmentGroupUiModel?,
     val viewModePreference: ViewModePreference

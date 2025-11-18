@@ -71,6 +71,7 @@ object MessageDetailBodyUiModelSample {
         mimeType = mimeType,
         shouldShowEmbeddedImagesBanner = shouldShowEmbeddedImagesBanner,
         shouldShowRemoteContentBanner = shouldShowRemoteContentBanner,
+        shouldShowImagesFailedToLoadBanner = false,
         shouldShowExpandCollapseButton = false,
         attachments = attachments,
         viewModePreference = ViewModePreference.ThemeDefault

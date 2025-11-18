@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
+import ch.protonmail.android.design.compose.component.ProtonCompactBannerWithButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
@@ -80,6 +81,15 @@ fun MessageBody(
                 buttonText = stringResource(id = R.string.message_body_load_remote_content_button_text),
                 icon = R.drawable.ic_proton_cog_wheel,
                 onButtonClicked = { actions.onLoadRemoteContent(messageBodyUiModel.messageId) }
+            )
+        }
+
+        messageBodyUiModel.shouldShowImagesFailedToLoadBanner -> {
+            ProtonCompactBannerWithButton(
+                bannerText = stringResource(id = R.string.message_body_images_failed_to_load_banner_text),
+                buttonText = stringResource(id = R.string.message_body_images_failed_to_load_banner_button),
+                icon = R.drawable.ic_info_circle,
+                onButtonClicked = {}
             )
         }
     }

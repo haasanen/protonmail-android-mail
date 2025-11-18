@@ -152,6 +152,7 @@ import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EventId
@@ -1319,7 +1320,9 @@ internal class ConversationDetailViewModelIntegrationTest {
         val contentId = "contentId"
         val byteArray = "I'm a byte array".toByteArray()
         val expectedResult = MessageBodyImage(byteArray, "image/png")
-        coEvery { loadImageAvoidDuplicatedExecution(userId, messageId, contentId, any()) } returns expectedResult
+        coEvery {
+            loadImageAvoidDuplicatedExecution(userId, messageId, contentId, any())
+        } returns expectedResult.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -1336,7 +1339,9 @@ internal class ConversationDetailViewModelIntegrationTest {
         // Given
         val messageId = MessageId("rawMessageId")
         val contentId = "contentId"
-        coEvery { loadImageAvoidDuplicatedExecution(userId, messageId, contentId, any()) } returns null
+        coEvery {
+            loadImageAvoidDuplicatedExecution(userId, messageId, contentId, any())
+        } returns AttachmentDataError.Other(DataError.Local.Unknown).left()
 
         // When
         val viewModel = buildConversationDetailViewModel()

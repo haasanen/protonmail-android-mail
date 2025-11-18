@@ -187,6 +187,9 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     data object ErrorUnsubscribingFromNewsletter : ConversationDetailEvent, AffectingErrorBar
 
     data object ErrorOpeningEventInCalendar : ConversationDetailEvent, AffectingErrorBar
+
+    data class ErrorLoadingImageProxyFailed(val messageId: MessageId) :
+        ConversationDetailEvent, AffectingMessages
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {

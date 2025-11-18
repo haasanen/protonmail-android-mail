@@ -34,7 +34,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class LoadImageAvoidDuplicatedExecutionTest {
 
@@ -50,10 +49,10 @@ class LoadImageAvoidDuplicatedExecutionTest {
     fun `returns image result when loading image was successful`() = runTest {
         // Given
         val expectedByteArray = "I'm an image".toByteArray()
-        val expectedImageResult = MessageBodyImage(data = expectedByteArray, mimeType = "")
+        val expectedImageResult = MessageBodyImage(data = expectedByteArray, mimeType = "").right()
         coEvery {
             loadMessageBodyImage(userId, messageId, url)
-        } returns expectedImageResult.right()
+        } returns expectedImageResult
 
         // When
         val result = loadImageAvoidDuplicatedExecution(userId, messageId, url, coroutineContext)
@@ -63,17 +62,18 @@ class LoadImageAvoidDuplicatedExecutionTest {
     }
 
     @Test
-    fun `returns null when loading image failed`() = runTest {
+    fun `returns error when loading image failed`() = runTest {
         // Given
+        val expectedResult = AttachmentDataError.Other(DataError.Local.NoDataCached).left()
         coEvery {
             loadMessageBodyImage(userId, messageId, url)
-        } returns AttachmentDataError.Other(DataError.Local.NoDataCached).left()
+        } returns expectedResult
 
         // When
         val result = loadImageAvoidDuplicatedExecution(userId, messageId, url, coroutineContext)
 
         // Then
-        assertNull(result)
+        assertEquals(expectedResult, result)
     }
 
     @Test

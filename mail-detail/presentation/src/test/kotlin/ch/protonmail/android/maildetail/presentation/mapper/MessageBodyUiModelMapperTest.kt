@@ -109,6 +109,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeTypeUiModel.PlainText,
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
+            shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault
@@ -148,6 +149,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeTypeUiModel.PlainText,
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
+            shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = AttachmentGroupUiModel(
                 attachments = listOf(
@@ -190,6 +192,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeTypeUiModel.PlainText,
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
+            shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = AttachmentGroupUiModel(
                 attachments = listOf(
@@ -230,6 +233,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeTypeUiModel.PlainText,
                 shouldShowEmbeddedImagesBanner = false,
                 shouldShowRemoteContentBanner = false,
+                shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = AttachmentGroupUiModel(
                     attachments = listOf(
@@ -276,6 +280,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeTypeUiModel.Html,
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
+            shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault
@@ -308,6 +313,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeTypeUiModel.Html,
                 shouldShowEmbeddedImagesBanner = false,
                 shouldShowRemoteContentBanner = false,
+                shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault
@@ -340,6 +346,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeTypeUiModel.Html,
                 shouldShowEmbeddedImagesBanner = false,
                 shouldShowRemoteContentBanner = true,
+                shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault
@@ -372,6 +379,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeTypeUiModel.Html,
                 shouldShowEmbeddedImagesBanner = false,
                 shouldShowRemoteContentBanner = false,
+                shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault
@@ -404,6 +412,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeTypeUiModel.Html,
                 shouldShowEmbeddedImagesBanner = true,
                 shouldShowRemoteContentBanner = false,
+                shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault
@@ -427,6 +436,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeTypeUiModel.PlainText,
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
+            shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault
@@ -458,6 +468,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeTypeUiModel.Html,
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = true,
+            shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault

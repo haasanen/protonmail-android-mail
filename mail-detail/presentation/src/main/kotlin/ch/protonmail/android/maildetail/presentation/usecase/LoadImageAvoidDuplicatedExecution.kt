@@ -18,6 +18,10 @@
 
 package ch.protonmail.android.maildetail.presentation.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.usecase.LoadMessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -32,22 +36,23 @@ class LoadImageAvoidDuplicatedExecution @Inject constructor(
     private val loadMessageBodyImage: LoadMessageBodyImage
 ) {
 
-    private val loadMessageBodyImageJobMap = mutableMapOf<String, Deferred<MessageBodyImage?>>()
+    private val loadMessageBodyImageJobMap =
+        mutableMapOf<String, Deferred<Either<AttachmentDataError, MessageBodyImage>>>()
 
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
         url: String,
         coroutineContext: CoroutineContext
-    ): MessageBodyImage? = runCatching {
+    ): Either<AttachmentDataError, MessageBodyImage> = runCatching {
         withContext(coroutineContext) {
             if (loadMessageBodyImageJobMap[url]?.isActive == true) {
-                loadMessageBodyImageJobMap[url]
+                loadMessageBodyImageJobMap[url]!!
             } else {
-                async { loadMessageBodyImage(userId, messageId, url).getOrNull() }.apply {
+                async { loadMessageBodyImage(userId, messageId, url) }.apply {
                     loadMessageBodyImageJobMap[url] = this
                 }
-            }?.await()
+            }.await()
         }
-    }.getOrNull()
+    }.getOrElse { AttachmentDataError.Other(DataError.Local.NotFound).left() }
 }

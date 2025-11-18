@@ -112,6 +112,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBot
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.mapper.MessageBodyTransformationsMapper
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
@@ -516,13 +517,24 @@ class ConversationDetailViewModel @AssistedInject constructor(
         setOrRefreshMessageBody(MessageIdUiModel(action.messageId.id), overrideTheme)
     }
 
-    fun loadImage(messageId: MessageId?, url: String) = messageId?.let {
+    fun loadImage(messageId: MessageId?, url: String) = messageId?.let { messageId ->
         runBlocking {
             loadImageAvoidDuplicatedExecution(
                 userId = primaryUserId.first(),
-                messageId = it,
+                messageId = messageId,
                 url = url,
                 coroutineContext = viewModelScope.coroutineContext
+            ).fold(
+                ifLeft = {
+                    when (it) {
+                        is AttachmentDataError.ProxyFailed -> {
+                            emitNewStateFrom(ConversationDetailEvent.ErrorLoadingImageProxyFailed(messageId))
+                            null
+                        }
+                        is AttachmentDataError.Other -> null
+                    }
+                },
+                ifRight = { it }
             )
         }
     }

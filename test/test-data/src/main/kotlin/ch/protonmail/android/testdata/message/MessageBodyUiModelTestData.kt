@@ -117,6 +117,7 @@ object MessageBodyUiModelTestData {
             mimeType = mimeType,
             shouldShowEmbeddedImagesBanner = shouldShowEmbeddedImagesBanner,
             shouldShowRemoteContentBanner = shouldShowRemoteContentBanner,
+            shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = attachments,
             viewModePreference = viewModePreference

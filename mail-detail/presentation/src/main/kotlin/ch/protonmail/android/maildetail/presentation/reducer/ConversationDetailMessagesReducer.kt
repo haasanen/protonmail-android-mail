@@ -27,6 +27,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
@@ -95,6 +96,9 @@ class ConversationDetailMessagesReducer @Inject constructor() {
         ConversationDetailEvent.ErrorLoadingSingleMessage -> ConversationDetailsMessagesState.Error(
             message = TextUiModel(string.detail_error_loading_single_message)
         )
+
+        is ConversationDetailEvent.ErrorLoadingImageProxyFailed ->
+            currentState.toNewStateForImageProxyFailed(operation.messageId)
     }
 
     private fun ConversationDetailsMessagesState.toNewStateForEditScheduleSend(
@@ -235,5 +239,27 @@ class ConversationDetailMessagesReducer @Inject constructor() {
                 }
             )
         )
+    }
+
+    private fun ConversationDetailsMessagesState.toNewStateForImageProxyFailed(
+        messageId: MessageId
+    ): ConversationDetailsMessagesState {
+        return when (this) {
+            is ConversationDetailsMessagesState.Data -> {
+                this.copy(
+                    messages = this.messages.map {
+                        if (it.messageId.id == messageId.id && it is ConversationDetailMessageUiModel.Expanded) {
+                            it.copy(
+                                messageBodyUiModel = it.messageBodyUiModel.copy(
+                                    shouldShowImagesFailedToLoadBanner = true
+                                )
+                            )
+                        } else
+                            it
+                    }.toImmutableList()
+                )
+            }
+            else -> this
+        }
     }
 }

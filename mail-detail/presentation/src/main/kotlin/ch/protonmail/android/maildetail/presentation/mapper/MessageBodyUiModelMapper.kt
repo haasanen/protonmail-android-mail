@@ -59,6 +59,7 @@ class MessageBodyUiModelMapper @Inject constructor(
             mimeType = decryptedMessageBody.mimeType.toMimeTypeUiModel(),
             shouldShowEmbeddedImagesBanner = hasEmbeddedImagesBlocked,
             shouldShowRemoteContentBanner = hasRemoteContentBlocked,
+            shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = hasExpandCollapseButton,
             attachments = if (decryptedMessageBody.attachments.isNotEmpty()) {
                 attachmentGroupUiModelMapper.toUiModel(
@@ -76,6 +77,7 @@ class MessageBodyUiModelMapper @Inject constructor(
         mimeType = MimeTypeUiModel.PlainText,
         shouldShowEmbeddedImagesBanner = false,
         shouldShowRemoteContentBanner = false,
+        shouldShowImagesFailedToLoadBanner = false,
         shouldShowExpandCollapseButton = false,
         attachments = null,
         viewModePreference = ViewModePreference.ThemeDefault
