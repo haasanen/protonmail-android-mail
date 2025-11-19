@@ -38,6 +38,7 @@ import javax.inject.Inject
 
 class GetDecryptedMessageBody @Inject constructor(
     private val injectViewPortMetaTagIntoMessageBody: InjectViewPortMetaTagIntoMessageBody,
+    private val injectFixedHeightCss: InjectFixedHeightCss,
     private val messageRepository: MessageRepository,
     private val messageBodyRepository: MessageBodyRepository,
     private val rsvpEventRepository: RsvpEventRepository
@@ -62,12 +63,14 @@ class GetDecryptedMessageBody @Inject constructor(
 
                     // Handle zoomed in newsletters
                     val transformedMessageBody = injectViewPortMetaTagIntoMessageBody(messageBody.body)
+                    // Handle HTML content that has for instance 'height: 100%'
+                    val messageBodyInjectedCss = injectFixedHeightCss(transformedMessageBody)
 
                     val hasCalendarInvite = rsvpEventRepository.identifyRsvp(userId, messageId).getOrElse { false }
 
                     DecryptedMessageBody(
                         messageId = messageId,
-                        value = transformedMessageBody,
+                        value = messageBodyInjectedCss,
                         isUnread = messageMetadata.isUnread,
                         mimeType = messageBody.mimeType,
                         hasQuotedText = messageBody.hasQuotedText,

@@ -44,7 +44,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
-class GetDecryptedMessageBodyTest(
+internal class GetDecryptedMessageBodyTest(
     private val testName: String,
     private val testInput: TestInput
 ) {
@@ -53,10 +53,12 @@ class GetDecryptedMessageBodyTest(
     private val messageRepository = mockk<MessageRepository>()
     private val messageBodyRepository = mockk<MessageBodyRepository>()
     private val injectViewPortMetaTagIntoMessageBody = mockk<InjectViewPortMetaTagIntoMessageBody>()
+    private val injectFixedHeightCss = mockk<InjectFixedHeightCss>()
     private val rsvpEventRepository = mockk<RsvpEventRepository>()
 
     private val getDecryptedMessageBody = GetDecryptedMessageBody(
         injectViewPortMetaTagIntoMessageBody,
+        injectFixedHeightCss,
         messageRepository,
         messageBodyRepository,
         rsvpEventRepository
@@ -97,6 +99,9 @@ class GetDecryptedMessageBodyTest(
         } returns testInput.messageBody.right()
         every {
             injectViewPortMetaTagIntoMessageBody(testInput.messageBody.body)
+        } returns testInput.messageBody.body
+        every {
+            injectFixedHeightCss(testInput.messageBody.body)
         } returns testInput.messageBody.body
         coEvery { rsvpEventRepository.identifyRsvp(UserIdTestData.userId, messageId) } returns true.right()
 
