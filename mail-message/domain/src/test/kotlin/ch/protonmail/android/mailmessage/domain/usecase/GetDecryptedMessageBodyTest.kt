@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -34,9 +35,11 @@ import ch.protonmail.android.mailmessage.domain.repository.RsvpEventRepository
 import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.called
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -56,12 +59,15 @@ internal class GetDecryptedMessageBodyTest(
     private val injectFixedHeightCss = mockk<InjectFixedHeightCss>()
     private val rsvpEventRepository = mockk<RsvpEventRepository>()
 
+    private val isCssInjectionEnabled = mockk<FeatureFlag<Boolean>>()
+
     private val getDecryptedMessageBody = GetDecryptedMessageBody(
-        injectViewPortMetaTagIntoMessageBody,
-        injectFixedHeightCss,
         messageRepository,
         messageBodyRepository,
-        rsvpEventRepository
+        rsvpEventRepository,
+        injectViewPortMetaTagIntoMessageBody,
+        injectFixedHeightCss,
+        isCssInjectionEnabled
     )
 
     @Test
@@ -100,7 +106,9 @@ internal class GetDecryptedMessageBodyTest(
         every {
             injectViewPortMetaTagIntoMessageBody(testInput.messageBody.body)
         } returns testInput.messageBody.body
-        every {
+
+        coEvery { isCssInjectionEnabled.get() } returns testInput.shouldInjectCss
+        coEvery {
             injectFixedHeightCss(testInput.messageBody.body)
         } returns testInput.messageBody.body
         coEvery { rsvpEventRepository.identifyRsvp(UserIdTestData.userId, messageId) } returns true.right()
@@ -110,6 +118,12 @@ internal class GetDecryptedMessageBodyTest(
 
         // Then
         assertEquals(expected, actual, testName)
+
+        if (testInput.shouldInjectCss) {
+            verify(exactly = 1) { injectFixedHeightCss(testInput.messageBody.body) }
+        } else {
+            verify { injectFixedHeightCss wasNot called }
+        }
     }
 
     @Test
@@ -161,12 +175,26 @@ internal class GetDecryptedMessageBodyTest(
             TestInput(
                 MimeType.Html,
                 MessageTestData.message,
-                MessageBodyTestData.htmlMessageBody
+                MessageBodyTestData.htmlMessageBody,
+                shouldInjectCss = true
+            ),
+            TestInput(
+                MimeType.Html,
+                MessageTestData.message,
+                MessageBodyTestData.htmlMessageBody,
+                shouldInjectCss = false
             ),
             TestInput(
                 MimeType.MultipartMixed,
                 MessageTestData.message,
-                MessageBodyTestData.multipartMixedMessageBody
+                MessageBodyTestData.multipartMixedMessageBody,
+                shouldInjectCss = true
+            ),
+            TestInput(
+                MimeType.MultipartMixed,
+                MessageTestData.message,
+                MessageBodyTestData.multipartMixedMessageBody,
+                shouldInjectCss = false
             )
         )
 
@@ -176,7 +204,8 @@ internal class GetDecryptedMessageBodyTest(
             return testInputList
                 .map { testInput ->
                     val testName = """
-                        Message type: ${testInput.mimeType}
+                        Message type: ${testInput.mimeType},
+                        Inject CSS: ${testInput.shouldInjectCss}
                     """.trimIndent()
                     arrayOf(testName, testInput)
                 }
@@ -186,6 +215,7 @@ internal class GetDecryptedMessageBodyTest(
     data class TestInput(
         val mimeType: MimeType,
         val message: Message,
-        val messageBody: MessageBody
+        val messageBody: MessageBody,
+        val shouldInjectCss: Boolean
     )
 }

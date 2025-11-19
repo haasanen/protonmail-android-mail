@@ -23,6 +23,8 @@ import arrow.core.flatMap
 import arrow.core.getOrElse
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsInjectCssOverrideEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -37,11 +39,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GetDecryptedMessageBody @Inject constructor(
-    private val injectViewPortMetaTagIntoMessageBody: InjectViewPortMetaTagIntoMessageBody,
-    private val injectFixedHeightCss: InjectFixedHeightCss,
     private val messageRepository: MessageRepository,
     private val messageBodyRepository: MessageBodyRepository,
-    private val rsvpEventRepository: RsvpEventRepository
+    private val rsvpEventRepository: RsvpEventRepository,
+    private val injectViewPortMetaTagIntoMessageBody: InjectViewPortMetaTagIntoMessageBody,
+    private val injectFixedHeightCss: InjectFixedHeightCss,
+    @IsInjectCssOverrideEnabled private val isInjectCssOverrideEnabled: FeatureFlag<Boolean>
 ) {
 
     suspend operator fun invoke(
@@ -62,15 +65,16 @@ class GetDecryptedMessageBody @Inject constructor(
                     }
 
                     // Handle zoomed in newsletters
-                    val transformedMessageBody = injectViewPortMetaTagIntoMessageBody(messageBody.body)
-                    // Handle HTML content that has for instance 'height: 100%'
-                    val messageBodyInjectedCss = injectFixedHeightCss(transformedMessageBody)
+                    val transformedMessageBody = injectViewPortMetaTagIntoMessageBody(messageBody.body).let {
+                        // Handle HTML content that styles with 'height: 100%'
+                        if (isInjectCssOverrideEnabled.get()) injectFixedHeightCss(it) else it
+                    }
 
                     val hasCalendarInvite = rsvpEventRepository.identifyRsvp(userId, messageId).getOrElse { false }
 
                     DecryptedMessageBody(
                         messageId = messageId,
-                        value = messageBodyInjectedCss,
+                        value = transformedMessageBody,
                         isUnread = messageMetadata.isUnread,
                         mimeType = messageBody.mimeType,
                         hasQuotedText = messageBody.hasQuotedText,

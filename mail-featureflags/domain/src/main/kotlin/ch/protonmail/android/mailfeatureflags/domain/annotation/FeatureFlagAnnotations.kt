@@ -59,3 +59,7 @@ annotation class IsLastMessageAutoExpandEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsSwipeAutoAdvanceEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsInjectCssOverrideEnabled

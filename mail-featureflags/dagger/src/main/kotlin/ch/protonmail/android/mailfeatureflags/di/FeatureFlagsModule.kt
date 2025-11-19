@@ -28,6 +28,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoro
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave1Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsInjectCssOverrideEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
@@ -39,6 +40,7 @@ import ch.protonmail.android.mailfeatureflags.domain.model.ComposerAutoCollapseQ
 import ch.protonmail.android.mailfeatureflags.domain.model.ConversationDetailAutoExpandLastMessageEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
+import ch.protonmail.android.mailfeatureflags.domain.model.InjectDetailCssOverrideEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
@@ -92,6 +94,17 @@ object FeatureFlagsModule {
     @IsSwipeAutoAdvanceEnabled
     fun provideIsSwipeAutoEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(SwipeAutoAdvanceEnabled.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideDetailCssOverrideDefinitions(): FeatureFlagDefinition = InjectDetailCssOverrideEnabled
+
+    @Provides
+    @Singleton
+    @IsInjectCssOverrideEnabled
+    fun provideDetailCssOverrideEnabledOverride(factory: BooleanFeatureFlagFactory) =
+        factory.create(InjectDetailCssOverrideEnabled.key, false)
 
     @Provides
     @Singleton

@@ -97,3 +97,11 @@ data object SwipeAutoAdvanceEnabled : FeatureFlagDefinition(
     description = "Show New Conversation detail Screen (that swipes) or Legacy",
     defaultValue = false
 )
+
+data object InjectDetailCssOverrideEnabled : FeatureFlagDefinition(
+    key = "MailAndroidV7CssHeightOverride",
+    name = "Inject CSS override in HTML messages",
+    category = FeatureFlagCategory.Details,
+    description = "Fix 0-height webview measurements by injecting additional CSS",
+    defaultValue = false
+)
