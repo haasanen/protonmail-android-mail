@@ -25,7 +25,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.startsWith
-import timber.log.Timber
 import javax.inject.Inject
 
 class GetMessageBodyWithClickableLinks @Inject constructor(
@@ -41,15 +40,12 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         messageId,
         transformations
     ).map { decryptedBody ->
-        Timber.d("linkify-body: Feature flag enabled, proceeding to linkify...")
         val bodyWithClickableLinks = makeUrlsClickable(decryptedBody.value)
         decryptedBody.copy(value = bodyWithClickableLinks)
     }
 
     private fun makeUrlsClickable(value: String): String {
         val urlRegex = URL_PATTERN.toRegex()
-        Timber.d("linkify-body: using pattern: $URL_PATTERN")
-
         val linkifiedBody = value.replace(urlRegex) { matchedUrl ->
 
             val matchedUrlWithProtocol = prependHttpsWhenMissing(matchedUrl.value)
