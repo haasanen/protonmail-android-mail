@@ -185,6 +185,10 @@ fun MessageBodyWebView(
 
     val webView = remember(messageId) { onBuildWebView(context) }
 
+    ConsumableLaunchedEffect(messageBodyUiModel.reloadMessageEffect) {
+        webView.reload()
+    }
+
     LaunchedEffect(messageId, messageBodyUiModel.messageBody, messageBodyUiModel.viewModePreference) {
         Timber.d("message-webview: setting initial value on webview ${webView.hashCode()} ($messageId)")
         webView.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)

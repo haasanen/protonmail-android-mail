@@ -653,6 +653,13 @@ fun ConversationDetailScreen(
                     },
                     onReportPhishing = { messageId ->
                         viewModel.submit(ConversationDetailViewAction.ReportPhishing(messageId))
+                    },
+                    onLoadImagesAfterImageProxyFailure = { messageId ->
+                        viewModel.submit(
+                            ConversationDetailViewAction.LoadImagesAfterImageProxyFailure(
+                                MessageIdUiModel(messageId.id)
+                            )
+                        )
                     }
                 )
             )
@@ -867,7 +874,8 @@ private fun ConversationDetailScreen(
                     onUnsubscribeFromNewsletter = actions.onUnsubscribeFromNewsletter,
                     onDownloadImage = { messageId, imageUrl ->
                         bodyImageSaver(BodyImageUiModel(imageUrl, messageId))
-                    }
+                    },
+                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure
                 )
                 val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
 
@@ -1320,7 +1328,8 @@ object ConversationDetailScreen {
         val onSnooze: () -> Unit,
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
-        val onReportPhishing: (MessageId) -> Unit
+        val onReportPhishing: (MessageId) -> Unit,
+        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit
     ) {
 
         companion object {
@@ -1379,7 +1388,8 @@ object ConversationDetailScreen {
                 onSnooze = {},
                 onActionBarVisibilityChanged = {},
                 onUnsubscribeFromNewsletter = {},
-                onReportPhishing = {}
+                onReportPhishing = {},
+                onLoadImagesAfterImageProxyFailure = {}
             )
         }
     }

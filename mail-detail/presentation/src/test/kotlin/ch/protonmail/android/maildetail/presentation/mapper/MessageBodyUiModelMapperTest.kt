@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
@@ -112,7 +113,8 @@ class MessageBodyUiModelMapperTest {
             shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = null,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            reloadMessageEffect = Effect.empty()
         )
 
         // When
@@ -158,7 +160,8 @@ class MessageBodyUiModelMapperTest {
                     AttachmentMetadataUiModelSamples.DocumentWithMultipleDots
                 )
             ),
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            reloadMessageEffect = Effect.empty()
         )
 
         // When
@@ -199,7 +202,8 @@ class MessageBodyUiModelMapperTest {
                     AttachmentMetadataUiModelSamples.Calendar
                 )
             ),
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            reloadMessageEffect = Effect.empty()
         )
 
         // When
@@ -240,7 +244,8 @@ class MessageBodyUiModelMapperTest {
                         AttachmentMetadataUiModelSamples.InvoiceWithBinaryContentType
                     )
                 ),
-                viewModePreference = ViewModePreference.ThemeDefault
+                viewModePreference = ViewModePreference.ThemeDefault,
+                reloadMessageEffect = Effect.empty()
             )
 
             every {
@@ -283,7 +288,8 @@ class MessageBodyUiModelMapperTest {
             shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = null,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            reloadMessageEffect = Effect.empty()
         )
 
         // When
@@ -316,7 +322,8 @@ class MessageBodyUiModelMapperTest {
                 shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
-                viewModePreference = ViewModePreference.ThemeDefault
+                viewModePreference = ViewModePreference.ThemeDefault,
+                reloadMessageEffect = Effect.empty()
             )
 
             // When
@@ -349,7 +356,8 @@ class MessageBodyUiModelMapperTest {
                 shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
-                viewModePreference = ViewModePreference.ThemeDefault
+                viewModePreference = ViewModePreference.ThemeDefault,
+                reloadMessageEffect = Effect.empty()
             )
 
             // When
@@ -382,7 +390,8 @@ class MessageBodyUiModelMapperTest {
                 shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
-                viewModePreference = ViewModePreference.ThemeDefault
+                viewModePreference = ViewModePreference.ThemeDefault,
+                reloadMessageEffect = Effect.empty()
             )
 
             // When
@@ -415,7 +424,8 @@ class MessageBodyUiModelMapperTest {
                 shouldShowImagesFailedToLoadBanner = false,
                 shouldShowExpandCollapseButton = false,
                 attachments = null,
-                viewModePreference = ViewModePreference.ThemeDefault
+                viewModePreference = ViewModePreference.ThemeDefault,
+                reloadMessageEffect = Effect.empty()
             )
 
             // When
@@ -439,7 +449,8 @@ class MessageBodyUiModelMapperTest {
             shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = null,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            reloadMessageEffect = Effect.empty()
         )
 
         // When
@@ -471,7 +482,8 @@ class MessageBodyUiModelMapperTest {
             shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = null,
-            viewModePreference = ViewModePreference.ThemeDefault
+            viewModePreference = ViewModePreference.ThemeDefault,
+            reloadMessageEffect = Effect.empty()
         )
 
         // When

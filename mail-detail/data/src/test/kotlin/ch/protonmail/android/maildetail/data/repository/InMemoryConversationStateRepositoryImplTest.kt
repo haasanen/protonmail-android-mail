@@ -38,6 +38,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class InMemoryConversationStateRepositoryImplTest {
 
@@ -266,6 +267,33 @@ class InMemoryConversationStateRepositoryImplTest {
             val expected = InMemoryConversationStateRepository.RsvpEventState.Error
             assertEquals(expected, conversationState.rsvpEvents[messageId])
         }
+    }
+
+    @Test
+    fun `should return true when checking if images should load safely for the first time`() {
+        // Given
+        val repo = buildRepository()
+        val messageId = MessageIdSample.AugWeatherForecast
+
+        // When
+        val actual = repo.getShouldLoadImagesSafely(messageId)
+
+        // Then
+        assertTrue(actual)
+    }
+
+    @Test
+    fun `should return correct value when checking if images should load safely`() {
+        // Given
+        val repo = buildRepository()
+        val messageId = MessageIdSample.AugWeatherForecast
+
+        // When
+        repo.setShouldLoadImagesSafely(messageId, false)
+        val actual = repo.getShouldLoadImagesSafely(messageId)
+
+        // Then
+        assertFalse(actual)
     }
 
     private fun buildRepository() = InMemoryConversationStateRepositoryImpl()

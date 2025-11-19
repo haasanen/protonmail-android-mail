@@ -28,6 +28,7 @@ import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -138,6 +139,33 @@ class MessageViewStateCacheTest {
 
         // Then
         coVerify { repo.updateRsvpEventError(messageId) }
+    }
+
+    @Test
+    fun `should get value for should load images safely`() {
+        // Given
+        val messageId = MessageIdSample.AugWeatherForecast
+        val useCase = buildUseCase()
+        every { repo.getShouldLoadImagesSafely(messageId) } returns true
+
+        // When
+        useCase.getShouldLoadImagesSafely(messageId)
+
+        // Then
+        coVerify { repo.getShouldLoadImagesSafely(messageId) }
+    }
+
+    @Test
+    fun `should set value for should load images safely`() {
+        // Given
+        val messageId = MessageIdSample.AugWeatherForecast
+        val useCase = buildUseCase()
+
+        // When
+        useCase.setShouldLoadImagesSafely(messageId, false)
+
+        // Then
+        coVerify { repo.setShouldLoadImagesSafely(messageId, false) }
     }
 
     private fun buildUseCase() = MessageViewStateCache(repo)

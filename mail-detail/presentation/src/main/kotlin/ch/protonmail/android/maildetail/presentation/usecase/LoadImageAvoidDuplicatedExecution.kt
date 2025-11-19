@@ -43,13 +43,14 @@ class LoadImageAvoidDuplicatedExecution @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         url: String,
+        shouldLoadImagesSafely: Boolean,
         coroutineContext: CoroutineContext
     ): Either<AttachmentDataError, MessageBodyImage> = runCatching {
         withContext(coroutineContext) {
             if (loadMessageBodyImageJobMap[url]?.isActive == true) {
                 loadMessageBodyImageJobMap[url]!!
             } else {
-                async { loadMessageBodyImage(userId, messageId, url) }.apply {
+                async { loadMessageBodyImage(userId, messageId, url, shouldLoadImagesSafely) }.apply {
                     loadMessageBodyImageJobMap[url] = this
                 }
             }.await()

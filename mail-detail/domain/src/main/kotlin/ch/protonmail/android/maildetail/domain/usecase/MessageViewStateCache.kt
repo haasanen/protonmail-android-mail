@@ -69,4 +69,10 @@ class MessageViewStateCache @Inject constructor(
 
     suspend fun updateRsvpEventError(messageId: MessageId) =
         inMemoryConversationStateRepository.updateRsvpEventError(messageId)
+
+    fun getShouldLoadImagesSafely(messageId: MessageId) =
+        inMemoryConversationStateRepository.getShouldLoadImagesSafely(messageId)
+
+    fun setShouldLoadImagesSafely(messageId: MessageId, value: Boolean) =
+        inMemoryConversationStateRepository.setShouldLoadImagesSafely(messageId, value)
 }

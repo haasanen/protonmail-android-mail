@@ -49,11 +49,15 @@ interface InMemoryConversationStateRepository {
     fun getTransformationsForMessage(messageId: MessageId): MessageBodyTransformations?
     fun setTransformationsForMessage(messageId: MessageId, transformations: MessageBodyTransformations)
 
+    fun getShouldLoadImagesSafely(messageId: MessageId): Boolean
+    fun setShouldLoadImagesSafely(messageId: MessageId, value: Boolean)
+
     data class MessagesState(
         val messagesTransformations: Map<MessageId, MessageBodyTransformations>,
         val attachmentsListExpandCollapseMode: Map<MessageId, AttachmentListExpandCollapseMode>,
         val messagesState: Map<MessageId, MessageState>,
-        val rsvpEvents: Map<MessageId, RsvpEventState>
+        val rsvpEvents: Map<MessageId, RsvpEventState>,
+        val shouldLoadImagesSafely: Map<MessageId, Boolean>
     )
 
     sealed class MessageState {

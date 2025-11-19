@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.reducer
 
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
@@ -247,6 +248,24 @@ class ConversationDetailMessagesReducerTest(
                             it.copy(
                                 messageBodyUiModel = it.messageBodyUiModel.copy(
                                     shouldShowImagesFailedToLoadBanner = true
+                                )
+                            )
+                        } else it
+                    }.toImmutableList()
+                )
+            ),
+            Input(
+                currentState = ConversationDetailsMessagesState.Data(messages = allMessagesFirstExpanded),
+                operation = ConversationDetailEvent.OnLoadImagesAfterImageProxyFailure(
+                    allMessages.first().messageId
+                ),
+                expectedState = ConversationDetailsMessagesState.Data(
+                    messages = allMessagesFirstExpanded.map {
+                        if (it is ConversationDetailMessageUiModel.Expanded) {
+                            it.copy(
+                                messageBodyUiModel = it.messageBodyUiModel.copy(
+                                    shouldShowImagesFailedToLoadBanner = false,
+                                    reloadMessageEffect = Effect.of(Unit)
                                 )
                             )
                         } else it

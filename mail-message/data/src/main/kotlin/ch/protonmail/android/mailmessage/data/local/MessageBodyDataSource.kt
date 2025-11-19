@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.ImagePolicy
 
 interface MessageBodyDataSource {
 
@@ -38,7 +39,8 @@ interface MessageBodyDataSource {
     suspend fun loadImage(
         userId: UserId,
         messageId: LocalMessageId,
-        url: String
+        url: String,
+        imagePolicy: ImagePolicy
     ): Either<AttachmentDataError, LocalAttachmentData>
 
     suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>

@@ -39,6 +39,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_uniffi.ImagePolicy
 import uniffi.proton_mail_uniffi.MessageBanner
 import uniffi.proton_mail_uniffi.TransformOpts
 import kotlin.test.Test
@@ -127,7 +128,7 @@ class RustMessageBodyDataSourceTest {
         )
 
         val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
-            coEvery { loadImage(any()) } returns attachmentData.right()
+            coEvery { loadImage(any(), any()) } returns attachmentData.right()
         }
 
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
@@ -135,7 +136,7 @@ class RustMessageBodyDataSourceTest {
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns decryptedMessageBodyWrapper.right()
 
         // When
-        val result = dataSource.loadImage(userId, messageId, "url")
+        val result = dataSource.loadImage(userId, messageId, "url", ImagePolicy.SAFE)
 
         // Then
         coVerify { rustMailboxFactory.createAllMail(userId) }
@@ -153,7 +154,7 @@ class RustMessageBodyDataSourceTest {
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns DataError.Local.NoDataCached.left()
 
         // When
-        val result = dataSource.loadImage(userId, messageId, "url")
+        val result = dataSource.loadImage(userId, messageId, "url", ImagePolicy.SAFE)
 
         // Then
         coVerify { rustMailboxFactory.createAllMail(userId) }

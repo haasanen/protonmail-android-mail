@@ -86,7 +86,8 @@ internal class MessageBodyImageSaverViewModelTest {
             loadMessageBodyImage(
                 UserIdSample.Primary,
                 MessageIdSample.MessageWithAttachments,
-                testImageUrl
+                testImageUrl,
+                shouldLoadImagesSafely = true
             )
         } returns testBodyImage.right()
 
@@ -102,7 +103,9 @@ internal class MessageBodyImageSaverViewModelTest {
         coVerify(exactly = 1) {
             loadMessageBodyImage(
                 UserIdSample.Primary,
-                MessageIdSample.MessageWithAttachments, testImageUrl
+                MessageIdSample.MessageWithAttachments,
+                testImageUrl,
+                shouldLoadImagesSafely = true
             )
         }
     }
@@ -115,7 +118,8 @@ internal class MessageBodyImageSaverViewModelTest {
             loadMessageBodyImage(
                 UserIdSample.Primary,
                 MessageIdSample.MessageWithAttachments,
-                testImageUrl
+                testImageUrl,
+                shouldLoadImagesSafely = true
             )
         } returns mockk<AttachmentDataError>().left()
 
@@ -153,7 +157,8 @@ internal class MessageBodyImageSaverViewModelTest {
             loadMessageBodyImage(
                 UserIdSample.Primary,
                 MessageIdSample.MessageWithAttachments,
-                testImageUrl
+                testImageUrl,
+                shouldLoadImagesSafely = true
             )
         } returns testBodyImage.right()
 
@@ -304,7 +309,8 @@ internal class MessageBodyImageSaverViewModelTest {
             loadMessageBodyImage(
                 UserIdSample.Primary,
                 MessageIdSample.MessageWithAttachments,
-                testImageUrl
+                testImageUrl,
+                shouldLoadImagesSafely = true
             )
         } returns testBodyImage.right()
 

@@ -38,6 +38,7 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
     private val conversationStateFlow = MutableSharedFlow<MessagesState>(1)
     private val attachmentsListExpandCollapseMode = ConcurrentHashMap<MessageId, AttachmentListExpandCollapseMode>()
     private val rsvpEventCache = ConcurrentHashMap<MessageId, InMemoryConversationStateRepository.RsvpEventState>()
+    private val shouldLoadImagesSafelyCache = ConcurrentHashMap<MessageId, Boolean>()
 
     init {
         conversationStateFlow.tryEmit(
@@ -45,7 +46,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                rsvpEventCache
+                rsvpEventCache,
+                shouldLoadImagesSafelyCache
             )
         )
     }
@@ -60,7 +62,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                rsvpEventCache
+                rsvpEventCache,
+                shouldLoadImagesSafelyCache
             )
         )
     }
@@ -72,7 +75,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                rsvpEventCache
+                rsvpEventCache,
+                shouldLoadImagesSafelyCache
             )
         )
     }
@@ -84,7 +88,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                rsvpEventCache
+                rsvpEventCache,
+                shouldLoadImagesSafelyCache
             )
         )
     }
@@ -99,7 +104,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                rsvpEventCache
+                rsvpEventCache,
+                shouldLoadImagesSafelyCache
             )
         )
     }
@@ -111,7 +117,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                rsvpEventCache
+                rsvpEventCache,
+                shouldLoadImagesSafelyCache
             )
         )
     }
@@ -127,7 +134,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                rsvpEventCache
+                rsvpEventCache,
+                shouldLoadImagesSafelyCache
             )
         )
     }
@@ -140,7 +148,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                     transformationCache,
                     attachmentsListExpandCollapseMode,
                     conversationCache,
-                    rsvpEventCache
+                    rsvpEventCache,
+                    shouldLoadImagesSafelyCache
                 )
             )
         }
@@ -153,7 +162,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                rsvpEventCache
+                rsvpEventCache,
+                shouldLoadImagesSafelyCache
             )
         )
     }
@@ -162,5 +172,12 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
 
     override fun setTransformationsForMessage(messageId: MessageId, transformations: MessageBodyTransformations) {
         transformationCache[messageId] = transformations
+    }
+
+    override fun getShouldLoadImagesSafely(messageId: MessageId): Boolean =
+        shouldLoadImagesSafelyCache[messageId] ?: true
+
+    override fun setShouldLoadImagesSafely(messageId: MessageId, value: Boolean) {
+        shouldLoadImagesSafelyCache[messageId] = value
     }
 }

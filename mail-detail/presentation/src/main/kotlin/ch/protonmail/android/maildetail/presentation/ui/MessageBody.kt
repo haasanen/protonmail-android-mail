@@ -89,7 +89,7 @@ fun MessageBody(
                 bannerText = stringResource(id = R.string.message_body_images_failed_to_load_banner_text),
                 buttonText = stringResource(id = R.string.message_body_images_failed_to_load_banner_button),
                 icon = R.drawable.ic_info_circle,
-                onButtonClicked = {}
+                onButtonClicked = { actions.onLoadImagesAfterImageProxyFailure(messageBodyUiModel.messageId) }
             )
         }
     }
@@ -195,7 +195,8 @@ object MessageBody {
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit,
-        val onDownloadImage: (messageId: MessageId, imageUrl: String) -> Unit
+        val onDownloadImage: (messageId: MessageId, imageUrl: String) -> Unit,
+        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit
     )
 }
 

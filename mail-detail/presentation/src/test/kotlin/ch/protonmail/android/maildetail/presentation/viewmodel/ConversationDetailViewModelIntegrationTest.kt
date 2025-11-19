@@ -1321,7 +1321,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         val byteArray = "I'm a byte array".toByteArray()
         val expectedResult = MessageBodyImage(byteArray, "image/png")
         coEvery {
-            loadImageAvoidDuplicatedExecution(userId, messageId, contentId, any())
+            loadImageAvoidDuplicatedExecution(userId, messageId, contentId, shouldLoadImagesSafely = true, any())
         } returns expectedResult.right()
 
         // When
@@ -1340,7 +1340,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         val messageId = MessageId("rawMessageId")
         val contentId = "contentId"
         coEvery {
-            loadImageAvoidDuplicatedExecution(userId, messageId, contentId, any())
+            loadImageAvoidDuplicatedExecution(userId, messageId, contentId, shouldLoadImagesSafely = true, any())
         } returns AttachmentDataError.Other(DataError.Local.Unknown).left()
 
         // When

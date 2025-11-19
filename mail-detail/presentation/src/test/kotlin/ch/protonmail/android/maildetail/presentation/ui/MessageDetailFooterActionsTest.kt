@@ -69,7 +69,8 @@ internal class MessageDetailFooterActionsTest {
             onMessage = {},
             onUnsnoozeMessage = {},
             onUnsubscribeFromNewsletter = {},
-            onDownloadImage = { _, _ -> }
+            onDownloadImage = { _, _ -> },
+            onLoadImagesAfterImageProxyFailure = {}
         )
 
         // When

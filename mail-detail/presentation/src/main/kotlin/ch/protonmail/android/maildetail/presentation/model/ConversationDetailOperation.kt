@@ -190,6 +190,9 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
 
     data class ErrorLoadingImageProxyFailed(val messageId: MessageId) :
         ConversationDetailEvent, AffectingMessages
+
+    data class OnLoadImagesAfterImageProxyFailure(val messageId: MessageIdUiModel) :
+        ConversationDetailEvent, AffectingMessages
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
@@ -241,6 +244,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class LoadRemoteContent(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     data class ShowEmbeddedImages(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     data class LoadRemoteAndEmbeddedContent(val messageId: MessageIdUiModel) : ConversationDetailViewAction
+    data class LoadImagesAfterImageProxyFailure(val messageId: MessageIdUiModel) : ConversationDetailViewAction
 
     data class ReportPhishing(
         val messageId: MessageId

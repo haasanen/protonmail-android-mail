@@ -37,6 +37,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.ImagePolicy
 import uniffi.proton_mail_uniffi.TransformOpts
 import javax.inject.Inject
 
@@ -75,7 +76,8 @@ class RustMessageBodyDataSource @Inject constructor(
     override suspend fun loadImage(
         userId: UserId,
         messageId: LocalMessageId,
-        url: String
+        url: String,
+        imagePolicy: ImagePolicy
     ): Either<AttachmentDataError, LocalAttachmentData> = withContext(ioDispatcher) {
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
@@ -88,7 +90,7 @@ class RustMessageBodyDataSource @Inject constructor(
                 AttachmentDataError.Other(it)
             }
             .flatMap { decryptedMessage ->
-                decryptedMessage.loadImage(url)
+                decryptedMessage.loadImage(url, imagePolicy)
             }
     }
 

@@ -51,11 +51,17 @@ class LoadImageAvoidDuplicatedExecutionTest {
         val expectedByteArray = "I'm an image".toByteArray()
         val expectedImageResult = MessageBodyImage(data = expectedByteArray, mimeType = "").right()
         coEvery {
-            loadMessageBodyImage(userId, messageId, url)
+            loadMessageBodyImage(userId, messageId, url, shouldLoadImagesSafely = true)
         } returns expectedImageResult
 
         // When
-        val result = loadImageAvoidDuplicatedExecution(userId, messageId, url, coroutineContext)
+        val result = loadImageAvoidDuplicatedExecution(
+            userId = userId,
+            messageId = messageId,
+            url = url,
+            shouldLoadImagesSafely = true,
+            coroutineContext = coroutineContext
+        )
 
         // Then
         assertEquals(expectedImageResult, result)
@@ -66,11 +72,17 @@ class LoadImageAvoidDuplicatedExecutionTest {
         // Given
         val expectedResult = AttachmentDataError.Other(DataError.Local.NoDataCached).left()
         coEvery {
-            loadMessageBodyImage(userId, messageId, url)
+            loadMessageBodyImage(userId, messageId, url, shouldLoadImagesSafely = true)
         } returns expectedResult
 
         // When
-        val result = loadImageAvoidDuplicatedExecution(userId, messageId, url, coroutineContext)
+        val result = loadImageAvoidDuplicatedExecution(
+            userId = userId,
+            messageId = messageId,
+            url = url,
+            shouldLoadImagesSafely = true,
+            coroutineContext = coroutineContext
+        )
 
         // Then
         assertEquals(expectedResult, result)
@@ -82,17 +94,21 @@ class LoadImageAvoidDuplicatedExecutionTest {
         val expectedByteArray = "I'm an image".toByteArray()
         val expectedImageResult = MessageBodyImage(data = expectedByteArray, mimeType = "")
         coEvery {
-            loadMessageBodyImage(userId, messageId, url)
+            loadMessageBodyImage(userId, messageId, url, shouldLoadImagesSafely = true)
         } coAnswers {
             expectedImageResult.right()
         }
 
         // When
-        launch { loadImageAvoidDuplicatedExecution(userId, messageId, url, coroutineContext) }
-        launch { loadImageAvoidDuplicatedExecution(userId, messageId, url, coroutineContext) }
+        launch {
+            loadImageAvoidDuplicatedExecution(userId, messageId, url, shouldLoadImagesSafely = true, coroutineContext)
+        }
+        launch {
+            loadImageAvoidDuplicatedExecution(userId, messageId, url, shouldLoadImagesSafely = true, coroutineContext)
+        }
         advanceUntilIdle()
 
         // Then
-        coVerify(exactly = 1) { loadMessageBodyImage(userId, messageId, url) }
+        coVerify(exactly = 1) { loadMessageBodyImage(userId, messageId, url, shouldLoadImagesSafely = true) }
     }
 }

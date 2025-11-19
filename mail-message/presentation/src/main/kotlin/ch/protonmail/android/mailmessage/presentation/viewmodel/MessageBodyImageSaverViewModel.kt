@@ -104,7 +104,7 @@ class MessageBodyImageSaverViewModel @Inject constructor(
             return ExternalAttachmentErrorResult.UserNotFound.left()
         }
 
-        return loadMessageBodyImage(userId, bodyImage.messageId, bodyImage.imageUrl)
+        return loadMessageBodyImage(userId, bodyImage.messageId, bodyImage.imageUrl, shouldLoadImagesSafely = true)
             .mapLeft { ExternalAttachmentErrorResult.UnableToLoadImage }
     }
 

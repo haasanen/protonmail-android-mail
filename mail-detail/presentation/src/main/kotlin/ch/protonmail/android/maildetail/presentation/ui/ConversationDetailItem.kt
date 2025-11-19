@@ -328,7 +328,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                     onLoadEmbeddedImages = { actions.onLoadEmbeddedImages(it) },
                     onLoadRemoteAndEmbeddedContent = { actions.onLoadRemoteAndEmbeddedContent(it) },
                     onPrint = { actions.onPrint(it) },
-                    onDownloadImage = { messageId, imageUrl -> actions.onDownloadImage(messageId, imageUrl) }
+                    onDownloadImage = { messageId, imageUrl -> actions.onDownloadImage(messageId, imageUrl) },
+                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure
                 ),
                 onMessageBodyLoaded = { id: MessageId, i: Int ->
                     // now that the webview is loaded send the more recent height so it can be cached
@@ -411,7 +412,8 @@ object ConversationDetailItem {
         val onMessage: (String) -> Unit,
         val onUnsnoozeMessage: () -> Unit,
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
-        val onDownloadImage: (MessageId, String) -> Unit
+        val onDownloadImage: (MessageId, String) -> Unit,
+        val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit
     )
 
     val previewActions = Actions(
@@ -447,7 +449,8 @@ object ConversationDetailItem {
         {},
         onUnsnoozeMessage = { },
         onUnsubscribeFromNewsletter = {},
-        onDownloadImage = { _, _ -> }
+        onDownloadImage = { _, _ -> },
+        onLoadImagesAfterImageProxyFailure = {}
     )
 }
 

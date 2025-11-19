@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.reducer
 
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
@@ -99,6 +100,9 @@ class ConversationDetailMessagesReducer @Inject constructor() {
 
         is ConversationDetailEvent.ErrorLoadingImageProxyFailed ->
             currentState.toNewStateForImageProxyFailed(operation.messageId)
+
+        is ConversationDetailEvent.OnLoadImagesAfterImageProxyFailure ->
+            currentState.toNewStateForLoadAfterImageProxyFailed(operation.messageId)
     }
 
     private fun ConversationDetailsMessagesState.toNewStateForEditScheduleSend(
@@ -252,6 +256,29 @@ class ConversationDetailMessagesReducer @Inject constructor() {
                             it.copy(
                                 messageBodyUiModel = it.messageBodyUiModel.copy(
                                     shouldShowImagesFailedToLoadBanner = true
+                                )
+                            )
+                        } else
+                            it
+                    }.toImmutableList()
+                )
+            }
+            else -> this
+        }
+    }
+
+    private fun ConversationDetailsMessagesState.toNewStateForLoadAfterImageProxyFailed(
+        messageId: MessageIdUiModel
+    ): ConversationDetailsMessagesState {
+        return when (this) {
+            is ConversationDetailsMessagesState.Data -> {
+                this.copy(
+                    messages = this.messages.map {
+                        if (it.messageId == messageId && it is ConversationDetailMessageUiModel.Expanded) {
+                            it.copy(
+                                messageBodyUiModel = it.messageBodyUiModel.copy(
+                                    shouldShowImagesFailedToLoadBanner = false,
+                                    reloadMessageEffect = Effect.of(Unit)
                                 )
                             )
                         } else

@@ -30,6 +30,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.ImagePolicy
 import javax.inject.Inject
 
 class RustMessageBodyRepository @Inject constructor(
@@ -46,13 +47,16 @@ class RustMessageBodyRepository @Inject constructor(
     override suspend fun loadImage(
         userId: UserId,
         messageId: MessageId,
-        url: String
-    ): Either<AttachmentDataError, MessageBodyImage> =
-        messageBodyDataSource.loadImage(userId, messageId.toLocalMessageId(), url)
+        url: String,
+        shouldLoadImagesSafely: Boolean
+    ): Either<AttachmentDataError, MessageBodyImage> {
+        val imagePolicy = if (shouldLoadImagesSafely) ImagePolicy.SAFE else ImagePolicy.UNSAFE
+        return messageBodyDataSource.loadImage(userId, messageId.toLocalMessageId(), url, imagePolicy)
             .map { localAttachmentData ->
                 Timber.d("RustMessage: Loaded image: $url; mime ${localAttachmentData.mime};")
                 MessageBodyImage(localAttachmentData.data, localAttachmentData.mime)
             }
+    }
 
     override suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         messageBodyDataSource.unsubscribeFromNewsletter(userId, messageId.toLocalMessageId())

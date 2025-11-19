@@ -33,7 +33,9 @@ class LoadMessageBodyImage @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
-        url: String
-    ): Either<AttachmentDataError, MessageBodyImage> = messageBodyRepository.loadImage(userId, messageId, url)
+        url: String,
+        shouldLoadImagesSafely: Boolean
+    ): Either<AttachmentDataError, MessageBodyImage> =
+        messageBodyRepository.loadImage(userId, messageId, url, shouldLoadImagesSafely)
 
 }

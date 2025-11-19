@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
@@ -67,7 +68,8 @@ class MessageBodyUiModelMapper @Inject constructor(
                     attachmentListExpandCollapseMode
                 )
             } else null,
-            viewModePreference = viewModePreference
+            viewModePreference = viewModePreference,
+            reloadMessageEffect = Effect.empty()
         )
     }
 
@@ -80,7 +82,8 @@ class MessageBodyUiModelMapper @Inject constructor(
         shouldShowImagesFailedToLoadBanner = false,
         shouldShowExpandCollapseButton = false,
         attachments = null,
-        viewModePreference = ViewModePreference.ThemeDefault
+        viewModePreference = ViewModePreference.ThemeDefault,
+        reloadMessageEffect = Effect.empty()
     )
 
     private fun MimeType.toMimeTypeUiModel() = when (this) {

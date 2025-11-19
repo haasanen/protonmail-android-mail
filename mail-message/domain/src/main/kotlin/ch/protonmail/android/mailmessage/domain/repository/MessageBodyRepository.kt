@@ -38,7 +38,8 @@ interface MessageBodyRepository {
     suspend fun loadImage(
         userId: UserId,
         messageId: MessageId,
-        url: String
+        url: String,
+        shouldLoadImagesSafely: Boolean
     ): Either<AttachmentDataError, MessageBodyImage>
 
     suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: MessageId): Either<DataError, Unit>

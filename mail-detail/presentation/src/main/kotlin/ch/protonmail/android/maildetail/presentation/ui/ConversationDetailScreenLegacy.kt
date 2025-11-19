@@ -647,6 +647,13 @@ fun ConversationDetailScreenLegacy(
                     },
                     onReportPhishing = { messageId ->
                         viewModel.submit(ConversationDetailViewAction.ReportPhishing(messageId))
+                    },
+                    onLoadImagesAfterImageProxyFailure = { messageId ->
+                        viewModel.submit(
+                            ConversationDetailViewAction.LoadImagesAfterImageProxyFailure(
+                                MessageIdUiModel(messageId.id)
+                            )
+                        )
                     }
                 ),
                 scrollToMessageId = state.scrollToMessage?.id
@@ -873,7 +880,8 @@ private fun ConversationDetailScreenLegacy(
                     onUnsubscribeFromNewsletter = actions.onUnsubscribeFromNewsletter,
                     onDownloadImage = { messageId, imageUrl ->
                         bodyImageSaver(BodyImageUiModel(imageUrl, messageId))
-                    }
+                    },
+                    onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure
                 )
                 val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
 

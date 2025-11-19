@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.testdata.message
 
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
@@ -120,7 +121,8 @@ object MessageBodyUiModelTestData {
             shouldShowImagesFailedToLoadBanner = false,
             shouldShowExpandCollapseButton = false,
             attachments = attachments,
-            viewModePreference = viewModePreference
+            viewModePreference = viewModePreference,
+            reloadMessageEffect = Effect.empty()
         )
     }
 }

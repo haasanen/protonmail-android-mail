@@ -437,6 +437,9 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 is ConversationDetailViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet()
                 is ConversationDetailViewAction.UnsubscribeFromNewsletter ->
                     handleUnsubscribeFromNewsletter(action.messageId)
+
+                is ConversationDetailViewAction.LoadImagesAfterImageProxyFailure ->
+                    handleLoadImagesAfterImageProxyFailure(action.messageId)
             }
         }
     }
@@ -523,6 +526,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 userId = primaryUserId.first(),
                 messageId = messageId,
                 url = url,
+                shouldLoadImagesSafely = messageViewStateCache.getShouldLoadImagesSafely(messageId),
                 coroutineContext = viewModelScope.coroutineContext
             ).fold(
                 ifLeft = {
@@ -1698,6 +1702,11 @@ class ConversationDetailViewModel @AssistedInject constructor(
             },
             ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
         )
+    }
+
+    private fun handleLoadImagesAfterImageProxyFailure(messageId: MessageIdUiModel) = viewModelScope.launch {
+        messageViewStateCache.setShouldLoadImagesSafely(MessageId(messageId.id), false)
+        emitNewStateFrom(ConversationDetailEvent.OnLoadImagesAfterImageProxyFailure(messageId))
     }
 
     /**

@@ -47,10 +47,12 @@ class LoadMessageBodyImageTest {
         // Given
         val expectedByteArray = "I'm a bytearray".toByteArray()
         val expected = MessageBodyImage(expectedByteArray, "image/png").right()
-        coEvery { messageBodyRepository.loadImage(userId, messageId, url) } returns expected
+        coEvery {
+            messageBodyRepository.loadImage(userId, messageId, url, shouldLoadImagesSafely = true)
+        } returns expected
 
         // When
-        val actual = loadMessageBodyImage(userId, messageId, url)
+        val actual = loadMessageBodyImage(userId, messageId, url, shouldLoadImagesSafely = true)
 
         // Then
         assertEquals(expected, actual)
@@ -59,11 +61,11 @@ class LoadMessageBodyImageTest {
     @Test
     fun `returns error when loading image fails`() = runTest {
         // Given
-        coEvery { messageBodyRepository.loadImage(userId, messageId, url) } returns
+        coEvery { messageBodyRepository.loadImage(userId, messageId, url, shouldLoadImagesSafely = true) } returns
             AttachmentDataError.Other(DataError.Local.NoDataCached).left()
 
         // When
-        val actual = loadMessageBodyImage(userId, messageId, url)
+        val actual = loadMessageBodyImage(userId, messageId, url, shouldLoadImagesSafely = true)
 
         // Then
         assertEquals(AttachmentDataError.Other(DataError.Local.NoDataCached).left(), actual)
