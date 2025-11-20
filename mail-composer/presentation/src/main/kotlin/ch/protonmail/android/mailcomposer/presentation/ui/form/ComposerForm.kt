@@ -167,8 +167,12 @@ internal fun ComposerForm(
                         nextFocusRequester = fieldFocusRequesters.getValue(FocusedFieldType.BODY),
                         onNextToBody = {
 
-                            webViewCache.value?.let { webView ->
-                                ComposerFocusUtils.focusEditorAndShowKeyboard(webView, context)
+                            if (draftType == DraftMimeType.Html) {
+                                webViewCache.value?.let { webView ->
+                                    ComposerFocusUtils.focusEditorAndShowKeyboard(webView, context)
+                                }
+                            } else {
+                                fieldFocusRequesters.getValue(FocusedFieldType.BODY).requestFocus()
                             }
                         }
                     )
