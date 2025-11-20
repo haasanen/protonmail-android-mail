@@ -19,8 +19,6 @@
 package ch.protonmail.android.mailcommon.presentation.compose
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -55,17 +53,13 @@ fun <FocusedField> FocusableForm(
             FocusRequester()
         }
     }
-    val bringIntoViewRequesters = remember(fieldList) {
-        fieldList.associateWith { BringIntoViewRequester() }
-    }
 
-    val isKeyboardVisible by ch.protonmail.android.uicomponents.keyboardVisibilityAsState()
     val onFieldFocused: (FocusedField) -> Unit = {
         focusedField = it
         onFocusedField(it)
     }
 
-    FocusableFormScope(focusRequesters, bringIntoViewRequesters, onFieldFocused).content(focusRequesters)
+    FocusableFormScope(focusRequesters, onFieldFocused).content(focusRequesters)
 
     LaunchedEffect(Unit) {
         if (focusedField != initialFocus) {
@@ -74,18 +68,10 @@ fun <FocusedField> FocusableForm(
             focusRequesters[initialFocus]?.requestFocus()
         }
     }
-
-    // This is a workaround as the keyboard needs to be fully visible before the composable can be brought into
-    // the view, otherwise the bringIntoView() call has no effect.
-    // See https://kotlinlang.slack.com/archives/CJLTWPH7S/p1683542940483379 for more context.
-    LaunchedEffect(isKeyboardVisible) {
-        bringIntoViewRequesters[focusedField]?.bringIntoView()
-    }
 }
 
 class FocusableFormScope<FocusedField> @OptIn(ExperimentalFoundationApi::class) constructor(
     private val focusRequesters: Map<FocusedField, FocusRequester>,
-    private val bringIntoViewRequesters: Map<FocusedField, BringIntoViewRequester>,
     private val onFieldFocused: (focusedField: FocusedField) -> Unit
 ) {
 
@@ -93,9 +79,8 @@ class FocusableFormScope<FocusedField> @OptIn(ExperimentalFoundationApi::class) 
     @Stable
     fun Modifier.retainFieldFocusOnConfigurationChange(fieldType: FocusedField): Modifier {
         val focusRequester = focusRequesters[fieldType]
-        val bringIntoViewRequester = bringIntoViewRequesters[fieldType]
-        return if (focusRequester != null && bringIntoViewRequester != null) {
-            focusRequester(focusRequester).bringIntoViewRequester(bringIntoViewRequester)
+        return if (focusRequester != null) {
+            focusRequester(focusRequester)
         } else {
             this
         }.onFocusChanged {
