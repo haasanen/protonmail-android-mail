@@ -26,11 +26,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
@@ -45,6 +45,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -81,13 +82,15 @@ import me.proton.core.util.kotlin.takeIfNotBlank
 fun AccountsSwitcherBottomSheetScreen(
     modifier: Modifier = Modifier,
     onEvent: (AccountSwitchEvent) -> Unit,
+    onDismiss: () -> Unit,
     viewModel: AccountsManagerViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     AccountsSwitcherBottomSheetScreen(
         state = state,
         modifier = modifier,
-        onEvent = onEvent
+        onEvent = onEvent,
+        onDismiss = onDismiss
     )
 }
 
@@ -95,11 +98,10 @@ fun AccountsSwitcherBottomSheetScreen(
 fun AccountsSwitcherBottomSheetScreen(
     state: AccountsManagerState,
     modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
     onEvent: (AccountSwitchEvent) -> Unit = {}
 ) {
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
+    Box {
         when (state) {
             is AccountsManagerState.Loading -> ProtonHorizontallyCenteredProgress()
             is AccountsManagerState.Idle -> {
@@ -108,6 +110,8 @@ fun AccountsSwitcherBottomSheetScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    CloseButtonSection(closeAction = onDismiss)
+
                     CurrentAccountSection(
                         currentAccount = state.signedInAccounts.filterIsInstance<AccountListItem.Ready.Primary>()
                             .first(),
@@ -141,6 +145,35 @@ fun AccountsSwitcherBottomSheetScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun CloseButtonSection(closeAction: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(top = ProtonDimens.Spacing.Small)
+                .padding(end = ProtonDimens.Spacing.Medium)
+                .background(
+                    color = ProtonTheme.colors.backgroundInvertedDeep,
+                    shape = CircleShape
+                )
+                .clip(CircleShape)
+                .clickable(onClick = closeAction)
+        ) {
+            Icon(
+                modifier = Modifier
+                    .padding(ProtonDimens.Spacing.Tiny)
+                    .size(ProtonDimens.IconSize.Default),
+                painter = painterResource(R.drawable.ic_proton_close_filled),
+                contentDescription = null,
+                tint = ProtonTheme.colors.shade50
+            )
         }
     }
 }
@@ -358,7 +391,7 @@ private fun SignOutButton(
     ButtonWithIconAndText(
         modifier = modifier,
         text = R.string.account_switcher_sign_out,
-        icon = R.drawable.ic_sign_out,
+        icon = R.drawable.ic_proton_arrow_out_from_rectangle,
         onClick = { onEvent(AccountSwitchEvent.OnSignOut(currentAccount.accountItem.userId)) }
     )
 }
@@ -368,7 +401,7 @@ private fun ManageAccountsOnDeviceButton(modifier: Modifier = Modifier, onEvent:
     ButtonWithIconAndText(
         modifier = modifier,
         text = R.string.manage_accounts_on_device,
-        icon = R.drawable.ic_proton_sliders,
+        icon = R.drawable.ic_proton_cog_wheel,
         onClick = { onEvent(AccountSwitchEvent.OnManageAccounts) }
     )
 }
@@ -378,7 +411,7 @@ private fun AddAnotherAccountButton(modifier: Modifier = Modifier, onEvent: (Acc
     ButtonWithIconAndText(
         modifier = modifier,
         text = R.string.add_another_account,
-        icon = R.drawable.ic_proton_plus,
+        icon = R.drawable.ic_proton_user_plus,
         onClick = { onEvent(AccountSwitchEvent.OnAddAccount) }
     )
 }
@@ -428,7 +461,8 @@ private fun AccountsSwitcherScreenPreview() {
                 )
             )
         ),
-        onEvent = {}
+        onEvent = {},
+        onDismiss = {}
     )
 }
 
@@ -468,6 +502,7 @@ private fun NoOtherAccountsPreview() {
             ),
             disabledAccounts = emptyList()
         ),
-        onEvent = {}
+        onEvent = {},
+        onDismiss = {}
     )
 }

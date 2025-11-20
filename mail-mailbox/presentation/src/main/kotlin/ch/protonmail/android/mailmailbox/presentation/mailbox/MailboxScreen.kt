@@ -397,9 +397,10 @@ fun MailboxScreen(
                     )
                 )
 
-                is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(onEvent = {
-                    dismissBottomSheet { onEvent(it) }
-                })
+                is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(
+                    onDismiss = { dismissBottomSheet {} },
+                    onEvent = { dismissBottomSheet { onEvent(it) } }
+                )
 
                 is SnoozeSheetState.Requested -> {
                     val initialData = SnoozeBottomSheet.InitialData(
