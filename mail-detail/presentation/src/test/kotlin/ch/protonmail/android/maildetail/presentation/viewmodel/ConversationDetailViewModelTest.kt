@@ -365,63 +365,64 @@ class ConversationDetailViewModelTest {
         createViewModel()
     }
 
-    private fun createViewModel(labelId: LabelId = LabelIdSample.AllMail) = ConversationDetailViewModel(
-        observePrimaryUserId = observePrimaryUserId,
-        messageIdUiModelMapper = messageIdUiModelMapper,
-        actionUiModelMapper = actionUiModelMapper,
-        conversationMessageMapper = conversationMessageMapper,
-        conversationMetadataMapper = conversationMetadataMapper,
-        markConversationAsRead = markConversationAsRead,
-        markConversationAsUnread = markConversationAsUnread,
-        moveConversation = move,
-        deleteConversations = deleteConversations,
-        observeConversationWithMessages = observeConversationWithMessages,
-        observeDetailActions = observeDetailBottomBarActions,
-        reducer = reducer,
-        starConversations = starConversations,
-        unStarConversations = unStarConversations,
-        starMessages = starMessages,
-        unStarMessages = unStarMessages,
-        getMessageBodyWithClickableLinks = getDecryptedMessageBody,
-        markMessageAsRead = markMessageAsRead,
-        messageViewStateCache = messageViewStateCache,
-        observeConversationViewState = observeConversationViewState,
-        getAttachmentIntentValues = getAttachmentIntentValues,
-        loadImageAvoidDuplicatedExecution = loadImageAvoidDuplicatedExecution,
-        ioDispatcher = Dispatchers.Unconfined,
-        observePrivacySettings = observePrivacySettings,
-        updateLinkConfirmationSetting = updateLinkConfirmationSetting,
-        reportPhishingMessage = reportPhishingMessage,
-        isProtonCalendarInstalled = isProtonCalendarInstalled,
-        markMessageAsUnread = markMessageAsUnread,
-        findContactByEmail = findContactByEmail,
-        getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
-        moveMessage = moveMessage,
-        deleteMessages = deleteMessages,
-        observePrimaryUserAddress = observePrimaryUserAddress,
-        loadAvatarImage = loadAvatarImage,
-        observeAvatarImageStates = observeAvatarImageStates,
-        getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
-        markMessageAsLegitimate = markMessageAsLegitimate,
-        unblockSender = unblockSender,
-        blockSender = blockSender,
-        cancelScheduleSendMessage = cancelScheduleSendMessage,
-        printMessage = printMessage,
-        getRsvpEvent = getRsvpEvent,
-        answerRsvpEvent = answerRsvpEvent,
-        snoozeRepository = snoozeRepository,
-        unsubscribeFromNewsletter = unsubscribeFromNewsletter,
-        toolbarRefreshSignal = toolbarRefreshSignal,
-        resolveSystemLabelId = resolveSystemLabelId,
-        executeWhenOnline = executeWhenOnline,
-        conversationId = conversationId,
-        isSingleMessageModeEnabled = false,
-        initialScrollToMessageId = null,
-        openedFromLocation = labelId,
-        isMessageSenderBlocked = isMessageSenderBlocked,
-        conversationEntryPoint = ConversationDetailEntryPoint.Mailbox,
-        isAutoExpandEnabled = isAutoExpandEnabled
-    )
+    private fun createViewModel(labelId: LabelId = LabelIdSample.AllMail, isSingleMessageModeEnabled: Boolean = false) =
+        ConversationDetailViewModel(
+            observePrimaryUserId = observePrimaryUserId,
+            messageIdUiModelMapper = messageIdUiModelMapper,
+            actionUiModelMapper = actionUiModelMapper,
+            conversationMessageMapper = conversationMessageMapper,
+            conversationMetadataMapper = conversationMetadataMapper,
+            markConversationAsRead = markConversationAsRead,
+            markConversationAsUnread = markConversationAsUnread,
+            moveConversation = move,
+            deleteConversations = deleteConversations,
+            observeConversationWithMessages = observeConversationWithMessages,
+            observeDetailActions = observeDetailBottomBarActions,
+            reducer = reducer,
+            starConversations = starConversations,
+            unStarConversations = unStarConversations,
+            starMessages = starMessages,
+            unStarMessages = unStarMessages,
+            getMessageBodyWithClickableLinks = getDecryptedMessageBody,
+            markMessageAsRead = markMessageAsRead,
+            messageViewStateCache = messageViewStateCache,
+            observeConversationViewState = observeConversationViewState,
+            getAttachmentIntentValues = getAttachmentIntentValues,
+            loadImageAvoidDuplicatedExecution = loadImageAvoidDuplicatedExecution,
+            ioDispatcher = Dispatchers.Unconfined,
+            observePrivacySettings = observePrivacySettings,
+            updateLinkConfirmationSetting = updateLinkConfirmationSetting,
+            reportPhishingMessage = reportPhishingMessage,
+            isProtonCalendarInstalled = isProtonCalendarInstalled,
+            markMessageAsUnread = markMessageAsUnread,
+            findContactByEmail = findContactByEmail,
+            getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
+            moveMessage = moveMessage,
+            deleteMessages = deleteMessages,
+            observePrimaryUserAddress = observePrimaryUserAddress,
+            loadAvatarImage = loadAvatarImage,
+            observeAvatarImageStates = observeAvatarImageStates,
+            getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
+            markMessageAsLegitimate = markMessageAsLegitimate,
+            unblockSender = unblockSender,
+            blockSender = blockSender,
+            cancelScheduleSendMessage = cancelScheduleSendMessage,
+            printMessage = printMessage,
+            getRsvpEvent = getRsvpEvent,
+            answerRsvpEvent = answerRsvpEvent,
+            snoozeRepository = snoozeRepository,
+            unsubscribeFromNewsletter = unsubscribeFromNewsletter,
+            toolbarRefreshSignal = toolbarRefreshSignal,
+            resolveSystemLabelId = resolveSystemLabelId,
+            executeWhenOnline = executeWhenOnline,
+            conversationId = conversationId,
+            isSingleMessageModeEnabled = isSingleMessageModeEnabled,
+            initialScrollToMessageId = null,
+            openedFromLocation = labelId,
+            isMessageSenderBlocked = isMessageSenderBlocked,
+            conversationEntryPoint = ConversationDetailEntryPoint.Mailbox,
+            isAutoExpandEnabled = isAutoExpandEnabled
+        )
 
     @BeforeTest
     fun setUp() {
@@ -498,6 +499,93 @@ class ConversationDetailViewModelTest {
             // then
             assertEquals(expectedState, awaitItem())
             cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `showAllMessages is true when isSingleMessageModeEnabled is true`() = runTest {
+        // Given
+        val labelId = LabelIdSample.Inbox
+        coEvery { resolveSystemLabelId(any(), labelId) } returns SystemLabelId.Inbox.right()
+
+        // When
+        createViewModel(labelId, isSingleMessageModeEnabled = true)
+        advanceUntilIdle()
+
+        // Then
+        coVerify {
+            observeConversationWithMessages(
+                UserIdSample.Primary,
+                ConversationIdSample.WeatherForecast,
+                labelId,
+                any(),
+                true
+            )
+        }
+    }
+
+    @Test
+    fun `showAllMessages is true when opened from AllMail label`() = runTest {
+        // Given
+        val labelId = LabelIdSample.AllMail
+        coEvery { resolveSystemLabelId(any(), labelId) } returns SystemLabelId.AllMail.right()
+
+        // When
+        createViewModel(labelId)
+        advanceUntilIdle()
+
+        // Then
+        coVerify {
+            observeConversationWithMessages(
+                UserIdSample.Primary,
+                ConversationIdSample.WeatherForecast,
+                labelId,
+                any(),
+                true
+            )
+        }
+    }
+
+    @Test
+    fun `showAllMessages is false when opened from non-AllMail label`() = runTest {
+        // Given
+        val labelId = LabelIdSample.Inbox
+        coEvery { resolveSystemLabelId(any(), labelId) } returns SystemLabelId.Inbox.right()
+
+        // When
+        createViewModel(labelId)
+        advanceUntilIdle()
+
+        // Then
+        coVerify {
+            observeConversationWithMessages(
+                UserIdSample.Primary,
+                ConversationIdSample.WeatherForecast,
+                labelId,
+                any(),
+                false
+            )
+        }
+    }
+
+    @Test
+    fun `showAllMessages is false when resolveSystemLabelId returns error`() = runTest {
+        // Given
+        val labelId = LabelIdSample.Document
+        coEvery { resolveSystemLabelId(any(), labelId) } returns DataError.Local.NoDataCached.left()
+
+        createViewModel(labelId)
+        advanceUntilIdle()
+
+        // Then
+        coVerify {
+            observeConversationWithMessages(
+                UserIdSample.Primary,
+                ConversationIdSample.WeatherForecast,
+                labelId,
+                any(),
+                false
+            )
         }
     }
 

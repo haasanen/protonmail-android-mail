@@ -1714,8 +1714,13 @@ class ConversationDetailViewModel @AssistedInject constructor(
      *
      * This is required as when the message is opened from the AllMail folder (not Almost All Mail)
      * the "Hidden messages" banner is not returned by Rust and the value should always be `true`.
+     *
+     * If the screen is also opened from the "single message mode" variant of the details screen, we need to make
+     * sure that opening a trashed message from Starred folder works as expected.
      */
     private suspend fun resolveInitialShowAll(): Boolean {
+        if (isSingleMessageModeEnabled) return true
+
         val label = resolveSystemLabelId(
             userId = primaryUserId.first(),
             labelId = openedFromLocation
