@@ -316,7 +316,7 @@ class MailboxItemUiModelMapperTest {
         val labelIds = listOf(SystemLabelId.Inbox.labelId, SystemLabelId.Drafts.labelId)
         val mailboxItem = buildMailboxItem(labelIds = labelIds, type = MailboxItemType.Conversation)
         val inboxIconRes = MailboxItemLocationUiModel(R.drawable.ic_proton_inbox)
-        val icons = GetMailboxItemLocationIcon.Result.Icon(inboxIconRes)
+        val icons = GetMailboxItemLocationIcon.Result.Icon(listOf(inboxIconRes))
         coEvery {
             getMailboxItemLocationIcons.invoke(
                 userId,

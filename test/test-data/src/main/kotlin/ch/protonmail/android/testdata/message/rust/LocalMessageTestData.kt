@@ -243,7 +243,7 @@ object LocalMessageTestData {
         bccList = bcc,
         attachmentsMetadata = attachments,
         customLabels = labels,
-        exclusiveLocation = null,
+        location = null,
         avatar = avatarInformation,
         isDraft = false,
         isScheduled = false,

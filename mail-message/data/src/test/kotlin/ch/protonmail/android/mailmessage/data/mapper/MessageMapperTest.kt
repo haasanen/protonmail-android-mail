@@ -77,7 +77,7 @@ class MessageMapperTest {
             avatar = LocalAvatarInformation("SN", "#FFFFFF"),
             attachmentsMetadata = emptyList(),
             customLabels = emptyList(),
-            exclusiveLocation = exclusiveLocation,
+            location = exclusiveLocation,
             snoozedUntil = 12345u,
             isDraft = false,
             isScheduled = false,

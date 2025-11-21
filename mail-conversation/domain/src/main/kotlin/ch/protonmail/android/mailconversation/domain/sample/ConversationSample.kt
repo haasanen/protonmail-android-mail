@@ -87,7 +87,7 @@ object ConversationSample {
         subject: String = "subject",
         userId: UserId = UserIdSample.Primary,
         numMessages: Int = 0,
-        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        exclusiveLocation: List<ExclusiveLocation> = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")))
     ) = Conversation(
         conversationId = conversationId,
         order = 0,

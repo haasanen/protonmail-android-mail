@@ -199,7 +199,7 @@ object LocalConversationTestData {
         customLabels = labels,
         isStarred = starred,
         displaySnoozeReminder = false,
-        exclusiveLocation = null,
+        locations = emptyList(),
         avatar = avatarInformation,
         attachmentsMetadata = attachments,
         totalMessages = numMessages,

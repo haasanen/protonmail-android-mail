@@ -76,7 +76,7 @@ class ConversationMapperTest {
         assertFalse(conversation.isStarred)
         assertEquals(localConversation.time.toLong(), conversation.time)
         assertEquals(localConversation.size.toLong(), conversation.size)
-        assertEquals(localConversation.exclusiveLocation.toExclusiveLocation(), conversation.exclusiveLocation)
+        assertEquals(localConversation.locations.map { it.toExclusiveLocation() }, conversation.exclusiveLocation)
         assertEquals(NoSnooze, conversation.snoozeInformation)
     }
 
@@ -251,7 +251,7 @@ class ConversationMapperTest {
             isStarred = isStarred,
             attachmentsMetadata = attachmentsMetadata,
             displaySnoozeReminder = displaySnoozeReminder,
-            exclusiveLocation = exclusiveLocation,
+            locations = listOf(exclusiveLocation),
             avatar = avatar,
             totalMessages = totalMessages,
             totalUnread = totalUnread,

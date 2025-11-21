@@ -59,7 +59,7 @@ data class MailboxItem(
     val expirationTime: Long,
     val calendarAttachmentCount: Int,
     val avatarInformation: AvatarInformation,
-    val exclusiveLocation: ExclusiveLocation,
+    val exclusiveLocations: List<ExclusiveLocation>,
     val attachments: List<AttachmentMetadata>,
     val isDraft: Boolean,
     val isScheduled: Boolean,

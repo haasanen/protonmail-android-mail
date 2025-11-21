@@ -66,7 +66,7 @@ fun LocalConversation.toConversation() = Conversation(
     size = size.toLong(),
     customLabels = this.customLabels.map { it.toLabel() },
     avatarInformation = this.avatar.toAvatarInformation(),
-    exclusiveLocation = this.exclusiveLocation.toExclusiveLocation(),
+    exclusiveLocation = this.locations.map { it.toExclusiveLocation() },
     snoozeInformation = this.toSnoozeInformation(),
     hiddenMessagesBanner = this.hiddenMessagesBanner?.toHiddenMessagesBanner()
 )

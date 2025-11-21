@@ -47,7 +47,7 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
         expirationTime = message.expirationTime,
         calendarAttachmentCount = message.attachmentCount.calendar,
         avatarInformation = message.avatarInformation,
-        exclusiveLocation = message.exclusiveLocation,
+        exclusiveLocations = listOf(message.exclusiveLocation),
         attachments = message.attachments,
         isDraft = message.isDraft,
         isScheduled = message.isScheduled,

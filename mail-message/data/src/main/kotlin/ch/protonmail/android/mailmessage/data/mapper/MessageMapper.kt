@@ -114,7 +114,7 @@ fun LocalMessageMetadata.toMessage(): Message {
             .map { it.toAttachmentMetadata() },
         customLabels = customLabels.map { it.toLabel() },
         avatarInformation = this.avatar.toAvatarInformation(),
-        exclusiveLocation = this.exclusiveLocation.toExclusiveLocation(),
+        exclusiveLocation = this.location.toExclusiveLocation(),
         isDraft = this.isDraft,
         isScheduled = this.isScheduled,
         isReplyAllowed = this.canReply,

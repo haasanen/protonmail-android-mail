@@ -36,7 +36,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class ShouldShowLocationIndicatorTest {
+internal class ShouldShowLocationIndicatorTest {
 
     private val userId = UserIdSample.Primary
 
@@ -71,10 +71,10 @@ class ShouldShowLocationIndicatorTest {
     fun `should return true when current location is a custom label`() = runTest {
         // Given
         val currentLocation = MailLabelId.Custom.Label(LabelId("0"))
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")))
 
         // When
-        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocation)
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocations)
 
         // Then
         assertTrue(result)
@@ -84,11 +84,11 @@ class ShouldShowLocationIndicatorTest {
     fun `should return false when current system location is not in exclusive system labels`() = runTest {
         // Given
         val currentLocation = MailLabelId.System(SystemLabelId.Inbox.labelId)
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")))
         coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(emptyList())
 
         // When
-        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocation)
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocations)
 
         // Then
         assertFalse(result)
@@ -99,11 +99,11 @@ class ShouldShowLocationIndicatorTest {
     fun `should return true when current system location is starred`() = runTest {
         // Given
         val currentLocation = MailLabelId.System(SystemLabelId.Starred.labelId)
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")))
         coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
 
         // When
-        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocation)
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocations)
 
         // Then
         assertTrue(result)
@@ -114,11 +114,11 @@ class ShouldShowLocationIndicatorTest {
     fun `should return true when current system location is AllMail`() = runTest {
         // Given
         val currentLocation = MailLabelId.System(SystemLabelId.AllMail.labelId)
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")))
         coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
 
         // When
-        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocation)
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocations)
 
         // Then
         assertTrue(result)
@@ -128,11 +128,11 @@ class ShouldShowLocationIndicatorTest {
     fun `should return true when current system location is AlmostAllMail`() = runTest {
         // Given
         val currentLocation = MailLabelId.System(SystemLabelId.AlmostAllMail.labelId)
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")))
         coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
 
         // When
-        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocation)
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocations)
 
         // Then
         assertTrue(result)
@@ -143,12 +143,12 @@ class ShouldShowLocationIndicatorTest {
         // Given
         val firstLocation = MailLabelId.System(SystemLabelId.Archive.labelId)
         val secondLocation = MailLabelId.System(SystemLabelId.Starred.labelId)
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")))
         coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
 
         // When
-        val firstResult = shouldShowLocationIndicator.invoke(userId, firstLocation, itemLocation)
-        val secondResult = shouldShowLocationIndicator.invoke(userId, secondLocation, itemLocation)
+        val firstResult = shouldShowLocationIndicator.invoke(userId, firstLocation, itemLocations)
+        val secondResult = shouldShowLocationIndicator.invoke(userId, secondLocation, itemLocations)
 
         // Then
         verify(exactly = 1) { labelRepository.observeSystemLabels(any()) }
@@ -160,11 +160,11 @@ class ShouldShowLocationIndicatorTest {
     fun `should return true when system location is Sent and mailboxItem is scheduled for sending`() = runTest {
         // Given
         val currentLocation = MailLabelId.System(SystemLabelId.Sent.labelId)
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.AllScheduled, LabelId("12"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.AllScheduled, LabelId("12")))
         coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
 
         // When
-        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocation)
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocations)
 
         // Then
         assertTrue(result)
@@ -174,11 +174,11 @@ class ShouldShowLocationIndicatorTest {
     fun `should return true when system location is All Sent and mailboxItem is scheduled for sending`() = runTest {
         // Given
         val currentLocation = MailLabelId.System(SystemLabelId.AllSent.labelId)
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.AllScheduled, LabelId("12"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.AllScheduled, LabelId("12")))
         coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
 
         // When
-        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocation)
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocations)
 
         // Then
         assertTrue(result)
@@ -188,14 +188,13 @@ class ShouldShowLocationIndicatorTest {
     fun `should return false when current system location is Sent and mailboxItem is not scheduled`() = runTest {
         // Given
         val currentLocation = MailLabelId.System(SystemLabelId.Sent.labelId)
-        val itemLocation = ExclusiveLocation.System(SystemLabelId.Sent, LabelId("7"))
+        val itemLocations = listOf(ExclusiveLocation.System(SystemLabelId.Sent, LabelId("7")))
         coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
 
         // When
-        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocation)
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation, itemLocations)
 
         // Then
         assertFalse(result)
     }
-
 }

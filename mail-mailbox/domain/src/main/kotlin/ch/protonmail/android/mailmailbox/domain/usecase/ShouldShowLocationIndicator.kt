@@ -36,11 +36,11 @@ class ShouldShowLocationIndicator @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         mailLabelId: MailLabelId,
-        itemLocation: ExclusiveLocation
+        exclusiveLocations: List<ExclusiveLocation>
     ): Boolean {
         return when (mailLabelId) {
             is MailLabelId.Custom.Label -> true
-            is MailLabelId.System -> shouldShowIconForSystemLabel(userId, mailLabelId, itemLocation)
+            is MailLabelId.System -> shouldShowIconForSystemLabel(userId, mailLabelId, exclusiveLocations)
             else -> false
         }
     }
@@ -48,12 +48,12 @@ class ShouldShowLocationIndicator @Inject constructor(
     private suspend fun shouldShowIconForSystemLabel(
         userId: UserId,
         currentMailLabel: MailLabelId,
-        itemLocation: ExclusiveLocation
+        exclusiveLocations: List<ExclusiveLocation>
     ): Boolean {
         val systemLabels = systemLabelsCache.getOrPut(userId) {
             labelRepository.observeSystemLabels(userId).firstOrNull()
         }
-        val isItemScheduledForSend = isItemScheduledForSend(itemLocation)
+        val isItemScheduledForSend = isItemScheduledForSend(exclusiveLocations)
         val isCurrentLocationSent = isCurrentLocationSent(systemLabels, currentMailLabel)
         val itemIsScheduledAndLocationIsSent = isItemScheduledForSend && isCurrentLocationSent
 
@@ -83,10 +83,12 @@ class ShouldShowLocationIndicator @Inject constructor(
             .map { it.label.labelId }
             .contains(currentMailLabel.labelId)
 
-    private fun isItemScheduledForSend(itemLocation: ExclusiveLocation) = when (itemLocation) {
-        is ExclusiveLocation.System -> itemLocation.systemLabelId == SystemLabelId.AllScheduled
-        is ExclusiveLocation.Folder,
-        ExclusiveLocation.NoLocation -> false
-    }
-
+    private fun isItemScheduledForSend(exclusiveLocations: List<ExclusiveLocation>) =
+        exclusiveLocations.any { location ->
+            when (location) {
+                is ExclusiveLocation.System -> location.systemLabelId == SystemLabelId.AllScheduled
+                is ExclusiveLocation.Folder,
+                ExclusiveLocation.NoLocation -> false
+            }
+        }
 }

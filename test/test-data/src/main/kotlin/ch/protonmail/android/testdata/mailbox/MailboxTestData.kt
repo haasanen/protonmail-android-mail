@@ -69,7 +69,12 @@ object MailboxTestData {
         hasAttachments: Boolean = false,
         expirationTime: Long = 0,
         calendarAttachmentCount: Int = 0,
-        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Sent, LabelId("1")),
+        exclusiveLocations: List<ExclusiveLocation> = listOf(
+            ExclusiveLocation.System(
+                SystemLabelId.Sent,
+                LabelId("1")
+            )
+        ),
         attachments: List<AttachmentMetadata> = emptyList(),
         isScheduled: Boolean = false
     ) = MailboxItem(
@@ -93,7 +98,7 @@ object MailboxTestData {
         expirationTime = expirationTime,
         calendarAttachmentCount = calendarAttachmentCount,
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = exclusiveLocation,
+        exclusiveLocations = exclusiveLocations,
         attachments = attachments,
         isDraft = false,
         isScheduled = isScheduled,
@@ -107,7 +112,9 @@ object MailboxTestData {
         isRepliedAll: Boolean = false,
         isForwarded: Boolean = false,
         labels: List<Label> = emptyList(),
-        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")),
+        exclusiveLocation: List<ExclusiveLocation> = listOf(
+            ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        ),
         attachments: List<AttachmentMetadata> = emptyList()
     ) = MailboxItem(
         type = MailboxItemType.Message,
@@ -130,7 +137,7 @@ object MailboxTestData {
         expirationTime = 0,
         calendarAttachmentCount = 0,
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = exclusiveLocation,
+        exclusiveLocations = exclusiveLocation,
         attachments = attachments,
         isDraft = false,
         isScheduled = false,
@@ -158,7 +165,7 @@ object MailboxTestData {
         expirationTime = 0,
         calendarAttachmentCount = 0,
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")),
+        exclusiveLocations = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))),
         attachments = emptyList(),
         isDraft = false,
         isScheduled = false,

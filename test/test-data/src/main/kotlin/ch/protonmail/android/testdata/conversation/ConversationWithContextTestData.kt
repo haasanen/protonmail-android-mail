@@ -99,7 +99,7 @@ object ConversationWithContextTestData {
         numAttachments: Int = 2,
         expirationTime: Long = 0,
         attachmentCount: AttachmentCount = AttachmentCount(0),
-        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        exclusiveLocation: List<ExclusiveLocation> = listOf(ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")))
     ) = Conversation(
         conversationId = ConversationId(id),
         order = order,

@@ -116,7 +116,7 @@ class MailboxItemUiModelMapper @Inject constructor(
         )
     ) {
         is GetMailboxItemLocationIcon.Result.None -> emptyList()
-        is GetMailboxItemLocationIcon.Result.Icon -> listOfNotNull(iconResult.icon)
+        is GetMailboxItemLocationIcon.Result.Icon -> iconResult.icons
     }.toImmutableList()
 
     private fun areAllAttachmentsExcludedFromPreview(mailboxItem: MailboxItem) =

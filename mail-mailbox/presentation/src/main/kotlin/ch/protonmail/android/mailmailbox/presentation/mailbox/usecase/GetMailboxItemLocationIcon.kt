@@ -48,38 +48,40 @@ class GetMailboxItemLocationIcon @Inject constructor(
             return Result.None
         }
 
-        val icon = getLocationIcon(mailboxItem, folderColorSettings) ?: return Result.None
+        val icon = getLocationIcons(mailboxItem, folderColorSettings).takeIf { it.isNotEmpty() } ?: return Result.None
         return Result.Icon(icon)
     }
 
-    private fun getLocationIcon(
+    private fun getLocationIcons(
         mailboxItem: MailboxItem,
         folderColorSettings: FolderColorSettings
-    ): MailboxItemLocationUiModel? {
-        return when (val location = mailboxItem.exclusiveLocation) {
-            is ExclusiveLocation.System -> {
-                val iconDrawable = location.systemLabelId.iconRes()
-                MailboxItemLocationUiModel(iconDrawable)
-            }
-
-            is ExclusiveLocation.Folder -> {
-                when (folderColorSettings.useFolderColor) {
-                    true -> MailboxItemLocationUiModel(
-                        icon = R.drawable.ic_proton_folder_filled,
-                        color = colorMapper.toColor(location.color).getOrElse { Color.Transparent }
-                    )
-
-                    false -> MailboxItemLocationUiModel(R.drawable.ic_proton_folder)
+    ): List<MailboxItemLocationUiModel> {
+        return mailboxItem.exclusiveLocations.take(ICON_COUNT_THRESHOLD).mapNotNull { location ->
+            when (location) {
+                is ExclusiveLocation.System -> {
+                    val iconDrawable = location.systemLabelId.iconRes()
+                    MailboxItemLocationUiModel(iconDrawable)
                 }
-            }
 
-            else -> null
+                is ExclusiveLocation.Folder -> {
+                    when (folderColorSettings.useFolderColor) {
+                        true -> MailboxItemLocationUiModel(
+                            icon = R.drawable.ic_proton_folder_filled,
+                            color = colorMapper.toColor(location.color).getOrElse { Color.Transparent }
+                        )
+
+                        false -> MailboxItemLocationUiModel(R.drawable.ic_proton_folder)
+                    }
+                }
+
+                ExclusiveLocation.NoLocation -> null
+            }
         }
     }
 
     private suspend fun shouldShowIcons(userId: UserId, mailboxItem: MailboxItem): Boolean {
         val currentLocation = getSelectedMailLabelId()
-        val itemLocation = mailboxItem.exclusiveLocation
+        val itemLocation = mailboxItem.exclusiveLocations
 
         // Should show when starred, all mail, almost all mail or custom label
         return shouldShowLocationIndicator(userId, currentLocation, itemLocation)
@@ -88,7 +90,12 @@ class GetMailboxItemLocationIcon @Inject constructor(
     sealed interface Result {
         data object None : Result
         data class Icon(
-            val icon: MailboxItemLocationUiModel
+            val icons: List<MailboxItemLocationUiModel>
         ) : Result
+    }
+
+    private companion object {
+
+        const val ICON_COUNT_THRESHOLD = 3
     }
 }
