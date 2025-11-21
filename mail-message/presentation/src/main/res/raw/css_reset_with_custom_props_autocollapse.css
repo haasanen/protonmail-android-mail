@@ -210,6 +210,9 @@ div[role="textbox"]{
   .protonmail_signature_block-user > div[style*="background-color: #fff"] {
     background-color: #191927 !important
   }
+  .protonmail_signature_block-user > div[style*="background-color: rgb(255, 255, 255)"] {
+    background-color: #191927 !important
+  }
 }
 
 /* Collapse the quote by default */
