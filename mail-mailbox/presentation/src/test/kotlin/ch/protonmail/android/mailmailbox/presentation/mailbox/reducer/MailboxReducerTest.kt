@@ -219,7 +219,8 @@ internal class MailboxReducerTest(
             clearAllDialogState = DeleteDialogState.Hidden,
             bottomSheetState = null,
             composerNavigationState = MailboxComposerNavigationState.Enabled(),
-            error = Effect.empty()
+            error = Effect.empty(),
+            showRatingBooster = Effect.empty()
         )
 
         private val actions = listOf(
@@ -660,6 +661,19 @@ internal class MailboxReducerTest(
                 errorBarState = Effect.of(TextUiModel(R.string.mailbox_action_label_messages_failed))
             ),
             TestInput(
+                MailboxEvent.ShowRatingBooster,
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = false,
+                shouldReduceClearAllDialog = false,
+                showRatingBooster = Effect.of(Unit)
+            ),
+            TestInput(
                 MailboxEvent.ClearAll(SpamOrTrash.Spam),
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
@@ -746,6 +760,7 @@ internal class MailboxReducerTest(
         val shouldReduceDeleteDialog: Boolean,
         val shouldReduceClearAllDialog: Boolean,
         val shouldReduceBottomSheetState: Boolean,
-        val errorBarState: Effect<TextUiModel> = Effect.empty()
+        val errorBarState: Effect<TextUiModel> = Effect.empty(),
+        val showRatingBooster: Effect<Unit> = Effect.empty()
     )
 }

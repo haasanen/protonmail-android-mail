@@ -75,8 +75,9 @@ object MailboxStateSampleData {
         deleteDialogState = DeleteDialogState.Hidden,
         clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
+        composerNavigationState = MailboxComposerNavigationState.Enabled(),
         error = Effect.empty(),
-        composerNavigationState = MailboxComposerNavigationState.Enabled()
+        showRatingBooster = Effect.empty()
     )
 
     val Inbox = MailboxState(
@@ -114,8 +115,9 @@ object MailboxStateSampleData {
         deleteDialogState = DeleteDialogState.Hidden,
         clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
+        composerNavigationState = MailboxComposerNavigationState.Enabled(),
         error = Effect.empty(),
-        composerNavigationState = MailboxComposerNavigationState.Enabled()
+        showRatingBooster = Effect.empty()
     )
 
     val AllMail = MailboxState(
@@ -153,8 +155,9 @@ object MailboxStateSampleData {
         deleteDialogState = DeleteDialogState.Hidden,
         clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
+        composerNavigationState = MailboxComposerNavigationState.Enabled(),
         error = Effect.empty(),
-        composerNavigationState = MailboxComposerNavigationState.Enabled()
+        showRatingBooster = Effect.empty()
     )
 
     val Trash = Inbox.copy(
@@ -168,7 +171,8 @@ object MailboxStateSampleData {
         bottomBarAction: List<ActionUiModel> = listOf(ActionUiModelSample.Archive),
         currentMailLabel: MailLabel = inboxDynamicLabel,
         bottomSheetState: BottomSheetState? = null,
-        error: Effect<TextUiModel> = Effect.empty()
+        error: Effect<TextUiModel> = Effect.empty(),
+        showRatingBooster: Effect<Unit> = Effect.empty()
     ) = MailboxState(
         mailboxListState = MailboxListState.Data.SelectionMode(
             currentMailLabel = currentMailLabel,
@@ -204,7 +208,8 @@ object MailboxStateSampleData {
         deleteDialogState = DeleteDialogState.Hidden,
         clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = bottomSheetState,
+        composerNavigationState = MailboxComposerNavigationState.Enabled(),
         error = error,
-        composerNavigationState = MailboxComposerNavigationState.Enabled()
+        showRatingBooster = showRatingBooster
     )
 }

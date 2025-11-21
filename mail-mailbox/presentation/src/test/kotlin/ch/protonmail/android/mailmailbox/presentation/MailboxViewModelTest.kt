@@ -106,6 +106,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveValidSenderAddress
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
@@ -206,6 +207,10 @@ internal class MailboxViewModelTest {
 
     private val getSelectedMailLabelId = mockk<GetSelectedMailLabelId> {
         coEvery { this@mockk.invoke() } returns initialLocationMailLabelId
+    }
+
+    private val shouldShowRatingBooster = mockk<ShouldShowRatingBooster> {
+        every { this@mockk(any()) } returns flowOf(false)
     }
 
     private val selectMailLabelId = mockk<SelectMailLabelId> {
@@ -396,7 +401,8 @@ internal class MailboxViewModelTest {
             setEphemeralMailboxCursor = setEphemeralMailboxCursor,
             observeMailboxFetchNewStatus = observeMailboxFetchNewStatus,
             loadingBarControllerFactory = loadingBarControllerFactory,
-            observeValidSenderAddress = observeValidSenderAddress
+            observeValidSenderAddress = observeValidSenderAddress,
+            shouldShowRatingBooster = shouldShowRatingBooster
         )
     }
 
@@ -438,7 +444,8 @@ internal class MailboxViewModelTest {
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
                 composerNavigationState = MailboxComposerNavigationState.Enabled(),
-                error = Effect.empty()
+                error = Effect.empty(),
+                showRatingBooster = Effect.empty()
             )
 
             assertEquals(expected, actual)
@@ -1077,7 +1084,8 @@ internal class MailboxViewModelTest {
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
                 composerNavigationState = MailboxComposerNavigationState.Enabled(),
-                error = Effect.empty()
+                error = Effect.empty(),
+                showRatingBooster = Effect.empty()
             )
 
             // when
@@ -1113,7 +1121,8 @@ internal class MailboxViewModelTest {
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
                 composerNavigationState = MailboxComposerNavigationState.Enabled(),
-                error = Effect.empty()
+                error = Effect.empty(),
+                showRatingBooster = Effect.empty()
             )
 
             // when
@@ -4113,5 +4122,21 @@ internal class MailboxViewModelTest {
                 searchQuery = searchQuery ?: any()
             )
         } returns mockk mockPager@{ every { this@mockPager.flow } returns pagingDataFlow }
+    }
+
+    @Test
+    fun `should create new state for showing the rating booster when it should be shown`() = runTest {
+        // Given
+        every { shouldShowRatingBooster(userId) } returns flowOf(true)
+
+        // When
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // Then
+            verify(exactly = 1) {
+                mailboxReducer.newStateFrom(any(), MailboxEvent.ShowRatingBooster)
+            }
+        }
     }
 }

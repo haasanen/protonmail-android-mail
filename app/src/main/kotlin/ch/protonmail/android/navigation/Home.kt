@@ -700,7 +700,8 @@ fun Home(
                         showSnackbar = { showSnackbar(it) },
                         onEvent = eventHandler,
                         showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
-                        onActionBarVisibilityChanged = updatePadding
+                        onActionBarVisibilityChanged = updatePadding,
+                        onShowRatingBooster = activityActions.launchRatingBooster
                     )
                     addAccountsManager(
                         navController,

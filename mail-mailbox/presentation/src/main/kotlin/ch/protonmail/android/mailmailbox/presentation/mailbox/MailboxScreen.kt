@@ -237,6 +237,10 @@ fun MailboxScreen(
     }
 
 
+    ConsumableLaunchedEffect(mailboxState.showRatingBooster) {
+        actions.onShowRatingBooster()
+    }
+
     val completeActions = actions.copy(
         navigateToComposer = { viewModel.submit(MailboxViewAction.NavigateToComposer) },
         onDisableUnreadFilter = { viewModel.submit(MailboxViewAction.DisableUnreadFilter) },
@@ -1314,7 +1318,8 @@ object MailboxScreen {
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onCustomizeToolbar: () -> Unit,
         val validateUserSession: () -> Unit,
-        val onDismissAccountsTooltip: () -> Unit
+        val onDismissAccountsTooltip: () -> Unit,
+        val onShowRatingBooster: () -> Unit
     ) {
 
         companion object {
@@ -1379,7 +1384,8 @@ object MailboxScreen {
                 onCustomizeToolbar = {},
                 onActionBarVisibilityChanged = {},
                 validateUserSession = {},
-                onDismissAccountsTooltip = {}
+                onDismissAccountsTooltip = {},
+                onShowRatingBooster = {}
             )
         }
     }

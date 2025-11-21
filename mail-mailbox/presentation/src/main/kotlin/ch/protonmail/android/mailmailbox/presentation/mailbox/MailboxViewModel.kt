@@ -102,6 +102,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveValidSenderAddress
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
@@ -215,8 +216,9 @@ class MailboxViewModel @Inject constructor(
     private val updateShowSpamTrashFilter: UpdateShowSpamTrashFilter,
     private val setEphemeralMailboxCursor: SetEphemeralMailboxCursor,
     private val observeMailboxFetchNewStatus: ObserveMailboxFetchNewStatus,
+    private val observeValidSenderAddress: ObserveValidSenderAddress,
     private val loadingBarControllerFactory: MailboxLoadingBarControllerFactory,
-    private val observeValidSenderAddress: ObserveValidSenderAddress
+    private val shouldShowRatingBooster: ShouldShowRatingBooster
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserIdWithValidSession().filterNotNull()
@@ -328,6 +330,17 @@ class MailboxViewModel @Inject constructor(
             observeValidSenderAddress(it)
         }.onEach {
             emitNewStateFrom(MailboxEvent.SenderHasValidAddressUpdated(isValid = it))
+        }.launchIn(viewModelScope)
+
+
+        primaryUserId.flatMapLatest { userId ->
+            shouldShowRatingBooster(userId)
+        }.onEach { shouldShowRatingBooster ->
+            if (shouldShowRatingBooster) {
+                // RUST side coming
+                // recordRatingBoosterTriggered(primaryUserId.filterNotNull().first())
+                emitNewStateFrom(MailboxEvent.ShowRatingBooster)
+            }
         }.launchIn(viewModelScope)
     }
 
@@ -1430,7 +1443,8 @@ class MailboxViewModel @Inject constructor(
             bottomSheetState = null,
             actionResult = Effect.empty(),
             composerNavigationState = MailboxComposerNavigationState.Enabled(),
-            error = Effect.empty()
+            error = Effect.empty(),
+            showRatingBooster = Effect.empty()
         )
     }
 }

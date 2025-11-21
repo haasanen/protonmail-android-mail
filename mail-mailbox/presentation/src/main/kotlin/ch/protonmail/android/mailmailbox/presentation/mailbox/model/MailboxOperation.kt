@@ -296,6 +296,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
 
     data class PaginatorInvalidated(val event: PageInvalidationEvent) : MailboxEvent, AffectingMailboxList
 
+    data object ShowRatingBooster : MailboxEvent
+
     sealed interface ItemClicked : MailboxEvent {
 
         val item: MailboxItemUiModel

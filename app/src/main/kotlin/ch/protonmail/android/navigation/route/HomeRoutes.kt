@@ -168,7 +168,8 @@ internal fun NavGraphBuilder.addMailbox(
     onEvent: (AccountSwitchEvent) -> Unit,
     showSnackbar: (type: SnackbarType) -> Unit,
     showFeatureMissingSnackbar: () -> Unit,
-    onActionBarVisibilityChanged: (Boolean) -> Unit
+    onActionBarVisibilityChanged: (Boolean) -> Unit,
+    onShowRatingBooster: () -> Unit
 ) {
     composable(
         route = Destination.Screen.Mailbox.route,
@@ -216,7 +217,8 @@ internal fun NavGraphBuilder.addMailbox(
                 onActionBarVisibilityChanged = onActionBarVisibilityChanged,
                 onCustomizeToolbar = {
                     navController.navigate(Destination.Screen.EditToolbarScreen(ToolbarType.List))
-                }
+                },
+                onShowRatingBooster = onShowRatingBooster
             ),
             onEvent = onEvent,
             fabHostState = fabHostState

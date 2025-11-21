@@ -44,6 +44,8 @@ import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.navigation.share.NewIntentObserver
 import coil.Coil
 import coil.ImageLoader
+import com.google.android.play.core.review.ReviewException
+import com.google.android.play.core.review.ReviewManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import me.proton.android.core.payment.domain.IconResourceManager
@@ -64,6 +66,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var iconResourceManager: IconResourceManager
+
+    @Inject
+    lateinit var reviewManager: ReviewManager
 
     private val launcherViewModel: LauncherViewModel by viewModels()
 
@@ -113,6 +118,12 @@ class MainActivity : AppCompatActivity() {
                                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                                     startActivity(intent)
                                 }
+                                val intent = Intent(this, LockScreenActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                startActivity(intent)
+                            },
+                            launchRatingBooster = {
+                                handleLaunchInAppReview()
                             }
                         ),
                         launcherViewModel
@@ -198,10 +209,27 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun handleLaunchInAppReview() {
+        val request = reviewManager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                val flow = reviewManager.launchReviewFlow(this, reviewInfo)
+                flow.addOnCompleteListener { _ ->
+                    Timber.d("ReviewFlow In-App Review flow completed.")
+                }
+            } else {
+                val reviewErrorCode = (task.exception as ReviewException).errorCode
+                Timber.e("ReviewFlow Review request failed with error: $reviewErrorCode")
+            }
+        }
+    }
+
     data class Actions(
         val openInActivityInNewTask: (uri: Uri) -> Unit,
         val openProtonCalendarIntentValues: (values: OpenProtonCalendarIntentValues) -> Unit,
         val onNavigateToLockScreen: () -> Unit,
+        val launchRatingBooster: () -> Unit,
         val openSecurityKeys: () -> Unit,
         val openPasswordManagement: (userId: UserId?) -> Unit,
         val openSubscription: () -> Unit,

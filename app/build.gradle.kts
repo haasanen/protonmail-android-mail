@@ -239,6 +239,9 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 
+    implementation(libs.play.review.core)
+    implementation(libs.play.review.ext)
+
     debugImplementation(libs.bundles.app.debug)
 
     // Environment configuration

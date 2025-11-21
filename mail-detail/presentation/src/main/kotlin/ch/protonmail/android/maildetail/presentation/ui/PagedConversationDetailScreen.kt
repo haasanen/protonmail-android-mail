@@ -127,6 +127,7 @@ private fun PagedConversationDetailScreen(
                     showUndoableOperationSnackbar(it)
                     onPagerAction(PagedConversationDetailAction.AutoAdvance)
                 } else {
+                    conversationDetailActions.recordMailboxScreenView()
                     conversationDetailActions.onExit(it)
                 }
             }

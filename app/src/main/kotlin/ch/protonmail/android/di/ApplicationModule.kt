@@ -28,6 +28,8 @@ import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelpe
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconManager
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconResourceManager
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHelperImpl
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -71,6 +73,10 @@ object ApplicationModule {
     @Provides
     @Singleton
     fun provideWorkManager(@ApplicationContext context: Context): WorkManager = WorkManager.getInstance(context)
+
+    @Provides
+    @Singleton
+    fun provideReviewManager(@ApplicationContext context: Context): ReviewManager = ReviewManagerFactory.create(context)
 
     @Module
     @InstallIn(SingletonComponent::class)

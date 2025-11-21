@@ -66,7 +66,8 @@ class MailboxReducer @Inject constructor(
             bottomSheetState = currentState.toNewBottomSheetState(operation),
             actionResult = currentState.toNewActionMessageStateFrom(operation),
             composerNavigationState = currentState.toComposerNavigationState(operation),
-            error = currentState.toNewErrorBarState(operation)
+            error = currentState.toNewErrorBarState(operation),
+            showRatingBooster = currentState.toNewShowRatingBoosterState(operation)
         )
 
     private fun MailboxState.toNewMailboxListStateFrom(operation: MailboxOperation): MailboxListState {
@@ -222,6 +223,14 @@ class MailboxReducer @Inject constructor(
                     ?.copy(navigateToCompose = Effect.of(Unit))
                     ?: this.composerNavigationState
             }
+        }
+    }
+
+    private fun MailboxState.toNewShowRatingBoosterState(operation: MailboxOperation): Effect<Unit> {
+        return if (operation is MailboxEvent.ShowRatingBooster) {
+            Effect.of(Unit)
+        } else {
+            showRatingBooster
         }
     }
 }
