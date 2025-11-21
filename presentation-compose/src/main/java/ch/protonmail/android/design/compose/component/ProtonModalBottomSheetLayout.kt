@@ -52,7 +52,7 @@ fun ProtonModalBottomSheetLayout(
             shape = ProtonTheme.shapes.bottomSheet,
             containerColor = ProtonTheme.colors.backgroundInvertedNorm,
             contentColor = ProtonTheme.colors.textNorm,
-            dragHandle = { BottomSheetDefaults.DragHandle(color = ProtonTheme.colors.backgroundDeep) },
+            dragHandle = { BottomSheetDefaults.DragHandle(color = ProtonTheme.colors.iconHint) },
             content = sheetContent,
             contentWindowInsets = contentWindowInsets,
             properties = ModalBottomSheetProperties(shouldDismissOnBackPress = dismissOnBack)
