@@ -93,7 +93,8 @@ object MessageDetailHeaderPreviewData {
         messageIdUiModel = MessageIdUiModel("string"),
         themeOverride = null,
         shouldShowQuickReply = true,
-        hasMoreActions = true
+        hasMoreActions = true,
+        subject = "A subject"
     )
 
     val WithLabels = WithoutLabels.copy(

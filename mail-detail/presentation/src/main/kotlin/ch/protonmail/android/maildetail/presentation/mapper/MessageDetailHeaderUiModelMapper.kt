@@ -94,7 +94,8 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             messageIdUiModel = toMessageUiModel(message.messageId),
             themeOverride = viewModePreference.toThemeOverride(),
             shouldShowQuickReply = message.isReplyAllowed,
-            hasMoreActions = hasMoreActionsEnabled
+            hasMoreActions = hasMoreActionsEnabled,
+            subject = message.subject
         )
     }
 

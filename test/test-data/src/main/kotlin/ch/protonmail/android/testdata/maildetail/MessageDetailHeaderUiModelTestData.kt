@@ -87,7 +87,8 @@ object MessageDetailHeaderUiModelTestData {
         messageIdUiModel = MessageIdUiModel("id"),
         themeOverride = null,
         shouldShowQuickReply = true,
-        hasMoreActions = true
+        hasMoreActions = true,
+        subject = "A subject"
     )
 
     fun buildParticipant(

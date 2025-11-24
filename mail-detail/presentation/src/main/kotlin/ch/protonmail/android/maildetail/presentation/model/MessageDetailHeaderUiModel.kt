@@ -32,6 +32,7 @@ data class MessageDetailHeaderUiModel(
     val avatar: AvatarUiModel,
     val avatarImage: AvatarImageUiModel,
     val sender: ParticipantUiModel,
+    val subject: String,
     val shouldShowTrackerProtectionIcon: Boolean,
     val shouldShowAttachmentIcon: Boolean,
     val shouldShowStar: Boolean,

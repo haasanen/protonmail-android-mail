@@ -116,7 +116,6 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
     sealed interface DetailMoreActionsBottomSheetOperation : BottomSheetOperation
     sealed interface DetailMoreActionsBottomSheetEvent : DetailMoreActionsBottomSheetOperation {
         data class DataLoaded(
-            val messageSender: String,
             val messageSubject: String,
             val messageIdInConversation: String?,
             val availableActions: AvailableActions,

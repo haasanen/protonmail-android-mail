@@ -106,7 +106,8 @@ class MessageDetailHeaderUiModelMapperTest {
         messageIdUiModel = MessageIdUiModel(message.messageId.id),
         themeOverride = null,
         shouldShowQuickReply = true,
-        hasMoreActions = true
+        hasMoreActions = true,
+        subject = "Subject"
     )
 
     private val colorMapper: ColorMapper = mockk {
@@ -165,6 +166,9 @@ class MessageDetailHeaderUiModelMapperTest {
 
     @Test
     fun `map to ui model returns a correct model`() = runTest {
+        // Given
+        val expectedResult = expectedResult.copy(subject = message.subject)
+
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
@@ -184,7 +188,7 @@ class MessageDetailHeaderUiModelMapperTest {
             numAttachments = 1,
             attachmentCount = AttachmentCount(1)
         )
-        val expectedResult = expectedResult.copy(shouldShowAttachmentIcon = false)
+        val expectedResult = expectedResult.copy(shouldShowAttachmentIcon = false, subject = message.subject)
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
@@ -201,7 +205,7 @@ class MessageDetailHeaderUiModelMapperTest {
     fun `when the message is not starred, don't show star icon`() = runTest {
         // Given
         val message = message.copy(isStarred = false)
-        val expectedResult = expectedResult.copy(shouldShowStar = false)
+        val expectedResult = expectedResult.copy(shouldShowStar = false, subject = message.subject)
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
@@ -223,6 +227,7 @@ class MessageDetailHeaderUiModelMapperTest {
         )
         val expectedResult = expectedResult.copy(
             shouldShowUndisclosedRecipients = true,
+            subject = message.subject,
             allRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
             toRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
             ccRecipients = emptyList<ParticipantUiModel>().toImmutableList()

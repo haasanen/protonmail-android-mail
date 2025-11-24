@@ -20,71 +20,65 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
-import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent
-import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetMoreActionsBottomSheetData @Inject constructor(
     private val getMessageAvailableActions: GetMessageAvailableActions,
-    private val getConversationAvailableActions: GetConversationAvailableActions,
-    private val observeMessage: ObserveMessage,
-    private val observeConversation: ObserveConversation
+    private val getConversationAvailableActions: GetConversationAvailableActions
 ) {
 
-    suspend fun forMessage(
-        userId: UserId,
-        labelId: LabelId,
-        messageId: MessageId,
-        messageThemeOptions: MessageThemeOptions,
-        entryPoint: MoreActionsBottomSheetEntryPoint
+    internal suspend fun forMessage(
+        payload: MoreMessageActionsBottomSheetDataPayload
     ): DetailMoreActionsBottomSheetEvent.DataLoaded? = getMessageAvailableActions(
-        userId, labelId, messageId, messageThemeOptions
+        payload.userId, payload.labelId, payload.messageId, payload.messageThemeOptions
     ).map { availableActions ->
-        val message = observeMessage(userId, messageId).firstOrNull()?.getOrNull()
-            ?: return null
 
-        val requestIsFromBottomBar = entryPoint is MoreActionsBottomSheetEntryPoint.BottomBar
+        val requestIsFromBottomBar = payload.entryPoint is MoreActionsBottomSheetEntryPoint.BottomBar
 
         return DetailMoreActionsBottomSheetEvent.DataLoaded(
-            messageSender = message.sender.name,
-            messageSubject = message.subject,
-            messageIdInConversation = message.messageId.id,
+            messageSubject = payload.subject,
+            messageIdInConversation = payload.messageId.id,
             availableActions = availableActions,
             customizeToolbarAction = if (requestIsFromBottomBar) Action.CustomizeToolbar else null
         )
     }.getOrNull()
 
-    suspend fun forConversation(
-        userId: UserId,
-        labelId: LabelId,
-        conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint,
-        showAllMessages: Boolean
-    ): DetailMoreActionsBottomSheetEvent.DataLoaded? =
-        getConversationAvailableActions(userId, labelId, conversationId).map { availableActions ->
-            val conversation = observeConversation(userId, conversationId, labelId, entryPoint, showAllMessages)
-                .firstOrNull()
-                ?.getOrNull()
-                ?: return null
-
-            return DetailMoreActionsBottomSheetEvent.DataLoaded(
-                messageSender = conversation.senders.first().name,
-                messageSubject = conversation.subject,
-                messageIdInConversation = null,
-                availableActions = availableActions,
-                customizeToolbarAction = Action.CustomizeToolbar
-            )
-        }.getOrNull()
-
+    internal suspend fun forConversation(
+        payload: MoreConversationActionsBottomSheetDataPayload
+    ): DetailMoreActionsBottomSheetEvent.DataLoaded? = getConversationAvailableActions(
+        payload.userId,
+        payload.labelId,
+        payload.conversationId
+    ).map { availableActions ->
+        return DetailMoreActionsBottomSheetEvent.DataLoaded(
+            messageSubject = payload.subject,
+            messageIdInConversation = null,
+            availableActions = availableActions,
+            customizeToolbarAction = Action.CustomizeToolbar
+        )
+    }.getOrNull()
 }
 
+internal data class MoreMessageActionsBottomSheetDataPayload(
+    val userId: UserId,
+    val labelId: LabelId,
+    val messageId: MessageId,
+    val messageThemeOptions: MessageThemeOptions,
+    val entryPoint: MoreActionsBottomSheetEntryPoint,
+    val subject: String
+)
+
+internal data class MoreConversationActionsBottomSheetDataPayload(
+    val userId: UserId,
+    val labelId: LabelId,
+    val conversationId: ConversationId,
+    val subject: String
+)

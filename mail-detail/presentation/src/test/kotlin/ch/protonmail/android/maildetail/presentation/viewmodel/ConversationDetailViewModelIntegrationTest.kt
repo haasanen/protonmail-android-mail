@@ -63,15 +63,12 @@ import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSam
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
-import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithMessages
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
-import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversationWithMessages
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
@@ -247,16 +244,6 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val showAllMessages = false
 
     // region mock observe use cases
-    private val observeContacts: ObserveContacts = mockk {
-        coEvery {
-            this@mockk(userId = UserIdSample.Primary)
-        } returns flowOf(emptyList<ContactMetadata.Contact>().right())
-    }
-
-    private val observeConversation = mockk<ObserveConversation> {
-        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any(), any(), any()) } returns
-            flowOf(ConversationSample.WeatherForecast.right())
-    }
 
     private val observeConversationMessages = mockk<ObserveConversationMessages> {
         coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any(), any(), any()) } returns
@@ -391,9 +378,7 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val attachmentGroupUiModelMapper = AttachmentGroupUiModelMapper(attachmentMetadataUiModelMapper)
     private val getMoreActionsBottomSheetData = GetMoreActionsBottomSheetData(
         getMessageAvailableActions,
-        getConversationAvailableActions,
-        observeMessage,
-        observeConversation
+        getConversationAvailableActions
     )
 
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
@@ -1381,41 +1366,6 @@ internal class ConversationDetailViewModelIntegrationTest {
 
                 // Then
                 assertIs<DetailMoreActionsBottomSheetState.Data>(lastEmittedItem().bottomSheetState?.contentState)
-            }
-        }
-
-    @Test
-    fun `verify no bottom sheet data is emitted when more actions bottom sheet is requested and loading fails`() =
-        runTest {
-            // Given
-            val messageId = MessageId("messageId")
-            val labelId = SystemLabelId.Archive.labelId
-            val themeOptions = MessageThemeOptionsTestData.darkNoOverride
-
-            coEvery {
-                observeMessage(
-                    userId = userId,
-                    messageId = messageId
-                )
-            } returns flowOf(DataError.Local.NoDataCached.left())
-            coEvery {
-                getMessageAvailableActions(userId, labelId, messageId, themeOptions)
-            } returns AvailableActionsTestData.replyActionsOnly.right()
-
-            // When
-            val viewModel = buildConversationDetailViewModel()
-            viewModel.state.test {
-                viewModel.submit(
-                    ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                        messageId,
-                        themeOptions,
-                        MoreActionsBottomSheetEntryPoint.BottomBar
-                    )
-                )
-                advanceUntilIdle()
-
-                // Then
-                assertNull(lastEmittedItem().bottomSheetState?.contentState)
             }
         }
 

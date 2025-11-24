@@ -96,6 +96,8 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailR
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
+import ch.protonmail.android.maildetail.presentation.usecase.MoreConversationActionsBottomSheetDataPayload
+import ch.protonmail.android.maildetail.presentation.usecase.MoreMessageActionsBottomSheetDataPayload
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
@@ -535,6 +537,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
                             emitNewStateFrom(ConversationDetailEvent.ErrorLoadingImageProxyFailed(messageId))
                             null
                         }
+
                         is AttachmentDataError.Other -> null
                     }
                 },
@@ -1041,14 +1044,16 @@ class ConversationDetailViewModel @AssistedInject constructor(
         val userId = primaryUserId.first()
         val labelId = openedFromLocation
 
-        val moreActions = getMoreActionsBottomSheetData.forMessage(
+        val bottomSheetDataPayload = MoreMessageActionsBottomSheetDataPayload(
             userId,
             labelId,
             initialEvent.messageId,
             initialEvent.themeOptions,
-            initialEvent.entryPoint
+            initialEvent.entryPoint,
+            resolveSubject() ?: ""
         )
-            ?: return
+
+        val moreActions = getMoreActionsBottomSheetData.forMessage(bottomSheetDataPayload) ?: return
         emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
     }
 
@@ -1076,14 +1081,15 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
         val userId = primaryUserId.first()
         val labelId = openedFromLocation
-        val moreActions = getMoreActionsBottomSheetData.forConversation(
+
+        val bottomSheetDataPayload = MoreConversationActionsBottomSheetDataPayload(
             userId,
             labelId,
             conversationId,
-            conversationEntryPoint,
-            showAllMessages.value
-        ) ?: return
+            resolveSubject() ?: ""
+        )
 
+        val moreActions = getMoreActionsBottomSheetData.forConversation(bottomSheetDataPayload) ?: return
         emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
     }
 
@@ -1727,6 +1733,12 @@ class ConversationDetailViewModel @AssistedInject constructor(
         ).getOrNull() ?: return false
 
         return label == SystemLabelId.AllMail
+    }
+
+    private fun resolveSubject(): String? {
+        return (state.value.conversationState as? ConversationDetailMetadataState.Data)
+            ?.conversationUiModel
+            ?.subject
     }
 
     private suspend fun withUserId(block: suspend (userId: UserId) -> Either<*, *>) {

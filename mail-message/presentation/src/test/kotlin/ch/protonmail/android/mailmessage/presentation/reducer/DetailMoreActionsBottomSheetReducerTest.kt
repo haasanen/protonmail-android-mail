@@ -68,12 +68,8 @@ internal class DetailMoreActionsBottomSheetReducerTest(
 
     companion object {
 
-        private const val ExpectedSender = "Sender"
         private const val ExpectedSubject = "Subject"
         private const val ExpectedMessageId = "messageId"
-        private const val SingleParticipantCount = 1
-        private const val MultipleParticipantsCount = 10
-
         private val expectedUiModel = DetailMoreActionsBottomSheetState.DetailDataUiModel(
             headerSubjectText = TextUiModel(ExpectedSubject),
             messageIdInConversation = ExpectedMessageId
@@ -82,7 +78,6 @@ internal class DetailMoreActionsBottomSheetReducerTest(
             TestInput(
                 currentState = BottomSheetState(DetailMoreActionsBottomSheetState.Loading),
                 operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
-                    messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
                     availableActions = AvailableActionsTestData.replyReportPhishing,
@@ -102,7 +97,6 @@ internal class DetailMoreActionsBottomSheetReducerTest(
             TestInput(
                 currentState = BottomSheetState(DetailMoreActionsBottomSheetState.Loading),
                 operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
-                    messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
                     availableActions = AvailableActionsTestData.forwardReportPhishingActions,
@@ -122,7 +116,6 @@ internal class DetailMoreActionsBottomSheetReducerTest(
             TestInput(
                 currentState = BottomSheetState(DetailMoreActionsBottomSheetState.Loading),
                 operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
-                    messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
                     availableActions = AvailableActionsTestData.fullAvailableActions,
