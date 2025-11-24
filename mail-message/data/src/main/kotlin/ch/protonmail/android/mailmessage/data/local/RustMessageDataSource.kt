@@ -31,6 +31,7 @@ import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailcommon.data.wrapper.ConversationCursor
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageScrollerFetchNewStatus
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
@@ -142,4 +143,7 @@ interface RustMessageDataSource {
         userId: UserId,
         messageId: MessageId
     ): Either<UndoSendError, PreviousScheduleSendTime>
+
+    fun observeScrollerFetchNewStatus(): Flow<MessageScrollerFetchNewStatus>
+
 }

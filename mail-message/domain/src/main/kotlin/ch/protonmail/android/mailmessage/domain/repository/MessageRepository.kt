@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.repository.ConversationCursor
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageScrollerFetchNewStatus
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
@@ -159,4 +160,7 @@ interface MessageRepository {
         userId: UserId,
         messageId: MessageId
     ): Either<UndoSendError, PreviousScheduleSendTime>
+
+    fun observeScrollerFetchNewStatus(): Flow<MessageScrollerFetchNewStatus>
+
 }

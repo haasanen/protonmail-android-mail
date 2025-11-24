@@ -47,6 +47,9 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -55,6 +58,7 @@ import timber.log.Timber
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageScrollerListUpdate
 import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
+import uniffi.proton_mail_uniffi.MessageScrollerStatusUpdate
 import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import javax.inject.Inject
 
@@ -68,6 +72,8 @@ class RustMessageListQueryImpl @Inject constructor(
 
     private var paginatorState: PaginatorState? = null
     private val paginatorMutex = Mutex()
+
+    private val scrollerFetchNewStatusFlow = MutableStateFlow<MessageScrollerStatusUpdate?>(null)
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> {
 
@@ -118,6 +124,9 @@ class RustMessageListQueryImpl @Inject constructor(
 
     override suspend fun getCursor(conversationId: LocalConversationId) =
         paginatorState?.paginatorWrapper?.getCursor(conversationId)
+
+    override fun observeScrollerFetchNewStatus(): Flow<MessageScrollerStatusUpdate> =
+        scrollerFetchNewStatusFlow.filterNotNull()
 
     override suspend fun terminatePaginator(userId: UserId) {
         if (paginatorState?.pageDescriptor?.userId == userId) {
@@ -179,7 +188,8 @@ class RustMessageListQueryImpl @Inject constructor(
                     paginatorMutex.withLock {
                         val update = when (update) {
                             is MessageScrollerUpdate.Status -> {
-                                Timber.d("rust-message-query: Ignoring status update")
+                                Timber.d("rust-message-query: Scroller fetch new status update: ${update.v1}")
+                                scrollerFetchNewStatusFlow.value = update.v1
                                 return@withLock
                             }
 

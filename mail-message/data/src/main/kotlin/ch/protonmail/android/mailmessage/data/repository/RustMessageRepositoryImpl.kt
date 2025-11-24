@@ -37,6 +37,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageScrollerFetchNewStatus
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
@@ -51,6 +52,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class RustMessageRepositoryImpl @Inject constructor(
     private val rustMessageDataSource: RustMessageDataSource,
     private val undoRepository: UndoRepository
@@ -163,6 +165,8 @@ class RustMessageRepositoryImpl @Inject constructor(
     ): Either<UndoSendError, PreviousScheduleSendTime> =
         rustMessageDataSource.cancelScheduleSendMessage(userId, messageId)
 
+    override fun observeScrollerFetchNewStatus(): Flow<MessageScrollerFetchNewStatus> =
+        rustMessageDataSource.observeScrollerFetchNewStatus()
 
     override suspend fun deleteMessages(
         userId: UserId,
