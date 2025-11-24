@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -89,6 +90,23 @@ class MailboxListReducer @Inject constructor(
             is MailboxEvent.AttachmentErrorEvent -> reduceAttachmentDownloadError(currentState)
             is MailboxEvent.PaginatorInvalidated -> reducePaginatorInvalidated(operation, currentState)
             is MailboxEvent.CouldNotLoadUserSession -> reduceCouldNotLoadUserSession()
+            is MailboxEvent.LoadingBarStateUpdated -> reduceLoadingBarStateUpdated(operation, currentState)
+        }
+    }
+
+    private fun reduceLoadingBarStateUpdated(
+        operation: MailboxEvent.LoadingBarStateUpdated,
+        currentState: MailboxListState
+    ): MailboxListState {
+        return when (currentState) {
+            is MailboxListState.Data.ViewMode -> currentState.copy(
+                loadingBarState = operation.state
+            )
+            is MailboxListState.Data.SelectionMode -> currentState.copy(
+                loadingBarState = operation.state
+            )
+
+            else -> currentState
         }
     }
 
@@ -250,6 +268,7 @@ class MailboxListReducer @Inject constructor(
                 scrollToMailboxTop = Effect.empty(),
                 refreshErrorEffect = Effect.empty(),
                 refreshOngoing = false,
+                loadingBarState = LoadingBarUiState.Hide,
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
                 shouldShowFab = true,
@@ -282,6 +301,7 @@ class MailboxListReducer @Inject constructor(
                 scrollToMailboxTop = Effect.empty(),
                 refreshErrorEffect = Effect.empty(),
                 refreshOngoing = false,
+                loadingBarState = LoadingBarUiState.Hide,
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
                 shouldShowFab = true,
@@ -381,7 +401,8 @@ class MailboxListReducer @Inject constructor(
                 avatarImagesUiModel = currentState.avatarImagesUiModel,
                 shouldShowFab = false,
                 areAllItemsSelected = false,
-                refreshOngoing = currentState.refreshOngoing
+                refreshOngoing = currentState.refreshOngoing,
+                loadingBarState = currentState.loadingBarState
             )
 
             else -> currentState
@@ -394,6 +415,7 @@ class MailboxListReducer @Inject constructor(
             scrollToMailboxTop = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
             refreshOngoing = currentState.refreshOngoing,
+            loadingBarState = currentState.loadingBarState,
             swipeActions = currentState.swipeActions,
             searchState = currentState.searchState,
             shouldShowFab = !currentState.searchState.isInSearch(),

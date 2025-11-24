@@ -29,6 +29,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToIte
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
@@ -199,7 +200,8 @@ internal class MailboxReducerTest(
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModel.Empty
+                avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                loadingBarState = LoadingBarUiState.Hide
             ),
             topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
                 currentLabelName = spamLabel.text(),

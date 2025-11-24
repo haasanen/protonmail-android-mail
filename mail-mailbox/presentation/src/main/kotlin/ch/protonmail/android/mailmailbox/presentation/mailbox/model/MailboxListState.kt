@@ -38,6 +38,7 @@ sealed interface MailboxListState {
         val avatarImagesUiModel: AvatarImagesUiModel
         val paginatorInvalidationEffect: Effect<Unit>
         val refreshOngoing: Boolean
+        val loadingBarState: LoadingBarUiState
 
         data class ViewMode(
             override val currentMailLabel: MailLabel,
@@ -47,6 +48,7 @@ sealed interface MailboxListState {
             override val avatarImagesUiModel: AvatarImagesUiModel,
             override val paginatorInvalidationEffect: Effect<Unit> = Effect.empty(),
             override val refreshOngoing: Boolean,
+            override val loadingBarState: LoadingBarUiState,
             val openItemEffect: Effect<OpenMailboxItemRequest>,
             val scrollToMailboxTop: Effect<MailLabelId>,
             val refreshErrorEffect: Effect<Unit>,
@@ -66,6 +68,7 @@ sealed interface MailboxListState {
             override val avatarImagesUiModel: AvatarImagesUiModel,
             override val paginatorInvalidationEffect: Effect<Unit> = Effect.empty(),
             override val refreshOngoing: Boolean,
+            override val loadingBarState: LoadingBarUiState,
             val selectedMailboxItems: Set<SelectedMailboxItem>,
             val areAllItemsSelected: Boolean
         ) : Data {

@@ -68,21 +68,27 @@ import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.SelectMailLabelId
 import ch.protonmail.android.maillabel.presentation.text
+import ch.protonmail.android.mailmailbox.domain.model.MailboxFetchNewStatus
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Conversation
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Message
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
+import ch.protonmail.android.mailmailbox.domain.model.ScrollerType
 import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
+import ch.protonmail.android.mailmailbox.domain.usecase.ObserveMailboxFetchNewStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.SetEphemeralMailboxCursor
 import ch.protonmail.android.mailmailbox.presentation.helper.MailboxAsyncPagingDataDiffer
+import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxLoadingBarControllerFactory
+import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxLoadingBarStateController
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxViewModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.SwipeActionsMapper
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -310,6 +316,19 @@ internal class MailboxViewModelTest {
 
     private val setEphemeralMailboxCursor = mockk<SetEphemeralMailboxCursor>()
 
+    private val observeMailboxFetchNewStatus = mockk<ObserveMailboxFetchNewStatus> {
+        every { this@mockk() } returns emptyFlow()
+    }
+
+    private val loadingBarController: MailboxLoadingBarStateController =
+        mockk<MailboxLoadingBarStateController>(relaxed = true).apply {
+            every { observeState() } returns emptyFlow()
+        }
+
+    private val loadingBarControllerFactory: MailboxLoadingBarControllerFactory = mockk {
+        every { this@mockk.create(any()) } returns loadingBarController
+    }
+
     private val isExpandableLocation = mockk<IsExpandableLocation> {
         coEvery { this@mockk.invoke(any()) } returns false
     }
@@ -368,7 +387,9 @@ internal class MailboxViewModelTest {
             eventLoopRepository = eventLoopRepository,
             updateUnreadFilter = updateUnreadFilter,
             updateShowSpamTrashFilter = updateShowSpamTrashFilter,
-            setEphemeralMailboxCursor = setEphemeralMailboxCursor
+            setEphemeralMailboxCursor = setEphemeralMailboxCursor,
+            observeMailboxFetchNewStatus = observeMailboxFetchNewStatus,
+            loadingBarControllerFactory = loadingBarControllerFactory
         )
     }
 
@@ -562,7 +583,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         val expectedSwipeActions = SwipeActionsUiModel(
@@ -579,7 +601,8 @@ internal class MailboxViewModelTest {
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         val mailLabelsFlow = MutableStateFlow(
@@ -638,7 +661,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         val expectedSwipeActions = SwipeActionsUiModel(
@@ -655,7 +679,8 @@ internal class MailboxViewModelTest {
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         val mailLabelsFlow = MutableStateFlow(
@@ -1421,7 +1446,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         every {
@@ -1453,7 +1479,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         every {
@@ -1485,7 +1512,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         val stateRefreshCompleted = expectedState.copy(
@@ -3048,7 +3076,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             ),
             unreadFilterState = UnreadFilterState.Data(
                 numUnread = UnreadCountersTestData.labelToCounterMap[initialLocationMailLabelId.labelId]!!,
@@ -3071,7 +3100,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NewSearch,
                 shouldShowFab = false,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         every {
@@ -3104,7 +3134,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         every {
@@ -3138,7 +3169,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchLoading,
                 shouldShowFab = false,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         every {
@@ -3171,7 +3203,8 @@ internal class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchData,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
             )
         )
         every {
@@ -3567,6 +3600,60 @@ internal class MailboxViewModelTest {
             verify(exactly = 1) {
                 mailboxReducer.newStateFrom(intermediateState, MailboxEvent.MaxSelectionLimitReached)
             }
+        }
+    }
+
+    @Test
+    fun `when mailbox fetch new status emits events they are forwarded to loading bar controller`() = runTest {
+        // Given
+        val statusFlow = MutableSharedFlow<MailboxFetchNewStatus>()
+        every { observeMailboxFetchNewStatus() } returns statusFlow
+
+        val started = MailboxFetchNewStatus.Started(timestampMs = 100L, scrollerType = ScrollerType.Conversation)
+        val ended = MailboxFetchNewStatus.Ended(timestampMs = 400L, scrollerType = ScrollerType.Conversation)
+
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // When
+            statusFlow.emit(started)
+            statusFlow.emit(ended)
+            advanceUntilIdle()
+
+            // Then
+            verify(exactly = 1) { loadingBarController.onMailboxFetchNewStatus(started) }
+            verify(exactly = 1) { loadingBarController.onMailboxFetchNewStatus(ended) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `loading bar state is updated when loading bar controller emits new state`() = runTest {
+        // Given
+        val loadingBarStateFlow = MutableStateFlow<LoadingBarUiState>(LoadingBarUiState.Hide)
+        every { loadingBarController.observeState() } returns loadingBarStateFlow
+
+        val showState = LoadingBarUiState.Show(
+            cycleDurationMs = MailboxLoadingBarStateController.DEFAULT_CYCLE_MS
+        )
+
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // When
+            loadingBarStateFlow.value = showState
+            advanceUntilIdle()
+
+            // Then
+            verify {
+                mailboxReducer.newStateFrom(
+                    any(),
+                    MailboxEvent.LoadingBarStateUpdated(showState)
+                )
+            }
+
+            cancelAndIgnoreRemainingEvents()
         }
     }
 

@@ -31,6 +31,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.text
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState.Data.SelectionMode.SelectedMailboxItem
@@ -83,6 +84,7 @@ object MailboxStateSampleData {
             scrollToMailboxTop = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
             refreshOngoing = false,
+            loadingBarState = LoadingBarUiState.Hide,
             swipeActions = SwipeActionsUiModel(
                 start = SwipeUiModelSampleData.Trash,
                 end = SwipeUiModelSampleData.Archive
@@ -120,6 +122,7 @@ object MailboxStateSampleData {
             scrollToMailboxTop = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
             refreshOngoing = false,
+            loadingBarState = LoadingBarUiState.Hide,
             swipeActions = SwipeActionsUiModel(
                 start = SwipeUiModelSampleData.Trash,
                 end = SwipeUiModelSampleData.Archive
@@ -176,7 +179,8 @@ object MailboxStateSampleData {
             shouldShowFab = false,
             avatarImagesUiModel = AvatarImagesUiModel.Empty,
             areAllItemsSelected = false,
-            refreshOngoing = false
+            refreshOngoing = false,
+            loadingBarState = LoadingBarUiState.Hide
         ),
         topAppBarState = MailboxTopAppBarState.Data.SelectionMode(
             currentLabelName = inboxDynamicLabel.text(),

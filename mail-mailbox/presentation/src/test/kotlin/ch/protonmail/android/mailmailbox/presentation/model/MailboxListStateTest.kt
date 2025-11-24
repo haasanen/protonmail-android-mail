@@ -23,6 +23,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.hasClearableOperations
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
@@ -53,7 +54,8 @@ class MailboxListStateTest {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.SearchLoading,
             shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty
+            avatarImagesUiModel = AvatarImagesUiModel.Empty,
+            loadingBarState = LoadingBarUiState.Hide
         )
         Assert.assertFalse(state.hasClearableOperations())
     }
@@ -72,7 +74,8 @@ class MailboxListStateTest {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
             shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty
+            avatarImagesUiModel = AvatarImagesUiModel.Empty,
+            loadingBarState = LoadingBarUiState.Hide
         )
         Assert.assertTrue(state.hasClearableOperations())
     }

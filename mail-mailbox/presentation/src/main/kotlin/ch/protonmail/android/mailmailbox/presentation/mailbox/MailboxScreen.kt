@@ -148,6 +148,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToIte
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxEmptyUiModelMapper
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchMode
@@ -546,6 +547,16 @@ fun MailboxScreen(
                     state = mailboxState,
                     actions = stickyHeaderActions
                 )
+
+                val loadingBarState = (mailboxState.mailboxListState as? MailboxListState.Data)?.loadingBarState
+                    ?: LoadingBarUiState.Hide
+                MailboxLoadingBar(
+                    state = loadingBarState,
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                    )
+                )
+
             }
 
             Crossfade(accountsTooltipState) { state ->

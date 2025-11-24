@@ -83,6 +83,7 @@ import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
+import ch.protonmail.android.mailmailbox.domain.usecase.ObserveMailboxFetchNewStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.SetEphemeralMailboxCursor
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
@@ -210,7 +211,9 @@ class MailboxViewModel @Inject constructor(
     private val eventLoopRepository: EventLoopRepository,
     private val updateUnreadFilter: UpdateUnreadFilter,
     private val updateShowSpamTrashFilter: UpdateShowSpamTrashFilter,
-    private val setEphemeralMailboxCursor: SetEphemeralMailboxCursor
+    private val setEphemeralMailboxCursor: SetEphemeralMailboxCursor,
+    private val observeMailboxFetchNewStatus: ObserveMailboxFetchNewStatus,
+    private val loadingBarControllerFactory: MailboxLoadingBarControllerFactory
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserIdWithValidSession().filterNotNull()
@@ -220,6 +223,8 @@ class MailboxViewModel @Inject constructor(
         observeFolderColorSettings(it).distinctUntilChanged()
     }
     private var refreshJob: Job? = null
+
+    private val loadingBarController = loadingBarControllerFactory.create(viewModelScope)
 
     val state: StateFlow<MailboxState> = mutableState.asStateFlow()
     val items: Flow<PagingData<MailboxItemUiModel>> = observePagingData().cachedIn(viewModelScope)
@@ -306,6 +311,14 @@ class MailboxViewModel @Inject constructor(
 
         observePageInvalidationEvents().onEach {
             emitNewStateFrom(MailboxEvent.PaginatorInvalidated(it))
+        }.launchIn(viewModelScope)
+
+        loadingBarController.observeState().onEach {
+            emitNewStateFrom(MailboxEvent.LoadingBarStateUpdated(it))
+        }.launchIn(viewModelScope)
+
+        observeMailboxFetchNewStatus().onEach {
+            loadingBarController.onMailboxFetchNewStatus(it)
         }.launchIn(viewModelScope)
     }
 
