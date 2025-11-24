@@ -72,7 +72,7 @@
   <string name="upselling_onboarding_unlimited_feature_customer_support">Vyhrazená podpora</string>
   <string name="upselling_onboarding_unlimited_feature_vpn">Ultra rychlá a soukromá VPN</string>
   <string name="upselling_onboarding_unlimited_feature_pass">Šifrovaný správce hesel</string>
-  <string name="upselling_onboarding_unlimited_feature_drive">Šifrované cloudové úložiště pro fotografie a dokumenty</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Šifrované cloudové úložiště pro fotky a dokumenty</string>
   <string name="upselling_onboarding_unlimited_feature_sentinel">Pokročilá ochrana účtu</string>
   <!-- Comparison Table -->
   <string name="upselling_comparison_table_storage">Úložiště</string>

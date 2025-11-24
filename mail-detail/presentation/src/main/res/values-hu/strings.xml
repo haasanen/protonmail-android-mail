@@ -74,6 +74,8 @@
   <string name="message_body_embedded_images_banner_text">A beágyazott képek automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
   <string name="message_body_remote_content_banner_text">A távoli tartalom automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">A beágyazott képek és távoli tartalom automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Some images failed to load with tracker protection.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Load images</string>
   <string name="message_phishing_banner_text">Ez az üzenet gyanúsnak lett megjelölve, akár a rendszerünk, akár Ön által. Ha úgy gondolja, hogy biztonságos, jelölje meg legitimnek.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Jelölje meg jogosnak</string>
   <string name="message_spam_banner_text">Ez az üzenet levélszemétnek lett megjelölve, akár a rendszerünk, akár Ön által.</string>

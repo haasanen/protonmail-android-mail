@@ -78,6 +78,8 @@
   <string name="message_body_embedded_images_banner_text">Аўтаматычная загрузка ўбудаваных відарысаў выключана. Гэта можна змяніць у наладах.</string>
   <string name="message_body_remote_content_banner_text">Аўтаматычная загрузка аддаленага змесціва выключана. Гэта можна змяніць у наладах.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Аўтаматычная загрузка ўбудаваных відарысаў і аддаленага змесціва выключана. Гэта можна змяніць у наладах.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Не ўдалося загрузіць некаторыя відарысы з абаронай ад сачэння.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Загрузка відарысаў</string>
   <string name="message_phishing_banner_text">Вы самі або наша сістэма пазначылі гэта паведамленне як падазронае. Калі вы перакананыя ў яго бяспецы, то пазначце яго як надзейнае.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Пазначыць як надзейнае</string>
   <string name="message_spam_banner_text">Вы самі або наша сістэма пазначылі гэта паведамленне як спам.</string>

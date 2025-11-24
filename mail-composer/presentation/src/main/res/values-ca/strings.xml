@@ -165,7 +165,7 @@
   <string name="composer_error_send_draft_attachments_error">No s\'ha pogut trobar l\'adjunt. Torneu-lo a carregar.</string>
   <string name="composer_error_send_draft_attachments_conversion_error">No s\'ha pogut convertir l\'adjunt. Torneu-lo a carregar.</string>
   <string name="composer_error_send_draft_invalid_recipient">Alguns destinataris no són vàlids. Comproveu-los i torneu-ho a provar.</string>
-  <string name="composer_error_send_draft_schedule_send_error">L\'hora d\'enviament programada ja ha passat. Aneu a Esborranys per a enviar-lo o reprogramar-lo.</string>
+  <string name="composer_error_send_draft_schedule_send_error">L\'hora d\'enviament planificada és en el passat. Aneu als esborranys per a enviar-lo o replanificar-lo.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">La data de caducitat del missatge és massa aviat.</string>
   <string name="composer_error_send_draft_package_error">S\'ha produït un problema en enviar el missatge. Torneu-ho a provar.</string>
   <string name="composer_error_send_draft_attachment_too_large">No s\'ha pogut enviar l\'esborrany - Els adjunts superen el límit de mida</string>

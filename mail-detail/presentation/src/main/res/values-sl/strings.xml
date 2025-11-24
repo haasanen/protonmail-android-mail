@@ -78,6 +78,8 @@
   <string name="message_body_embedded_images_banner_text">Samodejno nalaganje vdelanih slik je izključeno. To lahko spremenite v nastavitvah.</string>
   <string name="message_body_remote_content_banner_text">Samodejno nalaganje oddaljene vsebine je izključeno. To lahko spremenite v nastavitvah.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Samodejno nalaganje vdelanih slik in oddaljene vsebine je izključeno. To lahko spremenite v nastavitvah.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Some images failed to load with tracker protection.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Load images</string>
   <string name="message_phishing_banner_text">To sporočilo je bilo označeno kot sumljivo, bodisi s strani našega sistema ali vas. Če menite, da je varno, ga označite kot legitimno.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Označi kot legitimno</string>
   <string name="message_spam_banner_text">To sporočilo je bilo označeno kot neželena pošta, bodisi s strani našega sistema ali s strani vas.</string>

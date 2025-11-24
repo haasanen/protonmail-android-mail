@@ -72,6 +72,8 @@
   <string name="message_body_embedded_images_banner_text">嵌入图片自动加载功能已关闭，可以在设置中开启。</string>
   <string name="message_body_remote_content_banner_text">外链内容自动加载功能已关闭，可以在设置中开启。</string>
   <string name="message_body_embedded_and_remote_content_banner_text">嵌入图片和外链内容自动加载功能已关闭，可以在设置中开启。</string>
+  <string name="message_body_images_failed_to_load_banner_text">Some images failed to load with tracker protection.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Load images</string>
   <string name="message_phishing_banner_text">我们的系统或您已将此邮件标记为可疑邮件。如果您认为它是安全的，请标记为合法。</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">标为非垃圾邮件</string>
   <string name="message_spam_banner_text">此邮件被我们的系统或您标记为垃圾邮件。</string>

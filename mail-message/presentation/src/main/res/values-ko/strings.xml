@@ -68,7 +68,7 @@
   <string name="contact_actions_new_message">새 메시지</string>
   <string name="contact_actions_new_message_description">이 연락처에 대한 새 메시지 작성을 시작합니다</string>
   <string name="contact_actions_add_contact">연락처 추가하기</string>
-  <string name="contact_actions_add_contact_description">이 받는 이를 연락처에 저장합니다</string>
+  <string name="contact_actions_add_contact_description">해당 받는 사람을 연락처에 저장</string>
   <string name="contact_actions_block_contact">이 연락처 차단</string>
   <string name="contact_actions_block_contact_description">이 연락처 차단</string>
   <string name="contact_actions_block_contact_dialog_text"><xliff:g id="email">%1$s</xliff:g>으로부터 더 이상 이메일이 수신되지 않으며 영구적으로 삭제됩니다. 차단된 이메일 주소는 설정에서 관리할 수 있습니다.</string>

@@ -74,6 +74,8 @@
   <string name="message_body_embedded_images_banner_text">Automatisk laddning av inbäddade bilder är avstängt. Detta kan ändras i inställningarna.</string>
   <string name="message_body_remote_content_banner_text">Automatisk laddning av fjärrinnehåll är avstängt. Detta kan ändras i inställningarna.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Automatisk laddning av inbäddade bilder och fjärrinnehåll är avstängt. Dessa kan ändras i inställningarna.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Några bilder misslyckades att läsas in med spårningsskydd.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Läs in bilder</string>
   <string name="message_phishing_banner_text">Detta meddelande flaggades som misstänkt, antingen av vårt system eller av dig. Om du tror att det är säkert, markera det som legitimt.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Markera som legitimt</string>
   <string name="message_spam_banner_text">Detta meddelande flaggades som skräppost, antingen av vårt system eller av dig.</string>

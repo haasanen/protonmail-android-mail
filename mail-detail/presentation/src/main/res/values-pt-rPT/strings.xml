@@ -74,6 +74,8 @@
   <string name="message_body_embedded_images_banner_text">O carregamento automático de imagens incorporadas está desativado. Isto pode ser alterado nas definições.</string>
   <string name="message_body_remote_content_banner_text">O carregamento automático de conteúdo remoto está desativado. Isto pode ser alterado nas definições.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">O carregamento automático de imagens incorporadas e conteúdo remoto está desativado. Estas propriedades podem ser alteradas nas definições.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Some images failed to load with tracker protection.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Load images</string>
   <string name="message_phishing_banner_text">Esta mensagem foi sinalizada como suspeita seja pelo nosso sistema ou por si. Se acreditar ser segura, marque-a como legítima.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Marcar como legítimo</string>
   <string name="message_spam_banner_text">Esta mensagem foi sinalizada como spam seja pelo nosso sistema ou por si.</string>

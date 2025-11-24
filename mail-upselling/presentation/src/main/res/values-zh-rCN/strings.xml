@@ -35,7 +35,7 @@
   <string name="upselling_contact_groups_plus_description_override">轻松发送群组电子邮件。使用 Mail Plus，轻松享受此功能及更多便利。</string>
   <string name="upselling_contact_groups_plus_title">分组您的联系人</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">创建您保持井井有条所需的一切。通过 Mail Plus 获得此功能及更多。</string>
+  <string name="upselling_labels_plus_description_override">创建您保持井井有条所需的一切。通过 Mail Plus 获得此功能及更多。 </string>
   <string name="upselling_labels_plus_title">需要更多的标签或文件夹吗？</string>
   <!-- Upselling: Folders -->
   <string name="upselling_folders_plus_description_override">创建所需的一切，保持井井有条。通过 Mail Plus 获得此功能及更多。 </string>

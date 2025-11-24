@@ -78,6 +78,8 @@
   <string name="message_body_embedded_images_banner_text">Automatické načítanie vložených obrázkov je vypnuté. Toto je možné zmeniť v nastaveniach.</string>
   <string name="message_body_remote_content_banner_text">Automatické načítanie vzdialeného obsahu je vypnuté. Toto je možné zmeniť v nastaveniach.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Automatické načítanie vložených obrázkov a vzdialeného obsahu je vypnuté. Tie je možné zmeniť v nastaveniach.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Niektoré obrázky sa nepodarilo načítať s ochranou proti sledovaniu.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Načítať obrázky</string>
   <string name="message_phishing_banner_text">Táto správa bola označená ako podozrivá, buď naším systémom, alebo vami. Ak si myslíte, že je bezpečná, označte ju ako legitímnu.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Označiť za legitímnu</string>
   <string name="message_spam_banner_text">Táto správa bola označená ako spam, buď naším systémom alebo vami.</string>

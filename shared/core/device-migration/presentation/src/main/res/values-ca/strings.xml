@@ -25,12 +25,12 @@
   <string name="edm_missing_camera_permission_settings">Preferències</string>
   <string name="intro_origin_sign_in_title">Inicieu la sessió en un altre dispositiu</string>
   <string name="intro_origin_sign_in_subtitle">Com iniciar sessió amb un codi QR</string>
-  <string name="intro_origin_sign_in_hint_1">1. Obriu qualsevol aplicació de Proton al dispositiu en què vulgueu iniciar la sessió.</string>
+  <string name="intro_origin_sign_in_hint_1">1. Obriu qualsevol aplicació del Proton al dispositiu al qual vulgueu iniciar sessió.</string>
   <string name="intro_origin_sign_in_hint_2">2. A la pantalla d’inici de sessió, seleccioneu <b> He oblidat la contrasenya </b> o <b> Problemes per iniciar la sessió? </b> (a les aplicacions mòbils, seleccioneu <b> Ajuda</b>).</string>
   <string name="intro_origin_sign_in_hint_3">3. Seleccioneu <b>Inicieu la sessió amb un codi QR</b>. Apareixerà un codi QR.</string>
   <string name="intro_origin_sign_in_hint_4">4. En aquest dispositiu, premeu <b>Escaneja el codi QR</b> i escanegeu el codi.</string>
   <string name="intro_origin_sign_in_tips">Consells de seguretat</string>
-  <string name="intro_origin_sign_in_tip_1">Aneu amb compte amb els missatges amb codis QR. Només escanegeu-ne si confieu en la font.</string>
+  <string name="intro_origin_sign_in_tip_1">Aneu amb compte amb els missatges amb codis QR. Només escanegeu un codi si confieu en la font.</string>
   <string name="intro_origin_sign_in_tip_2">Proton mai es posarà en contacte inesperadament demanar-vos que inicieu la sessió amb un codi QR.</string>
   <string name="intro_origin_sign_in_tip_3">Proton mai us demanarà que escanegeu un codi QR que no sigui de <b>https://proton.me</b> o d\'una aplicació oficial de Proton.</string>
   <string name="intro_origin_sign_in_begin">Escaneja el codi QR</string>

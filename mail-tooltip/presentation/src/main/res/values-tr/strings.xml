@@ -17,6 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="accounts_new_location_tooltip">Hesaplarınız için Yeni Bir Görünüm</string>
+  <string name="accounts_new_location_tooltip">Hesaplarınız için yeni bir görünüm</string>
   <string name="accounts_new_location_tooltip_description">Hesap değiştirici yer değiştirdi! Artık tek bir yerden hesaplarınız arasında geçiş yapabilir, oturumu kapatabilir veya hesap ayarlarınızı yönetebilirsiniz.</string>
 </resources>

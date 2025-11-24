@@ -17,6 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="accounts_new_location_tooltip">A New Home for Your Accounts</string>
+  <string name="accounts_new_location_tooltip">Uma nova casa para suas contas</string>
   <string name="accounts_new_location_tooltip_description">The account switcher has moved! You can now switch accounts, log out, and manage your account settings - all from one convenient place.</string>
 </resources>

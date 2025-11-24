@@ -39,7 +39,7 @@
   <string name="mailbox_message_sending_offline">Ni povezave: sporočilo je uvrščeno v pošiljanje</string>
   <string name="mailbox_message_sending_success">Sporočilo poslano</string>
   <string name="mailbox_message_sending_error">Napaka pri pošiljanju sporočila</string>
-  <string name="mailbox_message_sending_error_action">Pojdi v mapo Osnutki</string>
+  <string name="mailbox_message_sending_error_action">Go to Draft</string>
   <string name="notification_switched_account">Preklopili ste na račun %s</string>
   <string name="label_saved">Oznaka shranjena</string>
   <string name="label_deleted">Oznaka izbrisana</string>

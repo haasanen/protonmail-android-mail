@@ -74,6 +74,8 @@
   <string name="message_body_embedded_images_banner_text">Upotettujen kuvien automaattinen lataus ei ole käytössä. Voit muuttaa tätä asetuksista.</string>
   <string name="message_body_remote_content_banner_text">Ulkoisen sisällön automaattinen lataus ei ole käytössä. Voit muuttaa tätä asetuksista.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Upotettujen kuvien ja ulkoisen sisällön automaattinen lataus ei ole käytössä. Voit muuttaa tätä asetuksista.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Joidenkin kuvien lataus epäonnistui seurantasuojauksen vuoksi.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Lataa kuvat</string>
   <string name="message_phishing_banner_text">Viesti merkittiin epäilyttäväksi, joko järjestelmämme tai sinun toimestasi. Jos uskot sen olevan turvallinen, merkitse se aidoksi.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Merkitse aidoksi</string>
   <string name="message_spam_banner_text">Viesti merkittiin roskapostiksi, joko järjestelmämme tai sinun toimestasi.</string>

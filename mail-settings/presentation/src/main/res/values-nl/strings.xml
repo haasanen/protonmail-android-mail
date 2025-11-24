@@ -141,7 +141,7 @@
   <string name="mail_settings_custom_toolbar_edit_actions">Acties bewerken</string>
   <string name="mail_settings_custom_toolbar_set_actions">Werkbalkacties</string>
   <string name="mail_settings_custom_toolbar_remaining_actions">Beschikbare acties</string>
-  <string name="mail_settings_custom_toolbar_nav_title_list">Edit list toolbar</string>
+  <string name="mail_settings_custom_toolbar_nav_title_list">Lijstwerkbalk bewerken</string>
   <string name="mail_settings_custom_toolbar_nav_title_convo">Gesprekswerkbalk</string>
   <string name="mail_settings_custom_toolbar_nav_title_message">Berichtwerkbalk</string>
   <string name="mail_settings_custom_toolbar_nav_button_save">Opslaan</string>

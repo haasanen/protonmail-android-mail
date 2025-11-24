@@ -72,6 +72,8 @@
   <string name="message_body_embedded_images_banner_text">已經關閉內嵌影像的自動載入。這可以在設定中變更。</string>
   <string name="message_body_remote_content_banner_text">已經關閉遠端內容的自動載入。這可以在設定中變更。</string>
   <string name="message_body_embedded_and_remote_content_banner_text">已經關閉內嵌影像與遠端內容的自動載入。這可以在設定中變更。</string>
+  <string name="message_body_images_failed_to_load_banner_text">Some images failed to load with tracker protection.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Load images</string>
   <string name="message_phishing_banner_text">這則訊息已被標記為可疑，無論是由我們的系統還是您所標記。如果您認為它是安全的，請將它標記為合法。</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">標記為正常郵件</string>
   <string name="message_spam_banner_text">此訊息被我們的系統或您標記為垃圾郵件。</string>

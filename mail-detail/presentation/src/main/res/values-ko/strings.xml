@@ -72,6 +72,8 @@
   <string name="message_body_embedded_images_banner_text">첨부한 이미지를 자동으로 불러오는 기능이 꺼져 있습니다. 설정에서 변경할 수 있습니다.</string>
   <string name="message_body_remote_content_banner_text">서버 콘텐츠를 자동으로 불러오는 기능이 꺼져 있습니다. 설정에서 변경할 수 있습니다.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">임베디드 이미지와 외부 콘텐츠의 자동 불러오기가 꺼져 있습니다. 설정에서 변경할 수 있습니다.</string>
+  <string name="message_body_images_failed_to_load_banner_text">트래킹 보호로 인하여 일부 이미지를 불러올 수 없습니다.</string>
+  <string name="message_body_images_failed_to_load_banner_button">이미지 불러오기</string>
   <string name="message_phishing_banner_text">해당 메시지는 시스템 또는 회원님의 설정에 의해 의심스러운 메시지로 표시되었습니다. 안전하다고 판단되시면 스팸이 아님으로 표시해 주세요.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">스팸이 아님으로 표시</string>
   <string name="message_spam_banner_text">이 메시지는 시스템 또는 사용자에 의해 스팸으로 분류되었습니다.</string>

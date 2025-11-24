@@ -74,6 +74,8 @@
   <string name="message_body_embedded_images_banner_text">Η αυτόματη φόρτωση ενσωματωμένων εικόνων είναι απενεργοποιημένη. Αυτό μπορεί να αλλάξει στις ρυθμίσεις.</string>
   <string name="message_body_remote_content_banner_text">Η αυτόματη φόρτωση απομακρυσμένου περιεχομένου είναι απενεργοποιημένη. Αυτό μπορεί να αλλάξει στις ρυθμίσεις.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Η αυτόματη φόρτωση ενσωματωμένων εικόνων και απομακρυσμένου περιεχομένου είναι απενεργοποιημένη. Αυτά μπορούν να αλλάξουν στις ρυθμίσεις.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Ορισμένες εικόνες απέτυχαν να φορτωθούν με προστασία ιχνηλάτη.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Φόρτωση εικόνων</string>
   <string name="message_phishing_banner_text">Αυτό το μήνυμα επισημάνθηκε ως ύποπτο, είτε από το σύστημά μας είτε από εσάς. Αν πιστεύετε ότι είναι ασφαλές, χαρακτηρίστε το ως γνήσιο.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Σήμανση ως αποδεκτό</string>
   <string name="message_spam_banner_text">Αυτό το μήνυμα σημειώθηκε ως Ενοχλητικό, είτε από το σύστημά μας είτε από εσάς.</string>

@@ -39,7 +39,7 @@
   <string name="mailbox_message_sending_offline">Çevrim dışı: İleti gönderilmek üzere sıraya alındı</string>
   <string name="mailbox_message_sending_success">İleti gönderildi</string>
   <string name="mailbox_message_sending_error">İleti gönderilirken sorun çıktı</string>
-  <string name="mailbox_message_sending_error_action">Taslaklar kutusuna git</string>
+  <string name="mailbox_message_sending_error_action">Taslağa git</string>
   <string name="notification_switched_account">%s hesabına geçildi</string>
   <string name="label_saved">Etiket kaydedldi</string>
   <string name="label_deleted">Etiket silindi</string>
@@ -49,7 +49,7 @@
   <string name="mailbox_message_scheduling_offline">Çevrim dışı: İleti zamanlanmak üzere sıraya alındı</string>
   <string name="mailbox_message_scheduled_for_sending_success">Bu ileti %1$s zamanında gönderilecek</string>
   <string name="launcher_alert_duplicate_account_description">Kullanıcı zaten oturum açmış</string>
-  <string name="home_event_loop_error_snackbar">Postalarınızı senkronize edemedik. Oturumu kapatıp tekrar açmayı deneyin. Bu işe yaramazsa, lütfen bir hata raporu gönderin.</string>
+  <string name="home_event_loop_error_snackbar">E-postalarınız eşitlenemedi. Oturumu kapatıp yeniden açmayı deneyin. Bu işe yaramazsa, lütfen bir hata bildiriminde bulunun.</string>
   <string name="settings_change_icon_title">Uygulama simgesi</string>
   <string name="settings_change_icon_description">Proton Mail uygulamasını farklı bir simge ile gizleyin. Bildirimlerde hala varsayılan Proton Mail adı ve simgesi görüntülenir.</string>
   <string name="settings_change_icon_confirmation_title">Uygulama simgesi değiştirilsin mi?</string>

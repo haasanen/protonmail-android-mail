@@ -50,7 +50,7 @@
   <string name="upselling_schedule_send_plus_description_override">Personalitzeu quan s\'enviarà un correu electrònic. Gaudiu això i més amb el Mail Plus.</string>
   <string name="upselling_schedule_send_plus_title">Planifiqueu ara, envieu més tard</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Ajorneu-ho — i feu que s\'entregui més tard. Trobareu això i més a Mail Plus.</string>
+  <string name="upselling_snooze_plus_description_override">Ajorneu-lo i entregueu-lo més tard. Gaudiu d\'això i més amb el Mail Plus.</string>
   <string name="upselling_snooze_plus_title">És un mal moment per aquest correu electrònic?</string>
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Milloreu de pla per a una flexibilitat total</string>

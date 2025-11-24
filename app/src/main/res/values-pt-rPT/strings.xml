@@ -39,7 +39,7 @@
   <string name="mailbox_message_sending_offline">Sem ligação: a mensagem está na lista para ser enviada.</string>
   <string name="mailbox_message_sending_success">Mensagem enviada</string>
   <string name="mailbox_message_sending_error">Erro no envio da mensagem</string>
-  <string name="mailbox_message_sending_error_action">Ir para Rascunhos</string>
+  <string name="mailbox_message_sending_error_action">Go to Draft</string>
   <string name="notification_switched_account">Mudou para a conta %s</string>
   <string name="label_saved">Etiqueta guardada</string>
   <string name="label_deleted">Etiqueta eliminada</string>

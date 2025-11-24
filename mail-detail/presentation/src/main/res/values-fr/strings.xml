@@ -74,6 +74,8 @@
   <string name="message_body_embedded_images_banner_text">Le chargement automatique des images intégrées est désactivé. Vous pouvez modifier cette option dans les paramètres.</string>
   <string name="message_body_remote_content_banner_text">Le chargement automatique du contenu distant est désactivé. Vous pouvez modifier cette option dans les paramètres.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Le chargement automatique des images intégrées et du contenu distant est désactivé. Vous pouvez modifier cette option dans les paramètres.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Certaines images n\'ont pas pu être chargées avec la protection contre le suivi.</string>
+  <string name="message_body_images_failed_to_load_banner_button">Charger les images</string>
   <string name="message_phishing_banner_text">Ce message a été signalé comme suspect, soit par notre système, soit par vous. Si vous estimez qu\'il est sûr, marquez-le comme légitime.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Marquer comme légitime</string>
   <string name="message_spam_banner_text">Ce message a été signalé comme indésirable soit par notre système, soit par vous.</string>

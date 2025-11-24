@@ -60,7 +60,7 @@
   <string name="composer_too_many_attachments_error">Maximum aantal bijlage (100) overschreden.</string>
   <string name="composer_delete_attachment_error">Er is een onverwachte fout opgetreden tijdens het verwijderen van een bijlage.</string>
   <string name="composer_unexpected_attachments_error">Er is een onverwachte fout opgetreden met betrekking tot bijlagen.</string>
-  <string name="composer_storage_quota_exceeded_error">Uw opslag is vol. Maak alstublieft ruimte vrij of upgrade om meer toe te voegen.</string>
+  <string name="composer_storage_quota_exceeded_error">Uw opslag is vol. Maak ruimte vrij of upgrade om meer toe te voegen.</string>
   <string name="composer_attach_capture_from_camera_error">Het vastleggen van een bijlage met de camera is momenteel niet mogelijk.</string>
   <string name="composer_warning_local_data_shown">Het laden van de laatste versie van dit concept is mislukt. Wijzigingen zal het inhoud overschrijven.</string>
   <string name="composer_button_add_password">Wachtwoord toevoegen</string>
@@ -68,7 +68,7 @@
   <string name="composer_button_set_expiration">Stel vervaltijd in</string>
   <string name="composer_expiration_time_bottom_sheet_title">Vervaldatum bericht</string>
   <string name="composer_expiration_time_bottom_sheet_done">Instellen</string>
-  <string name="composer_bottom_bar_expiration_time_none">Never expires</string>
+  <string name="composer_bottom_bar_expiration_time_none">Vervalt nooit</string>
   <string name="composer_bottom_bar_expiration_time_one_hour">Na 1 uur</string>
   <string name="composer_bottom_bar_expiration_time_one_day">Na 1 dag</string>
   <string name="composer_bottom_bar_expiration_time_three_days">Na 3 dagen</string>
@@ -76,11 +76,11 @@
   <string name="composer_bottom_bar_expiration_time_custom">Op een specifieke datum</string>
   <string name="composer_error_setting_expiration_time">Vervaltijd instellen mislukt</string>
   <!-- Send expiring message to external recipients dialog -->
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Add Password to Use Expiration</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_title">Wachtwoord toevoegen om vervaltijd te gebruiken</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_cancel">Annuleren</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Toch verzenden</string>
-  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Add password protection</string>
-  <string name="composer_send_expiring_message_to_external_may_fail">We could not confirm all recipients use Proton Mail. Only Proton addresses support message expiration. In this case, we suggest adding a password instead.</string>
+  <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Wachtwoordbeveiliging toevoegen</string>
+  <string name="composer_send_expiring_message_to_external_may_fail">We konden niet bevestigen dat alle ontvangers Proton Mail gebruiken. Alleen Proton-adressen ondersteunen het vervallen van berichten. In dit geval raden we aan om in plaats daarvan een wachtwoord toe te voegen.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
   <string name="composer_send_expiring_message_to_external_will_fail_for_all">Geen van de ontvangers ondersteunt standaard een verloopdatum. Voeg een wachtwoord toe om een verloopdatum in te schakelen voor niet-Proton Mail-ontvangers.</string>
   <!-- Sender changed dialog -->
@@ -152,24 +152,24 @@
   <string name="composer_external_encryption_unexpected_error">Onverwachte fout %s. Probeer opnieuw.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Het geselecteerde adres kan niet worden gebruikt om te verzenden. Uw bericht wordt verzonden vanaf uw standaard adres.</string>
   <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder. To expire messages for non-Proton users, add a password.</string>
-  <string name="expiration_time_set_time_and_date">Set time and date</string>
-  <string name="composer_expiration_set_expiration">Set expiration</string>
-  <string name="composer_expiration_pick_time_title">Set time</string>
-  <string name="composer_expiration_time_custom_time_on">On %1$s</string>
+  <string name="expiration_time_set_time_and_date">Kies tijd en datum</string>
+  <string name="composer_expiration_set_expiration">Stel vervaltijd</string>
+  <string name="composer_expiration_pick_time_title">Tijd instellen</string>
+  <string name="composer_expiration_time_custom_time_on">Op %1$s</string>
   <string name="composer_error_send_draft_generic">Er deed zich een onverwachte fout voor bij het verzenden van dit bericht. Probeer het opnieuw.</string>
   <string name="composer_error_send_draft_invalid_sender">Uitgeschakeld of ongeldig e-mailadres. Controleer of het adres geldig en actief is.</string>
-  <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
-  <string name="composer_error_send_draft_already_sent">Message was already sent</string>
-  <string name="composer_error_send_draft_message_does_not_exist">Draft not found. You may have already sent or discarded it.</string>
-  <string name="composer_error_send_draft_message_too_large">Message is too large to send. Please reduce the size of your attachments.</string>
-  <string name="composer_error_send_draft_attachments_error">Attachment is missing. Please upload again.</string>
-  <string name="composer_error_send_draft_attachments_conversion_error">Kan de bijlage niet converteren. Gelieve opnieuw te uploaden.</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Kon extern versleutelingswachtwoord niet ontsleutelen.</string>
+  <string name="composer_error_send_draft_already_sent">Bericht is al verzonden</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Bericht niet gevonden. Mogelijk hebt u het verzonden of weggegooid.</string>
+  <string name="composer_error_send_draft_message_too_large">Bericht is te groot om te verzenden. Verklein de grootte van uw bijlagen.</string>
+  <string name="composer_error_send_draft_attachments_error">Bijlage ontbreekt. Upload opnieuw.</string>
+  <string name="composer_error_send_draft_attachments_conversion_error">Kan de bijlage niet converteren. Upload opnieuw.</string>
   <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
-  <string name="composer_error_send_draft_schedule_send_error">Scheduled send time is in the past. Go to Drafts to send or reschedule it.</string>
-  <string name="composer_error_send_draft_expiration_time_too_soon">Message expiration time is too soon.</string>
-  <string name="composer_error_send_draft_package_error">Problem sending message. Please try again.</string>
-  <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
-  <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
-  <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Geplande verzendtijd is in het verleden. Ga naar Concepten om het te verzenden of opnieuw in te plannen.</string>
+  <string name="composer_error_send_draft_expiration_time_too_soon">Vervaltijd van bericht is te kort.</string>
+  <string name="composer_error_send_draft_package_error">Probleem met het verzenden van het bericht. Probeer het opnieuw.</string>
+  <string name="composer_error_send_draft_attachment_too_large">Kan concept niet opslaan - Bijlagen overschrijden de maximale grootte</string>
+  <string name="composer_error_send_draft_too_many_attachments">Kan concept niet opslaan - Bijlagelimiet bereikt</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Kan concept niet opslaan - Bijlagelimiet bereikt.</string>
   <string name="composer_expiration_time_learn_more">Meer informatie</string>
 </resources>

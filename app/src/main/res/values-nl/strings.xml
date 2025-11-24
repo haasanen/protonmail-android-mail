@@ -39,7 +39,7 @@
   <string name="mailbox_message_sending_offline">Offline: bericht staat in de wachtrij voor verzending</string>
   <string name="mailbox_message_sending_success">Bericht verzonden</string>
   <string name="mailbox_message_sending_error">Fout bij verzenden bericht</string>
-  <string name="mailbox_message_sending_error_action">Ga naar Concepten</string>
+  <string name="mailbox_message_sending_error_action">Ga naar Drive</string>
   <string name="notification_switched_account">Overgeschakeld naar account %s</string>
   <string name="label_saved">Label opgeslagen</string>
   <string name="label_deleted">Label verwijderd</string>
@@ -49,13 +49,13 @@
   <string name="mailbox_message_scheduling_offline">Offline: bericht staat in de wachtrij voor planning</string>
   <string name="mailbox_message_scheduled_for_sending_success">Dit bericht zal worden verzonden op %1$s om</string>
   <string name="launcher_alert_duplicate_account_description">De gebruiker is al ingelogd.</string>
-  <string name="home_event_loop_error_snackbar">We konden uw e-mail niet synchroniseren. Probeer uit te loggen en opnieuw in te loggen. Als dat niet werkt, dien dan alstublieft een bugrapport in.</string>
+  <string name="home_event_loop_error_snackbar">We konden uw e-mail niet synchroniseren. Probeer uit te loggen en opnieuw in te loggen. Als dat niet werkt, dien dan een bugrapport in.</string>
   <string name="settings_change_icon_title">App-icoon</string>
   <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
   <string name="settings_change_icon_confirmation_title">App-icoon wijzigen?</string>
   <string name="settings_change_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
-  <string name="settings_change_icon_action_cancel">Cancel</string>
-  <string name="settings_change_icon_change_icon">Change icon</string>
+  <string name="settings_change_icon_action_cancel">Annuleren</string>
+  <string name="settings_change_icon_change_icon">Wijzig icoon</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Discreet app icon</string>
+  <string name="settings_change_icon_header_discreet">Discreet app-icoon</string>
 </resources>

@@ -76,12 +76,12 @@
   <string name="contact_actions_block_contact_dialog_text">Els correus electrònics de <xliff:g id="email">%1$s</xliff:g> ja no es lliuraran i s\'eliminaran permanentment. Podeu gestionar les adreces de correu electrònic blocades a les preferències.</string>
   <string name="contact_actions_block_contact_dialog_button_block">Bloqueja</string>
   <string name="contact_actions_block_contact_dialog_button_cancel">Cancel·la</string>
-  <string name="contact_actions_unblock_contact">Desbloquegeu aquest contacte</string>
-  <string name="contact_actions_unblock_contact_description">Desbloquegeu aquest contacte</string>
+  <string name="contact_actions_unblock_contact">Desbloqueja aquest contacte</string>
+  <string name="contact_actions_unblock_contact_description">Desbloqueja aquest contacte</string>
   <string name="contact_actions_block_address">Bloca aquesta adreça</string>
   <string name="contact_actions_block_address_description">Bloca aquesta adreça</string>
-  <string name="contact_actions_unblock_address">Desbloquegeu aquesta adreça</string>
-  <string name="contact_actions_unblock_address_description">Desbloquegeu aquesta adreça</string>
+  <string name="contact_actions_unblock_address">Desbloqueja aquesta adreça</string>
+  <string name="contact_actions_unblock_address_description">Desbloqueja aquesta adreça</string>
   <string name="contact_actions_view_contact_details">Mostra el detalls del contacte</string>
   <string name="contact_actions_view_contact_details_description">Visualitza els detalls del contacte</string>
 </resources>
