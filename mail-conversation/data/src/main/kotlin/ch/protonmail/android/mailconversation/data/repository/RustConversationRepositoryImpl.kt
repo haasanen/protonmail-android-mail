@@ -35,6 +35,7 @@ import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithMessages
+import ch.protonmail.android.mailconversation.domain.model.ConversationScrollerFetchNewStatus
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -238,4 +239,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId,
         conversationIds.map { it.toLocalConversationId() }
     )
+
+    override fun observeScrollerFetchNewStatus(): Flow<ConversationScrollerFetchNewStatus> =
+        rustConversationDataSource.observeScrollerFetchNewStatus()
 }

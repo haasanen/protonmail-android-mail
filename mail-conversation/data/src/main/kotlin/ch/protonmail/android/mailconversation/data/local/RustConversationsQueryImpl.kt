@@ -44,6 +44,9 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -51,6 +54,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ConversationScrollerListUpdate
 import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
+import uniffi.proton_mail_uniffi.ConversationScrollerStatusUpdate
 import uniffi.proton_mail_uniffi.ConversationScrollerUpdate
 import javax.inject.Inject
 
@@ -63,6 +67,8 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private var paginatorState: PaginatorState? = null
     private val paginatorMutex = Mutex()
+
+    private val scrollerFetchNewStatusFlow = MutableStateFlow<ConversationScrollerStatusUpdate?>(null)
 
     override suspend fun getConversations(
         userId: UserId,
@@ -177,7 +183,8 @@ class RustConversationsQueryImpl @Inject constructor(
                     paginatorMutex.withLock {
                         val scrollerUpdate = when (update) {
                             is ConversationScrollerUpdate.Status -> {
-                                Timber.d("rust-conversation-query: Ignoring status update")
+                                Timber.d("rust-conversation-query: Scroller fetch new status update: ${update.v1}")
+                                scrollerFetchNewStatusFlow.value = update.v1
                                 return@withLock
                             }
 
@@ -231,6 +238,8 @@ class RustConversationsQueryImpl @Inject constructor(
     override suspend fun getCursor(conversationId: LocalConversationId) =
         paginatorState?.paginatorWrapper?.getCursor(conversationId)
 
+    override fun observeScrollerFetchNewStatus(): Flow<ConversationScrollerStatusUpdate> =
+        scrollerFetchNewStatusFlow.filterNotNull()
 
     private fun destroy() {
         if (paginatorState == null) {

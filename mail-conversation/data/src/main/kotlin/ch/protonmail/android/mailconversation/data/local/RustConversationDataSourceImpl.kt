@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.ConversationCursorError.InvalidState
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
+import ch.protonmail.android.mailconversation.data.mapper.toConversationScrollerFetchNewStatus
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationBottomSheetActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
@@ -35,6 +36,7 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLi
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
+import ch.protonmail.android.mailconversation.domain.model.ConversationScrollerFetchNewStatus
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.data.model.LocalConversationWithMessages
@@ -46,6 +48,7 @@ import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -351,6 +354,11 @@ class RustConversationDataSourceImpl @Inject constructor(
                     }
                 }
             }
+        }
+
+    override fun observeScrollerFetchNewStatus(): Flow<ConversationScrollerFetchNewStatus> =
+        rustConversationsQuery.observeScrollerFetchNewStatus().map {
+            it.toConversationScrollerFetchNewStatus()
         }
 
     private suspend fun initializeCursor(userId: UserId, firstPage: LocalConversationId) =

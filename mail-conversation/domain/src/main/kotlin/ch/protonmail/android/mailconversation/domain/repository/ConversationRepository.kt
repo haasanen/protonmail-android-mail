@@ -28,6 +28,7 @@ import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithMessages
+import ch.protonmail.android.mailconversation.domain.model.ConversationScrollerFetchNewStatus
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -117,4 +118,7 @@ interface ConversationRepository {
     ): Either<DataError, Unit>
 
     suspend fun deleteConversations(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, Unit>
+
+    fun observeScrollerFetchNewStatus(): Flow<ConversationScrollerFetchNewStatus>
+
 }
