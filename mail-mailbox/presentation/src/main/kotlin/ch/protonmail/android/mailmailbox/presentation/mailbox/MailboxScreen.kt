@@ -149,6 +149,7 @@ import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxEmptyUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchMode
@@ -228,8 +229,15 @@ fun MailboxScreen(
         viewModel.submit(MailboxViewAction.MailboxItemsChanged(mailboxListItems.itemSnapshotList.items.map { it.id }))
     }
 
+    (mailboxState.composerNavigationState as? MailboxComposerNavigationState.Enabled)?.navigateToCompose?.let {
+        ConsumableLaunchedEffect(it) {
+            actions.navigateToComposer()
+        }
+    }
+
+
     val completeActions = actions.copy(
-        navigateToComposer = { actions.navigateToComposer() },
+        navigateToComposer = { viewModel.submit(MailboxViewAction.NavigateToComposer) },
         onDisableUnreadFilter = { viewModel.submit(MailboxViewAction.DisableUnreadFilter) },
         onEnableUnreadFilter = { viewModel.submit(MailboxViewAction.EnableUnreadFilter) },
         onEnableSpamTrashFilter = { viewModel.submit(MailboxViewAction.EnableShowSpamTrashFilter) },

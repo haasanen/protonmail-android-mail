@@ -28,6 +28,9 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState.Enabled
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState.Disabled
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
@@ -62,6 +65,7 @@ class MailboxReducer @Inject constructor(
             clearAllDialogState = currentState.toNewClearAllDialogStateFrom(operation),
             bottomSheetState = currentState.toNewBottomSheetState(operation),
             actionResult = currentState.toNewActionMessageStateFrom(operation),
+            composerNavigationState = currentState.toComposerNavigationState(operation),
             error = currentState.toNewErrorBarState(operation)
         )
 
@@ -190,11 +194,34 @@ class MailboxReducer @Inject constructor(
                 is MailboxEvent.ErrorRetrievingDestinationMailFolders -> R.string.mailbox_action_move_messages_failed
                 is MailboxEvent.ErrorRetrievingFolderColorSettings ->
                     R.string.mailbox_action_failed_retrieving_colors
+
                 is MailboxEvent.ErrorDeleting -> R.string.mailbox_action_delete_failed
+                is MailboxEvent.ErrorComposing -> R.string.mailbox_action_no_sender_addresses
             }
             Effect.of(TextUiModel(textResource))
         } else {
             error
+        }
+    }
+
+    private fun MailboxState.toComposerNavigationState(operation: MailboxOperation): MailboxComposerNavigationState {
+        val affectingOperation = operation as? MailboxOperation.AffectingComposer
+            ?: return this.composerNavigationState
+
+        return when (affectingOperation) {
+            is MailboxEvent.SenderHasValidAddressUpdated -> {
+                if (affectingOperation.isValid) {
+                    Enabled()
+                } else {
+                    Disabled
+                }
+            }
+
+            is MailboxEvent.NavigateToComposer -> {
+                (this.composerNavigationState as? Enabled)
+                    ?.copy(navigateToCompose = Effect.of(Unit))
+                    ?: this.composerNavigationState
+            }
         }
     }
 }

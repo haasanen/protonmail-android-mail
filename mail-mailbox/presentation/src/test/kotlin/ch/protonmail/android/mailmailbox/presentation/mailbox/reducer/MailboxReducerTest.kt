@@ -30,6 +30,7 @@ import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
@@ -217,6 +218,7 @@ internal class MailboxReducerTest(
             deleteDialogState = DeleteDialogState.Hidden,
             clearAllDialogState = DeleteDialogState.Hidden,
             bottomSheetState = null,
+            composerNavigationState = MailboxComposerNavigationState.Enabled(),
             error = Effect.empty()
         )
 

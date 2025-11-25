@@ -32,6 +32,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState.Data.SelectionMode.SelectedMailboxItem
@@ -74,7 +75,8 @@ object MailboxStateSampleData {
         deleteDialogState = DeleteDialogState.Hidden,
         clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
-        error = Effect.empty()
+        error = Effect.empty(),
+        composerNavigationState = MailboxComposerNavigationState.Enabled()
     )
 
     val Inbox = MailboxState(
@@ -112,7 +114,8 @@ object MailboxStateSampleData {
         deleteDialogState = DeleteDialogState.Hidden,
         clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
-        error = Effect.empty()
+        error = Effect.empty(),
+        composerNavigationState = MailboxComposerNavigationState.Enabled()
     )
 
     val AllMail = MailboxState(
@@ -150,7 +153,8 @@ object MailboxStateSampleData {
         deleteDialogState = DeleteDialogState.Hidden,
         clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
-        error = Effect.empty()
+        error = Effect.empty(),
+        composerNavigationState = MailboxComposerNavigationState.Enabled()
     )
 
     val Trash = Inbox.copy(
@@ -200,6 +204,7 @@ object MailboxStateSampleData {
         deleteDialogState = DeleteDialogState.Hidden,
         clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = bottomSheetState,
-        error = error
+        error = error,
+        composerNavigationState = MailboxComposerNavigationState.Enabled()
     )
 }

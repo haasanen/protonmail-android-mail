@@ -56,6 +56,8 @@ internal sealed interface MailboxOperation {
     sealed interface AffectingDeleteDialog
     sealed interface AffectingClearAllDialog
     sealed interface AffectingBottomSheet
+
+    sealed interface AffectingComposer
     sealed interface AffectingErrorBar
 }
 
@@ -81,6 +83,7 @@ internal sealed interface MailboxViewAction : MailboxOperation {
         val itemIds: List<String>
     ) : MailboxViewAction
 
+    object NavigateToComposer : MailboxViewAction
     object EnterSearchMode : MailboxViewAction, AffectingTopAppBar, AffectingMailboxList
     data class SearchQuery(val query: String) : MailboxViewAction, AffectingMailboxList, AffectingTopAppBar
     object SearchResult : MailboxViewAction, AffectingMailboxList
@@ -92,7 +95,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     object Refresh : MailboxViewAction, AffectingMailboxList
     object EnableUnreadFilter : MailboxViewAction, AffectingUnreadFilter
     object DisableUnreadFilter : MailboxViewAction, AffectingUnreadFilter
-
     object EnableShowSpamTrashFilter : MailboxViewAction, AffectingShowSpamTrashFilter
     object DisableShowSpamTrashFilter : MailboxViewAction, AffectingShowSpamTrashFilter
 
@@ -180,6 +182,9 @@ internal sealed interface MailboxViewAction : MailboxOperation {
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
+
+    data class SenderHasValidAddressUpdated(val isValid: Boolean) : MailboxEvent, MailboxOperation.AffectingComposer
+    object NavigateToComposer : MailboxEvent, MailboxOperation.AffectingComposer
     object CouldNotLoadUserSession : MailboxEvent, AffectingMailboxList
     data class LabelAsConfirmed(
         val viewMode: ViewMode,
@@ -334,6 +339,7 @@ internal sealed interface MailboxEvent : MailboxOperation {
         val bottomSheetOperation: BottomSheetOperation
     ) : MailboxEvent, AffectingBottomSheet
 
+    object ErrorComposing : MailboxEvent, AffectingErrorBar
     object ErrorDeleting : MailboxEvent, AffectingErrorBar, AffectingDeleteDialog, AffectingBottomSheet
     object ErrorLabeling : MailboxEvent, AffectingErrorBar
     object ErrorRetrievingCustomMailLabels : MailboxEvent, AffectingErrorBar, AffectingBottomSheet
