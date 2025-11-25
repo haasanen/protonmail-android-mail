@@ -38,6 +38,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -60,9 +61,11 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -81,6 +84,7 @@ import ch.protonmail.android.maillabel.presentation.ui.LabelsList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
+import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -230,7 +234,10 @@ private fun SenderNameRow(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(modifier = Modifier.weight(1f)) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 modifier = Modifier.testTag(MessageDetailHeaderTestTags.SenderName),
                 text = participantUiModel.participantName,
@@ -250,6 +257,7 @@ private fun SenderNameRow(
 private fun ParticipantAddress(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
+    textStyle: TextStyle = ProtonTheme.typography.bodyMediumNorm,
     textColor: Color = ProtonTheme.colors.textWeak,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Visible
@@ -264,7 +272,7 @@ private fun ParticipantAddress(
             modifier = modifier.testTag(MessageDetailHeaderTestTags.ParticipantValue),
             maxLines = maxLines,
             color = if (participantUiModel.shouldShowAddressInRed) ProtonTheme.colors.notificationError else textColor,
-            style = ProtonTheme.typography.bodyMediumWeak,
+            style = textStyle,
             overflow = overflow
         )
     }
@@ -273,10 +281,6 @@ private fun ParticipantAddress(
 @Composable
 private fun Icons(modifier: Modifier = Modifier, uiModel: MessageDetailHeaderUiModel) {
     Row(modifier = modifier) {
-        // Display it when the handling is implemented https://jira.protontech.ch/browse/MAILANDR-214
-        //        if (uiModel.shouldShowTrackerProtectionIcon && !isExpanded) {
-        //            SmallNonClickableIcon(iconId = R.drawable.ic_proton_shield)
-        //        }
         if (uiModel.shouldShowAttachmentIcon) {
             SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = ProtonTheme.colors.iconWeak)
         }
@@ -452,9 +456,14 @@ private fun SenderDetails(
     Row(verticalAlignment = Alignment.Top, modifier = Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier
-                .width(MailDimens.MessageDetailsHeader.DetailsTitleWidth)
-                .padding(end = ProtonDimens.Spacing.Small),
+                .width(DetailsTitleWidth)
+                .padding(end = ProtonDimens.Spacing.Tiny)
+                .thenIf(senderUiModel.shouldShowOfficialBadge) {
+                    Modifier.padding(top = ProtonDimens.Spacing.Tiny)
+                },
             text = stringResource(R.string.message_details_header_from),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             style = ProtonTheme.typography.bodySmallWeak
         )
         Column(
@@ -468,13 +477,14 @@ private fun SenderDetails(
         ) {
             SenderNameRow(
                 participantUiModel = senderUiModel,
-                style = ProtonTheme.typography.bodyMediumNorm,
+                style = ProtonTheme.typography.bodySmallNorm,
                 icons = { }
             )
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
             ParticipantAddress(
                 participantUiModel = senderUiModel,
-                textColor = ProtonTheme.colors.textAccent
+                textColor = ProtonTheme.colors.textAccent,
+                textStyle = ProtonTheme.typography.bodySmall
             )
         }
     }
@@ -517,15 +527,18 @@ private fun RecipientsTitleAndList(
         Row(verticalAlignment = Alignment.Top, modifier = Modifier.fillMaxWidth()) {
             Text(
                 modifier = Modifier
-                    .width(MailDimens.MessageDetailsHeader.DetailsTitleWidth)
-                    .padding(
-                        bottom = ProtonDimens.Spacing.Tiny,
-                        end = ProtonDimens.Spacing.Small
-                    ),
+                    .width(DetailsTitleWidth)
+                    .padding(bottom = ProtonDimens.Spacing.Tiny)
+                    .padding(end = ProtonDimens.Spacing.Tiny),
                 text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 style = ProtonTheme.typography.bodySmallWeak
             )
-            Column(verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
+            ) {
                 recipients.forEach { recipient ->
                     Column(
                         modifier = Modifier.clickable(
@@ -541,7 +554,8 @@ private fun RecipientsTitleAndList(
                         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
                         ParticipantAddress(
                             participantUiModel = recipient,
-                            textColor = ProtonTheme.colors.textAccent
+                            textColor = ProtonTheme.colors.textAccent,
+                            textStyle = ProtonTheme.typography.bodySmall
                         )
                     }
                 }
@@ -585,9 +599,7 @@ private fun ExtendedHeaderRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = Modifier
-                .width(MailDimens.MessageDetailsHeader.DetailsTitleWidth)
-                .padding(end = ProtonDimens.Spacing.Standard),
+            modifier = Modifier.width(DetailsTitleWidth),
             contentAlignment = Alignment.Center
         ) {
             if (iconColor != null) {
@@ -604,7 +616,9 @@ private fun ExtendedHeaderRow(
             }
         }
         Text(
-            modifier = Modifier.testTag(MessageDetailHeaderTestTags.ExtendedHeaderText),
+            modifier = Modifier
+                .wrapContentWidth()
+                .testTag(MessageDetailHeaderTestTags.ExtendedHeaderText),
             text = text,
             style = ProtonTheme.typography.bodySmallWeak
         )

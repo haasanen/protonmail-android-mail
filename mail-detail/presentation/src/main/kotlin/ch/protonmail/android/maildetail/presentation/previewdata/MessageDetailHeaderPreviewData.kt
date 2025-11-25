@@ -33,6 +33,13 @@ import kotlinx.collections.immutable.toImmutableList
 
 object MessageDetailHeaderPreviewData {
 
+    val sender = ParticipantUiModel(
+        participantName = "Sender",
+        participantAddress = "sender@protonmail.com",
+        participantPadlock = R.drawable.ic_proton_lock,
+        shouldShowOfficialBadge = true
+    )
+
     val recipientOne = ParticipantUiModel(
         participantName = "Recipient One",
         participantAddress = "recipient1@protonmail.com",
@@ -125,6 +132,10 @@ class MessageDetailHeaderPreviewProvider : PreviewParameterProvider<MessageDetai
                 ccRecipients = listOf<ParticipantUiModel>().toImmutableList(),
                 bccRecipients = listOf<ParticipantUiModel>().toImmutableList()
             )
+        ),
+        MessageDetailHeaderPreview(
+            initiallyExpanded = true,
+            uiModel = MessageDetailHeaderPreviewData.WithoutLabels.copy(sender = MessageDetailHeaderPreviewData.sender)
         ),
         MessageDetailHeaderPreview(
             initiallyExpanded = true,
