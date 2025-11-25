@@ -51,7 +51,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
@@ -77,11 +76,12 @@ import ch.protonmail.android.mailcommon.presentation.ui.TimePickerUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.replaceText
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailcomposer.presentation.model.editor.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
+import ch.protonmail.android.mailcomposer.presentation.model.editor.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.isExpirationTimeSet
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
+import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.Actions.Companion.sendMaxDaysInFuture
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.ui.util.EdgeGuardNestedScrollConnection
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
@@ -251,7 +251,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 is BottomSheetType.ScheduleSendCustomTimePicker -> TimePickerBottomSheetContent(
                     uiModel = TimePickerUiModel(
                         pickerTitle = R.string.composer_schedule_send_content_description,
-                        sendButton = R.string.send_button_title
+                        sendButton = R.string.send_button_title,
+                        maximumDaysFromNow = sendMaxDaysInFuture
                     ),
                     onClose = { dismissBottomSheet() },
                     onTimeConfirmed = {
@@ -303,13 +304,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 ) { ProtonCenteredProgress() }
             } else {
 
-                val localDensity = LocalDensity.current
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
                 var columnBounds by remember { mutableStateOf(Rect.Zero) }
-                var visibleHeaderHeightPx by remember { mutableStateOf(0f) }
-                var visibleWebViewHeightPx by remember { mutableStateOf(0f) }
-                var headerHeightPx by remember { mutableStateOf(0f) }
+                var visibleHeaderHeightPx by remember { mutableFloatStateOf(0f) }
+                var visibleWebViewHeightPx by remember { mutableFloatStateOf(0f) }
+                var headerHeightPx by remember { mutableFloatStateOf(0f) }
                 var viewportCoordinateAlignmentEnabled by remember { mutableStateOf(true) }
 
                 val scrollManager = remember {
@@ -349,7 +349,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 if (mainState.loadingType == ComposerState.LoadingType.Save) {
                     LoadingIndicator(preventBackNavigation = true)
                 }
-
 
 
                 val edgeGuard = remember(scrollState) {
@@ -693,6 +692,7 @@ object ComposerScreen {
 
         companion object {
 
+            const val sendMaxDaysInFuture = 89
             val Empty = Actions(
 
                 onCloseComposerClick = {},

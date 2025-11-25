@@ -92,6 +92,7 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinMonth
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,23 +109,34 @@ fun TimePickerBottomSheetContent(
     val timePickerState = rememberTimePickerState(initialHour = INITIAL_TIME_HOUR, initialMinute = INITIAL_TIME_MINUTE)
     val datePickerState = rememberDatePickerState(
         initialSelectedDate = LocalDate.now(),
-        selectableDates = object : SelectableDates {
+        selectableDates =
+        object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                val timeZone = TimeZone.currentSystemDefault()
                 val instant = Instant.fromEpochMilliseconds(utcTimeMillis)
-
-                val today = Clock.System.now().toLocalDateTime(timeZone).date
-                val eightyNineDaysFromNow = today.plus(89, DateTimeUnit.DAY)
+                val timeZone = TimeZone.currentSystemDefault()
                 val dateOfTimestamp = instant.toLocalDateTime(timeZone).date
-                return dateOfTimestamp in today..eightyNineDaysFromNow
+                val today = Clock.System.now().toLocalDateTime(timeZone).date
+                if (uiModel.maximumDaysFromNow != null) {
+                    val eightyNineDaysFromNow = today.plus(uiModel.maximumDaysFromNow, DateTimeUnit.DAY)
+                    return dateOfTimestamp in today..eightyNineDaysFromNow
+                } else {
+                    return dateOfTimestamp >= today
+                }
             }
 
             override fun isSelectableYear(year: Int): Boolean {
-                val timeZone = TimeZone.currentSystemDefault()
-                return year == Clock.System.now().toLocalDateTime(timeZone).year
+                if (uiModel.maximumDaysFromNow == null) {
+                    return true
+                }
+                val now: Instant = Clock.System.now()
+                val timeZone: TimeZone = TimeZone.currentSystemDefault()
+                val maximumInstant: Instant = now + uiModel.maximumDaysFromNow.days
+                val maximumYear: Int = maximumInstant.toLocalDateTime(timeZone).year
+                return year <= maximumYear
             }
         }
     )
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -415,7 +427,8 @@ private fun TopBar(
 
 data class TimePickerUiModel(
     @StringRes val pickerTitle: Int = R.string.time_picker_enter_time,
-    @StringRes val sendButton: Int = R.string.time_picker_send_dialog_ok
+    @StringRes val sendButton: Int = R.string.time_picker_send_dialog_ok,
+    val maximumDaysFromNow: Int? = null
 )
 
 private const val INITIAL_TIME_HOUR = 8
