@@ -228,6 +228,7 @@ dependencies {
     implementation(project(":mail-settings"))
     implementation(project(":mail-pin-lock"))
     implementation(project(":mail-onboarding"))
+    implementation(project(":mail-crash-record"))
     implementation(project(":mail-sidebar"))
     implementation(project(":mail-session"))
     implementation(project(":mail-legacy-migration"))

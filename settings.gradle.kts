@@ -157,6 +157,10 @@ include(":mail-legacy-migration:data")
 include(":mail-legacy-migration:domain")
 include(":mail-legacy-migration:presentation")
 
+include(":mail-crash-record:dagger")
+include(":mail-crash-record:data")
+include(":mail-crash-record:domain")
+
 include(":uicomponents")
 include(":design-system")
 include(":presentation-compose")
