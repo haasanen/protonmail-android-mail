@@ -21,7 +21,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -48,4 +47,7 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
+    implementation(project(":mail-common:domain"))
+
+    testImplementation(libs.bundles.test)
 }

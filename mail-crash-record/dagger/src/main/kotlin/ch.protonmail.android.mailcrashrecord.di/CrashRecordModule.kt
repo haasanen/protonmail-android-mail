@@ -18,10 +18,40 @@
 
 package ch.protonmail.android.mailcrashrecord.di
 
+import android.content.Context
+import ch.protonmail.android.mailcrashrecord.data.CrashRecordDataStoreProvider
+import ch.protonmail.android.mailcrashrecord.data.local.CrashRecordLocalDataSource
+import ch.protonmail.android.mailcrashrecord.data.local.CrashRecordLocalDataSourceImpl
+import ch.protonmail.android.mailcrashrecord.data.local.CrashRecordRepositoryImpl
+import ch.protonmail.android.mailcrashrecord.domain.repository.CrashRecordRepository
+import dagger.Binds
 import dagger.Module
+import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@Module
+@Module(includes = [CrashRecordModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
-object CrashRecordModule
+object CrashRecordModule {
+
+    @Provides
+    @Singleton
+    fun provideCrashRecordDataStoreProvider(@ApplicationContext context: Context): CrashRecordDataStoreProvider =
+        CrashRecordDataStoreProvider(context)
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    internal interface BindsModule {
+
+        @Binds
+        @Reusable
+        fun bindsCrashRecordsLocalDataSource(impl: CrashRecordLocalDataSourceImpl): CrashRecordLocalDataSource
+
+        @Binds
+        @Reusable
+        fun bindsCrashRecordsRepository(impl: CrashRecordRepositoryImpl): CrashRecordRepository
+    }
+}

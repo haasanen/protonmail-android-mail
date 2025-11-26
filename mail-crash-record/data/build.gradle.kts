@@ -21,8 +21,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
@@ -50,8 +48,8 @@ android {
 dependencies {
     implementation(libs.bundles.module.data)
     implementation(project(":mail-crash-record:domain"))
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-common:data"))
 
-
-    kapt(libs.bundles.app.annotationProcessors)
-    implementation(libs.dagger.hilt.android)
+    testImplementation(libs.bundles.test)
 }
