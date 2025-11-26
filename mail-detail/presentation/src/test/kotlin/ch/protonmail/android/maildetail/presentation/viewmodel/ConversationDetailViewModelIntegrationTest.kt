@@ -175,7 +175,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActio
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageBodyWithClickableLinks
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
@@ -273,8 +272,6 @@ internal class ConversationDetailViewModelIntegrationTest {
                 ).right()
             )
     }
-
-    private val observeMessage = mockk<ObserveMessage>()
 
     private val getDetailBottomBarActions = mockk<GetDetailBottomBarActions> {
         coEvery {
@@ -1344,9 +1341,6 @@ internal class ConversationDetailViewModelIntegrationTest {
             val messageId = MessageId("messageId")
             val labelId = SystemLabelId.Archive.labelId
             coEvery {
-                observeMessage(userId = userId, messageId = messageId)
-            } returns flowOf(MessageSample.AugWeatherForecast.right())
-            coEvery {
                 getMessageAvailableActions(userId, labelId, messageId, themeOptions)
             } returns AvailableActionsTestData.replyActionsOnly.right()
 
@@ -1574,9 +1568,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         val messageId = MessageSample.Invoice.messageId
         coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
         coEvery {
-            observeMessage(userId, messageId)
-        } returns flowOf(MessageSample.Invoice.right())
-        coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
@@ -1644,9 +1635,6 @@ internal class ConversationDetailViewModelIntegrationTest {
             ).right()
         )
         coEvery {
-            observeMessage(userId, messageId)
-        } returns flowOf(MessageSample.Invoice.right())
-        coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
@@ -1699,9 +1687,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         )
         val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
-        coEvery {
-            observeMessage(userId, messageId)
-        } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Trash) } returns Unit.right()
         coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
@@ -1756,9 +1741,6 @@ internal class ConversationDetailViewModelIntegrationTest {
             MessageSample.AugWeatherForecast.messageId
         )
         coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
-        coEvery {
-            observeMessage(userId, messageId)
-        } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Archive) } returns Unit.right()
         coEvery {
             getMessageAvailableActions(userId, filterByLocationLabelId, messageId, themeOptions)
@@ -1823,9 +1805,6 @@ internal class ConversationDetailViewModelIntegrationTest {
                 any()
             )
         } returns flowOf(messages.right())
-        coEvery {
-            observeMessage(userId, messageId)
-        } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Spam) } returns Unit.right()
         coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
@@ -1891,9 +1870,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         )
         coEvery { observeConversationMessages(userId, any(), labelId, any(), any()) } returns flowOf(messages.right())
         coEvery {
-            observeMessage(userId, messageId)
-        } returns flowOf(MessageSample.Invoice.right())
-        coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
@@ -1948,7 +1924,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         )
         val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any(), labelId, any(), any()) } returns flowOf(messages.right())
-        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -1985,7 +1960,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         )
         val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any(), labelId, any(), any()) } returns flowOf(messages.right())
-        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
         coEvery { markMessageAsLegitimate(userId, messageId) } returns Unit.right()
 
         // When
@@ -2022,7 +1996,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         )
         val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any(), labelId, any(), any()) } returns flowOf(messages.right())
-        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
         coEvery { unblockSender(userId, email) } returns Unit.right()
 
         // When
@@ -2057,7 +2030,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         )
         val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any(), labelId, any(), any()) } returns flowOf(messages.right())
-        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.AugWeatherForecast.right())
         coEvery { reportPhishingMessage(userId, messageId) } returns Unit.right()
 
         // When
@@ -2096,7 +2068,6 @@ internal class ConversationDetailViewModelIntegrationTest {
                 messages = messages
             ).right()
         )
-        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.AugWeatherForecast.right())
         coEvery { reportPhishingMessage(userId, messageId) } returns Unit.right()
 
         // When
@@ -2351,7 +2322,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         )
         val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any(), labelId, any(), any()) } returns flowOf(messages.right())
-        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
         coEvery { unsubscribeFromNewsletter(userId, messageId) } returns Unit.right()
 
         // When
