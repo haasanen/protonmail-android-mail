@@ -19,21 +19,18 @@
 package ch.protonmail.android.mailconversation.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class ObserveAllConversationBottomBarActions @Inject constructor(
+class GetAllConversationBottomBarActions @Inject constructor(
     private val actionRepository: ConversationActionRepository
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
-        conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint,
-        showAllMessages: Boolean
-    ) = actionRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAllMessages)
+        conversationId: ConversationId
+    ) = actionRepository.getAllBottomBarActions(userId, labelId, conversationId)
 }

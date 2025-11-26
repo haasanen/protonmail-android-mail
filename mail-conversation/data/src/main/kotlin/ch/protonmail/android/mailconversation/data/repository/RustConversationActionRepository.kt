@@ -19,15 +19,12 @@
 package ch.protonmail.android.mailconversation.data.repository
 
 import arrow.core.Either
-import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toAvailableActions
-import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
-import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
@@ -37,11 +34,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toAllBottomBarActions
 import ch.protonmail.android.mailmessage.data.mapper.toLabelAsActions
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMailLabels
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class RustConversationActionRepository @Inject constructor(
@@ -104,35 +97,17 @@ class RustConversationActionRepository @Inject constructor(
         return allActions.map { it.toAllBottomBarActions() }
     }
 
-    override suspend fun observeAllBottomBarActions(
+    override suspend fun getAllBottomBarActions(
         userId: UserId,
         labelId: LabelId,
-        conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint,
-        showAllMessages: Boolean
-    ): Flow<Either<DataError, AllBottomBarActions>> {
-        return rustConversationDataSource.observeConversationWithMessages(
-            userId = userId,
-            conversationId = conversationId.toLocalConversationId(),
-            labelId = labelId.toLocalLabelId(),
-            entryPoint = entryPoint,
-            showAllMessages = showAllMessages
-        ).mapLatest { conversationResult ->
-            conversationResult.fold(
-                ifLeft = { error ->
-                    Timber.w("Failed to observe bottomBar actions due to conversation error $error")
-                    (error as? ConversationError.Other)?.error?.left() ?: DataError.Local.IllegalStateError.left()
-                },
-                ifRight = { _ ->
-                    val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(
-                        userId,
-                        labelId.toLocalLabelId(),
-                        conversationId.toLocalConversationId()
-                    )
+        conversationId: ConversationId
+    ): Either<DataError, AllBottomBarActions> {
+        val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(
+            userId,
+            labelId.toLocalLabelId(),
+            conversationId.toLocalConversationId()
+        )
 
-                    allActions.map { it.toAllBottomBarActions() }
-                }
-            )
-        }.distinctUntilChanged()
+        return allActions.map { it.toAllBottomBarActions() }
     }
 }

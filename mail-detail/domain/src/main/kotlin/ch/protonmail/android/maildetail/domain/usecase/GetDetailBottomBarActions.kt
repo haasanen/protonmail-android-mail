@@ -22,51 +22,35 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
-import ch.protonmail.android.mailconversation.domain.usecase.ObserveAllConversationBottomBarActions
+import ch.protonmail.android.mailconversation.domain.usecase.GetAllConversationBottomBarActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveAllMessageBottomBarActions
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageDetailBottomBarActions
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class ObserveDetailBottomBarActions @Inject constructor(
-    private val observeAllConversationBottomBarActions: ObserveAllConversationBottomBarActions,
-    private val observeAllMessageBottomBarActions: ObserveAllMessageBottomBarActions
+class GetDetailBottomBarActions @Inject constructor(
+    private val getAllConversationBottomBarActions: GetAllConversationBottomBarActions,
+    private val getMessageDetailBottomBarActions: GetMessageDetailBottomBarActions
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
-        conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint,
-        showAllMessages: Boolean
-    ): Flow<Either<DataError, List<Action>>> = observeAllConversationBottomBarActions(
+        conversationId: ConversationId
+    ): Either<DataError, List<Action>> = getAllConversationBottomBarActions(
         userId,
         labelId,
-        conversationId,
-        entryPoint,
-        showAllMessages
-    )
-        .map { eitherResult ->
-            eitherResult.map { allBottomBarActions ->
-                allBottomBarActions.visibleActions
-            }
-        }
+        conversationId
+    ).map { actions -> actions.visibleActions }
+
 
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
         messageId: MessageId,
         themeOptions: MessageThemeOptions
-    ): Flow<Either<DataError, List<Action>>> =
-        observeAllMessageBottomBarActions(userId, labelId, messageId, themeOptions)
-            .map { eitherResult ->
-                eitherResult.map { allBottomBarActions ->
-                    allBottomBarActions.visibleActions
-                }
-            }
+    ): Either<DataError, List<Action>> = getMessageDetailBottomBarActions(userId, labelId, messageId, themeOptions)
+        .map { actions -> actions.visibleActions }
 }

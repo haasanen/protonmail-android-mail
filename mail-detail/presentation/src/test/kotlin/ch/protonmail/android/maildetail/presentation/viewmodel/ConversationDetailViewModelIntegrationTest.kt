@@ -77,6 +77,7 @@ import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentVal
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
+import ch.protonmail.android.maildetail.domain.usecase.GetDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsMessageSenderBlocked
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -89,7 +90,6 @@ import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
-import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
 import ch.protonmail.android.maildetail.domain.usecase.UnsubscribeFromNewsletter
@@ -276,16 +276,14 @@ internal class ConversationDetailViewModelIntegrationTest {
 
     private val observeMessage = mockk<ObserveMessage>()
 
-    private val observeDetailBottomBarActions = mockk<ObserveDetailBottomBarActions> {
+    private val getDetailBottomBarActions = mockk<GetDetailBottomBarActions> {
         coEvery {
             this@mockk(
                 UserIdSample.Primary,
                 filterByLocationLabelId,
-                ConversationIdSample.WeatherForecast,
-                conversationEntryPoint,
-                showAllMessages
+                ConversationIdSample.WeatherForecast
             )
-        } returns flowOf(listOf(Action.Archive, Action.MarkUnread).right())
+        } returns listOf(Action.Archive, Action.MarkUnread).right()
     }
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
@@ -2385,7 +2383,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         moveConversation: MoveConversation = move,
         delete: DeleteConversations = deleteConversations,
         report: ReportPhishingMessage = reportPhishingMessage,
-        observeDetailActions: ObserveDetailBottomBarActions = observeDetailBottomBarActions,
+        observeDetailActions: GetDetailBottomBarActions = getDetailBottomBarActions,
         observeConversationWithMessages: ObserveConversationWithMessages = observeConversationWithMessagesUC,
         detailReducer: ConversationDetailReducer = reducer,
         starMsg: StarMessages = starMessages,
@@ -2413,7 +2411,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         moveConversation = moveConversation,
         deleteConversations = delete,
         observeConversationWithMessages = observeConversationWithMessages,
-        observeDetailActions = observeDetailActions,
+        getDetailBottomBarActions = observeDetailActions,
         reducer = detailReducer,
         starConversations = star,
         unStarConversations = unStar,

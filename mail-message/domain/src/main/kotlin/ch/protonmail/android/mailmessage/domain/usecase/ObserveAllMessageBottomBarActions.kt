@@ -19,21 +19,17 @@
 package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
-import arrow.core.flatMap
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class ObserveAllMessageBottomBarActions @Inject constructor(
-    private val actionRepository: MessageActionRepository,
-    private val observeMessage: ObserveMessage
+class GetMessageDetailBottomBarActions @Inject constructor(
+    private val actionRepository: MessageActionRepository
 ) {
 
     suspend operator fun invoke(
@@ -41,11 +37,6 @@ class ObserveAllMessageBottomBarActions @Inject constructor(
         labelId: LabelId,
         messageId: MessageId,
         themeOptions: MessageThemeOptions
-    ): Flow<Either<DataError, AllBottomBarActions>> = observeMessage(userId, messageId)
-        .mapLatest { messageEither ->
-            messageEither
-                .flatMap {
-                    actionRepository.getAllBottomBarActions(userId, labelId, messageId, themeOptions)
-                }
-        }
+    ): Either<DataError, AllBottomBarActions> =
+        actionRepository.getAllBottomBarActions(userId, labelId, messageId, themeOptions)
 }
