@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcrashrecord.domain.usecase.HasMessageBodyWebViewCrashed
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
@@ -35,6 +36,7 @@ import javax.inject.Inject
 
 class MessageBodyUiModelMapper @Inject constructor(
     private val attachmentGroupUiModelMapper: AttachmentGroupUiModelMapper,
+    private val hasMessageBodyWebViewCrashed: HasMessageBodyWebViewCrashed,
     @IsRestrictMessageWebViewHeightEnabled private val restrictMessageWebViewHeightEnabled: FeatureFlag<Boolean>
 ) {
 
@@ -73,7 +75,7 @@ class MessageBodyUiModelMapper @Inject constructor(
             } else null,
             viewModePreference = viewModePreference,
             reloadMessageEffect = Effect.empty(),
-            shouldRestrictWebViewHeight = restrictMessageWebViewHeightEnabled.get()
+            shouldRestrictWebViewHeight = restrictMessageWebViewHeightEnabled.get() && hasMessageBodyWebViewCrashed()
         )
     }
 

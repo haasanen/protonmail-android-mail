@@ -73,6 +73,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversationWithMessages
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
+import ch.protonmail.android.mailcrashrecord.domain.usecase.HasMessageBodyWebViewCrashed
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
@@ -366,6 +367,9 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val unblockSender = mockk<UnblockSender>()
     private val blockSender = mockk<BlockSender>()
     private val isMessageSenderBlocked = mockk<IsMessageSenderBlocked>()
+    private val hasMessageBodyWebViewCrashed = mockk<HasMessageBodyWebViewCrashed> {
+        coEvery { this@mockk() } returns true
+    }
 
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val attachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
@@ -439,6 +443,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         messageBannersUiModelMapper = MessageBannersUiModelMapper(context, formatScheduleSendTime),
         messageBodyUiModelMapper = MessageBodyUiModelMapper(
             attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
+            hasMessageBodyWebViewCrashed = hasMessageBodyWebViewCrashed,
             restrictMessageWebViewHeightEnabled = mockk<FeatureFlag<Boolean>> {
                 coEvery { get() } returns true
             }

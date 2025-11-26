@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcrashrecord.domain.usecase.HasMessageBodyWebViewCrashed
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
@@ -89,8 +90,13 @@ class MessageBodyUiModelMapperTest {
         )
     }
 
+    private val hasMessageBodyWebViewCrashed = mockk<HasMessageBodyWebViewCrashed> {
+        coEvery { this@mockk() } returns true
+    }
+
     private val messageBodyUiModelMapper = MessageBodyUiModelMapper(
         attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
+        hasMessageBodyWebViewCrashed = hasMessageBodyWebViewCrashed,
         restrictMessageWebViewHeightEnabled = mockk<FeatureFlag<Boolean>> {
             coEvery { get() } returns true
         }

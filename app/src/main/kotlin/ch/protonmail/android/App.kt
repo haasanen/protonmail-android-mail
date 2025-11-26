@@ -29,6 +29,7 @@ import ch.protonmail.android.logging.LogsFileHandlerLifecycleObserver
 import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
 import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
+import ch.protonmail.android.mailcrashrecord.domain.usecase.SaveMessageBodyWebViewCrash
 import ch.protonmail.android.mailnotifications.domain.FirebaseMessagingTokenLifecycleObserver
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
 import dagger.hilt.android.HiltAndroidApp
@@ -56,6 +57,9 @@ internal class App : Application() {
 
     @Inject
     lateinit var eventLoopLifecycleObserver: Provider<RustEventLoopErrorLifecycleObserver>
+
+    @Inject
+    lateinit var saveMessageBodyWebViewCrash: SaveMessageBodyWebViewCrash
 
     @OptIn(ExperimentalComposeRuntimeApi::class)
     override fun onCreate() {

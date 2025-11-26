@@ -63,7 +63,8 @@ class MainInitializer : Initializer<Unit> {
         RustMailCommonInitializer::class.java,
         ChallengeInitializer::class.java,
         BackgroundExecutionInitializer::class.java,
-        RustNetworkObserverInitializer::class.java
+        RustNetworkObserverInitializer::class.java,
+        WebViewCrashExceptionHandlerInitializer::class.java
     )
 
     companion object {
