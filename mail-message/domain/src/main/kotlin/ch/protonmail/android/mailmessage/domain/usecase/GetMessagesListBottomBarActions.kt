@@ -27,7 +27,7 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageActionReposito
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class GetAllMessageBottomBarActions @Inject constructor(
+class GetMessagesListBottomBarActions @Inject constructor(
     private val actionRepository: MessageActionRepository
 ) {
 

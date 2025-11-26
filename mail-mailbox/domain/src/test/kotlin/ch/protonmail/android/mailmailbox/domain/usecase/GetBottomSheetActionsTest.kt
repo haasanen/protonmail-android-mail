@@ -12,7 +12,7 @@ import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetAllMessageBottomBarActions
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessagesListBottomBarActions
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -22,10 +22,10 @@ import kotlin.test.assertEquals
 internal class GetBottomSheetActionsTest {
 
     private val getConversationsListBottomBarActions = mockk<GetConversationsListBottomBarActions>()
-    private val getAllMessageBottomBarActions = mockk<GetAllMessageBottomBarActions>()
+    private val getMessagesListBottomBarActions = mockk<GetMessagesListBottomBarActions>()
 
     private val getBottomSheetActions = GetBottomSheetActions(
-        getAllMessageBottomBarActions,
+        getMessagesListBottomBarActions,
         getConversationsListBottomBarActions
     )
 
@@ -41,7 +41,7 @@ internal class GetBottomSheetActionsTest {
             listOf(Action.Star, Action.Label),
             listOf(Action.Spam, Action.Archive)
         )
-        coEvery { getAllMessageBottomBarActions(userId, labelId, messageIds) } returns expected.right()
+        coEvery { getMessagesListBottomBarActions(userId, labelId, messageIds) } returns expected.right()
 
         // When
         val actual = getBottomSheetActions(userId, labelId, items, viewMode)

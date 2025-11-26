@@ -22,6 +22,7 @@ import android.net.Uri
 import app.cash.turbine.Event
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
+import arrow.core.Either
 import arrow.core.left
 import arrow.core.nonEmptyListOf
 import arrow.core.right
@@ -56,6 +57,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
+import ch.protonmail.android.maildetail.domain.usecase.GetDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsMessageSenderBlocked
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -68,7 +70,6 @@ import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
-import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
 import ch.protonmail.android.maildetail.domain.usecase.UnsubscribeFromNewsletter
@@ -166,7 +167,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @Suppress("LargeClass")
-class ConversationDetailViewModelTest {
+internal class ConversationDetailViewModelTest {
 
     private val userId = UserIdSample.Primary
     private val primaryUserAddress = UserAddressSample.PrimaryAddress.email
@@ -245,12 +246,11 @@ class ConversationDetailViewModelTest {
             )
     }
 
-    private val observeDetailBottomBarActions = mockk<ObserveDetailBottomBarActions> {
+    private val getDetailBottomBarActions = mockk<GetDetailBottomBarActions> {
         coEvery {
-            this@mockk(UserIdSample.Primary, any(), ConversationIdSample.WeatherForecast, any(), any())
-        } returns flowOf(
-            listOf(Action.Archive, Action.MarkUnread).right()
-        )
+            this@mockk(UserIdSample.Primary, any(), ConversationIdSample.WeatherForecast)
+        } returns listOf(Action.Archive, Action.MarkUnread).right()
+
     }
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
@@ -377,7 +377,7 @@ class ConversationDetailViewModelTest {
             moveConversation = move,
             deleteConversations = deleteConversations,
             observeConversationWithMessages = observeConversationWithMessages,
-            observeDetailActions = observeDetailBottomBarActions,
+            getDetailBottomBarActions = getDetailBottomBarActions,
             reducer = reducer,
             starConversations = starConversations,
             unStarConversations = unStarConversations,
@@ -866,10 +866,10 @@ class ConversationDetailViewModelTest {
             )
         )
         coEvery {
-            observeDetailBottomBarActions(
-                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any(), any()
+            getDetailBottomBarActions(
+                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast
             )
-        } returns flowOf(actions.right())
+        } returns actions.right()
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
@@ -906,10 +906,10 @@ class ConversationDetailViewModelTest {
             )
         } returns messages.first()
         coEvery {
-            observeDetailBottomBarActions(
-                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any(), any()
+            getDetailBottomBarActions(
+                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast
             )
-        } returns flowOf(DataError.Local.NoDataCached.left())
+        } returns DataError.Local.NoDataCached.left()
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
@@ -939,11 +939,24 @@ class ConversationDetailViewModelTest {
             )
         )
 
+        val conversationFlow = MutableSharedFlow<Either<ConversationError, ConversationWithMessages>>()
+
         coEvery {
-            observeDetailBottomBarActions(
-                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any(), any()
+            observeConversationWithMessages(
+                UserIdSample.Primary,
+                ConversationIdSample.WeatherForecast,
+                labelId,
+                any(),
+                any()
             )
-        } returns flowOf(actions.right())
+        } returns conversationFlow
+
+        coEvery {
+            getDetailBottomBarActions(
+                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast
+            )
+        } returns actions.right()
+
         coEvery {
             reducer.newStateFrom(
                 currentState = any(),
@@ -953,20 +966,108 @@ class ConversationDetailViewModelTest {
 
         // When + Then
         viewModel.state.test {
+            // Emit initial conversation data once
+            conversationFlow.emit(
+                ConversationWithMessages(
+                    conversation = ConversationSample.WeatherForecast,
+                    messages = ConversationMessages(
+                        nonEmptyListOf(MessageSample.Invoice, MessageSample.Invoice),
+                        MessageSample.Invoice.messageId
+                    )
+                ).right()
+            )
+            advanceUntilIdle()
+
             initialStateEmitted()
             assertEquals(expectedState.bottomBarState, awaitItem().bottomBarState)
 
-            // Emit toolbar refresh signal to trigger a new observeDetailBottomBarActions call
+            // Emit toolbar refresh signal to trigger a new getDetailBottomBarActions call
             refreshToolbarSharedFlow.emit(Unit)
             advanceUntilIdle()
 
             coVerify(exactly = 2) {
-                observeDetailBottomBarActions(
+                getDetailBottomBarActions(
                     UserIdSample.Primary,
                     labelId,
-                    ConversationIdSample.WeatherForecast,
-                    any(),
-                    any()
+                    ConversationIdSample.WeatherForecast
+                )
+            }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when conversation data updates, bottom bar actions are refreshed`() = runTest {
+        // Given
+        val actions = listOf(Action.Archive, Action.MarkUnread)
+        val actionUiModels = listOf(ActionUiModelTestData.archive, ActionUiModelTestData.markUnread).toImmutableList()
+        val labelId = LabelIdSample.AllMail
+        val expectedState = initialState.copy(
+            bottomBarState = BottomBarState.Data.Shown(
+                BottomBarTarget.Conversation, actionUiModels
+            )
+        )
+
+        val conversationFlow = MutableSharedFlow<Either<ConversationError, ConversationWithMessages>>()
+
+        coEvery {
+            observeConversationWithMessages(
+                UserIdSample.Primary,
+                ConversationIdSample.WeatherForecast,
+                labelId,
+                any(),
+                any()
+            )
+        } returns conversationFlow
+
+        coEvery {
+            getDetailBottomBarActions(
+                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast
+            )
+        } returns actions.right()
+
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = ofType<ConversationDetailEvent.ConversationBottomBarEvent>()
+            )
+        } returns expectedState
+
+        // When + Then
+        viewModel.state.test {
+            // Emit initial conversation data
+            conversationFlow.emit(
+                ConversationWithMessages(
+                    conversation = ConversationSample.WeatherForecast,
+                    messages = ConversationMessages(
+                        nonEmptyListOf(MessageSample.Invoice, MessageSample.Invoice),
+                        MessageSample.Invoice.messageId
+                    )
+                ).right()
+            )
+            advanceUntilIdle()
+
+            initialStateEmitted()
+            assertEquals(expectedState.bottomBarState, awaitItem().bottomBarState)
+
+            // Emit conversation data update (simulating a message action that updates conversation)
+            conversationFlow.emit(
+                ConversationWithMessages(
+                    conversation = ConversationSample.WeatherForecast,
+                    messages = ConversationMessages(
+                        nonEmptyListOf(MessageSample.Invoice, MessageSample.Invoice),
+                        MessageSample.Invoice.messageId
+                    )
+                ).right()
+            )
+            advanceUntilIdle()
+
+            coVerify(exactly = 2) {
+                getDetailBottomBarActions(
+                    UserIdSample.Primary,
+                    labelId,
+                    ConversationIdSample.WeatherForecast
                 )
             }
 
@@ -2403,10 +2504,10 @@ class ConversationDetailViewModelTest {
             )
         )
         coEvery {
-            observeDetailBottomBarActions(
-                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast, any(), any()
+            getDetailBottomBarActions(
+                UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast
             )
-        } returns flowOf(actions.right())
+        } returns actions.right()
         coEvery {
             reducer.newStateFrom(
                 currentState = initialState,

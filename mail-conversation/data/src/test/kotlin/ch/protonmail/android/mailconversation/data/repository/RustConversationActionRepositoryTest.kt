@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.mailconversation.data.repository
 
-import app.cash.turbine.test
-import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
@@ -28,24 +26,19 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
-import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
-import ch.protonmail.android.mailconversation.domain.entity.ConversationError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
-import ch.protonmail.android.mailmessage.data.model.LocalConversationWithMessages
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelAsActionTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import uniffi.proton_mail_uniffi.AllConversationActions
 import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.ConversationAction
 import uniffi.proton_mail_uniffi.ConversationActionSheet
@@ -316,80 +309,5 @@ internal class RustConversationActionRepositoryTest {
 
         // Then
         assertEquals(expected, result)
-    }
-
-    @Test
-    fun `observe all bottom bar actions should return an error when the data source errors`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val labelId = SystemLabelId.Inbox.labelId
-        val conversationId = ConversationId("1")
-        val expected = DataError.Local.IllegalStateError.left()
-        val entryPoint = ConversationDetailEntryPoint.Mailbox
-        val showAll = false
-
-        coEvery {
-            rustConversationDataSource.observeConversationWithMessages(
-                userId,
-                any(),
-                labelId.toLocalLabelId(),
-                entryPoint,
-                showAll
-            )
-        } returns
-            flowOf(ConversationError.UnknownLabel.left())
-
-        // When + Then
-        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
-            .test {
-                assertEquals(expected, awaitItem())
-                awaitComplete()
-            }
-    }
-
-    @Test
-    fun `observe all bottom bar actions should return data when the data source updates`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val labelId = SystemLabelId.Inbox.labelId
-        val conversationId = ConversationId("1")
-
-        val expectedActions: Either<DataError, AllBottomBarActions> = AllBottomBarActions(
-            listOf(Action.Star),
-            listOf(Action.MarkRead)
-        ).right()
-
-        val rustAvailableActions = AllConversationActions(
-            listOf(ConversationAction.Star),
-            listOf(ConversationAction.MarkRead)
-        )
-        val entryPoint = ConversationDetailEntryPoint.Mailbox
-        val showAll = false
-
-        coEvery {
-            rustConversationDataSource.getAllAvailableBottomBarActions(
-                userId,
-                labelId.toLocalLabelId(),
-                conversationId.toLocalConversationId()
-            )
-        } returns rustAvailableActions.right()
-
-        coEvery {
-            rustConversationDataSource.observeConversationWithMessages(
-                userId,
-                any(),
-                labelId.toLocalLabelId(),
-                entryPoint,
-                showAll
-            )
-        } returns
-            flowOf(mockk<LocalConversationWithMessages>().right())
-
-        // When + Then
-        rustConversationRepository.observeAllBottomBarActions(userId, labelId, conversationId, entryPoint, showAll)
-            .test {
-                assertEquals(expectedActions, awaitItem())
-                awaitComplete()
-            }
     }
 }

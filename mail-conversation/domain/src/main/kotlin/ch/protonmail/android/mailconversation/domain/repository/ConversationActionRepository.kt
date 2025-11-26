@@ -23,11 +23,9 @@ import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
-import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
 interface ConversationActionRepository {
@@ -56,11 +54,9 @@ interface ConversationActionRepository {
         conversationIds: List<ConversationId>
     ): Either<DataError, AllBottomBarActions>
 
-    suspend fun observeAllBottomBarActions(
+    suspend fun getAllBottomBarActions(
         userId: UserId,
         labelId: LabelId,
-        conversationId: ConversationId,
-        entryPoint: ConversationDetailEntryPoint,
-        showAllMessages: Boolean
-    ): Flow<Either<DataError, AllBottomBarActions>>
+        conversationId: ConversationId
+    ): Either<DataError, AllBottomBarActions>
 }

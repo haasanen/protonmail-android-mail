@@ -28,12 +28,12 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetAllMessageBottomBarActions
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessagesListBottomBarActions
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetBottomSheetActions @Inject constructor(
-    private val getAllMessageBottomBarActions: GetAllMessageBottomBarActions,
+    private val getMessagesListBottomBarActions: GetMessagesListBottomBarActions,
     private val getConversationsListBottomBarActions: GetConversationsListBottomBarActions
 ) {
 
@@ -50,7 +50,7 @@ class GetBottomSheetActions @Inject constructor(
 
         ViewMode.NoConversationGrouping -> {
             val messageIds = mailboxItemIds.map { MessageId(it.value) }
-            getAllMessageBottomBarActions(userId, labelId, messageIds).removeMoreAction()
+            getMessagesListBottomBarActions(userId, labelId, messageIds).removeMoreAction()
         }
     }
 }

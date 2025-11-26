@@ -52,6 +52,7 @@ import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentVal
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.BlockSender
+import ch.protonmail.android.maildetail.domain.usecase.GetDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsMessageSenderBlocked
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -64,7 +65,6 @@ import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
-import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
 import ch.protonmail.android.maildetail.domain.usecase.UnsubscribeFromNewsletter
@@ -167,7 +167,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
@@ -200,7 +199,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val moveConversation: MoveConversation,
     private val deleteConversations: DeleteConversations,
     private val observeConversationWithMessages: ObserveConversationWithMessages,
-    private val observeDetailActions: ObserveDetailBottomBarActions,
+    private val getDetailBottomBarActions: GetDetailBottomBarActions,
     private val reducer: ConversationDetailReducer,
     private val starConversations: StarConversations,
     private val unStarConversations: UnStarConversations,
@@ -265,6 +264,15 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val offlineErrorSignal = MutableSharedFlow<Unit>(
         replay = 0,
         extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    // Signal triggered when conversation/message (depending on the view mode) data event is emitted.
+    // Actions can't be observed from Rust as they are exposed as a one-time result, so we need
+    // to manually re-trigger the loading of available actions.
+    private val bottomBarRefreshSignal = MutableSharedFlow<Unit>(
+        replay = 1,
+        extraBufferCapacity = 0,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
@@ -679,6 +687,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 is ConversationDataLoadingResult.Success -> {
                     emitNewStateFrom(result.conversationData)
                     emitNewStateFrom(result.messagesData)
+                    bottomBarRefreshSignal.emit(Unit)
                 }
 
                 is ConversationDataLoadingResult.Error -> {
@@ -815,68 +824,57 @@ class ConversationDetailViewModel @AssistedInject constructor(
     @Suppress("LongMethod")
     private fun observeBottomBarActions(conversationId: ConversationId) = combine(
         primaryUserId,
-        toolbarRefreshSignal.refreshEvents.onStart { emit(Unit) }
-    ) { userId, _ ->
+        toolbarRefreshSignal.refreshEvents.onStart { emit(Unit) },
+        bottomBarRefreshSignal.onStart { emit(Unit) }
+    ) { userId, _, _ ->
         userId
-    }.flatMapLatest { userId ->
+    }.mapLatest { userId ->
         val errorEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions)
         val offlineEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.Offline)
         val labelId = openedFromLocation
         val themeOptions = MessageThemeOptions(MessageTheme.Dark)
 
         if (resolveLabelIdOrNull()?.labelId?.isOutbox() == true) {
-            return@flatMapLatest flowOf(
-                ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.HideBottomSheet)
-            )
+            return@mapLatest ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.HideBottomSheet)
         }
+
         if (isSingleMessageModeEnabled) {
             val messageId = initialScrollToMessageId?.let { MessageId(it.id) }
             if (messageId == null) {
-                return@flatMapLatest flowOf(errorEvent)
+                return@mapLatest errorEvent
             }
-            observeDetailActions(userId, labelId, messageId, themeOptions).mapLatest { either ->
-                either.fold(
-                    ifLeft = {
-                        if (it.isOfflineError()) {
-                            offlineEvent
-                        } else {
-                            errorEvent
-                        }
-                    },
-                    ifRight = { actions ->
-                        val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
-                        ConversationDetailEvent.ConversationBottomBarEvent(
-                            BottomBarEvent.ShowAndUpdateActionsData(
-                                BottomBarTarget.Message(messageId.id),
-                                actionUiModels
-                            )
+            getDetailBottomBarActions(userId, labelId, messageId, themeOptions).fold(
+                ifLeft = {
+                    if (it.isOfflineError()) offlineEvent else errorEvent
+                },
+                ifRight = { actions ->
+                    val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
+                    ConversationDetailEvent.ConversationBottomBarEvent(
+                        BottomBarEvent.ShowAndUpdateActionsData(
+                            BottomBarTarget.Message(messageId.id),
+                            actionUiModels
                         )
-                    }
-                )
-            }
-        } else {
-            observeDetailActions(userId, labelId, conversationId, conversationEntryPoint, showAllMessages.value)
-                .mapLatest { either ->
-                    either.fold(
-                        ifLeft = {
-                            if (it.isOfflineError()) {
-                                offlineEvent
-                            } else {
-                                errorEvent
-                            }
-                        },
-                        ifRight = { actions ->
-                            val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
-                            ConversationDetailEvent.ConversationBottomBarEvent(
-                                BottomBarEvent.ShowAndUpdateActionsData(
-                                    BottomBarTarget.Conversation, actionUiModels
-                                )
-                            )
-                        }
                     )
                 }
+            )
+        } else {
+            getDetailBottomBarActions(userId, labelId, conversationId).fold(
+                ifLeft = {
+                    if (it.isOfflineError()) offlineEvent else errorEvent
+                },
+                ifRight = { actions ->
+                    val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
+                    ConversationDetailEvent.ConversationBottomBarEvent(
+                        BottomBarEvent.ShowAndUpdateActionsData(
+                            BottomBarTarget.Conversation,
+                            actionUiModels
+                        )
+                    )
+                }
+            )
         }
     }
+        .distinctUntilChanged()
         .restartableOn(reloadSignal)
         .onEach { event ->
             emitNewStateFrom(event)
