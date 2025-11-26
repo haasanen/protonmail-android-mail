@@ -128,7 +128,7 @@ internal class MoveToViewModelTest {
         // Given
         val messageId = MessageId("item1")
         val initialData = defaultInitialData.copy(
-            entryPoint = MoveToBottomSheetEntryPoint.Message(messageId, isLastInCurrentLocation = false)
+            entryPoint = MoveToBottomSheetEntryPoint.Message(messageId)
         )
         expectLoadedDataForMessage(messageId, initialData.entryPoint)
 
@@ -244,7 +244,7 @@ internal class MoveToViewModelTest {
         )
 
         val initialData = defaultInitialData.copy(
-            entryPoint = MoveToBottomSheetEntryPoint.Message(messageId, isLastInCurrentLocation = false)
+            entryPoint = MoveToBottomSheetEntryPoint.Message(messageId)
         )
 
         val initialState = MoveToState.Data(
@@ -437,7 +437,7 @@ internal class MoveToViewModelTest {
 
     private fun expectLoadedDataForMessage(
         messageId: MessageId,
-        entryPoint: MoveToBottomSheetEntryPoint = MoveToBottomSheetEntryPoint.Message(messageId, false),
+        entryPoint: MoveToBottomSheetEntryPoint = MoveToBottomSheetEntryPoint.Message(messageId),
         initialState: MoveToState = defaultDataState
     ) {
         setupInitialDataLoading(destinations = defaultDestinations, entryPoint = entryPoint, state = initialState)

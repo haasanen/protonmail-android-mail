@@ -89,7 +89,6 @@ import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
@@ -654,6 +653,9 @@ fun ConversationDetailScreenLegacy(
                                 MessageIdUiModel(messageId.id)
                             )
                         )
+                    },
+                    showUndoableOperationSnackbar = { action ->
+                        actions.showUndoableOperationSnackbar(action)
                     }
                 ),
                 scrollToMessageId = state.scrollToMessage?.id
@@ -703,7 +705,9 @@ private fun ConversationDetailScreenLegacy(
         snackbarHostState.showSnackbar(ProtonSnackbarType.ERROR, message = string)
     }
 
-    UndoableOperationSnackbar(snackbarHostState = snackbarHostState, actionEffect = state.actionResult)
+    ConsumableLaunchedEffect(state.actionResult) {
+        actions.showUndoableOperationSnackbar(it)
+    }
 
     ConsumableLaunchedEffect(effect = state.openMessageBodyLinkEffect) { messageBodyLink ->
         val message = when (state.messagesState) {

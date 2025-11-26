@@ -90,7 +90,6 @@ import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
@@ -660,6 +659,9 @@ fun ConversationDetailScreen(
                                 MessageIdUiModel(messageId.id)
                             )
                         )
+                    },
+                    showUndoableOperationSnackbar = { action ->
+                        actions.showUndoableOperationSnackbar(action)
                     }
                 )
             )
@@ -710,7 +712,9 @@ private fun ConversationDetailScreen(
         snackbarHostState.showSnackbar(ProtonSnackbarType.ERROR, message = string)
     }
 
-    UndoableOperationSnackbar(snackbarHostState = snackbarHostState, actionEffect = state.actionResult)
+    ConsumableLaunchedEffect(state.actionResult) {
+        actions.showUndoableOperationSnackbar(it)
+    }
 
     ConsumableLaunchedEffect(effect = state.openMessageBodyLinkEffect) { messageBodyLink ->
         val message = when (state.messagesState) {
@@ -1277,6 +1281,7 @@ object ConversationDetailScreen {
     data class Actions(
         val onExit: (notifyUserMessage: ActionResult?) -> Unit,
         val onExitWithError: (errorMessage: String) -> Unit,
+        val showUndoableOperationSnackbar: (notifyUserMessage: ActionResult?) -> Unit,
         val onStarClick: () -> Unit,
         val onTrashClick: () -> Unit,
         val onDeleteClick: () -> Unit,
@@ -1389,7 +1394,8 @@ object ConversationDetailScreen {
                 onActionBarVisibilityChanged = {},
                 onUnsubscribeFromNewsletter = {},
                 onReportPhishing = {},
-                onLoadImagesAfterImageProxyFailure = {}
+                onLoadImagesAfterImageProxyFailure = {},
+                showUndoableOperationSnackbar = {}
             )
         }
     }
