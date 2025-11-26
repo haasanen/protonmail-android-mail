@@ -93,7 +93,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMe
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
-import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.MoreConversationActionsBottomSheetDataPayload
@@ -224,7 +223,6 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val observePrimaryUserAddress: ObservePrimaryUserAddress,
     private val loadAvatarImage: LoadAvatarImage,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
-    private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation,
     private val markMessageAsLegitimate: MarkMessageAsLegitimate,
     private val unblockSender: UnblockSender,
     private val blockSender: BlockSender,
@@ -952,18 +950,11 @@ class ConversationDetailViewModel @AssistedInject constructor(
     ) {
         emitNewStateFrom(operation)
 
-        val userId = primaryUserId.first()
-        val isLastMessageInLocation = isLastMessageInLocation(
-            userId, conversationId,
-            operation.messageId,
-            openedFromLocation
-        )
-
         val event = MoveToBottomSheetState.MoveToBottomSheetEvent.Ready(
             userId = primaryUserId.first(),
             currentLabel = openedFromLocation,
             itemIds = listOf(MoveToItemId(operation.messageId.id)),
-            entryPoint = MoveToBottomSheetEntryPoint.Message(operation.messageId, isLastMessageInLocation)
+            entryPoint = MoveToBottomSheetEntryPoint.Message(operation.messageId)
         )
 
         emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
@@ -1021,10 +1012,8 @@ class ConversationDetailViewModel @AssistedInject constructor(
     }
 
     private suspend fun handleMoveToCompleted(operation: ConversationDetailViewAction.MoveToCompleted) {
-        val shouldExit = when (val entryPoint = operation.entryPoint) {
-            is MoveToBottomSheetEntryPoint.Message ->
-                entryPoint.isLastInCurrentLocation || isSingleMessageModeEnabled
-
+        val shouldExit = when (operation.entryPoint) {
+            is MoveToBottomSheetEntryPoint.Message -> isSingleMessageModeEnabled
             is MoveToBottomSheetEntryPoint.Conversation -> true
             else -> false
         }
@@ -1253,18 +1242,11 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
         withUserId { userId ->
             val currentLabelId = openedFromLocation
-            val shouldExitScreen = isSingleMessageModeEnabled ||
-                isLastMessageInLocation(
-                    userId,
-                    conversationId,
-                    action.messageId,
-                    openedFromLocation
-                )
 
             deleteMessages(userId, listOf(action.messageId), currentLabelId)
                 .onLeft { emitNewStateFrom(ConversationDetailEvent.ErrorDeletingMessage) }
                 .onRight {
-                    if (shouldExitScreen) {
+                    if (isSingleMessageModeEnabled) {
                         val event = ConversationDetailEvent.ExitScreenWithMessage(
                             ConversationDetailEvent.LastMessageDeleted
                         )
@@ -1562,47 +1544,19 @@ class ConversationDetailViewModel @AssistedInject constructor(
     ) {
         val userId = primaryUserId.first()
 
-        val isLastMessageInLocation = isLastMessageInLocation(
-            userId,
-            conversationId,
-            messageId,
-            mailLabelId.labelId
-        )
-
         if (mailLabelId is MailLabelId.System) {
             moveMessage(userId, messageId, SystemLabelId.enumOf(mailLabelId.labelId.id)).getOrNull()
         } else {
             moveMessage(userId, messageId, mailLabelId.labelId).getOrNull()
         } ?: return emitNewStateFrom(ConversationDetailEvent.ErrorMovingMessage)
 
-        val event = if (isLastMessageInLocation || isSingleMessageModeEnabled) {
+        val event = if (isSingleMessageModeEnabled) {
             ConversationDetailEvent.LastMessageMoved(mailLabelText)
         } else {
             ConversationDetailEvent.MessageMoved(mailLabelText)
         }
 
         emitNewStateFrom(event)
-    }
-
-    private suspend fun isLastMessageInLocation(
-        userId: UserId,
-        conversationId: ConversationId,
-        messageId: MessageId,
-        labelId: LabelId
-    ): Boolean {
-        val messagesInSameLocation = getMessagesInSameExclusiveLocation(
-            userId,
-            conversationId,
-            messageId,
-            labelId,
-            conversationEntryPoint,
-            showAllMessages.value
-        ).getOrElse {
-            Timber.d("Unable to determine the number of messages in the current location - $labelId")
-            return true
-        }
-
-        return messagesInSameLocation.size == 1
     }
 
     private suspend fun handleStarMessage(starAction: ConversationDetailViewAction.StarMessage) {

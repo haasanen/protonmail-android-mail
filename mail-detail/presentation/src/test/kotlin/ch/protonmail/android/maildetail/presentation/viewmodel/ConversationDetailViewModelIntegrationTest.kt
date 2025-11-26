@@ -136,7 +136,6 @@ import ch.protonmail.android.maildetail.presentation.reducer.MarkAsLegitimateDia
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
-import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
@@ -375,8 +374,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         getMessageAvailableActions,
         getConversationAvailableActions
     )
-
-    private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
 
     private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>()
 
@@ -1691,16 +1688,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
-        coEvery {
-            getMessagesInSameExclusiveLocation(
-                userId,
-                conversationId,
-                messageId,
-                any(),
-                any(),
-                any()
-            ) // labelId here is not strict
-        } returns listOf<Message>(mockk(), mockk()).right()
+
         // When
         val viewModel = buildConversationDetailViewModel()
 
@@ -1745,16 +1733,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageAvailableActions(userId, filterByLocationLabelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
-        coEvery {
-            getMessagesInSameExclusiveLocation(
-                userId,
-                conversationId,
-                messageId,
-                any(),
-                any(),
-                any()
-            ) // labelId here is not strict
-        } returns listOf<Message>(mockk(), mockk()).right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -1809,16 +1787,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
-        coEvery {
-            getMessagesInSameExclusiveLocation(
-                userId,
-                conversationId,
-                messageId,
-                any(),
-                any(),
-                any()
-            ) // labelId here is not strict
-        } returns listOf<Message>(mockk(), mockk()).right()
+
         // When
         val viewModel = buildConversationDetailViewModel()
 
@@ -1864,7 +1833,7 @@ internal class ConversationDetailViewModelIntegrationTest {
                 userId,
                 labelId,
                 itemIds = listOf(MoveToItemId(messageId.id)),
-                entryPoint = MoveToBottomSheetEntryPoint.Message(isLastInCurrentLocation = false, messageId = messageId)
+                entryPoint = MoveToBottomSheetEntryPoint.Message(messageId = messageId)
             ),
             bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
         )
@@ -1872,16 +1841,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
-        coEvery {
-            getMessagesInSameExclusiveLocation(
-                userId,
-                conversationId,
-                messageId,
-                any(),
-                any(),
-                any()
-            ) // labelId here is not strict
-        } returns listOf<Message>(mockk(), mockk()).right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2406,7 +2365,6 @@ internal class ConversationDetailViewModelIntegrationTest {
         observePrimaryUserAddress = observePrimaryUserAddress,
         loadAvatarImage = loadAvatarImg,
         observeAvatarImageStates = observeAvatarImgStates,
-        getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
         markMessageAsLegitimate = markMessageAsLegitimate,
         unblockSender = unblockSender,
         blockSender = blockSender,

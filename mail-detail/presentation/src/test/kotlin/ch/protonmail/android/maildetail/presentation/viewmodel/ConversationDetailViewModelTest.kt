@@ -92,7 +92,6 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample.InvoiceWithLabelExpanded
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample.InvoiceWithLabelExpanding
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
-import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
@@ -324,7 +323,6 @@ internal class ConversationDetailViewModelTest {
     private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
         every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
     }
-    private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
     private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
     private val unblockSender = mockk<UnblockSender>()
     private val blockSender = mockk<BlockSender>()
@@ -402,7 +400,6 @@ internal class ConversationDetailViewModelTest {
             observePrimaryUserAddress = observePrimaryUserAddress,
             loadAvatarImage = loadAvatarImage,
             observeAvatarImageStates = observeAvatarImageStates,
-            getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
             markMessageAsLegitimate = markMessageAsLegitimate,
             unblockSender = unblockSender,
             blockSender = blockSender,

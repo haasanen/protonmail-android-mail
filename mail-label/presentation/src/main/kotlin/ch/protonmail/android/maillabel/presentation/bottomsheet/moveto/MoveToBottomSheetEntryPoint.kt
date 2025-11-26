@@ -23,7 +23,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 
 sealed interface MoveToBottomSheetEntryPoint {
     data object Conversation : MoveToBottomSheetEntryPoint
-    data class Message(val messageId: MessageId, val isLastInCurrentLocation: Boolean) : MoveToBottomSheetEntryPoint
+    data class Message(val messageId: MessageId) : MoveToBottomSheetEntryPoint
 
     sealed class Mailbox(val itemCount: Int, val viewMode: ViewMode) : MoveToBottomSheetEntryPoint {
         class MoveToSwipeAction(viewMode: ViewMode, val itemId: MoveToItemId) : Mailbox(itemCount = 1, viewMode)
