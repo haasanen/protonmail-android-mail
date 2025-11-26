@@ -30,9 +30,11 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -59,6 +61,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -241,41 +245,60 @@ fun MessageBodyWebView(
             LayoutParams.WRAP_CONTENT
         )
 
-        AndroidView(
-            factory = { webView },
-            update = {
-                it.settings.builtInZoomControls = true
-                it.settings.displayZoomControls = false
-                it.settings.javaScriptEnabled = false
-                it.settings.safeBrowsingEnabled = true
-                it.settings.allowContentAccess = false
-                it.settings.allowFileAccess = false
-                it.settings.loadWithOverviewMode = true
-                it.settings.useWideViewPort = true
-                it.isVerticalScrollBarEnabled = false
-                it.layoutParams = initialLayoutParams
-                it.webViewClient = client
+        Box {
+            AndroidView(
+                factory = { webView },
+                update = {
+                    it.settings.builtInZoomControls = true
+                    it.settings.displayZoomControls = false
+                    it.settings.javaScriptEnabled = false
+                    it.settings.safeBrowsingEnabled = true
+                    it.settings.allowContentAccess = false
+                    it.settings.allowFileAccess = false
+                    it.settings.loadWithOverviewMode = true
+                    it.settings.useWideViewPort = true
+                    it.isVerticalScrollBarEnabled = false
+                    it.layoutParams = initialLayoutParams
+                    it.webViewClient = client
 
-                configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
-                configureLongClick(
-                    it,
-                    actions.onMessageBodyLinkLongClicked,
-                    actions.onMessageBodyImageLongClicked
+                    configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
+                    configureLongClick(
+                        it,
+                        actions.onMessageBodyLinkLongClicked,
+                        actions.onMessageBodyImageLongClicked
+                    )
+                    configureOnTouchListener(it)
+                },
+                modifier = Modifier
+                    .testTag(MessageBodyWebViewTestTags.WebView)
+                    // there's a bug where if the message is too long the webview will crash
+                    .heightIn(max = (webViewMaxHeight - 1).pxToDp())
+                    .fillMaxWidth()
+                    .onSizeChanged {
+                        lastMeasuredWebViewHeight = it.height
+                        shouldShowViewEntireMessageButton.value = shouldAllowViewingEntireMessage &&
+                            it.height >= webViewMaxHeight - 1
+                    }
+                    .wrapContentSize()
+            )
+
+            if (shouldShowViewEntireMessageButton.value && messageBodyUiModel.shouldRestrictWebViewHeight) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    ProtonTheme.colors.backgroundNorm
+                                )
+                            )
+                        )
                 )
-                configureOnTouchListener(it)
-            },
-            modifier = Modifier
-                .testTag(MessageBodyWebViewTestTags.WebView)
-                // there's a bug where if the message is too long the webview will crash
-                .heightIn(max = (webViewMaxHeight - 1).pxToDp())
-                .fillMaxWidth()
-                .onSizeChanged {
-                    lastMeasuredWebViewHeight = it.height
-                    shouldShowViewEntireMessageButton.value = shouldAllowViewingEntireMessage &&
-                        it.height >= webViewMaxHeight - 1
-                }
-                .wrapContentSize()
-        )
+            }
+        }
 
 
         if (messageBodyUiModel.shouldShowExpandCollapseButton) {
