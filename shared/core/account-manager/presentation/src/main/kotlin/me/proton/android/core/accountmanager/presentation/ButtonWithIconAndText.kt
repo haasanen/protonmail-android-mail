@@ -21,6 +21,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -59,5 +60,37 @@ fun ButtonWithIconAndText(
             style = LocalTypography.current.bodyLarge,
             text = stringResource(text)
         )
+    }
+}
+
+@Composable
+fun ButtonWithIconAndTextAndCustom(
+    modifier: Modifier = Modifier,
+    @StringRes text: Int,
+    @DrawableRes icon: Int,
+    onClick: () -> Unit = {},
+    customContent: @Composable () -> Unit = {}
+) {
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(all = ProtonDimens.Spacing.Large),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
+    ) {
+        Icon(
+            contentDescription = null,
+            modifier = Modifier.defaultMinSize(minWidth = ProtonDimens.IconSize.Medium),
+            painter = painterResource(icon)
+        )
+        Column {
+            Text(
+                style = LocalTypography.current.bodyLarge,
+                text = stringResource(text)
+            )
+            customContent()
+        }
     }
 }

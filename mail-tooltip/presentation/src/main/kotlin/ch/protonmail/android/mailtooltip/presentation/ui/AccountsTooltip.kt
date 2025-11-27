@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -115,13 +116,13 @@ private fun TooltipBox(
                 shape = tooltipShape
             )
             .shadow(
-                elevation = ProtonDimens.ShadowElevation.Lifted,
+                elevation = ProtonDimens.ShadowElevation.Raised,
                 shape = tooltipShape,
                 ambientColor = ProtonTheme.colors.shadowRaised,
                 spotColor = ProtonTheme.colors.shadowRaised
             )
             .background(
-                color = ProtonTheme.colors.backgroundNorm,
+                color = ProtonTheme.colors.backgroundInvertedSecondary,
                 shape = tooltipShape
             )
             .clickable(true, onClick = {}),
@@ -135,7 +136,7 @@ private fun SparkleIcon(modifier: Modifier = Modifier) {
         modifier = modifier
             .padding(ProtonDimens.Spacing.Large)
             .background(
-                color = ProtonTheme.colors.interactionBrandWeakNorm,
+                color = ProtonTheme.colors.brandMinus10,
                 shape = ProtonTheme.shapes.large
             )
     ) {
@@ -145,7 +146,7 @@ private fun SparkleIcon(modifier: Modifier = Modifier) {
                 .size(ProtonDimens.IconSize.Medium),
             painter = painterResource(R.drawable.sparkles),
             contentDescription = null,
-            tint = ProtonTheme.colors.iconAccent
+            tint = ProtonTheme.colors.iconInverted
         )
     }
 }
@@ -178,10 +179,9 @@ private fun CloseIcon(modifier: Modifier = Modifier, onClose: () -> Unit) {
     Box(
         modifier = modifier
             .padding(ProtonDimens.Spacing.Medium)
+            .clip(RoundedCornerShape(percent = 100))
             .background(
-                color = ProtonTheme.colors.shade40.copy(
-                    alpha = .6f
-                ),
+                color = Color.Transparent,
                 shape = RoundedCornerShape(percent = 100)
             )
             .clickable(true, onClick = onClose)

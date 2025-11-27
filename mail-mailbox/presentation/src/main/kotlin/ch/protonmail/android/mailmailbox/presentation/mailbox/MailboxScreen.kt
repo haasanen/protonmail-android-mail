@@ -399,7 +399,6 @@ fun MailboxScreen(
                 )
 
                 is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(
-                    onDismiss = { dismissBottomSheet {} },
                     onEvent = { dismissBottomSheet { onEvent(it) } }
                 )
 
