@@ -30,4 +30,6 @@
     <string name="app_debug_screen_danger_crash_native_description" translatable="false">Trigger a Rust-level crash to test Sentry integration</string>
     <string name="app_debug_screen_danger_crash_title" translatable="false">Crash the app</string>
     <string name="app_debug_screen_danger_crash_description" translatable="false">Trigger a crash (KT) to test Sentry integration</string>
+    <string name="app_debug_screen_danger_crash_webview_title" translatable="false">Simulate a webview crash</string>
+    <string name="app_debug_screen_danger_crash_webview_description" translatable="false">Trigger a webview crash to test message limit</string>
 </resources>

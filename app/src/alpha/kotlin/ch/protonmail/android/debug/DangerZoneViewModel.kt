@@ -28,4 +28,8 @@ internal class DangerZoneViewModel @Inject constructor() : ViewModel() {
 
     fun nativeCrashApp() = makeMeCrash()
     fun crashApp() = Integer.parseInt("notInteger")
+
+    fun crashWebViewLike() {
+        throw IllegalStateException("Unable to create layer")
+    }
 }
