@@ -47,9 +47,11 @@ import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelpe
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
 import ch.protonmail.android.mailsession.domain.eventloop.EventLoopErrorSignal
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.navigation.mapper.IntentMapper
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.model.NavigationEffect
+import ch.protonmail.android.navigation.reducer.HomeNavigationEventsReducer
 import ch.protonmail.android.navigation.share.NewIntentObserver
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.Runs
@@ -118,6 +120,8 @@ class HomeViewModelTest {
     }
 
     private val formatFullDate = mockk<FormatFullDate>()
+    private val intentMapper = IntentMapper()
+    private val navigationEventsReducer = HomeNavigationEventsReducer()
 
     private val homeViewModel by lazy {
         HomeViewModel(
@@ -130,7 +134,9 @@ class HomeViewModelTest {
             cancelScheduleSendMessage,
             eventLoopErrorSignal,
             observePrimaryUserId,
-            newIntentObserver
+            newIntentObserver,
+            intentMapper,
+            navigationEventsReducer
         )
     }
 
@@ -163,7 +169,8 @@ class HomeViewModelTest {
         val mainIntent = mockIntent(
             action = Intent.ACTION_MAIN,
             data = null,
-            externalBoolean = false
+            externalBoolean = false,
+            categories = setOf(Intent.CATEGORY_LAUNCHER)
         )
         every { newIntentObserver() } returns flowOf(mainIntent)
 
@@ -339,38 +346,40 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `should not emit a new navigation state when app was started from launcher and external intent`() = runTest {
-        // Given
-        val fileUriStr = "content://media/1234"
-        val fileUri = mockk<Uri> {
-            every { this@mockk.host } returns null
-        }
-        val intentShareInfo = IntentShareInfo.Empty.copy(
-            attachmentUris = listOf(fileUriStr)
-        )
-        val shareIntent = mockIntent(
-            action = Intent.ACTION_SEND,
-            data = fileUri,
-            externalBoolean = true
-        )
-        val mainIntent = mockIntent(
-            action = Intent.ACTION_MAIN,
-            data = null,
-            externalBoolean = false
-        )
-        // Mock the extension function
-        mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
-        every { any<Intent>().getShareInfo() } returns intentShareInfo
+    fun `should emit a new navigation state when app was started from launcher and external intent received`() =
+        runTest {
+            // Given
+            val fileUriStr = "content://media/1234"
+            val fileUri = mockk<Uri> {
+                every { this@mockk.host } returns null
+            }
+            val intentShareInfo = IntentShareInfo.Empty.copy(
+                attachmentUris = listOf(fileUriStr)
+            )
+            val shareIntent = mockIntent(
+                action = Intent.ACTION_SEND,
+                data = fileUri,
+                externalBoolean = true
+            )
+            val mainIntent = mockIntent(
+                action = Intent.ACTION_MAIN,
+                data = null,
+                externalBoolean = false,
+                categories = setOf(Intent.CATEGORY_LAUNCHER)
+            )
+            // Mock the extension function
+            mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
+            every { any<Intent>().getShareInfo() } returns intentShareInfo
 
-        every { shouldPresentPinInsertionScreen() } returns flowOf()
-        every { newIntentObserver() } returns flowOf(mainIntent, shareIntent)
+            every { shouldPresentPinInsertionScreen() } returns flowOf()
+            every { newIntentObserver() } returns flowOf(mainIntent, shareIntent)
 
-        // When + Then
-        homeViewModel.state.test {
-            val effect = awaitItem().navigateToEffect.consume()
-            assertNull(effect)
+            // When + Then
+            homeViewModel.state.test {
+                val effect = awaitItem().navigateToEffect.consume()
+                assertTrue { effect is NavigationEffect.NavigateTo }
+            }
         }
-    }
 
     @Test
     fun `should emit a new navigation state when app was started from launcher and internal intent`() = runTest {
@@ -390,7 +399,8 @@ class HomeViewModelTest {
         val mainIntent = mockIntent(
             action = Intent.ACTION_MAIN,
             data = null,
-            externalBoolean = false
+            externalBoolean = false,
+            categories = setOf(Intent.CATEGORY_LAUNCHER)
         )
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
@@ -454,12 +464,14 @@ class HomeViewModelTest {
     private fun mockIntent(
         action: String,
         data: Uri?,
-        externalBoolean: Boolean
+        externalBoolean: Boolean,
+        categories: Set<String> = emptySet()
     ): Intent {
         return mockk {
             every { this@mockk.action } returns action
             every { this@mockk.data } returns data
             every { this@mockk.getBooleanExtra(IntentExtraKeys.EXTRA_EXTERNAL_SHARE, false) } returns externalBoolean
+            every { this@mockk.categories } returns categories
         }
     }
 
