@@ -37,6 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -63,10 +69,12 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInform
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.toSemanticsReadout
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxItemUiModelPreviewData
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeStatusUiModel
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun MailboxItem(
@@ -76,10 +84,16 @@ fun MailboxItem(
     avatarImageUiModel: AvatarImageUiModel,
     selectionMode: Boolean = false,
     isSelected: Boolean = false,
-    isSelectable: Boolean = true
+    isSelectable: Boolean = true,
+    accessibilitySwipeActions: ImmutableList<CustomAccessibilityAction>
 ) {
     Box(
         modifier = modifier
+            .semantics {
+                customActions = accessibilitySwipeActions
+                role = Role.Button
+                isItemRead = item.isRead
+            }
             .combinedClickable(
                 onClick = { actions.onItemClicked(item) },
                 onLongClick = {
@@ -88,7 +102,6 @@ fun MailboxItem(
                     }
                 }
             )
-            .semantics { isItemRead = item.isRead }
             .padding(start = ProtonDimens.Spacing.Tiny)
             .background(
                 color = ProtonTheme.colors.backgroundNorm,
@@ -141,11 +154,27 @@ fun MailboxItem(
                 actions = avatarActions
             )
             Column(
-                modifier = Modifier.padding(
-                    start = ProtonDimens.Spacing.Large
-                )
+                modifier = Modifier
+                    .padding(
+                        start = ProtonDimens.Spacing.Large
+                    )
             ) {
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                val talkbackUnreadReadout = stringResource(R.string.mailbox_talkback_readout_unread)
+                val time = item.time.string()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics {
+                            contentDescription = buildString {
+                                if (!item.isRead) {
+                                    append("$talkbackUnreadReadout. ")
+                                }
+                                append(item.participants.toSemanticsReadout())
+                                append(" $time")
+                            }
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     ActionIcons(
                         item = item,
                         iconColor = iconColor,
@@ -154,13 +183,13 @@ fun MailboxItem(
 
                     val participantsFontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Bold
                     Participants(
+                        modifier = Modifier
+                            .weight(1f),
                         participants = item.participants,
                         fontWeight = participantsFontWeight,
                         fontColor = fontColor,
                         count = item.numMessages,
-                        iconColor = iconColor,
-                        modifier = Modifier
-                            .weight(1f)
+                        iconColor = iconColor
                     )
 
                     if (item.shouldShowAttachmentIcon) {
@@ -186,8 +215,7 @@ fun MailboxItem(
                         modifier = Modifier.padding(end = ProtonDimens.Spacing.Tiny)
                     )
                     Row(
-                        Modifier
-                            .weight(1f),
+                        Modifier.weight(1f),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Subject(
@@ -423,9 +451,15 @@ private fun StarIcon(
 ) {
     val iconId = if (isStarred) R.drawable.ic_proton_star_filled else R.drawable.ic_proton_star
     val iconColor = if (isStarred) ProtonTheme.colors.starSelected else ProtonTheme.colors.starDefault
-
+    val talkbackStarredReadout = stringResource(R.string.mailbox_talkback_readout_starred)
+    val talkbackNotStarredReadout = stringResource(R.string.mailbox_talkback_readout_not_starred)
     if (isClickable) {
         SmallClickableIcon(
+            modifier = Modifier.semantics {
+                contentDescription = if (isStarred) {
+                    talkbackStarredReadout
+                } else talkbackNotStarredReadout
+            },
             iconId = iconId,
             iconColor = iconColor,
             onClick = onClick,
@@ -502,7 +536,8 @@ private fun DroidConMailboxItemPreview() {
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.DroidConLondon,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }
@@ -515,7 +550,8 @@ private fun DroidConWithoutCountMailboxItemPreview() {
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.DroidConLondonWithZeroMessages,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }
@@ -528,7 +564,8 @@ private fun WeatherMailboxItemPreview() {
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.WeatherForecast,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }
@@ -541,7 +578,8 @@ private fun LongRecipientItemPreview() {
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.MultipleRecipientWithLabel,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }
@@ -560,7 +598,8 @@ private fun LongRecipientItemWithExpiryPreview() {
             modifier = Modifier,
             item = itemWithExpiry,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }
@@ -581,7 +620,8 @@ private fun SnoozedUntilPreview() {
             modifier = Modifier,
             item = itemWithExpiry,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }
@@ -594,7 +634,8 @@ private fun LongSubjectItemPreview() {
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.LongSubjectWithIcons,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }
@@ -607,7 +648,8 @@ private fun LongSubjectWithIconItemPreview() {
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.LongSubjectWithoutIcons,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }
@@ -620,7 +662,8 @@ private fun NoRecipientIconItemPreview() {
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.NoParticipant,
             actions = ComposeMailboxItem.Actions.Empty,
-            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded,
+            accessibilitySwipeActions = persistentListOf()
         )
     }
 }

@@ -178,6 +178,7 @@ import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.fab.LazyFab
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
@@ -689,7 +690,6 @@ private fun AnimatedComposeMailFab(
 
 @Composable
 fun ComposeMailFab(onComposeClick: () -> Unit) {
-
     ExtendedFloatingActionButton(
         onClick = { onComposeClick() },
         icon = {
@@ -992,12 +992,21 @@ private fun MailboxItemsList(
                     !isInSearch &&
                     !isOpenDrawerGesture
 
+                val swipeActions = generateSwipeActions(items, actions, item)
                 SwipeableItem(
                     modifier = Modifier.animateItem(),
                     swipeActionsUiModel = listDataState.swipeActions,
                     swipingEnabled = swipingEnabled,
-                    swipeActionCallbacks = generateSwipeActions(items, actions, item)
+                    swipeActionCallbacks = swipeActions
                 ) {
+                    val accessibilitySwipeActions = listDataState.swipeActions?.let {
+                        getAccessibilityActionsForTalkback(
+                            swipingEnabled = swipingEnabled,
+                            swipeActionsUiModel = it,
+                            swipeActions = swipeActions,
+                            context = LocalContext.current
+                        )
+                    }
 
                     val avatarImageUiModel = (item.avatar as? AvatarUiModel.ParticipantAvatar)
                         ?.let { listDataState.avatarImagesUiModel.getStateForAddress(it.address) }
@@ -1017,7 +1026,8 @@ private fun MailboxItemsList(
                                 listDataState.selectedMailboxItems.any { it.id == item.id }
 
                             else -> false
-                        }
+                        },
+                        accessibilitySwipeActions = accessibilitySwipeActions.orEmpty().toImmutableList()
                     )
                 }
             }

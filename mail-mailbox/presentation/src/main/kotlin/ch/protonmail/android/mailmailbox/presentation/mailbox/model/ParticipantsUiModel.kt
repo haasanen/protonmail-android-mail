@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel.Participants
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface ParticipantsUiModel {
@@ -36,3 +37,5 @@ data class ParticipantUiModel(
     val name: String,
     val shouldShowOfficialBadge: Boolean
 )
+
+fun ParticipantsUiModel.toSemanticsReadout() = (this as? Participants)?.list?.map { it.name }.toString()

@@ -25,6 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
@@ -34,6 +38,7 @@ import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
+import me.proton.android.core.accountmanager.presentation.R
 
 @Composable
 fun AccountAvatar(
@@ -43,6 +48,7 @@ fun AccountAvatar(
 ) {
     val boxColor = accountItem?.color?.toColorInt()?.let { Color(it) }
         ?: LocalColors.current.interactionBrandDefaultNorm
+    val talkbackReadout = stringResource(R.string.account_switcher_manage_account)
     ProtonButton(
         onClick = onClick,
         elevation = null,
@@ -51,9 +57,16 @@ fun AccountAvatar(
         colors = ButtonDefaults.buttonColors(containerColor = boxColor),
         contentPadding = PaddingValues(0.dp),
         modifier = modifier
+            .semantics {
+                contentDescription = talkbackReadout
+            }
             .size(ProtonDimens.AvatarAppBarHeight)
     ) {
-        Text(text = accountItem?.initials ?: "")
+        Text(
+            modifier =
+            Modifier.clearAndSetSemantics {},
+            text = accountItem?.initials ?: ""
+        )
     }
 }
 

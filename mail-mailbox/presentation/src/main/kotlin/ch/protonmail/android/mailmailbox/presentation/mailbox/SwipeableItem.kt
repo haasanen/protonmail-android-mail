@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -48,6 +49,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.unit.Density
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -223,6 +225,36 @@ private fun callbackForSwipeAction(action: SwipeAction, swipeActionCallbacks: Sw
     SwipeAction.MarkRead -> swipeActionCallbacks.onMarkRead
     SwipeAction.MoveTo -> swipeActionCallbacks.onMoveTo
     SwipeAction.LabelAs -> swipeActionCallbacks.onLabelAs
+}
+
+fun getAccessibilityActionsForTalkback(
+    swipingEnabled: Boolean,
+    swipeActionsUiModel: SwipeActionsUiModel,
+    swipeActions: SwipeActions.Actions,
+    context: Context
+) = mutableListOf<CustomAccessibilityAction>().apply {
+    if (swipingEnabled) {
+        if (swipeActionsUiModel.start.isEnabled) {
+            add(
+                CustomAccessibilityAction(
+                    label = context.getString(swipeActionsUiModel.start.descriptionRes)
+                ) {
+                    callbackForSwipeAction(swipeActionsUiModel.start.swipeAction, swipeActions)()
+                    true
+                }
+            )
+        }
+        if (swipeActionsUiModel.end.isEnabled) {
+            add(
+                CustomAccessibilityAction(
+                    label = context.getString(swipeActionsUiModel.end.descriptionRes)
+                ) {
+                    callbackForSwipeAction(swipeActionsUiModel.end.swipeAction, swipeActions)()
+                    true
+                }
+            )
+        }
+    }
 }
 
 object SwipeActions {
