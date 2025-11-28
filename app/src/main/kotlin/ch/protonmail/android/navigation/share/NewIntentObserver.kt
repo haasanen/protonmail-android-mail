@@ -19,6 +19,7 @@
 package ch.protonmail.android.navigation.share
 
 import android.content.Intent
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,9 +27,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@ActivityRetainedScoped
 class NewIntentObserver @Inject constructor() {
 
     private val _intentFlow = MutableStateFlow<Intent?>(null)
