@@ -148,6 +148,7 @@ class LanguageSettingsViewModelTest {
         UserSelectedLanguage(AppLanguage.TURKISH),
         UserSelectedLanguage(AppLanguage.CATALAN),
         UserSelectedLanguage(AppLanguage.CZECH),
+        UserSelectedLanguage(AppLanguage.DANISH),
         UserSelectedLanguage(AppLanguage.FINNISH),
         UserSelectedLanguage(AppLanguage.HUNGARIAN),
         UserSelectedLanguage(AppLanguage.INDONESIAN),
