@@ -33,6 +33,7 @@ class ShouldPresentPinInsertionScreen @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<Boolean> = autoLockCheckPendingState.autoLockCheckEvents
+        .onStart { emit(Unit) }
         .map {
             Timber.tag("ShouldPresentPin").d("checking shouldAutoLock...")
             val shouldLock = autoLockRepository.shouldAutoLock()
@@ -42,8 +43,5 @@ class ShouldPresentPinInsertionScreen @Inject constructor(
                 }
             Timber.tag("ShouldPresentPin").d("got '$shouldLock', continuing...")
             shouldLock
-        }
-        .onStart {
-            emit(true) // Check by default on cold start
         }
 }

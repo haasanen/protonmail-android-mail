@@ -27,7 +27,7 @@ import javax.inject.Singleton
 class AutoLockCheckPendingState @Inject constructor() {
 
     private val mutableAutoLockCheckEvents = MutableSharedFlow<Unit>(
-        replay = 1,
+        replay = 0,
         extraBufferCapacity = 1
     )
 

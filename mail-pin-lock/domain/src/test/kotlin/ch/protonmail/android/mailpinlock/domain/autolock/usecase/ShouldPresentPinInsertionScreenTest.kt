@@ -73,7 +73,10 @@ internal class ShouldPresentPinInsertionScreenTest {
     }
 
     @Test
-    fun `invoke() should emit true immediately on collection due to onStart`() = runTest {
+    fun `should emit true on start when repository returns true`() = runTest {
+        // Given
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
+
         // When + Then
         shouldPresentPinInsertionScreen().test {
             assertTrue("Expected initial emission to be true", awaitItem())
@@ -82,13 +85,25 @@ internal class ShouldPresentPinInsertionScreenTest {
     }
 
     @Test
-    fun `should emit true when check event is received and repository returns true`() = runTest {
+    fun `should emit false on start when repository returns false`() = runTest {
         // Given
-        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
+        coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
-            awaitItem() // onStart (true)
+            assertFalse("Expected initial emission to be false", awaitItem())
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `should emit true when check event is received and repository returns true`() = runTest {
+        // Given
+        coEvery { autoLockRepository.shouldAutoLock() } returns false.right() andThen true.right()
+
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            assertFalse(awaitItem()) // onStart (false)
 
             lockCheckEvents.emit(Unit)
 
@@ -99,11 +114,11 @@ internal class ShouldPresentPinInsertionScreenTest {
     @Test
     fun `should emit false when check event is received and repository returns false`() = runTest {
         // Given
-        coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right() andThen false.right()
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
-            awaitItem() // onStart (true)
+            assertTrue(awaitItem()) // onStart (true)
 
             lockCheckEvents.emit(Unit)
 
@@ -112,17 +127,25 @@ internal class ShouldPresentPinInsertionScreenTest {
     }
 
     @Test
-    fun `should emit false when check event is received and repository call fails`() = runTest {
+    fun `should emit false when repository call fails`() = runTest {
         // Given
         coEvery { autoLockRepository.shouldAutoLock() } returns DataError.Local.NoDataCached.left()
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
-            awaitItem() // onStart (true)
-
-            lockCheckEvents.emit(Unit)
-
             assertFalse("Expected fallback emission to be false on repository error", awaitItem())
+        }
+    }
+
+    @Test
+    fun `should not receive replayed events from previous emissions`() = runTest {
+        // Given
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
+
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            assertTrue(awaitItem()) // Only the onStart emission
+            expectNoEvents() // No replayed events
         }
     }
 }
