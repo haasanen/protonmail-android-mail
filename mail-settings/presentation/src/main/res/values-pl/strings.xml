@@ -36,7 +36,7 @@
   <string name="mail_settings_privacy_and_security">Prywatność i bezpieczeństwo</string>
   <string name="mail_settings_fido_keys">Klucze bezpieczeństwa</string>
   <string name="mail_settings_change_password">Zarządzanie hasłami</string>
-  <string name="mail_settings_signature">Signature</string>
+  <string name="mail_settings_signature">Podpis</string>
   <string name="mail_settings_storage_quota">%1$d%% / %2$s</string>
   <string name="mail_settings_privacy_and_security_hint">Ochrona przed śledzeniem wiadomości</string>
   <string name="mail_settings_app_hint">Personalizacja aplikacji mobilnej</string>
@@ -72,7 +72,7 @@
   <string name="mail_settings_app_customization_view_application_logs">Pokaż logi aplikacji</string>
   <string name="mail_settings_app_customization_mail_experience_header">Opcje poczty</string>
   <string name="mail_settings_app_customization_advanced_header">Zaawansowane</string>
-  <string name="mail_settings_app_customization_signature_header">Signatures</string>
+  <string name="mail_settings_app_customization_signature_header">Podpisy</string>
   <string name="mail_settings_app_customization_email_signature_header">Email signature</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Podpis mobilny</string>
   <string name="mail_settings_app_customization_email_signature_explanation">Your email signature, that is automatically added to all emails you send.</string>

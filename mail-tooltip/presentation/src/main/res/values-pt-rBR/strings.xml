@@ -18,5 +18,5 @@
   -->
 <resources>
   <string name="accounts_new_location_tooltip">Uma nova casa para suas contas</string>
-  <string name="accounts_new_location_tooltip_description">The account switcher has moved! You can now switch accounts, log out, and manage your account settings - all from one convenient place.</string>
+  <string name="accounts_new_location_tooltip_description">O seletor de contas mudou de lugar! Agora você pode alternar entre contas, encerrar sessão da sua conta e gerenciar suas configurações de conta — tudo em um único lugar conveniente.</string>
 </resources>

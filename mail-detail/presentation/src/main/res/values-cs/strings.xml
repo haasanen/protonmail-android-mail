@@ -78,7 +78,7 @@
   <string name="message_body_embedded_images_banner_text">Automatické načítání vložených obrázků je vypnuto. Tuto možnost lze změnit v nastavení.</string>
   <string name="message_body_remote_content_banner_text">Automatické načítání vzdáleného obsahu je vypnuto. Tuto možnost lze změnit v nastavení.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Automatické načítání vložených obrázků a vzdáleného obsahu je vypnuto. Tyto možnosti lze změnit v nastavení.</string>
-  <string name="message_body_images_failed_to_load_banner_text">S ochranou před sledovacími prvky se nepodařilo načíst některé obrázky.</string>
+  <string name="message_body_images_failed_to_load_banner_text">Některé obrázky se nepodařilo načíst s ochranou sledování.</string>
   <string name="message_body_images_failed_to_load_banner_button">Načíst obrázky</string>
   <string name="message_phishing_banner_text">Tato zpráva byla naším systémem nebo vámi označena jako podezřelá. Pokud se domníváte, že je bezpečná, označte ji jako legitimní.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Označit jako legitimní</string>

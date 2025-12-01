@@ -75,8 +75,8 @@
   <string name="mail_settings_app_customization_signature_header">Allekirjoitukset</string>
   <string name="mail_settings_app_customization_email_signature_header">Sähköpostin allekirjoitus</string>
   <string name="mail_settings_app_customization_mobile_signature_header">Mobiiliallekirjoitus</string>
-  <string name="mail_settings_app_customization_email_signature_explanation">Your email signature, that is automatically added to all emails you send.</string>
-  <string name="mail_settings_app_customization_mobile_signature_explanation">Additional signature added to emails sent from this device.</string>
+  <string name="mail_settings_app_customization_email_signature_explanation">Sähkopostiosoitteesi allekirjoitus, joka lisätään automaattisesti kaikkiin lähettämiisi sähköposteihin.</string>
+  <string name="mail_settings_app_customization_mobile_signature_explanation">Lisäallekirjoitus lisätään tämän laitteen kautta lähetettäviin sähköposteihin.</string>
   <string name="mail_settings_app_customization_mobile_signature_on">Päällä</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Pois</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Käytä allekirjoitusta</string>

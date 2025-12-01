@@ -85,7 +85,7 @@
   <string name="action_save_pdf_content_description">Salvare ca PDF</string>
   <string name="action_sender_emails_content_description">Setare acțiuni mesaje ulterioare de la acest expeditor</string>
   <string name="action_save_attachments_content_description">Salvare atașamente</string>
-  <string name="action_more_content_description">Detalii</string>
+  <string name="action_more_content_description">Mai multe</string>
   <string name="action_snooze_content_description">Amânare</string>
   <string name="action_snooze_description">Amânare</string>
   <string name="common_error_loading_actions">Încărcarea acțiunilor a eșuat.</string>

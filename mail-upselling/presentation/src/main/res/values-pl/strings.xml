@@ -111,7 +111,7 @@
   <string name="upselling_description_social_proof">Ulepsz konto do planu, który zachwyca miliony subskrybentów.</string>
   <string name="upselling_discount_tag">ZAOSZCZĘDŹ %s%%</string>
   <string name="upselling_month">/ miesiąc</string>
-  <string name="upselling_month_only">tylko %s /miesiąc</string>
+  <string name="upselling_month_only">tylko %s / miesiąc</string>
   <string name="upselling_year"> / rok</string>
   <string name="upselling_get_button">Wybierz plan %s</string>
   <plurals name="upselling_month">

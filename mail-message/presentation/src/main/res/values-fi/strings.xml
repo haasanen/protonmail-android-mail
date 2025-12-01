@@ -73,15 +73,15 @@
   <string name="contact_actions_add_contact_description">Tallenna vastaanottaja yhteystiedoksi</string>
   <string name="contact_actions_block_contact">Estä tämä yhteystieto</string>
   <string name="contact_actions_block_contact_description">Estä tämä yhteystieto</string>
-  <string name="contact_actions_block_contact_dialog_text">Emails from <xliff:g id="email">%1$s</xliff:g> will no longer be delivered and will be permanently deleted. You can manage blocked email addresses in the settings.</string>
-  <string name="contact_actions_block_contact_dialog_button_block">Block</string>
-  <string name="contact_actions_block_contact_dialog_button_cancel">Cancel</string>
-  <string name="contact_actions_unblock_contact">Unblock this contact</string>
-  <string name="contact_actions_unblock_contact_description">Unblock this contact</string>
+  <string name="contact_actions_block_contact_dialog_text">Sähköposteja osoitteesta <xliff:g id="email">%1$s</xliff:g> ei enää toimiteta ja ne poistetaan pysyvästi. Voit hallinnoida estettyjä osoitteita asetuksissa.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Estä</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Peru</string>
+  <string name="contact_actions_unblock_contact">Poista tämän yhteistiedon esto</string>
+  <string name="contact_actions_unblock_contact_description">Poista tämän yhteistiedon esto</string>
   <string name="contact_actions_block_address">Estä tämä osoite</string>
   <string name="contact_actions_block_address_description">Estä tämä osoite</string>
-  <string name="contact_actions_unblock_address">Unblock this address</string>
-  <string name="contact_actions_unblock_address_description">Unblock this address</string>
+  <string name="contact_actions_unblock_address">Poista tämän osoitteen esto</string>
+  <string name="contact_actions_unblock_address_description">Poista tämän osoitteen esto</string>
   <string name="contact_actions_view_contact_details">Näytä yhteystieto</string>
   <string name="contact_actions_view_contact_details_description">Näytä yhteystiedon tiedot</string>
 </resources>

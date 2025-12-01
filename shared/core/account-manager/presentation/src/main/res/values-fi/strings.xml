@@ -32,5 +32,5 @@
   <string name="manage_accounts_on_device">Hallitse tämän laitteen tilejä</string>
   <string name="add_another_account">Lisää toinen tili</string>
   <string name="account_switcher_no_initials">Ei saatavilla</string>
-  <string name="manage_accounts_options">Options</string>
+  <string name="manage_accounts_options">Valinnat</string>
 </resources>
