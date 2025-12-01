@@ -239,7 +239,7 @@ fun MailboxItem(
                     }
                 }
 
-                if (item.attachments.isNotEmpty()) {
+                if (item.attachments.any { it.includeInPreview }) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
