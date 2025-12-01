@@ -21,6 +21,7 @@ package me.proton.android.core.accountmanager.presentation.manager
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,8 +29,6 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,6 +42,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -140,21 +142,24 @@ private fun AccountsList(
     cardModifier: Modifier = Modifier
 ) {
 
-    LazyColumn(modifier = modifier) {
+    val contentDesSignedIn = stringResource(R.string.manage_accounts_switch_to_signed_in_content_desc)
+    Column(modifier = modifier) {
         if (signedInAccounts.isNotEmpty()) {
-            item(key = "signed-in-header") {
-                Text(
-                    color = LocalColors.current.textWeak,
-                    style = LocalTypography.current.bodyLarge,
-                    text = stringResource(R.string.manage_accounts_switch_to),
-                    modifier = Modifier.padding(
+            Text(
+                color = LocalColors.current.textWeak,
+                style = LocalTypography.current.bodyLarge,
+                text = stringResource(R.string.manage_accounts_switch_to),
+                modifier = Modifier
+                    .semantics {
+                        contentDescription = contentDesSignedIn
+                        heading()
+                    }
+                    .padding(
                         bottom = ProtonDimens.Spacing.Medium,
                         top = ProtonDimens.Spacing.Standard
                     )
-                )
-            }
-
-            items(signedInAccounts, { "signed-in-${it.accountItem.userId}" }) { account ->
+            )
+            signedInAccounts.forEachIndexed { index, account ->
                 Card(
                     shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
                     modifier = cardModifier
@@ -177,19 +182,22 @@ private fun AccountsList(
         }
 
         if (signedOutAccounts.isNotEmpty()) {
-            item(key = "signed-out-header") {
-                Text(
-                    color = LocalColors.current.textWeak,
-                    style = LocalTypography.current.bodyLarge,
-                    text = stringResource(R.string.manage_accounts_switch_to),
-                    modifier = Modifier.padding(
+            val contentDesSignedOut = stringResource(R.string.manage_accounts_switch_to_signed_out_content_desc)
+            Text(
+                color = LocalColors.current.textWeak,
+                style = LocalTypography.current.bodyLarge,
+                text = stringResource(R.string.manage_accounts_switch_to),
+                modifier = Modifier
+                    .semantics {
+                        contentDescription = contentDesSignedOut
+                        heading()
+                    }
+                    .padding(
                         bottom = ProtonDimens.Spacing.Medium,
                         top = ProtonDimens.Spacing.Standard
                     )
-                )
-            }
-
-            items(signedOutAccounts, { "signed-out-${it.accountItem.userId}" }) { account ->
+            )
+            signedOutAccounts.forEachIndexed { index, account ->
                 Card(
                     shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
                     modifier = cardModifier

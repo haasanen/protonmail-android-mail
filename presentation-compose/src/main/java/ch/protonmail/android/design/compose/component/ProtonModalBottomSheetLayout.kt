@@ -28,6 +28,11 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +57,15 @@ fun ProtonModalBottomSheetLayout(
             shape = ProtonTheme.shapes.bottomSheet,
             containerColor = ProtonTheme.colors.backgroundInvertedNorm,
             contentColor = ProtonTheme.colors.textNorm,
-            dragHandle = { BottomSheetDefaults.DragHandle(color = ProtonTheme.colors.iconHint) },
+            dragHandle = {
+                BottomSheetDefaults.DragHandle(
+                    modifier = Modifier.semantics {
+                        this.role = Role.Companion.Image
+                        this.contentDescription = ""
+                    },
+                    color = ProtonTheme.colors.iconHint
+                )
+            },
             content = sheetContent,
             contentWindowInsets = contentWindowInsets,
             properties = ModalBottomSheetProperties(shouldDismissOnBackPress = dismissOnBack)

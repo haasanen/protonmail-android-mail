@@ -54,6 +54,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -150,8 +152,14 @@ private fun CurrentAccountSection(
     currentAccount: AccountListItem,
     onEvent: (AccountSwitchEvent) -> Unit
 ) {
+    val talkbackTitle = stringResource(
+        R.string.account_switcher_talkback_title
+    )
     Column(
         modifier = modifier
+            .semantics(mergeDescendants = true) {
+                contentDescription = talkbackTitle
+            }
             .padding(horizontal = ProtonDimens.Spacing.Standard),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -189,7 +197,8 @@ private fun CurrentAccountAvatar(
 ) {
     val cameraVisible by remember { mutableStateOf(false) } // remove when avatar image implemented
     Box(
-        modifier = modifier.padding(ProtonDimens.Spacing.MediumLight)
+        modifier = modifier
+            .padding(ProtonDimens.Spacing.MediumLight)
     ) {
         PrimaryAccountAvatar(
             modifier = modifier,

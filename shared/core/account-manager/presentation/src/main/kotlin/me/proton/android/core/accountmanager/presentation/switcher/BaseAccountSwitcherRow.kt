@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.graphics.toColorInt
@@ -75,7 +76,7 @@ internal fun BaseAccountSwitcherRow(
                         ?: stringResource(R.string.account_switcher_no_initials),
                     color = Color.White,
                     style = LocalTypography.current.bodyMedium,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.clearAndSetSemantics {}.align(Alignment.Center)
                 )
             }
 
