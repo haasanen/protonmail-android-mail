@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.model.bottomsheet
 
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
@@ -41,6 +41,7 @@ import me.proton.core.domain.entity.UserId
 
 sealed interface MoveToBottomSheetState : BottomSheetContentState {
 
+    @Immutable
     data class Requested(
         val userId: UserId,
         val currentLabel: LabelId,
@@ -61,6 +62,7 @@ sealed interface MoveToBottomSheetState : BottomSheetContentState {
 
 sealed interface LabelAsBottomSheetState : BottomSheetContentState {
 
+    @Immutable
     data class Requested(
         val userId: UserId,
         val currentLocationLabelId: LabelId,
@@ -140,13 +142,11 @@ sealed interface ManageAccountSheetState : BottomSheetContentState {
 
 sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
 
-    @Stable
     sealed interface Origin {
         data class MessageDetails(val messageId: MessageId) : Origin
         data object Unknown : Origin
     }
 
-    @Stable
     data class ContactActionsGroups(
         val firstGroup: ImmutableList<ContactActionUiModel>,
         val secondGroup: ImmutableList<ContactActionUiModel>,
@@ -177,6 +177,7 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
 }
 
 sealed interface SnoozeSheetState : BottomSheetContentState {
+    @Immutable
     data class Requested(
         val userId: UserId,
         val labelId: LabelId,

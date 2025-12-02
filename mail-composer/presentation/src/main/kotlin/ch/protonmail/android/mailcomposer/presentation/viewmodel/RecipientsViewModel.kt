@@ -37,6 +37,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -72,7 +73,7 @@ internal class RecipientsViewModel @AssistedInject constructor(
         mutableRequestPermissionEffect
     ) { suggestions, suggestionsField, requestPermission ->
         ContactSuggestionsState(
-            suggestions = suggestions,
+            suggestions = suggestions.toImmutableList(),
             suggestionsField = suggestionsField,
             requestContactsPermission = requestPermission
         )
@@ -80,7 +81,7 @@ internal class RecipientsViewModel @AssistedInject constructor(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ContactSuggestionsState(
-            suggestions = emptyList(),
+            suggestions = emptyList<ContactSuggestionUiModel>().toImmutableList(),
             suggestionsField = null,
             requestContactsPermission = Effect.empty()
         )

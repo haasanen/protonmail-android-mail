@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class GroupedContactListItemsUiModel(
     val contacts: List<ContactListItemUiModel>
 )

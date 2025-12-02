@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -72,6 +73,8 @@ sealed interface MoveToOperation {
     sealed interface MoveToEvent : MoveToOperation {
 
         data object LoadingError : MoveToEvent
+
+        @Immutable
         data class InitialData(
             val moveToDestinations: List<MailLabel>,
             val entryPoint: MoveToBottomSheetEntryPoint

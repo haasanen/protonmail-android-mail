@@ -50,6 +50,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -159,7 +160,7 @@ class ContactListViewModelTest {
             val expected = ContactListState.Loaded.Data(
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
-                }
+                }.toImmutableList()
             )
 
             assertEquals(expected, actual)
@@ -200,7 +201,7 @@ class ContactListViewModelTest {
             val expected = ContactListState.Loaded.Data(
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
+                }.toImmutableList(),
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
                 bottomSheetType = ContactListState.BottomSheetType.RedirectToWeb
             )
@@ -224,7 +225,7 @@ class ContactListViewModelTest {
             val expected = ContactListState.Loaded.Data(
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
+                }.toImmutableList(),
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
             )
 
@@ -247,7 +248,7 @@ class ContactListViewModelTest {
             val expected = ContactListState.Loaded.Data(
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
+                }.toImmutableList(),
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
             )
 
@@ -276,7 +277,7 @@ class ContactListViewModelTest {
             val expected = ContactListState.Loaded.Data(
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
+                }.toImmutableList(),
                 showDeleteConfirmDialog = Effect.of(contactUiModel),
                 bottomSheetType = ContactListState.BottomSheetType.Menu
             )
@@ -310,7 +311,7 @@ class ContactListViewModelTest {
             val expected = ContactListState.Loaded.Data(
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
+                }.toImmutableList(),
                 showDeleteConfirmDialog = Effect.empty(),
                 showDeleteConfirmationSnackbar = Effect.of(TextUiModel.TextRes(R.string.contact_deleted))
             )

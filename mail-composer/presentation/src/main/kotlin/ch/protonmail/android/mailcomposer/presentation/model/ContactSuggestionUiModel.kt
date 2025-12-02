@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 sealed interface ContactSuggestionUiModel {
@@ -35,6 +36,7 @@ sealed interface ContactSuggestionUiModel {
             val avatarColor: Color = Color.Unspecified
         ) : Data(name)
 
+        @Immutable
         data class ContactGroup(
             override val name: String,
             val emails: List<String>,

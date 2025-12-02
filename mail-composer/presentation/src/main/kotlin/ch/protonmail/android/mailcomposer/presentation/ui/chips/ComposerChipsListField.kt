@@ -69,6 +69,7 @@ import ch.protonmail.android.uicomponents.chips.ChipsListTextField
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.thenIf
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.takeIfNotBlank
 
@@ -76,7 +77,7 @@ import me.proton.core.util.kotlin.takeIfNotBlank
 @Composable
 fun ComposerChipsListField(
     label: String,
-    chipsList: List<ChipItem>,
+    chipsList: ImmutableList<ChipItem>,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester,
     nextFocusRequester: FocusRequester,

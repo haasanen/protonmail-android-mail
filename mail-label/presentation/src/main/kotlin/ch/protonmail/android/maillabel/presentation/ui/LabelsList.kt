@@ -47,11 +47,12 @@ import ch.protonmail.android.maillabel.presentation.previewdata.MailboxItemLabel
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus1CharLimit
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus2CharsLimit
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus3CharsLimit
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun LabelsList(
     modifier: Modifier = Modifier,
-    labels: List<LabelUiModel>,
+    labels: ImmutableList<LabelUiModel>,
     isExpanded: Boolean = false
 ) {
     SubcomposeLayout(
@@ -252,7 +253,7 @@ object MailboxItemLabels {
 @Composable
 @Preview(showBackground = true, widthDp = 400)
 private fun MailboxItemLabelsPreview(
-    @PreviewParameter(MailboxItemLabelsPreviewDataProvider::class) labels: List<LabelUiModel>
+    @PreviewParameter(MailboxItemLabelsPreviewDataProvider::class) labels: ImmutableList<LabelUiModel>
 ) {
     ProtonTheme {
         LabelsList(labels = labels)

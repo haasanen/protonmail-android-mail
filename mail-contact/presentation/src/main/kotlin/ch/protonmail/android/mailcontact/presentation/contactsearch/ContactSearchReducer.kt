@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcontact.presentation.contactsearch
 
+import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 
 class ContactSearchReducer @Inject constructor() {
@@ -33,7 +34,7 @@ class ContactSearchReducer @Inject constructor() {
         currentState: ContactSearchState,
         event: ContactSearchEvent.ContactsLoaded
     ): ContactSearchState = currentState.copy(
-        contactUiModels = event.contacts
+        contactUiModels = event.contacts.toImmutableList()
     )
 
     private fun reduceSearchCleared(currentState: ContactSearchState): ContactSearchState = currentState.copy(

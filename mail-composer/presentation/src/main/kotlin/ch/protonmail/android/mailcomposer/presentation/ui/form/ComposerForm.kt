@@ -68,6 +68,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
+import kotlinx.collections.immutable.toImmutableList
 import timber.log.Timber
 
 @Composable
@@ -109,7 +110,7 @@ internal fun ComposerForm(
             FocusedFieldType.BCC,
             FocusedFieldType.SUBJECT,
             FocusedFieldType.BODY
-        ),
+        ).toImmutableList(),
         initialFocus = initialFocusField,
         onFocusedField = {
             Timber.d("Focus changed: onFocusedField: $it")

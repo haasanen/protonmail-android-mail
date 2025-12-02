@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibility
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModel
+import kotlinx.collections.immutable.ImmutableList
 
 sealed interface ContactListState {
 
@@ -42,7 +43,7 @@ sealed interface ContactListState {
             override val bottomSheetType: BottomSheetType = BottomSheetType.Menu,
             val showDeleteConfirmDialog: Effect<ContactListItemUiModel.Contact> = Effect.empty(),
             val showDeleteConfirmationSnackbar: Effect<TextUiModel> = Effect.empty(),
-            val groupedContacts: List<GroupedContactListItemsUiModel>
+            val groupedContacts: ImmutableList<GroupedContactListItemsUiModel>
         ) : Loaded
 
         data class Empty(

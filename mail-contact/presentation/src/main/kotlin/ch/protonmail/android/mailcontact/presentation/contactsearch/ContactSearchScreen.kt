@@ -57,9 +57,11 @@ import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListItemCard
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
 import ch.protonmail.android.uicomponents.SearchView
 import ch.protonmail.android.uicomponents.dismissKeyboard
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: ContactSearchViewModel = hiltViewModel()) {
@@ -255,7 +257,7 @@ object ContactSearchContent {
 private fun ManageMembersContentPreview() {
     ContactSearchContent(
         state = ContactSearchState(
-            contactUiModels = emptyList()
+            contactUiModels = emptyList<ContactListItemUiModel>().toImmutableList()
         ),
         actions = ContactSearchContent.Actions.Empty
     )
@@ -273,7 +275,7 @@ private fun ContactSearchContentPreview() {
                 ContactListPreviewData.contactSampleData,
                 ContactListPreviewData.contactSampleData,
                 ContactListPreviewData.contactSampleData
-            )
+            ).toImmutableList()
         ),
         actions = ContactSearchContent.Actions.Empty
     )

@@ -18,9 +18,11 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
+import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 
+@Immutable
 data class ConversationDeleteState(
     val deleteDialogState: DeleteDialogState,
     val messageIdInConversation: MessageId? = null

@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListIt
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData.contactGroupSampleData
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData.contactSampleData
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun ContactListScreenContent(
@@ -87,7 +88,7 @@ fun ContactListScreenContentPreview() {
         GroupedContactListItemsUiModel(
             contacts = listOf(contactSampleData, contactSampleData)
         )
-    )
+    ).toImmutableList()
 
     val sampleState = ContactListState.Loaded.Data(
         groupedContacts = sampleGroupedContacts

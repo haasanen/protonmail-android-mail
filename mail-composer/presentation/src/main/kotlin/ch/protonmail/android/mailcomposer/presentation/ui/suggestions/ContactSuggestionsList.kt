@@ -25,11 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun ContactSuggestionsList(
     currentText: String,
-    contactSuggestionItems: List<ContactSuggestionUiModel>,
+    contactSuggestionItems: ImmutableList<ContactSuggestionUiModel>,
     modifier: Modifier,
     actions: ContactSuggestionsList.Actions
 ) {

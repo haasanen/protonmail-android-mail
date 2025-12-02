@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 
+@Immutable
 data class DraftUiModel(
     val draftFields: DraftFields,
     val draftDisplayBodyUiModel: DraftDisplayBodyUiModel

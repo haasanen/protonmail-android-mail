@@ -20,10 +20,12 @@ package ch.protonmail.android.mailcontact.presentation.contactdetails.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
+@Immutable
 data class ContactDetailsUiModel(
     val remoteId: String?,
     val avatarUiModel: AvatarUiModel,
@@ -34,6 +36,8 @@ data class ContactDetailsUiModel(
 
 sealed interface AvatarUiModel {
     data class Initials(val value: String, val color: Color) : AvatarUiModel
+
+    @Immutable
     data class Photo(val bitmap: ImageBitmap) : AvatarUiModel
 }
 
@@ -49,10 +53,12 @@ data class QuickActionUiModel(
     val isEnabled: Boolean
 )
 
+@Immutable
 data class ContactDetailsItemGroupUiModel(
     val contactDetailsItemUiModels: List<ContactDetailsItemUiModel>
 )
 
+@Immutable
 data class ContactDetailsItemUiModel(
     val contactDetailsItemType: ContactDetailsItemType,
     val label: TextUiModel,

@@ -21,10 +21,11 @@ package ch.protonmail.android.mailcomposer.presentation.ui.suggestions
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Dp
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
+import kotlinx.collections.immutable.ImmutableList
 
 @Stable
 data class ContactSuggestionState(
     val areSuggestionsExpanded: Boolean,
-    val contactSuggestionItems: List<ContactSuggestionUiModel>,
+    val contactSuggestionItems: ImmutableList<ContactSuggestionUiModel>,
     val suggestionListHeightDp: Dp
 )

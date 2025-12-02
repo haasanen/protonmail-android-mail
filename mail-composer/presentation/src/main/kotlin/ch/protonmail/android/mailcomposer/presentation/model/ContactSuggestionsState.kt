@@ -19,9 +19,10 @@
 package ch.protonmail.android.mailcomposer.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import kotlinx.collections.immutable.ImmutableList
 
 data class ContactSuggestionsState(
-    val suggestions: List<ContactSuggestionUiModel>,
+    val suggestions: ImmutableList<ContactSuggestionUiModel>,
     val suggestionsField: ContactSuggestionsField?,
     val requestContactsPermission: Effect<Unit>
 )

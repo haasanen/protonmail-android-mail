@@ -45,6 +45,7 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -184,7 +185,7 @@ internal class RecipientsViewModelTest {
         val expectedSuggestions = listOf(
             ContactUiModelTestData.contactSuggestion1,
             ContactUiModelTestData.contactGroupSuggestion
-        )
+        ).toImmutableList()
 
         coEvery {
             getContactSuggestions(userId, ContactSuggestionQuery(searchTerm))

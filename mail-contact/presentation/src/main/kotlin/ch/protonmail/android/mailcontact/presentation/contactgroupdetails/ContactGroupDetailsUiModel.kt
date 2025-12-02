@@ -18,10 +18,12 @@
 
 package ch.protonmail.android.mailcontact.presentation.contactgroupdetails
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
 
+@Immutable
 data class ContactGroupDetailsUiModel(
     val color: Color,
     val name: String,

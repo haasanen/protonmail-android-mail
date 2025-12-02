@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailmessage.presentation.model
 
+import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 
+@Immutable
 data class AvatarImagesUiModel(
     val states: Map<String, AvatarImageUiModel>
 ) {

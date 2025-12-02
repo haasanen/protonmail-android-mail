@@ -39,6 +39,7 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun BugReportScreenContent(
@@ -55,7 +56,7 @@ internal fun BugReportScreenContent(
             BugReportFocusableField.ExpectedResult,
             BugReportFocusableField.StepsToReproduce,
             BugReportFocusableField.ActualResult
-        ),
+        ).toImmutableList(),
         initialFocus = null,
         onFocusedField = {}
     ) { fieldFocusRequesters ->

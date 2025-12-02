@@ -19,7 +19,9 @@
 package ch.protonmail.android.mailcommon.presentation.model
 
 import java.io.File
+import androidx.compose.runtime.Immutable
 
+@Immutable
 sealed interface AvatarImageUiModel {
     data object NotLoaded : AvatarImageUiModel
     data object Loading : AvatarImageUiModel

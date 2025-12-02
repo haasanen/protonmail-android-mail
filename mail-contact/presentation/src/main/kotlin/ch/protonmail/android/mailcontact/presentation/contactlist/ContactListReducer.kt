@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.R
+import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 
 class ContactListReducer @Inject constructor() {
@@ -45,7 +46,7 @@ class ContactListReducer @Inject constructor() {
         return when (currentState) {
             is ContactListState.Loading -> {
                 if (event.groupedContactsList.isNotEmpty()) {
-                    ContactListState.Loaded.Data(groupedContacts = event.groupedContactsList)
+                    ContactListState.Loaded.Data(groupedContacts = event.groupedContactsList.toImmutableList())
                 } else ContactListState.Loaded.Empty()
             }
 
@@ -53,7 +54,7 @@ class ContactListReducer @Inject constructor() {
                 if (event.groupedContactsList.isNotEmpty()) {
                     ContactListState.Loaded.Data(
                         bottomSheetVisibilityEffect = currentState.bottomSheetVisibilityEffect,
-                        groupedContacts = event.groupedContactsList
+                        groupedContacts = event.groupedContactsList.toImmutableList()
                     )
                 } else {
                     ContactListState.Loaded.Empty(

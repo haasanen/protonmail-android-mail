@@ -18,9 +18,11 @@
 
 package ch.protonmail.android.maillabel.presentation.model
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
+@Immutable
 data class FolderUiModel(
     val id: LabelId,
     val parent: FolderUiModel?,

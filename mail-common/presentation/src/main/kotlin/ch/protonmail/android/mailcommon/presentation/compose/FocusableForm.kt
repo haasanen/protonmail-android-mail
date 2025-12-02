@@ -31,6 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 
 /**
  * Represents a set of focusable fields such that:
@@ -40,7 +43,7 @@ import androidx.compose.ui.focus.onFocusChanged
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <FocusedField> FocusableForm(
-    fieldList: List<FocusedField>,
+    fieldList: ImmutableList<FocusedField>,
     initialFocus: FocusedField?,
     onFocusedField: (FocusedField) -> Unit = {},
     content: @Composable FocusableFormScope<FocusedField>.(Map<FocusedField, FocusRequester>) -> Unit
@@ -51,7 +54,7 @@ fun <FocusedField> FocusableForm(
     val focusRequesters = remember(fieldList) {
         fieldList.associateWith {
             FocusRequester()
-        }
+        }.toImmutableMap()
     }
 
     val onFieldFocused: (FocusedField) -> Unit = {
@@ -71,7 +74,7 @@ fun <FocusedField> FocusableForm(
 }
 
 class FocusableFormScope<FocusedField> @OptIn(ExperimentalFoundationApi::class) constructor(
-    private val focusRequesters: Map<FocusedField, FocusRequester>,
+    private val focusRequesters: ImmutableMap<FocusedField, FocusRequester>,
     private val onFieldFocused: (focusedField: FocusedField) -> Unit
 ) {
 

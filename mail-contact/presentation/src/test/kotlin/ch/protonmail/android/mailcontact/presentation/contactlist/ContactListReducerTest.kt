@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModel
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -93,7 +94,7 @@ internal class ContactListReducerTest(
             GroupedContactListItemsUiModel(
                 contacts = loadedContactListItemUiModels2
             )
-        )
+        ).toImmutableList()
         private val emptyLoadingState = ContactListState.Loading()
         private val errorLoadingState = ContactListState.Loading(
             errorLoading = Effect.of(TextUiModel(R.string.contact_list_loading_error))

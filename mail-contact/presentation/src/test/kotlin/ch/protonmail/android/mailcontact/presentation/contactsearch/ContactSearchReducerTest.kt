@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -72,14 +73,14 @@ internal class ContactSearchReducerTest(
                 memberCount = 10,
                 color = Color(1f, 1f, 1f)
             )
-        )
+        ).toImmutableList()
 
         private val emptyState = ContactSearchState(
             contactUiModels = null,
             searchValue = ""
         )
         private val noResultsState = ContactSearchState(
-            contactUiModels = emptyList(),
+            contactUiModels = emptyList<ContactListItemUiModel>().toImmutableList(),
             searchValue = ""
         )
         private val someResultsContactsState = ContactSearchState(
@@ -147,7 +148,7 @@ internal class ContactSearchReducerTest(
                     contacts = searchResultsContacts.take(1)
                 ),
                 expectedState = someResultsContactsState.copy(
-                    contactUiModels = searchResultsContacts.take(1)
+                    contactUiModels = searchResultsContacts.take(1).toImmutableList()
                 )
             ),
             TestInput(
