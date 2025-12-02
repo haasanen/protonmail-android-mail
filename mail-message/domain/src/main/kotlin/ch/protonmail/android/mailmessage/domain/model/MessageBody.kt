@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import kotlin.time.Instant
 
 data class MessageBody(
@@ -26,7 +27,8 @@ data class MessageBody(
     val hasQuotedText: Boolean,
     val banners: List<MessageBanner>,
     val mimeType: MimeType,
-    val transformations: MessageBodyTransformations
+    val transformations: MessageBodyTransformations,
+    val attachments: List<AttachmentMetadata>
 )
 
 enum class MimeType(val value: String) {

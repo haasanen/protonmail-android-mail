@@ -87,7 +87,7 @@ internal class GetDecryptedMessageBodyTest(
             hasCalendarInvite = true,
             isUnread = false,
             banners = emptyList(),
-            attachments = testInput.message.attachments,
+            attachments = testInput.messageBody.attachments,
             transformations = transformations
         ).right()
         coEvery {
@@ -194,6 +194,12 @@ internal class GetDecryptedMessageBodyTest(
                 MimeType.MultipartMixed,
                 MessageTestData.message,
                 MessageBodyTestData.multipartMixedMessageBody,
+                shouldInjectCss = false
+            ),
+            TestInput(
+                MimeType.Html,
+                MessageTestData.message,
+                MessageBodyTestData.attachmentsBody,
                 shouldInjectCss = false
             )
         )

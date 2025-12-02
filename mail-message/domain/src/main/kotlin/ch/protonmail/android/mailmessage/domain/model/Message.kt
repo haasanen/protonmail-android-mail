@@ -63,6 +63,7 @@ data class Message(
     val numAttachments: Int,
     val flags: Long,
     val attachmentCount: AttachmentCount,
+    @Deprecated("limited to 10, get attachments from DecryptedMessage instead")
     val attachments: List<AttachmentMetadata>,
     val customLabels: List<Label>,
     val avatarInformation: AvatarInformation,

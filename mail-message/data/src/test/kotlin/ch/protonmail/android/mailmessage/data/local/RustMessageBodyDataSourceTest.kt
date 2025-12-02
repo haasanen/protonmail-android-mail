@@ -20,6 +20,8 @@ package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -38,13 +40,20 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
+import uniffi.proton_mail_uniffi.AttachmentMetadata
+import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_uniffi.Disposition
+import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.ImagePolicy
 import uniffi.proton_mail_uniffi.MessageBanner
+import uniffi.proton_mail_uniffi.MimeTypeCategory
 import uniffi.proton_mail_uniffi.TransformOpts
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata as DomainAttachmentMetadata
 
 class RustMessageBodyDataSourceTest {
 
@@ -80,9 +89,12 @@ class RustMessageBodyDataSourceTest {
             bodyBanners
         )
         val localMimeType = LocalMimeType.TEXT_PLAIN
+
+
         val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
             coEvery { body(any()) } returns bodyOutput.right()
             coEvery { mimeType() } returns localMimeType
+            coEvery { attachments() } returns TestData.rawAttachments
         }
 
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
@@ -96,6 +108,8 @@ class RustMessageBodyDataSourceTest {
         coVerify { rustMailboxFactory.createAllMail(userId) }
         coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
         assertTrue(result.isRight())
+        assertNotNull(result.getOrNull())
+        assertEquals(TestData.expectedAttachments, result.getOrNull()!!.attachments)
     }
 
     @Test
@@ -202,5 +216,36 @@ class RustMessageBodyDataSourceTest {
         // Then
         coVerify { rustMailboxFactory.createAllMail(userId) }
         assertEquals(expectedError.left(), result)
+    }
+
+    companion object {
+
+        object TestData {
+
+            val expectedAttachments = listOf(
+                DomainAttachmentMetadata(
+                    AttachmentId("100"),
+                    ch.protonmail.android.mailattachments.domain.model.AttachmentMimeType(
+                        "test",
+                        ch.protonmail.android.mailattachments.domain.model.MimeTypeCategory.Audio
+                    ),
+                    AttachmentDisposition.Attachment,
+                    "test attachment",
+                    100L,
+                    true
+                )
+            )
+
+            val rawAttachments = listOf(
+                AttachmentMetadata(
+                    Id(100.toULong()),
+                    Disposition.ATTACHMENT,
+                    AttachmentMimeType("test", MimeTypeCategory.AUDIO),
+                    "test attachment",
+                    100.toULong(),
+                    true
+                )
+            )
+        }
     }
 }

@@ -29,6 +29,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toAttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AttachmentDataResult
+import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.BodyOutputResult
 import uniffi.proton_mail_uniffi.DecryptedMessage
@@ -50,10 +51,13 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
                 Timber.d("DecryptedMessageWrapper: Failed to load image: $url: ${result.v1}")
                 result.v1.toAttachmentDataError().left()
             }
+
             is AttachmentDataResult.Ok -> result.v1.right()
         }
 
     fun mimeType(): LocalMimeType = decryptedMessage.mimeType()
+
+    fun attachments(): List<AttachmentMetadata> = decryptedMessage.attachments()
 
     suspend fun identifyRsvp() = decryptedMessage.identifyRsvp()
 

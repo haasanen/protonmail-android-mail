@@ -59,6 +59,7 @@ import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeInformation
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
 import uniffi.proton_mail_uniffi.MailTheme
@@ -154,13 +155,18 @@ fun LocalMimeType.toAndroidMimeType(): MimeType {
     }
 }
 
-fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType) = MessageBody(
+fun BodyOutput.toMessageBody(
+    messageId: MessageId,
+    mimeType: LocalMimeType,
+    attachments: List<AttachmentMetadata>
+) = MessageBody(
     messageId = messageId,
     body = this.body,
     hasQuotedText = this.hadBlockquote,
     banners = this.bodyBanners.map { it.toMessageBanner() },
     mimeType = mimeType.toAndroidMimeType(),
-    transformations = this.transformOpts.toMessageBodyTransformations()
+    transformations = this.transformOpts.toMessageBodyTransformations(),
+    attachments = attachments.map { it.toAttachmentMetadata() }
 )
 
 fun RemoteMessageId.toRemoteMessageId(): RustRemoteMessageId = RustRemoteMessageId(this.id)

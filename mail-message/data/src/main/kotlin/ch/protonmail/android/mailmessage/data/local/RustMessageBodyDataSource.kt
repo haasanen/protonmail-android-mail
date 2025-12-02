@@ -68,7 +68,10 @@ class RustMessageBodyDataSource @Inject constructor(
                 )
 
                 decryptedMessage.body(transformOptions).map { decryptedBody ->
-                    decryptedBody.toMessageBody(messageId.toMessageId(), decryptedMessage.mimeType())
+                    decryptedBody.toMessageBody(
+                        messageId.toMessageId(), decryptedMessage.mimeType(),
+                        decryptedMessage.attachments()
+                    )
                 }
             }
     }

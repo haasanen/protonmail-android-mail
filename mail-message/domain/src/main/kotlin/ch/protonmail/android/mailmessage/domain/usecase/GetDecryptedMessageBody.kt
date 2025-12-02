@@ -22,20 +22,16 @@ import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.getOrElse
 import arrow.core.right
-import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsInjectCssOverrideEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
-import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.repository.RsvpEventRepository
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class GetDecryptedMessageBody @Inject constructor(
@@ -57,13 +53,6 @@ class GetDecryptedMessageBody @Inject constructor(
             messageBodyRepository.getMessageBody(userId, messageId, transformations)
                 .mapLeft { GetMessageBodyError.Data(it) }
                 .flatMap { messageBody ->
-                    val attachments = when {
-                        messageBody.mimeType == MimeType.MultipartMixed ->
-                            getDecryptedMimeAttachments(userId, messageId, messageMetadata)
-
-                        else -> messageMetadata.attachments
-                    }
-
                     // Handle zoomed in newsletters
                     val transformedMessageBody = injectViewPortMetaTagIntoMessageBody(messageBody.body).let {
                         // Handle HTML content that styles with 'height: 100%'
@@ -80,26 +69,9 @@ class GetDecryptedMessageBody @Inject constructor(
                         hasQuotedText = messageBody.hasQuotedText,
                         hasCalendarInvite = hasCalendarInvite,
                         banners = messageBody.banners,
-                        attachments = attachments,
+                        attachments = messageBody.attachments,
                         transformations = messageBody.transformations
                     ).right()
                 }
         }
-
-    private suspend fun getDecryptedMimeAttachments(
-        userId: UserId,
-        messageId: MessageId,
-        message: Message
-    ): List<AttachmentMetadata> {
-        // After the message body is decrypted (through the first messageWithBody call)
-        // rust will expose the decrypted mime attachments to the message "attachments" field.
-        // This logic is needed to get such up-to-date attachments when opening a MIME message
-        return messageRepository.getMessage(userId, messageId)
-            .onLeft {
-                Timber.w("decrypted-message-body: Failed getting refreshed MIME attachments")
-            }
-            .getOrNull()
-            ?.attachments
-            ?: message.attachments
-    }
 }
