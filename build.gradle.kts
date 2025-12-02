@@ -106,7 +106,14 @@ kotlinCompilerArgs(
     // Enables experimental Time (Turbine).
     "-opt-in=kotlin.time.ExperimentalTime",
     // https://youtrack.jetbrains.com/issue/KT-73255
-    "-Xannotation-default-target=param-property"
+    "-Xannotation-default-target=param-property",
+    // Global Compose stability configuration
+    "-P",
+    "plugin:androidx.compose.compiler.plugins.kotlin:stabilityConfigurationPath=" +
+        rootProject.layout.projectDirectory
+            .file("compose-stability.conf")
+            .asFile
+            .absolutePath
 )
 
 fun Project.kotlinCompilerArgs(vararg extraCompilerArgs: String) {
