@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 /*
  * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
@@ -50,14 +52,31 @@ plugins {
 
 subprojects {
     if (project.findProperty("enableComposeCompilerReports") == "true") {
-        kotlinCompilerArgs(
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
-                project.layout.buildDirectory.asFile.get().absolutePath + "/compose_reports",
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
-                project.layout.buildDirectory.asFile.get().absolutePath + "/compose_metrics"
-        )
+        plugins.withId("org.jetbrains.kotlin.android") {
+            tasks.withType<KotlinCompile>().configureEach {
+                val reportsPrefix =
+                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination="
+                val metricsPrefix =
+                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination="
+
+                val projectDir = project.layout.buildDirectory.asFile.get().absolutePath
+                val currentArgs = compilerOptions.freeCompilerArgs.get()
+
+                // Avoid adding them twice if this block runs multiple times
+                if (currentArgs.none { it.startsWith(reportsPrefix) } &&
+                    currentArgs.none { it.startsWith(metricsPrefix) }
+                ) {
+                    compilerOptions.freeCompilerArgs.set(
+                        currentArgs + listOf(
+                            "-P",
+                            "$reportsPrefix$projectDir/compose_reports",
+                            "-P",
+                            "$metricsPrefix$projectDir/compose_metrics"
+                        )
+                    )
+                }
+            }
+        }
     }
 
     afterEvaluate {
