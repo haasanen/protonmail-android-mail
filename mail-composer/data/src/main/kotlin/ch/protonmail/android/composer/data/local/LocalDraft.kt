@@ -19,12 +19,13 @@
 package ch.protonmail.android.composer.data.local
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 
 data class LocalDraft(
     val sender: String,
     val subject: String,
-    val body: String,
+    val bodyFields: BodyFields,
     val mimeType: LocalMimeType,
     val recipientsTo: List<DraftRecipient>,
     val recipientsCc: List<DraftRecipient>,

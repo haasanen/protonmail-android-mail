@@ -18,10 +18,27 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
+@JvmInline
+value class DraftBody(val value: String)
+
+@JvmInline
+value class DraftHead(val value: String) {
+
+    companion object {
+
+        val Empty = DraftHead("")
+    }
+}
+
+data class BodyFields(
+    val head: DraftHead,
+    val body: DraftBody
+)
+
 data class DraftFields(
     val sender: SenderEmail,
     val subject: Subject,
-    val body: DraftBody,
+    val bodyFields: BodyFields,
     val mimeType: DraftMimeType,
     val recipientsTo: RecipientsTo,
     val recipientsCc: RecipientsCc,

@@ -23,6 +23,7 @@ import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
@@ -66,7 +67,7 @@ interface RustDraftDataSource {
     suspend fun updateBccRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>
     suspend fun listSenderAddresses(): Either<DataError, LocalSenderAddresses>
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
-    suspend fun body(): Either<DataError, String>
+    suspend fun bodyFields(): Either<DataError, BodyFields>
     suspend fun isPasswordProtected(): Either<DataError, Boolean>
     suspend fun setMessagePassword(password: MessagePassword): Either<MessagePasswordError, Unit>
 

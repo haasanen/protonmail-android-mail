@@ -21,8 +21,10 @@ import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
 import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.DraftHead
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
@@ -137,7 +139,8 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             subject = expected.localDraft.subject,
             sender = expected.localDraft.sender,
-            body = expected.localDraft.body,
+            head = expected.localDraft.bodyFields.head.value,
+            body = expected.localDraft.bodyFields.body.value,
             toRecipientsWrapper = toRecipientsWrapperMock,
             ccRecipientsWrapper = ccRecipientsWrapperMock,
             bccRecipientsWrapper = bccRecipientsWrapperMock,
@@ -169,7 +172,8 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             subject = expected.subject,
             sender = expected.sender,
-            body = expected.body,
+            head = expected.bodyFields.head.value,
+            body = expected.bodyFields.body.value,
             toRecipientsWrapper = recipientsWrapperMock,
             ccRecipientsWrapper = recipientsWrapperMock,
             bccRecipientsWrapper = recipientsWrapperMock
@@ -228,12 +232,13 @@ class RustDraftDataSourceImplTest {
         val expected = LocalDraftTestData.JobApplicationDraft
         val subject = expected.subject
         val sender = expected.sender
-        val body = expected.body
+        val body = expected.bodyFields
         val recipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val expectedDraftWrapper = expectDraftWrapperReturns(
             subject = subject,
             sender = sender,
-            body = body,
+            head = expected.bodyFields.head.value,
+            body = expected.bodyFields.body.value,
             toRecipientsWrapper = recipientsWrapperMock,
             ccRecipientsWrapper = recipientsWrapperMock,
             bccRecipientsWrapper = recipientsWrapperMock,
@@ -263,7 +268,8 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             subject = expected.subject,
             sender = expected.sender,
-            body = expected.body,
+            head = expected.bodyFields.head.value,
+            body = expected.bodyFields.body.value,
             toRecipientsWrapper = recipientsWrapperMock,
             ccRecipientsWrapper = recipientsWrapperMock,
             bccRecipientsWrapper = recipientsWrapperMock
@@ -337,7 +343,8 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             draft.subject,
             draft.sender,
-            draft.body,
+            draft.bodyFields.body.value,
+            draft.bodyFields.head.value,
             messageId = messageId.toLocalMessageId()
         )
         every { draftCache.get() } returns expectedDraftWrapper
@@ -355,7 +362,12 @@ class RustDraftDataSourceImplTest {
     fun `save subject returns error when rust draft wrapper call fails`() = runTest {
         // Given
         val draft = LocalDraftTestData.JobApplicationDraft
-        val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            draft.subject,
+            draft.sender,
+            draft.bodyFields.head.value,
+            draft.bodyFields.body.value
+        )
         val subject = Subject("saving a draft...")
         every { draftCache.get() } returns expectedDraftWrapper
         every { draftCache.get() } returns expectedDraftWrapper
@@ -378,9 +390,10 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val body = DraftBody("saving a draft's body...")
         val expectedDraftWrapper = expectDraftWrapperReturns(
-            draft.body,
+            draft.subject,
             draft.sender,
-            draft.body,
+            draft.bodyFields.body.value,
+            draft.bodyFields.head.value,
             messageId = messageId.toLocalMessageId()
         )
         every { draftCache.get() } returns expectedDraftWrapper
@@ -399,7 +412,12 @@ class RustDraftDataSourceImplTest {
         // Given
         val draft = LocalDraftTestData.JobApplicationDraft
         val body = DraftBody("saving a draft's body...")
-        val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            draft.subject,
+            draft.sender,
+            draft.bodyFields.head.value,
+            draft.bodyFields.body.value
+        )
         every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveResult.Error(
             DraftSaveError.Reason(DraftSaveErrorReason.MessageIsNotADraft)
@@ -1058,6 +1076,7 @@ class RustDraftDataSourceImplTest {
         subject: String = "",
         sender: String = "",
         body: String = "",
+        head: String = "",
         mimeType: LocalMimeType = LocalMimeType.TEXT_HTML,
         toRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
         ccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
@@ -1067,7 +1086,7 @@ class RustDraftDataSourceImplTest {
     ) = mockk<DraftWrapper> {
         every { subject() } returns subject
         every { sender() } returns sender
-        every { body() } returns body
+        every { bodyFields() } returns BodyFields(DraftHead(head), DraftBody(body))
         every { mimeType() } returns mimeType
         every { recipientsTo() } returns toRecipientsWrapper
         every { recipientsCc() } returns ccRecipientsWrapper

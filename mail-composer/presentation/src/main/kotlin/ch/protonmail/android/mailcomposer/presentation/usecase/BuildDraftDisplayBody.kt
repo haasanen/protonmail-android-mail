@@ -19,15 +19,15 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
+import ch.protonmail.android.mailcomposer.domain.model.ComposerValues.EDITOR_ID
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.DraftHead
 import ch.protonmail.android.mailcomposer.domain.usecase.GenerateCspNonce
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import javax.inject.Inject
-
-internal const val EDITOR_ID = "EditorId"
 
 class BuildDraftDisplayBody @Inject constructor(
     private val getCustomCss: GetCustomCss,
@@ -40,16 +40,16 @@ class BuildDraftDisplayBody @Inject constructor(
         getCustomCss() to getCustomJs()
     }
 
-    suspend operator fun invoke(draftBody: DraftBody): DraftDisplayBodyUiModel {
-        val bodyContent = draftBody.value
+    suspend operator fun invoke(draftHead: DraftHead, draftBody: DraftBody): DraftDisplayBodyUiModel {
         val cspNonce = generateCspNonce()
         val (css, javascript) = cssAndJs.await()
 
-        return buildHtmlTemplate(bodyContent, css, javascript, cspNonce.value)
+        return buildHtmlTemplate(draftBody, draftHead, css, javascript, cspNonce.value)
     }
 
     private fun buildHtmlTemplate(
-        bodyContent: String,
+        bodyContent: DraftBody,
+        draftHead: DraftHead,
         customCss: String,
         javascript: String,
         cspNonce: String
@@ -62,15 +62,21 @@ class BuildDraftDisplayBody @Inject constructor(
                     <meta id="myViewport" name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
                     <meta id="myCSP" http-equiv="Content-Security-Policy" content="script-src 'nonce-$cspNonce'">
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    
+                    <!-- START Rust SDK CSS overrides -->
+                    ${draftHead.value}
+                    <!-- END Rust SDK CSS overrides -->
+                    
+                    <!-- START Client CSS overrides -->
                     <style>
                         $customCss
                     </style>
-
+                    <!-- END Client CSS overrides -->
                 </head>
                 <body>
                     <div id="editor_header"></div>
                     <div role="textbox" aria-multiline="true" id="$EDITOR_ID" contentEditable="true" placeholder="" class="placeholder">
-                        $bodyContent
+                        ${bodyContent.value}
                     </div>
                     <div id="editor_footer"></div>
 

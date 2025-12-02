@@ -1,7 +1,9 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
+import ch.protonmail.android.mailcomposer.domain.model.ComposerValues.EDITOR_ID
 import ch.protonmail.android.mailcomposer.domain.model.CspNonce
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.DraftHead
 import ch.protonmail.android.mailcomposer.domain.usecase.GenerateCspNonce
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -32,19 +34,28 @@ internal class BuildDraftDisplayBodyTest {
     fun `returns html template with injected css and javascript`() = runTest {
         // Given
         val messageBodyWithType = DraftBody(messageBody)
+        val messageDraftHead = DraftHead(messageHead)
         coEvery { getCustomCss() } returns rawCustomCss
         coEvery { getCustomJs() } returns rawCustomJs
         every { generateCspNonce() } returns CspNonce(rawCspNonce)
-        val expected = buildHtmlTemplate(messageBody, rawCustomCss, rawCustomJs, rawCspNonce)
+        val expected = buildHtmlTemplate(
+            headContent = messageHead,
+            bodyContent = messageBody,
+            customCss = rawCustomCss,
+            javascript = rawCustomJs,
+            cspNonce = rawCspNonce
+        )
 
         // When
-        val actual = buildDraftDisplayBody(messageBodyWithType)
+        val actual = buildDraftDisplayBody(messageDraftHead, messageBodyWithType)
 
         // Then
         assertEquals(expected, actual)
     }
 
+    @Suppress("SameParameterValue")
     private fun buildHtmlTemplate(
+        headContent: String,
         bodyContent: String,
         customCss: String,
         javascript: String,
@@ -58,10 +69,16 @@ internal class BuildDraftDisplayBodyTest {
                     <meta id="myViewport" name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
                     <meta id="myCSP" http-equiv="Content-Security-Policy" content="script-src 'nonce-$cspNonce'">
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    
+                    <!-- START Rust SDK CSS overrides -->
+                    $headContent
+                    <!-- END Rust SDK CSS overrides -->
+                    
+                    <!-- START Client CSS overrides -->
                     <style>
                         $customCss
                     </style>
-
+                    <!-- END Client CSS overrides -->
                 </head>
                 <body>
                     <div id="editor_header"></div>
@@ -83,6 +100,7 @@ internal class BuildDraftDisplayBodyTest {
 
     companion object TestData {
 
+        private const val messageHead = "This is the message head"
         private const val messageBody = "This is the message body sanitized"
         private const val rawCustomCss = "<style> ... </style>"
         private const val rawCustomJs = "<script> ... </script>"

@@ -50,6 +50,7 @@ import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
@@ -286,7 +287,7 @@ class RustDraftDataSourceImpl @Inject constructor(
         return mutableRecipientsUpdatedFlow.asSharedFlow()
     }
 
-    override suspend fun body(): Either<DataError, String> = draftCache.get().body().right()
+    override suspend fun bodyFields(): Either<DataError, BodyFields> = draftCache.get().bodyFields().right()
 
     override suspend fun isPasswordProtected(): Either<DataError, Boolean> =
         when (val result = draftCache.get().isPasswordProtected()) {

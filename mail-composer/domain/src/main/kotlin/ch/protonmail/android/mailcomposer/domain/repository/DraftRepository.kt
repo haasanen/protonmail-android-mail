@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcomposer.domain.repository
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoSendError
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DiscardDraftError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
@@ -62,7 +63,7 @@ interface DraftRepository {
     suspend fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions>
     suspend fun listSenderAddresses(): Either<DataError, SenderAddresses>
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
-    suspend fun getBody(): Either<DataError, DraftBody>
+    suspend fun getBodyFields(): Either<DataError, BodyFields>
 
     fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients>
     suspend fun getDraftSenderValidationError(): DraftSenderValidationError?

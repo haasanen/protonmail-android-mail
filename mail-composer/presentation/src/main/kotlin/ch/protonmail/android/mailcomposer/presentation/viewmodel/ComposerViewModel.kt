@@ -37,10 +37,12 @@ import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcommon.presentation.ui.replaceText
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.DraftHead
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
@@ -192,14 +194,18 @@ class ComposerViewModel @AssistedInject constructor(
 
     internal val bodyTextField = TextFieldState()
 
+    private val draftHead = MutableStateFlow(DraftHead.Empty)
+
     // This is what we're going to display in the Webview, keep it separate from other flows
     // as this can't be debounced (or webview recompositions won't receive the updated value)
     internal val displayBody: StateFlow<DraftDisplayBodyUiModel> =
-        snapshotFlow { bodyTextField.text }
-            .mapLatest { text ->
-                val draftBody = DraftBody(text.toString())
-                buildDraftDisplayBody(draftBody)
-            }
+        combine(
+            snapshotFlow { bodyTextField.text },
+            draftHead
+        ) { text, head ->
+            val draftBody = DraftBody(text.toString())
+            buildDraftDisplayBody(head, draftBody)
+        }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
@@ -279,11 +285,11 @@ class ComposerViewModel @AssistedInject constructor(
                 Timber.d("Saving draft..")
 
                 val (toParticipants, ccParticipants, bccParticipants) = it.recipients.toDraftRecipients()
-
+                val bodyFields = BodyFields(draftHead.value, it.body)
                 val draftFields = DraftFields(
                     it.sender,
                     it.subject,
-                    it.body,
+                    bodyFields,
                     currentMimeType(),
                     RecipientsTo(toParticipants),
                     RecipientsCc(ccParticipants),
@@ -337,6 +343,7 @@ class ComposerViewModel @AssistedInject constructor(
             draftAction != null -> prefillForDraftAction(draftAction).onLeft {
                 return false
             }
+
             else -> prefillForNewDraft().onLeft {
                 return false
             }
@@ -387,8 +394,9 @@ class ComposerViewModel @AssistedInject constructor(
         // making this the same as other prefill cases (eg. "reply" or "fw")
         return createEmptyDraft(primaryUserId())
             .onRight { draftFields ->
-                // ensure the displayBody prop that the UI uses to set initial value is up-to-date with the signature
-                bodyTextField.replaceText(draftFields.body.value, resetRange = true)
+                // ensure the body fields properties the UI uses to set initial values are up-to-date with the signature
+                draftHead.value = draftFields.bodyFields.head
+                bodyTextField.replaceText(draftFields.bodyFields.body.value, resetRange = true)
 
                 emitNewStateFor(
                     CompositeEvent.DraftContentReady(
@@ -436,6 +444,7 @@ class ComposerViewModel @AssistedInject constructor(
             }
         )
         val subject = Subject(intentShareInfo.emailSubject ?: "")
+        val bodyFields = BodyFields(draftHead.value, draftBody)
         val recipientsTo = RecipientsTo(
             intentShareInfo.emailRecipientTo.takeIfNotEmpty()?.map {
                 RecipientUiModel.Valid(it).toDraftRecipient()
@@ -457,7 +466,7 @@ class ComposerViewModel @AssistedInject constructor(
         return DraftFields(
             currentSenderEmail(),
             subject,
-            draftBody,
+            bodyFields,
             currentMimeType(),
             recipientsTo,
             recipientsCc,
@@ -524,9 +533,7 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun DraftFields.toDraftUiModel(): DraftUiModel {
-        val draftBody = DraftBody(this.body.value)
-        val draftDisplayBody = buildDraftDisplayBody(draftBody)
-
+        val draftDisplayBody = buildDraftDisplayBody(this.bodyFields.head, this.bodyFields.body)
         return DraftUiModel(this, draftDisplayBody)
     }
 
@@ -613,11 +620,13 @@ class ComposerViewModel @AssistedInject constructor(
 
             }
             .onRight { bodyWithNewSignature ->
-                bodyTextField.replaceText(bodyWithNewSignature.value)
+                draftHead.value = bodyWithNewSignature.head
+                bodyTextField.replaceText(bodyWithNewSignature.body.value)
 
                 // This needs to be created directly as we're emitting a state change.
                 val draftDisplayBody = buildDraftDisplayBody(
-                    DraftBody(bodyWithNewSignature.value)
+                    bodyWithNewSignature.head,
+                    bodyWithNewSignature.body
                 )
 
                 emitNewStateFor(CompositeEvent.UserChangedSender(newSender, draftDisplayBody))
@@ -833,7 +842,7 @@ class ComposerViewModel @AssistedInject constructor(
                 raise(saveError)
             }
 
-        storeDraftWithBody(fields.body)
+        storeDraftWithBody(fields.bodyFields.body)
             .onLeft { saveError ->
                 raise(saveError)
             }
@@ -856,7 +865,7 @@ class ComposerViewModel @AssistedInject constructor(
 
         if (fields.haveBlankRecipients() &&
             fields.haveBlankSubject() &&
-            fields.body.value.isEmpty()
+            fields.bodyFields.body.value.isEmpty()
         ) {
             return true
         }
@@ -868,10 +877,12 @@ class ComposerViewModel @AssistedInject constructor(
         val (toParticipants, ccParticipants, bccParticipants) =
             recipientsStateManager.recipients.value.toDraftRecipients()
 
+        val bodyFields = BodyFields(draftHead.value, DraftBody(bodyTextField.text.toString()))
+
         DraftFields(
             currentSenderEmail(),
             Subject(subjectTextField.text.toString().stripNewLines()),
-            DraftBody(bodyTextField.text.toString()),
+            bodyFields,
             currentMimeType(),
             RecipientsTo(toParticipants),
             RecipientsCc(ccParticipants),
@@ -916,8 +927,9 @@ class ComposerViewModel @AssistedInject constructor(
     private fun currentMimeType(): DraftMimeType = composerStates.value.main.draftType
 
     private fun initComposerFields(draftFields: DraftFields) {
+        draftHead.value = draftFields.bodyFields.head
         subjectTextField.replaceText(draftFields.subject.value)
-        bodyTextField.replaceText(draftFields.body.value, resetRange = true)
+        bodyTextField.replaceText(draftFields.bodyFields.body.value, resetRange = true)
         recipientsStateManager.setFromDraftRecipients(
             toRecipients = draftFields.recipientsTo.value,
             ccRecipients = draftFields.recipientsCc.value,

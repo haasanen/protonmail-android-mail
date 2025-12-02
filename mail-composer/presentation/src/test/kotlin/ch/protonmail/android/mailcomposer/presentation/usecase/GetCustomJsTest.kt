@@ -1,6 +1,7 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
 import android.content.Context
+import ch.protonmail.android.mailcomposer.domain.model.ComposerValues.EDITOR_ID
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.ui.JAVASCRIPT_CALLBACK_INTERFACE_NAME
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag

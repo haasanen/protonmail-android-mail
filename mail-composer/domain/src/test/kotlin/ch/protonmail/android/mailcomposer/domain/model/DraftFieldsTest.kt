@@ -27,7 +27,10 @@ class DraftFieldsTest {
     private val sut = DraftFields(
         sender = SenderEmail("A sender email"),
         subject = Subject("A test subject"),
-        body = DraftBody("A draft body"),
+        bodyFields = BodyFields(
+            DraftHead("Draft head"),
+            DraftBody("A draft body")
+        ),
         mimeType = DraftMimeType.Html,
         recipientsTo = RecipientsTo(emptyList()),
         recipientsCc = RecipientsCc(emptyList()),

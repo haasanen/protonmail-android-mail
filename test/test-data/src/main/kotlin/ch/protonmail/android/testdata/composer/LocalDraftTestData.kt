@@ -21,6 +21,9 @@ package ch.protonmail.android.testdata.composer
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.DraftHead
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 
 object LocalDraftTestData {
@@ -49,6 +52,7 @@ object LocalDraftTestData {
         expectedSubject: String = "Subject for the message",
         expectedSenderEmail: String = "drafts@proton.me",
         expectedDraftBody: String = "I am plaintext",
+        expectedDraftHead: String = "",
         expectedMimeType: LocalMimeType = LocalMimeType.TEXT_HTML,
         recipientsTo: List<DraftRecipient> = listOf(DraftRecipientTestData.NamelessRecipient),
         recipientsCc: List<DraftRecipient> = listOf(DraftRecipientTestData.NamelessRecipient),
@@ -56,7 +60,7 @@ object LocalDraftTestData {
     ) = LocalDraft(
         expectedSenderEmail,
         expectedSubject,
-        expectedDraftBody,
+        BodyFields(head = DraftHead(expectedDraftHead), body = DraftBody(expectedDraftBody)),
         expectedMimeType,
         recipientsTo,
         recipientsCc,

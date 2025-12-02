@@ -27,8 +27,10 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.DraftHead
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
@@ -81,7 +83,10 @@ internal class EffectsStateModificationTest(
         private val draftFields = DraftFields(
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
-            DraftBody("Decrypted body of this draft"),
+            BodyFields(
+                DraftHead("The head of this draft"),
+                DraftBody("Decrypted body of this draft")
+            ),
             DraftMimeType.Html,
             RecipientsTo(listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch"))),
             RecipientsCc(emptyList()),

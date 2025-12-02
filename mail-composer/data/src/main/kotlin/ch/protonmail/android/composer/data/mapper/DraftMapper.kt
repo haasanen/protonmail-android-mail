@@ -30,7 +30,6 @@ import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
-import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
@@ -80,7 +79,7 @@ fun LocalDraftWithSyncStatus.toDraftFieldsWithSyncStatus() = when (this) {
 fun LocalDraft.toDraftFields() = DraftFields(
     sender = SenderEmail(this.sender),
     subject = Subject(this.subject),
-    body = DraftBody(this.body),
+    bodyFields = this.bodyFields,
     mimeType = this.mimeType.toDraftMimeType(),
     recipientsTo = RecipientsTo(this.recipientsTo),
     recipientsCc = RecipientsCc(this.recipientsCc),
@@ -95,7 +94,7 @@ fun DraftWrapperWithSyncStatus.toLocalDraftWithSyncStatus() = when (this.syncSta
 fun DraftWrapper.toLocalDraft() = LocalDraft(
     subject = this.subject(),
     sender = this.sender(),
-    body = this.body(),
+    bodyFields = this.bodyFields(),
     mimeType = this.mimeType(),
     recipientsTo = this.recipientsTo().recipients().toComposerRecipients(),
     recipientsCc = this.recipientsCc().recipients().toComposerRecipients(),

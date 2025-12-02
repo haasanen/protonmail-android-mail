@@ -19,10 +19,17 @@
 package ch.protonmail.android.composer.data.wrapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
+import ch.protonmail.android.mailcomposer.domain.model.BodyFields
+import ch.protonmail.android.mailcomposer.domain.model.ComposerValues.EDITOR_ID
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.DraftHead
 import uniffi.proton_mail_uniffi.Draft
+import uniffi.proton_mail_uniffi.DraftComposerContentResult
 import uniffi.proton_mail_uniffi.DraftExpirationTime
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
 import uniffi.proton_mail_uniffi.ImagePolicy
+import uniffi.proton_mail_uniffi.MailTheme
+import uniffi.proton_mail_uniffi.ThemeOpts
 import uniffi.proton_mail_uniffi.UnixTimestamp
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
@@ -38,7 +45,22 @@ class DraftWrapper(private val rustDraft: Draft) {
 
     fun sender(): String = rustDraft.sender()
 
-    fun body(): String = rustDraft.body()
+    fun bodyFields(): BodyFields {
+        // Hardcoded, this param is useless as we target Android 10+ now.
+        val themeOpts = ThemeOpts(currentTheme = MailTheme.DARK_MODE)
+
+        return when (val result = rustDraft.composerContent(themeOpts, EDITOR_ID)) {
+            is DraftComposerContentResult.Error -> BodyFields(
+                head = DraftHead.Empty,
+                body = DraftBody(rustDraft.body())
+            )
+
+            is DraftComposerContentResult.Ok -> BodyFields(
+                head = DraftHead(result.v1.head),
+                body = DraftBody(result.v1.body)
+            )
+        }
+    }
 
     fun recipientsTo(): ComposerRecipientListWrapper = ComposerRecipientListWrapper(rustDraft.toRecipients())
 
