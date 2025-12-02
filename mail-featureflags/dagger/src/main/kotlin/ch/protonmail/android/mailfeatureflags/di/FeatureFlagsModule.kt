@@ -63,7 +63,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Suppress("TooManyFunctions")
 object FeatureFlagsModule {
-
     @Provides
     @IntoSet
     @Singleton

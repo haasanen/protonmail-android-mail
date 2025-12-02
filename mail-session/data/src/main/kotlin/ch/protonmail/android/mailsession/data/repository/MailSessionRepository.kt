@@ -26,4 +26,6 @@ interface MailSessionRepository {
     fun setMailSession(mailSession: MailSession)
 
     fun getMailSession(): MailSessionWrapper
+
+    fun isMailSessionInitialised(): Boolean
 }

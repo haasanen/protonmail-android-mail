@@ -85,4 +85,6 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
     }
 
     fun observeEventLoopErrors(callback: EventLoopErrorObserver) = userSession.observeEventLoopErrors(callback)
+
+    suspend fun isFeatureEnabled(featureId: String) = userSession.isFeatureEnabled(featureId = featureId)
 }

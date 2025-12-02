@@ -31,4 +31,6 @@ class InMemoryMailSessionRepository @Inject constructor() : MailSessionRepositor
     }
 
     override fun getMailSession() = MailSessionWrapper(mailSession)
+
+    override fun isMailSessionInitialised(): Boolean = ::mailSession.isInitialized
 }

@@ -21,15 +21,18 @@ package ch.protonmail.android.mailfeatureflags.data.local
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagProviderPriority
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
-import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import dagger.Lazy
 import kotlinx.coroutines.CoroutineScope
+import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailSessionIsFeatureEnabledResult
+import uniffi.proton_mail_uniffi.MailUserSessionIsFeatureEnabledResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UnleashFeatureFlagValueProvider @Inject constructor(
-    private val mailSessionRepository: MailSessionRepository,
+    private val sessionFacade: Lazy<SessionFacade>,
     @FeatureFlagsCoroutineScope private val coroutineScope: CoroutineScope
 ) : FeatureFlagValueProvider {
 
@@ -38,8 +41,47 @@ class UnleashFeatureFlagValueProvider @Inject constructor(
     override val name: String = "Unleash FF provider"
 
     override suspend fun getFeatureFlagValue(key: String): Boolean? = with(coroutineScope) {
-        val mailSession = mailSessionRepository.getMailSession().getRustMailSession()
-        return@with when (val result = mailSession.isFeatureEnabled(key)) {
+        // needs to be lazy because of initialisation steps
+        val session = sessionFacade.get()
+        // For feature flags that are used in the app initialisation such as IsMultithreadDnsDispatcherEnabled
+        if (session.isMailSessionInitialised().not()) {
+            Timber.w(
+                "Getting FeatureFlag:: MailSession is not initialized yet. " +
+                    " It's probably that either the user is not logged in or the app is initialising"
+            )
+            return getAppSessionFeatureFlag(key = key, sessionFacade = session)
+        }
+
+        val userId = session.getUserId()
+        if (userId == null) {
+            Timber.w(
+                "Getting FeatureFlag:: No user session available"
+            )
+            return getAppSessionFeatureFlag(key = key, sessionFacade = session)
+        }
+        return getUserSessionFeatureFlag(key = key, userId = userId, session)
+    }
+
+    private suspend fun getUserSessionFeatureFlag(
+        key: String,
+        userId: UserId,
+        sessionFacade: SessionFacade
+    ): Boolean? {
+        return when (val result = sessionFacade.getIsUserSessionFeatureEnabled(key = key, userId = userId)) {
+            is MailUserSessionIsFeatureEnabledResult.Error -> null
+            is MailUserSessionIsFeatureEnabledResult.Ok -> result.v1
+            null -> null
+        }
+    }
+
+
+    /**
+     * MailSession::isFeatureEnabled won't refresh if there is an active user session!
+     * Use MailUserSession::isFeatureEnabled instead. MailSession::isFeatureEnabled should be used only
+     * before user logs in, for example on login screen.
+     */
+    private suspend fun getAppSessionFeatureFlag(sessionFacade: SessionFacade, key: String): Boolean? {
+        return when (val result = sessionFacade.getIsMailSessionFeatureEnabled(key)) {
             is MailSessionIsFeatureEnabledResult.Error -> null
             is MailSessionIsFeatureEnabledResult.Ok -> result.v1
         }

@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
+    implementation(project(":mail-session:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:utils"))
