@@ -313,10 +313,10 @@ class MessageMapperTest {
         val message = localMessageMetadata.toMessage()
 
         // Then
-        assertEquals(2, message.attachments.size)
+        assertEquals(2, message.attachmentPreviews.size)
         assertEquals(0, message.attachmentCount.calendar)
-        assertEquals(attachment1.toAttachmentMetadata(), message.attachments[0])
-        assertEquals(attachment2.toAttachmentMetadata(), message.attachments[1])
+        assertEquals(attachment1.toAttachmentMetadata(), message.attachmentPreviews[0])
+        assertEquals(attachment2.toAttachmentMetadata(), message.attachmentPreviews[1])
     }
 }
 

@@ -111,7 +111,7 @@ fun LocalMessageMetadata.toMessage(): Message {
         attachmentCount = AttachmentCount(
             calendar = this.attachmentsMetadata.getCalendarAttachmentCount()
         ),
-        attachments = attachmentsMetadata.filter { it.disposition == LocalAttachmentDisposition.ATTACHMENT }
+        attachmentPreviews = attachmentsMetadata.filter { it.disposition == LocalAttachmentDisposition.ATTACHMENT }
             .map { it.toAttachmentMetadata() },
         customLabels = customLabels.map { it.toLabel() },
         avatarInformation = this.avatar.toAvatarInformation(),
