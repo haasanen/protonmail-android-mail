@@ -3667,6 +3667,171 @@ internal class MailboxViewModelTest {
         }
     }
 
+    @Test
+    fun `when item clicked in search mode with spam trash filter enabled then origin is AllMail label`() = runTest {
+        // Given
+        val item = buildMailboxUiModelItem(id = "id", type = Message)
+        val searchModeState = createSearchModeState(
+            spamTrashFilterState = ShowSpamTrashIncludeFilterState.Data.Shown(enabled = true)
+        )
+        val allMailLabelId = MailLabelTestData.allMailSystemLabel.id
+
+        every { mailboxReducer.newStateFrom(any(), any()) } returns searchModeState
+        coEvery { findLocalSystemLabelId(userId, SystemLabelId.AllMail) } returns allMailLabelId
+        coEvery { setEphemeralMailboxCursor(userId, any(), any()) } just runs
+        expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectPagerMock()
+
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // When
+            mailboxViewModel.submit(MailboxViewAction.ItemClicked(item))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { findLocalSystemLabelId(userId, SystemLabelId.AllMail) }
+            verify {
+                mailboxReducer.newStateFrom(
+                    any(),
+                    MailboxEvent.ItemClicked.ItemDetailsOpened(
+                        item,
+                        allMailLabelId.labelId,
+                        false,
+                        item.id
+                    )
+                )
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when item clicked in search mode with spam trash filter hidden then origin is AllMail`() = runTest {
+        // Given
+        val item = buildMailboxUiModelItem(id = "id", type = Message)
+        val searchModeState = createSearchModeState(
+            spamTrashFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden
+        )
+        val allMailLabelId = MailLabelTestData.allMailSystemLabel.id
+
+        every { mailboxReducer.newStateFrom(any(), any()) } returns searchModeState
+        coEvery { findLocalSystemLabelId(userId, SystemLabelId.AllMail) } returns allMailLabelId
+        coEvery { setEphemeralMailboxCursor(userId, any(), any()) } just runs
+        expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectPagerMock()
+
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // When
+            mailboxViewModel.submit(MailboxViewAction.ItemClicked(item))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { findLocalSystemLabelId(userId, SystemLabelId.AllMail) }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when item clicked in search mode with spam trash filter disabled then origin is AlmostAllMail`() = runTest {
+        // Given
+        val item = buildMailboxUiModelItem(id = "id", type = Message)
+        val searchModeState = createSearchModeState(
+            spamTrashFilterState = ShowSpamTrashIncludeFilterState.Data.Shown(enabled = false)
+        )
+        val almostAllMailLabelId = MailLabelTestData.almostAllMailSystemLabel.id
+
+        every { mailboxReducer.newStateFrom(any(), any()) } returns searchModeState
+        coEvery { findLocalSystemLabelId(userId, SystemLabelId.AlmostAllMail) } returns almostAllMailLabelId
+        coEvery { setEphemeralMailboxCursor(userId, any(), any()) } just runs
+        expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectPagerMock()
+
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // When
+            mailboxViewModel.submit(MailboxViewAction.ItemClicked(item))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { findLocalSystemLabelId(userId, SystemLabelId.AlmostAllMail) }
+            coVerify(exactly = 0) { findLocalSystemLabelId(userId, SystemLabelId.AllMail) }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when item clicked not in search mode with spam trash filter enabled then origin is AllMail`() = runTest {
+        // Given
+        val item = buildMailboxUiModelItem(id = "id", type = Message)
+        val stateWithFilterEnabled = createMailboxDataState().copy(
+            showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Shown(enabled = true)
+        )
+        val allMailLabelId = MailLabelTestData.allMailSystemLabel.id
+
+        every { mailboxReducer.newStateFrom(any(), any()) } returns stateWithFilterEnabled
+        coEvery { findLocalSystemLabelId(userId, SystemLabelId.AllMail) } returns allMailLabelId
+        coEvery { setEphemeralMailboxCursor(userId, any(), any()) } just runs
+        expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectPagerMock()
+
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // When
+            mailboxViewModel.submit(MailboxViewAction.ItemClicked(item))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { findLocalSystemLabelId(userId, SystemLabelId.AllMail) }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when item clicked not in search mode with spam trash filter disabled then origin is currentlabel`() = runTest {
+        // Given
+        val item = buildMailboxUiModelItem(id = "id", type = Message)
+        val currentLabelId = initialLocationMailLabelId.labelId
+        val intermediateState = createMailboxDataState()
+
+        expectedTrashSpamFilterStateChange(intermediateState)
+        expectedSelectedLabelCountStateChange(intermediateState)
+        coEvery { setEphemeralMailboxCursor(userId, any(), any()) } just runs
+        expectViewModeForCurrentLocation(NoConversationGrouping)
+        expectPagerMock()
+
+        every {
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.ItemClicked.ItemDetailsOpened(item, currentLabelId, false, item.id)
+            )
+        } returns intermediateState
+
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // When
+            mailboxViewModel.submit(MailboxViewAction.ItemClicked(item))
+            advanceUntilIdle()
+
+            // Then
+            coVerify(exactly = 0) { findLocalSystemLabelId(any(), any()) }
+
+            // Verify current label is used
+            verify {
+                mailboxReducer.newStateFrom(
+                    any(),
+                    MailboxEvent.ItemClicked.ItemDetailsOpened(item, currentLabelId, false, item.id)
+                )
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     private fun returnExpectedStateForBottomBarEvent(
         intermediateState: MailboxState? = null,
         expectedState: MailboxState
@@ -3911,6 +4076,26 @@ internal class MailboxViewModelTest {
         currentMailLabel = MailLabelTestData.trashSystemLabel,
         bottomSheetState = BottomSheetState(expectedBottomSheetContent)
     )
+
+    private fun createSearchModeState(
+        spamTrashFilterState: ShowSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden
+    ): MailboxState {
+        return MailboxStateSampleData.Loading.copy(
+            mailboxListState = MailboxListState.Data.ViewMode(
+                currentMailLabel = MailLabelTestData.allMailSystemLabel,
+                openItemEffect = Effect.empty(),
+                scrollToMailboxTop = Effect.empty(),
+                refreshErrorEffect = Effect.empty(),
+                refreshOngoing = false,
+                swipeActions = null,
+                searchState = MailboxSearchStateSampleData.SearchData,
+                shouldShowFab = false,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1,
+                loadingBarState = LoadingBarUiState.Hide
+            ),
+            showSpamTrashIncludeFilterState = spamTrashFilterState
+        )
+    }
 
     private fun expectPagerMock(
         user: UserId = userId,

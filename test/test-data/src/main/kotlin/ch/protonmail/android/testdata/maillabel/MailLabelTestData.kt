@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.testdata.maillabel
 
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object MailLabelTestData {
 
@@ -31,6 +31,7 @@ object MailLabelTestData {
     val draftsSystemLabel = buildDynamicLabelId(SystemLabelId.Drafts)
     val trashSystemLabel = buildDynamicLabelId(SystemLabelId.Trash)
     val allMailSystemLabel = buildDynamicLabelId(SystemLabelId.AllMail)
+    val almostAllMailSystemLabel = buildDynamicLabelId(SystemLabelId.AlmostAllMail)
     val sentSystemLabel = buildDynamicLabelId(SystemLabelId.Sent)
     val starredSystemLabel = buildDynamicLabelId(SystemLabelId.Starred)
     val allDraftsSystemLabel = buildDynamicLabelId(SystemLabelId.AllDrafts)

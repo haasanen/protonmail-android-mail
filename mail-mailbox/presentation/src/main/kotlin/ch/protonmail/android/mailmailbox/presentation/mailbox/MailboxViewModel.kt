@@ -1349,9 +1349,9 @@ class MailboxViewModel @Inject constructor(
         mutableState.value = state
     }
 
-    // A user can be logged in but not have a valid user session, in this case the app can't function.  User sessions
-// are cached, but in rare cases such as migration RUST will not have even cached the session and therefore network
-// connection is obligatory and we MUST load the session before the app can recover
+    // A user can be logged in but not have a valid user session, in this case the app can't function. User sessions
+    // are cached, but in rare cases such as migration RUST will not have even cached the session and therefore network
+    // connection is obligatory and we MUST load the session before the app can recover
     private suspend fun handleValidateUserSession() {
         if (state.value.mailboxListState is MailboxListState.Loading && !getUserHasValidSession()) {
             emitNewStateFrom(MailboxEvent.CouldNotLoadUserSession)
@@ -1383,9 +1383,6 @@ class MailboxViewModel @Inject constructor(
     private fun MailboxState.isInSearchMode() =
         this.mailboxListState is MailboxListState.Data && this.mailboxListState.searchState.isInSearch()
 
-    fun Flow<MailboxState>.observeSearchModeStatus(): Flow<Boolean> = this.map { it.isInSearchMode() }
-        .distinctUntilChanged()
-
     private fun Flow<MailboxState>.observeSelectedMailboxItems() =
         this.map { it.mailboxListState as? MailboxListState.Data.SelectionMode }
             .mapNotNull { it?.selectedMailboxItems }
@@ -1402,16 +1399,17 @@ class MailboxViewModel @Inject constructor(
         val currentLabelId = getSelectedMailLabelId().labelId
         val userId = primaryUserId.filterNotNull().first()
 
-        return when {
-            isSpamTrashFilterEnabled() ->
-                findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId ?: currentLabelId
-
-            state.value.isInSearchMode() ->
-                findLocalSystemLabelId(userId, SystemLabelId.AlmostAllMail)?.labelId ?: currentLabelId
-
-            else -> currentLabelId
+        val systemLabelId = when {
+            !state.value.isInSearchMode() && !isSpamTrashFilterEnabled() -> return currentLabelId
+            isSpamTrashFilterEnabled() || isSpamTrashFilterHidden() -> SystemLabelId.AllMail
+            else -> SystemLabelId.AlmostAllMail
         }
+
+        return findLocalSystemLabelId(userId, systemLabelId)?.labelId ?: currentLabelId
     }
+
+    private fun isSpamTrashFilterHidden() =
+        state.value.showSpamTrashIncludeFilterState is ShowSpamTrashIncludeFilterState.Data.Hidden
 
     private fun isSpamTrashFilterEnabled() =
         (state.value.showSpamTrashIncludeFilterState as? ShowSpamTrashIncludeFilterState.Data.Shown)?.enabled == true
