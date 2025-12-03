@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,24 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailpinlock.domain
+package ch.protonmail.android.mailmailbox.data
 
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.Qualifier
 
-@Singleton
-class AutoLockCheckPendingState @Inject constructor() {
-
-    private val mutableAutoLockCheckEvents = MutableSharedFlow<Unit>(
-        replay = 0,
-        extraBufferCapacity = 1
-    )
-
-    val autoLockCheckEvents = mutableAutoLockCheckEvents.asSharedFlow()
-
-    fun triggerAutoLockCheck() {
-        mutableAutoLockCheckEvents.tryEmit(Unit)
-    }
-}
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RustSenderAddressCoroutineScope

@@ -33,7 +33,7 @@ internal class LauncherRouterViewModel @Inject constructor(
     shouldPresentPinInsertionScreen: ShouldPresentPinInsertionScreen
 ) : ViewModel() {
 
-    private val showLockScreenChannel = Channel<Unit>(Channel.BUFFERED)
+    private val showLockScreenChannel = Channel<Unit>(Channel.CONFLATED)
     val showLockScreenEvent = showLockScreenChannel.receiveAsFlow()
 
     init {

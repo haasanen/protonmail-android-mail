@@ -108,9 +108,11 @@ class MainActivity : AppCompatActivity() {
                                 launcherViewModel.submit(LauncherViewModel.Action.OpenPasswordManagement(it))
                             },
                             onNavigateToLockScreen = {
-                                val intent = Intent(this, LockScreenActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                startActivity(intent)
+                                window.decorView.post { // Ensure that activity launch happens in the correct stage.
+                                    val intent = Intent(this@MainActivity, LockScreenActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                    startActivity(intent)
+                                }
                             }
                         ),
                         launcherViewModel

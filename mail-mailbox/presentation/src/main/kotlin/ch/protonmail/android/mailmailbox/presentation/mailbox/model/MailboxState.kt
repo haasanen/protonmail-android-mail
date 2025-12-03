@@ -36,6 +36,7 @@ data class MailboxState(
     val deleteDialogState: DeleteDialogState,
     val clearAllDialogState: DeleteDialogState,
     val bottomSheetState: BottomSheetState?,
+    val composerNavigationState: MailboxComposerNavigationState,
     val actionResult: Effect<ActionResult>,
     val error: Effect<TextUiModel>
 )

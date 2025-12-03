@@ -89,6 +89,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxViewModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.SwipeActionsMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -103,6 +104,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeUiModelSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveValidSenderAddress
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
@@ -333,6 +335,10 @@ internal class MailboxViewModelTest {
         coEvery { this@mockk.invoke(any()) } returns false
     }
 
+    private val observeValidSenderAddress = mockk<ObserveValidSenderAddress> {
+        coEvery { this@mockk.invoke(any()) } returns flowOf()
+    }
+
     private val updateUnreadFilter = mockk<UpdateUnreadFilter>()
     private val updateShowSpamTrashFilter = mockk<UpdateShowSpamTrashFilter>()
 
@@ -389,7 +395,8 @@ internal class MailboxViewModelTest {
             updateShowSpamTrashFilter = updateShowSpamTrashFilter,
             setEphemeralMailboxCursor = setEphemeralMailboxCursor,
             observeMailboxFetchNewStatus = observeMailboxFetchNewStatus,
-            loadingBarControllerFactory = loadingBarControllerFactory
+            loadingBarControllerFactory = loadingBarControllerFactory,
+            observeValidSenderAddress = observeValidSenderAddress
         )
     }
 
@@ -430,6 +437,7 @@ internal class MailboxViewModelTest {
                 clearAllDialogState = DeleteDialogState.Hidden,
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
+                composerNavigationState = MailboxComposerNavigationState.Enabled(),
                 error = Effect.empty()
             )
 
@@ -1068,6 +1076,7 @@ internal class MailboxViewModelTest {
                 clearAllDialogState = DeleteDialogState.Hidden,
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
+                composerNavigationState = MailboxComposerNavigationState.Enabled(),
                 error = Effect.empty()
             )
 
@@ -1103,6 +1112,7 @@ internal class MailboxViewModelTest {
                 clearAllDialogState = DeleteDialogState.Hidden,
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
+                composerNavigationState = MailboxComposerNavigationState.Enabled(),
                 error = Effect.empty()
             )
 

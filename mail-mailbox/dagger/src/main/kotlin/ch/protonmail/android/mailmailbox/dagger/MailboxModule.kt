@@ -18,9 +18,14 @@
 
 package ch.protonmail.android.mailmailbox.dagger
 
+import ch.protonmail.android.mailmailbox.data.RustSenderAddressCoroutineScope
+import ch.protonmail.android.mailmailbox.data.local.RustSenderAddressDataSourceImpl
+import ch.protonmail.android.mailmailbox.data.local.SenderAddressDataSource
 import ch.protonmail.android.mailmailbox.data.repository.MailboxBannersRepositoryImpl
+import ch.protonmail.android.mailmailbox.data.repository.SenderAddressRepositoryImpl
 import ch.protonmail.android.mailmailbox.data.repository.UnreadCountersRepositoryImpl
 import ch.protonmail.android.mailmailbox.domain.repository.MailboxBannersRepository
+import ch.protonmail.android.mailmailbox.domain.repository.SenderAddressRepository
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemPagingSourceFactory
@@ -30,10 +35,17 @@ import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 @Module(includes = [MailboxModule.BindsModule::class])
 @InstallIn(ViewModelComponent::class)
 object MailboxModule {
+
+    @Provides
+    @RustSenderAddressCoroutineScope
+    fun provideRustSenderAddressCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Provides
     fun providesMailboxItemPagingSourceFactory(getMailboxItems: GetMailboxItems): MailboxItemPagingSourceFactory =
@@ -52,5 +64,15 @@ object MailboxModule {
         @Binds
         @Reusable
         fun bindsMailboxBannersRepository(impl: MailboxBannersRepositoryImpl): MailboxBannersRepository
+
+        @Binds
+        @Reusable
+        fun bindsSenderAddressRepository(impl: SenderAddressRepositoryImpl): SenderAddressRepository
+
+        @Reusable
+        @Binds
+        fun provideSenderAddressDataSource(
+            senderAddressDataSourceImpl: RustSenderAddressDataSourceImpl
+        ): SenderAddressDataSource
     }
 }

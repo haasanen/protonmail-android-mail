@@ -88,6 +88,7 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.SetEphemeralMailboxCursor
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.SwipeActionsMapper
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -99,6 +100,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MoveResult
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveValidSenderAddress
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
@@ -213,7 +215,8 @@ class MailboxViewModel @Inject constructor(
     private val updateShowSpamTrashFilter: UpdateShowSpamTrashFilter,
     private val setEphemeralMailboxCursor: SetEphemeralMailboxCursor,
     private val observeMailboxFetchNewStatus: ObserveMailboxFetchNewStatus,
-    private val loadingBarControllerFactory: MailboxLoadingBarControllerFactory
+    private val loadingBarControllerFactory: MailboxLoadingBarControllerFactory,
+    private val observeValidSenderAddress: ObserveValidSenderAddress
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserIdWithValidSession().filterNotNull()
@@ -320,6 +323,12 @@ class MailboxViewModel @Inject constructor(
         observeMailboxFetchNewStatus().onEach {
             loadingBarController.onMailboxFetchNewStatus(it)
         }.launchIn(viewModelScope)
+
+        primaryUserId.flatMapLatest {
+            observeValidSenderAddress(it)
+        }.onEach {
+            emitNewStateFrom(MailboxEvent.SenderHasValidAddressUpdated(isValid = it))
+        }.launchIn(viewModelScope)
     }
 
     override fun onCleared() {
@@ -416,7 +425,16 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SignalMoveToCompleted -> handleMoveToCompleted(viewAction)
                 is MailboxViewAction.SignalLabelAsCompleted -> handleLabelAsCompleted(viewAction)
                 is MailboxViewAction.ValidateUserSession -> handleValidateUserSession()
+                is MailboxViewAction.NavigateToComposer -> handleNavigateToComposer()
             }
+        }
+    }
+
+    private fun handleNavigateToComposer() {
+        if (state.value.composerNavigationState is MailboxComposerNavigationState.Disabled) {
+            emitNewStateFrom(MailboxEvent.ErrorComposing)
+        } else {
+            emitNewStateFrom(MailboxEvent.NavigateToComposer)
         }
     }
 
@@ -1413,6 +1431,7 @@ class MailboxViewModel @Inject constructor(
             clearAllDialogState = DeleteDialogState.Hidden,
             bottomSheetState = null,
             actionResult = Effect.empty(),
+            composerNavigationState = MailboxComposerNavigationState.Enabled(),
             error = Effect.empty()
         )
     }
