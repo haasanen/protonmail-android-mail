@@ -32,7 +32,7 @@ class ShouldShowRatingBooster @Inject constructor(
 
     operator fun invoke(userId: UserId): Flow<Boolean> {
         return inMemoryMailboxRepository.observeScreenViewCount().map { screenViewCount ->
-            showRatingBooster.get() && screenViewCount >= SCREEN_VIEW_COUNT_THRESHOLD
+            showRatingBooster.get() && screenViewCount == SCREEN_VIEW_COUNT_THRESHOLD
         }
     }
 

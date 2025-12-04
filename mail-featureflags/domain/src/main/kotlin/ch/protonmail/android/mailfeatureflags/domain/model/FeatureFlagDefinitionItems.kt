@@ -121,5 +121,3 @@ data object ShowRatingBoosterEnabled : FeatureFlagDefinition(
     description = "Show the rating app store dialog",
     defaultValue = false
 )
-
-

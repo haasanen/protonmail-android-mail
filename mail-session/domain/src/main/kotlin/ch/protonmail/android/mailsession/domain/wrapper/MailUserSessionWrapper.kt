@@ -94,7 +94,7 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
         when (val result = userSession.overrideUserFeatureFlag(flagName = flagName, newValue = newValue)) {
             is MailUserSessionOverrideUserFeatureFlagResult.Ok -> Unit.right()
             is MailUserSessionOverrideUserFeatureFlagResult.Error -> {
-                Timber.e("Rating booster UserSession:: Unable set set feature flag ${result.v1}")
+                Timber.e("MailUserSession FeatureFlag Override:: Unable set set feature flag ${result.v1}")
                 result.v1.toDataError().left()
             }
         }

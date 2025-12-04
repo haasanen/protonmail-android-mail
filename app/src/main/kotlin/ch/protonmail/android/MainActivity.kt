@@ -118,9 +118,6 @@ class MainActivity : AppCompatActivity() {
                                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                                     startActivity(intent)
                                 }
-                                val intent = Intent(this, LockScreenActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                startActivity(intent)
                             },
                             launchRatingBooster = {
                                 handleLaunchInAppReview()
