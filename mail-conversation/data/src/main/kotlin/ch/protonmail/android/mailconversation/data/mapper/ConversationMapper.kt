@@ -19,9 +19,7 @@
 package ch.protonmail.android.mailconversation.data.mapper
 
 import arrow.core.Either
-import arrow.core.left
 import arrow.core.right
-import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailattachments.data.mapper.getCalendarAttachmentCount
 import ch.protonmail.android.mailattachments.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
@@ -75,12 +73,11 @@ private fun LocalConversationId.toConversationId(): ConversationId = Conversatio
 
 fun LocalConversationMessages.toConversationMessagesWithMessageToOpen():
     Either<ConversationError, ConversationMessages> {
-    val messages = messages.toNonEmptyListOrNull()?.map { it.toMessage() }
-        ?: return ConversationError.ConvoWithNoMessages.left()
+    val messages = messages.toList().map { it.toMessage() }
 
     return ConversationMessages(
         messages = messages,
-        messageIdToOpen = messageIdToOpen.toMessageId()
+        messageIdToOpen = messageIdToOpen?.toMessageId()
     ).right()
 }
 

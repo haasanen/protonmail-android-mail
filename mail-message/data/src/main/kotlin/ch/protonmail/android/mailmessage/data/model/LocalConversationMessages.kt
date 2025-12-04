@@ -22,6 +22,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 
 data class LocalConversationMessages(
-    val messageIdToOpen: LocalMessageId,
+    val messageIdToOpen: LocalMessageId?,
     val messages: List<LocalMessageMetadata>
 )

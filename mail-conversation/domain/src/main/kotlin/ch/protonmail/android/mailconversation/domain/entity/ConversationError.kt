@@ -26,7 +26,6 @@ sealed interface ConversationError {
     data object UnknownMessage : ConversationError
     data object UnknownContentId : ConversationError
     data object NullValueReturned : ConversationError
-    data object ConvoWithNoMessages : ConversationError
 
     data class Other(val error: DataError) : ConversationError
 }

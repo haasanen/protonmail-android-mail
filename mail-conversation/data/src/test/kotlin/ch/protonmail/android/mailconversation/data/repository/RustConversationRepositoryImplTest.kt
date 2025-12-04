@@ -231,54 +231,6 @@ internal class RustConversationRepositoryImplTest {
     }
 
     @Test
-    fun `observeConversationMessages should return DataError when no messages found`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
-        val expectedError = ConversationError.ConvoWithNoMessages.left()
-        val labelId = LabelId("2")
-        val entryPoint = ConversationDetailEntryPoint.Mailbox
-        val showAll = false
-
-        coEvery {
-            rustConversationDataSource.observeConversationWithMessages(
-                userId,
-                conversationId.toLocalConversationId(),
-                labelId.toLocalLabelId(),
-                entryPoint,
-                showAll
-            )
-        } returns flowOf(
-            LocalConversationWithMessages(
-                conversation = mockk(),
-                messages = LocalConversationMessages(
-                    messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
-                    messages = emptyList()
-                )
-            ).right()
-        )
-
-        // When
-        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId, entryPoint, showAll)
-            .test {
-                val result = awaitItem()
-
-                // Then
-                assertEquals(expectedError, result)
-                coVerify {
-                    rustConversationDataSource.observeConversationWithMessages(
-                        userId,
-                        conversationId.toLocalConversationId(),
-                        labelId.toLocalLabelId(),
-                        entryPoint,
-                        showAll
-                    )
-                }
-                awaitComplete()
-            }
-    }
-
-    @Test
     fun `when getConversationCursor returns a cursor with the first conversationId`() = runTest {
         // Given
         val conversationCursor = mockk<ConversationCursor> {

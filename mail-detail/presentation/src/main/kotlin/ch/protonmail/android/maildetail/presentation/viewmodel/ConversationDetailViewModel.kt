@@ -22,7 +22,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import arrow.core.NonEmptyList
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
@@ -595,8 +594,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
                             )
                         }
 
-                        error is ConversationError.ConvoWithNoMessages ||
-                            error is ConversationError.NullValueReturned -> {
+                        error is ConversationError.NullValueReturned -> {
                             ConversationDataLoadingResult.Exit
                         }
 
@@ -645,7 +643,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
                 val initialScrollTo = initialScrollToMessageId
                     ?: conversationWithMessages.messages.messageIdToOpen
-                        .let { messageIdUiModelMapper.toUiModel(it) }
+                        ?.let { messageIdUiModelMapper.toUiModel(it) }
 
                 val messagesEvent =
                     if (stateIsLoadingOrOffline() && allCollapsed(conversationViewState.messagesState)) {
@@ -655,7 +653,8 @@ class ConversationDetailViewModel @AssistedInject constructor(
                             openedFromLocation
                         )
                     } else {
-                        val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
+                        val requestScrollTo =
+                            requestScrollToMessageId(conversationViewState.messagesState) ?: initialScrollTo
                         ConversationDetailEvent.MessagesData(
                             messagesUiModels,
                             requestScrollTo,
@@ -736,11 +735,11 @@ class ConversationDetailViewModel @AssistedInject constructor(
     }
 
     private suspend fun buildMessagesUiModels(
-        messages: NonEmptyList<Message>,
+        messages: List<Message>,
         primaryUserAddress: String?,
         currentViewState: InMemoryConversationStateRepository.MessagesState,
         avatarImageStates: AvatarImageStates
-    ): NonEmptyList<ConversationDetailMessageUiModel> {
+    ): List<ConversationDetailMessageUiModel> {
         val messagesList = messages.map { message ->
             val avatarImageState = avatarImageStates.getStateForAddress(message.sender.address)
             val attachmentListExpandCollapseMode = currentViewState.attachmentsListExpandCollapseMode[message.messageId]

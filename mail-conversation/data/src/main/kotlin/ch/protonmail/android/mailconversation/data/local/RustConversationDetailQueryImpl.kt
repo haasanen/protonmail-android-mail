@@ -135,7 +135,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                 conversationWithMessagesMutableFlow.value = conversationEither.map {
                     LocalConversationWithMessages(
                         conversation = it.conversation,
-                        messages = LocalConversationMessages(it.messageIdToOpen, it.messages)
+                        messages = LocalConversationMessages(it.focusedMessageId, it.messages)
                     )
                 }
                 currentConversationId = conversationId
@@ -175,7 +175,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     conversationWithMessagesMutableFlow.value = conversationEither.map {
                         LocalConversationWithMessages(
                             conversation = it.conversation,
-                            messages = LocalConversationMessages(it.messageIdToOpen, it.messages)
+                            messages = LocalConversationMessages(it.focusedMessageId, it.messages)
                         )
                     }
 

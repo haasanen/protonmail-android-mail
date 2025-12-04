@@ -87,7 +87,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock = mockk<WatchedConversation> {
             every { this@mockk.conversation } returns expectedConversation
             every { this@mockk.messages } returns expectedMessages.messages
-            every { this@mockk.messageIdToOpen } returns messageToOpen
+            every { this@mockk.focusedMessageId } returns messageToOpen
             every { this@mockk.handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -102,7 +102,7 @@ internal class RustConversationDetailQueryImplTest {
         } returns watcherMock.right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll)
-        } returns ConversationAndMessages(expectedConversation, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation, expectedMessages.messages, messageToOpen).right()
 
         // When
         rustConversationQuery.observeConversationWithMessages(userId, conversationId, localLabelId, entryPoint, showAll)
@@ -130,7 +130,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock = mockk<WatchedConversation> {
             every { this@mockk.conversation } returns expectedConversation
             every { this@mockk.messages } returns expectedMessages.messages
-            every { this@mockk.messageIdToOpen } returns messageToOpen
+            every { this@mockk.focusedMessageId } returns messageToOpen
             every { this@mockk.handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -145,7 +145,7 @@ internal class RustConversationDetailQueryImplTest {
         } returns watcherMock.right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll)
-        } returns ConversationAndMessages(expectedConversation, messageToOpen, messages).right()
+        } returns ConversationAndMessages(expectedConversation, messages, messageToOpen).right()
         rustConversationQuery.observeConversationWithMessages(userId, conversationId, localLabelId, entryPoint, showAll)
             .test {
                 skipItems(1)
@@ -155,13 +155,13 @@ internal class RustConversationDetailQueryImplTest {
                 val updatedMessages = expectedMessages.copy(messageIdToOpen = updatedMessageToOpen)
                 every { watcherMock.conversation } returns updatedConversation
                 every { watcherMock.messages } returns updatedMessages.messages
-                every { watcherMock.messageIdToOpen } returns messageToOpen
+                every { watcherMock.focusedMessageId } returns messageToOpen
                 coEvery {
                     getRustConversation(mailbox, conversationId, showAll)
                 } returns ConversationAndMessages(
                     updatedConversation,
-                    updatedMessageToOpen,
-                    updatedMessages.messages
+                    updatedMessages.messages,
+                    updatedMessageToOpen
                 ).right()
 
                 // When
@@ -191,7 +191,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns messageToOpen
+            every { focusedMessageId } returns messageToOpen
             every { handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -205,7 +205,7 @@ internal class RustConversationDetailQueryImplTest {
         } returns watcherMock.right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll)
-        } returns ConversationAndMessages(expectedConversation, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation, expectedMessages.messages, messageToOpen).right()
 
         rustConversationQuery.observeConversationWithMessages(userId, conversationId, localLabelId, entryPoint, showAll)
             .test {
@@ -249,7 +249,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock1 = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation1
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns messageToOpen
+            every { focusedMessageId } returns messageToOpen
             every { handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -257,7 +257,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock2 = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation2
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns messageToOpen
+            every { focusedMessageId } returns messageToOpen
             every { handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -276,10 +276,10 @@ internal class RustConversationDetailQueryImplTest {
         } returns watcherMock2.right()
         coEvery {
             getRustConversation(mailbox, conversationId1, showAll)
-        } returns ConversationAndMessages(expectedConversation1, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation1, expectedMessages.messages, messageToOpen).right()
         coEvery {
             getRustConversation(newMailbox, conversationId2, showAll)
-        } returns ConversationAndMessages(expectedConversation2, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation2, expectedMessages.messages, messageToOpen).right()
 
         // When - First conversation
         val job1 = launch {
@@ -339,7 +339,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock1 = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation1
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns messageToOpen
+            every { focusedMessageId } returns messageToOpen
             every { handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -347,7 +347,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock2 = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation2
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns messageToOpen
+            every { focusedMessageId } returns messageToOpen
             every { handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -365,10 +365,10 @@ internal class RustConversationDetailQueryImplTest {
         } returns watcherMock2.right()
         coEvery {
             getRustConversation(mailbox, conversationId1, showAll)
-        } returns ConversationAndMessages(expectedConversation1, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation1, expectedMessages.messages, messageToOpen).right()
         coEvery {
             getRustConversation(mailbox, conversationId2, showAll)
-        } returns ConversationAndMessages(expectedConversation2, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation2, expectedMessages.messages, messageToOpen).right()
 
         // When - First conversation
         val job1 = launch {
@@ -424,7 +424,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns messageToOpen
+            every { focusedMessageId } returns messageToOpen
             every { handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -443,10 +443,10 @@ internal class RustConversationDetailQueryImplTest {
         } returns watcherMock.right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll1)
-        } returns ConversationAndMessages(expectedConversation, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation, expectedMessages.messages, messageToOpen).right()
         coEvery {
             getRustConversation(mailbox, conversationId, showAll2)
-        } returns ConversationAndMessages(expectedConversation, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation, expectedMessages.messages, messageToOpen).right()
 
         // When - First conversation
         val job1 = launch {
@@ -500,7 +500,7 @@ internal class RustConversationDetailQueryImplTest {
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns messageToOpen
+            every { focusedMessageId } returns messageToOpen
             every { handle } returns mockk {
                 every { disconnect() } returns Unit
             }
@@ -518,7 +518,7 @@ internal class RustConversationDetailQueryImplTest {
         }
         coEvery {
             getRustConversation(mailbox, conversationId, showAll)
-        } returns ConversationAndMessages(expectedConversation, messageToOpen, expectedMessages.messages).right()
+        } returns ConversationAndMessages(expectedConversation, expectedMessages.messages, messageToOpen).right()
 
         // When
         val numberOfConcurrentCalls = 10

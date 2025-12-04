@@ -18,9 +18,7 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
-import arrow.core.NonEmptyList
-
 data class ConversationMessages(
-    val messages: NonEmptyList<Message>,
-    val messageIdToOpen: MessageId
+    val messages: List<Message>,
+    val messageIdToOpen: MessageId?
 )
