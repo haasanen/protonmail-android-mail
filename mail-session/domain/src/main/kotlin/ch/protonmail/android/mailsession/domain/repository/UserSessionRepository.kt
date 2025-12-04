@@ -70,6 +70,12 @@ interface UserSessionRepository {
     suspend fun setBiometricAppProtection(): Either<DataError, Unit>
 
     fun observeUserSessionAvailable(userId: UserId): Flow<UserId?>
+
+    suspend fun overrideFeatureFlag(
+        userId: UserId,
+        flagName: String,
+        newValue: Boolean
+    ): Either<DataError, Unit>
 }
 
 fun UserSessionRepository.onAccountState(state: AccountState, initialState: Boolean = true): Flow<Account> =

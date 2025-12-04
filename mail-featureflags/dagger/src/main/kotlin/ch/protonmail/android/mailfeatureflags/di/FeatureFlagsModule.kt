@@ -34,6 +34,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailE
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowRatingBoosterEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
@@ -47,6 +48,7 @@ import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wa
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.RestrictMessageWebViewHeight
+import ch.protonmail.android.mailfeatureflags.domain.model.ShowRatingBoosterEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.SwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
 import dagger.Module
@@ -203,4 +205,11 @@ object FeatureFlagsModule {
     @IsRestrictMessageWebViewHeightEnabled
     fun provideRestrictMessageWebViewHeight(factory: BooleanFeatureFlagFactory) =
         factory.create(key = RestrictMessageWebViewHeight.key, false)
+
+    @Provides
+    @Singleton
+    @IsShowRatingBoosterEnabled
+    fun provideIsShowRatingBoosterEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = ShowRatingBoosterEnabled.key, false)
+
 }

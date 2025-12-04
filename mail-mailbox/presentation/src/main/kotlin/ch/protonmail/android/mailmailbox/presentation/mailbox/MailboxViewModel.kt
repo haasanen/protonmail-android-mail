@@ -102,6 +102,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveValidSenderAddress
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
@@ -218,7 +219,8 @@ class MailboxViewModel @Inject constructor(
     private val observeMailboxFetchNewStatus: ObserveMailboxFetchNewStatus,
     private val observeValidSenderAddress: ObserveValidSenderAddress,
     private val loadingBarControllerFactory: MailboxLoadingBarControllerFactory,
-    private val shouldShowRatingBooster: ShouldShowRatingBooster
+    private val shouldShowRatingBooster: ShouldShowRatingBooster,
+    private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserIdWithValidSession().filterNotNull()
@@ -332,13 +334,11 @@ class MailboxViewModel @Inject constructor(
             emitNewStateFrom(MailboxEvent.SenderHasValidAddressUpdated(isValid = it))
         }.launchIn(viewModelScope)
 
-
         primaryUserId.flatMapLatest { userId ->
             shouldShowRatingBooster(userId)
         }.onEach { shouldShowRatingBooster ->
             if (shouldShowRatingBooster) {
-                // RUST side coming
-                // recordRatingBoosterTriggered(primaryUserId.filterNotNull().first())
+                recordRatingBoosterTriggered()
                 emitNewStateFrom(MailboxEvent.ShowRatingBooster)
             }
         }.launchIn(viewModelScope)

@@ -67,3 +67,7 @@ annotation class IsInjectCssOverrideEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsRestrictMessageWebViewHeightEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsShowRatingBoosterEnabled

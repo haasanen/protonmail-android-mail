@@ -113,3 +113,13 @@ data object RestrictMessageWebViewHeight : FeatureFlagDefinition(
     description = "Restrict the height of the message web view in order to avoid crashes.",
     defaultValue = false
 )
+
+data object ShowRatingBoosterEnabled : FeatureFlagDefinition(
+    key = "RatingAndroidMail",
+    name = "Show rating booster",
+    category = FeatureFlagCategory.Rating,
+    description = "Show the rating app store dialog",
+    defaultValue = false
+)
+
+

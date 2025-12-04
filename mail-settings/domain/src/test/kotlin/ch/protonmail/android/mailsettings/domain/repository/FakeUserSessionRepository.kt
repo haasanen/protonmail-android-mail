@@ -98,4 +98,11 @@ internal class FakeUserSessionRepository(
     }
 
     override fun observeUserSessionAvailable(userId: UserId): Flow<UserId> = observePrimaryUserId().filterNotNull()
+    override suspend fun overrideFeatureFlag(
+        userId: UserId,
+        flagName: String,
+        newValue: Boolean
+    ): Either<DataError, Unit> {
+        TODO("Not yet implemented")
+    }
 }

@@ -98,6 +98,7 @@ dependencies {
     implementation(project(":mail-snooze:domain"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
+    implementation(project(":mail-featureflags:domain"))
     implementation(project(":presentation-compose"))
     implementation(project(":shared:core:account-manager:domain"))
     implementation(project(":shared:core:account-manager:presentation"))

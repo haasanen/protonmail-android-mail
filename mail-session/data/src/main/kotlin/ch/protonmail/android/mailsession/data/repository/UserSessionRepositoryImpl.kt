@@ -190,5 +190,11 @@ class UserSessionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setBiometricAppProtection(): Either<DataError, Unit> = mailSession.setBiometricAppProtection()
+
+    override suspend fun overrideFeatureFlag(
+        userId: UserId,
+        flagName: String,
+        newValue: Boolean
+    ) = getUserSession(userId)?.overrideFeatureFlag(flagName, newValue) ?: DataError.Local.NoUserSession.left()
 }
 

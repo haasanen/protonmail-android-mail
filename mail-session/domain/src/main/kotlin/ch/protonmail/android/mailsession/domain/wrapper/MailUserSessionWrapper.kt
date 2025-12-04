@@ -26,11 +26,13 @@ import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.mapper.toEventLoopError
 import ch.protonmail.android.mailsession.domain.model.EventLoopError
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.EventLoopErrorObserver
 import uniffi.proton_mail_uniffi.ExecuteWhenOnlineCallbackAsync
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionForkResult
+import uniffi.proton_mail_uniffi.MailUserSessionOverrideUserFeatureFlagResult
 import uniffi.proton_mail_uniffi.MailUserSessionUserResult
 import uniffi.proton_mail_uniffi.User
 import uniffi.proton_mail_uniffi.VoidEventResult
@@ -87,4 +89,13 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
     fun observeEventLoopErrors(callback: EventLoopErrorObserver) = userSession.observeEventLoopErrors(callback)
 
     suspend fun isFeatureEnabled(featureId: String) = userSession.isFeatureEnabled(featureId = featureId)
+
+    suspend fun overrideFeatureFlag(flagName: String, newValue: Boolean) =
+        when (val result = userSession.overrideUserFeatureFlag(flagName = flagName, newValue = newValue)) {
+            is MailUserSessionOverrideUserFeatureFlagResult.Ok -> Unit.right()
+            is MailUserSessionOverrideUserFeatureFlagResult.Error -> {
+                Timber.e("Rating booster UserSession:: Unable set set feature flag ${result.v1}")
+                result.v1.toDataError().left()
+            }
+        }
 }

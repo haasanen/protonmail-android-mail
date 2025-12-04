@@ -15,29 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package ch.protonmail.android.mailmailbox.presentation.mailbox.usecase
 
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowRatingBoosterEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
-import ch.protonmail.android.mailmailbox.domain.repository.InMemoryMailboxRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailfeatureflags.domain.model.ShowRatingBoosterEnabled
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import javax.inject.Inject
 
-class ShouldShowRatingBooster @Inject constructor(
-    private val inMemoryMailboxRepository: InMemoryMailboxRepository,
-    @IsShowRatingBoosterEnabled val showRatingBooster: FeatureFlag<Boolean>
+class RecordRatingBoosterTriggered @Inject constructor(
+    val observePrimaryUserId: ObservePrimaryUserId,
+    val userSessionRepository: UserSessionRepository
 ) {
 
-    operator fun invoke(userId: UserId): Flow<Boolean> {
-        return inMemoryMailboxRepository.observeScreenViewCount().map { screenViewCount ->
-            showRatingBooster.get() && screenViewCount >= SCREEN_VIEW_COUNT_THRESHOLD
+    suspend operator fun invoke() {
+        observePrimaryUserId().first()?.let { userId ->
+            userSessionRepository.overrideFeatureFlag(
+                userId, ShowRatingBoosterEnabled.key,
+                false
+            )
+        } ?: run {
+            Timber.e("RatingBooster:: Unable to set feature flag because there is no primary user")
         }
-    }
-
-    companion object {
-
-        const val SCREEN_VIEW_COUNT_THRESHOLD = 2
     }
 }

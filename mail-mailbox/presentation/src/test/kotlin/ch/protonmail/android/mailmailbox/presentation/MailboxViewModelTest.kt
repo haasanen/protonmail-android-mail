@@ -106,6 +106,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveValidSenderAddress
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateShowSpamTrashFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
@@ -323,6 +324,8 @@ internal class MailboxViewModelTest {
 
     private val setEphemeralMailboxCursor = mockk<SetEphemeralMailboxCursor>()
 
+    private val recordRatingBoosterTriggered = mockk<RecordRatingBoosterTriggered>()
+
     private val observeMailboxFetchNewStatus = mockk<ObserveMailboxFetchNewStatus> {
         every { this@mockk() } returns emptyFlow()
     }
@@ -402,7 +405,8 @@ internal class MailboxViewModelTest {
             observeMailboxFetchNewStatus = observeMailboxFetchNewStatus,
             loadingBarControllerFactory = loadingBarControllerFactory,
             observeValidSenderAddress = observeValidSenderAddress,
-            shouldShowRatingBooster = shouldShowRatingBooster
+            shouldShowRatingBooster = shouldShowRatingBooster,
+            recordRatingBoosterTriggered = recordRatingBoosterTriggered
         )
     }
 
@@ -4128,6 +4132,7 @@ internal class MailboxViewModelTest {
     fun `should create new state for showing the rating booster when it should be shown`() = runTest {
         // Given
         every { shouldShowRatingBooster(userId) } returns flowOf(true)
+        coEvery { recordRatingBoosterTriggered() } just runs
 
         // When
         mailboxViewModel.state.test {
@@ -4136,6 +4141,9 @@ internal class MailboxViewModelTest {
             // Then
             verify(exactly = 1) {
                 mailboxReducer.newStateFrom(any(), MailboxEvent.ShowRatingBooster)
+            }
+            coVerify(exactly = 1) {
+                recordRatingBoosterTriggered.invoke()
             }
         }
     }

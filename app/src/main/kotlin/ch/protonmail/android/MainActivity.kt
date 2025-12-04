@@ -216,11 +216,11 @@ class MainActivity : AppCompatActivity() {
                 val reviewInfo = task.result
                 val flow = reviewManager.launchReviewFlow(this, reviewInfo)
                 flow.addOnCompleteListener { _ ->
-                    Timber.d("ReviewFlow In-App Review flow completed.")
+                    Timber.d("ReviewFlow Rating In-App Review flow completed.")
                 }
             } else {
                 val reviewErrorCode = (task.exception as ReviewException).errorCode
-                Timber.e("ReviewFlow Review request failed with error: $reviewErrorCode")
+                Timber.e("ReviewFlow Rating Review request failed with error: $reviewErrorCode")
             }
         }
     }
