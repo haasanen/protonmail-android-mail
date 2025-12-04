@@ -49,6 +49,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.labelSmallNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.uicomponents.text.MultiWordHighlightedText
 
 @Composable
 fun ParticipantsListWithMessageCount(
@@ -57,7 +58,8 @@ fun ParticipantsListWithMessageCount(
     fontWeight: FontWeight,
     fontColor: Color,
     messageCount: Int?,
-    iconColor: Color
+    iconColor: Color,
+    highlightText: String
 ) {
     SubcomposeLayout(modifier = modifier) { constraints ->
 
@@ -80,7 +82,10 @@ fun ParticipantsListWithMessageCount(
                     id = participantWithBadgeAndSeparatorId,
                     constraints = constraints,
                     participant = ParticipantUiModel(minLengthParticipantName, shouldShowOfficialBadge = true),
-                    displayData = ParticipantRowDisplayData(shouldShowSeparator = true, fontWeight, fontColor),
+                    displayData = ParticipantRowDisplayData(
+                        shouldShowSeparator = true,
+                        fontWeight, fontColor, highlightText
+                    ),
                     cacheSetter = MeasurementCache::setMinWidthWithBadgeAndSeparator
                 )
 
@@ -89,7 +94,10 @@ fun ParticipantsListWithMessageCount(
                 id = participantWithBadgeId,
                 constraints = constraints,
                 participant = ParticipantUiModel(minLengthParticipantName, shouldShowOfficialBadge = true),
-                displayData = ParticipantRowDisplayData(shouldShowSeparator = false, fontWeight, fontColor),
+                displayData = ParticipantRowDisplayData(
+                    shouldShowSeparator = false,
+                    fontWeight, fontColor, highlightText
+                ),
                 cacheSetter = MeasurementCache::setMinWidthWithBadge
             )
 
@@ -98,7 +106,10 @@ fun ParticipantsListWithMessageCount(
                 id = participantWithSeparatorId,
                 constraints = constraints,
                 participant = ParticipantUiModel(minLengthParticipantName, shouldShowOfficialBadge = false),
-                displayData = ParticipantRowDisplayData(shouldShowSeparator = true, fontWeight, fontColor),
+                displayData = ParticipantRowDisplayData(
+                    shouldShowSeparator = true,
+                    fontWeight, fontColor, highlightText
+                ),
                 cacheSetter = MeasurementCache::setMinWidthWithSeparator
             )
 
@@ -107,7 +118,10 @@ fun ParticipantsListWithMessageCount(
                 id = participantNameId,
                 constraints = constraints,
                 participant = ParticipantUiModel(minLengthParticipantName, shouldShowOfficialBadge = false),
-                displayData = ParticipantRowDisplayData(shouldShowSeparator = false, fontWeight, fontColor),
+                displayData = ParticipantRowDisplayData(
+                    shouldShowSeparator = false,
+                    fontWeight, fontColor, highlightText
+                ),
                 cacheSetter = MeasurementCache::setMinWidthName
             )
 
@@ -116,7 +130,8 @@ fun ParticipantsListWithMessageCount(
                 val displayData = ParticipantRowDisplayData(
                     shouldShowSeparator = shouldShowSeparator(index),
                     fontWeight = fontWeight,
-                    fontColor = fontColor
+                    fontColor = fontColor,
+                    highlightText = highlightText
                 )
                 ParticipantRow(
                     participant = participantUiModel,
@@ -217,7 +232,8 @@ private fun ParticipantRow(
                 .weight(1f, fill = false),
             participantName = participant.name,
             fontWeight = displayData.fontWeight,
-            fontColor = displayData.fontColor
+            fontColor = displayData.fontColor,
+            highlightText = displayData.highlightText
         )
         if (participant.shouldShowOfficialBadge) {
             OfficialBadge()
@@ -263,15 +279,30 @@ private fun ParticipantName(
     modifier: Modifier = Modifier,
     participantName: String,
     fontWeight: FontWeight,
-    fontColor: Color
+    fontColor: Color,
+    highlightText: String
 ) {
-    Text(
-        modifier = modifier,
-        text = participantName,
-        overflow = TextOverflow.Ellipsis,
-        maxLines = 1,
-        style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
-    )
+    if (highlightText.isEmpty()) {
+        Text(
+            modifier = modifier,
+            text = participantName,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
+        )
+    } else {
+        MultiWordHighlightedText(
+            modifier = modifier,
+            text = participantName,
+            highlight = highlightText,
+            maxLines = 1,
+            highlightBackgroundColor = ProtonTheme.colors.searchHighlightBackground,
+            highlightTextColor = ProtonTheme.colors.searchHighlightText,
+            style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor),
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+
 }
 
 @Composable
@@ -338,7 +369,8 @@ object MeasurementCache {
 data class ParticipantRowDisplayData(
     val shouldShowSeparator: Boolean,
     val fontWeight: FontWeight,
-    val fontColor: Color
+    val fontColor: Color,
+    val highlightText: String
 )
 
 object ParticipantsList {

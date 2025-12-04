@@ -156,6 +156,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearc
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.getHighlightText
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.hasClearableOperations
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxPreview
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxPreviewProvider
@@ -1031,7 +1032,8 @@ private fun MailboxItemsList(
 
                             else -> false
                         },
-                        accessibilitySwipeActions = accessibilitySwipeActions.orEmpty().toImmutableList()
+                        accessibilitySwipeActions = accessibilitySwipeActions.orEmpty().toImmutableList(),
+                        highlightText = state.getHighlightText()
                     )
                 }
             }

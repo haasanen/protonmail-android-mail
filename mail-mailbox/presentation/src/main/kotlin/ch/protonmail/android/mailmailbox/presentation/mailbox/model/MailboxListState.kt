@@ -91,3 +91,11 @@ sealed interface MailboxListState {
 }
 
 fun MailboxListState.hasClearableOperations() = this is MailboxListState.Data.ViewMode && !this.searchState.isInSearch()
+
+fun MailboxListState.getHighlightText(): String {
+    return if (this is MailboxListState.Data && this.searchState.isInSearch()) {
+        this.searchState.searchQuery
+    } else {
+        ""
+    }
+}

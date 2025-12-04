@@ -73,6 +73,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.toSemanticsR
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxItemUiModelPreviewData
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeStatusUiModel
+import ch.protonmail.android.uicomponents.text.MultiWordHighlightedText
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -85,7 +86,8 @@ fun MailboxItem(
     selectionMode: Boolean = false,
     isSelected: Boolean = false,
     isSelectable: Boolean = true,
-    accessibilitySwipeActions: ImmutableList<CustomAccessibilityAction>
+    accessibilitySwipeActions: ImmutableList<CustomAccessibilityAction>,
+    highlightText: String = ""
 ) {
     Box(
         modifier = modifier
@@ -189,7 +191,8 @@ fun MailboxItem(
                         fontWeight = participantsFontWeight,
                         fontColor = fontColor,
                         count = item.numMessages,
-                        iconColor = iconColor
+                        iconColor = iconColor,
+                        highlightText = highlightText
                     )
 
                     if (item.shouldShowAttachmentIcon) {
@@ -222,6 +225,7 @@ fun MailboxItem(
                             subject = item.subject,
                             fontWeight = fontWeight,
                             fontColor = fontColor,
+                            highlightText = highlightText,
                             modifier = Modifier
                                 .weight(1f, fill = false)
                                 .padding(end = ProtonDimens.Spacing.Medium)
@@ -339,7 +343,8 @@ private fun Participants(
     count: Int? = null,
     fontWeight: FontWeight,
     fontColor: Color,
-    iconColor: Color
+    iconColor: Color,
+    highlightText: String
 ) {
     when (participants) {
         is ParticipantsUiModel.Participants -> {
@@ -349,7 +354,8 @@ private fun Participants(
                 messageCount = count,
                 fontWeight = fontWeight,
                 fontColor = fontColor,
-                iconColor = iconColor
+                iconColor = iconColor,
+                highlightText = highlightText
             )
         }
 
@@ -412,15 +418,30 @@ private fun Subject(
     modifier: Modifier = Modifier,
     subject: String,
     fontWeight: FontWeight,
-    fontColor: Color
+    fontColor: Color,
+    highlightText: String
 ) {
-    Text(
-        modifier = modifier.testTag(MailboxItemTestTags.Subject),
-        text = subject,
-        overflow = TextOverflow.Ellipsis,
-        maxLines = 1,
-        style = ProtonTheme.typography.bodyMedium.copy(fontWeight = fontWeight, color = fontColor)
-    )
+    if (highlightText.isEmpty()) {
+        Text(
+            modifier = modifier.testTag(MailboxItemTestTags.Subject),
+            text = subject,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            style = ProtonTheme.typography.bodyMedium.copy(fontWeight = fontWeight, color = fontColor)
+        )
+    } else {
+        MultiWordHighlightedText(
+            modifier = modifier.testTag(MailboxItemTestTags.Subject),
+            text = subject,
+            highlight = highlightText,
+            maxLines = 1,
+            highlightBackgroundColor = ProtonTheme.colors.searchHighlightBackground,
+            highlightTextColor = ProtonTheme.colors.searchHighlightText,
+            style = ProtonTheme.typography.bodyMedium.copy(fontWeight = fontWeight, color = fontColor),
+            overflow = TextOverflow.Ellipsis
+        )
+
+    }
 }
 
 @Composable
