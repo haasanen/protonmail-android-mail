@@ -20,6 +20,7 @@ package ch.protonmail.android.uicomponents.text
 
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -58,6 +59,74 @@ fun HighlightedText(
     }
 
     BasicText(
+        text = annotatedString,
+        maxLines = maxLines,
+        style = style,
+        overflow = overflow
+    )
+}
+
+@Composable
+fun MultiWordHighlightedText(
+    modifier: Modifier = Modifier,
+    text: String,
+    highlight: String,
+    highlightTextColor: Color = ProtonTheme.colors.textAccent,
+    highlightBackgroundColor: Color = Color.Transparent,
+    maxLines: Int,
+    style: TextStyle,
+    overflow: TextOverflow
+) {
+    val annotatedString = buildAnnotatedString {
+        val query = highlight.trim()
+
+        if (query.isEmpty()) {
+            // Nothing to highlight
+            append(text)
+        } else {
+            // Split query into words
+            val words = query.trim().split(Regex("\\s+"))
+
+            if (words.isEmpty()) {
+                append(text)
+            } else {
+                val pattern = words.joinToString("|") { Regex.escape(it) }
+                val regex = Regex(pattern, RegexOption.IGNORE_CASE)
+
+                var currentIndex = 0
+
+                for (match in regex.findAll(text)) {
+                    val start = match.range.first
+                    val end = match.range.last + 1
+
+                    // Append text before the match
+                    if (currentIndex < start) {
+                        append(text.substring(currentIndex, start))
+                    }
+
+                    // Append highlighted part
+                    withStyle(
+                        style = SpanStyle(
+                            color = highlightTextColor,
+                            background = highlightBackgroundColor
+                        )
+                    ) {
+                        append(text.substring(start, end))
+                    }
+
+                    currentIndex = end
+                }
+
+                // Append remaining text after the last match
+                if (currentIndex < text.length) {
+                    append(text.substring(currentIndex))
+                }
+            }
+        }
+    }
+
+    BasicText(
+        modifier = modifier,
         text = annotatedString,
         maxLines = maxLines,
         style = style,
