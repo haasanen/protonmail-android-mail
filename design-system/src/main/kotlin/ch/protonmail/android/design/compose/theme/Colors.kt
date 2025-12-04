@@ -75,6 +75,7 @@ private object ProtonPalette {
     val SeashellPeach = Color(0xFFFFF0E8)
     val TexasRose = Color(0xFFFFB84D)
     val BrightSun = Color(0xFFFFD143)
+    val Dolly = Color(0xFFFFF28E)
 
     // Green Tones
     val GreenPea = Color(0xFF1E5C4F)
@@ -256,6 +257,9 @@ class ProtonColors(
 
     starDefault: Color = shade50,
     starSelected: Color = ProtonPalette.TexasRose,
+
+    searchHighlightText: Color = ProtonPalette.Charade,
+    searchHighlightBackground: Color = ProtonPalette.Dolly,
 
     sidebarBackground: Color,
     sidebarInteractionPressed: Color,
@@ -451,9 +455,15 @@ class ProtonColors(
         internal set
     var shadowLifted: Color by mutableStateOf(shadowLifted, structuralEqualityPolicy())
         internal set
+
     var starDefault: Color by mutableStateOf(starDefault, structuralEqualityPolicy())
         internal set
     var starSelected: Color by mutableStateOf(starSelected, structuralEqualityPolicy())
+        internal set
+
+    var searchHighlightText: Color by mutableStateOf(searchHighlightText, structuralEqualityPolicy())
+        internal set
+    var searchHighlightBackground: Color by mutableStateOf(searchHighlightBackground, structuralEqualityPolicy())
         internal set
 
     var sidebarBackground: Color by mutableStateOf(sidebarBackground, structuralEqualityPolicy())
@@ -553,6 +563,8 @@ class ProtonColors(
         floatyText: Color = this.floatyText,
         starDefault: Color = this.starDefault,
         starSelected: Color = this.starSelected,
+        searchHighlightText: Color = this.searchHighlightText,
+        searchHighlightBackground: Color = this.searchHighlightBackground,
         shadowRaised: Color = this.shadowRaised,
         shadowLifted: Color = this.shadowLifted,
         shadowSoft: Color = this.shadowSoft,
@@ -668,6 +680,9 @@ class ProtonColors(
 
         starDefault = starDefault,
         starSelected = starSelected,
+
+        searchHighlightText = searchHighlightText,
+        searchHighlightBackground = searchHighlightBackground,
 
         sidebarBackground = sidebarBackground,
         sidebarInteractionPressed = sidebarInteractionPressed,
@@ -993,6 +1008,9 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
 
     starDefault = other.starDefault
     starSelected = other.starSelected
+
+    searchHighlightText = other.searchHighlightText
+    searchHighlightBackground = other.searchHighlightBackground
 
     sidebarBackground = other.sidebarBackground
     sidebarInteractionPressed = other.sidebarInteractionPressed
