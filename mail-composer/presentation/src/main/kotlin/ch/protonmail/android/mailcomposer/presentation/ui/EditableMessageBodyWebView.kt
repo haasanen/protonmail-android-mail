@@ -43,7 +43,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.viewinterop.AndroidView
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -78,7 +77,6 @@ fun EditableMessageBodyWebView(
 ) {
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
-    val localDensity = LocalDensity.current
 
     var webView by remember { mutableStateOf<WebView?>(null) }
     var currentCursorPosition by remember { mutableStateOf(CursorPosition(0f, 0f)) }

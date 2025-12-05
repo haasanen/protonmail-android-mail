@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
@@ -37,9 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
@@ -73,23 +70,24 @@ internal fun SenderEmailWithSelector(
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
 
-        BasicTextField(
-            value = TextFieldValue(selectedEmail),
-            onValueChange = { },
+        Text(
+            text = selectedEmail,
             modifier = Modifier
                 .testTag(SenderEmailWithSelectorTestTags.TextField)
                 .align(Alignment.CenterVertically)
                 .weight(1f),
-            readOnly = true,
-            textStyle = ProtonTheme.typography.bodyMediumNorm,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Email
-            )
+            style = ProtonTheme.typography.bodyMediumNorm
         )
 
-        ChangeSenderButton(Modifier.align(Alignment.CenterVertically), onChangeSender)
+        val composerSenderAddressContentDescription = stringResource(R.string.composer_sender_address_description)
+        ChangeSenderButton(
+            Modifier
+                .semantics {
+                    contentDescription = composerSenderAddressContentDescription
+                }
+                .align(Alignment.CenterVertically),
+            onChangeSender
+        )
     }
 }
 

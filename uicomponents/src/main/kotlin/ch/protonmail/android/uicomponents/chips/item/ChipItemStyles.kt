@@ -19,9 +19,8 @@
 package ch.protonmail.android.uicomponents.chips.item
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ChipColors
-import androidx.compose.material3.InputChipDefaults
-import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
@@ -42,8 +41,8 @@ internal fun ChipItem.textStyle(): TextStyle = when (this) {
 internal fun ChipItem.suggestionsTextStyle() = ProtonTheme.typography.bodyMediumNorm
 
 @Composable
-internal fun inputChipColor(): SelectableChipColors {
-    return InputChipDefaults.inputChipColors()
+internal fun assistChipColor(): ChipColors {
+    return AssistChipDefaults.assistChipColors()
         .copy(containerColor = ProtonTheme.colors.backgroundNorm)
 }
 

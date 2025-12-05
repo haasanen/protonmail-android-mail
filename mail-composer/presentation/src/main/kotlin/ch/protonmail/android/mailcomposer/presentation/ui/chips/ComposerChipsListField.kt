@@ -51,6 +51,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.toClipEntry
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
@@ -59,6 +60,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.ui.RecipientChipActionsBottomSheetContent
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
@@ -247,6 +249,7 @@ private fun ChipsListContent(
                 style = ProtonTheme.typography.bodyMedium
             )
 
+            val contentDesc = stringResource(R.string.composer_enter_recipient_content_description)
             ChipsListTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -262,7 +265,8 @@ private fun ChipsListContent(
                 state = listState,
                 focusRequester = focusRequester,
                 nextFocusRequester = nextFocusRequester,
-                actions = chipsListActions
+                actions = chipsListActions,
+                enterTextForChipContentDescription = contentDesc
             )
 
             chevronIconContent()

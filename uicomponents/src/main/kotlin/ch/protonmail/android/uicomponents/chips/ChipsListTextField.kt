@@ -35,6 +35,8 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -57,7 +59,8 @@ fun ChipsListTextField(
     cursorColor: Color = ProtonTheme.colors.iconAccent,
     textStyle: TextStyle = ProtonTheme.typography.bodyMediumNorm,
     animateChipsCreation: Boolean = false,
-    actions: ChipsListTextField.Actions
+    actions: ChipsListTextField.Actions,
+    enterTextForChipContentDescription: String
 ) {
     val focusManager = LocalFocusManager.current
     val localDensity = LocalDensity.current
@@ -105,6 +108,9 @@ fun ChipsListTextField(
                 .fillMaxWidth()
                 .weight(1f)
                 .align(Alignment.CenterVertically)
+                .semantics {
+                    contentDescription = enterTextForChipContentDescription
+                }
                 .testTag(ChipsTestTags.BasicTextField)
                 .focusRequester(focusRequester)
                 .focusProperties { next = nextFocusRequester }
