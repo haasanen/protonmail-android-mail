@@ -20,8 +20,10 @@ package ch.protonmail.android.uicomponents.text
 
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -77,8 +79,33 @@ fun MultiWordHighlightedText(
     style: TextStyle,
     overflow: TextOverflow
 ) {
-    val annotatedString = buildAnnotatedString {
-        val query = highlight.trim()
+    val annotatedString = remember(text, highlight, highlightTextColor, highlightBackgroundColor) {
+        buildMultiWordHighlightedText(
+            text = text,
+            highlight = highlight,
+            highlightTextColor = highlightTextColor,
+            highlightBackgroundColor = highlightBackgroundColor
+        )
+    }
+
+    BasicText(
+        modifier = modifier,
+        text = annotatedString,
+        maxLines = maxLines,
+        style = style,
+        overflow = overflow
+    )
+}
+
+fun buildMultiWordHighlightedText(
+    text: String,
+    highlight: String,
+    highlightTextColor: Color,
+    highlightBackgroundColor: Color
+): AnnotatedString {
+    val query = highlight.trim()
+
+    return buildAnnotatedString {
 
         if (query.isEmpty()) {
             // Nothing to highlight
@@ -124,12 +151,4 @@ fun MultiWordHighlightedText(
             }
         }
     }
-
-    BasicText(
-        modifier = modifier,
-        text = annotatedString,
-        maxLines = maxLines,
-        style = style,
-        overflow = overflow
-    )
 }
