@@ -54,7 +54,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -228,11 +230,11 @@ fun ProtonMainSettingsItem(
         Column(
             modifier = Modifier
                 .padding(start = ProtonDimens.Spacing.Large)
-                .semantics(mergeDescendants = true) {}
+                .semantics(mergeDescendants = true) { role = Role.Button }
                 .weight(1f)
         ) {
             Text(
-                modifier = Modifier,
+                modifier = Modifier.clearAndSetSemantics {},
                 text = name,
                 color = nameColor,
                 style = ProtonTheme.typography.bodyLargeWeak
@@ -242,6 +244,7 @@ fun ProtonMainSettingsItem(
 
         Icon(
             modifier = Modifier
+                .clearAndSetSemantics {}
                 .padding(start = ProtonDimens.Spacing.Large),
             painter = painterResource(id = R.drawable.ic_proton_chevron_right),
             contentDescription = name,

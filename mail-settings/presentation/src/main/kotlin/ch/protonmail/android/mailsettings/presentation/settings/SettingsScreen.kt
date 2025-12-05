@@ -43,6 +43,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -203,8 +205,10 @@ fun MainSettingsScreen(
 fun MainSettingsHeader(@StringRes titleRes: Int, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier
-            .padding(vertical = ProtonDimens.Spacing.Large)
-            .semantics { heading() },
+            .semantics {
+                heading()
+            }
+            .padding(vertical = ProtonDimens.Spacing.Large),
         text = stringResource(id = titleRes),
         color = ProtonTheme.colors.textWeak,
         style = ProtonTheme.typography.titleMedium
@@ -242,12 +246,17 @@ fun AccountSettingsItem(
             containerColor = ProtonTheme.colors.backgroundInvertedSecondary
         )
     ) {
+        val accountContentDes = stringResource(R.string.mail_settings_account)
         ProtonMainSettingsItem(
-            modifier = modifier,
+            modifier = modifier.semantics {
+                contentDescription = "$accountContentDes $header $hint"
+            },
             name = header,
             hint = {
                 Text(
-                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
+                    modifier = Modifier
+                        .clearAndSetSemantics {}
+                        .padding(top = ProtonDimens.Spacing.Small),
                     text = hint,
                     color = ProtonTheme.colors.textHint,
                     style = ProtonTheme.typography.bodyMedium
@@ -256,6 +265,7 @@ fun AccountSettingsItem(
             icon = {
                 accountInfo?.avatarUiModel?.let {
                     Avatar(
+                        modifier = Modifier.clearAndSetSemantics {},
                         avatarUiModel = it
                     )
                 }
