@@ -84,4 +84,6 @@
   <string name="contact_actions_unblock_address_description">Deblokkeer dit adres</string>
   <string name="contact_actions_view_contact_details">Contactdetails bekijken</string>
   <string name="contact_actions_view_contact_details_description">Bekijk de details van de contactpersoon</string>
+  <!-- View entire message button -->
+  <string name="button_view_entire_message">Bekijk het volledige bericht</string>
 </resources>

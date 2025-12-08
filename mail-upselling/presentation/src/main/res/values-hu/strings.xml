@@ -86,20 +86,20 @@
   <string name="upselling_select_plan_year">12 hónap</string>
   <string name="upselling_select_plan_month">1 hónap</string>
   <!-- Onboarding upsell -->
-  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
-  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
-  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_choose_plan">Előfizetés kiválasztása</string>
+  <string name="upselling_onboarding_choose_plan_monthly">Havonta</string>
+  <string name="upselling_onboarding_choose_plan_yearly">Évente</string>
   <string name="upselling_onboarding_best_value">Legjobb ár-érték arány</string>
   <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
-  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
-  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
-  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
+  <string name="upselling_onboarding_entitlements_show_more">Több megjelenítése</string>
+  <string name="upselling_onboarding_entitlements_show_less">Kevesebb megjelenítése</string>
+  <string name="upselling_onboarding_button_continue_free">Folytatás az ingyenes csomaggal</string>
   <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
   <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
-  <string name="upselling_onboarding_autorenew_month">month</string>
-  <string name="upselling_onboarding_autorenew_year">12 months</string>
-  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
-  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
+  <string name="upselling_onboarding_autorenew_month">hónap</string>
+  <string name="upselling_onboarding_autorenew_year">12 hónap</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB tárhely</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 email cím</string>
   <!-- Other UI Items -->
   <string name="upselling_unlimited_description_override">Az Ön mindent egyben tartalmazó prémium előfizetése</string>
   <string name="upselling_auto_renew_text">Lemondás nélkül automatikusan megújul ugyanazon az áron és feltételek mellett</string>

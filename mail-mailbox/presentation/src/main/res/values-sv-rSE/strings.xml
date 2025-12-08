@@ -75,6 +75,7 @@
   <string name="mailbox_action_label_messages_failed">Etikettåtgärd misslyckades</string>
   <string name="mailbox_action_label_messages_failed_retrieving_labels">Misslyckades att hämta etiketter</string>
   <string name="mailbox_action_failed_retrieving_colors">Misslyckades att hämta färginställningar</string>
+  <string name="mailbox_action_no_sender_addresses">Ingen adress med behörighet att skicka</string>
   <string name="mailbox_action_move_messages_failed">Flyttåtgärd misslyckades</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Misslyckades att hämta mappar</string>
   <string name="mailbox_action_trash_message">Meddelandet flyttades till papperskorgen</string>
@@ -104,6 +105,9 @@
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Är du säker på att du vill ta bort alla konversationer permanent i din skräppostmapp?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Rensningsåtgärd är schemalagd"</string>
   <string name="mailbox_action_maximum_selection_reached">"Maximalt antal val uppnått"</string>
+  <string name="mailbox_talkback_readout_unread">Oläst</string>
+  <string name="mailbox_talkback_readout_starred">Ta bort stjärnmärkning</string>
+  <string name="mailbox_talkback_readout_not_starred">Stjärnmärk</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">Öppnar bilaga …</string>
   <string name="mailbox_attachment_download_error">Kan inte öppna bilagan. Försök igen.</string>

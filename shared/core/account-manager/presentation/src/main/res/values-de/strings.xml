@@ -18,6 +18,7 @@
   -->
 <resources>
   <string name="account_switcher_manage_account">Konto verwalten</string>
+  <string name="account_switcher_talkback_title">Konto verwalten: Aktuelles Konto</string>
   <string name="account_switcher_sign_out">Abmelden</string>
   <string name="account_switcher_sign_in">Anmelden</string>
   <string name="account_switcher_remove">Entfernen</string>
@@ -28,6 +29,8 @@
   <string name="manage_accounts_signed_out">Abgemeldet</string>
   <string name="manage_accounts_add_account">Konto hinzufügen</string>
   <string name="manage_accounts_switch_to">Wechseln zu</string>
+  <string name="manage_accounts_switch_to_signed_in_content_desc">Zu einem angemeldeten Konto wechseln</string>
+  <string name="manage_accounts_switch_to_signed_out_content_desc">Zu einem abgemeldeten Konto wechseln</string>
   <string name="primary_account_avatar_camera_content_description">Kamera für Konto-Avatar</string>
   <string name="manage_accounts_on_device">Konten auf diesem Gerät verwalten</string>
   <string name="add_another_account">Weiteres Konto hinzufügen</string>

@@ -78,10 +78,12 @@
   <string name="contact_actions_block_contact_dialog_button_cancel">Annulla</string>
   <string name="contact_actions_unblock_contact">Sblocca questo contatto</string>
   <string name="contact_actions_unblock_contact_description">Sblocca questo contatto</string>
-  <string name="contact_actions_block_address">Blocca questo indirizzo</string>
+  <string name="contact_actions_block_address">Blocca</string>
   <string name="contact_actions_block_address_description">Blocca questo indirizzo</string>
-  <string name="contact_actions_unblock_address">Sblocca questo indirizzo</string>
+  <string name="contact_actions_unblock_address">Sblocca</string>
   <string name="contact_actions_unblock_address_description">Sblocca questo indirizzo</string>
   <string name="contact_actions_view_contact_details">Visualizza i dettagli</string>
   <string name="contact_actions_view_contact_details_description">Visualizza i dettagli di questo contatto</string>
+  <!-- View entire message button -->
+  <string name="button_view_entire_message">Visualizza l\'intero messaggio</string>
 </resources>

@@ -39,7 +39,7 @@
   <string name="mailbox_message_sending_offline">Ви поза мережею: повідомлення в черзі на відправлення</string>
   <string name="mailbox_message_sending_success">Повідомлення надіслано</string>
   <string name="mailbox_message_sending_error">Помилка надсилання повідомлення</string>
-  <string name="mailbox_message_sending_error_action">Go to Draft</string>
+  <string name="mailbox_message_sending_error_action">Перейти до Чернетки</string>
   <string name="notification_switched_account">Змінено на обліковий запис %s</string>
   <string name="label_saved">Мітку збережено</string>
   <string name="label_deleted">Мітку видалено</string>
@@ -49,7 +49,7 @@
   <string name="mailbox_message_scheduling_offline">Ви поза мережею: повідомлення в черзі на планування</string>
   <string name="mailbox_message_scheduled_for_sending_success">Це повідомлення буде надіслано %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Користувач уже ввійшов</string>
-  <string name="home_event_loop_error_snackbar">We couldn\'t sync your mail. Try logging out and back in again. If that doesn\'t work, please submit a bug report.</string>
+  <string name="home_event_loop_error_snackbar">Не вдалося синхронізувати вашу пошту. Спробуйте вийти з облікового запису та ввійти знову. Якщо це не допоможе, надішліть звіт про помилку.</string>
   <string name="settings_change_icon_title">Піктограма застосунку</string>
   <string name="settings_change_icon_description">Замаскуйте застосунок Proton Mail за допомогою стриманої піктограми. Сповіщення й надалі показуватимуться з типовою назвою та піктограмою Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">Змінити піктограму?</string>

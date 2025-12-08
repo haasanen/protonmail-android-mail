@@ -82,4 +82,6 @@
   <string name="contact_actions_unblock_address_description">주소 차단 해제</string>
   <string name="contact_actions_view_contact_details">연락처 세부 정보 보기</string>
   <string name="contact_actions_view_contact_details_description">연락처의 세부 정보를 봅니다</string>
+  <!-- View entire message button -->
+  <string name="button_view_entire_message">전체 메시지 보기</string>
 </resources>

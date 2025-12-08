@@ -27,14 +27,14 @@
   <string name="snooze_sheet_option_upsell_detail">收费功能</string>
   <string name="snooze_sheet_snooze_title">待办至</string>
   <string name="snooze_sheet_option_unsnooze">取消延迟通知</string>
-  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
-  <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
-  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
+  <string name="snooze_sheet_error_unable_to_snooze">抱歉，我们在延后会话时遇到了一个未知错误。</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">取消会话延后时发生了一个未知错误</string>
+  <string name="snooze_sheet_error_in_the_past">延后时间已过</string>
   <string name="snooze_sheet_success">待办至 %s</string>
-  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
+  <string name="unsnooze_sheet_success">已取消延后会话</string>
   <string name="snooze_picker_content_description">延迟通知</string>
   <string name="snooze_picker_button_title">保存</string>
   <string name="snooze_custom_upsell_title">自定义日期与时间</string>
   <string name="snooze_custom_upsell_title_short">自定义</string>
-  <string name="snooze_custom_upsell_hint_short">Upgrade to access</string>
+  <string name="snooze_custom_upsell_hint_short">升级即可访问</string>
 </resources>

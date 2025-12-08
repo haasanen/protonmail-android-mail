@@ -18,6 +18,7 @@
   -->
 <resources>
   <string name="account_switcher_manage_account">Hantera konto</string>
+  <string name="account_switcher_talkback_title">Hantera konto: nuvarande konto</string>
   <string name="account_switcher_sign_out">Logga ut</string>
   <string name="account_switcher_sign_in">Logga in</string>
   <string name="account_switcher_remove">Ta bort</string>
@@ -28,6 +29,8 @@
   <string name="manage_accounts_signed_out">Utloggad</string>
   <string name="manage_accounts_add_account">Lägg till konto</string>
   <string name="manage_accounts_switch_to">Byt till</string>
+  <string name="manage_accounts_switch_to_signed_in_content_desc">Byt till ett inloggat konto</string>
+  <string name="manage_accounts_switch_to_signed_out_content_desc">Byt till ett utloggat konto</string>
   <string name="primary_account_avatar_camera_content_description">Kameran för kontoavatar</string>
   <string name="manage_accounts_on_device">Hantera konton på denna enhet</string>
   <string name="add_another_account">Lägg till ett annat konto</string>

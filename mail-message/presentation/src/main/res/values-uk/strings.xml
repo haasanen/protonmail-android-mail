@@ -77,15 +77,17 @@
   <string name="contact_actions_add_contact_description">Зберегти цього отримувача до контактів</string>
   <string name="contact_actions_block_contact">Заблокувати цей контакт</string>
   <string name="contact_actions_block_contact_description">Заблокувати цей контакт</string>
-  <string name="contact_actions_block_contact_dialog_text">Emails from <xliff:g id="email">%1$s</xliff:g> will no longer be delivered and will be permanently deleted. You can manage blocked email addresses in the settings.</string>
-  <string name="contact_actions_block_contact_dialog_button_block">Block</string>
-  <string name="contact_actions_block_contact_dialog_button_cancel">Cancel</string>
-  <string name="contact_actions_unblock_contact">Unblock this contact</string>
-  <string name="contact_actions_unblock_contact_description">Unblock this contact</string>
+  <string name="contact_actions_block_contact_dialog_text">Лист від <xliff:g id="email">%1$s</xliff:g> більше не буде доставлятися та буде назавжди видалено. Ви можете керувати заблокованими адресами в налаштуваннях.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Заблокувати</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Скасувати</string>
+  <string name="contact_actions_unblock_contact">Розблокувати цей контакт</string>
+  <string name="contact_actions_unblock_contact_description">Розблокувати цей контакт</string>
   <string name="contact_actions_block_address">Заблокувати цю адресу</string>
   <string name="contact_actions_block_address_description">Заблокувати цю адресу</string>
   <string name="contact_actions_unblock_address">Розблокувати цю адресу</string>
   <string name="contact_actions_unblock_address_description">Розблокувати цю адресу</string>
   <string name="contact_actions_view_contact_details">Подробиці контакту</string>
   <string name="contact_actions_view_contact_details_description">Переглянути інформацію про контакт</string>
+  <!-- View entire message button -->
+  <string name="button_view_entire_message">Переглянути повідомлення цілком</string>
 </resources>

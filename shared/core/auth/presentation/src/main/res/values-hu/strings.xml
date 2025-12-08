@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">További információk</string>
   <string name="auth_user_check_delinquent_error">Fiókja jelenleg, számlatartozás miatt, fel van függesztve.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
-    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="one">A %d ingyenes fiók maximális száma túllépésre került.</item>
+    <item quantity="other">A %d ingyenes fiók maximális száma túllépésre került.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Valami hiba történt. Kérjük próbálja újra.</string>
   <string name="auth_fido_config_error">Hiba a tárolt kulcsok lekérésekor.</string>
@@ -168,5 +168,5 @@
   <string name="settings_password_error_invalid_recovery">Hibás kétfaktoros kód. Próbálja újra.</string>
   <string name="settings_password_error_2fa_reused">A kód már felhasználásra került. Próbáljon egy másik kódot.</string>
   <string name="settings_password_general_error">Hiba történt.</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Egy vagy több művelet nem feldolgozható. Jelentkezzen ki, majd jelentkezzen be újra a fiókjába.</string>
 </resources>

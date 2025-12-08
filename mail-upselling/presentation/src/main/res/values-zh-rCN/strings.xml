@@ -86,20 +86,20 @@
   <string name="upselling_select_plan_year">12 个月</string>
   <string name="upselling_select_plan_month">1 个月</string>
   <!-- Onboarding upsell -->
-  <string name="upselling_onboarding_choose_plan">Choose your plan</string>
-  <string name="upselling_onboarding_choose_plan_monthly">Monthly</string>
-  <string name="upselling_onboarding_choose_plan_yearly">Yearly</string>
+  <string name="upselling_onboarding_choose_plan">选择您的套餐</string>
+  <string name="upselling_onboarding_choose_plan_monthly">每月</string>
+  <string name="upselling_onboarding_choose_plan_yearly">每年</string>
   <string name="upselling_onboarding_best_value">超值</string>
-  <string name="upselling_onboarding_yearly_savings">Pay annually and save %s</string>
-  <string name="upselling_onboarding_entitlements_show_more">Show more</string>
-  <string name="upselling_onboarding_entitlements_show_less">Show less</string>
-  <string name="upselling_onboarding_button_continue_free">Continue with Free plan</string>
-  <string name="upselling_onboarding_autorenew">Billed at %s every %s</string>
-  <string name="upselling_onboarding_autorenew_welcome_offer">Welcome offer. Auto-renews at %s every %s</string>
-  <string name="upselling_onboarding_autorenew_month">month</string>
-  <string name="upselling_onboarding_autorenew_year">12 months</string>
-  <string name="upselling_onboarding_free_entitlement_storage">1 GB storage</string>
-  <string name="upselling_onboarding_free_entitlement_mail">1 email address</string>
+  <string name="upselling_onboarding_yearly_savings">按年付费，可节省 %s</string>
+  <string name="upselling_onboarding_entitlements_show_more">显示更多</string>
+  <string name="upselling_onboarding_entitlements_show_less">显示更少</string>
+  <string name="upselling_onboarding_button_continue_free">继续使用免费套餐</string>
+  <string name="upselling_onboarding_autorenew">每 %s 收费 %s</string>
+  <string name="upselling_onboarding_autorenew_welcome_offer">首期优惠，到期后自动续费，每 %s 收费 %s</string>
+  <string name="upselling_onboarding_autorenew_month">月</string>
+  <string name="upselling_onboarding_autorenew_year">12 个月</string>
+  <string name="upselling_onboarding_free_entitlement_storage">1 GB 存储空间</string>
+  <string name="upselling_onboarding_free_entitlement_mail">1 个电子邮件地址</string>
   <!-- Other UI Items -->
   <string name="upselling_unlimited_description_override">您的多合一高级订阅</string>
   <string name="upselling_auto_renew_text">除非取消，否则将以相同的价格和条款自动续订</string>

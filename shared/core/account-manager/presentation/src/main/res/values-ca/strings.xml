@@ -18,6 +18,7 @@
   -->
 <resources>
   <string name="account_switcher_manage_account">Gestiona el compte</string>
+  <string name="account_switcher_talkback_title">Gestió del compte: compte actual</string>
   <string name="account_switcher_sign_out">Tanca la sessió</string>
   <string name="account_switcher_sign_in">Inicia la sessió</string>
   <string name="account_switcher_remove">Esborra</string>
@@ -28,6 +29,8 @@
   <string name="manage_accounts_signed_out">S\'ha tancat la sessió.</string>
   <string name="manage_accounts_add_account">Afegeix un compte</string>
   <string name="manage_accounts_switch_to">Canvia a</string>
+  <string name="manage_accounts_switch_to_signed_in_content_desc">Canvieu a un compte amb la sessió iniciada</string>
+  <string name="manage_accounts_switch_to_signed_out_content_desc">Canvieu a un compte amb la sessió tancada</string>
   <string name="primary_account_avatar_camera_content_description">Càmera de l\'avatar del compte</string>
   <string name="manage_accounts_on_device">Gestiona els comptes en aquest dispositiu</string>
   <string name="add_another_account">Afegeix un altre compte</string>

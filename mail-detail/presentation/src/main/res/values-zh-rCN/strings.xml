@@ -72,8 +72,8 @@
   <string name="message_body_embedded_images_banner_text">嵌入图片自动加载功能已关闭，可以在设置中开启。</string>
   <string name="message_body_remote_content_banner_text">外链内容自动加载功能已关闭，可以在设置中开启。</string>
   <string name="message_body_embedded_and_remote_content_banner_text">嵌入图片和外链内容自动加载功能已关闭，可以在设置中开启。</string>
-  <string name="message_body_images_failed_to_load_banner_text">Some images failed to load with tracker protection.</string>
-  <string name="message_body_images_failed_to_load_banner_button">Load images</string>
+  <string name="message_body_images_failed_to_load_banner_text">由于追踪保护功能，部分图片未能加载。</string>
+  <string name="message_body_images_failed_to_load_banner_button">加载图片</string>
   <string name="message_phishing_banner_text">我们的系统或您已将此邮件标记为可疑邮件。如果您认为它是安全的，请标记为合法。</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">标为非垃圾邮件</string>
   <string name="message_spam_banner_text">此邮件被我们的系统或您标记为垃圾邮件。</string>
@@ -155,7 +155,7 @@
   <string name="rsvp_widget_offline_invite_outdated">您处于离线状态。显示的信息可能已过时。</string>
   <string name="rsvp_widget_address_is_incorrect">您的地址无法用于回复。请更新您的账户信息。</string>
   <string name="rsvp_widget_user_is_organizer">您是组织者。</string>
-  <string name="rsvp_widget_user_is_not_invited">You cannot respond to event invites if you\'re not on the participants list at the moment.</string>
+  <string name="rsvp_widget_user_is_not_invited">当前未在参与者列表中时，您无法回复事件邀请。</string>
   <string name="rsvp_widget_event_does_not_exist">此事件不在您的日历中，因此您无法回复它。</string>
   <string name="rsvp_widget_today">今天</string>
   <string name="rsvp_widget_tomorrow">明天</string>
@@ -169,14 +169,14 @@
   <string name="rsvp_widget_message">消息</string>
   <string name="snooze_message_snoozed_until_banner_title">待办至</string>
   <string name="snooze_message_unsnooze_banner_button">取消延迟通知</string>
-  <string name="unsubscribe_newsletter_banner_message">This message is from a mailing list.</string>
-  <string name="unsubscribe_newsletter_banner_button">Unsubscribe</string>
+  <string name="unsubscribe_newsletter_banner_message">此邮件来自邮件列表。</string>
+  <string name="unsubscribe_newsletter_banner_button">退订</string>
   <string name="unsubscribe_newsletter_dialog_text">确定退订吗？您将不再收到此邮件列表的电子邮件。</string>
   <string name="unsubscribe_newsletter_dialog_cancel">取消</string>
   <string name="unsubscribe_newsletter_dialog_confirm">取消订阅</string>
-  <string name="already_unsubscribed_banner_message">You are unsubscribed from this mailing list.</string>
-  <string name="error_unsubscribe_newsletter">Failed to unsubscribe from newsletter</string>
+  <string name="already_unsubscribed_banner_message">您已成功退订此邮件列表。</string>
+  <string name="error_unsubscribe_newsletter">退订通讯失败</string>
   <string name="detail_error_loading_single_message">邮件加载失败</string>
-  <string name="error_downloading_image">Failed to download image</string>
-  <string name="image_downloaded_successfully">Image downloaded</string>
+  <string name="error_downloading_image">下载图片失败</string>
+  <string name="image_downloaded_successfully">图片已下载</string>
 </resources>

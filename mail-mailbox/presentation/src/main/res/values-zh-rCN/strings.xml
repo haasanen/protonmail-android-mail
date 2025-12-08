@@ -34,7 +34,7 @@
   <string name="mailbox_default_sender">（无发件人）</string>
   <string name="mailbox_error_message_offline">网络未连接，无法获取数据</string>
   <string name="mailbox_error_message_generic">邮箱数据加载失败</string>
-  <string name="mailbox_error_message_user_session">Unable to load session.  Please check your connection and try again.</string>
+  <string name="mailbox_error_message_user_session">无法加载会话，请检查您的连接并重试。</string>
   <string name="mailbox_error_message_unexpected">发生意外错误</string>
   <string name="mailbox_is_empty_title">无邮件</string>
   <string name="trash_is_empty_title">回收站为空</string>
@@ -67,6 +67,7 @@
   <string name="mailbox_action_label_messages_failed">添加标签失败</string>
   <string name="mailbox_action_label_messages_failed_retrieving_labels">获取标签失败</string>
   <string name="mailbox_action_failed_retrieving_colors">无法获取颜色设置</string>
+  <string name="mailbox_action_no_sender_addresses">没有发送权限的地址</string>
   <string name="mailbox_action_move_messages_failed">移动操作失败</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">无法列出文件夹</string>
   <string name="mailbox_action_trash_message">邮件已移至回收站</string>
@@ -76,10 +77,10 @@
   <string name="mailbox_search_no_results_title">无匹配项</string>
   <string name="mailbox_search_no_results_explanation">您可以修改或清除搜索内容。</string>
   <plurals name="mailbox_action_move_conversation">
-    <item quantity="other">Conversations moved to %s</item>
+    <item quantity="other">会话已移至 %s</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
-    <item quantity="other">Messages moved to %s</item>
+    <item quantity="other">邮件已移至 %s</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">清空回收站</string>
   <string name="mailbox_action_button_clear_spam">清空垃圾邮件</string>
@@ -94,6 +95,9 @@
   <string name="mailbox_action_clear_spam_dialog_body_conversation">确定要永久删除垃圾文件夹中的所有会话吗？</string>
   <string name="mailbox_action_clear_operation_scheduled">"清除操作已经安排"</string>
   <string name="mailbox_action_maximum_selection_reached">"已达到选择数量上限"</string>
+  <string name="mailbox_talkback_readout_unread">未读</string>
+  <string name="mailbox_talkback_readout_starred">无星标</string>
+  <string name="mailbox_talkback_readout_not_starred">星标</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">正在打开附件…</string>
   <string name="mailbox_attachment_download_error">无法打开附件，请重试。</string>
@@ -125,12 +129,12 @@
   <string name="schedule_send_today">今天 %1$s</string>
   <!--    Snooze messages-->
   <plurals name="snoozed_in_days">
-    <item quantity="other">Snoozed for %d days</item>
+    <item quantity="other">延后 %d 天</item>
   </plurals>
   <plurals name="snooze_in_hours">
-    <item quantity="other">Snoozed for %d hours</item>
+    <item quantity="other">延后 %d 小时</item>
   </plurals>
   <plurals name="snooze_in_minutes">
-    <item quantity="other">Snoozed for %d minutes</item>
+    <item quantity="other">延后 %d 分钟</item>
   </plurals>
 </resources>

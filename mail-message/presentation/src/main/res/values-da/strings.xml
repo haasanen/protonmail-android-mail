@@ -84,4 +84,6 @@
   <string name="contact_actions_unblock_address_description">Fjern blokering af denne adresse</string>
   <string name="contact_actions_view_contact_details">Vis kontaktoplysninger</string>
   <string name="contact_actions_view_contact_details_description">Vis detaljer om kontaktpersonen</string>
+  <!-- View entire message button -->
+  <string name="button_view_entire_message">Vis hele beskeden</string>
 </resources>

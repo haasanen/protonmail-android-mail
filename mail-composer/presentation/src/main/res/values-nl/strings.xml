@@ -164,7 +164,7 @@
   <string name="composer_error_send_draft_message_too_large">Bericht is te groot om te verzenden. Verklein de grootte van uw bijlagen.</string>
   <string name="composer_error_send_draft_attachments_error">Bijlage ontbreekt. Upload opnieuw.</string>
   <string name="composer_error_send_draft_attachments_conversion_error">Kan de bijlage niet converteren. Upload opnieuw.</string>
-  <string name="composer_error_send_draft_invalid_recipient">Some recipients are invalid, please check recipients and try again.</string>
+  <string name="composer_error_send_draft_invalid_recipient">Sommige ontvangers zijn ongeldig, controleer de ontvangers en probeer het opnieuw.</string>
   <string name="composer_error_send_draft_schedule_send_error">Geplande verzendtijd is in het verleden. Ga naar Concepten om het te verzenden of opnieuw in te plannen.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Vervaltijd van bericht is te kort.</string>
   <string name="composer_error_send_draft_package_error">Probleem met het verzenden van het bericht. Probeer het opnieuw.</string>

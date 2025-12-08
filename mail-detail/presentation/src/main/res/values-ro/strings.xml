@@ -130,12 +130,12 @@
   <string name="schedule_message_sent_at_banner_title">Acest mesaj va fi trimis</string>
   <string name="schedule_message_edit_message_button">Editare mesaj</string>
   <string name="schedule_send_tomorrow">mâine la %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Nu s-a putut anula timpul de trimitere programată al acestui mesaj.</string>
-  <string name="offline_error_cancel_schedule_send_failed">Nu se poate anula un mesaj programat cât timp nu aveți conexiune.</string>
+  <string name="error_cancel_schedule_send_failed">Nu s-a putut anula timpul de trimitere planificată pentru acest mesaj.</string>
+  <string name="offline_error_cancel_schedule_send_failed">Nu se poate anula un mesaj planificat cât timp nu aveți conexiune.</string>
   <string name="message_cancel_schedule_send_dialog_confim_button">Editare ciornă</string>
   <string name="message_cancel_schedule_send_dialog_cancel_button">Anulare</string>
-  <string name="message_cancel_schedule_send_dialog_title">Editare și reprogramare</string>
-  <string name="message_cancel_schedule_send_dialog_message">Acest mesaj va fi mutat în ciorne astfel încât să îl puteți edita. Va trebui să reprogramați când va fi trimis.</string>
+  <string name="message_cancel_schedule_send_dialog_title">Editare și replanificare</string>
+  <string name="message_cancel_schedule_send_dialog_message">Acest mesaj va fi mutat în ciorne astfel încât să îl puteți edita. Va trebui să replanificați când va fi trimis.</string>
   <!-- RSVP widget -->
   <string name="rsvp_widget_no_title">(fără titlu)</string>
   <string name="rsvp_widget_attendance_optional">(Participare opțională)</string>

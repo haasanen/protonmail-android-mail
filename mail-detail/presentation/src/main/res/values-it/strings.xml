@@ -118,8 +118,8 @@
   <string name="message_report_phishing_dialog_cancel_button">Annulla</string>
   <string name="open_on_protoncalendar_banner_title">Apri in Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Calendario crittografato sicuro</string>
-  <string name="trashed_messages_banner">Mostra messaggi nel Cestino in questa conversazione.</string>
-  <string name="non_trashed_messages_banner">Mostra i messaggi non cestinati in questa conversazione.</string>
+  <string name="trashed_messages_banner">Mostra messaggi eliminati presenti nel cestino</string>
+  <string name="non_trashed_messages_banner">Mostra messaggi non eliminati</string>
   <string name="recipient_me">me</string>
   <string name="message_details_header_from">Da</string>
   <string name="message_details_header_to">A</string>
@@ -167,7 +167,7 @@
   <string name="rsvp_widget_button_retry">Riprova</string>
   <string name="rsvp_widget_error_answering">Risposta all\'evento non riuscita</string>
   <string name="rsvp_widget_open_in_proton_calendar">Apri in Proton Calendar</string>
-  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Impossibile aprire in Proton Calendar</string>
+  <string name="rsvp_widget_failed_to_open_in_proton_calendar">Apertura del file in Proton Calendar non riuscita</string>
   <string name="rsvp_widget_copy_address">Copia l’indirizzo email</string>
   <string name="rsvp_widget_message">Scrivi</string>
   <string name="snooze_message_snoozed_until_banner_title">Posticipato a</string>

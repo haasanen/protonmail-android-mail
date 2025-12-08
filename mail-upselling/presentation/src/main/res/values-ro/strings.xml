@@ -48,7 +48,7 @@
   <string name="upselling_auto_delete_plus_title">Golire automată a gunoiului</string>
   <!-- Upselling: Schedule Send -->
   <string name="upselling_schedule_send_plus_description_override">Personalizați când va fi trimis un e-mail. Bucurați-vă de acest lucru și de mai multe cu Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Programați acum, trimiteți mai târziu</string>
+  <string name="upselling_schedule_send_plus_title">Planificați acum, trimiteți mai târziu</string>
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Amânați-l — și livrați-l mai târziu. Bucurați-vă de acest lucru și de mai multe cu Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Moment nepotrivit pentru acest e-mail?</string>

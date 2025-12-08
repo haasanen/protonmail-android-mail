@@ -39,7 +39,7 @@
   <string name="mailbox_message_sending_offline">Ni povezave: sporočilo je uvrščeno v pošiljanje</string>
   <string name="mailbox_message_sending_success">Sporočilo poslano</string>
   <string name="mailbox_message_sending_error">Napaka pri pošiljanju sporočila</string>
-  <string name="mailbox_message_sending_error_action">Go to Draft</string>
+  <string name="mailbox_message_sending_error_action">Pojdi v mapo Osnutki</string>
   <string name="notification_switched_account">Preklopili ste na račun %s</string>
   <string name="label_saved">Oznaka shranjena</string>
   <string name="label_deleted">Oznaka izbrisana</string>
@@ -49,9 +49,9 @@
   <string name="mailbox_message_scheduling_offline">Ni povezave: sporočilo čaka na načrtovanje</string>
   <string name="mailbox_message_scheduled_for_sending_success">To sporočilo bo poslano %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Uporabnik je že prijavljen</string>
-  <string name="home_event_loop_error_snackbar">We couldn\'t sync your mail. Try logging out and back in again. If that doesn\'t work, please submit a bug report.</string>
+  <string name="home_event_loop_error_snackbar">Ni nam uspelo sinhronizirati vaše pošte. Poskusite se odjaviti in ponovno prijaviti. Če to ne deluje, oddajte prijavo napake.</string>
   <string name="settings_change_icon_title">Ikona aplikacije</string>
-  <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
+  <string name="settings_change_icon_description">Prikrijte aplikacijo Proton Mail z diskretno ikono. Obvestila bodo še vedno prikazovala privzeto ime in ikono Proton Mail.</string>
   <string name="settings_change_icon_confirmation_title">Želite zamenjati ikono aplikacije?</string>
   <string name="settings_change_icon_confirmation_details">Aplikacija Proton Mail se bo zaprla in vsa prikazana obvestila bodo izginila.\n\nZa ponovni zagon se samo dotaknite nove ikone aplikacije.</string>
   <string name="settings_change_icon_action_cancel">Prekliči</string>

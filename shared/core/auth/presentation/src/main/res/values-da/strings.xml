@@ -38,9 +38,9 @@
   <string name="auth_password">Adgangskode</string>
   <string name="auth_username_placeholder">Brugernavn eller e-mail</string>
   <string name="auth_password_placeholder">Adgangskode</string>
-  <string name="auth_login_assistive_text">Indtast venligst din Proton e-mailadresse eller dit brugernavn.</string>
+  <string name="auth_login_assistive_text">Indtast din Proton e-mailadresse eller dit brugernavn.</string>
   <string name="auth_account_details">Indtast dine Proton-kontodetaljer.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem med at logge dig ind. Prøv venligst igen.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem med at logge dig ind. Prøv igen.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Menneskelig bekræftelse er nødvendig.</string>
   <string name="auth_login_error_invalid_action_invalid_credentials">Forkerte loginoplysninger. Prøv igen.</string>
   <string name="auth_login_error_invalid_action_unsupported_tfa">Ikke-understøttet to-faktor.</string>
@@ -63,7 +63,7 @@
   <string name="auth_two_pass_input_label">Adgangskode til postkasse</string>
   <string name="auth_two_pass_unlock">Lås op</string>
   <string name="auth_two_pass_forgot_password">Glemt adgangskode</string>
-  <string name="auth_two_pass_input_empty">Adgangskode må ikke være tom</string>
+  <string name="auth_two_pass_input_empty">Adgangskoden må ikke være tom</string>
   <string name="auth_signup_title">Opret din Proton-konto</string>
   <string name="auth_signup_subtitle">Én konto til alle Proton-tjenester</string>
   <string name="auth_signup_username_assistive_text">Brugernavn må ikke være tomt.</string>
@@ -160,13 +160,13 @@
   <string name="settings_recovery_email_success">E-mail-adresse til gendannelse opdateret</string>
   <string name="settings_password_management_login_success">Login-adgangskode opdateret</string>
   <string name="settings_password_management_second_success">Sekundær adgangskode opdateret</string>
-  <string name="settings_password_management_start_recovery">Kan du ikke din adgangskode?</string>
+  <string name="settings_password_management_start_recovery">Kender du ikke din adgangskode?</string>
   <string name="settings_password_management_2fa">To-FA er påkrævet</string>
-  <string name="settings_password_invalid_2fa">Ugyldig sekundær faktorkode. Prøv venligst igen.</string>
+  <string name="settings_password_invalid_2fa">Ugyldig sekundær faktorkode. Prøv igen.</string>
   <string name="settings_password_error_empty">Adgangskode må ikke være tom.</string>
   <string name="settings_password_error">Forkert brugernavn eller adgangskode. Prøv igen.</string>
-  <string name="settings_password_error_invalid_recovery">Forkert 2FA-kode. Prøv venligst igen.</string>
-  <string name="settings_password_error_2fa_reused">Koden er allerede blevet anvendt. Prøv venligst en anden kode.</string>
+  <string name="settings_password_error_invalid_recovery">Forkert 2FA-kode. Prøv igen.</string>
+  <string name="settings_password_error_2fa_reused">Koden er allerede blevet anvendt. Prøv en anden kode.</string>
   <string name="settings_password_general_error">Der opstod en fejl.</string>
-  <string name="proton_error_non_processable_actions">En eller flere handlinger kan ikke behandles. Log venligst ud og ind igen på din konto.</string>
+  <string name="proton_error_non_processable_actions">En eller flere handlinger kan ikke behandles. Log ud og ind igen på din konto.</string>
 </resources>

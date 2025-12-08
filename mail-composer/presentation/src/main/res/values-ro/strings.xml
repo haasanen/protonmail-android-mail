@@ -130,9 +130,9 @@
   <string name="composer_send_as_attachment">Trimitere ca atașament</string>
   <string name="composer_remove_recipient_action_item">Eliminare</string>
   <string name="composer_copy_recipient_action_item">Copiere</string>
-  <string name="schedule_send_content_description">Trimitere programată</string>
-  <string name="composer_error_retrieving_schedule_send_options">Generarea timpului pentru „trimitere programată” a eșuat.</string>
-  <string name="composer_schedule_send_content_description">Trimitere programată</string>
+  <string name="schedule_send_content_description">Planificare trimitere</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generarea timpului pentru „planificare trimitere” a eșuat.</string>
+  <string name="composer_schedule_send_content_description">Planificare trimitere</string>
   <string name="composer_schedule_send_tomorrow_title">Mâine</string>
   <string name="composer_schedule_send_monday_title">Luni</string>
   <string name="composer_schedule_send_custom_title">Personal</string>
@@ -166,7 +166,7 @@
   <string name="composer_error_send_draft_attachments_error">Atașamentul lipsește. Reîncărcați-l.</string>
   <string name="composer_error_send_draft_attachments_conversion_error">Fișierul atașat nu se poate converti. Reîncărcați-l.</string>
   <string name="composer_error_send_draft_invalid_recipient">Unii destinatari nu sunt valizi. Verificați destinatarii și reîncercați.</string>
-  <string name="composer_error_send_draft_schedule_send_error">Ora de trimitere programată este în trecut. Accesați „Ciorne” pentru a-l trimite sau a-l reprograma.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Ora de trimitere planificată este în trecut. Accesați „Ciorne” pentru a-l trimite sau a-l replanifica.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Timpul de expirare a mesajului este prea apropiat.</string>
   <string name="composer_error_send_draft_package_error">Problemă la trimiterea mesajului. Reîncercați.</string>
   <string name="composer_error_send_draft_attachment_too_large">Ciorna nu se poate trimite - Atașamentele depășesc limita de mărime.</string>

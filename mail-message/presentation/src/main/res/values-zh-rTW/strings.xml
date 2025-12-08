@@ -82,4 +82,6 @@
   <string name="contact_actions_unblock_address_description">Unblock this address</string>
   <string name="contact_actions_view_contact_details">檢視聯絡人詳細資料</string>
   <string name="contact_actions_view_contact_details_description">瀏覽聯絡人詳細資料</string>
+  <!-- View entire message button -->
+  <string name="button_view_entire_message">檢視完整訊息</string>
 </resources>

@@ -17,8 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="open_with">Apri con…</string>
+  <string name="open_with">Apri con...</string>
   <string name="file_saved">File salvato</string>
   <string name="file_saved_fallback">File salvato nella cartella Download</string>
-  <string name="error_saving_file">Si è verificato un errore durante il salvataggio del file</string>
+  <string name="error_saving_file">Salvataggio del file non riuscito</string>
 </resources>

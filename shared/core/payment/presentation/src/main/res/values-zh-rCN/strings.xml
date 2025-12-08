@@ -43,5 +43,5 @@
   <string name="payment_subscription_managed_by_google">您的订阅由 Google Play 管理。</string>
   <string name="payment_subscription_managed_by_apple">您的订阅由 Apple Store 管理。</string>
   <string name="payment_subscription_managed_by_other">您的订阅无法在移动应用内进行管理。</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">一项或多项操作无法处理。请登出并重新登录您的账户。</string>
 </resources>

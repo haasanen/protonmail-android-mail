@@ -18,6 +18,7 @@
   -->
 <resources>
   <string name="account_switcher_manage_account">Gerenciar conta</string>
+  <string name="account_switcher_talkback_title">Gerenciar: conta atual</string>
   <string name="account_switcher_sign_out">Encerrar sessão</string>
   <string name="account_switcher_sign_in">Iniciar sessão</string>
   <string name="account_switcher_remove">Remover</string>
@@ -28,6 +29,8 @@
   <string name="manage_accounts_signed_out">Encerrar sessão</string>
   <string name="manage_accounts_add_account">Adicionar conta</string>
   <string name="manage_accounts_switch_to">Alternar para</string>
+  <string name="manage_accounts_switch_to_signed_in_content_desc">Mudar para uma conta com sessão iniciada</string>
+  <string name="manage_accounts_switch_to_signed_out_content_desc">Mudar para uma conta com sessão encerrada</string>
   <string name="primary_account_avatar_camera_content_description">Câmera do avatar da conta</string>
   <string name="manage_accounts_on_device">Gerenciar contas neste dispositivo</string>
   <string name="add_another_account">Adicionar outra conta</string>

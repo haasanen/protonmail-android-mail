@@ -91,6 +91,7 @@
   <string name="mailbox_action_label_messages_failed">Dodajanje oznake ni uspelo</string>
   <string name="mailbox_action_label_messages_failed_retrieving_labels">Oznak ni bilo mogoče pridobiti</string>
   <string name="mailbox_action_failed_retrieving_colors">Nastavitev barv ni bilo mogoče pridobiti</string>
+  <string name="mailbox_action_no_sender_addresses">No address with sending permissions</string>
   <string name="mailbox_action_move_messages_failed">Operacija premikanja ni uspela</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Map ni bilo mogoče pridobiti</string>
   <string name="mailbox_action_trash_message">Sporočilo premaknjeno v smetnjak</string>
@@ -124,6 +125,9 @@
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Ali ste prepričani, da želite trajno izbrisati vse pogovore v mapi neželene pošte?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Načrtovana je operacija za čiščenje"</string>
   <string name="mailbox_action_maximum_selection_reached">"Dosežen je največji dovoljen izbor"</string>
+  <string name="mailbox_talkback_readout_unread">Unread</string>
+  <string name="mailbox_talkback_readout_starred">Unstar</string>
+  <string name="mailbox_talkback_readout_not_starred">Star</string>
   <!-- Attachment download -->
   <string name="mailbox_attachment_download_started">Odpiranje priponke…</string>
   <string name="mailbox_attachment_download_error">Priponke ni bilo mogoče odpreti. Poskusite znova.</string>

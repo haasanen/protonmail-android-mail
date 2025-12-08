@@ -94,9 +94,9 @@
   <plurals name="contact_group_details_number_of_contacts">
     <item quantity="other">%1$d 位联系人</item>
   </plurals>
-  <string name="contact_bottom_sheet_redirect_to_web_title">Available on web</string>
-  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">Dismiss</string>
-  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">Creating contacts or groups in the app is not yet ready. For now, you can create them in the web app and they’ll sync to your device.</string>
-  <string name="edit_contact_bottom_sheet_redirect_to_web_description">Editing contacts or groups in the app is not yet ready. For now, you can edit them in the web app and changes will sync to your device.</string>
+  <string name="contact_bottom_sheet_redirect_to_web_title">网络应用中可用</string>
+  <string name="contact_bottom_sheet_redirect_to_web_dismiss_button">忽略</string>
+  <string name="add_contact_bottom_sheet_redirect_to_web_descrption">暂不支持在应用中创建联系人或群组。目前您可以通过网络应用进行创建，并同步到您的设备。</string>
+  <string name="edit_contact_bottom_sheet_redirect_to_web_description">暂不支持在应用中编辑联系人或群组。目前您可以通过网络应用进行创建，并同步到您的设备。</string>
   <string name="contact_bottom_sheet_redirect_to_web_button">在网页上继续</string>
 </resources>

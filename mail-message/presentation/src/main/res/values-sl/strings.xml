@@ -77,15 +77,17 @@
   <string name="contact_actions_add_contact_description">Shrani tega prejemnika kot stik</string>
   <string name="contact_actions_block_contact">Blokiraj ta stik</string>
   <string name="contact_actions_block_contact_description">Blokiraj ta stik</string>
-  <string name="contact_actions_block_contact_dialog_text">Emails from <xliff:g id="email">%1$s</xliff:g> will no longer be delivered and will be permanently deleted. You can manage blocked email addresses in the settings.</string>
-  <string name="contact_actions_block_contact_dialog_button_block">Block</string>
-  <string name="contact_actions_block_contact_dialog_button_cancel">Cancel</string>
-  <string name="contact_actions_unblock_contact">Unblock this contact</string>
-  <string name="contact_actions_unblock_contact_description">Unblock this contact</string>
+  <string name="contact_actions_block_contact_dialog_text">E-pošta od <xliff:g id="email">%1$s</xliff:g> ne bo več dostavljena in bo trajno izbrisana. Blokirane e-poštne naslove lahko upravljate v nastavitvah.</string>
+  <string name="contact_actions_block_contact_dialog_button_block">Blokiraj</string>
+  <string name="contact_actions_block_contact_dialog_button_cancel">Prekliči</string>
+  <string name="contact_actions_unblock_contact">Odblokiraj ta stik</string>
+  <string name="contact_actions_unblock_contact_description">Odblokiraj ta stik</string>
   <string name="contact_actions_block_address">Blokiraj ta naslov</string>
   <string name="contact_actions_block_address_description">Blokiraj ta naslov</string>
   <string name="contact_actions_unblock_address">Odblokiraj ta naslov</string>
   <string name="contact_actions_unblock_address_description">Odblokiraj ta naslov</string>
   <string name="contact_actions_view_contact_details">Ogled podrobnosti stika</string>
   <string name="contact_actions_view_contact_details_description">Oglejte si podrobnosti stika</string>
+  <!-- View entire message button -->
+  <string name="button_view_entire_message">Prikaži celotno sporočilo</string>
 </resources>

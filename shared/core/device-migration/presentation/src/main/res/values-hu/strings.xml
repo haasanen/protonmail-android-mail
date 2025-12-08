@@ -55,5 +55,5 @@
   <string name="target_sign_in_error_new_qr">QR-kód létrehozása</string>
   <string name="target_sign_in_error_back_to_signin">Vissza a bejelentkezéshez</string>
   <string name="target_sign_in_learn_more">További információk</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="proton_error_non_processable_actions">Egy vagy több művelet nem feldolgozható. Jelentkezzen ki, majd jelentkezzen be újra a fiókjába.</string>
 </resources>
