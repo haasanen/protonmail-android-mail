@@ -219,7 +219,7 @@ private fun NotificationSettingsItem(
                 icon = {
                     ProtonMainSettingsIcon(
                         iconRes = R.drawable.ic_proton_arrow_out_over_square,
-                        contentDescription = stringResource(id = R.string.mail_settings_app_customization_notification),
+                        contentDescription = "",
                         tint = ProtonTheme.colors.iconHint
                     )
                 }
@@ -251,7 +251,7 @@ private fun LanguageSettingsItem(
             icon = {
                 ProtonMainSettingsIcon(
                     iconRes = R.drawable.ic_proton_arrow_out_over_square,
-                    contentDescription = stringResource(id = R.string.mail_settings_app_customization_language),
+                    contentDescription = "",
                     tint = ProtonTheme.colors.iconHint
                 )
             }
@@ -281,7 +281,7 @@ private fun AppearanceSettingsItem(
             icon = {
                 ProtonMainSettingsIcon(
                     iconRes = R.drawable.ic_proton_chevron_up_down,
-                    contentDescription = stringResource(id = R.string.mail_settings_app_customization_appearance),
+                    contentDescription = "",
                     tint = ProtonTheme.colors.iconHint
                 )
             }
@@ -311,7 +311,7 @@ private fun ProtectionSettingsItem(
             icon = {
                 ProtonMainSettingsIcon(
                     iconRes = R.drawable.ic_proton_chevron_right,
-                    contentDescription = stringResource(id = R.string.mail_settings_app_customization_protection),
+                    contentDescription = "",
                     tint = ProtonTheme.colors.iconHint
                 )
             }
@@ -407,9 +407,7 @@ private fun MailExperienceSettingsItem(
                 icon = {
                     ProtonMainSettingsIcon(
                         iconRes = R.drawable.ic_proton_chevron_right,
-                        contentDescription = stringResource(
-                            id = R.string.mail_settings_app_customization_customize_toolbar
-                        ),
+                        contentDescription = "",
                         tint = ProtonTheme.colors.iconHint
                     )
                 }

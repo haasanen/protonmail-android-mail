@@ -43,6 +43,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -200,7 +202,9 @@ fun MainSettingsScreen(
 @Composable
 fun MainSettingsHeader(@StringRes titleRes: Int, modifier: Modifier = Modifier) {
     Text(
-        modifier = modifier.padding(vertical = ProtonDimens.Spacing.Large),
+        modifier = modifier
+            .padding(vertical = ProtonDimens.Spacing.Large)
+            .semantics { heading() },
         text = stringResource(id = titleRes),
         color = ProtonTheme.colors.textWeak,
         style = ProtonTheme.typography.titleMedium
