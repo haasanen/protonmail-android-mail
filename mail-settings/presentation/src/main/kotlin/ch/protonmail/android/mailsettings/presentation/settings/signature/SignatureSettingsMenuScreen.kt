@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailsettings.presentation.settings.signature
 
 import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +40,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -143,16 +144,6 @@ private fun SignatureSettingsMenuScreenContent(
 }
 
 @Composable
-private fun SignatureFieldDescription(@StringRes stringRes: Int) {
-    Text(
-        modifier = Modifier.padding(top = ProtonDimens.Spacing.Compact),
-        text = stringResource(stringRes),
-        color = ProtonTheme.colors.textWeak,
-        style = ProtonTheme.typography.bodyMediumNorm
-    )
-}
-
-@Composable
 private fun MobileSignatureSettingsItemForFreePlan(
     modifier: Modifier = Modifier,
     mobileSignature: MobileSignatureUiModel,
@@ -171,7 +162,7 @@ private fun MobileSignatureSettingsItemForFreePlan(
         val context = LocalContext.current
         val fallbackText =
             stringResource(R.string.upselling_upgrade_plan_generic)
-
+        val hint = stringResource(R.string.mail_settings_app_customization_mobile_signature_explanation)
         val onNavigateToUpsell: () -> Unit = {
             when (upsellingVisibility) {
                 is UpsellingVisibility.Hidden -> {
@@ -185,8 +176,12 @@ private fun MobileSignatureSettingsItemForFreePlan(
                 )
             }
         }
+        val name = stringResource(id = R.string.mail_settings_app_customization_mobile_signature_header)
         ProtonAppSettingsItemInvert(
-            name = stringResource(id = R.string.mail_settings_app_customization_mobile_signature_header),
+            modifier = Modifier.semantics {
+                contentDescription = "$name $hint $fallbackText"
+            },
+            name = name,
             hint = mobileSignature.statusText.string(),
             onClick = onNavigateToUpsell,
             icon = {
@@ -196,7 +191,12 @@ private fun MobileSignatureSettingsItemForFreePlan(
                 ProtonDimens.IconSize.ExtraLarge, ProtonDimens.IconSize.MediumLarge
             ),
             content = {
-                SignatureFieldDescription(R.string.mail_settings_app_customization_mobile_signature_explanation)
+                Text(
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Compact),
+                    text = hint,
+                    color = ProtonTheme.colors.textWeak,
+                    style = ProtonTheme.typography.bodyMediumNorm
+                )
             }
         )
     }
@@ -223,14 +223,17 @@ private fun MobileSignatureSettingsItemForPaidPlan(
             icon = {
                 ProtonMainSettingsIcon(
                     iconRes = R.drawable.ic_proton_chevron_right,
-                    contentDescription = stringResource(
-                        id = R.string.mail_settings_app_customization_mobile_signature
-                    ),
+                    contentDescription = "",
                     tint = ProtonTheme.colors.iconHint
                 )
             },
             content = {
-                SignatureFieldDescription(R.string.mail_settings_app_customization_mobile_signature_explanation)
+                Text(
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Compact),
+                    text = stringResource(R.string.mail_settings_app_customization_mobile_signature_explanation),
+                    color = ProtonTheme.colors.textWeak,
+                    style = ProtonTheme.typography.bodyMediumNorm
+                )
             },
             iconContainerSize = DpSize(
                 ProtonDimens.IconSize.Default, ProtonDimens.IconSize.Default

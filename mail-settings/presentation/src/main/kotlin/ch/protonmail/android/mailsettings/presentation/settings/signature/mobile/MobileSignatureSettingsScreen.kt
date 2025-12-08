@@ -201,6 +201,7 @@ private fun MobileSignatureSettingsContent(
                 containerColor = ProtonTheme.colors.backgroundInvertedSecondary
             )
         ) {
+            val contentDescription = stringResource(string.mail_settings_app_customization_mobile_signature_edit)
             ProtonAppSettingsItemNorm(
                 name = settings.signatureValue,
                 enabled = settings.enabled,
@@ -209,7 +210,7 @@ private fun MobileSignatureSettingsContent(
                 icon = {
                     ProtonMainSettingsIcon(
                         iconRes = R.drawable.ic_proton_pencil,
-                        contentDescription = "",
+                        contentDescription = contentDescription,
                         tint = ProtonTheme.colors.iconHint
                     )
                 }
