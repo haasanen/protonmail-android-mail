@@ -17,6 +17,7 @@
  */
 package ch.protonmail.android.navigation
 
+import java.net.URLEncoder
 import android.content.Intent
 import android.net.Uri
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
@@ -28,13 +29,14 @@ import ch.protonmail.android.navigation.model.HomeNavigationEvent
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.model.NavigationEffect
 import ch.protonmail.android.navigation.reducer.HomeNavigationEventsReducer
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
-import org.junit.Test
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
@@ -164,6 +166,31 @@ class HomeNavigationEventsReducerTest {
             draftAction = expectedDraftAction,
             isExternal = false
         )
+        val expectedNavigation = NavigationEffect.NavigateTo(expectedDestination)
+        val expectedEffect = Effect.of(expectedNavigation)
+
+        assertEquals(expectedEffect, result.navigateToEffect)
+    }
+
+    @Test
+    fun `navigate to composer when mailto intent is received`() {
+        // Given
+        val initialState = HomeState.Initial
+        val mailToUri = "mailto:proton@protonmail.com"
+        val mailToIntent = mockk<Intent> {
+            every { action } returns Intent.ACTION_SEND
+            every { dataString } returns mailToUri
+        }
+        val event = HomeNavigationEvent.MailToIntentReceived(
+            intent = mailToIntent
+        )
+
+        // When
+        val result = reducer.reduce(initialState, event)
+
+        // Then
+        val expectedDraftAction = DraftAction.MailTo(URLEncoder.encode(mailToUri, Charsets.UTF_8.name()))
+        val expectedDestination = Destination.Screen.MessageActionComposer(action = expectedDraftAction)
         val expectedNavigation = NavigationEffect.NavigateTo(expectedDestination)
         val expectedEffect = Effect.of(expectedNavigation)
 

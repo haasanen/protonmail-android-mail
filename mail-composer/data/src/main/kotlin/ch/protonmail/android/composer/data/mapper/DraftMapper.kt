@@ -106,6 +106,7 @@ fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
     is DraftAction.Reply -> DraftCreateMode.Reply(this.parentId.toLocalMessageId())
     is DraftAction.ReplyAll -> DraftCreateMode.ReplyAll(this.parentId.toLocalMessageId())
     DraftAction.Compose -> DraftCreateMode.Empty
+    is DraftAction.MailTo -> DraftCreateMode.Mailto(this.uri)
     is DraftAction.ComposeToAddresses,
     is DraftAction.PrefillForShare -> {
         Timber.e("rust-draft: mapping draft action $this failed! Unsupported by rust DraftCreateMode type")

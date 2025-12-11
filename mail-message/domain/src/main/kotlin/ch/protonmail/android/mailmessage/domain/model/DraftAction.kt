@@ -41,4 +41,7 @@ sealed interface DraftAction {
 
     @Serializable
     data class PrefillForShare(val intentShareInfo: IntentShareInfo) : DraftAction
+
+    @Serializable
+    data class MailTo(val uri: String) : DraftAction
 }

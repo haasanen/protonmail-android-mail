@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.navigation.reducer
 
+import java.net.URLEncoder
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.navigation.model.HomeNavigationEvent
 import ch.protonmail.android.navigation.model.HomeState
@@ -43,6 +44,9 @@ class HomeNavigationEventsReducer @Inject constructor() {
 
             is HomeNavigationEvent.InternalShareIntentReceived ->
                 handleInternalShareIntentReceived(state, event)
+
+            is HomeNavigationEvent.MailToIntentReceived ->
+                handleMailToIntentReceived(state, event)
 
             is HomeNavigationEvent.InvalidShareIntentReceived ->
                 handleInvalidShareIntentReceived(state)
@@ -99,6 +103,20 @@ class HomeNavigationEventsReducer @Inject constructor() {
             Destination.Screen.ShareFileComposer(
                 draftAction = draftAction,
                 isExternal = false
+            )
+        )
+
+        return state.copy(navigateToEffect = Effect.of(navigate))
+    }
+
+    private fun handleMailToIntentReceived(
+        state: HomeState,
+        event: HomeNavigationEvent.MailToIntentReceived
+    ): HomeState {
+        val draftAction = DraftAction.MailTo(URLEncoder.encode(event.intent.dataString, Charsets.UTF_8.name()))
+        val navigate = NavigationEffect.NavigateTo(
+            Destination.Screen.MessageActionComposer(
+                action = draftAction
             )
         )
 

@@ -306,6 +306,7 @@ class HomeViewModelTest {
             data = fileUri,
             externalBoolean = true
         )
+        every { shareIntent.scheme } returns ""
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
         every { any<Intent>().getShareInfo() } returns intentShareInfo
@@ -331,6 +332,7 @@ class HomeViewModelTest {
             data = fileUri,
             externalBoolean = true
         )
+        every { shareIntent.scheme } returns ""
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
         every { any<Intent>().getShareInfo() } returns IntentShareInfo.Empty
@@ -367,6 +369,7 @@ class HomeViewModelTest {
                 externalBoolean = false,
                 categories = setOf(Intent.CATEGORY_LAUNCHER)
             )
+            every { shareIntent.scheme } returns ""
             // Mock the extension function
             mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
             every { any<Intent>().getShareInfo() } returns intentShareInfo
@@ -402,6 +405,7 @@ class HomeViewModelTest {
             externalBoolean = false,
             categories = setOf(Intent.CATEGORY_LAUNCHER)
         )
+        every { shareIntent.scheme } returns ""
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
         every { any<Intent>().getShareInfo() } returns intentShareInfo

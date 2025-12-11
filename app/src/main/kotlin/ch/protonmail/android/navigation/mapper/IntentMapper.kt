@@ -19,6 +19,7 @@ package ch.protonmail.android.navigation.mapper
 
 import android.content.Intent
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
+import ch.protonmail.android.mailcommon.data.file.isMailToIntent
 import ch.protonmail.android.mailcommon.domain.model.isNotEmpty
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.navigation.model.HomeNavigationEvent
@@ -40,6 +41,10 @@ class IntentMapper @Inject constructor() {
             }
 
             intent.isShareIntent() -> {
+                if (intent.isMailToIntent()) {
+                    return HomeNavigationEvent.MailToIntentReceived(intent)
+                }
+
                 val shareInfo = intent.getShareInfo()
                     .takeIf { it.isNotEmpty() }
                     ?: return HomeNavigationEvent.InvalidShareIntentReceived(intent)

@@ -49,6 +49,8 @@ fun Intent.isStartedFromLauncher(): Boolean = action == Intent.ACTION_MAIN
 fun Intent.isExternal(): Boolean = getBooleanExtra(IntentExtraKeys.EXTRA_EXTERNAL_SHARE, false) &&
     action != Intent.ACTION_MAIN
 
+fun Intent.isMailToIntent(): Boolean = this.scheme == MAILTO_SCHEME
+
 private fun Intent.getShareInfoForSingleSendAction(): IntentShareInfo {
     val fileUriList = getFileUriForActionSend()?.let {
         listOf(it.toString())

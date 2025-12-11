@@ -30,6 +30,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlin.test.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class IntentMapperTest {
@@ -155,6 +156,21 @@ class IntentMapperTest {
     }
 
     @Test
+    fun `map mailto intent`() {
+        // Given
+        val intent = mockIntent(
+            action = Intent.ACTION_SEND,
+            scheme = "mailto"
+        )
+
+        // When
+        val result = mapper.map(intent)
+
+        // Then
+        assertIs<HomeNavigationEvent.MailToIntentReceived>(result)
+    }
+
+    @Test
     fun `map share intent with no valid data`() {
         // Given
         val intent = mockIntent(
@@ -190,6 +206,7 @@ class IntentMapperTest {
     private fun mockIntent(
         action: String = "",
         data: Uri? = null,
+        scheme: String = "",
         categories: Set<String> = emptySet(),
         clipData: ClipData? = null,
         extraStreamUri: Uri? = null,
@@ -204,6 +221,7 @@ class IntentMapperTest {
         return mockk {
             every { this@mockk.action } returns action
             every { this@mockk.data } returns data
+            every { this@mockk.scheme } returns scheme
             every { this@mockk.clipData } returns clipData
             every { this@mockk.categories } returns categories
             every { this@mockk.getParcelableExtra<Uri>(Intent.EXTRA_STREAM) } returns extraStreamUri

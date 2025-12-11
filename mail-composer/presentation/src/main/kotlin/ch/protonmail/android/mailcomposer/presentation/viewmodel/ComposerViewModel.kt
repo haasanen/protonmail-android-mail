@@ -111,6 +111,7 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ComposeToAddresses
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Forward
+import ch.protonmail.android.mailmessage.domain.model.DraftAction.MailTo
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.PrefillForShare
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Reply
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ReplyAll
@@ -489,7 +490,8 @@ class ComposerViewModel @AssistedInject constructor(
 
             is Forward,
             is Reply,
-            is ReplyAll -> createDraftForAction(primaryUserId(), draftAction)
+            is ReplyAll,
+            is MailTo -> createDraftForAction(primaryUserId(), draftAction)
                 .onRight { draftFields ->
                     initComposerFields(draftFields)
                     initMessageExpiration()

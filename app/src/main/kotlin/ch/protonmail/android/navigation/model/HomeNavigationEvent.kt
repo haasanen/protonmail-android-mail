@@ -44,6 +44,10 @@ sealed interface HomeNavigationEvent {
         val shareInfo: IntentShareInfo
     ) : HomeNavigationEvent
 
+    data class MailToIntentReceived(
+        override val intent: Intent
+    ) : HomeNavigationEvent
+
     data class InvalidShareIntentReceived(
         override val intent: Intent
     ) : HomeNavigationEvent
