@@ -39,9 +39,6 @@ class IntentExtensionsTest {
     private val uri2 = mockk<Uri> {
         every { scheme } returns "content"
     }
-    private val mailToUri = mockk<Uri> {
-        every { scheme } returns "mailto"
-    }
 
     @Before
     fun setUp() {
@@ -83,48 +80,6 @@ class IntentExtensionsTest {
         every { uri1.toString() } returns "content://test1"
         val intent = mockIntent(action = Intent.ACTION_VIEW, data = uri1)
         val expected = IntentShareInfo.Empty.copy(attachmentUris = listOf(uri1.toString()))
-
-        // When
-        val fileShareInfo = intent.getShareInfo()
-
-        // Then
-        assertEquals(expected, fileShareInfo)
-    }
-
-    @Test
-    fun `should return share info with recipient when uri has mailto scheme in intent data for action view`() {
-        // Given
-        val recipientEmail = "user1@example.com"
-        every { Uri.decode(any()) } returns recipientEmail
-        every { Uri.parse(any()) } returns mailToUri
-        every { mailToUri.toString() } returns "mailto:$recipientEmail"
-        val intent = mockIntent(action = Intent.ACTION_VIEW, data = mailToUri)
-        val expected = IntentShareInfo.Empty.copy(emailRecipientTo = listOf(recipientEmail))
-
-        // When
-        val fileShareInfo = intent.getShareInfo()
-
-        // Then
-        assertEquals(expected, fileShareInfo)
-    }
-
-    @Test
-    fun `should return share info with multiple recipients when uri has mailto scheme in intent for action view`() {
-        // Given
-        val recipientEmail1 = "user1@example.com"
-        val recipientEmail2 = "user2@example.com"
-        val recipientEmail3 = "user3@example.com"
-        every { Uri.decode(any()) } returns "$recipientEmail1,$recipientEmail2,$recipientEmail3"
-        every { Uri.parse(any()) } returns mailToUri
-        every { mailToUri.toString() } returns "mailto:$recipientEmail1,$recipientEmail2,$recipientEmail3"
-        val intent = mockIntent(action = Intent.ACTION_VIEW, data = mailToUri)
-        val expected = IntentShareInfo.Empty.copy(
-            emailRecipientTo = listOf(
-                recipientEmail1,
-                recipientEmail2,
-                recipientEmail3
-            )
-        )
 
         // When
         val fileShareInfo = intent.getShareInfo()

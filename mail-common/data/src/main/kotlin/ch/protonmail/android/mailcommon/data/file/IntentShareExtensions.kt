@@ -21,9 +21,7 @@ package ch.protonmail.android.mailcommon.data.file
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.core.net.MailTo
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
-import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
 
 object IntentExtraKeys {
@@ -35,8 +33,8 @@ fun Intent.getShareInfo(): IntentShareInfo {
     return when (action) {
         Intent.ACTION_SEND -> getShareInfoForSingleSendAction()
         Intent.ACTION_SEND_MULTIPLE -> getShareInfoForMultipleSendAction()
-        Intent.ACTION_VIEW -> getShareInfoForViewAction()
-        Intent.ACTION_SENDTO -> getShareInfoForSendToAction()
+        Intent.ACTION_VIEW,
+        Intent.ACTION_SENDTO -> getShareInfoForViewAndSendToAction()
 
         else -> {
             Timber.d("Unhandled intent action: $action")
@@ -45,7 +43,6 @@ fun Intent.getShareInfo(): IntentShareInfo {
     }
 }
 
-fun Intent.isStartedFromLauncher(): Boolean = action == Intent.ACTION_MAIN
 fun Intent.isExternal(): Boolean = getBooleanExtra(IntentExtraKeys.EXTRA_EXTERNAL_SHARE, false) &&
     action != Intent.ACTION_MAIN
 
@@ -79,43 +76,7 @@ private fun Intent.getShareInfoForMultipleSendAction(): IntentShareInfo {
     )
 }
 
-private fun Intent.getShareInfoForViewAction(): IntentShareInfo {
-    val intentUri = getFileUrisForActionViewAndSendTo().takeIfNotEmpty()?.firstOrNull()
-
-    return if (intentUri?.scheme == MAILTO_SCHEME) {
-        val mailTo = MailTo.parse(intentUri)
-
-        val toRecipients = mailTo.to
-            ?.split(",")
-            ?.map { it.trim() }
-            ?: getRecipientTo()
-
-        val ccRecipients: List<String> = mailTo.cc
-            ?.split(",")
-            ?: getRecipientCc()
-
-        val bccRecipients: List<String> = mailTo.bcc
-            ?.split(",")
-            ?: getRecipientBcc()
-
-        val subject = mailTo.subject ?: getSubject()
-        val body = mailTo.body ?: getEmailBody()
-
-        IntentShareInfo(
-            attachmentUris = emptyList(),
-            emailSubject = subject,
-            emailRecipientTo = toRecipients,
-            emailRecipientCc = ccRecipients,
-            emailRecipientBcc = bccRecipients,
-            emailBody = body,
-            isExternal = isExternal()
-        )
-    } else {
-        getShareInfoForSendToAction()
-    }
-}
-
-private fun Intent.getShareInfoForSendToAction(): IntentShareInfo {
+private fun Intent.getShareInfoForViewAndSendToAction(): IntentShareInfo {
     return IntentShareInfo(
         attachmentUris = getFileUrisForActionViewAndSendTo().map { it.toString() },
         emailSubject = getSubject(),
