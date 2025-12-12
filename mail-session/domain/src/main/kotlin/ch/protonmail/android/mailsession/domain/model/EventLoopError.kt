@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 interface EventLoopError {
     data object RefreshError : EventLoopError
     data object SubscriberError : EventLoopError
+    data object CyclicDependencyError : EventLoopError
 
     data class Other(val error: DataError) : EventLoopError
 }

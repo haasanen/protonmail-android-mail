@@ -28,5 +28,6 @@ fun EventError.toEventLoopError(): EventLoopError = when (this) {
     is EventError.Reason -> when (this.v1) {
         EventErrorReason.REFRESH -> EventLoopError.RefreshError
         EventErrorReason.SUBSCRIBER -> EventLoopError.SubscriberError
+        EventErrorReason.CYCLIC_DEPENDENCY -> EventLoopError.CyclicDependencyError
     }
 }
