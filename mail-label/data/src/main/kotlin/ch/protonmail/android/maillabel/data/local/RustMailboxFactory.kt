@@ -18,10 +18,8 @@
 
 package ch.protonmail.android.maillabel.data.local
 
-import java.util.concurrent.ConcurrentHashMap
 import arrow.core.Either
 import arrow.core.flatten
-import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -30,8 +28,6 @@ import ch.protonmail.android.maillabel.data.usecase.CreateMailbox
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -45,103 +41,29 @@ class RustMailboxFactory @Inject constructor(
     private val getSelectedMailLabelId: GetSelectedMailLabelId
 ) {
 
-    private val mailboxCache = ConcurrentHashMap<MailboxCacheKey, MailboxWrapper>()
-    private val allMailCache = ConcurrentHashMap<UserId, MailboxWrapper>()
-
-    private val mailboxMutexes = ConcurrentHashMap<MailboxCacheKey, Mutex>()
-    private val allMailMutexes = ConcurrentHashMap<UserId, Mutex>()
-
     @Deprecated("Error prone due to using selectedMailLabel; To be dropped after ET-1739")
     suspend fun create(userId: UserId): Either<DataError, MailboxWrapper> {
         val currentLabelId = getSelectedMailLabelId().labelId.toLocalLabelId()
-        val mailboxCacheKey = MailboxCacheKey(userId, currentLabelId)
+        Timber.d("rust-mailbox-factory: (deprecated) creating mailbox for user: $userId, label: $currentLabelId")
 
-        Timber.d("rust-mailbox-factory: (deprecated) Looking up cache for user: $userId, label: $currentLabelId")
-
-        mailboxCache[mailboxCacheKey]?.let {
-            return it.right()
-        }
-
-        val mutex = mailboxMutexes.computeIfAbsent(mailboxCacheKey) { Mutex() }
-
-        return mutex.withLock {
-            // Double check: if we missed the cache earlier, it should be hit now if the value is present.
-            mailboxCache[mailboxCacheKey]?.let {
-                return it.right()
-            }
-
-            executeWithUserSession(userId) { session ->
-                createMailbox(session, currentLabelId)
-            }
-                .flatten()
-                .onRight { mailbox ->
-                    Timber.d("rust-mailbox-factory: Mailbox created for user: $userId, label: $currentLabelId")
-                    mailboxCache[mailboxCacheKey] = mailbox
-                }
-        }
+        return executeWithUserSession(userId) { session ->
+            createMailbox(session, currentLabelId)
+        }.flatten()
     }
 
     suspend fun create(userId: UserId, labelId: LocalLabelId): Either<DataError, MailboxWrapper> {
-        val mailboxCacheKey = MailboxCacheKey(userId, labelId)
+        Timber.d("rust-mailbox-factory: creating mailbox for user: $userId, label: $labelId")
 
-        Timber.d("rust-mailbox-factory: Looking up cache for user: $userId, label: $labelId")
-
-        mailboxCache[mailboxCacheKey]?.let {
-            return it.right()
-        }
-
-        val mutex = mailboxMutexes.computeIfAbsent(mailboxCacheKey) { Mutex() }
-        return mutex.withLock {
-            // Double check: if we missed the cache earlier, it should be hit now if the value is present.
-            mailboxCache[mailboxCacheKey]?.let {
-                return it.right()
-            }
-
-            Timber.d("rust-mailbox-factory: start creating $labelId mailbox for user $userId")
-            executeWithUserSession(userId) { session ->
-                createMailbox(session, labelId)
-            }
-                .flatten()
-                .onRight { mailbox ->
-                    Timber.d("rust-mailbox-factory: Mailbox created for user: $userId, label: $labelId")
-                    mailboxCache[mailboxCacheKey] = mailbox
-                }
-        }
-    }
-
-    suspend fun createSkipCache(userId: UserId, labelId: LocalLabelId): Either<DataError, MailboxWrapper> {
         return executeWithUserSession(userId) { session ->
             createMailbox(session, labelId)
         }.flatten()
     }
 
     suspend fun createAllMail(userId: UserId): Either<DataError, MailboxWrapper> {
-        Timber.d("rust-mailbox-factory: Looking up AllMail cache for user: $userId")
+        Timber.d("rust-mailbox-factory: creating AllMail mailbox for user: $userId")
 
-        allMailCache[userId]?.let {
-            Timber.d("rust-mailbox-factory: AllMail cache hit for user: $userId")
-            return it.right()
-        }
-
-        val mutex = allMailMutexes.computeIfAbsent(userId) { Mutex() }
-        return mutex.withLock {
-            // Double check: if we missed the cache earlier, it should be hit now if the value is present.
-            allMailCache[userId]?.let {
-                Timber.d("rust-mailbox-factory: AllMail cache hit for user: $userId")
-                return it.right()
-            }
-            Timber.d("rust-mailbox-factory: start creating AllMail mailbox")
-            executeWithUserSession(userId) { session -> createAllMailMailbox(session) }
-                .flatten()
-                .onRight {
-                    Timber.d("rust-mailbox-factory: Mailbox created for all mail label, userId: $userId")
-                    allMailCache[userId] = it
-                }
-        }
+        return executeWithUserSession(userId) { session ->
+            createAllMailMailbox(session)
+        }.flatten()
     }
 }
-
-private data class MailboxCacheKey(
-    val userId: UserId,
-    val labelId: LocalLabelId
-)

@@ -34,7 +34,7 @@ class ViewModeRepositoryImpl @Inject constructor(
 ) : ViewModeRepository {
 
     override suspend fun getViewModeForLabel(userId: UserId, labelId: LabelId): ViewMode? =
-        rustMailboxFactory.createSkipCache(userId, labelId.toLocalLabelId())
+        rustMailboxFactory.create(userId, labelId.toLocalLabelId())
             .getOrNull()
             ?.viewMode()
             ?.toViewMode()
