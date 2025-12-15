@@ -40,7 +40,8 @@ class BuildMultiWordHighlightedTextTest {
             text = text,
             highlight = highlight,
             highlightTextColor = highlightTextColor,
-            highlightBackgroundColor = highlightBackgroundColor
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = text.length
         )
 
         // Then
@@ -59,7 +60,8 @@ class BuildMultiWordHighlightedTextTest {
             text = text,
             highlight = highlight,
             highlightTextColor = highlightTextColor,
-            highlightBackgroundColor = highlightBackgroundColor
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = text.length
         )
 
         // Then
@@ -72,17 +74,19 @@ class BuildMultiWordHighlightedTextTest {
         // Given
         val text = "John Smith"
         val highlight = "John"
+        val visibleEnd = text.length
 
         // When
         val result = buildMultiWordHighlightedText(
             text = text,
             highlight = highlight,
             highlightTextColor = highlightTextColor,
-            highlightBackgroundColor = highlightBackgroundColor
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = visibleEnd
         )
 
         // Then
-        assertEquals("John Smith", result.text)
+        assertEquals(text, result.text)
         assertEquals(1, result.spanStyles.size)
 
         val span = result.spanStyles[0]
@@ -101,7 +105,8 @@ class BuildMultiWordHighlightedTextTest {
             text = text,
             highlight = highlight,
             highlightTextColor = highlightTextColor,
-            highlightBackgroundColor = highlightBackgroundColor
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = text.length
         )
 
         assertEquals(text, result.text)
@@ -113,13 +118,15 @@ class BuildMultiWordHighlightedTextTest {
         // Given
         val text = "John Smith, London Office - John in London"
         val highlight = "john london"
+        val visibleEnd = text.length
 
         // When
         val result = buildMultiWordHighlightedText(
             text = text,
             highlight = highlight,
             highlightTextColor = highlightTextColor,
-            highlightBackgroundColor = highlightBackgroundColor
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = visibleEnd
         )
 
         // Then
@@ -151,7 +158,8 @@ class BuildMultiWordHighlightedTextTest {
             text = text,
             highlight = highlight,
             highlightTextColor = highlightTextColor,
-            highlightBackgroundColor = highlightBackgroundColor
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = text.length
         )
 
         // Then
@@ -176,7 +184,8 @@ class BuildMultiWordHighlightedTextTest {
             text = text,
             highlight = highlight,
             highlightTextColor = highlightTextColor,
-            highlightBackgroundColor = highlightBackgroundColor
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = text.length
         )
 
         // Then
@@ -188,5 +197,49 @@ class BuildMultiWordHighlightedTextTest {
 
         assertEquals("john", text.substring(johnSpan.start, johnSpan.end))
         assertEquals("lOnDoN", text.substring(londonSpan.start, londonSpan.end))
+    }
+
+    @Test
+    fun `does not highlight matches that start after truncation point`() {
+        // Given
+        val text = "AAA John BBB"
+        val highlight = "john"
+        val visibleEnd = 4
+
+        // When
+        val result = buildMultiWordHighlightedText(
+            text = text,
+            highlight = highlight,
+            highlightTextColor = highlightTextColor,
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = visibleEnd
+        )
+
+        // Then
+        assertEquals(text, result.text)
+        assertTrue(result.spanStyles.isEmpty())
+    }
+
+    @Test
+    fun `does not highlight a match that is partially visible`() {
+        // Given
+        val text = "AAA John BBB"
+        val highlight = "john"
+
+        // John is [4,8) but we cut at 6 -> partial visibility
+        val visibleEnd = 6
+
+        // When
+        val result = buildMultiWordHighlightedText(
+            text = text,
+            highlight = highlight,
+            highlightTextColor = highlightTextColor,
+            highlightBackgroundColor = highlightBackgroundColor,
+            visibleEnd = visibleEnd
+        )
+
+        // Then
+        assertEquals(text, result.text)
+        assertTrue(result.spanStyles.isEmpty())
     }
 }

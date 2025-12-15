@@ -18,17 +18,21 @@
 
 package ch.protonmail.android.uicomponents.text
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Constraints
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
@@ -79,29 +83,57 @@ fun MultiWordHighlightedText(
     style: TextStyle,
     overflow: TextOverflow
 ) {
-    val annotatedString = remember(text, highlight, highlightTextColor, highlightBackgroundColor) {
-        buildMultiWordHighlightedText(
-            text = text,
-            highlight = highlight,
-            highlightTextColor = highlightTextColor,
-            highlightBackgroundColor = highlightBackgroundColor
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+
+    BoxWithConstraints(modifier = modifier) {
+        val maxWidthPx = with(density) { maxWidth.roundToPx() }
+
+        val visibleEnd = remember(text, style, maxLines, overflow, maxWidthPx) {
+            if (maxWidthPx <= 0 || overflow != TextOverflow.Ellipsis) {
+                text.length
+            } else {
+                val layout = textMeasurer.measure(
+                    text = AnnotatedString(text),
+                    style = style,
+                    maxLines = maxLines,
+                    overflow = overflow,
+                    constraints = Constraints(maxWidth = maxWidthPx)
+                )
+                val lastLine = layout.lineCount - 1
+                layout.getLineEnd(lastLine, visibleEnd = true)
+            }
+        }
+
+        val annotatedString = remember(
+            text, highlight,
+            highlightTextColor, highlightBackgroundColor, visibleEnd
+        ) {
+            buildMultiWordHighlightedText(
+                text = text,
+                highlight = highlight,
+                highlightTextColor = highlightTextColor,
+                highlightBackgroundColor = highlightBackgroundColor,
+                visibleEnd = visibleEnd.coerceIn(0, text.length)
+            )
+        }
+
+        BasicText(
+            modifier = modifier,
+            text = annotatedString,
+            maxLines = maxLines,
+            style = style,
+            overflow = overflow
         )
     }
-
-    BasicText(
-        modifier = modifier,
-        text = annotatedString,
-        maxLines = maxLines,
-        style = style,
-        overflow = overflow
-    )
 }
 
 fun buildMultiWordHighlightedText(
     text: String,
     highlight: String,
     highlightTextColor: Color,
-    highlightBackgroundColor: Color
+    highlightBackgroundColor: Color,
+    visibleEnd: Int
 ): AnnotatedString {
     val query = highlight.trim()
 
@@ -125,6 +157,11 @@ fun buildMultiWordHighlightedText(
                 for (match in regex.findAll(text)) {
                     val start = match.range.first
                     val end = match.range.last + 1
+
+                    // Stop highlighting once we reach truncated area
+                    if (end > visibleEnd) {
+                        break
+                    }
 
                     // Append text before the match
                     if (currentIndex < start) {
