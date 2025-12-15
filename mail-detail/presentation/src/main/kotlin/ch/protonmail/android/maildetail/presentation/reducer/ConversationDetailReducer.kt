@@ -76,6 +76,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageBodyLink
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
+import ch.protonmail.android.maildetail.presentation.model.ScrollToMessageState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import javax.inject.Inject
 
@@ -111,7 +112,7 @@ class ConversationDetailReducer @Inject constructor(
             openAttachmentEffect = currentState.toNewOpenAttachmentStateFrom(operation),
             openProtonCalendarIntent = currentState.toNewOpenProtonCalendarIntentFrom(operation),
             onExitWithNavigateToComposer = currentState.toOpenComposerEffectState(operation),
-            scrollToMessage = currentState.toScrollToMessageState(operation),
+            scrollToMessageState = currentState.toScrollToMessageState(operation),
             conversationDeleteState = currentState.toNewDeleteDialogState(operation),
             reportPhishingDialogState = currentState.toNewReportPhishingDialogState(operation),
             hiddenMessagesBannerState = currentState.toNewHiddenMessagesBannerState(operation),
@@ -332,20 +333,37 @@ class ConversationDetailReducer @Inject constructor(
 
     private fun ConversationDetailState.toScrollToMessageState(
         operation: ConversationDetailOperation
-    ): MessageIdUiModel? = when (operation) {
-        // Scroll to message requested
-        is ConversationDetailViewAction.RequestScrollTo -> operation.messageId
+    ): ScrollToMessageState = when (operation) {
+        is ConversationDetailViewAction.ScrollRequestCompleted ->
+            ScrollToMessageState.ScrollCompleted(operation.messageId)
 
-        // Scroll to message completed, so we need to clear the state
-        is ConversationDetailViewAction.ScrollRequestCompleted -> null
+        // Keep the current scroll state unless we are in NoScrollTarget
+        is MessagesData -> when (scrollToMessageState) {
+            ScrollToMessageState.NoScrollTarget -> {
+                val targetId = operation.requestScrollToMessageId
+                    ?: return ScrollToMessageState.NoScrollTarget
 
-        // ConversationDetailEvent.MessagesData update should not clear the scroll state. It will be cleared when
-        // the scroll is completed.
-        is MessagesData -> {
-            operation.requestScrollToMessageId ?: scrollToMessage
+                val indexInList = operation.messagesUiModels.indexOfFirst {
+                    it.messageId == targetId
+                }
+
+                if (indexInList == -1) {
+                    // Target doesn't exist in the list – keep "no target".
+                    ScrollToMessageState.NoScrollTarget
+                } else {
+                    ScrollToMessageState.ScrollRequested(
+                        targetMessageId = targetId,
+                        targetMessageIndex = indexInList + 1 // Add 1 to account for subject header
+                    )
+                }
+            }
+
+            is ScrollToMessageState.ScrollRequested,
+            is ScrollToMessageState.ScrollCompleted -> scrollToMessageState
         }
 
-        else -> scrollToMessage
+
+        else -> scrollToMessageState
     }
 
     private fun ConversationDetailState.toNewOpenAttachmentStateFrom(

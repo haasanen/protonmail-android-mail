@@ -395,7 +395,7 @@ object ConversationDetailItem {
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,
-        val onScrollRequestCompleted: () -> Unit,
+        val onScrollRequestCompleted: (MessageIdUiModel) -> Unit,
         val onBodyExpandCollapseButtonClicked: (MessageIdUiModel) -> Unit,
         val onMoreMessageActionsClick: (MessageId, MessageThemeOptions) -> Unit,
         val onLoadRemoteContent: (MessageId) -> Unit,

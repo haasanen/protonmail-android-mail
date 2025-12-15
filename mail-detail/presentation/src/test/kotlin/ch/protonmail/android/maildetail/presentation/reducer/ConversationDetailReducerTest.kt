@@ -38,6 +38,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailSta
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maildetail.presentation.model.ScrollToMessageState
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
@@ -54,10 +55,12 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
+import me.proton.core.test.kotlin.assertIs
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIsNot
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -160,9 +163,9 @@ class ConversationDetailReducerTest(
             }
 
             if (reducesMessageScroll) {
-                assertNotNull(result.scrollToMessage)
+                assertIsNot<ScrollToMessageState.NoScrollTarget>(result.scrollToMessageState)
             } else {
-                assertNull(result.scrollToMessage)
+                assertIs<ScrollToMessageState.NoScrollTarget>(result.scrollToMessageState)
             }
 
             if (reducesDeleteDialog) {
@@ -200,6 +203,114 @@ class ConversationDetailReducerTest(
                 verify { editScheduledMessageDialogReducer wasNot Called }
             }
         }
+    }
+
+    @Test
+    fun `initial valid scroll request produces scroll requested state with correct index`() = runTest {
+        // Given
+        val targetId = MessageIdUiModel("target-id")
+
+        val initialState = ConversationDetailState.Loading.copy(
+            scrollToMessageState = ScrollToMessageState.NoScrollTarget
+        )
+
+        val messages = listOf(
+            ConversationDetailMessageUiModelSample.SepWeatherForecast,
+            ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.copy(messageId = targetId),
+            ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.copy(
+                messageId = MessageIdUiModel("other")
+            )
+        ).toImmutableList()
+
+        val op = ConversationDetailEvent.MessagesData(
+            messagesUiModels = messages,
+            requestScrollToMessageId = targetId,
+            filterByLocation = null
+        )
+
+        // When
+        val result = reducer.newStateFrom(initialState, op)
+
+        // Then
+        assertEquals(
+            ScrollToMessageState.ScrollRequested(
+                targetMessageId = targetId,
+                targetMessageIndex = 2 // 1 added to account for the Subject at index 0 in LazyColumn
+            ),
+            result.scrollToMessageState
+        )
+    }
+
+    @Test
+    fun `ignores new scroll requests after the initial scroll is initiated`() = runTest {
+        // Given
+        val existingTarget = MessageIdUiModel("existing-target")
+        val incomingTarget = MessageIdUiModel("incoming-target")
+
+        val initialState = ConversationDetailState.Loading.copy(
+            scrollToMessageState = ScrollToMessageState.ScrollRequested(
+                targetMessageId = existingTarget,
+                targetMessageIndex = 1
+            )
+        )
+
+        val op = ConversationDetailEvent.MessagesData(
+            messagesUiModels = listOf(
+                ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.copy(messageId = incomingTarget)
+            ).toImmutableList(),
+            requestScrollToMessageId = incomingTarget,
+            filterByLocation = null
+        )
+
+        // When
+        val result = reducer.newStateFrom(initialState, op)
+
+        // Then
+        assertEquals(initialState.scrollToMessageState, result.scrollToMessageState)
+    }
+
+    @Test
+    fun `stays in No scroll target state when scroll target does not exist in message list`() = runTest {
+        // Given
+        val missing = MessageIdUiModel("missing-id")
+
+        val initialState = ConversationDetailState.Loading.copy(
+            scrollToMessageState = ScrollToMessageState.NoScrollTarget
+        )
+
+        val op = ConversationDetailEvent.MessagesData(
+            messagesUiModels = allMessagesFirstExpanded,
+            requestScrollToMessageId = missing,
+            filterByLocation = null
+        )
+
+        // When
+        val result = reducer.newStateFrom(initialState, op)
+
+        // Then
+        assertEquals(ScrollToMessageState.NoScrollTarget, result.scrollToMessageState)
+    }
+
+    @Test
+    fun `completes the scroll with the given message id`() = runTest {
+        // Given
+        val completedId = MessageIdUiModel("done-id")
+
+        val initialState = ConversationDetailState.Loading.copy(
+            scrollToMessageState = ScrollToMessageState.ScrollRequested(
+                targetMessageId = completedId,
+                targetMessageIndex = 0
+            )
+        )
+
+        // When
+        val result = reducer.newStateFrom(
+            initialState,
+            ConversationDetailViewAction.ScrollRequestCompleted(completedId)
+        )
+
+        // Then
+        assertEquals(ScrollToMessageState.ScrollCompleted(completedId), result.scrollToMessageState)
     }
 
     data class TestInput(
