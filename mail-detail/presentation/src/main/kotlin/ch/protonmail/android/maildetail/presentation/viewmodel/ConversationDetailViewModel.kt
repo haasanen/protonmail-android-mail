@@ -83,7 +83,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MessageBodyLinkClicked
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToInbox
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToTrash
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestScrollTo
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ScrollRequestCompleted
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ShowAllAttachmentsForMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.Star
@@ -382,7 +381,6 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 is ConversationDetailViewAction.DeleteMessageRequested,
                 is ConversationDetailViewAction.DismissBottomSheet,
                 is MessageBodyLinkClicked,
-                is RequestScrollTo,
                 is ScrollRequestCompleted,
                 is ConversationDetailViewAction.ReportPhishing,
                 is ConversationDetailViewAction.ReportPhishingDismissed,

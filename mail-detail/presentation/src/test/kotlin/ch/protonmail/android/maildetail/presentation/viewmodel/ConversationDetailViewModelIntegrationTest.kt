@@ -118,7 +118,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailSta
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ExpandMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.OnAttachmentClicked
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestScrollTo
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ShowAllAttachmentsForMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
@@ -946,34 +945,6 @@ internal class ConversationDetailViewModelIntegrationTest {
                 .first { it.messageId.id == defaultExpanded.messageId.id }
             assertIs<Collapsed>(collapsedMessage)
 
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `should emit scroll to message id when requested`() = runTest {
-        // given
-        val defaultExpanded = MessageSample.AugWeatherForecast
-        val messages = ConversationMessages(
-            nonEmptyListOf(
-                defaultExpanded,
-                MessageSample.Invoice
-            ),
-            defaultExpanded.messageId
-        )
-        coEvery {
-            observeConversationWithMessagesUC(userId, any(), any(), any(), any())
-        } returns flowOf(ConversationWithMessages(ConversationSample.WeatherForecast, messages).right())
-
-        val viewModel = buildConversationDetailViewModel()
-
-        viewModel.state.test {
-            skipItems(3)
-            // when
-            viewModel.submit(RequestScrollTo(messageIdUiModelMapper.toUiModel(defaultExpanded.messageId)))
-
-            // then
-            assertEquals(defaultExpanded.messageId.id, awaitItem().scrollToMessage?.id)
             cancelAndIgnoreRemainingEvents()
         }
     }

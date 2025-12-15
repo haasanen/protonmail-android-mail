@@ -2380,14 +2380,6 @@ internal class ConversationDetailViewModelTest {
         coEvery {
             reducer.newStateFrom(
                 currentState = any(),
-                operation = ofType<ConversationDetailViewAction.RequestScrollTo>()
-            )
-        } returns ConversationDetailState.Loading.copy(
-            scrollToMessage = MessageIdUiModel(allCollapsed.first().messageId.id)
-        )
-        coEvery {
-            reducer.newStateFrom(
-                currentState = any(),
                 operation = ofType<ConversationDetailEvent.ExpandingMessage>()
             )
         } returns ConversationDetailState.Loading.copy(

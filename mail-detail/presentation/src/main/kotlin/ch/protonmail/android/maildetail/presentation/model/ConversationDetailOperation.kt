@@ -227,7 +227,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class CollapseMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     data class MessageBodyLinkClicked(val messageId: MessageIdUiModel, val uri: Uri) : ConversationDetailViewAction
     object DoNotAskLinkConfirmationAgain : ConversationDetailViewAction
-    data class RequestScrollTo(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     object ScrollRequestCompleted : ConversationDetailViewAction
     data class ShowAllAttachmentsForMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     data class OnAttachmentClicked(

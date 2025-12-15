@@ -260,7 +260,6 @@ class ConversationDetailReducerTest(
                 entryPoint = LabelAsBottomSheetEntryPoint.Conversation
             ) affects BottomSheet,
             ConversationDetailViewAction.MessageBodyLinkClicked(messageId, mockk()) affects LinkClick,
-            ConversationDetailViewAction.RequestScrollTo(messageId) affects MessageScroll,
             ConversationDetailViewAction.DeleteConfirmed affects listOf(
                 DeleteDialog,
                 BottomSheet
