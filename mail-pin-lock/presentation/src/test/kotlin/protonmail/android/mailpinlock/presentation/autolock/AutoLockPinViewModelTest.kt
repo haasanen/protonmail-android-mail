@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
+import ch.protonmail.android.mailcommon.presentation.AutoLockUnlockSignal
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
@@ -47,7 +48,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifySequence
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
@@ -71,6 +74,7 @@ internal class AutoLockPinViewModelTest {
     }
     private val signOutAllAccounts = mockk<SignOutAllAccounts>()
     private val savedStateHandle = mockk<SavedStateHandle>()
+    private val autoLockUnlockSignal = mockk<AutoLockUnlockSignal>()
 
     private val reducer = spyk(
         AutoLockPinReducer(
@@ -85,6 +89,7 @@ internal class AutoLockPinViewModelTest {
         userSessionRepository = userSessionRepository,
         signOutAllAccounts = signOutAllAccounts,
         reducer = reducer,
+        autoLockUnlockSignal = autoLockUnlockSignal,
         savedStateHandle = savedStateHandle
     )
 
@@ -287,12 +292,13 @@ internal class AutoLockPinViewModelTest {
     }
 
     @Test
-    fun `should verify existing pin successfully`() = runTest {
+    fun `should verify existing pin successfully and signal unlock`() = runTest {
         // Given
         expectValidOpeningMode(AutoLockInsertionMode.VerifyPin)
         val pin = AutoLockPin("1234")
         coEvery { autoLockRepository.getRemainingAttempts() } returns 10.right()
         coEvery { autoLockRepository.verifyAutoLockPinCode(pin) } returns Unit.right()
+        every { autoLockUnlockSignal.signalUnlock() } just runs
 
         // When
         val viewModel = viewModel()
@@ -301,6 +307,7 @@ internal class AutoLockPinViewModelTest {
 
         // Then
         coVerify {
+            autoLockUnlockSignal.signalUnlock()
             reducer.newStateFrom(any(), AutoLockPinEvent.Update.VerificationCompleted)
         }
     }
@@ -431,6 +438,25 @@ internal class AutoLockPinViewModelTest {
 
         verify {
             reducer.newStateFrom(any(), AutoLockPinEvent.Update.NoAccountSignedIn)
+        }
+    }
+
+    @Test
+    fun `should not signal unlock when pin verification fails`() = runTest {
+        // Given
+        expectValidOpeningMode(AutoLockInsertionMode.VerifyPin)
+        val pin = AutoLockPin("1234")
+        coEvery { autoLockRepository.getRemainingAttempts() } returns 9.right()
+        coEvery { autoLockRepository.verifyAutoLockPinCode(pin) } returns VerifyAutoLockPinError.IncorrectPin.left()
+
+        // When
+        val viewModel = viewModel()
+        viewModel.pinTextFieldState.edit { append(pin.value) }
+        viewModel.submit(AutoLockPinViewAction.PerformConfirm)
+
+        // Then
+        verify(exactly = 0) {
+            autoLockUnlockSignal.signalUnlock()
         }
     }
 

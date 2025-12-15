@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.presentation.AutoLockUnlockSignal
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.pin.reducer.AutoLockPinReducer
@@ -48,6 +49,7 @@ class AutoLockPinViewModel @Inject constructor(
     private val signOutAllAccounts: SignOutAllAccounts,
     private val userSessionRepository: UserSessionRepository,
     private val reducer: AutoLockPinReducer,
+    private val autoLockUnlockSignal: AutoLockUnlockSignal,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -139,6 +141,7 @@ class AutoLockPinViewModel @Inject constructor(
     }
 
     private suspend fun handlePinVerification() = matchExistingPin {
+        autoLockUnlockSignal.signalUnlock()
         emitNewStateFrom(AutoLockPinEvent.Update.VerificationCompleted)
     }
 

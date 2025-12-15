@@ -19,6 +19,7 @@
 package protonmail.android.mailpinlock.presentation
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.presentation.AutoLockUnlockSignal
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.Protection
@@ -44,6 +45,7 @@ internal class LockScreenViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val autoLockRepository = mockk<AutoLockRepository>()
+    private val autoLockUnlockSignal = mockk<AutoLockUnlockSignal>()
 
     @AfterTest
     fun teardown() {
@@ -106,11 +108,12 @@ internal class LockScreenViewModelTest {
     }
 
     @Test
-    fun `should notify the repository when biometric succeeds`() = runTest {
+    fun `should notify the repository and signal unlock when biometric succeeds`() = runTest {
         // Given
         val lock = AutoLock.default().copy(protectionType = Protection.Biometrics)
         every { autoLockRepository.observeAppLock() } returns flowOf(lock)
         every { autoLockRepository.signalBiometricsCheckPassed() } just runs
+        every { autoLockUnlockSignal.signalUnlock() } just runs
 
         val viewModel = viewModel()
 
@@ -119,9 +122,11 @@ internal class LockScreenViewModelTest {
 
         // Then
         coVerify { autoLockRepository.signalBiometricsCheckPassed() }
+        coVerify { autoLockUnlockSignal.signalUnlock() }
     }
 
     private fun viewModel() = LockScreenViewModel(
-        autoLockRepository = autoLockRepository
+        autoLockRepository = autoLockRepository,
+        autoLockUnlockSignal = autoLockUnlockSignal
     )
 }
