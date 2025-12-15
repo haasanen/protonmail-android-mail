@@ -40,6 +40,7 @@ import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialo
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
+import ch.protonmail.android.maildetail.presentation.model.ScrollToMessageState
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -92,7 +93,7 @@ object ConversationDetailsPreviewData {
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
         onExitWithNavigateToComposer = Effect.empty(),
-        scrollToMessage = null,
+        scrollToMessageState = ScrollToMessageState.NoScrollTarget,
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
@@ -150,7 +151,7 @@ object ConversationDetailsPreviewData {
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
         onExitWithNavigateToComposer = Effect.empty(),
-        scrollToMessage = null,
+        scrollToMessageState = ScrollToMessageState.NoScrollTarget,
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
@@ -174,7 +175,7 @@ object ConversationDetailsPreviewData {
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
         onExitWithNavigateToComposer = Effect.empty(),
-        scrollToMessage = null,
+        scrollToMessageState = ScrollToMessageState.NoScrollTarget,
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
@@ -198,7 +199,7 @@ object ConversationDetailsPreviewData {
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
         onExitWithNavigateToComposer = Effect.empty(),
-        scrollToMessage = null,
+        scrollToMessageState = ScrollToMessageState.NoScrollTarget,
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
@@ -222,7 +223,7 @@ object ConversationDetailsPreviewData {
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
         onExitWithNavigateToComposer = Effect.empty(),
-        scrollToMessage = null,
+        scrollToMessageState = ScrollToMessageState.NoScrollTarget,
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
@@ -246,7 +247,7 @@ object ConversationDetailsPreviewData {
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
         onExitWithNavigateToComposer = Effect.empty(),
-        scrollToMessage = null,
+        scrollToMessageState = ScrollToMessageState.NoScrollTarget,
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
@@ -270,7 +271,7 @@ object ConversationDetailsPreviewData {
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
         onExitWithNavigateToComposer = Effect.empty(),
-        scrollToMessage = null,
+        scrollToMessageState = ScrollToMessageState.NoScrollTarget,
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
