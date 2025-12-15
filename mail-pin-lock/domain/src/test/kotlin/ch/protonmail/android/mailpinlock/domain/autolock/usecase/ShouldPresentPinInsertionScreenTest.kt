@@ -65,6 +65,7 @@ internal class ShouldPresentPinInsertionScreenTest {
     @BeforeTest
     fun setUp() {
         every { autoLockCheckPendingState.autoLockCheckEvents } returns lockCheckEvents
+        every { autoLockCheckPendingState.shouldSkipAndClear() } returns false
 
         shouldPresentPinInsertionScreen = ShouldPresentPinInsertionScreen(
             autoLockRepository,
@@ -146,6 +147,35 @@ internal class ShouldPresentPinInsertionScreenTest {
         shouldPresentPinInsertionScreen().test {
             assertTrue(awaitItem()) // Only the onStart emission
             expectNoEvents() // No replayed events
+        }
+    }
+
+    @Test
+    fun `should emit false and skip repository check when shouldSkipAndClear returns true`() = runTest {
+        // Given
+        every { autoLockCheckPendingState.shouldSkipAndClear() } returns true
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
+
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            assertFalse("Expected emission to be false when skip is active", awaitItem())
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `should skip first check and process second when shouldSkipAndClear changes`() = runTest {
+        // Given
+        every { autoLockCheckPendingState.shouldSkipAndClear() } returns true andThen false
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
+
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            assertFalse(awaitItem()) // onStart - skipped
+
+            lockCheckEvents.emit(Unit)
+
+            assertTrue("Expected emission to be true after skip cleared", awaitItem())
         }
     }
 }

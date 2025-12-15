@@ -246,6 +246,13 @@
         <receiver android:name=".mailnotifications.data.local.PushNotificationActionsBroadcastReceiver" />
 
         <activity
+            android:name=".feature.trampoline.NotificationTrampolineActivity"
+            android:theme="@style/ProtonTheme.Mail.Transparent"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:noHistory="true" />
+
+        <activity
             android:name=".MainActivity"
             android:documentLaunchMode="never"
             android:exported="true"
@@ -603,6 +610,7 @@
         <activity
             android:name=".feature.lockscreen.LockScreenActivity"
             android:theme="@style/ProtonTheme.Mail.Transparent"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

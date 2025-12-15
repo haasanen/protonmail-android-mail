@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.feature.lockscreen
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -25,83 +26,105 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailpinlock.presentation.autolock.standalone.LocalLockScreenEntryPointIsStandalone
-import ch.protonmail.android.navigation.model.Destination
-import ch.protonmail.android.navigation.route.addAutoLockOverlay
-import ch.protonmail.android.navigation.route.addAutoLockPinScreen
+import androidx.lifecycle.lifecycleScope
+import ch.protonmail.android.feature.appicon.usecase.CreateLaunchIntent
+import ch.protonmail.android.mailcommon.presentation.AutoLockUnlockSignal
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
+import ch.protonmail.android.navigation.deeplinks.NotificationDeepLinkHandler
 import dagger.hilt.android.AndroidEntryPoint
-import io.sentry.compose.withSentryObservableEffect
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 internal class LockScreenActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var autoLockUnlockSignal: AutoLockUnlockSignal
+
+    @Inject
+    lateinit var autoLockCheckPendingState: AutoLockCheckPendingState
+
+    @Inject
+    lateinit var createLaunchIntent: CreateLaunchIntent
+
+    @Inject
+    lateinit var deepLinkHandler: NotificationDeepLinkHandler
+
+    @Inject
+    lateinit var lockScreenState: LockScreenState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        // Block back navigation
+        initializeLockState()
+        setupBackPressBlocking()
+        observeUnlockSignal()
+
+        val shouldBlurScreen = setupBlurIfSupported()
+
+        setContent {
+            LockScreenContent(shouldBlurScreen) {
+                this@LockScreenActivity.finish()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lockScreenState.setActive(false)
+    }
+
+    private fun initializeLockState() {
+        deepLinkHandler.setLocked()
+        lockScreenState.setActive(true)
+    }
+
+    private fun observeUnlockSignal() {
+        lifecycleScope.launch {
+            autoLockUnlockSignal.unlockSignal.collect {
+                deepLinkHandler.setUnlocked()
+
+                if (shouldLaunchMainActivity()) {
+                    autoLockCheckPendingState.skipNextAutoLockCheck()
+                    launchMainActivity()
+                }
+
+                finish()
+            }
+        }
+    }
+
+    private fun shouldLaunchMainActivity() = isTaskRoot || deepLinkHandler.hasPending()
+
+    private fun launchMainActivity() {
+        createLaunchIntent()?.apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }?.let { startActivity(it) }
+    }
+
+    private fun setupBackPressBlocking() {
         onBackPressedDispatcher.addCallback(
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() = Unit
             }
         )
-
-        // Blur is only added on API 31+ devices and when advertised by the window flag.
-        val supportsBackgroundBlur = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            window.windowManager.isCrossWindowBlurEnabled
-
-        if (supportsBackgroundBlur) {
-            setupNativeBlur()
-        }
-
-        setContent {
-            ProtonTheme {
-                val navController = rememberNavController().withSentryObservableEffect()
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(
-                            // If blurring is unsupported or not enabled, prevent transparency by adding a background
-                            if (!supportsBackgroundBlur) {
-                                Modifier.background(ProtonTheme.colors.backgroundNorm)
-                            } else {
-                                Modifier
-                            }
-                        )
-                ) {
-
-                    CompositionLocalProvider(LocalLockScreenEntryPointIsStandalone provides true) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = Destination.Screen.AutoLockOverlay.route
-                        ) {
-                            addAutoLockOverlay(
-                                onClose = { this@LockScreenActivity.finish() },
-                                navController
-                            )
-
-                            addAutoLockPinScreen(
-                                onClose = { this@LockScreenActivity.finish() },
-                                onShowSuccessSnackbar = {}
-                            )
-                        }
-                    }
-                }
-            }
-        }
     }
 
-    private fun setupNativeBlur() {
+    private fun setupBlurIfSupported(): Boolean {
+        val shouldBlur = !deepLinkHandler.hasPending() &&
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            window.windowManager.isCrossWindowBlurEnabled
+
+        if (shouldBlur) {
+            applyNativeBlur()
+        }
+
+        return shouldBlur
+    }
+
+    private fun applyNativeBlur() {
         window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 

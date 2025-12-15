@@ -42,6 +42,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -52,6 +53,7 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class NotificationsDeepLinksViewModel @Inject constructor(
+    private val deepLinkHandler: NotificationDeepLinkHandler,
     private val networkManager: NetworkManager,
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val userSessionRepository: UserSessionRepository,
@@ -65,6 +67,26 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     val state: StateFlow<State> = _state
 
     private var navigateJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            deepLinkHandler.pending.filterNotNull().collect { data ->
+                processPendingDeepLink(data)
+            }
+        }
+    }
+
+    private fun processPendingDeepLink(data: NotificationDeepLinkData) {
+        when (data) {
+            is NotificationDeepLinkData.Message -> {
+                navigateToDetails(data.messageId, data.userId)
+            }
+
+            is NotificationDeepLinkData.Group -> {
+                navigateToInbox(data.userId)
+            }
+        }
+    }
 
     fun navigateToDetails(messageId: String, userId: String) {
         if (isOffline()) {
@@ -83,6 +105,11 @@ class NotificationsDeepLinksViewModel @Inject constructor(
                 _state.update { NavigateToInbox.ActiveUser }
             }
         }
+    }
+
+    fun consume() {
+        deepLinkHandler.consume()
+        _state.value = State.Launched
     }
 
     private suspend fun switchUserAndNavigateToInbox(userId: String) {

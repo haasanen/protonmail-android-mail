@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.navigation
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -102,6 +103,7 @@ import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.blackfriday.BlackFridayModalState
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
 import ch.protonmail.android.mailupselling.presentation.viewmodel.BlackFridayModalUpsellViewModel
+import ch.protonmail.android.navigation.deeplinks.DeepLinkNavigationEffect
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
@@ -120,7 +122,6 @@ import ch.protonmail.android.navigation.route.addContactSearch
 import ch.protonmail.android.navigation.route.addContacts
 import ch.protonmail.android.navigation.route.addConversationDetail
 import ch.protonmail.android.navigation.route.addCustomizeToolbarSettings
-import ch.protonmail.android.navigation.route.addDeepLinkHandler
 import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addEmailSignatureSettings
 import ch.protonmail.android.navigation.route.addEntireMessageBody
@@ -407,6 +408,17 @@ fun Home(
             drawerState.close()
         }
     }
+
+    DeepLinkNavigationEffect(
+        navController = navController,
+        onUserSwitched = { email ->
+            Toast.makeText(
+                context,
+                context.getString(R.string.notification_switched_account, email),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    )
 
     var preventBottomSheetDismissal by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(
@@ -807,7 +819,6 @@ fun Home(
                     addExportLogsSettings(navController)
                     addFeatureFlagsOverrides(navController)
                     addBugReporting(navController, onShowNormalSnackbar = { showNormalSnackbar(it) })
-                    addDeepLinkHandler(navController)
                     addUpsellingRoutes(
                         UpsellingScreen.Actions.Empty.copy(
                             onSuccess = { navController.navigateBack() },

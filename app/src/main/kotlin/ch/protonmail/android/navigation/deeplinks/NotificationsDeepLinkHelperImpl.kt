@@ -18,13 +18,15 @@
 
 package ch.protonmail.android.navigation.deeplinks
 
+import android.content.Context
 import android.content.Intent
-import ch.protonmail.android.feature.appicon.usecase.CreateLaunchIntent
+import ch.protonmail.android.feature.trampoline.NotificationTrampolineActivity
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class NotificationsDeepLinkHelperImpl @Inject constructor(
-    private val createLaunchIntent: CreateLaunchIntent
+    @ApplicationContext private val context: Context
 ) : NotificationsDeepLinkHelper {
 
     override fun buildMessageDeepLinkIntent(
@@ -32,22 +34,18 @@ class NotificationsDeepLinkHelperImpl @Inject constructor(
         messageId: String,
         userId: String
     ): Intent {
-        val intent = createLaunchIntent()?.apply {
+        return Intent(context, NotificationTrampolineActivity::class.java).apply {
             action = Intent.ACTION_VIEW
             data = buildMessageDeepLinkUri(notificationId, messageId, userId)
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
-
-        return intent!!
     }
 
     override fun buildMessageGroupDeepLinkIntent(notificationId: String, userId: String): Intent {
-        val intent = createLaunchIntent()?.apply {
+        return Intent(context, NotificationTrampolineActivity::class.java).apply {
             action = Intent.ACTION_VIEW
             data = buildMessageGroupDeepLinkUri(notificationId, userId)
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
-
-        return intent!!
     }
 }

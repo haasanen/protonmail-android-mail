@@ -32,7 +32,6 @@ import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportScreen
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
-import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.DialogType
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockIntervalDialog
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockSettingsScreen
@@ -44,11 +43,11 @@ import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinS
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.settings.combinedcontacts.CombinedContactsSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsDialog
-import ch.protonmail.android.mailsettings.presentation.settings.signature.mobile.MobileSignatureSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.notifications.ui.PushNotificationsSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.privacy.PrivacySettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.signature.SignatureSettingsMenuScreen
 import ch.protonmail.android.mailsettings.presentation.settings.signature.email.EmailSignatureSettingScreen
+import ch.protonmail.android.mailsettings.presentation.settings.signature.mobile.MobileSignatureSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionsPreferenceScreen
@@ -220,13 +219,11 @@ internal fun NavGraphBuilder.addAutoLockSettings(navController: NavHostControlle
     }
 }
 
-internal fun NavGraphBuilder.addAutoLockOverlay(onClose: () -> Unit, navController: NavHostController) {
+internal fun NavGraphBuilder.addAutoLockOverlay(onClose: () -> Unit, onNavigateToPinLock: () -> Unit) {
     composable(route = Screen.AutoLockOverlay.route) {
         LockScreenOverlay(
             onClose = onClose,
-            onNavigateToPinInsertion = {
-                navController.navigate(Screen.AutoLockPinScreen(AutoLockInsertionMode.VerifyPin))
-            }
+            onNavigateToPinInsertion = onNavigateToPinLock
         )
     }
 }
