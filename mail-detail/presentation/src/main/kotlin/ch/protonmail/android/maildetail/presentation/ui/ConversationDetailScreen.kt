@@ -115,6 +115,8 @@ import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerS
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maildetail.presentation.model.ScrollToMessageState
+import ch.protonmail.android.maildetail.presentation.model.getScrollTargetMessageIdOrNull
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
 import ch.protonmail.android.maildetail.presentation.ui.dialog.BlockSenderDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendDialog
@@ -504,7 +506,6 @@ fun ConversationDetailScreen(
                 padding = padding,
                 state = state,
                 topBarState = topBarState,
-                scrollToMessageId = state.scrollToMessage?.id,
                 isDirectionForwards = isDirectionForwards,
                 actions = ConversationDetailScreen.Actions(
                     onExit = actions.onExit,
@@ -540,7 +541,6 @@ fun ConversationDetailScreen(
                         viewModel.submit(ConversationDetailViewAction.MessageBodyLinkClicked(messageId, uri))
                     },
                     onOpenMessageBodyLink = actions.openMessageBodyLink,
-                    onRequestScrollTo = { viewModel.submit(ConversationDetailViewAction.RequestScrollTo(it)) },
                     onShowAllAttachmentsForMessage = {
                         viewModel.submit(ConversationDetailViewAction.ShowAllAttachmentsForMessage(it))
                     },
@@ -564,8 +564,8 @@ fun ConversationDetailScreen(
                     onForward = {
                         actions.onForward(it)
                     },
-                    onScrollRequestCompleted = {
-                        viewModel.submit(ConversationDetailViewAction.ScrollRequestCompleted)
+                    onScrollRequestCompleted = { messageId ->
+                        viewModel.submit(ConversationDetailViewAction.ScrollRequestCompleted(messageId))
                     },
                     onDoNotAskLinkConfirmationAgain = {
                         viewModel.submit(ConversationDetailViewAction.DoNotAskLinkConfirmationAgain)
@@ -679,7 +679,6 @@ private fun ConversationDetailScreen(
     actions: ConversationDetailScreen.Actions,
     padding: PaddingValues,
     modifier: Modifier = Modifier,
-    scrollToMessageId: String?,
     topBarState: ConversationTopBarState,
     isDirectionForwards: () -> Boolean
 ) {
@@ -893,7 +892,7 @@ private fun ConversationDetailScreen(
                     hiddenMessagesBannerState = state.hiddenMessagesBannerState,
                     parentPadding = padding,
                     innerPadding = innerPadding,
-                    scrollToMessageId = scrollToMessageId,
+                    scrollToMessageState = state.scrollToMessageState,
                     actions = conversationDetailItemActions,
                     onHiddenMessagesBannerClick = actions.onHiddenMessagesBannerClick,
                     conversationKey = state.conversationId(),
@@ -925,7 +924,7 @@ fun MessagesContentWithHiddenEdges(
     hiddenMessagesBannerState: HiddenMessagesBannerState,
     parentPadding: PaddingValues,
     innerPadding: PaddingValues,
-    scrollToMessageId: String?,
+    scrollToMessageState: ScrollToMessageState,
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
     onHiddenMessagesBannerClick: () -> Unit,
@@ -942,7 +941,7 @@ fun MessagesContentWithHiddenEdges(
             hiddenMessagesBannerState = hiddenMessagesBannerState,
             parentPadding = parentPadding,
             innerPadding = innerPadding,
-            scrollToMessageId = scrollToMessageId,
+            scrollToMessageState = scrollToMessageState,
             actions = actions,
             onHiddenMessagesBannerClick = onHiddenMessagesBannerClick,
             conversationId = conversationKey,
@@ -980,7 +979,7 @@ private fun MessagesContent(
     hiddenMessagesBannerState: HiddenMessagesBannerState,
     parentPadding: PaddingValues,
     innerPadding: PaddingValues,
-    scrollToMessageId: String?,
+    scrollToMessageState: ScrollToMessageState,
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
     onHiddenMessagesBannerClick: () -> Unit,
@@ -989,7 +988,6 @@ private fun MessagesContent(
     onSubjectScrolled: (Float) -> Unit
 ) {
     val listState = rememberLazyListState()
-    var webContentLoaded by remember(conversationId) { mutableIntStateOf(0) }
     val loadedItemsHeight = remember(conversationId) { mutableStateMapOf<String, Int>() }
 
     val layoutDirection = LocalLayoutDirection.current
@@ -1003,14 +1001,6 @@ private fun MessagesContent(
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
     val itemsHeight = remember(conversationId) { mutableStateMapOf<Int, Int>() }
-    var scrollCount by remember(conversationId) { mutableIntStateOf(0) }
-
-    var scrollToIndex = remember(scrollToMessageId, uiModels, conversationId) {
-        if (scrollToMessageId == null) return@remember null
-        else uiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
-            .takeIf { it > -1 }
-            ?.let { it + 1 } // Add 1 to account for subject header
-    }
 
     // Calculate subject visibility based on scroll
     LaunchedEffect(listState) {
@@ -1039,38 +1029,13 @@ private fun MessagesContent(
         if (!isAutoExpandEnabled) return@LaunchedEffect
 
         val lastMessage = uiModels.lastOrNull()
+        val scrollToMessageId = scrollToMessageState.getScrollTargetMessageIdOrNull()
         val shouldAutoExpandLastMessage = lastMessage is ConversationDetailMessageUiModel.Collapsed &&
             lastMessage.messageId.id != scrollToMessageId &&
             lastMessage.isDraft.not()
 
         if (shouldAutoExpandLastMessage) {
             actions.onExpand(lastMessage.messageId)
-        }
-    }
-
-    LaunchedEffect(key1 = scrollToIndex, key2 = webContentLoaded, key3 = conversationId) {
-        if (scrollToIndex != null) {
-
-            // We are having frequent state updates at the beginning which are causing recompositions and
-            // animateScrollToItem to be cancelled or delayed. Therefore we use scrollToItem for
-            // the first scroll action.
-            if (webContentLoaded == 0) {
-
-                // When try to perform both scrolling and expanding at the same time, the above scrollToItem
-                // suspend function is paused during WebView initialization. Therefore we notify the view model
-                // after the completion of the first scrolling to start expanding the message.
-                if (scrollCount == 0) {
-                    scrollToMessageId?.let { actions.onExpand(MessageIdUiModel(it)) }
-                }
-
-                scrollCount++
-
-            } else {
-
-                // Scrolled message expanded, so we can conclude that scrolling is completed
-                actions.onScrollRequestCompleted()
-                scrollToIndex = null
-            }
         }
     }
 
@@ -1128,20 +1093,27 @@ private fun MessagesContent(
 
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
-    LaunchedEffect(conversationId) {
-        scrollToIndex?.let { listState.scrollToItem(it) }
+    LaunchedEffect(scrollToMessageState) {
+        val scrollRequest = scrollToMessageState as? ScrollToMessageState.ScrollRequested
+            ?: return@LaunchedEffect
+
+        // Hard jump to the item (no animation, ensures it will be in viewport)
+        listState.scrollToItem(scrollRequest.targetMessageIndex)
+        actions.onExpand(scrollRequest.targetMessageId)
+
         // wait for the final height of our target expanded message before scrolling
         snapshotFlow { finishedResizingOperations }
             .filter {
-                it && !userScrolled && scrollToIndex != null
+                it && !userScrolled
             }
             .distinctUntilChanged()
             // creates a delay to wait for item to finish expanding animations
             .debounce(AnimationConstants.DefaultDurationMillis.toLong())
             .collectLatest {
-                scrollToIndex?.let {
-                    listState.animateScrollToItem((it - 1).coerceAtLeast(0))
-                }
+                listState.animateScrollToItem(
+                    (scrollRequest.targetMessageIndex - 1).coerceAtLeast(0)
+                )
+                actions.onScrollRequestCompleted(scrollRequest.targetMessageId)
             }
     }
 
@@ -1223,10 +1195,10 @@ private fun MessagesContent(
                 },
                 onMessageBodyLoadFinished = { messageId, height ->
                     loadedItemsHeight[messageId.id] = height
+                    val scrollToMessageId = scrollToMessageState.getScrollTargetMessageIdOrNull()
                     if (messageId.id == scrollToMessageId || scrollToMessageId == null) {
                         isScrollToMessageWebViewLoaded = true
                     }
-                    webContentLoaded++
                 },
                 previouslyLoadedHeight = rememberCachedHeight,
                 finishedResizing = itemFinishedResizing
@@ -1303,7 +1275,7 @@ object ConversationDetailScreen {
         val onMessageBodyLinkClicked: (messageId: MessageIdUiModel, uri: Uri) -> Unit,
         val onOpenMessageBodyLink: (uri: Uri) -> Unit,
         val onDoNotAskLinkConfirmationAgain: () -> Unit,
-        val onScrollRequestCompleted: () -> Unit,
+        val onScrollRequestCompleted: (MessageIdUiModel) -> Unit,
         val onShowAllAttachmentsForMessage: (MessageIdUiModel) -> Unit,
         val onToggleAttachmentsExpandCollapseMode: (MessageIdUiModel) -> Unit,
         val onAttachmentClicked: (AttachmentOpenMode, MessageIdUiModel, AttachmentId) -> Unit,
@@ -1417,7 +1389,6 @@ private fun ConversationDetailScreenPreview(
             topBarState = ConversationTopBarState(),
             state = state,
             actions = ConversationDetailScreen.Actions.Empty,
-            scrollToMessageId = null,
             isDirectionForwards = { true }
         )
     }

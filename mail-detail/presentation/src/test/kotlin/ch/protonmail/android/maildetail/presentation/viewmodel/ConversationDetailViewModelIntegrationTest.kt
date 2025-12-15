@@ -124,6 +124,8 @@ import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialo
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MoreActionsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
+import ch.protonmail.android.maildetail.presentation.model.ScrollToMessageState
+import ch.protonmail.android.maildetail.presentation.model.getScrollTargetMessageIdOrNull
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationBlockSenderDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDeleteDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailMessagesReducer
@@ -820,34 +822,22 @@ internal class ConversationDetailViewModelIntegrationTest {
                 .messages
                 .first { it.messageId.id == expectedScrolledTo.messageId.id }
             assertIs<Collapsed>(collapsedMessage)
-            assertTrue { conversationState.scrollToMessage?.id == expectedScrolledTo.messageId.id }
+            assertTrue {
+                conversationState.scrollToMessageState.getScrollTargetMessageIdOrNull() ==
+                    expectedScrolledTo.messageId.id
+            }
 
             // when
-            // scroll request completed, clear scroll msg id in state
-            viewModel.submit(ConversationDetailViewAction.ScrollRequestCompleted)
-
-            // then
-            conversationState = awaitItem()
-            assertTrue { conversationState.scrollToMessage == null }
-
-            // when
+            // scroll request completed
             viewModel.submit(
-                ExpandMessage(
-                    messageIdUiModelMapper.toUiModel(
-                        MessageSample.Invoice.messageId
-                    )
+                ConversationDetailViewAction.ScrollRequestCompleted(
+                    MessageIdUiModel(expectedScrolledTo.messageId.id)
                 )
             )
 
             // then
             conversationState = awaitItem()
-            val expandMessage = (conversationState.messagesState as ConversationDetailsMessagesState.Data)
-                .messages
-                .first { it.messageId.id == expectedExpandedNotScrolled.messageId.id }
-            assertIs<Expanded>(expandMessage)
-            // If there is only one expanded message that item  is scrolled to
-            // (according to View Model requestScrollToMessageId)
-            assertTrue { conversationState.scrollToMessage == expandMessage.messageId }
+            assertTrue { conversationState.scrollToMessageState is ScrollToMessageState.ScrollCompleted }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -1168,16 +1158,29 @@ internal class ConversationDetailViewModelIntegrationTest {
             ),
             searchedItem.messageId
         )
-        coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+
+        coEvery {
+            observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+        } returns flowOf(
+            ConversationWithMessages(
+                conversation = ConversationSample.WeatherForecast,
+                messages = messages
+            ).right()
+        )
 
         // When
-        val viewModel = buildConversationDetailViewModel(scrollToMessageId = searchedItem.messageId.id)
+        val viewModel = buildConversationDetailViewModel(
+            scrollToMessageId = searchedItem.messageId.id
+        )
         viewModel.state.test {
             skipItems(3)
 
             // then
             val conversationState: ConversationDetailState = awaitItem()
-            assertEquals(searchedItem.messageId.id, conversationState.scrollToMessage?.id)
+            assertEquals(
+                searchedItem.messageId.id,
+                conversationState.scrollToMessageState.getScrollTargetMessageIdOrNull()
+            )
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -1437,7 +1440,14 @@ internal class ConversationDetailViewModelIntegrationTest {
             val messages = ConversationMessages(nonEmptyListOf(message), message.messageId)
 
             val messageId = message.messageId
-            coEvery { observeConversationMessages(userId, any(), any(), any(), any()) } returns flowOf(messages.right())
+            coEvery {
+                observeConversationWithMessagesUC(userId, any(), any(), any(), any())
+            } returns flowOf(
+                ConversationWithMessages(
+                    conversation = ConversationSample.WeatherForecast,
+                    messages = messages
+                ).right()
+            )
             coEvery { getDecryptedMessageBody.invoke(userId, messageId) } returns DecryptedMessageBody(
                 messageId = messageId,
                 value = EmailBodyTestSamples.BodyWithoutQuotes,
