@@ -18,15 +18,14 @@
 
 package ch.protonmail.android.navigation.deeplinks
 
-
-sealed class NotificationDeepLinkData {
+sealed class NotificationsDeepLinkData {
 
     data class Message(
         val messageId: String,
         val userId: String
-    ) : NotificationDeepLinkData()
+    ) : NotificationsDeepLinkData()
 
     data class Group(
         val userId: String
-    ) : NotificationDeepLinkData()
+    ) : NotificationsDeepLinkData()
 }

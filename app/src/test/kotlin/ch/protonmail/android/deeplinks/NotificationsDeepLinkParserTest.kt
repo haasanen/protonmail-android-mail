@@ -20,8 +20,8 @@ package ch.protonmail.android.deeplinks
 
 import android.net.Uri
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
-import ch.protonmail.android.navigation.deeplinks.DeepLinkParser
-import ch.protonmail.android.navigation.deeplinks.NotificationDeepLinkData
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkData
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkParser
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.Test
@@ -29,26 +29,26 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 @RunWith(RobolectricTestRunner::class)
-internal class DeepLinkParserTest {
+internal class NotificationsDeepLinkParserTest {
 
     private val validHost = NotificationsDeepLinkHelper.NotificationHost
 
     @Test
     fun `parseUri returns null when uri is null`() {
-        assertNull(DeepLinkParser.parseUri(null))
+        assertNull(NotificationsDeepLinkParser.parseUri(null))
     }
 
     @Test
     fun `parseUri returns null when host does not match`() {
         val uri = Uri.parse("proton://wrong-host/mailbox/message/msg123/user456")
-        assertNull(DeepLinkParser.parseUri(uri))
+        assertNull(NotificationsDeepLinkParser.parseUri(uri))
     }
 
     @Test
     fun `parseUri returns Message for valid message deep link`() {
-        val uri = Uri.parse("proton://$validHost/mailbox/message/msg123/user456")
+        val uri = Uri.parse("proton://$validHost/mailbox/message/msg123/user456/notifId")
 
-        val result = DeepLinkParser.parseUri(uri) as NotificationDeepLinkData.Message
+        val result = NotificationsDeepLinkParser.parseUri(uri) as NotificationsDeepLinkData.Message
 
         assertEquals("msg123", result.messageId)
         assertEquals("user456", result.userId)
@@ -58,26 +58,26 @@ internal class DeepLinkParserTest {
     fun `parseUri returns Group for valid group deep link`() {
         val uri = Uri.parse("proton://$validHost/mailbox/notif789/user456")
 
-        val result = DeepLinkParser.parseUri(uri) as NotificationDeepLinkData.Group
+        val result = NotificationsDeepLinkParser.parseUri(uri) as NotificationsDeepLinkData.Group
 
         assertEquals("user456", result.userId)
     }
 
     @Test
-    fun `parseUri returns null when 4 segments but not message type`() {
-        val uri = Uri.parse("proton://$validHost/mailbox/other/id123/user456")
-        assertNull(DeepLinkParser.parseUri(uri))
+    fun `parseUri returns null when 5 segments but not message type`() {
+        val uri = Uri.parse("proton://$validHost/mailbox/other/id123/user456/notifId")
+        assertNull(NotificationsDeepLinkParser.parseUri(uri))
     }
 
     @Test
     fun `parseUri returns null when 3 segments but not mailbox prefix`() {
         val uri = Uri.parse("proton://$validHost/inbox/notif789/user456")
-        assertNull(DeepLinkParser.parseUri(uri))
+        assertNull(NotificationsDeepLinkParser.parseUri(uri))
     }
 
     @Test
     fun `parseUri returns null for invalid path length`() {
         val uri = Uri.parse("proton://$validHost/mailbox/message")
-        assertNull(DeepLinkParser.parseUri(uri))
+        assertNull(NotificationsDeepLinkParser.parseUri(uri))
     }
 }

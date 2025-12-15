@@ -19,8 +19,8 @@
 package ch.protonmail.android.deeplinks
 
 import app.cash.turbine.test
-import ch.protonmail.android.navigation.deeplinks.NotificationDeepLinkData
-import ch.protonmail.android.navigation.deeplinks.NotificationDeepLinkHandler
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkData
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHandler
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -32,11 +32,11 @@ import org.junit.Test
 
 internal class NotificationDeepLinkHandlerTest {
 
-    private lateinit var handler: NotificationDeepLinkHandler
+    private lateinit var handler: NotificationsDeepLinkHandler
 
     @Before
     fun setup() {
-        handler = NotificationDeepLinkHandler()
+        handler = NotificationsDeepLinkHandler()
     }
 
     @Test
@@ -51,7 +51,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `initial state is locked`() = runTest {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
 
         // When
         handler.setPending(testData)
@@ -66,7 +66,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `hasPending returns true when data is set`() {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
 
         // When
         handler.setPending(testData)
@@ -78,7 +78,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `hasPending returns false after consume is called`() {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setPending(testData)
 
         // When
@@ -91,7 +91,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `pending flow emits null when locked`() = runTest {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setLocked()
 
         // When
@@ -108,7 +108,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `pending flow emits data when unlocked`() = runTest {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setUnlocked()
 
         // When
@@ -138,7 +138,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `pending flow transitions from null to data when unlocked`() = runTest {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setUnlocked()
 
         handler.pending.test {
@@ -157,7 +157,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `pending flow transitions from data to null when locked`() = runTest {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setUnlocked()
         handler.setPending(testData)
 
@@ -177,7 +177,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `pending flow transitions from null to data when unlocking with existing data`() = runTest {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setLocked()
         handler.setPending(testData)
 
@@ -197,7 +197,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `pending flow emits null after consume is called`() = runTest {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setUnlocked()
         handler.setPending(testData)
 
@@ -217,8 +217,8 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `setPending replaces existing data`() = runTest {
         // Given
-        val firstData = mockk<NotificationDeepLinkData>(name = "first")
-        val secondData = mockk<NotificationDeepLinkData>(name = "second")
+        val firstData = mockk<NotificationsDeepLinkData>(name = "first")
+        val secondData = mockk<NotificationsDeepLinkData>(name = "second")
         handler.setUnlocked()
         handler.setPending(firstData)
 
@@ -238,7 +238,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `multiple lock unlock cycles work correctly`() = runTest {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setPending(testData)
 
         handler.pending.test {
@@ -268,7 +268,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `consume clears data that was set while locked`() {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setLocked()
         handler.setPending(testData)
 
@@ -282,7 +282,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `setLocked does not clear pending data`() {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setPending(testData)
 
         // When
@@ -295,7 +295,7 @@ internal class NotificationDeepLinkHandlerTest {
     @Test
     fun `setUnlocked does not clear pending data`() {
         // Given
-        val testData = mockk<NotificationDeepLinkData>()
+        val testData = mockk<NotificationsDeepLinkData>()
         handler.setPending(testData)
 
         // When

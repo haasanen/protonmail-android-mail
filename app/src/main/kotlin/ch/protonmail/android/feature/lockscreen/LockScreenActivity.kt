@@ -30,7 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import ch.protonmail.android.feature.appicon.usecase.CreateLaunchIntent
 import ch.protonmail.android.mailcommon.presentation.AutoLockUnlockSignal
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
-import ch.protonmail.android.navigation.deeplinks.NotificationDeepLinkHandler
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHandler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,7 +48,7 @@ internal class LockScreenActivity : AppCompatActivity() {
     lateinit var createLaunchIntent: CreateLaunchIntent
 
     @Inject
-    lateinit var deepLinkHandler: NotificationDeepLinkHandler
+    lateinit var deepLinkHandler: NotificationsDeepLinkHandler
 
     @Inject
     lateinit var lockScreenState: LockScreenState

@@ -76,7 +76,7 @@ internal class NotificationsDeepLinksViewModelTest {
 
     private val isShowSingleMessage = mockk<IsShowSingleMessageMode>()
 
-    private val deepLinkHandler = mockk<NotificationDeepLinkHandler>()
+    private val deepLinkHandler = mockk<NotificationsDeepLinkHandler>()
 
     private fun viewModel() = NotificationsDeepLinksViewModel(
         deepLinkHandler = deepLinkHandler,
@@ -303,7 +303,7 @@ internal class NotificationsDeepLinksViewModelTest {
         val userId = getUserId()
         val messageId = getRemoteMessageId()
         val labelId = LabelId("1")
-        val pendingFlow = MutableStateFlow<NotificationDeepLinkData?>(null)
+        val pendingFlow = MutableStateFlow<NotificationsDeepLinkData?>(null)
 
         every { deepLinkHandler.pending } returns pendingFlow
         expectPrimaryId(userId)
@@ -313,7 +313,7 @@ internal class NotificationsDeepLinksViewModelTest {
         // When
         val viewModel = viewModel()
 
-        pendingFlow.value = NotificationDeepLinkData.Message(
+        pendingFlow.value = NotificationsDeepLinkData.Message(
             messageId = messageId.id,
             userId = userId.id
         )
@@ -336,14 +336,14 @@ internal class NotificationsDeepLinksViewModelTest {
     fun `should navigate to inbox when pending deep link is a Group`() = runTest {
         // Given
         val userId = getUserId()
-        val pendingFlow = MutableStateFlow<NotificationDeepLinkData?>(null)
+        val pendingFlow = MutableStateFlow<NotificationsDeepLinkData?>(null)
 
         every { deepLinkHandler.pending } returns pendingFlow
         expectPrimaryId(userId)
 
         // When
         val viewModel = viewModel()
-        pendingFlow.value = NotificationDeepLinkData.Group(userId = userId.id)
+        pendingFlow.value = NotificationsDeepLinkData.Group(userId = userId.id)
 
         // Then
         viewModel.state.test {
@@ -355,7 +355,7 @@ internal class NotificationsDeepLinksViewModelTest {
     fun `should call handler consume and reset state when consume is called`() = runTest {
         // Given
         val userId = getUserId()
-        val pendingFlow = MutableStateFlow<NotificationDeepLinkData?>(null)
+        val pendingFlow = MutableStateFlow<NotificationsDeepLinkData?>(null)
 
         every { deepLinkHandler.pending } returns pendingFlow
         every { deepLinkHandler.consume() } just runs
@@ -363,7 +363,7 @@ internal class NotificationsDeepLinksViewModelTest {
 
         // When
         val viewModel = viewModel()
-        pendingFlow.value = NotificationDeepLinkData.Group(userId = userId.id)
+        pendingFlow.value = NotificationsDeepLinkData.Group(userId = userId.id)
         viewModel.consume()
 
         // Then
@@ -376,7 +376,7 @@ internal class NotificationsDeepLinksViewModelTest {
     @Test
     fun `should not process null pending deep links`() = runTest {
         // Given
-        val pendingFlow = MutableStateFlow<NotificationDeepLinkData?>(null)
+        val pendingFlow = MutableStateFlow<NotificationsDeepLinkData?>(null)
         every { deepLinkHandler.pending } returns pendingFlow
 
         // When

@@ -53,7 +53,7 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class NotificationsDeepLinksViewModel @Inject constructor(
-    private val deepLinkHandler: NotificationDeepLinkHandler,
+    private val deepLinkHandler: NotificationsDeepLinkHandler,
     private val networkManager: NetworkManager,
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val userSessionRepository: UserSessionRepository,
@@ -76,13 +76,13 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         }
     }
 
-    private fun processPendingDeepLink(data: NotificationDeepLinkData) {
+    private fun processPendingDeepLink(data: NotificationsDeepLinkData) {
         when (data) {
-            is NotificationDeepLinkData.Message -> {
+            is NotificationsDeepLinkData.Message -> {
                 navigateToDetails(data.messageId, data.userId)
             }
 
-            is NotificationDeepLinkData.Group -> {
+            is NotificationsDeepLinkData.Group -> {
                 navigateToInbox(data.userId)
             }
         }

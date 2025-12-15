@@ -25,19 +25,19 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NotificationDeepLinkHandler @Inject constructor() {
+class NotificationsDeepLinkHandler @Inject constructor() {
 
-    private val _pending = MutableStateFlow<NotificationDeepLinkData?>(null)
+    private val _pending = MutableStateFlow<NotificationsDeepLinkData?>(null)
     private val _unlocked = MutableStateFlow(false)
 
     // Only emits when unlocked
-    val pending: Flow<NotificationDeepLinkData?> = combine(_pending, _unlocked) { data, unlocked ->
+    val pending: Flow<NotificationsDeepLinkData?> = combine(_pending, _unlocked) { data, unlocked ->
         if (unlocked) data else null
     }
 
     fun hasPending(): Boolean = _pending.value != null
 
-    fun setPending(data: NotificationDeepLinkData) {
+    fun setPending(data: NotificationsDeepLinkData) {
         _pending.value = data
     }
 

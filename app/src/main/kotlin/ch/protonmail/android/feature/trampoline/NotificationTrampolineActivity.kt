@@ -27,9 +27,9 @@ import ch.protonmail.android.feature.lockscreen.LockScreenActivity
 import ch.protonmail.android.feature.lockscreen.LockScreenState
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
-import ch.protonmail.android.navigation.deeplinks.DeepLinkParser
-import ch.protonmail.android.navigation.deeplinks.NotificationDeepLinkData
-import ch.protonmail.android.navigation.deeplinks.NotificationDeepLinkHandler
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkData
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHandler
+import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkParser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -45,7 +45,7 @@ internal class NotificationTrampolineActivity : AppCompatActivity() {
     lateinit var createLaunchIntent: CreateLaunchIntent
 
     @Inject
-    lateinit var deepLinkHandler: NotificationDeepLinkHandler
+    lateinit var deepLinkHandler: NotificationsDeepLinkHandler
 
     @Inject
     lateinit var lockScreenState: LockScreenState
@@ -66,7 +66,7 @@ internal class NotificationTrampolineActivity : AppCompatActivity() {
         val wasInBackground = appInBackgroundState.isAppInBackground()
         val lockScreenAlreadyActive = lockScreenState.isShowing.value
         val needsLockScreen = autoLockRepository.shouldAutoLock().getOrNull() ?: false
-        val deepLinkData = DeepLinkParser.parseUri(intent.data)
+        val deepLinkData = NotificationsDeepLinkParser.parseUri(intent.data)
 
         when {
             lockScreenAlreadyActive -> handleLockScreenActive(deepLinkData)
@@ -76,13 +76,13 @@ internal class NotificationTrampolineActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleLockScreenActive(deepLinkData: NotificationDeepLinkData?) {
+    private fun handleLockScreenActive(deepLinkData: NotificationsDeepLinkData?) {
         Timber.d("Trampoline: Lock screen active, storing deep link")
         deepLinkData?.let { deepLinkHandler.setPending(it) }
         launchLockScreen(reorderToFront = true)
     }
 
-    private fun handleBackgroundWithLock(deepLinkData: NotificationDeepLinkData?) {
+    private fun handleBackgroundWithLock(deepLinkData: NotificationsDeepLinkData?) {
         Timber.d("Trampoline: Background + needs lock, launching lock screen")
         lockScreenState.setActive(true)
         deepLinkHandler.setLocked()
@@ -90,14 +90,14 @@ internal class NotificationTrampolineActivity : AppCompatActivity() {
         launchLockScreen(reorderToFront = false)
     }
 
-    private fun handleBackgroundNoLock(deepLinkData: NotificationDeepLinkData?) {
+    private fun handleBackgroundNoLock(deepLinkData: NotificationsDeepLinkData?) {
         Timber.d("Trampoline: Background + no lock, navigating directly")
         deepLinkData?.let { deepLinkHandler.setPending(it) }
         deepLinkHandler.setUnlocked()
         launchMainActivity()
     }
 
-    private fun handleForegroundNoLock(deepLinkData: NotificationDeepLinkData?) {
+    private fun handleForegroundNoLock(deepLinkData: NotificationsDeepLinkData?) {
         Timber.d("Trampoline: Foreground + no lock, signaling in-app navigation")
         deepLinkData?.let { deepLinkHandler.setPending(it) }
         deepLinkHandler.setUnlocked()

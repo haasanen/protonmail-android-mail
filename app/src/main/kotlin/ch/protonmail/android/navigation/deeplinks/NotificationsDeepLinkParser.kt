@@ -22,24 +22,22 @@ import android.net.Uri
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import timber.log.Timber
 
-internal object DeepLinkParser {
+internal object NotificationsDeepLinkParser {
 
-    private const val MessagePathLength = 4
+    private const val MessagePathLength = 5
     private const val GroupPathLength = 3
 
-    fun parseUri(uri: Uri?): NotificationDeepLinkData? {
+    fun parseUri(uri: Uri?): NotificationsDeepLinkData? {
         uri ?: return null
 
         if (uri.host != NotificationsDeepLinkHelper.NotificationHost) return null
 
         val pathSegments = uri.pathSegments
-        Timber.d("Trampoline: pathSegments = $pathSegments")
 
         return when (pathSegments.size) {
-
             // Message: /mailbox/message/{messageId}/{userId}/{notificationId}
             MessagePathLength if pathSegments[0] == "mailbox" && pathSegments[1] == "message" -> {
-                NotificationDeepLinkData.Message(
+                NotificationsDeepLinkData.Message(
                     messageId = pathSegments[2],
                     userId = pathSegments[3]
                 )
@@ -47,13 +45,13 @@ internal object DeepLinkParser {
 
             // Group: /mailbox/{notificationId}/{userId}
             GroupPathLength if pathSegments[0] == "mailbox" -> {
-                NotificationDeepLinkData.Group(
+                NotificationsDeepLinkData.Group(
                     userId = pathSegments[2]
                 )
             }
 
             else -> {
-                Timber.w("Trampoline: Unknown deep link format: $uri")
+                Timber.w("NotificationsDeepLinkParser: Unknown deep link format: $uri")
                 null
             }
         }
