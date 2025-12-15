@@ -19,20 +19,31 @@
 package ch.protonmail.android.mailpinlock.presentation.autolock.ui
 
 import androidx.activity.compose.LocalActivity
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockOverlayState
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.LockScreenViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LockScreenOverlay(
@@ -52,10 +63,7 @@ fun LockScreenOverlay(
                     .background(ProtonTheme.colors.backgroundNorm)
             ) {
                 LockScreenBiometricsPrompt(
-                    onClose = {
-                        viewModel.onSuccessfulBiometrics()
-                        activity?.finish()
-                    },
+                    onClose = { viewModel.onSuccessfulBiometrics() },
                     onCloseAll = { activity?.finishAffinity() }
                 )
             }
@@ -74,9 +82,37 @@ private fun LockScreenBiometricsPrompt(onClose: () -> Unit, onCloseAll: () -> Un
         negativeButtonText = stringResource(R.string.mail_settings_biometrics_button_negative)
     )
 
-    LaunchedEffect(biometricAuthenticator) {
+    var authenticationTrigger by remember { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                authenticationTrigger++
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    LaunchedEffect(authenticationTrigger) {
         biometricAuthenticator.authenticate(
-            onAuthenticationError = { _, _ -> onCloseAll() },
+            onAuthenticationError = { errorCode, _ ->
+                when (errorCode) {
+                    // Tapped outside - re-prompt after short delay
+                    BiometricPrompt.ERROR_USER_CANCELED -> {
+                        scope.launch {
+                            @Suppress("MagicNumber")
+                            delay(300)
+                            authenticationTrigger++
+                        }
+                    }
+
+                    BiometricPrompt.ERROR_CANCELED -> Unit
+                    else -> onCloseAll()
+                }
+            },
             onAuthenticationFailed = {},
             onAuthenticationSucceeded = { onClose() }
         )
