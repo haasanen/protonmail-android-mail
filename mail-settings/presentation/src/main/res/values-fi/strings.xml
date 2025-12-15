@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">Päällä</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Pois</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Käytä allekirjoitusta</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Muokkaa allekirjoitusta</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Järjestelmä</string>
   <string name="mail_settings_theme_light">Vaalea</string>

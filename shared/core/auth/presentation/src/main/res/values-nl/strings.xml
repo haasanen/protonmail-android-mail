@@ -123,8 +123,8 @@
   <string name="auth_fido_security_keys_learn_more">Meer info</string>
   <string name="auth_user_check_delinquent_error">Uw account staat momenteel in de wacht wegens een achterstallige factuur.</string>
   <plurals name="auth_user_check_max_free_error">
-    <item quantity="one">The maximum number of %d free account has been exceeded.</item>
-    <item quantity="other">The maximum number of %d free accounts have been exceeded.</item>
+    <item quantity="one">Het maximale aantal van %d gratis account is overschreden.</item>
+    <item quantity="other">Het maximale aantal van %d gratis accounts is overschreden.</item>
   </plurals>
   <string name="common_error_something_went_wrong">Er is iets fout gegaan. Probeer het later nog eens.</string>
   <string name="auth_fido_config_error">Fout bij het ophalen van opgeslagen sleutels.</string>

@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">Vključeno</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Izključeno</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Omogoči podpis</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Edit signature</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistemska</string>
   <string name="mail_settings_theme_light">Svetla</string>

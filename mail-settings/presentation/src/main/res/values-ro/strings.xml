@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">Activată</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Dezactivată</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Activare semnătură</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Editare semnătură</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistem</string>
   <string name="mail_settings_theme_light">Albă</string>

@@ -40,11 +40,11 @@
   <string name="composer_error_store_draft_address_pk_missing">Kan concept niet opslaan - Dit afzenderadres heeft geen primaire sleutel</string>
   <string name="composer_error_store_draft_attachment_too_large">Kan concept niet opslaan - Bijlagen overschrijden de maximale grootte</string>
   <string name="composer_error_store_draft_too_many_attachments">Kan concept niet opslaan - Bijlagelimiet bereikt</string>
-  <string name="composer_error_store_draft_duplicate_recipient">Unable to save draft - One or more recipients are duplicates</string>
-  <string name="composer_error_store_draft_recipient_group_name">Unable to save draft - Invalid recipient group name</string>
-  <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
-  <string name="composer_error_store_draft_message_not_a_draft">Unable to save draft - This message is not a draft</string>
-  <string name="composer_error_store_draft_generic">Unable to save draft - A generic error occurred</string>
+  <string name="composer_error_store_draft_duplicate_recipient">Kan concept niet opslaan - Een of meer ontvangers zijn duplicaten</string>
+  <string name="composer_error_store_draft_recipient_group_name">Kan concept niet opslaan - Ongeldige naam van de ontvangersgroep</string>
+  <string name="composer_error_store_draft_invalid_recipient">Kan concept niet opslaan - Ongeldige ontvanger(s)</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Kan concept niet opslaan - Dit bericht is geen concept</string>
+  <string name="composer_error_store_draft_generic">Kan concept niet opslaan - Er is een algemene fout opgetreden</string>
   <string name="composer_error_loading_draft">De inhoud van dit concept is op dit moment niet beschikbaar, bewerken is niet mogelijk.</string>
   <string name="composer_add_attachments_content_description">Bestanden toevoegen</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importeren van…</string>
@@ -81,7 +81,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_confirm">Toch verzenden</string>
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Wachtwoordbeveiliging toevoegen</string>
   <string name="composer_send_expiring_message_to_external_may_fail">We konden niet bevestigen dat alle ontvangers Proton Mail gebruiken. Alleen Proton-adressen ondersteunen het vervallen van berichten. In dit geval raden we aan om in plaats daarvan een wachtwoord toe te voegen.</string>
-  <string name="composer_send_expiring_message_to_external_will_fail">Some recipients (%1$s) don\'t support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail">Sommige ontvangers (%1$s) ondersteunen standaard geen vervaltijd. Voeg een wachtwoord toe om vervaltijd in te schakelen voor ontvangers die geen Proton Mail hebben.</string>
   <string name="composer_send_expiring_message_to_external_will_fail_for_all">Geen van de ontvangers ondersteunt standaard een verloopdatum. Voeg een wachtwoord toe om een verloopdatum in te schakelen voor niet-Proton Mail-ontvangers.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Melding versturen</string>
@@ -151,7 +151,7 @@
   <string name="composer_attachment_upload_error_retry">Sommige bijlagen konden niet worden geüpload. Probeer het opnieuw.</string>
   <string name="composer_external_encryption_unexpected_error">Onverwachte fout %s. Probeer opnieuw.</string>
   <string name="composer_sender_changed_original_address_cannot_send">Het geselecteerde adres kan niet worden gebruikt om te verzenden. Uw bericht wordt verzonden vanaf uw standaard adres.</string>
-  <string name="composer_expiration_time_bottom_sheet_description">Set when the message will be deleted from the recipient’s inbox and your Sent folder. To expire messages for non-Proton users, add a password.</string>
+  <string name="composer_expiration_time_bottom_sheet_description">Stel in wanneer het bericht zal worden verwijderd uit de inbox van de ontvanger en uw map Verzonden. Om berichten voor niet-Proton-gebruikers te laten verlopen, voegt u een wachtwoord toe.</string>
   <string name="expiration_time_set_time_and_date">Kies tijd en datum</string>
   <string name="composer_expiration_set_expiration">Stel vervaltijd</string>
   <string name="composer_expiration_pick_time_title">Tijd instellen</string>

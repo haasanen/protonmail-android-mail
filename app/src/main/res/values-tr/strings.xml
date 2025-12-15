@@ -51,11 +51,11 @@
   <string name="launcher_alert_duplicate_account_description">Kullanıcı zaten oturum açmış</string>
   <string name="home_event_loop_error_snackbar">E-postalarınız eşitlenemedi. Oturumu kapatıp yeniden açmayı deneyin. Bu işe yaramazsa, lütfen bir hata bildiriminde bulunun.</string>
   <string name="settings_change_icon_title">Uygulama simgesi</string>
-  <string name="settings_change_icon_description">Proton Mail uygulamasını farklı bir simge ile gizleyin. Bildirimlerde hala varsayılan Proton Mail adı ve simgesi görüntülenir.</string>
+  <string name="settings_change_icon_description">Farklı bir simge ile Proton Mail uygulamasının göze çarpmasını önleyin. Bildirimlerde varsayılan Proton Mail adı ve simgesi görüntülenmeyi sürdürür.</string>
   <string name="settings_change_icon_confirmation_title">Uygulama simgesi değiştirilsin mi?</string>
   <string name="settings_change_icon_confirmation_details">Bu işlem, Proton Mail uygulamasının kapanmasına ve tüm bildirimlerin yok sayılmasına neden olur.\n\nProton Mail uygulamasını yeniden başlatmak için yeni uygulama simgenize dokunun.</string>
   <string name="settings_change_icon_action_cancel">İptal</string>
   <string name="settings_change_icon_change_icon">Simgeyi değiştir</string>
   <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Gizli uygulama simgesi</string>
+  <string name="settings_change_icon_header_discreet">Göze çarpmayan uygulama simgesi</string>
 </resources>

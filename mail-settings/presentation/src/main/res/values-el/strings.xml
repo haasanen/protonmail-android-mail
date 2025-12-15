@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">Ενεργό</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Ανενεργό</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Ενεργοποίηση υπογραφής</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Επεξεργασία υπογραφής</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Σύστημα</string>
   <string name="mail_settings_theme_light">Φωτεινό</string>

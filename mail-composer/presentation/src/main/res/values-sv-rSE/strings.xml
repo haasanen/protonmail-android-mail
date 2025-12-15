@@ -170,6 +170,6 @@
   <string name="composer_error_send_draft_package_error">Problem att skicka meddelande. Försök igen.</string>
   <string name="composer_error_send_draft_attachment_too_large">Unable to send draft - Attachments exceed the size limit</string>
   <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
-  <string name="composer_error_send_draft_attachments_crypto_error">Unable to send draft - Attachment encryption failed.</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Kan inte skicka utkast – Bilagekrypteringen misslyckades.</string>
   <string name="composer_expiration_time_learn_more">Lär dig mer</string>
 </resources>

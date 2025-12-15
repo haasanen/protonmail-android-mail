@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">Aan</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Uit</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Handtekening inschakelen</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Edit signature</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Systeem</string>
   <string name="mail_settings_theme_light">Licht</string>

@@ -180,7 +180,7 @@
   <string name="snooze_message_unsnooze_banner_button">Prekliči dremež</string>
   <string name="unsubscribe_newsletter_banner_message">To sporočilo je s poštnega seznama.</string>
   <string name="unsubscribe_newsletter_banner_button">Odjavi se</string>
-  <string name="unsubscribe_newsletter_dialog_text">Are you sure you want to unsubscribe? You’ll no longer receive emails from this mailing list.</string>
+  <string name="unsubscribe_newsletter_dialog_text">Ali ste prepričani, da se želite odjaviti? S tega poštnega seznama ne boste več prejemali sporočil.</string>
   <string name="unsubscribe_newsletter_dialog_cancel">Prekliči</string>
   <string name="unsubscribe_newsletter_dialog_confirm">Odjavi se</string>
   <string name="already_unsubscribed_banner_message">Odjavili ste se s tega e-poštnega seznama.</string>

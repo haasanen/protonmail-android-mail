@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">På</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Av</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Aktiver signatur</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Rediger signatur</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">System</string>
   <string name="mail_settings_theme_light">Lys</string>

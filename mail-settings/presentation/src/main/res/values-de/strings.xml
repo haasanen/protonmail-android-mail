@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">Ein</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Aus</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Signatur aktivieren</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Signatur bearbeiten</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">System</string>
   <string name="mail_settings_theme_light">Hell</string>

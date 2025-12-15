@@ -21,7 +21,7 @@
   <string name="edm_code_verifying">S\'està verificant...</string>
   <string name="edm_missing_camera_permission_headline">Permet l\'accés a la càmera</string>
   <string name="edm_missing_camera_permission_body">Per a iniciar sessió amb codi QR, haureu de permetre que %1$s accedeixi a la càmera. Podeu fer-ho a les preferències del dispositiu.</string>
-  <string name="edm_missing_camera_permission_footer">Sempre tindreu el control: podeu canviar-ho en qualsevol moment a preferències del dispositiu.</string>
+  <string name="edm_missing_camera_permission_footer">Sempre tindreu el control: podeu canviar-ho en qualsevol moment a les preferències del dispositiu.</string>
   <string name="edm_missing_camera_permission_settings">Preferències</string>
   <string name="intro_origin_sign_in_title">Inicieu la sessió en un altre dispositiu</string>
   <string name="intro_origin_sign_in_subtitle">Com iniciar sessió amb un codi QR</string>

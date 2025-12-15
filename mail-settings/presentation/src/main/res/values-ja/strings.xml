@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">オン</string>
   <string name="mail_settings_app_customization_mobile_signature_off">オフ</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">署名の有効化</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">署名を編集</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">システム</string>
   <string name="mail_settings_theme_light">ライト</string>

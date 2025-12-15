@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">Ativada</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Desativada</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Ativar assinatura</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Editar assinatura</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistema</string>
   <string name="mail_settings_theme_light">Claro</string>

@@ -80,6 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">开启</string>
   <string name="mail_settings_app_customization_mobile_signature_off">关闭</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">启用签名</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">编辑签名</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">跟随系统</string>
   <string name="mail_settings_theme_light">浅色</string>

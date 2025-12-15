@@ -17,7 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="open_with">Obriu amb...</string>
+  <string name="open_with">Obre amb...</string>
   <string name="file_saved">S\'ha desat el fitxer</string>
   <string name="file_saved_fallback">El fitxer s\'ha desat a la carpeta de descàrregues</string>
   <string name="error_saving_file">S\'ha produït un error en desar el fitxer</string>
