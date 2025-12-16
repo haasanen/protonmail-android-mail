@@ -18,41 +18,19 @@
 
 package ch.protonmail.android.feature.appicon.ui
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.feature.appicon.model.AppIconUiModel
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import coil.compose.AsyncImage
 
 @Composable
-fun AppIconPreview(
-    modifier: Modifier = Modifier,
-    preset: AppIconUiModel,
-    showBorder: Boolean = false
-) {
-    val borderModifier = if (showBorder) {
-        Modifier.border(
-            width = 1.dp,
-            color = ProtonTheme.colors.separatorNorm,
-            shape = RoundedCornerShape(ProtonDimens.Spacing.ExtraLarge)
-        )
-    } else {
-        Modifier
-    }
-
+fun AppIconPreview(modifier: Modifier = Modifier, preset: AppIconUiModel) {
     AsyncImage(
+        modifier = modifier,
         model = preset.iconPreviewResId,
         contentDescription = NO_CONTENT_DESCRIPTION,
-        modifier = modifier
-            .then(borderModifier)
-            .clip(RoundedCornerShape(20.dp)),
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Fit
     )
 }

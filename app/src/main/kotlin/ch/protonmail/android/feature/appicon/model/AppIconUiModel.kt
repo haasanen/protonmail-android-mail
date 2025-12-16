@@ -29,3 +29,5 @@ data class AppIconUiModel(
     @DrawableRes val iconPreviewResId: Int,
     @StringRes val labelResId: Int
 )
+
+internal fun AppIconUiModel.isMain() = this.data.category == AppIconData.IconCategory.ProtonMail

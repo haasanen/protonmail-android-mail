@@ -52,32 +52,22 @@ internal class AppIconResourceIconManagerImplTest(
             arrayOf(
                 "default icon",
                 AppIconData.AppIconId.Default,
-                R.mipmap.ic_launcher
-            ),
-            arrayOf(
-                "dark icon",
-                AppIconData.AppIconId.Dark,
-                R.mipmap.ic_launcher_dark
-            ),
-            arrayOf(
-                "retro icon",
-                AppIconData.AppIconId.Retro,
-                R.mipmap.ic_launcher_retro
+                R.drawable.ic_launcher_main_raster
             ),
             arrayOf(
                 "calculator icon",
                 AppIconData.AppIconId.Weather,
-                R.mipmap.ic_launcher_weather
+                R.drawable.ic_launcher_weather_raster
             ),
             arrayOf(
                 "notes icon",
                 AppIconData.AppIconId.Notes,
-                R.mipmap.ic_launcher_notes
+                R.drawable.ic_launcher_notes_raster
             ),
             arrayOf(
                 "weather icon",
                 AppIconData.AppIconId.Calculator,
-                R.mipmap.ic_launcher_calculator
+                R.drawable.ic_launcher_calculator_raster
             )
         )
     }
@@ -111,29 +101,19 @@ internal class AppIconResourceStringManagerImplTest(
                 R.string.app_name
             ),
             arrayOf(
-                "dark icon",
-                AppIconData.AppIconId.Dark,
-                R.string.app_icon_name_dark
-            ),
-            arrayOf(
-                "retro icon",
-                AppIconData.AppIconId.Retro,
-                R.string.app_icon_name_retro
-            ),
-            arrayOf(
                 "weather icon",
                 AppIconData.AppIconId.Weather,
-                R.string.app_icon_name_weather
+                R.string.settings_app_icon_name_discreet
             ),
             arrayOf(
                 "notes icon",
                 AppIconData.AppIconId.Notes,
-                R.string.app_icon_name_notes
+                R.string.settings_app_icon_name_discreet
             ),
             arrayOf(
                 "calculator icon",
                 AppIconData.AppIconId.Calculator,
-                R.string.app_icon_name_calculator
+                R.string.settings_app_icon_name_discreet
             )
         )
     }

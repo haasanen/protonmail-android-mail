@@ -20,16 +20,16 @@ package ch.protonmail.android.feature.appicon.ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.feature.appicon.model.AppIconUiModel
@@ -48,7 +48,7 @@ internal fun SelectableAppIcon(
             .then(
                 if (isSelected) {
                     Modifier.border(
-                        width = 3.dp,
+                        width = ProtonDimens.BorderSize.Semilarge,
                         color = ProtonTheme.colors.brandNorm,
                         shape = RoundedCornerShape(ProtonDimens.CornerRadius.Jumbo)
                     )
@@ -56,16 +56,19 @@ internal fun SelectableAppIcon(
                     Modifier
                 }
             )
-            .padding(6.dp),
+            .padding(ProtonDimens.Spacing.Compact),
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
             model = preset.iconPreviewResId,
             contentDescription = NO_CONTENT_DESCRIPTION,
             modifier = Modifier
-                .size(64.dp)
-                .clip(RoundedCornerShape(ProtonDimens.CornerRadius.Jumbo))
-                .clickable(onClick = onClick),
+                .size(ProtonDimens.IconSize.ExtraExtraLarge)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClick
+                ),
             contentScale = ContentScale.Fit
         )
     }

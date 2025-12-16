@@ -42,7 +42,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
 import ch.protonmail.android.R
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
@@ -51,8 +50,8 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.feature.appicon.model.AppIconUiModel
+import ch.protonmail.android.feature.appicon.model.isMain
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
-import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -66,12 +65,10 @@ internal fun AppIconSettingsContent(
     var showRestartDialog by remember { mutableStateOf(false) }
     var currentIcon: AppIconUiModel by remember { mutableStateOf(activeIcon) }
     var pendingIcon: AppIconUiModel by remember { mutableStateOf(activeIcon) }
-    var isDiscreetEnabled by remember {
-        mutableStateOf(activeIcon.data.category == AppIconData.IconCategory.Discreet)
-    }
+    var isDiscreetEnabled by remember { mutableStateOf(activeIcon.isMain().not()) }
 
-    val discreetIconList = availableIcons.filter { it.data.category == AppIconData.IconCategory.Discreet }
-    val defaultIcon = availableIcons.firstOrNull { it.data.category == AppIconData.IconCategory.ProtonMail }
+    val discreetIconList = availableIcons.filter { it.isMain().not() }
+    val defaultIcon = availableIcons.firstOrNull { it.isMain() }
 
     if (showRestartDialog) {
         ProtonAlertDialog(
@@ -87,6 +84,7 @@ internal fun AppIconSettingsContent(
                     titleResId = R.string.settings_change_icon_change_icon
                 ) {
                     currentIcon = pendingIcon
+                    isDiscreetEnabled = pendingIcon.isMain().not() // Update toggle state based on new icon
                     onIconConfirmed(pendingIcon)
                     showRestartDialog = false
                 }
@@ -127,16 +125,16 @@ internal fun AppIconSettingsContent(
                         .fillMaxWidth()
                         .padding(ProtonDimens.Spacing.Large)
                 ) {
+
                     AppIconPreview(
                         preset = currentIcon,
-                        modifier = Modifier.size(64.dp),
-                        showBorder = currentIcon.data.category == AppIconData.IconCategory.ProtonMail
+                        modifier = Modifier.size(ProtonDimens.IconSize.ExtraExtraLarge)
                     )
 
                     Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
 
                     Text(
-                        text = if (currentIcon.data.category == AppIconData.IconCategory.Discreet) {
+                        text = if (currentIcon.isMain().not()) {
                             stringResource(id = R.string.settings_app_icon_title_discreet)
                         } else {
                             stringResource(id = R.string.settings_app_icon_title_default)
@@ -185,13 +183,14 @@ internal fun AppIconSettingsContent(
                     ProtonSwitch(
                         checked = isDiscreetEnabled,
                         onCheckedChange = { enabled ->
-                            isDiscreetEnabled = enabled
-                            if (!enabled && currentIcon.data.category == AppIconData.IconCategory.Discreet) {
-                                // Turning off while using a discreet icon - revert to default
+                            if (!enabled && currentIcon.isMain().not()) {
+                                // Turning off while using a discreet icon - show confirmation first
                                 defaultIcon?.let { icon ->
                                     pendingIcon = icon
                                     showRestartDialog = true
                                 }
+                            } else {
+                                isDiscreetEnabled = enabled
                             }
                         }
                     )

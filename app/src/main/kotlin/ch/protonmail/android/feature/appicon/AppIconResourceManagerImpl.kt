@@ -33,11 +33,12 @@ class AppIconResourceManagerImpl @Inject constructor() : AppIconResourceManager 
     }
 
     override fun getIconRes(id: AppIconId): Int {
+        // Return rasterized versions, not mipmaps
         return when (id) {
-            AppIconId.Default -> R.mipmap.ic_launcher
-            AppIconId.Weather -> R.mipmap.ic_launcher_weather
-            AppIconId.Notes -> R.mipmap.ic_launcher_notes
-            AppIconId.Calculator -> R.mipmap.ic_launcher_calculator
+            AppIconId.Default -> R.drawable.ic_launcher_main_raster
+            AppIconId.Weather -> R.drawable.ic_launcher_weather_raster
+            AppIconId.Notes -> R.drawable.ic_launcher_notes_raster
+            AppIconId.Calculator -> R.drawable.ic_launcher_calculator_raster
         }
     }
 }
