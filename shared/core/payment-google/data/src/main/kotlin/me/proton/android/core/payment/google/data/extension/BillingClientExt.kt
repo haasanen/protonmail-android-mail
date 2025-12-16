@@ -32,8 +32,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import me.proton.android.core.payment.domain.LogTag
+import me.proton.android.core.payment.domain.PaymentErrorCode
 import me.proton.android.core.payment.domain.PaymentException
-import me.proton.android.core.payment.domain.PaymentException.Companion.ErrorCode.SERVICE_UNAVAILABLE
 import me.proton.android.core.payment.domain.model.PaymentObservabilityValue
 import me.proton.android.core.payment.google.data.PurchaseStoreListener
 import me.proton.core.util.kotlin.CoreLogger
@@ -94,7 +94,7 @@ suspend fun <R> BillingClient.withConnection(retry: Int = Int.MAX_VALUE, block: 
         }
 
         if (state != ConnectionState.CONNECTED) {
-            throw PaymentException(SERVICE_UNAVAILABLE, "Failed to connect to billing service")
+            throw PaymentException(PaymentErrorCode.BILLING_UNAVAILABLE.value, "Failed to connect to billing service")
         }
 
         CoreLogger.d(LogTag.STORE, "BillingClient: invoking block...")
