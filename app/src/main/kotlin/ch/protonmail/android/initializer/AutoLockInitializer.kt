@@ -55,7 +55,10 @@ class AutoLockInitializer : Initializer<Unit>, LifecycleEventObserver {
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
             Lifecycle.Event.ON_RESUME -> autoLockCheckPendingState?.triggerAutoLockCheck()
-            Lifecycle.Event.ON_STOP -> startAutoLockCountdown?.invoke()
+            Lifecycle.Event.ON_STOP -> {
+                autoLockCheckPendingState?.clearSkip()
+                startAutoLockCountdown?.invoke()
+            }
             else -> Unit
         }
     }

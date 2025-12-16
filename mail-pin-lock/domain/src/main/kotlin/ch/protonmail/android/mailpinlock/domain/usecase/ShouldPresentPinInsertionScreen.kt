@@ -23,7 +23,6 @@ import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -33,7 +32,6 @@ class ShouldPresentPinInsertionScreen @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<Boolean> = autoLockCheckPendingState.autoLockCheckEvents
-        .onStart { emit(Unit) }
         .map {
             if (autoLockCheckPendingState.shouldSkipAndClear()) {
                 Timber.tag("ShouldPresentPin").d("Skipping auto-lock check (just unlocked)")

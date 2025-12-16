@@ -74,56 +74,28 @@ internal class ShouldPresentPinInsertionScreenTest {
     }
 
     @Test
-    fun `should emit true on start when repository returns true`() = runTest {
+    fun `should emit true when check event is received and repository returns true`() = runTest {
         // Given
         coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
-            assertTrue("Expected initial emission to be true", awaitItem())
-            expectNoEvents()
-        }
-    }
-
-    @Test
-    fun `should emit false on start when repository returns false`() = runTest {
-        // Given
-        coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
-
-        // When + Then
-        shouldPresentPinInsertionScreen().test {
-            assertFalse("Expected initial emission to be false", awaitItem())
-            expectNoEvents()
-        }
-    }
-
-    @Test
-    fun `should emit true when check event is received and repository returns true`() = runTest {
-        // Given
-        coEvery { autoLockRepository.shouldAutoLock() } returns false.right() andThen true.right()
-
-        // When + Then
-        shouldPresentPinInsertionScreen().test {
-            assertFalse(awaitItem()) // onStart (false)
-
             lockCheckEvents.emit(Unit)
-
-            assertTrue("Expected emission after event to be true", awaitItem())
+            assertTrue("Expected emission to be true", awaitItem())
+            expectNoEvents()
         }
     }
 
     @Test
     fun `should emit false when check event is received and repository returns false`() = runTest {
         // Given
-        coEvery { autoLockRepository.shouldAutoLock() } returns true.right() andThen false.right()
+        coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
-            assertTrue(awaitItem()) // onStart (true)
-
             lockCheckEvents.emit(Unit)
-
-            assertFalse("Expected emission after event to be false", awaitItem())
+            assertFalse("Expected emission to be false", awaitItem())
+            expectNoEvents()
         }
     }
 
@@ -134,19 +106,19 @@ internal class ShouldPresentPinInsertionScreenTest {
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
+            lockCheckEvents.emit(Unit)
             assertFalse("Expected fallback emission to be false on repository error", awaitItem())
         }
     }
 
     @Test
-    fun `should not receive replayed events from previous emissions`() = runTest {
+    fun `should not emit without check events`() = runTest {
         // Given
         coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
-            assertTrue(awaitItem()) // Only the onStart emission
-            expectNoEvents() // No replayed events
+            expectNoEvents()
         }
     }
 
@@ -158,6 +130,7 @@ internal class ShouldPresentPinInsertionScreenTest {
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
+            lockCheckEvents.emit(Unit)
             assertFalse("Expected emission to be false when skip is active", awaitItem())
             expectNoEvents()
         }
@@ -171,11 +144,26 @@ internal class ShouldPresentPinInsertionScreenTest {
 
         // When + Then
         shouldPresentPinInsertionScreen().test {
-            assertFalse(awaitItem()) // onStart - skipped
+            lockCheckEvents.emit(Unit)
+            assertFalse(awaitItem()) // First check skipped
 
             lockCheckEvents.emit(Unit)
-
             assertTrue("Expected emission to be true after skip cleared", awaitItem())
+        }
+    }
+
+    @Test
+    fun `should emit for each check event received`() = runTest {
+        // Given
+        coEvery { autoLockRepository.shouldAutoLock() } returns false.right() andThen true.right()
+
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            lockCheckEvents.emit(Unit)
+            assertFalse(awaitItem())
+
+            lockCheckEvents.emit(Unit)
+            assertTrue(awaitItem())
         }
     }
 }

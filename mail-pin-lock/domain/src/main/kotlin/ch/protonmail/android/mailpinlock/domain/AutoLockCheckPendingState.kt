@@ -19,30 +19,27 @@
 package ch.protonmail.android.mailpinlock.domain
 
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AutoLockCheckPendingState @Inject constructor() {
 
-    private val mutableAutoLockCheckEvents = MutableSharedFlow<Unit>(
-        replay = 0,
-        extraBufferCapacity = 1
-    )
+    private val pendingStateChannel = Channel<Unit>(Channel.CONFLATED)
 
     private val skipNextCheck = AtomicBoolean(false)
 
-    val autoLockCheckEvents = mutableAutoLockCheckEvents.asSharedFlow()
+    val autoLockCheckEvents = pendingStateChannel.receiveAsFlow()
 
     fun triggerAutoLockCheck() {
-        mutableAutoLockCheckEvents.tryEmit(Unit)
+        pendingStateChannel.trySend(Unit)
     }
 
-    fun skipNextAutoLockCheck() {
-        skipNextCheck.set(true)
-    }
+    fun skipNextAutoLockCheck() = skipNextCheck.set(true)
 
     fun shouldSkipAndClear() = skipNextCheck.getAndSet(false)
+
+    fun clearSkip() = skipNextCheck.set(false)
 }
