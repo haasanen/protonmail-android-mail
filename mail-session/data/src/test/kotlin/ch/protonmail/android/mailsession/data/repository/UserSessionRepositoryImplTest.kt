@@ -27,6 +27,7 @@ import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class UserSessionRepositoryImplTest {
 
@@ -44,47 +45,92 @@ class UserSessionRepositoryImplTest {
     )
 
     @Test
-    fun `initializes session from repository and returns it when not already active`() = runTest {
+    fun `getUserSession returns an existing ready user session without reinitialization`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        val mailSession = mailSessionWithReadyInitializedSession(expectedMailUserSession)
+
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
         val actual = userSessionRepository.getUserSession(userId)
+
         // Then
         assertEquals(expectedMailUserSession, actual)
+        coVerify(exactly = 1) { mailSession.initializedUserContextFromSession(any()) }
+        coVerify(exactly = 0) { mailSession.userContextFromSession(any()) } // no fallback needed
     }
 
     @Test
-    fun `returns active session without re initialising it`() = runTest {
+    fun `getUserSession initializes a user session when no ready session is available`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        val mailSession = mailSessionWithFallbackToFullInit(expectedMailUserSession)
+
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
         val actual = userSessionRepository.getUserSession(userId)
+
         // Then
         assertEquals(expectedMailUserSession, actual)
-        // When
-        assertEquals(expectedMailUserSession, actual)
-        coVerify(exactly = 1) { mailSessionRepository.getMailSession() }
+        coVerify(exactly = 1) { mailSession.initializedUserContextFromSession(any()) }
+        coVerify(exactly = 1) { mailSession.userContextFromSession(any()) } // fallback used
     }
 
     @Test
-    fun `emits null when no session exists`() = runTest {
+    fun `getUserSession returns null when no stored account exists`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mailSessionWithNoUserSessionsStored()
+        val mailSession = mailSessionWithNoStoredAccount()
+
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
         val actual = userSessionRepository.getUserSession(userId)
+
         // Then
-        assertEquals(null, actual)
+        assertNull(actual)
+        coVerify(exactly = 0) { mailSession.getAccountSessions(any()) }
+        coVerify(exactly = 0) { mailSession.initializedUserContextFromSession(any()) }
+        coVerify(exactly = 0) { mailSession.userContextFromSession(any()) }
+    }
+
+    @Test
+    fun `getUserSession returns null when account sessions cannot be retrieved`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mailSessionWithAccountSessionsError()
+
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+
+        // When
+        val actual = userSessionRepository.getUserSession(userId)
+
+        // Then
+        assertNull(actual)
+        coVerify(exactly = 1) { mailSession.getAccountSessions(any()) }
+        coVerify(exactly = 0) { mailSession.initializedUserContextFromSession(any()) }
+        coVerify(exactly = 0) { mailSession.userContextFromSession(any()) }
+    }
+
+    @Test
+    fun `getUserSession returns null when there are no active sessions`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mailSessionWithNoAccountSessions()
+
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+
+        // When
+        val actual = userSessionRepository.getUserSession(userId)
+
+        // Then
+        assertNull(actual)
+        coVerify(exactly = 1) { mailSession.getAccountSessions(any()) }
+        coVerify(exactly = 0) { mailSession.initializedUserContextFromSession(any()) }
         coVerify(exactly = 0) { mailSession.userContextFromSession(any()) }
     }
 
@@ -96,7 +142,7 @@ class UserSessionRepositoryImplTest {
         val expectedMailUserSession = mockk<MailUserSessionWrapper> {
             coEvery { fork() } returns expectedSessionId.right()
         }
-        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        val mailSession = mailSessionWithReadyInitializedSession(expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
@@ -112,7 +158,7 @@ class UserSessionRepositoryImplTest {
     fun `forkSession should return SessionError when session is null`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mailSessionWithNoUserSessionsStored()
+        val mailSession = mailSessionWithNoStoredAccount()
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
@@ -130,7 +176,7 @@ class UserSessionRepositoryImplTest {
         val expectedMailUserSession = mockk<MailUserSessionWrapper> {
             coEvery { fork() } returns DataError.Local.NoUserSession.left()
         }
-        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        val mailSession = mailSessionWithReadyInitializedSession(expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
@@ -158,7 +204,7 @@ class UserSessionRepositoryImplTest {
             maxSpace = 0L
         )
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        val mailSession = mailSessionWithReadyInitializedSession(expectedMailUserSession)
         val localUser = LocalUserTestData.build(subscribed = 0, services = 0)
         val updatedLocalUser = LocalUserTestData.build(subscribed = 1, services = 1)
         val flow = MutableSharedFlow<Either<DataError, LocalUser>>()
@@ -180,7 +226,7 @@ class UserSessionRepositoryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        val mailSession = mailSessionWithReadyInitializedSession(expectedMailUserSession)
         val expectedError = DataError.Local.CryptoError.left()
         val flow = MutableSharedFlow<Either<DataError, LocalUser>>()
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
@@ -193,83 +239,42 @@ class UserSessionRepositoryImplTest {
         }
     }
 
-    @Test
-    fun `ensures single session instance is created for a user`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
-        coEvery { mailSessionRepository.getMailSession() } returns mailSession
-
-        // When
-        val firstSession = userSessionRepository.getUserSession(userId)
-        val secondSession = userSessionRepository.getUserSession(userId)
-
-        // Then
-        assertEquals(firstSession, secondSession)
-        coVerify(exactly = 1) { mailSession.userContextFromSession(any()) }
-    }
-
-    @Test
-    fun `caching of a new user session will trigger observer`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val userId1 = UserIdTestData.userId1
-        val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
-        coEvery { mailSessionRepository.getMailSession() } returns mailSession
-
-
-        // When
-        userSessionRepository.getUserSession(userId)
-        // Then
-        userSessionRepository.observeUserSessionAvailable(userId).test {
-            assertEquals(userId, awaitItem())
-        }
-
-        // When
-        userSessionRepository.getUserSession(userId1)
-
-        // Then
-        userSessionRepository.observeUserSessionAvailable(userId1).test {
-            assertEquals(userId1, awaitItem())
-        }
-    }
-
-    @Test
-    fun `when switching to a user with a cached session, observe session available emits`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val userId1 = UserIdTestData.userId1
-        val mailSession = mockk<MailUserSessionWrapper>()
-        val mailSession1 = mockk<MailUserSessionWrapper>()
-        userSessionRepository.userSessionCache[userId] = mailSession
-        userSessionRepository.userSessionCache[userId1] = mailSession1
-        userSessionRepository.userSessionAddedSignal.emit(Unit)
-
-        // When
-        userSessionRepository.observeUserSessionAvailable(userId).test {
-            // Then
-            assertEquals(userId, awaitItem())
-        }
-    }
-
-    private fun mailSessionWithNoUserSessionsStored() = mockk<MailSessionWrapper> {
+    private fun mailSessionWithNoStoredAccount() = mockk<MailSessionWrapper> {
         coEvery { getAccount(any()) } returns DataError.Local.NoDataCached.left()
-        coEvery { getAccounts() } returns emptyList<StoredAccount>().right()
     }
 
-    private fun mailSessionWithUserSessionStored(expectedMailUserSession: MailUserSessionWrapper) =
-        mockk<MailSessionWrapper> {
-            val storedAccount = mockk<StoredAccount>()
-            val storedSession = mockk<StoredSession>()
-            coEvery {
-                userContextFromSession(
-                    storedSession
-                )
-            } returns expectedMailUserSession.right()
-            coEvery { getAccount(any()) } returns storedAccount.right()
-            coEvery { getAccounts() } returns listOf(storedAccount).right()
-            coEvery { getAccountSessions(storedAccount) } returns listOf(storedSession).right()
-        }
+    private fun mailSessionWithAccountSessionsError() = mockk<MailSessionWrapper> {
+        val storedAccount = mockk<StoredAccount>()
+        coEvery { getAccount(any()) } returns storedAccount.right()
+        coEvery { getAccountSessions(storedAccount) } returns DataError.Local.CryptoError.left()
+    }
+
+    private fun mailSessionWithNoAccountSessions() = mockk<MailSessionWrapper> {
+        val storedAccount = mockk<StoredAccount>()
+        coEvery { getAccount(any()) } returns storedAccount.right()
+        coEvery { getAccountSessions(storedAccount) } returns emptyList<StoredSession>().right()
+    }
+
+    private fun mailSessionWithReadyInitializedSession(expected: MailUserSessionWrapper) = mockk<MailSessionWrapper> {
+        val storedAccount = mockk<StoredAccount>()
+        val storedSession = mockk<StoredSession>()
+
+        coEvery { getAccount(any()) } returns storedAccount.right()
+        coEvery { getAccountSessions(storedAccount) } returns listOf(storedSession).right()
+
+        coEvery { initializedUserContextFromSession(storedSession) } returns expected.right()
+        // should NOT be called in this path, but provide a default to avoid accidental crashes
+        coEvery { userContextFromSession(storedSession) } returns expected.right()
+    }
+
+    private fun mailSessionWithFallbackToFullInit(expected: MailUserSessionWrapper) = mockk<MailSessionWrapper> {
+        val storedAccount = mockk<StoredAccount>()
+        val storedSession = mockk<StoredSession>()
+
+        coEvery { getAccount(any()) } returns storedAccount.right()
+        coEvery { getAccountSessions(storedAccount) } returns listOf(storedSession).right()
+
+        coEvery { initializedUserContextFromSession(storedSession) } returns (null as MailUserSessionWrapper?).right()
+        coEvery { userContextFromSession(storedSession) } returns expected.right()
+    }
 }

@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.mailsession.data.repository
 
-import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.flatMap
+import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -41,7 +41,6 @@ import ch.protonmail.android.mailsession.domain.model.UserSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -63,13 +62,6 @@ class UserSessionRepositoryImpl @Inject constructor(
 ) : UserSessionRepository {
 
     private val mailSession by lazy { mailSessionRepository.getMailSession() }
-
-    // Cache to store MailUserSession per UserId
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val userSessionCache = mutableMapOf<UserId, MailUserSessionWrapper>()
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val userSessionAddedSignal = MutableSharedFlow<Unit>(replay = 1)
 
     private suspend fun getStoredAccount(userId: UserId) = mailSession.getAccount(userId.toLocalUserId())
 
@@ -119,44 +111,85 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount(userId: UserId) {
         mailSession.deleteAccount(userId.toLocalUserId())
-        // Remove session from cache
-        userSessionCache.remove(userId)
     }
 
     override suspend fun disableAccount(userId: UserId) {
         mailSession.logoutAccount(userId.toLocalUserId())
-        // Remove session from cache
-        userSessionCache.remove(userId)
     }
 
-    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId?> = userSessionAddedSignal.map {
-        if (userSessionCache.contains(userId)) {
-            return@map userId
-        } else {
-            return@map null
+    override fun observeUserSessionAvailable(userId: UserId): Flow<UserId?> = observeAccounts()
+        .map { accounts ->
+            val ready = accounts.any { it.userId == userId && it.state == AccountState.Ready }
+            if (ready) userId else null
         }
-    }.distinctUntilChanged()
+        .distinctUntilChanged()
 
+    @Suppress("ReturnCount")
     override suspend fun getUserSession(userId: UserId): MailUserSessionWrapper? {
-        // Return cached session if it exists
-        userSessionCache[userId]?.let {
-            return it
+        val storedAccount = getStoredAccount(userId)
+            .getOrElse {
+                Timber.w(
+                    "user-session: no stored account for userId=$userId, error=$it"
+                )
+                return null
+            }
+
+        val session = mailSession.getAccountSessions(storedAccount)
+            .fold(
+                ifLeft = { error ->
+                    Timber.e(
+                        "user-session: failed to get account sessions for userId=$userId, error=$error"
+                    )
+                    return null
+                },
+                ifRight = { sessions ->
+                    sessions.firstOrNull() ?: run {
+                        Timber.w(
+                            "user-session: no active sessions found for userId=$userId"
+                        )
+                        return null
+                    }
+                }
+            )
+
+        // 1. First try the lightweight, non-initializing path
+        when (val initialized = mailSession.initializedUserContextFromSession(session)) {
+            is Either.Right -> {
+                if (initialized.value != null) {
+                    return initialized.value
+                } else {
+                    Timber.i(
+                        "user-session: initialized user context not ready yet for userId=$userId, " +
+                            "falling back to full initialization"
+                    )
+                }
+            }
+
+            is Either.Left -> {
+                Timber.w(
+                    "user-session: failed to get initialized user context for userId=$userId, " +
+                        "error=${initialized.value}, falling back to full initialization"
+                )
+            }
         }
 
-        // Create and store session if not in cache
-        val storedAccount = getStoredAccount(userId).getOrNull()
-        val session = storedAccount?.let { account ->
-            val accountSessions = mailSession.getAccountSessions(account).getOrNull()
-            accountSessions?.firstOrNull()
+        // 2) Fallback: Full initialization (sync, migrations, etc.)
+        return when (val result = mailSession.userContextFromSession(session)) {
+            is Either.Left -> {
+                Timber.e(
+                    "user-session: failed to create user context from session " +
+                        "for userId=$userId (likely revoked or broken), error=${result.value}"
+                )
+                null
+            }
+
+            is Either.Right -> {
+                Timber.i(
+                    "user-session: user context successfully initialized for userId=$userId"
+                )
+                result.value
+            }
         }
-        // throws network error
-        val userContext = session?.let { mailSession.userContextFromSession(it) }
-        userContext?.getOrNull()?.let {
-            userSessionCache[userId] = it
-            userSessionAddedSignal.emit(Unit)
-            return it
-        }
-        return null
     }
 
     override suspend fun getUserSettings(userId: UserId): UserSettings? {
@@ -172,7 +205,7 @@ class UserSessionRepositoryImpl @Inject constructor(
         return userSession.fork()
             .map { sessionId -> ForkedSessionId(sessionId) }
             .mapLeft {
-                Timber.e("rust-session: Forking session failed $it")
+                Timber.e("user-session: Forking session failed $it")
                 SessionError.Local.Unknown
             }
     }

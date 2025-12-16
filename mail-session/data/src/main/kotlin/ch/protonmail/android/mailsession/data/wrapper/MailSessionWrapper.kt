@@ -36,6 +36,7 @@ import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
 import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetSessionsResult
+import uniffi.proton_mail_uniffi.MailSessionInitializedUserSessionFromStoredSessionResult
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.MailSessionRemainingPinAttemptsResult
 import uniffi.proton_mail_uniffi.MailSessionSetBiometricsAppProtectionResult
@@ -100,6 +101,15 @@ class MailSessionWrapper(private val mailSession: MailSession) {
         when (val result = mailSession.userSessionFromStoredSession(session)) {
             is MailSessionUserSessionFromStoredSessionResult.Error -> result.v1.toDataError().left()
             is MailSessionUserSessionFromStoredSessionResult.Ok -> MailUserSessionWrapper(result.v1).right()
+        }
+
+    suspend fun initializedUserContextFromSession(session: StoredSession): Either<DataError, MailUserSessionWrapper?> =
+        when (val result = mailSession.initializedUserSessionFromStoredSession(session)) {
+            is MailSessionInitializedUserSessionFromStoredSessionResult.Error ->
+                result.v1.toDataError().left()
+
+            is MailSessionInitializedUserSessionFromStoredSessionResult.Ok ->
+                result.v1?.let { MailUserSessionWrapper(it) }.right()
         }
 
     suspend fun deleteAccount(userId: LocalUserId) = mailSession.deleteAccount(userId)
