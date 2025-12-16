@@ -28,7 +28,7 @@ data class AppIconData(
 ) {
 
     enum class AppIconId {
-        Default, Dark, Retro, Weather, Notes, Calculator
+        Default, Weather, Notes, Calculator
     }
 
     enum class IconCategory {
@@ -39,16 +39,6 @@ data class AppIconData(
         val DEFAULT = AppIconData(
             id = AppIconId.Default,
             componentName = ".RoutingActivity",
-            category = IconCategory.ProtonMail
-        )
-        val DARK = AppIconData(
-            id = AppIconId.Dark,
-            componentName = ".RoutingDark",
-            category = IconCategory.ProtonMail
-        )
-        val RETRO = AppIconData(
-            id = AppIconId.Retro,
-            componentName = ".RoutingRetro",
             category = IconCategory.ProtonMail
         )
         val WEATHER = AppIconData(
@@ -67,7 +57,7 @@ data class AppIconData(
             category = IconCategory.Discreet
         )
 
-        val ALL_ICONS = listOf(DEFAULT, DARK, RETRO, WEATHER, NOTES, CALCULATOR)
+        val ALL_ICONS = listOf(DEFAULT, WEATHER, NOTES, CALCULATOR)
     }
 }
 

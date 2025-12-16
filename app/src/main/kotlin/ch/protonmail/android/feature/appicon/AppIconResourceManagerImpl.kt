@@ -28,19 +28,13 @@ class AppIconResourceManagerImpl @Inject constructor() : AppIconResourceManager 
     override fun getDescriptionStringRes(id: AppIconId): Int {
         return when (id) {
             AppIconId.Default -> R.string.app_name
-            AppIconId.Dark -> R.string.app_icon_name_dark
-            AppIconId.Retro -> R.string.app_icon_name_retro
-            AppIconId.Weather -> R.string.app_icon_name_weather
-            AppIconId.Notes -> R.string.app_icon_name_notes
-            AppIconId.Calculator -> R.string.app_icon_name_calculator
+            else -> R.string.app_icon_name_discreet
         }
     }
 
     override fun getIconRes(id: AppIconId): Int {
         return when (id) {
             AppIconId.Default -> R.mipmap.ic_launcher
-            AppIconId.Dark -> R.mipmap.ic_launcher_dark
-            AppIconId.Retro -> R.mipmap.ic_launcher_retro
             AppIconId.Weather -> R.mipmap.ic_launcher_weather
             AppIconId.Notes -> R.mipmap.ic_launcher_notes
             AppIconId.Calculator -> R.mipmap.ic_launcher_calculator

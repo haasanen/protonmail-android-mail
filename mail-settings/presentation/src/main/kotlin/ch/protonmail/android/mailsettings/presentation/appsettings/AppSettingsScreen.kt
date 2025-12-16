@@ -151,8 +151,8 @@ private fun AppSettingsScreenContent(
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
-//              AppIconSettingsItem(appIconName = state.settings.appIconName, onClick = actions.onAppIconSettingsClick)
-//              Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+                AppIconSettingsItem(appIconName = state.settings.appIconName, onClick = actions.onAppIconSettingsClick)
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
                 UseCombinedContactsSettingsItem(
                     useCombinedContacts = state.settings.deviceContactsEnabled,
