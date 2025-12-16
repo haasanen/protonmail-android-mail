@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
-import java.util.Collections
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -159,6 +158,8 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import me.proton.android.core.accountmanager.domain.usecase.ObservePrimaryAccountAvatarItem
 import me.proton.core.domain.entity.UserId
@@ -226,7 +227,8 @@ class MailboxViewModel @Inject constructor(
 
     private val primaryUserId = observePrimaryUserIdWithValidSession().filterNotNull()
     private val mutableState = MutableStateFlow(initialState)
-    private val itemIds = Collections.synchronizedList(mutableListOf<String>())
+    private val itemIdsMutex = Mutex()
+    private val itemIds = mutableListOf<String>()
     private val folderColorSettings = primaryUserId.flatMapLatest {
         observeFolderColorSettings(it).distinctUntilChanged()
     }
@@ -257,7 +259,7 @@ class MailboxViewModel @Inject constructor(
                 Triple(labelWithCount.first, labelWithCount.second, userId)
             }
             .onEach { (currentMailLabel, currentLabelCount, _) ->
-                itemIds.clear()
+                itemIdsMutex.withLock { itemIds.clear() }
                 emitNewStateFrom(
                     MailboxEvent.NewLabelSelected(
                         currentMailLabel, currentLabelCount
@@ -503,7 +505,7 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleMailboxItemChanged(updatedItemIds: List<String>) {
         withContext(dispatchersProvider.Comp) {
-            synchronized(itemIds) {
+            itemIdsMutex.withLock {
                 val removedItems = itemIds.filterNot { updatedItemIds.contains(it) }
                 itemIds.clear()
                 itemIds.addAll(updatedItemIds)
