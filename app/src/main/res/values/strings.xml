@@ -18,7 +18,6 @@
   -->
 <resources>
     <string name="app_name" translatable="false">Proton Mail</string>
-    <string name="app_icon_name_discreet">Discreet</string>
     <string name="app_icon_name_weather">Weather</string>
     <string name="app_icon_name_notes">Notes</string>
     <string name="app_icon_name_calculator">Calculator</string>
@@ -60,9 +59,10 @@
     <string name="settings_change_icon_header_discreet">Discreet app icon</string>
 
     <string name="settings_app_icon_toolbar_title">App icon</string>
-    <string name="settings_app_icon_title_default">App icon</string>
+    <string name="settings_app_icon_name_discreet">Discreet</string>
+    <string name="settings_app_icon_title_default">App icon - default</string>
     <string name="settings_app_icon_title_discreet">App icon - discreet</string>
-    <string name="settings_app_icon_description">Keep the default Proton Mail icon, or disguise it with a more discreet one for extra privacy. Notifications will always show the Proton Mail name and icon.</string>
+    <string name="settings_app_icon_description">Keep the default Proton Mail icon, or disguise it with a more discreet one for extra privacy.\nNotifications will always show the Proton Mail name and icon.</string>
     <string name="settings_app_icon_learn_more">Learn more…</string>
     <string name="settings_app_icon_discreet_toggle">Discreet app icon</string>
 </resources>

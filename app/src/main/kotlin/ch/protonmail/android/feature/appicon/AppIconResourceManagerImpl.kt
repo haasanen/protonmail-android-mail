@@ -28,7 +28,7 @@ class AppIconResourceManagerImpl @Inject constructor() : AppIconResourceManager 
     override fun getDescriptionStringRes(id: AppIconId): Int {
         return when (id) {
             AppIconId.Default -> R.string.app_name
-            else -> R.string.app_icon_name_discreet
+            else -> R.string.settings_app_icon_name_discreet
         }
     }
 

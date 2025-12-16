@@ -20,8 +20,10 @@ package ch.protonmail.android.feature.appicon.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData
 
+@Stable
 data class AppIconUiModel(
     val data: AppIconData,
     @DrawableRes val iconPreviewResId: Int,

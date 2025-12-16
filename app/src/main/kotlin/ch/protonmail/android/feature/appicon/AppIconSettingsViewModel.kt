@@ -22,6 +22,8 @@ import androidx.lifecycle.ViewModel
 import ch.protonmail.android.feature.appicon.model.AppIconUiModel
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,8 +37,8 @@ internal class AppIconSettingsViewModel @Inject constructor(
         return appIconDataMapper.toUiModel(appIcon)
     }
 
-    fun getAvailableIcons(): List<AppIconUiModel> =
-        appIconManager.getAvailableIcons().map { appIconDataMapper.toUiModel(it) }
+    fun getAvailableIcons(): ImmutableList<AppIconUiModel> =
+        appIconManager.getAvailableIcons().map { appIconDataMapper.toUiModel(it) }.toImmutableList()
 
     fun setNewAppIcon(newIcon: AppIconUiModel) {
         appIconManager.setNewAppIcon(newIcon.data)
