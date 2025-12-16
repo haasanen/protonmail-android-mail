@@ -503,20 +503,22 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleMailboxItemChanged(updatedItemIds: List<String>) {
         withContext(dispatchersProvider.Comp) {
-            val removedItems = itemIds.filterNot { updatedItemIds.contains(it) }
-            itemIds.clear()
-            itemIds.addAll(updatedItemIds)
-            if (removedItems.isNotEmpty()) {
-                when (val currentState = state.value.mailboxListState) {
-                    is MailboxListState.Data.SelectionMode -> {
-                        currentState.selectedMailboxItems
-                            .map { it.id }
-                            .filter { currentSelectedItem -> removedItems.contains(currentSelectedItem) }
-                            .takeIf { it.isNotEmpty() }
-                            ?.let { emitNewStateFrom(MailboxEvent.ItemsRemovedFromSelection(it)) }
-                    }
+            synchronized(itemIds) {
+                val removedItems = itemIds.filterNot { updatedItemIds.contains(it) }
+                itemIds.clear()
+                itemIds.addAll(updatedItemIds)
+                if (removedItems.isNotEmpty()) {
+                    when (val currentState = state.value.mailboxListState) {
+                        is MailboxListState.Data.SelectionMode -> {
+                            currentState.selectedMailboxItems
+                                .map { it.id }
+                                .filter { currentSelectedItem -> removedItems.contains(currentSelectedItem) }
+                                .takeIf { it.isNotEmpty() }
+                                ?.let { emitNewStateFrom(MailboxEvent.ItemsRemovedFromSelection(it)) }
+                        }
 
-                    else -> {}
+                        else -> {}
+                    }
                 }
             }
         }
