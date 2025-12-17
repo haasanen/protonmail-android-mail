@@ -34,6 +34,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailE
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTrackersEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowRatingBoosterEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
@@ -48,6 +49,7 @@ import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wa
 import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.RestrictMessageWebViewHeight
+import ch.protonmail.android.mailfeatureflags.domain.model.ShowBlockedTrackers
 import ch.protonmail.android.mailfeatureflags.domain.model.ShowRatingBoosterEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.SwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
@@ -211,5 +213,16 @@ object FeatureFlagsModule {
     @IsShowRatingBoosterEnabled
     fun provideIsShowRatingBoosterEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(key = ShowRatingBoosterEnabled.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideShowBlockedTrackersDefinition(): FeatureFlagDefinition = ShowBlockedTrackers
+
+    @Provides
+    @Singleton
+    @IsShowBlockedTrackersEnabled
+    fun provideShowBlockedTrackersEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(ShowBlockedTrackers.key, false)
 
 }

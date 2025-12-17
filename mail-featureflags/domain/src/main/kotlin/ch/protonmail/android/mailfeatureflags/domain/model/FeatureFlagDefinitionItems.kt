@@ -121,3 +121,12 @@ data object ShowRatingBoosterEnabled : FeatureFlagDefinition(
     description = "Show the rating app store dialog",
     defaultValue = false
 )
+
+data object ShowBlockedTrackers : FeatureFlagDefinition(
+    key = "MailAndroidV7ShowBlockedTrackers",
+    name = "Show blocked trackers",
+    category = FeatureFlagCategory.Details,
+    description = "Enable the 'show blocked trackers' feature",
+    defaultValue = false
+)
+

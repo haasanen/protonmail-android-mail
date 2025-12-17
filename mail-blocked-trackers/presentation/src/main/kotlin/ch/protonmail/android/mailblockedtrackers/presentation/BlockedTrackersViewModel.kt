@@ -19,20 +19,34 @@
 package ch.protonmail.android.mailblockedtrackers.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersState
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTrackersEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import timber.log.Timber
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BlockedTrackersViewModel @Inject constructor() : ViewModel() {
+class BlockedTrackersViewModel @Inject constructor(
+    @IsShowBlockedTrackersEnabled val showBlockedTrackersFeatureFlag: FeatureFlag<Boolean>
+) : ViewModel() {
 
-    val state = MutableStateFlow<BlockedTrackersState>(BlockedTrackersState.Unknown)
+    private val mutableState = MutableStateFlow<BlockedTrackersState>(BlockedTrackersState.Unknown)
+
+    val state: StateFlow<BlockedTrackersState> = mutableState
 
     fun loadBlockedTrackers(messageId: MessageId) {
-        Timber.d("Not implemented! loading blocked trackers for $messageId")
+        viewModelScope.launch {
+            if (showBlockedTrackersFeatureFlag.get()) {
+                mutableState.emit(BlockedTrackersState.TrackersBlocked(TrackersUiModelSample.oneTrackerBlocked))
+            } else {
+                mutableState.emit(BlockedTrackersState.Unknown)
+            }
+        }
     }
 
 }

@@ -71,3 +71,7 @@ annotation class IsRestrictMessageWebViewHeightEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsShowRatingBoosterEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsShowBlockedTrackersEnabled
