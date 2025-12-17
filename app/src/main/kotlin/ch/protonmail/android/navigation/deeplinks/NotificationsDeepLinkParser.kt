@@ -34,9 +34,9 @@ internal object NotificationsDeepLinkParser {
 
         val pathSegments = uri.pathSegments
 
-        return when (pathSegments.size) {
+        return when {
             // Message: /mailbox/message/{messageId}/{userId}/{notificationId}
-            MessagePathLength if pathSegments[0] == "mailbox" && pathSegments[1] == "message" -> {
+            pathSegments.size == MessagePathLength && pathSegments[0] == "mailbox" && pathSegments[1] == "message" -> {
                 NotificationsDeepLinkData.Message(
                     messageId = pathSegments[2],
                     userId = pathSegments[3]
@@ -44,7 +44,7 @@ internal object NotificationsDeepLinkParser {
             }
 
             // Group: /mailbox/{notificationId}/{userId}
-            GroupPathLength if pathSegments[0] == "mailbox" -> {
+            pathSegments.size == GroupPathLength && pathSegments[0] == "mailbox" -> {
                 NotificationsDeepLinkData.Group(
                     userId = pathSegments[2]
                 )
