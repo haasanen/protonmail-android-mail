@@ -64,6 +64,7 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.mailblockedtrackers.presentation.BlockedTrackers
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
@@ -441,6 +442,9 @@ private fun MessageDetailHeaderCard(
                 actions
             )
             RecipientsSection(uiModel, actions)
+
+            BlockedTrackers(MessageId(uiModel.messageIdUiModel.id))
+
             ExtendedHeaderSection(uiModel)
         }
     }
