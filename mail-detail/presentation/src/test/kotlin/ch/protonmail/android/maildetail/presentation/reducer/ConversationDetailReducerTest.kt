@@ -235,7 +235,7 @@ class ConversationDetailReducerTest(
         assertEquals(
             ScrollToMessageState.ScrollRequested(
                 targetMessageId = targetId,
-                targetMessageIndex = 2 // 1 added to account for the Subject at index 0 in LazyColumn
+                targetMessageIndex = 1
             ),
             result.scrollToMessageState
         )

@@ -1111,7 +1111,7 @@ private fun MessagesContent(
             .debounce(AnimationConstants.DefaultDurationMillis.toLong())
             .collectLatest {
                 listState.animateScrollToItem(
-                    (scrollRequest.targetMessageIndex - 1).coerceAtLeast(0)
+                    scrollRequest.targetMessageIndex
                 )
                 actions.onScrollRequestCompleted(scrollRequest.targetMessageId)
             }

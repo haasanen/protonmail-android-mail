@@ -351,9 +351,11 @@ class ConversationDetailReducer @Inject constructor(
                     // Target doesn't exist in the list – keep "no target".
                     ScrollToMessageState.NoScrollTarget
                 } else {
+                    // Subject is also a LazyColumn item, so indexInList actually points to the previous item,
+                    // which lets us show one extra item above the target.
                     ScrollToMessageState.ScrollRequested(
                         targetMessageId = targetId,
-                        targetMessageIndex = indexInList + 1 // Add 1 to account for subject header
+                        targetMessageIndex = indexInList
                     )
                 }
             }
