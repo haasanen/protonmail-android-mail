@@ -79,7 +79,7 @@ internal class NotificationTrampolineActivity : AppCompatActivity() {
     private fun handleLockScreenActive(deepLinkData: NotificationsDeepLinkData?) {
         Timber.d("Trampoline: Lock screen active, storing deep link")
         deepLinkData?.let { deepLinkHandler.setPending(it) }
-        launchLockScreen(reorderToFront = true)
+        launchLockScreen()
     }
 
     private fun handleBackgroundWithLock(deepLinkData: NotificationsDeepLinkData?) {
@@ -87,7 +87,7 @@ internal class NotificationTrampolineActivity : AppCompatActivity() {
         lockScreenState.setActive(true)
         deepLinkHandler.setLocked()
         deepLinkData?.let { deepLinkHandler.setPending(it) }
-        launchLockScreen(reorderToFront = false)
+        launchLockScreen()
     }
 
     private fun handleBackgroundNoLock(deepLinkData: NotificationsDeepLinkData?) {
@@ -103,11 +103,9 @@ internal class NotificationTrampolineActivity : AppCompatActivity() {
         deepLinkHandler.setUnlocked()
     }
 
-    private fun launchLockScreen(reorderToFront: Boolean) {
+    private fun launchLockScreen() {
         val lockIntent = Intent(this, LockScreenActivity::class.java).apply {
-            if (reorderToFront) {
-                addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-            }
+            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
         }
         startActivity(lockIntent)
     }
