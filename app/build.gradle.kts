@@ -213,6 +213,7 @@ dependencies {
     implementation(libs.java.jna) { artifact { type = "aar" } }
 
     implementation(project(":mail-attachments"))
+    implementation(project(":mail-blocked-trackers"))
     implementation(project(":mail-bugreport"))
     implementation(project(":mail-common"))
     implementation(project(":mail-composer"))

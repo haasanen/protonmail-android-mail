@@ -55,6 +55,11 @@ include(":mail-attachments:data")
 include(":mail-attachments:domain")
 include(":mail-attachments:presentation")
 
+include(":mail-blocked-trackers:dagger")
+include(":mail-blocked-trackers:data")
+include(":mail-blocked-trackers:domain")
+include(":mail-blocked-trackers:presentation")
+
 include(":mail-bugreport:dagger")
 include(":mail-bugreport:data")
 include(":mail-bugreport:domain")
