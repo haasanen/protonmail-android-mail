@@ -48,21 +48,4 @@
     <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
     <string name="launcher_alert_duplicate_account_description">The user is already signed in</string>
     <string name="home_event_loop_error_snackbar">We couldn\'t sync your mail. Try logging out and back in again. If that doesn\'t work, please submit a bug report.</string>
-
-    <string name="settings_change_icon_title">App Icon</string>
-    <string name="settings_change_icon_description">Disguise the Proton Mail app with a discreet icon. Notifications will still display the default Proton Mail name and icon.</string>
-    <string name="settings_change_icon_confirmation_title">Change app icon?</string>
-    <string name="settings_change_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
-    <string name="settings_change_icon_action_cancel">Cancel</string>
-    <string name="settings_change_icon_change_icon">Change icon</string>
-    <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-    <string name="settings_change_icon_header_discreet">Discreet app icon</string>
-
-    <string name="settings_app_icon_toolbar_title">App icon</string>
-    <string name="settings_app_icon_name_discreet">Discreet</string>
-    <string name="settings_app_icon_title_default">App icon - default</string>
-    <string name="settings_app_icon_title_discreet">App icon - discreet</string>
-    <string name="settings_app_icon_description">Keep the default Proton Mail icon, or disguise it with a more discreet one for extra privacy.\nNotifications will always show the Proton Mail name and icon.</string>
-    <string name="settings_app_icon_learn_more">Learn more…</string>
-    <string name="settings_app_icon_discreet_toggle">Discreet app icon</string>
 </resources>

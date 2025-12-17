@@ -26,7 +26,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import ch.protonmail.android.design.compose.navigation.require
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
-import ch.protonmail.android.feature.appicon.ui.AppIconSettingsScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportScreen
@@ -41,6 +40,7 @@ import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinS
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogModeKey
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogResultKey
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.ui.AppIconSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.combinedcontacts.CombinedContactsSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsDialog
 import ch.protonmail.android.mailsettings.presentation.settings.notifications.ui.PushNotificationsSettingsScreen

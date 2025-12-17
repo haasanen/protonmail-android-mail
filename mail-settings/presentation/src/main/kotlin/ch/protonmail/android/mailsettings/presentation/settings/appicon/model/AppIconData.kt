@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.appicon.model
 import android.content.ComponentName
 import android.content.Context
 
-data class AppIconData(
+internal data class AppIconData(
     val id: AppIconId,
     val componentName: String,
     val category: IconCategory
@@ -61,7 +61,7 @@ data class AppIconData(
     }
 }
 
-fun AppIconData.getComponentName(activityAliasPrefix: String, context: Context): ComponentName {
+internal fun AppIconData.getComponentName(activityAliasPrefix: String, context: Context): ComponentName {
     val applicationContext = context.applicationContext
     return ComponentName(applicationContext, activityAliasPrefix + componentName)
 }

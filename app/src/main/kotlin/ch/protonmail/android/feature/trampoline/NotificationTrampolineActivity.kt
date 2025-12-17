@@ -22,11 +22,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import ch.protonmail.android.feature.appicon.usecase.CreateLaunchIntent
 import ch.protonmail.android.feature.lockscreen.LockScreenActivity
 import ch.protonmail.android.feature.lockscreen.LockScreenState
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.usecase.CreateLaunchIntent
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkData
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHandler
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkParser

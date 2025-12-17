@@ -16,11 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon
+package ch.protonmail.android.mailsettings.presentation.settings.appicon
 
 import androidx.lifecycle.ViewModel
-import ch.protonmail.android.feature.appicon.model.AppIconUiModel
-import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconManager
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.mapper.AppIconDataMapper
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList

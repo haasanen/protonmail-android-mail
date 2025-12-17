@@ -16,15 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon.model
+package ch.protonmail.android.mailsettings.presentation.settings.appicon.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Stable
-import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData
 
 @Stable
-data class AppIconUiModel(
+internal data class AppIconUiModel(
     val data: AppIconData,
     @DrawableRes val iconPreviewResId: Int,
     @StringRes val labelResId: Int

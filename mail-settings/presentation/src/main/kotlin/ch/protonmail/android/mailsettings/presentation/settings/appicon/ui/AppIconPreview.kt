@@ -16,20 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon
+package ch.protonmail.android.mailsettings.presentation.settings.appicon.ui
 
-import ch.protonmail.android.feature.appicon.model.AppIconUiModel
-import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconResourceManager
-import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData
-import javax.inject.Inject
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconUiModel
+import coil.compose.AsyncImage
 
-class AppIconDataMapper @Inject constructor(
-    private val appIconResourceManager: AppIconResourceManager
-) {
-
-    fun toUiModel(appIconData: AppIconData) = AppIconUiModel(
-        data = appIconData,
-        iconPreviewResId = appIconResourceManager.getIconRes(appIconData.id),
-        labelResId = appIconResourceManager.getDescriptionStringRes(appIconData.id)
+@Composable
+internal fun AppIconPreview(modifier: Modifier = Modifier, preset: AppIconUiModel) {
+    AsyncImage(
+        modifier = modifier,
+        model = preset.iconPreviewResId,
+        contentDescription = NO_CONTENT_DESCRIPTION,
+        contentScale = ContentScale.Fit
     )
 }

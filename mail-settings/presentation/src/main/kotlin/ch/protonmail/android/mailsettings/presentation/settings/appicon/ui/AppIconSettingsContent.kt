@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon.ui
+package ch.protonmail.android.mailsettings.presentation.settings.appicon.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,16 +42,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import ch.protonmail.android.R
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonSwitch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.feature.appicon.model.AppIconUiModel
-import ch.protonmail.android.feature.appicon.model.isMain
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
+import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconUiModel
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.isMain
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -72,16 +72,16 @@ internal fun AppIconSettingsContent(
 
     if (showRestartDialog) {
         ProtonAlertDialog(
-            title = stringResource(id = R.string.settings_change_icon_confirmation_title),
+            title = stringResource(id = R.string.settings_app_icon_confirmation_title),
             text = {
                 Text(
-                    text = stringResource(id = R.string.settings_change_icon_confirmation_details),
+                    text = stringResource(id = R.string.settings_app_icon_confirmation_details),
                     style = ProtonTheme.typography.bodyMediumWeak
                 )
             },
             confirmButton = {
                 ProtonAlertDialogButton(
-                    titleResId = R.string.settings_change_icon_change_icon
+                    titleResId = R.string.settings_app_icon_change_icon
                 ) {
                     currentIcon = pendingIcon
                     isDiscreetEnabled = pendingIcon.isMain().not() // Update toggle state based on new icon
@@ -91,7 +91,7 @@ internal fun AppIconSettingsContent(
             },
             dismissButton = {
                 ProtonAlertDialogButton(
-                    titleResId = R.string.settings_change_icon_action_cancel
+                    titleResId = R.string.settings_app_icon_action_cancel
                 ) {
                     pendingIcon = currentIcon
                     showRestartDialog = false

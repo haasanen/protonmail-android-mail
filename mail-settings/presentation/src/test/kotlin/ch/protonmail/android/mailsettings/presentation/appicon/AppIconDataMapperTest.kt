@@ -16,11 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon
+package ch.protonmail.android.mailsettings.presentation.appicon
 
-import ch.protonmail.android.feature.appicon.model.AppIconUiModel
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconResourceManager
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.mapper.AppIconDataMapper
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconUiModel
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

@@ -16,11 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon
+package ch.protonmail.android.mailsettings.presentation.appicon
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import ch.protonmail.android.R
+import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconResourceManager
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -28,7 +29,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
-internal class AppIconResourceIconManagerImplTest(
+internal class AppIconResourceIconManagerTest(
     @Suppress("unused") private val testName: String,
     private val iconId: AppIconData.AppIconId,
     @DrawableRes private val expectedResId: Int
@@ -37,7 +38,7 @@ internal class AppIconResourceIconManagerImplTest(
     @Test
     fun `returns the correct id for icon resource`() {
         // When
-        val iconResourceManager = AppIconResourceManagerImpl()
+        val iconResourceManager = AppIconResourceManager()
         val actual = iconResourceManager.getIconRes(iconId)
 
         // Then
@@ -83,7 +84,7 @@ internal class AppIconResourceStringManagerImplTest(
     @Test
     fun `returns the correct id for string resource`() {
         // When
-        val iconResourceManager = AppIconResourceManagerImpl()
+        val iconResourceManager = AppIconResourceManager()
         val actual = iconResourceManager.getDescriptionStringRes(iconId)
 
         // Then
@@ -98,7 +99,7 @@ internal class AppIconResourceStringManagerImplTest(
             arrayOf(
                 "default icon",
                 AppIconData.AppIconId.Default,
-                R.string.app_name
+                R.string.settings_app_icon_name_default
             ),
             arrayOf(
                 "weather icon",

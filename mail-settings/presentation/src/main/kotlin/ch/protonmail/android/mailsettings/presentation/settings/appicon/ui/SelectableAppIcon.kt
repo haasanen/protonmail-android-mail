@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon.ui
+package ch.protonmail.android.mailsettings.presentation.settings.appicon.ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,8 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.feature.appicon.model.AppIconUiModel
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconUiModel
 import coil.compose.AsyncImage
 
 @Composable

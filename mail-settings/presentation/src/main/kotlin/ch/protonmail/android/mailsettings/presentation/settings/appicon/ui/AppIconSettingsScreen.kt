@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon.ui
+package ch.protonmail.android.mailsettings.presentation.settings.appicon.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
@@ -26,12 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import ch.protonmail.android.R
 import ch.protonmail.android.design.compose.component.ProtonSettingsDetailsAppBar
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.feature.appicon.AppIconSettingsViewModel
-import ch.protonmail.android.feature.appicon.model.AppIconUiModel
+import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconSettingsViewModel
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconUiModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -55,6 +55,7 @@ fun AppIconSettingsScreen(
 }
 
 @Composable
+@Suppress("UseComposableActions")
 private fun AppIconSettingsScreen(
     modifier: Modifier = Modifier,
     availableIcons: ImmutableList<AppIconUiModel>,
@@ -91,12 +92,12 @@ private fun AppIconSettingsScreenPreview() {
     ProtonTheme {
         AppIconSettingsScreen(
             availableIcons = AppIconData.ALL_ICONS.map {
-                AppIconUiModel(it, R.drawable.ic_proton_pencil, R.string.app_name)
+                AppIconUiModel(it, R.drawable.ic_launcher_main_raster, R.string.settings_app_icon_title_default)
             }.toImmutableList(),
             activeIcon = AppIconUiModel(
                 AppIconData.DEFAULT,
-                R.mipmap.ic_launcher,
-                R.string.app_name
+                R.drawable.ic_launcher_main_raster,
+                R.string.settings_app_icon_title_default
             ),
             onIconSelected = {},
             onBackClick = {},

@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.feature.appicon.usecase
+package ch.protonmail.android.mailsettings.presentation.settings.appicon.usecase
 
 import android.content.Context
 import android.content.Intent

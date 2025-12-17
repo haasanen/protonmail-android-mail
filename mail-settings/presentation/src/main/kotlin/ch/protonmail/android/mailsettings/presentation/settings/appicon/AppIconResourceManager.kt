@@ -20,13 +20,28 @@ package ch.protonmail.android.mailsettings.presentation.settings.appicon
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData.AppIconId
+import javax.inject.Inject
 
-interface AppIconResourceManager {
+internal class AppIconResourceManager @Inject constructor() {
 
     @StringRes
-    fun getDescriptionStringRes(id: AppIconId): Int
+    fun getDescriptionStringRes(id: AppIconId): Int {
+        return when (id) {
+            AppIconId.Default -> R.string.settings_app_icon_name_default
+            else -> R.string.settings_app_icon_name_discreet
+        }
+    }
 
     @DrawableRes
-    fun getIconRes(id: AppIconId): Int
+    fun getIconRes(id: AppIconId): Int {
+        // Return rasterized versions, not mipmaps
+        return when (id) {
+            AppIconId.Default -> R.drawable.ic_launcher_main_raster
+            AppIconId.Weather -> R.drawable.ic_launcher_weather_raster
+            AppIconId.Notes -> R.drawable.ic_launcher_notes_raster
+            AppIconId.Calculator -> R.drawable.ic_launcher_calculator_raster
+        }
+    }
 }

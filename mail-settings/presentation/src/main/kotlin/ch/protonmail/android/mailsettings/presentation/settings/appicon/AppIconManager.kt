@@ -18,13 +18,70 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.appicon
 
+import android.content.Context
+import android.content.pm.PackageManager
+import ch.protonmail.android.mailcommon.domain.AppInformation
+import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.AppIconData
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.model.getComponentName
+import ch.protonmail.android.mailsettings.presentation.settings.appicon.usecase.CreateLaunchIntent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-interface AppIconManager {
+@Singleton
+internal class AppIconManager @Inject constructor(
+    @ApplicationContext private val appContext: Context,
+    private val appInformation: AppInformation,
+    private val createLaunchIntent: CreateLaunchIntent,
+    private val notificationManagerCompatProxy: NotificationManagerCompatProxy
+) {
 
-    val currentIconData: MutableStateFlow<AppIconData>
-    fun setNewAppIcon(desiredAppIcon: AppIconData)
-    fun getCurrentIconData(): AppIconData
-    fun getAvailableIcons(): List<AppIconData>
+    val currentIconData by lazy { MutableStateFlow(getCurrentIconData()) }
+
+    fun setNewAppIcon(desiredAppIcon: AppIconData) {
+        // Dismiss all notifications
+        notificationManagerCompatProxy.dismissAllNotifications()
+
+        val activityAliasPrefix = activityAliasPrefix()
+
+        // Disable current icon
+        getCurrentIconData().let { currentIcon ->
+            appContext.packageManager.setComponentEnabledSetting(
+                currentIcon.getComponentName(activityAliasPrefix, appContext),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
+        }
+
+        // Enable new icon
+        appContext.packageManager.setComponentEnabledSetting(
+            desiredAppIcon.getComponentName(activityAliasPrefix, appContext),
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
+
+        currentIconData.value = desiredAppIcon
+        createLaunchIntent.invalidateCache()
+    }
+
+    fun getCurrentIconData(): AppIconData {
+        val activityAliasPrefix = activityAliasPrefix()
+        val activeIcon = AppIconData.ALL_ICONS.firstOrNull { iconData ->
+            appContext.packageManager.getComponentEnabledSetting(
+                iconData.getComponentName(activityAliasPrefix, appContext)
+            ) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        }
+
+        return activeIcon ?: AppIconData.DEFAULT
+    }
+
+    fun getAvailableIcons(): List<AppIconData> = AppIconData.ALL_ICONS
+
+    private fun activityAliasPrefix() = when (appInformation.appBuildFlavor) {
+        "dev" -> "ch.protonmail.android.dev"
+        "alpha" -> "ch.protonmail.android.alpha"
+        else -> "ch.protonmail.android"
+    }
 }

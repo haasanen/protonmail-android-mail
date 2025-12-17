@@ -21,12 +21,8 @@ package ch.protonmail.android.di
 import android.content.Context
 import androidx.work.WorkManager
 import ch.protonmail.android.BuildConfig
-import ch.protonmail.android.feature.appicon.AppIconManagerImpl
-import ch.protonmail.android.feature.appicon.AppIconResourceManagerImpl
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
-import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconManager
-import ch.protonmail.android.mailsettings.presentation.settings.appicon.AppIconResourceManager
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHelperImpl
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -84,11 +80,5 @@ object ApplicationModule {
 
         @Binds
         fun bindNotificationsDeepLinkHelper(impl: NotificationsDeepLinkHelperImpl): NotificationsDeepLinkHelper
-
-        @Binds
-        fun bindAppIconManager(impl: AppIconManagerImpl): AppIconManager
-
-        @Binds
-        fun bindAppIconResourceManager(impl: AppIconResourceManagerImpl): AppIconResourceManager
     }
 }
