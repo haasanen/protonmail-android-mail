@@ -51,8 +51,9 @@ internal fun ConversationSubjectHeader(
             .fillMaxWidth()
             .background(ProtonTheme.colors.backgroundNorm)
             .padding(
-                horizontal = ProtonDimens.Spacing.Large,
-                vertical = ProtonDimens.Spacing.ExtraLarge
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.ExtraLarge
             )
     ) {
         AnimatedContent(
@@ -69,7 +70,8 @@ internal fun ConversationSubjectHeader(
         ) { currentSubject ->
             SelectionContainer {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     text = currentSubject,
                     overflow = TextOverflow.Ellipsis,
                     style = ProtonTheme.typography.headlineSmall,

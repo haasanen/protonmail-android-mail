@@ -140,7 +140,7 @@ private fun MessageDetailHeaderLayout(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = ProtonDimens.Spacing.Large, vertical = ProtonDimens.Spacing.ModeratelyLarger)
+            .padding(all = ProtonDimens.Spacing.Large)
     ) {
         Row(
             modifier = modifier
@@ -175,11 +175,10 @@ private fun MessageDetailHeaderLayout(
                         .fillMaxWidth(),
                     participantUiModel = uiModel.sender, icons = {
                         Icons(uiModel = uiModel)
-                        Spacer(modifier.width(ProtonDimens.Spacing.Small))
+                        Spacer(modifier.width(ProtonDimens.Spacing.Compact))
                         Time(time = uiModel.time)
                     }
                 )
-                Spacer(modifier = modifier.height(ProtonDimens.Spacing.Small))
                 Row {
                     Column(
                         modifier = Modifier.weight(1f)
@@ -204,7 +203,7 @@ private fun MessageDetailHeaderLayout(
                     Spacer(modifier = modifier.size(ProtonDimens.Spacing.Large))
                     MessageDetailHeaderActions(
                         modifier = modifier
-                            .padding(top = ProtonDimens.Spacing.MediumLight)
+                            .padding(top = ProtonDimens.Spacing.Standard)
                             .testTag(MessageDetailHeaderTestTags.ActionsRootItem),
                         uiModel = uiModel,
                         actions = actions
