@@ -809,7 +809,7 @@ fun Home(
                         onClose = { navController.navigateBack() },
                         onShowSuccessSnackbar = { showNormalSnackbar(it) }
                     )
-                    addAppIconSettings(navController)
+                    addAppIconSettings(navController, onLearnMoreClick = activityActions.openInActivityInNewTask)
                     addPinDialog(navController)
                     addSwipeActionsSettings(navController)
                     addThemeSettings(navController)

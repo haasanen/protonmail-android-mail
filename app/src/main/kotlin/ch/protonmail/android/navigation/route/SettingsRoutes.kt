@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.navigation.route
 
+import android.net.Uri
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -144,12 +145,13 @@ internal fun NavGraphBuilder.addPrivacySettings(navController: NavHostController
     }
 }
 
-internal fun NavGraphBuilder.addAppIconSettings(navController: NavHostController) {
+internal fun NavGraphBuilder.addAppIconSettings(navController: NavHostController, onLearnMoreClick: (Uri) -> Unit) {
     composable(route = Screen.AppIconSettings.route) {
         ProtonInvertedTheme {
             AppIconSettingsScreen(
                 modifier = Modifier,
-                onBackClick = { navController.navigateBack() }
+                onBackClick = { navController.navigateBack() },
+                onLearnMoreClick = onLearnMoreClick
             )
         }
     }

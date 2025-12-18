@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.appicon.ui
 
+import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.core.net.toUri
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonSwitch
@@ -60,7 +63,7 @@ internal fun AppIconSettingsContent(
     availableIcons: ImmutableList<AppIconUiModel>,
     activeIcon: AppIconUiModel,
     onIconConfirmed: (AppIconUiModel) -> Unit,
-    onLearnMoreClick: () -> Unit
+    onLearnMoreClick: (Uri) -> Unit
 ) {
     var showRestartDialog by remember { mutableStateOf(false) }
     var currentIcon: AppIconUiModel by remember { mutableStateOf(activeIcon) }
@@ -158,7 +161,10 @@ internal fun AppIconSettingsContent(
                         text = descriptionText,
                         style = ProtonTheme.typography.bodyMedium,
                         color = ProtonTheme.colors.textWeak,
-                        modifier = Modifier.clickable { onLearnMoreClick() }
+                        modifier = Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) { onLearnMoreClick(LEARN_MORE_URL.toUri()) }
                     )
                 }
 
@@ -233,3 +239,5 @@ internal fun AppIconSettingsContent(
         }
     }
 }
+
+private const val LEARN_MORE_URL = "https://proton.me/support/disguise-app-icon"

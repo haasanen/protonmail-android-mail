@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsettings.presentation.settings.appicon.ui
 
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -39,7 +40,7 @@ import kotlinx.collections.immutable.toImmutableList
 fun AppIconSettingsScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onLearnMoreClick: () -> Unit = {}
+    onLearnMoreClick: (Uri) -> Unit
 ) {
     val viewModel: AppIconSettingsViewModel = hiltViewModel()
     val availableIcons = viewModel.getAvailableIcons()
@@ -62,7 +63,7 @@ private fun AppIconSettingsScreen(
     activeIcon: AppIconUiModel,
     onIconSelected: (AppIconUiModel) -> Unit,
     onBackClick: () -> Unit,
-    onLearnMoreClick: () -> Unit = {}
+    onLearnMoreClick: (Uri) -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
