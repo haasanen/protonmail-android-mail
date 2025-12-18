@@ -63,6 +63,7 @@ import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailblockedtrackers.presentation.BlockedTrackers
+import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
@@ -441,7 +442,11 @@ private fun MessageDetailHeaderCard(
             )
             RecipientsSection(uiModel, actions)
 
-            BlockedTrackers(MessageId(uiModel.messageIdUiModel.id))
+            BlockedTrackers(
+                MessageId(uiModel.messageIdUiModel.id),
+                onBlockedTrackersClick = { actions.onBlockedTrackersClick(it) },
+                onNoBlockedTrackersClick = { actions.onBlockedTrackersClick(null) }
+            )
 
             ExtendedHeaderSection(uiModel)
         }
@@ -639,7 +644,8 @@ object MessageDetailHeader {
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onAvatarImageLoadFailed: () -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel) -> Unit,
-        val onCollapseMessage: (MessageIdUiModel) -> Unit
+        val onCollapseMessage: (MessageIdUiModel) -> Unit,
+        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit
     ) {
 
         companion object {
@@ -654,7 +660,8 @@ object MessageDetailHeader {
                 onAvatarImageLoadRequested = { },
                 onAvatarImageLoadFailed = { },
                 onParticipantClicked = { _, _, _ -> },
-                onCollapseMessage = {}
+                onCollapseMessage = {},
+                onBlockedTrackersClick = {}
             )
         }
     }

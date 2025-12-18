@@ -55,6 +55,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
+import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
@@ -230,7 +231,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             actions.onParticipantClicked(participantUiModel, avatarUiModel, messageIdUiModel)
         },
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
-        onCollapseMessage = actions.onCollapse
+        onCollapseMessage = actions.onCollapse,
+        onBlockedTrackersClick = actions.onBlockedTrackersClick
     )
 
     MessageDetailHeader(
@@ -416,7 +418,8 @@ object ConversationDetailItem {
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
         val onDownloadImage: (MessageId, String) -> Unit,
         val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
-        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit
+        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
+        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit
     )
 
     val previewActions = Actions(
@@ -454,7 +457,8 @@ object ConversationDetailItem {
         onUnsubscribeFromNewsletter = {},
         onDownloadImage = { _, _ -> },
         onLoadImagesAfterImageProxyFailure = {},
-        onViewEntireMessageClicked = { _, _, _, _ -> }
+        onViewEntireMessageClicked = { _, _, _, _ -> },
+        onBlockedTrackersClick = {}
     )
 }
 

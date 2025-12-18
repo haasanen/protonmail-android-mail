@@ -134,6 +134,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.attachment.isExpandable
+import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
@@ -445,6 +446,9 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
                 is ConversationDetailViewAction.LoadImagesAfterImageProxyFailure ->
                     handleLoadImagesAfterImageProxyFailure(action.messageId)
+
+                is ConversationDetailViewAction.RequestBlockedTrackersBottomSheet ->
+                    requestBlockedTrackersBottomSheet(action)
             }
         }
     }
@@ -994,6 +998,16 @@ class ConversationDetailViewModel @AssistedInject constructor(
             itemIds = listOf(LabelAsItemId(operation.messageId.id)),
             entryPoint = LabelAsBottomSheetEntryPoint.Message(operation.messageId)
         )
+
+        emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
+    }
+
+    private suspend fun requestBlockedTrackersBottomSheet(
+        operation: ConversationDetailViewAction.RequestBlockedTrackersBottomSheet
+    ) {
+        emitNewStateFrom(operation)
+
+        val event = BlockedTrackersSheetState.BlockedTrackersBottomSheetEvent.Ready(operation.trackers)
 
         emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
     }

@@ -658,7 +658,10 @@ fun ConversationDetailScreenLegacy(
                     showUndoableOperationSnackbar = { action ->
                         actions.showUndoableOperationSnackbar(action)
                     },
-                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked,
+                    onBlockedTrackersClick = {
+                        viewModel.submit(ConversationDetailViewAction.RequestBlockedTrackersBottomSheet(it))
+                    }
                 )
             )
         }
@@ -886,7 +889,8 @@ private fun ConversationDetailScreenLegacy(
                         bodyImageSaver(BodyImageUiModel(imageUrl, messageId))
                     },
                     onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure,
-                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked,
+                    onBlockedTrackersClick = actions.onBlockedTrackersClick
                 )
                 val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
 

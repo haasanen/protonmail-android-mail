@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailblockedtrackers.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 fun BlockedTrackers(
     messageId: MessageId,
     viewModel: BlockedTrackersViewModel = hiltViewModel(),
+    onBlockedTrackersClick: (TrackersUiModel) -> Unit,
+    onNoBlockedTrackersClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -58,15 +61,21 @@ fun BlockedTrackers(
     }
 
     when (val current = state.value) {
-        BlockedTrackersState.NoTrackersBlocked -> NoBlockedTrackers(modifier)
-        is BlockedTrackersState.TrackersBlocked -> BlockedTrackers(current.uiModel, modifier)
+        BlockedTrackersState.NoTrackersBlocked -> NoBlockedTrackers(onNoBlockedTrackersClick, modifier)
+        is BlockedTrackersState.TrackersBlocked -> BlockedTrackers(current.uiModel, onBlockedTrackersClick, modifier)
         BlockedTrackersState.Unknown -> { }
     }
 }
 
 @Composable
-private fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modifier) {
-    Column(verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ModeratelyLarge)) {
+private fun BlockedTrackers(
+    uiModel: TrackersUiModel,
+    onBlockedTrackersClick: (TrackersUiModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ModeratelyLarge)
+    ) {
         Row(
             modifier = modifier,
             horizontalArrangement = Arrangement.Start,
@@ -104,7 +113,9 @@ private fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modif
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
 
                 Text(
-                    modifier = Modifier.wrapContentWidth(),
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .clickable(onClick = { onBlockedTrackersClick(uiModel) }),
                     text = stringResource(R.string.show_details),
                     style = ProtonTheme.typography.bodySmallNorm.copy(
                         color = ProtonTheme.colors.iconAccent
@@ -116,9 +127,11 @@ private fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modif
 }
 
 @Composable
-private fun NoBlockedTrackers(modifier: Modifier = Modifier) {
+private fun NoBlockedTrackers(onNoBlockedTrackersClick: () -> Unit, modifier: Modifier = Modifier) {
 
-    Column(verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ModeratelyLarge)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ModeratelyLarge)
+    ) {
         Row(
             modifier = modifier,
             horizontalArrangement = Arrangement.Start,
@@ -145,7 +158,9 @@ private fun NoBlockedTrackers(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
 
                 Text(
-                    modifier = Modifier.wrapContentWidth(),
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .clickable(onClick = onNoBlockedTrackersClick),
                     text = stringResource(R.string.show_details),
                     style = ProtonTheme.typography.bodySmallNorm.copy(
                         color = ProtonTheme.colors.iconAccent
@@ -160,12 +175,13 @@ private fun NoBlockedTrackers(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewBlockedTrackers() {
     BlockedTrackers(
-        uiModel = TrackersUiModelSample.oneTrackerBlocked
+        uiModel = TrackersUiModelSample.oneTrackerBlocked,
+        onBlockedTrackersClick = {}
     )
 }
 
 @Preview
 @Composable
 fun PreviewNoBlockedTrackers() {
-    NoBlockedTrackers()
+    NoBlockedTrackers(onNoBlockedTrackersClick = {})
 }

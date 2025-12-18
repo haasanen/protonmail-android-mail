@@ -24,6 +24,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
+import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
@@ -394,4 +395,8 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         AffectingMessageBar
 
     data class UnsubscribeFromNewsletter(val messageId: MessageId) : ConversationDetailViewAction
+
+    data class RequestBlockedTrackersBottomSheet(val trackers: TrackersUiModel?) :
+        ConversationDetailViewAction,
+        AffectingBottomSheet
 }

@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.reducer
 
+import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
@@ -88,6 +89,12 @@ class BottomSheetReducer @Inject constructor(
 
             is BottomSheetOperation.Dismiss -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Hide))
             is BottomSheetOperation.Requested -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Show))
+
+            is BlockedTrackersSheetState.BlockedTrackersBottomSheetEvent.Ready ->
+                BottomSheetState(
+                    contentState = BlockedTrackersSheetState.Requested(operation.trackers),
+                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
+                )
 
             else -> null
         }

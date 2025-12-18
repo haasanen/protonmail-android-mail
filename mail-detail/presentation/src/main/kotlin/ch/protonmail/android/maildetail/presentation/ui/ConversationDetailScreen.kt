@@ -84,6 +84,8 @@ import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.ui.OpenAttachmentInput
 import ch.protonmail.android.mailattachments.presentation.ui.fileOpener
 import ch.protonmail.android.mailattachments.presentation.ui.fileSaver
+import ch.protonmail.android.mailblockedtrackers.presentation.BlockedTrackersBottomSheetContent
+import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
@@ -136,6 +138,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.model.BodyImageUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -496,6 +499,8 @@ fun ConversationDetailScreen(
                     )
                 )
 
+                is BlockedTrackersSheetState -> BlockedTrackersBottomSheetContent(bottomSheetContentState)
+
                 else -> Unit
             }
         }
@@ -664,7 +669,10 @@ fun ConversationDetailScreen(
                     showUndoableOperationSnackbar = { action ->
                         actions.showUndoableOperationSnackbar(action)
                     },
-                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked,
+                    onBlockedTrackersClick = {
+                        viewModel.submit(ConversationDetailViewAction.RequestBlockedTrackersBottomSheet(it))
+                    }
                 )
             )
         }
@@ -881,7 +889,8 @@ private fun ConversationDetailScreen(
                         bodyImageSaver(BodyImageUiModel(imageUrl, messageId))
                     },
                     onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure,
-                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked
+                    onViewEntireMessageClicked = actions.onViewEntireMessageClicked,
+                    onBlockedTrackersClick = actions.onBlockedTrackersClick
                 )
                 val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
 
@@ -1310,7 +1319,8 @@ object ConversationDetailScreen {
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit,
         val onReportPhishing: (MessageId) -> Unit,
         val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
-        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit
+        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
+        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit
     ) {
 
         companion object {
@@ -1371,7 +1381,8 @@ object ConversationDetailScreen {
                 onReportPhishing = {},
                 onLoadImagesAfterImageProxyFailure = {},
                 showUndoableOperationSnackbar = {},
-                onViewEntireMessageClicked = { _, _, _, _ -> }
+                onViewEntireMessageClicked = { _, _, _, _ -> },
+                onBlockedTrackersClick = {}
             )
         }
     }

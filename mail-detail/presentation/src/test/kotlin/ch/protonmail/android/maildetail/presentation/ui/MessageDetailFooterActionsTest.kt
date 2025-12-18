@@ -71,7 +71,8 @@ internal class MessageDetailFooterActionsTest {
             onUnsubscribeFromNewsletter = {},
             onDownloadImage = { _, _ -> },
             onLoadImagesAfterImageProxyFailure = {},
-            onViewEntireMessageClicked = { _, _, _, _ -> }
+            onViewEntireMessageClicked = { _, _, _, _ -> },
+            onBlockedTrackersClick = {}
         )
 
         // When

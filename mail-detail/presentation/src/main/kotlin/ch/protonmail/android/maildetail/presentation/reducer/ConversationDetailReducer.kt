@@ -173,6 +173,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet,
                 is ConversationDetailViewAction.RequestConversationMoveToBottomSheet,
                 is ConversationDetailViewAction.RequestSnoozeBottomSheet,
+                is ConversationDetailViewAction.RequestBlockedTrackersBottomSheet,
                 is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> BottomSheetOperation.Requested
 
                 is ErrorMovingConversation,
