@@ -40,6 +40,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -51,6 +53,12 @@ import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataState
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataType
+import ch.protonmail.android.maildetail.presentation.viewmodel.RawMessageDataViewModel
+
+@Composable
+fun RawMessageDataScreen(viewModel: RawMessageDataViewModel = hiltViewModel()) {
+    RawMessageDataScreen(viewModel.state.collectAsStateWithLifecycle().value)
+}
 
 @Composable
 fun RawMessageDataScreen(state: RawMessageDataState) {
@@ -233,4 +241,9 @@ fun RawMessageDataScreenPreview() {
             """.trimIndent()
         )
     )
+}
+
+object RawMessageDataScreen {
+    const val MESSAGE_ID_KEY = "messageId"
+    const val RAW_DATA_TYPE_KEY = "rawDataType"
 }
