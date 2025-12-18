@@ -22,7 +22,7 @@ import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.core.domain.entity.UserId
 
-internal interface OnboardingUpsellState {
+internal sealed interface OnboardingUpsellState {
 
     data object Loading : OnboardingUpsellState
 
