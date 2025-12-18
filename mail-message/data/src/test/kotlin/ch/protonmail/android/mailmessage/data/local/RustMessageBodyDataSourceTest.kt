@@ -218,6 +218,94 @@ class RustMessageBodyDataSourceTest {
         assertEquals(expectedError.left(), result)
     }
 
+    @Test
+    fun `get raw headers should return raw headers`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSessionWrapper>()
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+        val rawHeaders = "raw headers"
+
+        val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
+            coEvery { rawHeaders() } returns rawHeaders
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns decryptedMessageBodyWrapper.right()
+
+        // When
+        val result = dataSource.getRawHeaders(userId, messageId)
+
+        // Then
+        coVerify { rustMailboxFactory.createAllMail(userId) }
+        coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
+        assertEquals(result, rawHeaders.right())
+    }
+
+    @Test
+    fun `get raw headers should handle error`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+        val expectedError = DataError.Local.NoDataCached
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns expectedError.left()
+
+        // When
+        val result = dataSource.getRawHeaders(userId, messageId)
+
+        // Then
+        coVerify { rustMailboxFactory.createAllMail(userId) }
+        assertEquals(expectedError.left(), result)
+    }
+
+    @Test
+    fun `get raw body should return raw headers`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSessionWrapper>()
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+        val rawBody = "raw body"
+
+        val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
+            coEvery { rawBody() } returns rawBody
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns decryptedMessageBodyWrapper.right()
+
+        // When
+        val result = dataSource.getRawBody(userId, messageId)
+
+        // Then
+        coVerify { rustMailboxFactory.createAllMail(userId) }
+        coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
+        assertEquals(result, rawBody.right())
+    }
+
+    @Test
+    fun `get body headers should handle error`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+        val expectedError = DataError.Local.NoDataCached
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns expectedError.left()
+
+        // When
+        val result = dataSource.getRawBody(userId, messageId)
+
+        // Then
+        coVerify { rustMailboxFactory.createAllMail(userId) }
+        assertEquals(expectedError.left(), result)
+    }
+
     companion object {
 
         object TestData {

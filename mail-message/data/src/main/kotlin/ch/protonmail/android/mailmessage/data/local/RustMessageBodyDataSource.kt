@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.local
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
@@ -30,6 +31,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalThemeOptions
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
+import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
@@ -52,13 +54,7 @@ class RustMessageBodyDataSource @Inject constructor(
         messageId: LocalMessageId,
         transformations: MessageBodyTransformations
     ): Either<DataError, MessageBody> = withContext(ioDispatcher) {
-        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
-        // the current labelId is not needed to get the body and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-            ?: return@withContext DataError.Local.IllegalStateError.left()
-
-        return@withContext createRustMessageBodyAccessor(mailbox, messageId)
-            .onLeft { Timber.e("rust-message: Failed to get message body $it") }
+        return@withContext getDecryptedMessageWrapper(userId, messageId)
             .flatMap { decryptedMessage ->
                 val transformOptions = TransformOpts(
                     showBlockQuote = transformations.showQuotedText,
@@ -82,14 +78,8 @@ class RustMessageBodyDataSource @Inject constructor(
         url: String,
         imagePolicy: ImagePolicy
     ): Either<AttachmentDataError, LocalAttachmentData> = withContext(ioDispatcher) {
-        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
-        // the current labelId is not needed to get the body and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-            ?: return@withContext AttachmentDataError.Other(DataError.Local.IllegalStateError).left()
-
-        return@withContext createRustMessageBodyAccessor(mailbox, messageId)
+        return@withContext getDecryptedMessageWrapper(userId, messageId)
             .mapLeft {
-                Timber.e("rust-message: Failed to build message body accessor $it")
                 AttachmentDataError.Other(it)
             }
             .flatMap { decryptedMessage ->
@@ -97,17 +87,40 @@ class RustMessageBodyDataSource @Inject constructor(
             }
     }
 
+    override suspend fun getRawHeaders(userId: UserId, messageId: LocalMessageId): Either<DataError, String> =
+        withContext(ioDispatcher) {
+            return@withContext getDecryptedMessageWrapper(userId, messageId)
+                .flatMap { decryptedMessage ->
+                    decryptedMessage.rawHeaders().right()
+                }
+        }
+
+    override suspend fun getRawBody(userId: UserId, messageId: LocalMessageId): Either<DataError, String> =
+        withContext(ioDispatcher) {
+            return@withContext getDecryptedMessageWrapper(userId, messageId)
+                .flatMap { decryptedMessage ->
+                    decryptedMessage.rawBody().right()
+                }
+        }
+
     override suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =
         withContext(ioDispatcher) {
-            // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
-            // the current labelId is not needed to get the body and is planned to be dropped on this API
-            val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-                ?: return@withContext DataError.Local.IllegalStateError.left()
-
-            return@withContext createRustMessageBodyAccessor(mailbox, messageId)
-                .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
+            return@withContext getDecryptedMessageWrapper(userId, messageId)
                 .flatMap { decryptedMessage ->
                     decryptedMessage.unsubscribeFromNewsletter()
                 }
         }
+
+    private suspend fun getDecryptedMessageWrapper(
+        userId: UserId,
+        messageId: LocalMessageId
+    ): Either<DataError, DecryptedMessageWrapper> {
+        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+        // the current labelId is not needed to get the body and is planned to be dropped on this API
+        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
+            ?: return DataError.Local.IllegalStateError.left()
+
+        return createRustMessageBodyAccessor(mailbox, messageId)
+            .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
+    }
 }

@@ -58,6 +58,14 @@ class RustMessageBodyRepository @Inject constructor(
             }
     }
 
+    override suspend fun getRawHeaders(userId: UserId, messageId: MessageId): Either<DataError, String> =
+        messageBodyDataSource.getRawHeaders(userId, messageId.toLocalMessageId())
+
+    override suspend fun getRawBody(userId: UserId, messageId: MessageId): Either<DataError, String> =
+        messageBodyDataSource.getRawBody(userId, messageId.toLocalMessageId())
+
+
+
     override suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         messageBodyDataSource.unsubscribeFromNewsletter(userId, messageId.toLocalMessageId())
 }

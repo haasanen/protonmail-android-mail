@@ -42,5 +42,9 @@ interface MessageBodyRepository {
         shouldLoadImagesSafely: Boolean
     ): Either<AttachmentDataError, MessageBodyImage>
 
+    suspend fun getRawHeaders(userId: UserId, messageId: MessageId): Either<DataError, String>
+
+    suspend fun getRawBody(userId: UserId, messageId: MessageId): Either<DataError, String>
+
     suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: MessageId): Either<DataError, Unit>
 }

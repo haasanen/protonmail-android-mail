@@ -61,6 +61,10 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
 
     suspend fun identifyRsvp() = decryptedMessage.identifyRsvp()
 
+    fun rawHeaders() = decryptedMessage.rawHeaders()
+
+    fun rawBody() = decryptedMessage.rawBody()
+
     suspend fun unsubscribeFromNewsletter(): Either<DataError, Unit> =
         when (val result = decryptedMessage.unsubscribeFromNewsletter()) {
             is VoidActionResult.Error -> result.v1.toDataError().left()

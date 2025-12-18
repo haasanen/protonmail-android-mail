@@ -43,5 +43,9 @@ interface MessageBodyDataSource {
         imagePolicy: ImagePolicy
     ): Either<AttachmentDataError, LocalAttachmentData>
 
+    suspend fun getRawHeaders(userId: UserId, messageId: LocalMessageId): Either<DataError, String>
+
+    suspend fun getRawBody(userId: UserId, messageId: LocalMessageId): Either<DataError, String>
+
     suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
 }
