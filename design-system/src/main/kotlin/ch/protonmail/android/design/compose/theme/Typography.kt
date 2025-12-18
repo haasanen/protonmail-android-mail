@@ -60,6 +60,9 @@ val ProtonTypography.titleSmallNorm: TextStyle
 val ProtonTypography.labelLargeNorm: TextStyle
     @Composable get() = labelLarge.copy(color = ProtonTheme.colors.textNorm)
 
+val ProtonTypography.labelLargeWeak: TextStyle
+    @Composable get() = labelLarge.copy(color = ProtonTheme.colors.textWeak)
+
 val ProtonTypography.labelLargeInverted: TextStyle
     @Composable get() = labelLarge.copy(color = ProtonTheme.colors.textInverted)
 

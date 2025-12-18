@@ -18,13 +18,451 @@
 
 package ch.protonmail.android.mailblockedtrackers.presentation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withLink
+import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.headlineSmallNorm
+import ch.protonmail.android.design.compose.theme.labelLargeWeak
+import ch.protonmail.android.mailblockedtrackers.domain.model.BlockedTracker
+import ch.protonmail.android.mailblockedtrackers.domain.model.CleanedLink
 import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
+import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiModel
+import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
 fun BlockedTrackersBottomSheetContent(state: BlockedTrackersSheetState, modifier: Modifier = Modifier) {
 
-    Text("blocked $state")
+    when (state) {
+        is BlockedTrackersSheetState.Requested -> when {
+            state.trackers != null -> BlockedTrackersBottomSheetContent(state.trackers, modifier)
+            else -> NoBlockedTrackersBottomSheetContent(modifier)
+        }
+    }
+}
+
+@Composable
+private fun NoBlockedTrackersBottomSheetContent(modifier: Modifier = Modifier) {
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(ProtonDimens.Spacing.ExtraLarge)
+    ) {
+
+        Header()
+
+        BottomNavigationBarSpacer()
+    }
+}
+
+@Composable
+private fun BlockedTrackersBottomSheetContent(trackers: TrackersUiModel, modifier: Modifier = Modifier) {
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(ProtonDimens.Spacing.ExtraLarge)
+    ) {
+
+        Header()
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+
+        BlockedTrackersDetails(trackers.blocked)
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+
+        CleanedLinksDetails(trackers.links)
+
+        BottomNavigationBarSpacer()
+    }
+}
+
+@Composable
+private fun CleanedLinksDetails(links: List<CleanedLink>, modifier: Modifier = Modifier) {
+
+    val isExpanded = remember { mutableStateOf(false) }
+
+    Column(
+        modifier
+            .fillMaxWidth()
+            .clip(ProtonTheme.shapes.large)
+            .background(
+                color = ProtonTheme.colors.backgroundNorm,
+                shape = ProtonTheme.shapes.large
+            )
+            .padding(ProtonDimens.Spacing.ModeratelyLarger)
+    ) {
+
+        CleanedLinksDetailsHeader(
+            links,
+            isExpanded.value,
+            onClick = { isExpanded.value = !isExpanded.value }
+        )
+
+        AnimatedContent(isExpanded.value) {
+            if (isExpanded.value) {
+                CleanedLinksDetailsList(links)
+            }
+        }
+
+    }
+}
+
+@Composable
+private fun CleanedLinksDetailsList(links: List<CleanedLink>) {
+
+    Column {
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+
+        for (link in links) {
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                Spacer(modifier = Modifier.weight(1f))
+
+            }
+
+            OriginalLinkRow(link)
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+            CleanedLinkRow(link)
+        }
+
+    }
+}
+
+@Composable
+private fun CleanedLinkRow(link: CleanedLink) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier,
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_proton_arrow_down_and_right),
+                    contentDescription = null,
+                    tint = ProtonTheme.colors.iconWeak
+                )
+
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+
+                Text(
+                    text = stringResource(R.string.cleaned),
+                    style = ProtonTheme.typography.labelLargeWeak
+                )
+            }
+
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+
+            Text(
+                text = link.cleaned,
+                style = ProtonTheme.typography.bodyLargeNorm,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Icon(
+            painter = painterResource(id = R.drawable.ic_proton_arrow_out_square),
+            contentDescription = null,
+            tint = ProtonTheme.colors.iconWeak
+        )
+    }
+}
+
+
+@Composable
+private fun OriginalLinkRow(link: CleanedLink) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier,
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(R.string.original),
+                style = ProtonTheme.typography.labelLargeWeak
+            )
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+            Text(
+                text = link.original,
+                style = ProtonTheme.typography.bodyLargeNorm,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Icon(
+            modifier = Modifier.size(ProtonDimens.IconSize.Default),
+            painter = painterResource(id = R.drawable.ic_proton_arrow_out_square),
+            contentDescription = null,
+            tint = ProtonTheme.colors.iconWeak
+        )
+    }
+}
+
+@Composable
+private fun CleanedLinksDetailsHeader(
+    links: List<CleanedLink>,
+    isExpanded: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clickable(
+                onClick = onClick,
+                interactionSource = null,
+                indication = null
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = pluralStringResource(
+                R.plurals.number_of_cleaned_links,
+                links.size,
+                links.size
+            ),
+            style = ProtonTheme.typography.bodyLargeNorm
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        val chevronIcon = when {
+            isExpanded -> R.drawable.ic_proton_chevron_down
+            else -> R.drawable.ic_proton_chevron_up
+        }
+        Icon(
+            painter = painterResource(id = chevronIcon),
+            contentDescription = null,
+            tint = ProtonTheme.colors.iconNorm
+        )
+    }
+}
+
+@Composable
+private fun BlockedTrackersDetails(trackers: List<BlockedTracker>, modifier: Modifier = Modifier) {
+
+    val isExpanded = remember { mutableStateOf(false) }
+
+    Column(
+        modifier
+            .fillMaxWidth()
+            .clip(ProtonTheme.shapes.large)
+            .background(
+                color = ProtonTheme.colors.backgroundNorm,
+                shape = ProtonTheme.shapes.large
+            )
+            .padding(ProtonDimens.Spacing.ModeratelyLarger)
+    ) {
+
+        BlockedTrackersDetailsHeader(
+            trackers,
+            isExpanded.value,
+            onClick = { isExpanded.value = !isExpanded.value }
+        )
+
+        AnimatedContent(isExpanded.value) {
+            if (isExpanded.value) {
+                BlockedTrackersDetailsList(trackers)
+            }
+        }
+
+    }
+}
+
+@Composable
+private fun BlockedTrackersDetailsList(trackers: List<BlockedTracker>) {
+
+    Column {
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+
+        for (tracker in trackers) {
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = tracker.domain,
+                    style = ProtonTheme.typography.bodyLargeNorm
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(
+                    text = "${tracker.urls.size}",
+                    style = ProtonTheme.typography.bodyLargeNorm
+                )
+            }
+
+            for (url in tracker.urls) {
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.MediumLight))
+
+                Text(
+                    text = url,
+                    style = ProtonTheme.typography.bodySmallWeak,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+        }
+
+    }
+}
+
+@Composable
+private fun BlockedTrackersDetailsHeader(
+    trackers: List<BlockedTracker>,
+    isExpanded: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clickable(
+                onClick = onClick,
+                interactionSource = null,
+                indication = null
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = pluralStringResource(
+                R.plurals.number_of_blocked_trackers,
+                trackers.size,
+                trackers.size
+            ),
+            style = ProtonTheme.typography.bodyLargeNorm
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        val chevronIcon = when {
+            isExpanded -> R.drawable.ic_proton_chevron_down
+            else -> R.drawable.ic_proton_chevron_up
+        }
+        Icon(
+            painter = painterResource(id = chevronIcon),
+            contentDescription = null,
+            tint = ProtonTheme.colors.iconNorm
+        )
+    }
+}
+
+@Composable
+private fun Header() {
+
+    Column {
+        HeaderIcon()
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+
+        Text(
+            text = stringResource(R.string.tracking_protection),
+            style = ProtonTheme.typography.headlineSmallNorm
+        )
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+
+        HeaderDescription()
+    }
+}
+
+@Composable
+private fun HeaderDescription() {
+    val text = stringResource(R.string.tracking_protection_description)
+    val linkText = stringResource(R.string.tracking_protection_learn_more)
+    val linkUrl = "https://proton.me/support/email-tracker-protection"
+    val linkColor = ProtonTheme.colors.interactionBrandDefaultNorm
+
+    val annotatedString = remember(text, linkText) {
+        buildAnnotatedString {
+            append(text)
+            append(" ")
+            withLink(
+                LinkAnnotation.Url(
+                    url = linkUrl,
+                    styles = TextLinkStyles(
+                        style = SpanStyle(color = linkColor)
+                    )
+                )
+            ) {
+                append(linkText)
+            }
+        }
+    }
+    Text(
+        text = annotatedString,
+        style = ProtonTheme.typography.bodyLargeNorm
+    )
+}
+
+@Composable
+private fun HeaderIcon() {
+    Box(
+        modifier = Modifier
+            .size(ProtonDimens.IconSize.Huge)
+            .clip(ProtonTheme.shapes.large)
+            .background(
+                color = ProtonTheme.colors.backgroundDeep,
+                shape = ProtonTheme.shapes.large
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_shield_2_check_filled),
+            contentDescription = null,
+            modifier = Modifier.size(ProtonDimens.IconSize.Large)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewBlockedTrackersBottomSheet() {
+    BlockedTrackersBottomSheetContent(
+        BlockedTrackersSheetState.Requested(TrackersUiModelSample.oneTrackerBlocked)
+    )
 }

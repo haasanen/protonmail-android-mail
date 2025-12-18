@@ -42,7 +42,7 @@ class BlockedTrackersViewModel @Inject constructor(
     fun loadBlockedTrackers(messageId: MessageId) {
         viewModelScope.launch {
             if (showBlockedTrackersFeatureFlag.get()) {
-                mutableState.emit(BlockedTrackersState.TrackersBlocked(TrackersUiModelSample.oneTrackerBlocked))
+                mutableState.emit(BlockedTrackersState.TrackersBlocked(TrackersUiModelSample.trackersAndLinks))
             } else {
                 mutableState.emit(BlockedTrackersState.Unknown)
             }
