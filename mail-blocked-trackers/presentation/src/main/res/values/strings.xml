@@ -18,7 +18,7 @@
 
 <resources>
     <string name="trackers_blocked_links_cleaned_numbers">%s trackers blocked, %s links cleaned</string>
-    <string name="trackers_protection">Trackers protection:</string>
+    <string name="trackers_protection">Tracker protection:</string>
     <string name="show_details">Show details</string>
-    <string name="trackers_protection_no_trackers_detected">Trackers protection: no trackers detected</string>
+    <string name="trackers_protection_no_trackers_detected">Tracker protection: no trackers detected</string>
 </resources>

@@ -29,16 +29,15 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersState
 import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
@@ -52,7 +51,7 @@ fun BlockedTrackers(
     modifier: Modifier = Modifier
 ) {
 
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(messageId) {
         viewModel.loadBlockedTrackers(messageId)
@@ -66,7 +65,7 @@ fun BlockedTrackers(
 }
 
 @Composable
-fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modifier) {
+private fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modifier) {
     Column(verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ModeratelyLarge)) {
         Row(
             modifier = modifier,
@@ -78,7 +77,8 @@ fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modifier) {
                 contentAlignment = Alignment.Center
             ) {
                 SmallNonClickableIcon(
-                    iconId = R.drawable.ic_shield_2_check_filled
+                    iconId = R.drawable.ic_shield_2_check_filled,
+                    iconColor = ProtonTheme.colors.iconNorm
                 )
             }
             Column {
@@ -87,7 +87,7 @@ fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .wrapContentWidth(),
                     text = stringResource(R.string.trackers_protection),
-                    style = ProtonTheme.typography.bodySmallWeak
+                    style = ProtonTheme.typography.bodySmallNorm
                 )
 
                 Text(
@@ -98,7 +98,7 @@ fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modifier) {
                         uiModel.blocked.size,
                         uiModel.links.size
                     ),
-                    style = ProtonTheme.typography.bodySmallWeak
+                    style = ProtonTheme.typography.bodySmallNorm
                 )
 
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
@@ -116,7 +116,7 @@ fun BlockedTrackers(uiModel: TrackersUiModel, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun NoBlockedTrackers(modifier: Modifier = Modifier) {
+private fun NoBlockedTrackers(modifier: Modifier = Modifier) {
 
     Column(verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ModeratelyLarge)) {
         Row(
@@ -129,7 +129,8 @@ fun NoBlockedTrackers(modifier: Modifier = Modifier) {
                 contentAlignment = Alignment.Center
             ) {
                 SmallNonClickableIcon(
-                    iconId = R.drawable.ic_shield_2_check_filled
+                    iconId = R.drawable.ic_shield_2_check_filled,
+                    iconColor = ProtonTheme.colors.iconNorm
                 )
             }
             Column {
@@ -138,7 +139,7 @@ fun NoBlockedTrackers(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .wrapContentWidth(),
                     text = stringResource(R.string.trackers_protection_no_trackers_detected),
-                    style = ProtonTheme.typography.bodySmallWeak
+                    style = ProtonTheme.typography.bodySmallNorm
                 )
 
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))

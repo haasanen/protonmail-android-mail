@@ -60,9 +60,7 @@ import ch.protonmail.android.design.compose.component.ProtonOutlinedIconButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailblockedtrackers.presentation.BlockedTrackers
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -259,7 +257,7 @@ private fun ParticipantAddress(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
     textStyle: TextStyle = ProtonTheme.typography.bodyMediumNorm,
-    textColor: Color = ProtonTheme.colors.textWeak,
+    textColor: Color = ProtonTheme.colors.textNorm,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Visible
 ) {
@@ -283,7 +281,7 @@ private fun ParticipantAddress(
 private fun Icons(modifier: Modifier = Modifier, uiModel: MessageDetailHeaderUiModel) {
     Row(modifier = modifier) {
         if (uiModel.shouldShowAttachmentIcon) {
-            SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = ProtonTheme.colors.iconWeak)
+            SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = ProtonTheme.colors.iconNorm)
         }
         if (uiModel.shouldShowStar) {
             SmallNonClickableIcon(
@@ -300,7 +298,7 @@ private fun Time(modifier: Modifier = Modifier, time: TextUiModel) {
         modifier = modifier.testTag(MessageDetailHeaderTestTags.Time),
         text = time.string(),
         maxLines = 1,
-        style = ProtonTheme.typography.bodySmallWeak
+        style = ProtonTheme.typography.bodySmallNorm
     )
 }
 
@@ -325,7 +323,7 @@ private fun AllRecipients(
                 .testTag(MessageDetailHeaderTestTags.AllRecipientsText)
                 .padding(end = ProtonDimens.Spacing.Small),
             text = stringResource(R.string.to),
-            style = ProtonTheme.typography.bodyMediumWeak
+            style = ProtonTheme.typography.bodyMediumNorm
         )
         Row(
             modifier = Modifier.weight(1f, fill = false),
@@ -333,7 +331,7 @@ private fun AllRecipients(
         ) {
             SingleLineRecipientNames(
                 modifier = Modifier.weight(1f, fill = false),
-                textStyle = ProtonTheme.typography.bodyMediumWeak,
+                textStyle = ProtonTheme.typography.bodyMediumNorm,
                 recipients = allRecipients,
                 hasUndisclosedRecipients = hasUndisclosedRecipients
             )
@@ -351,7 +349,7 @@ private fun AllRecipients(
                     .size(MailDimens.MessageDetailsHeader.CollapseExpandButtonSize),
                 painter = painterResource(id = expandCollapseIconRes),
                 contentDescription = null,
-                tint = ProtonTheme.colors.iconWeak
+                tint = ProtonTheme.colors.iconNorm
             )
         }
     }
@@ -400,7 +398,7 @@ internal fun MessageDetailHeaderButton(
         Icon(
             modifier = Modifier.size(MailDimens.MessageDetailsHeader.ButtonIconSize),
             painter = painterResource(id = iconResource),
-            tint = ProtonTheme.colors.iconWeak,
+            tint = ProtonTheme.colors.iconNorm,
             contentDescription = stringResource(contentDescriptionResource)
         )
     }
@@ -468,7 +466,7 @@ private fun SenderDetails(
             text = stringResource(R.string.message_details_header_from),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.bodySmallWeak
+            style = ProtonTheme.typography.bodySmallNorm
         )
         Column(
             modifier = Modifier
@@ -537,7 +535,7 @@ private fun RecipientsTitleAndList(
                 text = title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = ProtonTheme.typography.bodySmallWeak
+                style = ProtonTheme.typography.bodySmallNorm
             )
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -553,7 +551,7 @@ private fun RecipientsTitleAndList(
                     ) {
                         ParticipantText(
                             participantUiModel = recipient,
-                            textColor = ProtonTheme.colors.textWeak
+                            textColor = ProtonTheme.colors.textNorm
                         )
                         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
                         ParticipantAddress(
@@ -566,7 +564,7 @@ private fun RecipientsTitleAndList(
                 if (hasUndisclosedRecipients) {
                     Text(
                         text = stringResource(R.string.undisclosed_recipients),
-                        style = ProtonTheme.typography.bodySmallWeak
+                        style = ProtonTheme.typography.bodySmallNorm
                     )
                 }
             }
@@ -615,7 +613,8 @@ private fun ExtendedHeaderRow(
             } else {
                 SmallNonClickableIcon(
                     modifier = Modifier.testTag(MessageDetailHeaderTestTags.ExtendedHeaderIcon),
-                    iconId = icon
+                    iconId = icon,
+                    iconColor = ProtonTheme.colors.iconNorm
                 )
             }
         }
@@ -624,7 +623,7 @@ private fun ExtendedHeaderRow(
                 .wrapContentWidth()
                 .testTag(MessageDetailHeaderTestTags.ExtendedHeaderText),
             text = text,
-            style = ProtonTheme.typography.bodySmallWeak
+            style = ProtonTheme.typography.bodySmallNorm
         )
     }
 }
