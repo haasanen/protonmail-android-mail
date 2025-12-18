@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.domain.usecase
 
-import arrow.core.getOrHandle
+import arrow.core.getOrElse
 import arrow.core.right
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelType
@@ -81,7 +81,7 @@ class GetMailboxItemsTest {
 
         // When
         val mailboxItems = usecase.invoke(userId, MailboxItemType.Message, pageKey)
-            .getOrHandle(::error)
+            .getOrElse(::error)
 
         // Then
         coVerify { messageRepository.getMessages(userId, pageKey) }
@@ -103,7 +103,7 @@ class GetMailboxItemsTest {
 
         // When
         val mailboxItems = usecase.invoke(userId, MailboxItemType.Conversation, pageKey)
-            .getOrHandle(::error)
+            .getOrElse(::error)
 
         // Then
         coVerify { conversationRepository.getConversations(userId, pageKey) }

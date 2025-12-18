@@ -52,5 +52,5 @@ class CombinedContactsRepositoryImpl @Inject constructor(
     override suspend fun save(combinedContactsPreference: CombinedContactsPreference): Either<PreferencesError, Unit> =
         dataStoreProvider.combinedContactsDataStore.safeEdit { mutablePreferences ->
             mutablePreferences[hasCombinedContactsKey] = combinedContactsPreference.isEnabled
-        }.void()
+        }.map { }
 }

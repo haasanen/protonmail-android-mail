@@ -20,6 +20,7 @@ package ch.protonmail.android.maillabel.domain.usecase
 
 import android.graphics.Color
 import app.cash.turbine.test
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
@@ -30,7 +31,6 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -66,7 +66,7 @@ class ObserveCustomMailLabelsTest {
     fun `return correct value and order on success`() = runTest {
         observeCustomLabels(userId).test {
             val item = awaitItem()
-            val result = checkNotNull(item.orNull())
+            val result = checkNotNull(item.getOrNull())
 
             assertEquals(3, result.size)
             assertEquals(
