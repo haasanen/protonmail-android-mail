@@ -21,6 +21,7 @@ package ch.protonmail.android.maillabel.presentation
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -57,7 +58,7 @@ class MailLabelUiModelMapperTest {
                 icon = R.drawable.ic_proton_folders_filled,
                 iconTint = Color(0),
                 isSelected = true,
-                count = null,
+                count = CappedNumberUiModel.Empty,
                 isVisible = true,
                 isExpanded = true,
                 iconPaddingStart = 0.0.dp
@@ -68,7 +69,7 @@ class MailLabelUiModelMapperTest {
                 icon = R.drawable.ic_proton_folder_filled,
                 iconTint = Color(0),
                 isSelected = false,
-                count = null,
+                count = CappedNumberUiModel.Empty,
                 isVisible = true,
                 isExpanded = true,
                 iconPaddingStart = ProtonDimens.Spacing.Large
@@ -79,7 +80,7 @@ class MailLabelUiModelMapperTest {
                 icon = R.drawable.ic_proton_folders_filled,
                 iconTint = Color(0),
                 isSelected = false,
-                count = null,
+                count = CappedNumberUiModel.Empty,
                 isVisible = true,
                 isExpanded = true,
                 iconPaddingStart = ProtonDimens.Spacing.Large
@@ -90,7 +91,7 @@ class MailLabelUiModelMapperTest {
                 icon = R.drawable.ic_proton_folder_filled,
                 iconTint = Color(0),
                 isSelected = false,
-                count = null,
+                count = CappedNumberUiModel.Empty,
                 isVisible = true,
                 isExpanded = true,
                 iconPaddingStart = ProtonDimens.Spacing.Large * 2
@@ -101,7 +102,7 @@ class MailLabelUiModelMapperTest {
                 icon = R.drawable.ic_proton_folder_filled,
                 iconTint = Color(0),
                 isSelected = false,
-                count = null,
+                count = CappedNumberUiModel.Empty,
                 isVisible = true,
                 isExpanded = true,
                 iconPaddingStart = ProtonDimens.Spacing.Large * 2
@@ -146,7 +147,7 @@ class MailLabelUiModelMapperTest {
                 icon = R.drawable.ic_proton_folder_filled,
                 iconTint = Color.Green,
                 isSelected = true,
-                count = null,
+                count = CappedNumberUiModel.Empty,
                 isVisible = true,
                 isExpanded = true,
                 iconPaddingStart = 0.0.dp
@@ -157,7 +158,7 @@ class MailLabelUiModelMapperTest {
                 icon = R.drawable.ic_proton_folder_filled,
                 iconTint = Color.Red,
                 isSelected = false,
-                count = null,
+                count = CappedNumberUiModel.Empty,
                 isVisible = true,
                 isExpanded = true,
                 iconPaddingStart = ProtonDimens.Spacing.Large
@@ -192,7 +193,7 @@ class MailLabelUiModelMapperTest {
             icon = R.drawable.ic_proton_folders,
             iconTint = null,
             isSelected = false,
-            count = null,
+            count = CappedNumberUiModel.Empty,
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.0.dp

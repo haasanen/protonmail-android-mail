@@ -35,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.extension.tintColor
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -126,6 +127,7 @@ private fun SidebarCustomLabelTitleItem(type: LabelType, onAddClick: () -> Unit)
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
+@Suppress("MagicNumber")
 private fun PreviewSidebarLabelFolderItems() {
     ProtonTheme {
         ProtonSidebarLazy {
@@ -137,7 +139,7 @@ private fun PreviewSidebarLabelFolderItems() {
                         icon = R.drawable.ic_proton_folders_filled,
                         iconTint = Color.Blue,
                         isSelected = false,
-                        count = 1,
+                        count = CappedNumberUiModel.Exact(1),
                         isVisible = true,
                         isExpanded = true,
                         iconPaddingStart = 0.dp
@@ -148,7 +150,7 @@ private fun PreviewSidebarLabelFolderItems() {
                         icon = R.drawable.ic_proton_folder_filled,
                         iconTint = Color.Red,
                         isSelected = true,
-                        count = 2,
+                        count = CappedNumberUiModel.Exact(2),
                         isVisible = true,
                         isExpanded = true,
                         iconPaddingStart = ProtonDimens.Spacing.Large * 1
@@ -159,7 +161,7 @@ private fun PreviewSidebarLabelFolderItems() {
                         icon = R.drawable.ic_proton_folder_filled,
                         iconTint = Color.Yellow,
                         isSelected = false,
-                        count = null,
+                        count = CappedNumberUiModel.Empty,
                         isVisible = true,
                         isExpanded = true,
                         iconPaddingStart = ProtonDimens.Spacing.Large * 2
@@ -176,7 +178,7 @@ private fun PreviewSidebarLabelFolderItems() {
                         icon = R.drawable.ic_proton_circle_filled,
                         iconTint = Color.Green,
                         isSelected = false,
-                        count = 0,
+                        count = CappedNumberUiModel.Zero,
                         isVisible = true,
                         isExpanded = true,
                         iconPaddingStart = 0.dp
@@ -187,7 +189,7 @@ private fun PreviewSidebarLabelFolderItems() {
                         icon = R.drawable.ic_proton_circle_filled,
                         iconTint = Color.Cyan,
                         isSelected = false,
-                        count = 9,
+                        count = CappedNumberUiModel.Exact(9),
                         isVisible = true,
                         isExpanded = true,
                         iconPaddingStart = 0.dp

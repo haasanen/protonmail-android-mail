@@ -20,6 +20,7 @@ package ch.protonmail.android.testdata.maillabel
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -39,7 +40,7 @@ object MailLabelUiModelTestData {
         icon = SystemLabelId.Spam.iconRes(),
         iconTint = null,
         isSelected = false,
-        count = null
+        count = CappedNumberUiModel.Empty
     )
     val spamAndCustomFolder = listOf(
         spamFolder,
@@ -49,7 +50,7 @@ object MailLabelUiModelTestData {
             icon = R.drawable.ic_proton_folders_filled,
             iconTint = Color.Blue,
             isSelected = false,
-            count = 1,
+            count = CappedNumberUiModel.Exact(1),
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.dp
@@ -63,7 +64,7 @@ object MailLabelUiModelTestData {
             icon = R.drawable.ic_proton_folders_filled,
             iconTint = Color.Blue,
             isSelected = false,
-            count = 1,
+            count = CappedNumberUiModel.Exact(1),
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.dp
@@ -77,7 +78,7 @@ object MailLabelUiModelTestData {
             icon = R.drawable.ic_proton_folders_filled,
             iconTint = Color.Blue,
             isSelected = true,
-            count = 1,
+            count = CappedNumberUiModel.Exact(1),
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.dp
@@ -91,7 +92,7 @@ object MailLabelUiModelTestData {
             icon = R.drawable.ic_proton_folders_filled,
             iconTint = Color.Blue,
             isSelected = false,
-            count = 1,
+            count = CappedNumberUiModel.Exact(1),
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.dp
@@ -102,7 +103,7 @@ object MailLabelUiModelTestData {
             icon = R.drawable.ic_proton_folder_filled,
             iconTint = Color.Red,
             isSelected = true,
-            count = 2,
+            count = CappedNumberUiModel.Exact(2),
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.dp
@@ -115,7 +116,7 @@ object MailLabelUiModelTestData {
             icon = SystemLabelId.Archive.iconRes(),
             iconTint = null,
             isSelected = false,
-            count = null
+            count = CappedNumberUiModel.Empty
         ),
         MailLabelUiModel.Custom(
             id = MailLabelId.Custom.Folder(LabelId("folder1")),
@@ -123,7 +124,7 @@ object MailLabelUiModelTestData {
             icon = R.drawable.ic_proton_folders_filled,
             iconTint = Color.Blue,
             isSelected = false,
-            count = 1,
+            count = CappedNumberUiModel.Exact(1),
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.dp
@@ -137,7 +138,7 @@ object MailLabelUiModelTestData {
             icon = R.drawable.ic_proton_circle_filled,
             iconTint = Color(it.color!!),
             isSelected = false,
-            count = null,
+            count = CappedNumberUiModel.Empty,
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.dp
@@ -151,7 +152,7 @@ object MailLabelUiModelTestData {
             icon = R.drawable.ic_proton_circle_filled,
             iconTint = Color(0),
             isSelected = false,
-            count = null,
+            count = CappedNumberUiModel.Empty,
             isVisible = true,
             isExpanded = true,
             iconPaddingStart = 0.dp

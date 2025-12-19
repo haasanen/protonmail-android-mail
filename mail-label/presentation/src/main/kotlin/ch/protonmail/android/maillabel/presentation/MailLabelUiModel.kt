@@ -22,6 +22,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 
@@ -33,7 +34,7 @@ sealed interface MailLabelUiModel {
     val icon: Int
     val iconTint: Color?
     val isSelected: Boolean
-    val count: Int?
+    val count: CappedNumberUiModel
 
     @Immutable
     data class System(
@@ -42,7 +43,7 @@ sealed interface MailLabelUiModel {
         override val icon: Int,
         override val iconTint: Color?,
         override val isSelected: Boolean,
-        override val count: Int?
+        override val count: CappedNumberUiModel
     ) : MailLabelUiModel
 
     @Immutable
@@ -52,7 +53,7 @@ sealed interface MailLabelUiModel {
         override val icon: Int,
         override val iconTint: Color?,
         override val isSelected: Boolean,
-        override val count: Int?,
+        override val count: CappedNumberUiModel,
         val isVisible: Boolean,
         val isExpanded: Boolean,
         val iconPaddingStart: Dp

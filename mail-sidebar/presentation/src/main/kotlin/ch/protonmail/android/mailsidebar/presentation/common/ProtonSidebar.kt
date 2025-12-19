@@ -139,7 +139,7 @@ fun ProtonSidebarItem(
     isSelected: Boolean = false,
     textColor: Color = if (isSelected) ProtonTheme.colors.textNorm else Color.Unspecified,
     iconTint: Color = if (isSelected) ProtonTheme.colors.iconNorm else ProtonTheme.colors.iconWeak,
-    count: Int? = null,
+    count: String = "",
     onClick: () -> Unit = {}
 ) {
     ProtonListItem(
@@ -168,7 +168,7 @@ fun ProtonSidebarItem(
     isSelected: Boolean = false,
     textColor: Color = Color.Unspecified,
     iconTint: Color = ProtonTheme.colors.iconWeak,
-    count: Int? = null,
+    count: String = "",
     onClick: () -> Unit = {}
 ) {
     ProtonListItem(

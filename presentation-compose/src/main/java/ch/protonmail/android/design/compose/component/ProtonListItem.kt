@@ -129,7 +129,7 @@ fun ProtonListItem(
     isSelected: Boolean = false,
     textColor: Color = Color.Unspecified,
     iconTint: Color = LocalContentColor.current,
-    count: Int? = null,
+    count: String = "",
     onClick: () -> Unit = {}
 ) {
     ProtonListItem(
@@ -155,12 +155,12 @@ fun ProtonListItem(
             )
         },
         count = {
-            if (count != null) {
+            if (!count.isEmpty()) {
                 Text(
                     modifier = Modifier
                         .defaultMinSize(ProtonDimens.IconSize.Medium)
                         .background(color = ProtonTheme.colors.interactionBrandDefaultNorm, shape = CircleShape),
-                    text = "$count",
+                    text = count,
                     color = Color.White,
                     textAlign = TextAlign.Center,
                     style = ProtonTheme.typography.bodySmallNorm
@@ -181,7 +181,7 @@ fun ProtonListItem(
     isSelected: Boolean = false,
     textColor: Color = Color.Unspecified,
     iconTint: Color = LocalContentColor.current,
-    count: Int? = null,
+    count: String = "",
     onClick: () -> Unit = {}
 ) = ProtonListItem(
     icon = painterResource(icon),
@@ -242,6 +242,6 @@ fun PreviewProtonListItemCount() {
     ProtonListItem(
         icon = R.drawable.ic_proton_arrow_out_from_rectangle,
         text = R.string.presentation_menu_item_title_sign_out,
-        count = 1
+        count = "1"
     )
 }

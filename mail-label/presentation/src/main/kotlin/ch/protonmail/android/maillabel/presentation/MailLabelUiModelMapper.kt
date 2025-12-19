@@ -20,8 +20,11 @@ package ch.protonmail.android.maillabel.presentation
 
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailcommon.presentation.model.toCappedNumberUiModel
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.mailcommon.presentation.model.NullCountPolicy
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.model.ZeroCountPolicy
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -54,7 +57,10 @@ fun MailLabel.System.toDynamicSystemUiModel(
     icon = iconRes(),
     iconTint = iconTintColor(),
     isSelected = id.labelId == selected?.labelId,
-    count = counters[id.labelId]
+    count = counters[id.labelId].toCappedNumberUiModel(
+        nullPolicy = NullCountPolicy.Empty,
+        zeroPolicy = ZeroCountPolicy.Empty
+    )
 )
 
 fun MailLabel.Custom.toCustomUiModel(counters: Map<LabelId, Int?>, selected: MailLabelId?): MailLabelUiModel.Custom =
@@ -67,7 +73,10 @@ fun MailLabel.Custom.toCustomUiModel(counters: Map<LabelId, Int?>, selected: Mai
         isExpanded = isExpanded,
         isSelected = id.labelId == selected?.labelId,
         iconPaddingStart = ProtonDimens.Spacing.Large * level,
-        count = counters[id.labelId]
+        count = counters[id.labelId].toCappedNumberUiModel(
+            nullPolicy = NullCountPolicy.Empty,
+            zeroPolicy = ZeroCountPolicy.Empty
+        )
     )
 
 fun MailLabel.text(): TextUiModel = when (this) {
