@@ -453,7 +453,9 @@ fun ConversationDetailScreen(
                         },
                         onSnooze = {
                             viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet)
-                        }
+                        },
+                        onViewHeaders = actions.onViewMessageHeaders,
+                        onViewHtml = actions.onViewMessageHtml
                     )
                 )
 
@@ -1255,7 +1257,9 @@ object ConversationDetail {
         val onExitWithOpenInComposer: (MessageId) -> Unit,
         val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit,
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
-        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit
+        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
+        val onViewMessageHeaders: (MessageId) -> Unit,
+        val onViewMessageHtml: (MessageId) -> Unit
     )
 
     data class NavigationArgs(

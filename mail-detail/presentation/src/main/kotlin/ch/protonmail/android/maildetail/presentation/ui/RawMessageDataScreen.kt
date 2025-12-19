@@ -56,12 +56,12 @@ import ch.protonmail.android.maildetail.presentation.model.RawMessageDataType
 import ch.protonmail.android.maildetail.presentation.viewmodel.RawMessageDataViewModel
 
 @Composable
-fun RawMessageDataScreen(viewModel: RawMessageDataViewModel = hiltViewModel()) {
-    RawMessageDataScreen(viewModel.state.collectAsStateWithLifecycle().value)
+fun RawMessageDataScreen(onBackClick: () -> Unit, viewModel: RawMessageDataViewModel = hiltViewModel()) {
+    RawMessageDataScreen(viewModel.state.collectAsStateWithLifecycle().value, onBackClick)
 }
 
 @Composable
-fun RawMessageDataScreen(state: RawMessageDataState) {
+fun RawMessageDataScreen(state: RawMessageDataState, onBackClick: () -> Unit) {
     val isDropDownExpanded = remember { mutableStateOf(false) }
 
     Scaffold(
@@ -81,7 +81,7 @@ fun RawMessageDataScreen(state: RawMessageDataState) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             tint = ProtonTheme.colors.iconNorm,
                             painter = painterResource(id = R.drawable.ic_proton_close),
@@ -239,7 +239,8 @@ fun RawMessageDataScreenPreview() {
                 X-Proton-Sender-Ip: 83.212.41.102
                 X-Proton-Relay: yes
             """.trimIndent()
-        )
+        ),
+        onBackClick = {}
     )
 }
 

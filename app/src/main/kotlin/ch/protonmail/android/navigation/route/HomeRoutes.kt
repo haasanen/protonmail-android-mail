@@ -53,6 +53,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen.ViewModeIsConversation
+import ch.protonmail.android.maildetail.presentation.ui.RawMessageDataScreen
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationRouterViewModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
@@ -195,6 +196,14 @@ internal fun NavGraphBuilder.addEntireMessageBody(
         EntireMessageBodyScreen(
             onBackClick = { navController.navigateBack() },
             onOpenMessageBodyLink = onOpenMessageBodyLink
+        )
+    }
+}
+
+internal fun NavGraphBuilder.addRawMessageData(navController: NavHostController) {
+    composable(route = Destination.Screen.RawMessageData.route) {
+        RawMessageDataScreen(
+            onBackClick = { navController.navigateBack() }
         )
     }
 }

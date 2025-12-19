@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactDetailsScreen.CONTACT_DETAILS_ID_KEY
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.CONTACT_GROUP_DETAILS_ID_KEY
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
+import ch.protonmail.android.maildetail.presentation.model.RawMessageDataType
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationDetailEntryPointNameKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.IsSingleMessageMode
@@ -38,6 +39,8 @@ import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen.INPUT_PARAMS_KEY
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen.MESSAGE_ID_KEY
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen.ViewModeIsConversation
+import ch.protonmail.android.maildetail.presentation.ui.RawMessageDataScreen
+import ch.protonmail.android.maildetail.presentation.ui.RawMessageDataScreen.RAW_DATA_TYPE_KEY
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -121,6 +124,15 @@ sealed class Destination(val route: String) {
                         viewModePreference
                     ).serialize()
                 )
+        }
+
+        data object RawMessageData : Destination(
+            "mailbox/message/${RawMessageDataScreen.MESSAGE_ID_KEY.wrap()}/rawData/${RAW_DATA_TYPE_KEY.wrap()}"
+        ) {
+
+            operator fun invoke(messageId: MessageId, rawMessageDataType: RawMessageDataType) =
+                route.replace(RawMessageDataScreen.MESSAGE_ID_KEY.wrap(), messageId.id)
+                    .replace(RAW_DATA_TYPE_KEY.wrap(), rawMessageDataType.serialize())
         }
 
         object Composer : Destination("composer")

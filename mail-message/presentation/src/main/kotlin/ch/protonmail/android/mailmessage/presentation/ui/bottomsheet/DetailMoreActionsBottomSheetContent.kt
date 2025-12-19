@@ -339,6 +339,8 @@ private fun callbackForAction(
     Action.ReportPhishing -> actionCallbacks.onReportPhishing
     Action.SavePdf -> actionCallbacks.onSaveMessageAsPdf
     Action.CustomizeToolbar -> actionCallbacks.onCustomizeMessageToolbar
+    Action.ViewHeaders -> actionCallbacks.onViewHeaders
+    Action.ViewHtml -> actionCallbacks.onViewHtml
 
     else -> {
         { Timber.d("Action not handled $action.") }
@@ -382,7 +384,9 @@ object DetailMoreActionsBottomSheetContent {
         val onCustomizeToolbar: () -> Unit,
         val onCustomizeMessageToolbar: (MessageId) -> Unit,
         val onSaveConversationAsPdf: () -> Unit,
-        val onSnooze: () -> Unit
+        val onSnooze: () -> Unit,
+        val onViewHeaders: (MessageId) -> Unit,
+        val onViewHtml: (MessageId) -> Unit
     )
 }
 
@@ -452,7 +456,9 @@ private fun BottomSheetContentPreview() {
                 onCustomizeToolbar = {},
                 onCustomizeMessageToolbar = {},
                 onSaveConversationAsPdf = {},
-                onSnooze = {}
+                onSnooze = {},
+                onViewHeaders = {},
+                onViewHtml = {}
             )
         )
     }

@@ -113,6 +113,8 @@ fun List<MessageAction>.generalMessageActionsToActions() = this.map { generalAct
         MessageAction.ViewInDarkMode -> Action.ViewInDarkMode
         MessageAction.Print -> Action.Print
         MessageAction.ReportPhishing -> Action.ReportPhishing
+        MessageAction.ViewHeaders -> Action.ViewHeaders
+        MessageAction.ViewHtml -> Action.ViewHtml
         else -> {
             Timber.d("rust-actions-mapper: Skipping unhandled action mapping generalActions: $generalAction")
             null

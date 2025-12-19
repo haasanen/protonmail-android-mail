@@ -87,6 +87,7 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.presentation.mapper.SendErrorReasonMapper
+import ch.protonmail.android.maildetail.presentation.model.RawMessageDataType
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -132,6 +133,7 @@ import ch.protonmail.android.navigation.route.addMobileSignatureSettings
 import ch.protonmail.android.navigation.route.addNotificationsSettings
 import ch.protonmail.android.navigation.route.addPinDialog
 import ch.protonmail.android.navigation.route.addPrivacySettings
+import ch.protonmail.android.navigation.route.addRawMessageData
 import ch.protonmail.android.navigation.route.addRemoveAccountDialog
 import ch.protonmail.android.navigation.route.addSetMessagePassword
 import ch.protonmail.android.navigation.route.addSettings
@@ -699,12 +701,21 @@ fun Home(
                                         viewModePreference = vmPreference
                                     )
                                 )
+                            },
+                            onViewMessageHeaders = { messageId ->
+                                navController.navigate(Screen.RawMessageData(messageId, RawMessageDataType.Headers))
+                            },
+                            onViewMessageHtml = { messageId ->
+                                navController.navigate(Screen.RawMessageData(messageId, RawMessageDataType.HTML))
                             }
                         )
                     )
                     addEntireMessageBody(
                         navController,
                         onOpenMessageBodyLink = activityActions.openInActivityInNewTask
+                    )
+                    addRawMessageData(
+                        navController
                     )
                     addMailbox(
                         navController,
