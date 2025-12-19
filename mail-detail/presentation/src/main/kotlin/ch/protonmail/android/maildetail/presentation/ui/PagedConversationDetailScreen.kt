@@ -280,9 +280,7 @@ private fun Pager(
         // Disable user scrolling while the page is being updated through ViewModel methods.
         userScrollEnabled = canScroll
     ) { page ->
-        val item = pages[page]
-
-        when (item) {
+        when (val item = pages[page]) {
             is Page.Conversation -> {
                 val topBarHostState = remember { ConversationTopBarState() }
                 if (page == pagerState.targetPage) {

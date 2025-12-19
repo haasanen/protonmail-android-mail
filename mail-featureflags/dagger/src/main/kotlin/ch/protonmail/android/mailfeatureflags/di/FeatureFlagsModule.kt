@@ -34,7 +34,6 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpse
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTrackersEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowRatingBoosterEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.ComposerAutoCollapseQuotedText
 import ch.protonmail.android.mailfeatureflags.domain.model.ConversationDetailAutoExpandLastMessageEnabled
@@ -47,7 +46,6 @@ import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEn
 import ch.protonmail.android.mailfeatureflags.domain.model.RestrictMessageWebViewHeight
 import ch.protonmail.android.mailfeatureflags.domain.model.ShowBlockedTrackers
 import ch.protonmail.android.mailfeatureflags.domain.model.ShowRatingBoosterEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.SwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
 import dagger.Module
 import dagger.Provides
@@ -74,17 +72,6 @@ object FeatureFlagsModule {
     @IsLastMessageAutoExpandEnabled
     fun provideAutoExpandLastMessageConvoEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(ConversationDetailAutoExpandLastMessageEnabled.key, false)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideIsSwipeAutoEnabledDefinitions(): FeatureFlagDefinition = SwipeAutoAdvanceEnabled
-
-    @Provides
-    @Singleton
-    @IsSwipeAutoAdvanceEnabled
-    fun provideIsSwipeAutoEnabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(SwipeAutoAdvanceEnabled.key, false)
 
     @Provides
     @IntoSet

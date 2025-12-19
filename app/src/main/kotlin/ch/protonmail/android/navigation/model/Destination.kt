@@ -103,25 +103,6 @@ sealed class Destination(val route: String) {
                 .replace(ViewModeIsConversation.wrap(), viewModeIsConversation.toString())
         }
 
-        object ConversationNonSwipable : Destination(
-            "mailbox/conversationlegacy/${ConversationIdKey.wrap()}/" +
-                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}/${IsSingleMessageMode.wrap()}" +
-                "/${ConversationDetailEntryPointNameKey.wrap()}"
-        ) {
-
-            operator fun invoke(
-                conversationId: ConversationId,
-                scrollToMessageId: MessageId? = null,
-                openedFromLocation: LabelId,
-                isSingleMessageMode: Boolean,
-                entryPoint: ConversationDetailEntryPoint
-            ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
-                .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
-                .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
-                .replace(IsSingleMessageMode.wrap(), isSingleMessageMode.toString())
-                .replace(ConversationDetailEntryPointNameKey.wrap(), entryPoint.name)
-        }
-
         data object EntireMessageBody : Destination(
             "mailbox/message/${MESSAGE_ID_KEY.wrap()}/body/${INPUT_PARAMS_KEY.wrap()}"
         ) {

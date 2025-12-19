@@ -74,14 +74,6 @@ data object ConversationDetailAutoExpandLastMessageEnabled : FeatureFlagDefiniti
     defaultValue = false
 )
 
-data object SwipeAutoAdvanceEnabled : FeatureFlagDefinition(
-    key = "MailAndroidV7SwipeAutoAdvance",
-    name = "Swipe and AutoAdvance View",
-    category = FeatureFlagCategory.Details,
-    description = "Show New Conversation detail Screen (that swipes) or Legacy",
-    defaultValue = false
-)
-
 data object InjectDetailCssOverrideEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7CssHeightOverride",
     name = "Inject CSS override in HTML messages",

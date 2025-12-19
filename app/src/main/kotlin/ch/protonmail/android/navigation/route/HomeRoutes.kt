@@ -45,17 +45,14 @@ import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.Contac
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
-import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationDetailEntryPointNameKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.IsSingleMessageMode
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen
-import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen.ViewModeIsConversation
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreenLegacy
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen
+import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen.ViewModeIsConversation
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationRouterViewModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
@@ -85,37 +82,21 @@ internal fun NavGraphBuilder.addConversationDetail(
         LaunchedEffect(conversationSettings) {
             val conversationSettings = conversationSettings ?: return@LaunchedEffect
             val singleMessageMode = conversationSettings.singleMessageModeEnabled
-            val swipeAutoAdvanceEnabled = conversationSettings.swipeAutoAdvanceEnabled
 
-            val conversationDestination = if (!swipeAutoAdvanceEnabled) {
-                Destination.Screen.ConversationNonSwipable(
-                    conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
-                    scrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
-                        ?.takeIf { it != "null" }
-                        ?.let(::MessageId),
-                    openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
-                    // for the conversation view
-                    isSingleMessageMode = singleMessageMode,
-                    entryPoint = ConversationDetailEntryPoint.valueOf(
-                        backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
-                    )
+            val conversationDestination = Destination.Screen.Conversation(
+                conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
+                scrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
+                    ?.takeIf { it != "null" }
+                    ?.let(::MessageId),
+                openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
+                // for the conversation view
+                isSingleMessageMode = singleMessageMode,
+                // for the message list grouping
+                viewModeIsConversation = backStackEntry.arguments?.getString(ViewModeIsConversation)!!.toBoolean(),
+                entryPoint = ConversationDetailEntryPoint.valueOf(
+                    backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
                 )
-            } else {
-                Destination.Screen.Conversation(
-                    conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
-                    scrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
-                        ?.takeIf { it != "null" }
-                        ?.let(::MessageId),
-                    openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
-                    // for the conversation view
-                    isSingleMessageMode = singleMessageMode,
-                    // for the message list grouping
-                    viewModeIsConversation = backStackEntry.arguments?.getString(ViewModeIsConversation)!!.toBoolean(),
-                    entryPoint = ConversationDetailEntryPoint.valueOf(
-                        backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
-                    )
-                )
-            }
+            )
 
             Timber.d("Conversation Router resolved conversation settings to $conversationSettings")
             navController.navigate(conversationDestination) {
@@ -134,28 +115,6 @@ internal fun NavGraphBuilder.addConversationDetail(
         exitTransition = { RouteTransitions.exitTransitionRightToLeft }
     ) {
         PagedConversationDetailScreen(actions = actions)
-    }
-
-    composable(
-        route = Destination.Screen.ConversationNonSwipable.route,
-        enterTransition = { RouteTransitions.enterTransientLeftToRight },
-        popEnterTransition = { RouteTransitions.enterTransientLeftToRight },
-        popExitTransition = { RouteTransitions.exitTransitionRightToLeft },
-        exitTransition = { RouteTransitions.exitTransitionRightToLeft }
-    ) { backStackEntry ->
-        ConversationDetailScreenLegacy(
-            conversationId = ConversationId(backStackEntry.arguments?.getString(ConversationIdKey)!!),
-            initialScrollToMessageId = backStackEntry.arguments?.getString(ScrollToMessageIdKey)
-                ?.takeIf { it != "null" }
-                ?.let(::MessageIdUiModel),
-            openedFromLocation = LabelId(backStackEntry.arguments?.getString(OpenedFromLocationKey)!!),
-            // for the conversation view
-            singleMessageMode = backStackEntry.arguments?.getString(IsSingleMessageMode)!!.toBoolean(),
-            conversationEntryPoint = ConversationDetailEntryPoint.valueOf(
-                backStackEntry.arguments?.getString(ConversationDetailEntryPointNameKey)!!
-            ),
-            actions = actions
-        )
     }
 }
 
