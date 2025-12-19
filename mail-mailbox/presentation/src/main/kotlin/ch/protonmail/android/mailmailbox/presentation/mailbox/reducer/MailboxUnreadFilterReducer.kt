@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
+import ch.protonmail.android.mailcommon.presentation.model.toCappedNumberUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
@@ -50,11 +51,11 @@ class MailboxUnreadFilterReducer @Inject constructor() {
 
     private fun UnreadFilterState.toNewStateForLabelSelected(operation: MailboxEvent.NewLabelSelected) = when (this) {
         is UnreadFilterState.Loading -> UnreadFilterState.Data(
-            numUnread = operation.selectedLabelCount ?: 0,
+            unreadCount = operation.selectedLabelCount.toCappedNumberUiModel(),
             isFilterEnabled = false
         )
         is UnreadFilterState.Data -> copy(
-            numUnread = operation.selectedLabelCount ?: 0,
+            unreadCount = operation.selectedLabelCount.toCappedNumberUiModel(),
             isFilterEnabled = false
         )
     }
@@ -64,8 +65,11 @@ class MailboxUnreadFilterReducer @Inject constructor() {
     ): UnreadFilterState.Data {
         val currentLabelCount = operation.selectedLabelCount
         return when (this) {
-            is UnreadFilterState.Loading -> UnreadFilterState.Data(currentLabelCount, false)
-            is UnreadFilterState.Data -> copy(currentLabelCount)
+            is UnreadFilterState.Loading -> UnreadFilterState.Data(
+                unreadCount = currentLabelCount.toCappedNumberUiModel(),
+                isFilterEnabled = false
+            )
+            is UnreadFilterState.Data -> copy(unreadCount = currentLabelCount.toCappedNumberUiModel())
         }
     }
 }

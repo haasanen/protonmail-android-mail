@@ -42,6 +42,8 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
+import ch.protonmail.android.mailcommon.presentation.model.toCappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
@@ -760,7 +762,7 @@ internal class MailboxViewModelTest {
         // Given
         val expectedCount = 42
         val expectedState = MailboxStateSampleData.Loading.copy(
-            unreadFilterState = UnreadFilterState.Data(expectedCount, false)
+            unreadFilterState = UnreadFilterState.Data(expectedCount.toCappedNumberUiModel(), false)
         )
         val currentCountersFlow = MutableStateFlow(UnreadCountersTestData.systemUnreadCounters)
         val modifiedCounters = UnreadCountersTestData.systemUnreadCounters
@@ -788,7 +790,7 @@ internal class MailboxViewModelTest {
         // Given
         val expectedCount = 42
         val expectedState = MailboxStateSampleData.Loading.copy(
-            unreadFilterState = UnreadFilterState.Data(expectedCount, false)
+            unreadFilterState = UnreadFilterState.Data(expectedCount.toCappedNumberUiModel(), false)
         )
         val currentCountersFlow = MutableStateFlow(UnreadCountersTestData.systemUnreadCounters)
         val modifiedCounters = UnreadCountersTestData.systemUnreadCounters
@@ -1627,7 +1629,7 @@ internal class MailboxViewModelTest {
     fun `when enable unread filter action submitted, produces and emits a new state`() = runTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
-            unreadFilterState = UnreadFilterState.Data(5, true)
+            unreadFilterState = UnreadFilterState.Data(CappedNumberUiModel.Exact(5), true)
         )
         every { mailboxReducer.newStateFrom(any(), MailboxViewAction.EnableUnreadFilter) } returns expectedState
 
@@ -1643,7 +1645,7 @@ internal class MailboxViewModelTest {
     fun `when disable unread filter action submitted, produces and emits a new state`() = runTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
-            unreadFilterState = UnreadFilterState.Data(5, false)
+            unreadFilterState = UnreadFilterState.Data(CappedNumberUiModel.Exact(5), false)
         )
         every {
             mailboxReducer.newStateFrom(MailboxStateSampleData.Loading, MailboxViewAction.DisableUnreadFilter)
@@ -3103,7 +3105,10 @@ internal class MailboxViewModelTest {
                 loadingBarState = LoadingBarUiState.Hide
             ),
             unreadFilterState = UnreadFilterState.Data(
-                numUnread = UnreadCountersTestData.labelToCounterMap[initialLocationMailLabelId.labelId]!!,
+                unreadCount = UnreadCountersTestData.labelToCounterMap
+                    [
+                        initialLocationMailLabelId.labelId
+                    ]!!.toCappedNumberUiModel(),
                 isFilterEnabled = unreadFilterState
             ),
             showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden

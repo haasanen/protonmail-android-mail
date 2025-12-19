@@ -112,6 +112,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
@@ -1424,7 +1425,7 @@ private fun MailboxEmptyTrashPreview() {
     ProtonTheme {
         MailboxEmpty(
             listState = MailboxStateSampleData.Trash.mailboxListState as MailboxListState.Data,
-            unreadFilterState = UnreadFilterState.Data(0, false),
+            unreadFilterState = UnreadFilterState.Data(CappedNumberUiModel.Zero, false),
             topBarHeight = 0.dp
         )
     }
@@ -1436,7 +1437,7 @@ private fun MailboxUnreadFilterEmptyPreview() {
     ProtonTheme {
         MailboxEmpty(
             listState = MailboxStateSampleData.Inbox.mailboxListState as MailboxListState.Data,
-            unreadFilterState = UnreadFilterState.Data(0, true),
+            unreadFilterState = UnreadFilterState.Data(CappedNumberUiModel.Zero, true),
             topBarHeight = 0.dp
         )
     }
@@ -1450,7 +1451,7 @@ private fun MailboxEmptyPreview() {
     ProtonTheme {
         MailboxEmpty(
             listState = MailboxStateSampleData.Inbox.mailboxListState as MailboxListState.Data,
-            unreadFilterState = UnreadFilterState.Data(0, false),
+            unreadFilterState = UnreadFilterState.Data(CappedNumberUiModel.Zero, false),
             topBarHeight = 0.dp
         )
     }

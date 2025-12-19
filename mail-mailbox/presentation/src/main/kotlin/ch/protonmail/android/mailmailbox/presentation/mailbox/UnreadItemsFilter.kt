@@ -41,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
+import ch.protonmail.android.mailcommon.presentation.model.asDisplayText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
@@ -99,7 +101,7 @@ fun UnreadItemsFilter(
                             append(stringResource(R.string.filter_unread_button_text))
                             append(" ")
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(state.numUnread.toString())
+                                append(state.unreadCount.asDisplayText())
                             }
                         },
                         style = if (state.isFilterEnabled) {
@@ -163,7 +165,7 @@ fun ActiveUnreadFilterButtonPreview() {
 
 private object PreviewData {
 
-    const val DummyUnreadCount = 4
+    val DummyUnreadCount = CappedNumberUiModel.Exact(4)
 }
 
 object UnreadItemsFilterTestTags {

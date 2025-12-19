@@ -72,7 +72,7 @@ internal class MailboxUnreadFiltersTest : HiltInstrumentedTest() {
             ProtonTheme {
                 UnreadItemsFilter(
                     state = UnreadFilterState.Data(
-                        numUnread = count,
+                        unreadCount = count,
                         isFilterEnabled = false
                     ),
                     onFilterDisabled = {},

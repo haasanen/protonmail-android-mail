@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata
 
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
@@ -102,7 +103,7 @@ object MailboxStateSampleData {
         ),
         unreadFilterState = UnreadFilterState.Data(
             isFilterEnabled = false,
-            numUnread = 1
+            unreadCount = CappedNumberUiModel.Exact(1)
         ),
         showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Shown(
             enabled = false
@@ -142,7 +143,7 @@ object MailboxStateSampleData {
         ),
         unreadFilterState = UnreadFilterState.Data(
             isFilterEnabled = false,
-            numUnread = 1
+            unreadCount = CappedNumberUiModel.Exact(1)
         ),
         showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Shown(
             enabled = false
@@ -197,7 +198,7 @@ object MailboxStateSampleData {
         ),
         unreadFilterState = UnreadFilterState.Data(
             isFilterEnabled = false,
-            numUnread = 1
+            unreadCount = CappedNumberUiModel.Exact(1)
         ),
         showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden,
         bottomAppBarState = BottomBarState.Data.Hidden(

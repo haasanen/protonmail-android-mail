@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
@@ -209,7 +210,7 @@ internal class MailboxReducerTest(
                 primaryAvatarItem = null
             ),
             unreadFilterState = UnreadFilterState.Data(
-                numUnread = 42,
+                unreadCount = CappedNumberUiModel.Exact(42),
                 isFilterEnabled = false
             ),
             showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Data.Hidden,

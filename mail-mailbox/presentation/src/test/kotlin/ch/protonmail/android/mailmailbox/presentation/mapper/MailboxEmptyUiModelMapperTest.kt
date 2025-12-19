@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mapper
 
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -36,7 +37,9 @@ internal class MailboxEmptyUiModelMapperTest {
     @Test
     fun `should map to empty unread state`() {
         // Given
-        val unreadFilterState = UnreadFilterState.Data(numUnread = 0, isFilterEnabled = true)
+        val unreadFilterState = UnreadFilterState.Data(
+            unreadCount = CappedNumberUiModel.Zero, isFilterEnabled = true
+        )
         val listState = mockk<MailboxListState.Data.ViewMode>()
         val expected = MailboxEmptyUiModel(
             R.drawable.illustration_empty_mailbox_unread,
@@ -57,7 +60,9 @@ internal class MailboxEmptyUiModelMapperTest {
     @Test
     fun `should map to empty default custom mailbox state`() {
         // Given
-        val unreadFilterState = UnreadFilterState.Data(numUnread = 0, isFilterEnabled = false)
+        val unreadFilterState = UnreadFilterState.Data(
+            unreadCount = CappedNumberUiModel.Zero, isFilterEnabled = false
+        )
         val listState = getListStateForCustomLocation()
         val expected = expectedEmptyDefaultModel
 
@@ -74,7 +79,9 @@ internal class MailboxEmptyUiModelMapperTest {
     @Test
     fun `should map to empty default system mailbox state`() {
         // Given
-        val unreadFilterState = UnreadFilterState.Data(numUnread = 0, isFilterEnabled = false)
+        val unreadFilterState = UnreadFilterState.Data(
+            unreadCount = CappedNumberUiModel.Zero, isFilterEnabled = false
+        )
         val listState = getListStateForSystemLabel(SystemLabelId.AllMail)
         val expected = expectedEmptyDefaultModel
 
@@ -91,7 +98,9 @@ internal class MailboxEmptyUiModelMapperTest {
     @Test
     fun `should map to empty mailbox inbox state`() {
         // Given
-        val unreadFilterState = UnreadFilterState.Data(numUnread = 0, isFilterEnabled = false)
+        val unreadFilterState = UnreadFilterState.Data(
+            unreadCount = CappedNumberUiModel.Zero, isFilterEnabled = false
+        )
         val listState = getListStateForSystemLabel(SystemLabelId.Inbox)
         val expected = expectedEmptyInboxModel
 
@@ -108,7 +117,9 @@ internal class MailboxEmptyUiModelMapperTest {
     @Test
     fun `should map to empty mailbox trash state`() {
         // Given
-        val unreadFilterState = UnreadFilterState.Data(numUnread = 0, isFilterEnabled = false)
+        val unreadFilterState = UnreadFilterState.Data(
+            unreadCount = CappedNumberUiModel.Zero, isFilterEnabled = false
+        )
         val listState = getListStateForSystemLabel(SystemLabelId.Trash)
         val expected = expectedEmptyTrashModel
 
@@ -125,7 +136,9 @@ internal class MailboxEmptyUiModelMapperTest {
     @Test
     fun `should map to empty mailbox spam state`() {
         // Given
-        val unreadFilterState = UnreadFilterState.Data(numUnread = 0, isFilterEnabled = false)
+        val unreadFilterState = UnreadFilterState.Data(
+            unreadCount = CappedNumberUiModel.Zero, isFilterEnabled = false
+        )
         val listState = getListStateForSystemLabel(SystemLabelId.Spam)
         val expected = expectedEmptySpamModel
 

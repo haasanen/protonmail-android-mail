@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
+import ch.protonmail.android.mailcommon.presentation.model.toCappedNumberUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
@@ -48,12 +49,16 @@ internal class MailboxUnreadFilterReducerTest(
         private const val DEFAULT_UNREAD_COUNT = 0
         private const val INITIAL_UNREAD_COUNT = 42
         private const val UPDATED_UNREAD_COUNT = 24
+        private const val OVERFLOW_UNREAD_COUNT = 100
 
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = UnreadFilterState.Loading,
                 operation = MailboxEvent.SelectedLabelCountChanged(INITIAL_UNREAD_COUNT),
-                expectedState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
                 currentState = UnreadFilterState.Loading,
@@ -61,7 +66,10 @@ internal class MailboxUnreadFilterReducerTest(
                     MailLabelTestData.dynamicSystemLabels[0],
                     INITIAL_UNREAD_COUNT
                 ),
-                expectedState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
                 currentState = UnreadFilterState.Loading,
@@ -69,7 +77,10 @@ internal class MailboxUnreadFilterReducerTest(
                     MailLabelTestData.dynamicSystemLabels[0],
                     selectedLabelCount = null
                 ),
-                expectedState = UnreadFilterState.Data(DEFAULT_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = DEFAULT_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
                 currentState = UnreadFilterState.Loading,
@@ -80,71 +91,150 @@ internal class MailboxUnreadFilterReducerTest(
                 currentState = UnreadFilterState.Loading,
                 operation = MailboxViewAction.EnableUnreadFilter,
                 expectedState = UnreadFilterState.Loading
+            ),
+            TestInput(
+                currentState = UnreadFilterState.Loading,
+                operation = MailboxEvent.SelectedLabelCountChanged(OVERFLOW_UNREAD_COUNT),
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = OVERFLOW_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             )
         )
 
         private val transitionsFromDataState = listOf(
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                ),
                 operation = MailboxEvent.SelectedLabelCountChanged(UPDATED_UNREAD_COUNT),
-                expectedState = UnreadFilterState.Data(UPDATED_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = UPDATED_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = true),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = true
+                ),
                 operation = MailboxEvent.SelectedLabelCountChanged(UPDATED_UNREAD_COUNT),
-                expectedState = UnreadFilterState.Data(UPDATED_UNREAD_COUNT, isFilterEnabled = true)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = UPDATED_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = true
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                ),
                 operation = MailboxEvent.NewLabelSelected(
                     MailLabelTestData.dynamicSystemLabels[0],
                     UPDATED_UNREAD_COUNT
                 ),
-                expectedState = UnreadFilterState.Data(UPDATED_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = UPDATED_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = true),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = true
+                ),
                 operation = MailboxEvent.NewLabelSelected(
                     MailLabelTestData.dynamicSystemLabels[0],
                     UPDATED_UNREAD_COUNT
                 ),
-                expectedState = UnreadFilterState.Data(UPDATED_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = UPDATED_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                ),
                 operation = MailboxEvent.NewLabelSelected(
                     MailLabelTestData.dynamicSystemLabels[0],
                     selectedLabelCount = null
                 ),
-                expectedState = UnreadFilterState.Data(DEFAULT_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = DEFAULT_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = true),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = true
+                ),
                 operation = MailboxEvent.NewLabelSelected(
                     MailLabelTestData.dynamicSystemLabels[0],
                     selectedLabelCount = null
                 ),
-                expectedState = UnreadFilterState.Data(DEFAULT_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = DEFAULT_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                ),
                 operation = MailboxViewAction.EnableUnreadFilter,
-                expectedState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = true)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = true
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = true),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = true
+                ),
                 operation = MailboxViewAction.EnableUnreadFilter,
-                expectedState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = true)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = true
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                ),
                 operation = MailboxViewAction.DisableUnreadFilter,
-                expectedState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             ),
             TestInput(
-                currentState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = true),
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = true
+                ),
                 operation = MailboxViewAction.DisableUnreadFilter,
-                expectedState = UnreadFilterState.Data(INITIAL_UNREAD_COUNT, isFilterEnabled = false)
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
+            ),
+            TestInput(
+                currentState = UnreadFilterState.Data(
+                    unreadCount = INITIAL_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                ),
+                operation = MailboxEvent.SelectedLabelCountChanged(OVERFLOW_UNREAD_COUNT),
+                expectedState = UnreadFilterState.Data(
+                    unreadCount = OVERFLOW_UNREAD_COUNT.toCappedNumberUiModel(),
+                    isFilterEnabled = false
+                )
             )
         )
 
@@ -155,7 +245,7 @@ internal class MailboxUnreadFilterReducerTest(
                 val testName = """
                     Current state: ${testInput.currentState}
                     Operation: ${testInput.operation}
-                    Next state: ${testInput.expectedState}    
+                    Next state: ${testInput.expectedState}
                 """.trimIndent()
                 arrayOf(testName, testInput)
             }

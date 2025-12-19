@@ -18,10 +18,12 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
+
 sealed interface UnreadFilterState {
 
     data class Data(
-        val numUnread: Int,
+        val unreadCount: CappedNumberUiModel,
         val isFilterEnabled: Boolean
     ) : UnreadFilterState
 
