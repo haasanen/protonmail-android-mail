@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailfeatureflags.presentation.mapper
 
+import arrow.fx.coroutines.parMap
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagCategory
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
@@ -49,7 +50,7 @@ data class FeatureFlagsDefinitionsMapper @Inject constructor(
 
     private suspend fun List<@JvmSuppressWildcards FeatureFlagDefinition>.mapToUiModel(
         overrides: Map<FeatureFlagDefinition, Boolean>
-    ) = this.map { definition ->
+    ) = this.parMap { definition ->
         val isOverridden = overrides.containsKey(definition)
         val isEnabled = if (isOverridden) {
             overrides[definition] ?: definition.defaultValue

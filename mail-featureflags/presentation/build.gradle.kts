@@ -62,6 +62,7 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.arrow.coroutines)
 
     implementation(project(":design-system"))
     implementation(project(":mail-featureflags:data"))
