@@ -23,6 +23,7 @@ import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.annotation.FeatureFlagsCoroutineScope
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailSessionIsFeatureEnabledResult
@@ -40,7 +41,7 @@ class UnleashFeatureFlagValueProvider @Inject constructor(
 
     override val name: String = "Unleash FF provider"
 
-    override suspend fun getFeatureFlagValue(key: String): Boolean? = with(coroutineScope) {
+    override suspend fun getFeatureFlagValue(key: String): Boolean? = withContext(coroutineScope.coroutineContext) {
         // needs to be lazy because of initialisation steps
         val session = sessionFacade.get()
         // For feature flags that are used in the app initialisation such as IsMultithreadDnsDispatcherEnabled
@@ -49,7 +50,7 @@ class UnleashFeatureFlagValueProvider @Inject constructor(
                 "Getting FeatureFlag:: MailSession is not initialized yet. " +
                     " It's probably that either the user is not logged in or the app is initialising"
             )
-            return getAppSessionFeatureFlag(key = key, sessionFacade = session)
+            return@withContext getAppSessionFeatureFlag(key = key, sessionFacade = session)
         }
 
         val userId = session.getUserId()
@@ -57,9 +58,9 @@ class UnleashFeatureFlagValueProvider @Inject constructor(
             Timber.w(
                 "Getting FeatureFlag:: No user session available"
             )
-            return getAppSessionFeatureFlag(key = key, sessionFacade = session)
+            return@withContext getAppSessionFeatureFlag(key = key, sessionFacade = session)
         }
-        return getUserSessionFeatureFlag(key = key, userId = userId, session)
+        return@withContext getUserSessionFeatureFlag(key = key, userId = userId, session)
     }
 
     private suspend fun getUserSessionFeatureFlag(
@@ -73,7 +74,6 @@ class UnleashFeatureFlagValueProvider @Inject constructor(
             null -> null
         }
     }
-
 
     /**
      * MailSession::isFeatureEnabled won't refresh if there is an active user session!
