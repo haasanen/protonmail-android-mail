@@ -46,6 +46,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":mail-common:data"))
+    implementation(project(":mail-common:domain"))
     implementation(project(":mail-spotlight:domain"))
 
     implementation(libs.bundles.module.data)
