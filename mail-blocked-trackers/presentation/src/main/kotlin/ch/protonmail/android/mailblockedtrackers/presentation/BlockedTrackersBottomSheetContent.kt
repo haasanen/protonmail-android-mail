@@ -47,6 +47,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
@@ -88,6 +91,8 @@ private fun NoBlockedTrackersBottomSheetContent(modifier: Modifier = Modifier) {
 @Composable
 private fun BlockedTrackersBottomSheetContent(trackers: TrackersUiModel, modifier: Modifier = Modifier) {
 
+    val urlDialogContent = remember { mutableStateOf<Pair<String, String>?>(null) }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -98,7 +103,10 @@ private fun BlockedTrackersBottomSheetContent(trackers: TrackersUiModel, modifie
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
-        BlockedTrackersDetails(trackers.blocked)
+        BlockedTrackersDetails(
+            trackers.blocked,
+            onUrlClick = { domain, url -> urlDialogContent.value = Pair(domain, url) }
+        )
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
@@ -106,6 +114,36 @@ private fun BlockedTrackersBottomSheetContent(trackers: TrackersUiModel, modifie
 
         BottomNavigationBarSpacer()
     }
+
+    urlDialogContent.value?.let { domainUrlPair ->
+        TrackerUrlDialog(
+            domain = domainUrlPair.first,
+            url = domainUrlPair.second,
+            onDismiss = { urlDialogContent.value = null }
+        )
+    }
+}
+
+@Composable
+private fun TrackerUrlDialog(
+    domain: String,
+    url: String,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    ProtonAlertDialog(
+        modifier = modifier,
+        onDismissRequest = onDismiss,
+        confirmButton = { },
+        dismissButton = {
+            ProtonAlertDialogButton(R.string.action_close_dialog_button) {
+                onDismiss()
+            }
+        },
+        title = domain,
+        text = { ProtonAlertDialogText(url) }
+    )
 }
 
 @Composable
@@ -283,7 +321,11 @@ private fun CleanedLinksDetailsHeader(
 }
 
 @Composable
-private fun BlockedTrackersDetails(trackers: List<BlockedTracker>, modifier: Modifier = Modifier) {
+private fun BlockedTrackersDetails(
+    trackers: List<BlockedTracker>,
+    onUrlClick: (String, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     val isExpanded = remember { mutableStateOf(false) }
 
@@ -306,7 +348,7 @@ private fun BlockedTrackersDetails(trackers: List<BlockedTracker>, modifier: Mod
 
         AnimatedContent(isExpanded.value) {
             if (isExpanded.value) {
-                BlockedTrackersDetailsList(trackers)
+                BlockedTrackersDetailsList(trackers, onUrlClick)
             }
         }
 
@@ -314,7 +356,7 @@ private fun BlockedTrackersDetails(trackers: List<BlockedTracker>, modifier: Mod
 }
 
 @Composable
-private fun BlockedTrackersDetailsList(trackers: List<BlockedTracker>) {
+private fun BlockedTrackersDetailsList(trackers: List<BlockedTracker>, onUrlClick: (String, String) -> Unit) {
 
     Column {
 
@@ -322,7 +364,9 @@ private fun BlockedTrackersDetailsList(trackers: List<BlockedTracker>) {
 
         for (tracker in trackers) {
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = tracker.domain,
                     style = ProtonTheme.typography.bodyLargeNorm
@@ -340,6 +384,12 @@ private fun BlockedTrackersDetailsList(trackers: List<BlockedTracker>) {
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.MediumLight))
 
                 Text(
+                    modifier = Modifier
+                        .clickable(
+                            onClick = { onUrlClick(tracker.domain, url) },
+                            interactionSource = null,
+                            indication = null
+                        ),
                     text = url,
                     style = ProtonTheme.typography.bodySmallWeak,
                     maxLines = 2,
