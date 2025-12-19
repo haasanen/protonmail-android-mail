@@ -43,8 +43,8 @@ object TrackersUiModelSample {
     )
 
     private val cleanedLink = CleanedLink(
-        "website.com/page/tracker",
-        "website.com/page"
+        "https://website.com/page/tracker",
+        "https://website.com/page"
     )
 
     val oneTrackerBlocked = TrackersUiModel(

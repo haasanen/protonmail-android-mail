@@ -53,9 +53,9 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.headlineSmallNorm
-import ch.protonmail.android.design.compose.theme.labelLargeWeak
 import ch.protonmail.android.mailblockedtrackers.domain.model.BlockedTracker
 import ch.protonmail.android.mailblockedtrackers.domain.model.CleanedLink
 import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
@@ -221,19 +221,13 @@ private fun CleanedLinkRow(link: CleanedLink) {
 
                 Text(
                     text = stringResource(R.string.cleaned),
-                    style = ProtonTheme.typography.labelLargeWeak
+                    style = ProtonTheme.typography.bodyMediumWeak
                 )
             }
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
 
-            Text(
-                text = link.cleaned,
-                style = ProtonTheme.typography.bodyLargeNorm,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
+            ClickableLink(url = link.cleaned)
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -259,15 +253,10 @@ private fun OriginalLinkRow(link: CleanedLink) {
         ) {
             Text(
                 text = stringResource(R.string.original),
-                style = ProtonTheme.typography.labelLargeWeak
+                style = ProtonTheme.typography.bodyMediumWeak
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
-            Text(
-                text = link.original,
-                style = ProtonTheme.typography.bodyLargeNorm,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            ClickableLink(url = link.original)
 
         }
 
@@ -280,6 +269,31 @@ private fun OriginalLinkRow(link: CleanedLink) {
             tint = ProtonTheme.colors.iconWeak
         )
     }
+}
+
+@Composable
+private fun ClickableLink(url: String) {
+    val annotatedString = remember(url) {
+        buildAnnotatedString {
+            withLink(
+                LinkAnnotation.Url(
+                    url = url,
+                    styles = TextLinkStyles(
+                        style = SpanStyle()
+                    )
+                )
+            ) {
+                append(url)
+            }
+        }
+    }
+
+    Text(
+        text = annotatedString,
+        style = ProtonTheme.typography.bodyLargeNorm,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
 }
 
 @Composable
