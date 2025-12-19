@@ -147,6 +147,11 @@ include(":mail-session:data")
 include(":mail-session:domain")
 include(":mail-session:presentation")
 
+include(":mail-spotlight:dagger")
+include(":mail-spotlight:data")
+include(":mail-spotlight:domain")
+include(":mail-spotlight:presentation")
+
 include(":mail-tooltip:dagger")
 include(":mail-tooltip:data")
 include(":mail-tooltip:domain")
