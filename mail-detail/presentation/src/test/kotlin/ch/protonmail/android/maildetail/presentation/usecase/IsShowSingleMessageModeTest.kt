@@ -20,7 +20,6 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maildetail.domain.usecase.IsShowSingleMessageMode
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailsettings.domain.usecase.GetUserPreferredViewMode
 import io.mockk.coEvery
@@ -30,49 +29,16 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class IsShowSingleMessageModeTest {
+internal class IsShowSingleMessageModeTest {
 
-    private val isMessageDetailFeatureEnabled = mockk<FeatureFlag<Boolean>>()
     private val getUserPreferredViewMode = mockk<GetUserPreferredViewMode>()
 
-    private val isShowSingleMessageMode = IsShowSingleMessageMode(
-        isMessageDetailFeatureEnabled,
-        getUserPreferredViewMode
-    )
-
-    @Test
-    fun `returns true when feature flag is true and preferred mode is message mode`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        coEvery { isMessageDetailFeatureEnabled.get() } returns true
-        coEvery { getUserPreferredViewMode(userId) } returns ViewMode.NoConversationGrouping
-
-        // When
-        val actual = isShowSingleMessageMode(userId)
-
-        // Then
-        assertTrue(actual)
-    }
-
-    @Test
-    fun `returns false when feature flag is false`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        coEvery { isMessageDetailFeatureEnabled.get() } returns false
-        coEvery { getUserPreferredViewMode(userId) } returns ViewMode.NoConversationGrouping
-
-        // When
-        val actual = isShowSingleMessageMode(userId)
-
-        // Then
-        assertFalse(actual)
-    }
+    private val isShowSingleMessageMode = IsShowSingleMessageMode(getUserPreferredViewMode)
 
     @Test
     fun `returns false when preferred mode is conversation mode`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        coEvery { isMessageDetailFeatureEnabled.get() } returns true
         coEvery { getUserPreferredViewMode(userId) } returns ViewMode.ConversationGrouping
 
         // When
@@ -80,5 +46,18 @@ class IsShowSingleMessageModeTest {
 
         // Then
         assertFalse(actual)
+    }
+
+    @Test
+    fun `returns true when preferred mode is message mode`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        coEvery { getUserPreferredViewMode(userId) } returns ViewMode.NoConversationGrouping
+
+        // When
+        val actual = isShowSingleMessageMode(userId)
+
+        // Then
+        assertTrue(actual)
     }
 }

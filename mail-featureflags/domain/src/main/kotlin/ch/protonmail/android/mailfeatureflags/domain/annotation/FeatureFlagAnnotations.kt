@@ -46,10 +46,6 @@ annotation class IsDebugInspectDbEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsMessageDetailEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class IsLastMessageAutoExpandEnabled
 
 @Qualifier

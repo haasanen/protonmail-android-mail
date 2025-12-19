@@ -18,22 +18,14 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailsettings.domain.usecase.GetUserPreferredViewMode
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class IsShowSingleMessageMode @Inject constructor(
-    @IsMessageDetailEnabled private val isMessageDetailFeatureEnabled: FeatureFlag<Boolean>,
     private val getUserPreferredViewMode: GetUserPreferredViewMode
 ) {
 
-    suspend operator fun invoke(userId: UserId): Boolean {
-        val isFeatureEnabled = isMessageDetailFeatureEnabled.get()
-        val isMessageViewMode = getUserPreferredViewMode(userId) == ViewMode.NoConversationGrouping
-
-        return isFeatureEnabled && isMessageViewMode
-    }
+    suspend operator fun invoke(userId: UserId) = getUserPreferredViewMode(userId) == ViewMode.NoConversationGrouping
 }

@@ -30,7 +30,6 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWav
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsInjectCssOverrideEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTrackersEnabled
@@ -44,7 +43,6 @@ import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.InjectDetailCssOverrideEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wave2Enabled
-import ch.protonmail.android.mailfeatureflags.domain.model.MessageDetailEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.RestrictMessageWebViewHeight
 import ch.protonmail.android.mailfeatureflags.domain.model.ShowBlockedTrackers
@@ -65,16 +63,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Suppress("TooManyFunctions")
 object FeatureFlagsModule {
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideMessageDetailEnabledDefinitions(): FeatureFlagDefinition = MessageDetailEnabled
-
-    @Provides
-    @Singleton
-    @IsMessageDetailEnabled
-    fun provideMessageDetailEnabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(MessageDetailEnabled.key, false)
 
     @Provides
     @IntoSet

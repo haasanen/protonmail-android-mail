@@ -74,14 +74,6 @@ data object ConversationDetailAutoExpandLastMessageEnabled : FeatureFlagDefiniti
     defaultValue = false
 )
 
-data object MessageDetailEnabled : FeatureFlagDefinition(
-    key = "MailAndroidV7MessageDetail",
-    name = "View Single Message Detail",
-    category = FeatureFlagCategory.Details,
-    description = "Allow to view a single message in the detail screen",
-    defaultValue = true
-)
-
 data object SwipeAutoAdvanceEnabled : FeatureFlagDefinition(
     key = "MailAndroidV7SwipeAutoAdvance",
     name = "Swipe and AutoAdvance View",
