@@ -58,14 +58,6 @@ data object MailBlackFriday2025Wave2Enabled : FeatureFlagDefinition(
     defaultValue = false
 )
 
-data object AndroidDnsMultithread : FeatureFlagDefinition(
-    key = "MailAndroidV7DnsMultithread",
-    name = "Enable concurrent DNS resolutions",
-    category = FeatureFlagCategory.Global,
-    description = "Allow parallel execution of DNS callbacks",
-    defaultValue = false
-)
-
 data object ComposerAutoCollapseQuotedText : FeatureFlagDefinition(
     key = "MailAndroidV7ComposerAutoCollapsedText",
     name = "Auto collapse composer quoted text",

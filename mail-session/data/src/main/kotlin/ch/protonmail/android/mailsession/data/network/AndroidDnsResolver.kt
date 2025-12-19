@@ -20,17 +20,12 @@ package ch.protonmail.android.mailsession.data.network
 
 import java.net.Inet6Address
 import java.net.InetAddress
-import java.util.concurrent.Executors
 import android.net.DnsResolver
 import android.os.CancellationSignal
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.IpAddr
 import uniffi.proton_mail_uniffi.Resolver
@@ -41,28 +36,17 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 @Singleton
-class AndroidDnsResolver @Inject constructor(
-    private val networkManager: NetworkManager,
-    @IsMultithreadDnsDispatcherEnabled private val isMultithreadDnsDispatcherEnabled: FeatureFlag<Boolean>
-) : Resolver {
+class AndroidDnsResolver @Inject constructor(private val networkManager: NetworkManager) : Resolver {
 
     private val resolver: DnsResolver = DnsResolver.getInstance()
-
-    private val featureFlagMutex = Mutex()
-    private var useMultithreadDns: Boolean? = null
 
     private val dispatcherIoAsExecutor by lazy {
         Dispatchers.IO.asExecutor()
     }
 
-    private val singleThreadExecutor by lazy {
-        Executors.newSingleThreadExecutor()
-    }
 
     @Throws(ResolverException::class)
     override suspend fun resolve(host: String): List<IpAddr>? {
-        val useMultithreadDispatcher = resolveFeatureFlag()
-
         return suspendCancellableCoroutine { continuation ->
             Timber.tag("DnsResolution").d("required for host: $host")
 
@@ -75,8 +59,7 @@ class AndroidDnsResolver @Inject constructor(
                 }
 
                 else -> {
-                    val executorType = if (useMultithreadDispatcher) "multithread" else "singlethread"
-                    Timber.tag("DnsResolution").d("Resolving via ${network.networkHandle} - $executorType")
+                    Timber.tag("DnsResolution").d("Resolving via ${network.networkHandle}")
 
                     val cancelSignal = CancellationSignal()
                     continuation.invokeOnCancellation { cancelSignal.cancel() }
@@ -84,7 +67,7 @@ class AndroidDnsResolver @Inject constructor(
                     val callback = object : DnsResolver.Callback<List<InetAddress>> {
 
                         override fun onAnswer(answer: List<InetAddress>, rcode: Int) {
-                            Timber.tag("DnsResolution").d("DNS host for '$host' resolved to $answer - $executorType")
+                            Timber.tag("DnsResolution").d("DNS host for '$host' resolved to $answer")
 
                             val addresses = answer.mapNotNull {
                                 @Suppress("UNNECESSARY_SAFE_CALL") // InetAddress is a platform type
@@ -97,15 +80,9 @@ class AndroidDnsResolver @Inject constructor(
                         override fun onError(error: DnsResolver.DnsException) {
                             val exception =
                                 ResolverException.Other("DNS resolution for '$host' errored: $error")
-                            Timber.tag("DnsResolution").d("DNS resolution error: $exception - $executorType")
+                            Timber.tag("DnsResolution").d("DNS resolution error: $exception ")
                             continuation.resumeWithException(exception)
                         }
-                    }
-
-                    val executor = if (useMultithreadDispatcher) {
-                        dispatcherIoAsExecutor
-                    } else {
-                        singleThreadExecutor
                     }
 
                     runCatching {
@@ -113,13 +90,13 @@ class AndroidDnsResolver @Inject constructor(
                             network,
                             host,
                             DnsResolver.FLAG_EMPTY,
-                            executor,
+                            dispatcherIoAsExecutor,
                             cancelSignal,
                             callback
                         )
                     }.getOrElse {
                         val exception = ResolverException.Other("DNS resolution for '$host' error from resolver: $it")
-                        Timber.tag("DnsResolution").d("DNS resolution error: $exception - $executorType")
+                        Timber.tag("DnsResolution").d("DNS resolution error: $exception")
                         continuation.resumeWithException(exception)
                     }
                 }
@@ -138,18 +115,6 @@ class AndroidDnsResolver @Inject constructor(
         return when (this) {
             is Inet6Address -> IpAddr.V6(address)
             else -> IpAddr.V4(address)
-        }
-    }
-
-    private suspend fun resolveFeatureFlag(): Boolean {
-        return useMultithreadDns ?: featureFlagMutex.withLock {
-            useMultithreadDns ?: run {
-                Timber.tag("DnsResolution").d("Resolving multithread FF flag")
-                val featureFlagValue = isMultithreadDnsDispatcherEnabled.get()
-                Timber.tag("DnsResolution").d("FF resolved to $featureFlagValue")
-                useMultithreadDns = featureFlagValue
-                featureFlagValue
-            }
         }
     }
 }

@@ -38,10 +38,6 @@ annotation class IsBlackFridayWave2Enabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsMultithreadDnsDispatcherEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class ComposerAutoCollapseQuotedTextEnabled
 
 @Qualifier

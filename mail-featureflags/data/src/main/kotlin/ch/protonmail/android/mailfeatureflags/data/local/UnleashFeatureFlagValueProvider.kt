@@ -44,7 +44,7 @@ class UnleashFeatureFlagValueProvider @Inject constructor(
     override suspend fun getFeatureFlagValue(key: String): Boolean? = withContext(coroutineScope.coroutineContext) {
         // needs to be lazy because of initialisation steps
         val session = sessionFacade.get()
-        // For feature flags that are used in the app initialisation such as IsMultithreadDnsDispatcherEnabled
+        // For feature flags that are used in the app initialisation
         if (session.isMailSessionInitialised().not()) {
             Timber.w(
                 "Getting FeatureFlag:: MailSession is not initialized yet. " +

@@ -31,14 +31,12 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDb
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsInjectCssOverrideEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageDetailEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMultithreadDnsDispatcherEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTrackersEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowRatingBoosterEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSwipeAutoAdvanceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.AndroidDnsMultithread
 import ch.protonmail.android.mailfeatureflags.domain.model.ComposerAutoCollapseQuotedText
 import ch.protonmail.android.mailfeatureflags.domain.model.ConversationDetailAutoExpandLastMessageEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
@@ -141,12 +139,6 @@ object FeatureFlagsModule {
 
     @Provides
     @Singleton
-    @IsMultithreadDnsDispatcherEnabled
-    fun provideMultithreadedDnsDispatcher(factory: BooleanFeatureFlagFactory) =
-        factory.create(key = AndroidDnsMultithread.key, false)
-
-    @Provides
-    @Singleton
     @ComposerAutoCollapseQuotedTextEnabled
     fun provideComposerAutoCollapseText(factory: BooleanFeatureFlagFactory) =
         factory.create(key = ComposerAutoCollapseQuotedText.key, false)
@@ -191,11 +183,6 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun provideObdnUpsellEnabledDefinition(): FeatureFlagDefinition = OnboardingUpsellingEnabled
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideMultiThreadDnsDefinition(): FeatureFlagDefinition = AndroidDnsMultithread
 
     @Provides
     @IntoSet
