@@ -18,9 +18,6 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.appicon.ui
 
-import android.net.Uri
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +27,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -41,10 +40,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
-import androidx.core.net.toUri
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonSwitch
@@ -62,8 +63,7 @@ internal fun AppIconSettingsContent(
     modifier: Modifier = Modifier,
     availableIcons: ImmutableList<AppIconUiModel>,
     activeIcon: AppIconUiModel,
-    onIconConfirmed: (AppIconUiModel) -> Unit,
-    onLearnMoreClick: (Uri) -> Unit
+    onIconConfirmed: (AppIconUiModel) -> Unit
 ) {
     var showRestartDialog by remember { mutableStateOf(false) }
     var currentIcon: AppIconUiModel by remember { mutableStateOf(activeIcon) }
@@ -111,6 +111,7 @@ internal fun AppIconSettingsContent(
         modifier = modifier
             .fillMaxSize()
             .padding(ProtonDimens.Spacing.Large)
+            .verticalScroll(rememberScrollState())
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -145,27 +146,9 @@ internal fun AppIconSettingsContent(
                         style = ProtonTheme.typography.titleLarge
                     )
 
-                    Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
+                    Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
-                    val descriptionText = buildAnnotatedString {
-                        append(stringResource(id = R.string.settings_app_icon_description))
-                        append(" ")
-                        withStyle(style = SpanStyle(color = ProtonTheme.colors.brandNorm)) {
-                            append(stringResource(id = R.string.settings_app_icon_learn_more))
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
-
-                    Text(
-                        text = descriptionText,
-                        style = ProtonTheme.typography.bodyMedium,
-                        color = ProtonTheme.colors.textWeak,
-                        modifier = Modifier.clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) { onLearnMoreClick(LEARN_MORE_URL.toUri()) }
-                    )
+                    HeaderText()
                 }
 
                 MailDivider()
@@ -240,4 +223,36 @@ internal fun AppIconSettingsContent(
     }
 }
 
-private const val LEARN_MORE_URL = "https://proton.me/support/disguise-app-icon"
+@Composable
+private fun HeaderText(modifier: Modifier = Modifier) {
+    val text = stringResource(id = R.string.settings_app_icon_description)
+    val linkText = stringResource(id = R.string.settings_app_icon_learn_more)
+    val linkColor = ProtonTheme.colors.brandNorm
+    val linkUrl = "https://proton.me/support/disguise-app-icon"
+
+    val annotatedString =
+        buildAnnotatedString {
+            append(text)
+            append(" ")
+            withLink(
+                LinkAnnotation.Url(
+                    url = linkUrl,
+                    styles = TextLinkStyles(
+                        style = SpanStyle(
+                            color = linkColor,
+                            textDecoration = TextDecoration.None
+                        )
+                    )
+                )
+            ) {
+                append(linkText)
+            }
+        }
+
+    Text(
+        text = annotatedString,
+        style = ProtonTheme.typography.bodyMedium,
+        color = ProtonTheme.colors.textWeak,
+        modifier = modifier
+    )
+}

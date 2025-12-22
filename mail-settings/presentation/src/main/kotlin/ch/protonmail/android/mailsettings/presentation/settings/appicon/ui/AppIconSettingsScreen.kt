@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailsettings.presentation.settings.appicon.ui
 
 import android.content.res.Configuration
-import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -37,11 +36,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
-fun AppIconSettingsScreen(
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
-    onLearnMoreClick: (Uri) -> Unit
-) {
+fun AppIconSettingsScreen(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
     val viewModel: AppIconSettingsViewModel = hiltViewModel()
     val availableIcons = viewModel.getAvailableIcons()
 
@@ -50,8 +45,7 @@ fun AppIconSettingsScreen(
         availableIcons = availableIcons,
         activeIcon = viewModel.getCurrentAppIcon(),
         onIconSelected = { viewModel.setNewAppIcon(it) },
-        onBackClick = onBackClick,
-        onLearnMoreClick = onLearnMoreClick
+        onBackClick = onBackClick
     )
 }
 
@@ -62,8 +56,7 @@ private fun AppIconSettingsScreen(
     availableIcons: ImmutableList<AppIconUiModel>,
     activeIcon: AppIconUiModel,
     onIconSelected: (AppIconUiModel) -> Unit,
-    onBackClick: () -> Unit,
-    onLearnMoreClick: (Uri) -> Unit = {}
+    onBackClick: () -> Unit
 ) {
     Scaffold(
         modifier = modifier,
@@ -79,8 +72,7 @@ private fun AppIconSettingsScreen(
                 modifier = Modifier.padding(paddingValues),
                 availableIcons = availableIcons,
                 activeIcon = activeIcon,
-                onIconConfirmed = onIconSelected,
-                onLearnMoreClick = onLearnMoreClick
+                onIconConfirmed = onIconSelected
             )
         }
     )
@@ -101,8 +93,7 @@ private fun AppIconSettingsScreenPreview() {
                 R.string.settings_app_icon_title_default
             ),
             onIconSelected = {},
-            onBackClick = {},
-            onLearnMoreClick = {}
+            onBackClick = {}
         )
     }
 }

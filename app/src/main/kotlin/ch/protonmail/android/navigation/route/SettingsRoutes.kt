@@ -150,8 +150,7 @@ internal fun NavGraphBuilder.addAppIconSettings(navController: NavHostController
         ProtonInvertedTheme {
             AppIconSettingsScreen(
                 modifier = Modifier,
-                onBackClick = { navController.navigateBack() },
-                onLearnMoreClick = onLearnMoreClick
+                onBackClick = { navController.navigateBack() }
             )
         }
     }
@@ -190,13 +189,15 @@ internal fun NavGraphBuilder.addSignatureMenuSettings(navController: NavHostCont
                 modifier = Modifier,
                 actions = SignatureSettingsMenuScreen.Actions(
                     onBackClick = { navController.navigateBack() },
-                    onNavigateToMobileSignatureSettings =
-                    { navController.navigate(Screen.MobileSignatureSettings.route) },
+                    onNavigateToMobileSignatureSettings = {
+                        navController.navigate(Screen.MobileSignatureSettings.route)
+                    },
                     onNavigateToUpselling = { entryPoint, type ->
                         navController.navigate(Screen.FeatureUpselling(entryPoint, type))
                     },
-                    onNavigateToEmailSignatureSettings =
-                    { navController.navigate(Screen.EmailSignatureSettings.route) }
+                    onNavigateToEmailSignatureSettings = {
+                        navController.navigate(Screen.EmailSignatureSettings.route)
+                    }
                 )
             )
         }
