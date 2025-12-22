@@ -70,6 +70,7 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailspotlight.presentation.R
 import ch.protonmail.android.mailspotlight.presentation.model.AppVersionUiModel
 import ch.protonmail.android.mailspotlight.presentation.model.FeatureItem
+import ch.protonmail.android.mailspotlight.presentation.viewmodel.FeatureSpotlightViewModel
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import ch.protonmail.android.uicomponents.TopNavigationBarSpacer
 import dev.chrisbanes.haze.HazeStyle

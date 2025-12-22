@@ -73,6 +73,7 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.feature.spotlight.HomeFeatureSpotlightViewModel
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.SnackbarError
@@ -97,7 +98,6 @@ import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingSte
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
-import ch.protonmail.android.mailspotlight.presentation.viewmodel.HomeFeatureSpotlightViewModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
 import ch.protonmail.android.mailupselling.presentation.viewmodel.BlackFridayModalUpsellViewModel
@@ -690,14 +690,13 @@ fun Home(
                             onCustomizeMessageToolbar = {
                                 navController.navigate(Screen.EditToolbarScreen(ToolbarType.Message))
                             },
-                            onViewEntireMessageClicked =
-                            { messageId, shouldShowEmbeddedImages, shouldShowRemoteContent, viewModePreference ->
+                            onViewEntireMessageClicked = { msgId, showInline, showRemote, vmPreference ->
                                 navController.navigate(
                                     Screen.EntireMessageBody(
-                                        messageId,
-                                        shouldShowEmbeddedImages,
-                                        shouldShowRemoteContent,
-                                        viewModePreference
+                                        messageId = msgId,
+                                        shouldShowEmbeddedImages = showInline,
+                                        shouldShowRemoteContent = showRemote,
+                                        viewModePreference = vmPreference
                                     )
                                 )
                             }
@@ -716,7 +715,8 @@ fun Home(
                         onEvent = eventHandler,
                         showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
                         onActionBarVisibilityChanged = updatePadding,
-                        onShowRatingBooster = activityActions.launchRatingBooster
+                        onShowRatingBooster = activityActions.launchRatingBooster,
+                        isInterstitialActive = { interstitialPriority !is HomeInterstitialPriority.None }
                     )
                     addAccountsManager(
                         navController,

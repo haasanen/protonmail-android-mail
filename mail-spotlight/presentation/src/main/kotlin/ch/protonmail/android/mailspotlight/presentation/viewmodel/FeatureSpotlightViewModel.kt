@@ -20,28 +20,62 @@ package ch.protonmail.android.mailspotlight.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailspotlight.domain.usecase.ObserveFeatureSpotlightDisplay
-import ch.protonmail.android.mailspotlight.presentation.model.FeatureSpotlightState
+import ch.protonmail.android.mailcommon.domain.AppInformation
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailspotlight.domain.usecase.MarkFeatureSpotlightSeen
+import ch.protonmail.android.mailspotlight.presentation.R
+import ch.protonmail.android.mailspotlight.presentation.model.AppVersionUiModel
+import ch.protonmail.android.mailspotlight.presentation.model.FeatureItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeFeatureSpotlightViewModel @Inject constructor(
-    observeFeatureSpotlightDisplay: ObserveFeatureSpotlightDisplay
+internal class FeatureSpotlightViewModel @Inject constructor(
+    appInformation: AppInformation,
+    private val markFeatureSpotlightSeen: MarkFeatureSpotlightSeen
 ) : ViewModel() {
 
-    val state: StateFlow<FeatureSpotlightState> = observeFeatureSpotlightDisplay().map { preferenceEither ->
-        preferenceEither.fold(
-            ifLeft = { FeatureSpotlightState.Hide },
-            ifRight = { if (it.show) FeatureSpotlightState.Show else FeatureSpotlightState.Hide }
+    private val _closeScreenEvent = MutableSharedFlow<Unit>()
+    val closeScreenEvent = _closeScreenEvent.asSharedFlow()
+
+    val appVersion: AppVersionUiModel = AppVersionUiModel(
+        text = TextUiModel.TextResWithArgs(
+            value = R.string.spotlight_screen_version_text,
+            formatArgs = listOf(appInformation.appVersionName)
         )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = FeatureSpotlightState.Loading
     )
+
+    val features = listOf(
+        FeatureItem(
+            icon = R.drawable.ic_palette,
+            title = TextUiModel.TextRes(R.string.spotlight_feature_item_discreet_icon_title),
+            description = TextUiModel.TextRes(R.string.spotlight_feature_item_discreet_icon_description)
+        ),
+        FeatureItem(
+            icon = R.drawable.ic_lock,
+            title = TextUiModel.TextRes(R.string.spotlight_feature_item_encryption_locks_title),
+            description = TextUiModel.TextRes(R.string.spotlight_feature_item_encryption_locks_description)
+        ),
+        FeatureItem(
+            icon = R.drawable.ic_shield_check,
+            title = TextUiModel.TextRes(R.string.spotlight_feature_item_tracking_protection_title),
+            description = TextUiModel.TextRes(R.string.spotlight_feature_item_tracking_protection_description)
+        ),
+        FeatureItem(
+            icon = R.drawable.ic_code,
+            title = TextUiModel.TextRes(R.string.spotlight_feature_item_headers_html_title),
+            description = TextUiModel.TextRes(R.string.spotlight_feature_item_headers_html_description)
+        )
+    ).toImmutableList()
+
+    fun saveScreenShown() {
+        viewModelScope.launch {
+            markFeatureSpotlightSeen()
+            _closeScreenEvent.emit(Unit)
+        }
+    }
 }

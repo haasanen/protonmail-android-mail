@@ -195,7 +195,8 @@ fun MailboxScreen(
     onEvent: (AccountSwitchEvent) -> Unit,
     viewModel: MailboxViewModel = hiltViewModel(),
     accountsTooltipViewModel: AccountsTooltipViewModel = hiltViewModel(),
-    fabHostState: ProtonFabHostState
+    fabHostState: ProtonFabHostState,
+    isInterstitialActive: () -> Boolean
 ) {
     val mailboxState = viewModel.state.collectAsStateWithLifecycle().value
     val accountsTooltipState by accountsTooltipViewModel.state.collectAsStateWithLifecycle()
@@ -451,7 +452,8 @@ fun MailboxScreen(
             fabHostState = fabHostState,
             mailboxListItems = mailboxListItems,
             actions = completeActions,
-            modifier = modifier.semantics { testTagsAsResourceId = true }
+            modifier = modifier.semantics { testTagsAsResourceId = true },
+            isInterstitialActive = isInterstitialActive
         )
     }
 }
@@ -463,7 +465,8 @@ fun MailboxScreen(
     fabHostState: ProtonFabHostState,
     mailboxListItems: LazyPagingItems<MailboxItemUiModel>,
     actions: MailboxScreen.Actions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isInterstitialActive: () -> Boolean
 ) {
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -476,6 +479,8 @@ fun MailboxScreen(
             lazyListState.firstVisibleItemIndex > 0
         }
     }
+
+    val showTooltip = accountsTooltipState == AccountsTooltipState.Show && !isInterstitialActive()
 
     val stickyHeaderActions = MailboxStickyHeader.Actions(
         onUnreadFilterEnabled = actions.onEnableUnreadFilter,
@@ -572,8 +577,8 @@ fun MailboxScreen(
 
             }
 
-            Crossfade(accountsTooltipState) { state ->
-                if (state == AccountsTooltipState.Show) {
+            Crossfade(showTooltip) { show ->
+                if (show) {
                     AccountsTooltip(anchorBounds = topAppBarBounds, onDismiss = actions.onDismissAccountsTooltip)
                 }
             }
@@ -1407,7 +1412,8 @@ private fun MailboxScreenPreview(@PreviewParameter(MailboxPreviewProvider::class
             mailboxState = mailboxPreview.state,
             accountsTooltipState = AccountsTooltipState.Loading,
             fabHostState = ProtonFabHostState(),
-            actions = MailboxScreen.Actions.Empty
+            actions = MailboxScreen.Actions.Empty,
+            isInterstitialActive = { false }
         )
     }
 }
