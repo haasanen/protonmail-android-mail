@@ -106,3 +106,11 @@ data object ShowBlockedTrackers : FeatureFlagDefinition(
     defaultValue = false
 )
 
+data object ShowEncryptionInfo : FeatureFlagDefinition(
+    key = "MailAndroidV7ShowEncryptionInfo",
+    name = "Show encryption info",
+    category = FeatureFlagCategory.Details,
+    description = "Enable the 'show encryption info' (aka. padlocks) feature",
+    defaultValue = false
+)
+
