@@ -236,6 +236,7 @@ dependencies {
     implementation(project(":mail-upselling"))
     implementation(project(":mail-tooltip"))
     implementation(project(":mail-snooze"))
+    implementation(project(":mail-padlocks"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))

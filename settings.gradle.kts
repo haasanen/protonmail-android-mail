@@ -132,6 +132,11 @@ include(":mail-pin-lock:domain")
 include(":mail-pin-lock:data")
 include(":mail-pin-lock:presentation")
 
+include(":mail-padlocks:dagger")
+include(":mail-padlocks:data")
+include(":mail-padlocks:domain")
+include(":mail-padlocks:presentation")
+
 include(":mail-sidebar:dagger")
 include(":mail-sidebar:data")
 include(":mail-sidebar:domain")
