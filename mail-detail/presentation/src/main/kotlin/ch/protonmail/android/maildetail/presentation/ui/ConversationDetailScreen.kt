@@ -84,8 +84,8 @@ import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.ui.OpenAttachmentInput
 import ch.protonmail.android.mailattachments.presentation.ui.fileOpener
 import ch.protonmail.android.mailattachments.presentation.ui.fileSaver
-import ch.protonmail.android.mailblockedtrackers.presentation.BlockedTrackersBottomSheetContent
-import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.BlockedTrackersBottomSheetContent
+import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
@@ -138,7 +138,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.model.BodyImageUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState

@@ -62,8 +62,8 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.mailblockedtrackers.presentation.BlockedTrackers
-import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.BlockedTrackers
+import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge

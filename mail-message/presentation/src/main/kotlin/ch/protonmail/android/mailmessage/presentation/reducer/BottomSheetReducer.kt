@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.reducer
 
-import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState

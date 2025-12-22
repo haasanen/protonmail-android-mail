@@ -22,18 +22,18 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
 
 android {
-    namespace = "ch.protonmail.android.maildetail.presentation"
+    namespace = "ch.protonmail.android.mailtrackingprotection.presentation"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
         minSdk = AppConfiguration.minSdk.get()
-        lint.targetSdk = AppConfiguration.targetSdk.get()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
 
     compileOptions {
@@ -53,12 +53,9 @@ android {
 
     packaging {
         resources.excludes.add("META-INF/licenses/**")
+        resources.excludes.add("META-INF/LICENSE*")
         resources.excludes.add("META-INF/AL2.0")
         resources.excludes.add("META-INF/LGPL2.1")
-    }
-
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -67,35 +64,15 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
-    implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.proton.core.domain)
-    implementation(libs.proton.core.user.domain)
 
-    implementation(project(":mail-attachments:domain"))
-    implementation(project(":mail-attachments:presentation"))
-    implementation(project(":mail-tracking-protection:presentation"))
-    implementation(project(":mail-detail:domain"))
-    implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
-    implementation(project(":mail-contact:domain"))
-    implementation(project(":mail-conversation:domain"))
+    implementation(project(":mail-featureflags:domain"))
     implementation(project(":mail-message:domain"))
-    implementation(project(":mail-message:presentation"))
-    implementation(project(":mail-mailbox:domain"))
-    implementation(project(":mail-label:domain"))
-    implementation(project(":mail-label:presentation"))
-    implementation(project(":mail-crash-record:domain"))
-    implementation(project(":mail-padlocks:presentation"))
-    implementation(project(":mail-session:domain"))
-    implementation(project(":mail-settings:domain"))
-    implementation(project(":mail-snooze:domain"))
-    implementation(project(":mail-snooze:presentation"))
+
+    implementation(project(":mail-tracking-protection:domain"))
+    implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
-    implementation(project(":uicomponents"))
-    implementation(project(":mail-featureflags:domain"))
-    implementation(project(":mail-upselling:presentation"))
-    implementation(project(":mail-upselling:domain"))
+
     testImplementation(libs.bundles.test)
-    testImplementation(project(":test:test-data"))
 }

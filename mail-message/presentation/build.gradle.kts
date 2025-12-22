@@ -71,7 +71,7 @@ dependencies {
 
     implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-attachments:presentation"))
-    implementation(project(":mail-blocked-trackers:presentation"))
+    implementation(project(":mail-tracking-protection:presentation"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-contact:domain"))
