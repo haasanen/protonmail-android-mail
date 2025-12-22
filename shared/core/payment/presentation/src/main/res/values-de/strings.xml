@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Etwas ist schiefgelaufen</string>
   <string name="payment_error_description">Diese Seite konnte nicht geladen werden. Bitte die Seite aktualisieren oder die Internetverbindung überprüfen.</string>
+  <string name="proton_error_non_processable_actions">Eine oder mehrere Aktionen können nicht verarbeitet werden. Bitte melden dich jetzt ab und erneut wieder an.</string>
   <string name="payment_purchase_button_get">Hol dir %1$s</string>
   <string name="payment_purchase_button_subscribed">%1$s abonniert</string>
   <string name="payment_purchase_button_product_not_found">Produkt im Shop nicht gefunden</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">Dein Abonnement wird von Google Play verwaltet.</string>
   <string name="payment_subscription_managed_by_apple">Dein Abonnement wird vom Apple Store verwaltet.</string>
   <string name="payment_subscription_managed_by_other">Dein Abonnement kann nicht in der mobilen App verwaltet werden.</string>
-  <string name="proton_error_non_processable_actions">Eine oder mehrere Aktionen können nicht verarbeitet werden. Bitte melden dich jetzt ab und erneut wieder an.</string>
+  <string name="payment_subscription_restricted_access_title">Eingeschränkter Zugriff</string>
+  <string name="payment_subscription_restricted_access_description">Leider hast du keine Berechtigung, auf diese Seite zuzugreifen. Wende dich an deinen Administrator, falls dies nicht beabsichtigt sein sollte.</string>
 </resources>

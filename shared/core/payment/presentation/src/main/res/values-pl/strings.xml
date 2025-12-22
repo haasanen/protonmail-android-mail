@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Coś poszło nie tak</string>
   <string name="payment_error_description">Nie mogliśmy załadować strony. Odśwież stronę lub sprawdź połączenie internetowe.</string>
+  <string name="proton_error_non_processable_actions">Nie można przetworzyć co najmniej jednej akcji. Zaloguj się ponownie na swoje konto.</string>
   <string name="payment_purchase_button_get">Wybierz plan %1$s</string>
   <string name="payment_purchase_button_subscribed">Subskrybujesz %1$s</string>
   <string name="payment_purchase_button_product_not_found">Nie znaleziono usługi w sklepie</string>
@@ -49,5 +50,6 @@
   <string name="payment_subscription_managed_by_google">Twoja subskrypcja jest zarządzana przez Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Twoja subskrypcja jest zarządzana przez App Store.</string>
   <string name="payment_subscription_managed_by_other">Nie możesz zarządzać subskrypcją poprzez aplikację mobilną.</string>
-  <string name="proton_error_non_processable_actions">Nie można przetworzyć co najmniej jednej akcji. Zaloguj się ponownie na swoje konto.</string>
+  <string name="payment_subscription_restricted_access_title">Restricted access</string>
+  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

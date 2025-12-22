@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Něco se pokazilo</string>
   <string name="payment_error_description">Tuto stránku se nám nepodařilo načíst. Obnovte prosím stránku nebo zkontrolujte své internetové připojení.</string>
+  <string name="proton_error_non_processable_actions">Nelze zpracovat jednu nebo více akcí. Prosím odhlašte se a znovu se přihlašte do vašeho účtu.</string>
   <string name="payment_purchase_button_get">Získejte %1$s</string>
   <string name="payment_purchase_button_subscribed">Přihlásit se k odběru %1$s</string>
   <string name="payment_purchase_button_product_not_found">Produkt nebyl v obchodě nalezen</string>
@@ -49,5 +50,6 @@
   <string name="payment_subscription_managed_by_google">Vaše předplatné spravuje Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Vaše předplatné spravuje Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Vaše předplatné nelze spravovat v mobilní aplikaci.</string>
-  <string name="proton_error_non_processable_actions">Nelze zpracovat jednu nebo více akcí. Prosím odhlašte se a znovu se přihlašte do vašeho účtu.</string>
+  <string name="payment_subscription_restricted_access_title">Omezený přístup</string>
+  <string name="payment_subscription_restricted_access_description">Omlouváme se, ale nemáte oprávnění k přístupu na tuto stránku. Pokud se toto nemělo stát, kontaktujte svého správce.</string>
 </resources>

@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">予期せぬエラー</string>
   <string name="payment_error_description">ページが読み込めませんでした。再読み込みするか、インターネット接続をご確認ください。</string>
+  <string name="proton_error_non_processable_actions">1つまたは複数の操作が処理できません。アカウントからログアウトし、再度ログインしてください。</string>
   <string name="payment_purchase_button_get">%1$sを入手</string>
   <string name="payment_purchase_button_subscribed">%1$s に登録しました</string>
   <string name="payment_purchase_button_product_not_found">ストアの製品が見つかりません</string>
@@ -43,5 +44,6 @@
   <string name="payment_subscription_managed_by_google">サブスクリプションは Google Play によって管理されています。</string>
   <string name="payment_subscription_managed_by_apple">サブスクリプションは Apple Store によって管理されています。</string>
   <string name="payment_subscription_managed_by_other">サブスクリプションはモバイル アプリ内では管理できません。</string>
-  <string name="proton_error_non_processable_actions">1つまたは複数の操作が処理できません。アカウントからログアウトし、再度ログインしてください。</string>
+  <string name="payment_subscription_restricted_access_title">Restricted access</string>
+  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

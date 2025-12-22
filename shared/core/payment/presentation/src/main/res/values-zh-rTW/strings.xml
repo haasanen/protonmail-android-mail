@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">出了點問題</string>
   <string name="payment_error_description">我們無法載入此頁面。請重新整理頁面或檢查您的網際網路連線。</string>
+  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
   <string name="payment_purchase_button_get">取得 %1$s</string>
   <string name="payment_purchase_button_subscribed">已訂閱 %1$s</string>
   <string name="payment_purchase_button_product_not_found">在商店中找不到產品</string>
@@ -43,5 +44,6 @@
   <string name="payment_subscription_managed_by_google">您的訂閱是由 Google Play 管理。</string>
   <string name="payment_subscription_managed_by_apple">您的訂閱是由 Apple Store 管理。</string>
   <string name="payment_subscription_managed_by_other">您的訂閱無法在行動裝置應用程式內管理。</string>
-  <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+  <string name="payment_subscription_restricted_access_title">Restricted access</string>
+  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Si è verificato un errore</string>
   <string name="payment_error_description">Caricamento della pagina non riuscito. Controlla la connessione a Internet e aggiorna la pagina.</string>
+  <string name="proton_error_non_processable_actions">Azione non disponibile. Effettua nuovamente l\'accesso all\'account.</string>
   <string name="payment_purchase_button_get">Ottieni %1$s</string>
   <string name="payment_purchase_button_subscribed">Abbonato a %1$s</string>
   <string name="payment_purchase_button_product_not_found">Prodotto non trovato nell\'app store</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">L\'abbonamento è gestito da Google Play Store</string>
   <string name="payment_subscription_managed_by_apple">L\'abbonamento è gestito da App Store</string>
   <string name="payment_subscription_managed_by_other">L\'abbonamento non può essere gestito nell\'app mobile</string>
-  <string name="proton_error_non_processable_actions">Azione non disponibile. Effettua nuovamente l\'accesso all\'account.</string>
+  <string name="payment_subscription_restricted_access_title">Accesso limitato</string>
+  <string name="payment_subscription_restricted_access_description">Spiacente, non hai il permesso di accedere a questa pagina. Contatta il tuo amministratore se questo non doveva succedere.</string>
 </resources>

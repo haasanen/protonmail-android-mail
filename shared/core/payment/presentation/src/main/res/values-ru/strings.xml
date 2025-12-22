@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Что-то пошло не так</string>
   <string name="payment_error_description">Мы не смогли загрузить эту страницу. Обновите страницу или проверьте подключение к Интернету.</string>
+  <string name="proton_error_non_processable_actions">Одно или несколько действий не могут быть обработаны. Выйдите из своего аккаунта и войдите в него снова.</string>
   <string name="payment_purchase_button_get">Получить %1$s</string>
   <string name="payment_purchase_button_subscribed">Подписка на %1$s</string>
   <string name="payment_purchase_button_product_not_found">Товар не найден в Store</string>
@@ -49,5 +50,6 @@
   <string name="payment_subscription_managed_by_google">Ваша подписка управляется Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Ваша подписка управляется Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Вы не можете управлять подпиской из мобильного приложения.</string>
-  <string name="proton_error_non_processable_actions">Одно или несколько действий не могут быть обработаны. Выйдите из своего аккаунта и войдите в него снова.</string>
+  <string name="payment_subscription_restricted_access_title">Restricted access</string>
+  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

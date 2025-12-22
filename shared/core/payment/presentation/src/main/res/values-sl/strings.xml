@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Nekaj je šlo narobe</string>
   <string name="payment_error_description">Strani ni bilo mogoče naložiti. Osvežite stran ali preverite svojo internetno povezavo.</string>
+  <string name="proton_error_non_processable_actions">Enega ali več dejanj ni bilo mogoče obdelati. Odjavite se in se ponovno prijavite v račun.</string>
   <string name="payment_purchase_button_get">Pridobi %1$s</string>
   <string name="payment_purchase_button_subscribed">Naročen na %1$s</string>
   <string name="payment_purchase_button_product_not_found">Izdelek ni najden v trgovini</string>
@@ -49,5 +50,6 @@
   <string name="payment_subscription_managed_by_google">Vašo naročnino upravlja Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Vašo naročnino upravlja Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Naročnine ni mogoče upravljati v mobilni aplikaciji.</string>
-  <string name="proton_error_non_processable_actions">Enega ali več dejanj ni bilo mogoče obdelati. Odjavite se in se ponovno prijavite v račun.</string>
+  <string name="payment_subscription_restricted_access_title">Restricted access</string>
+  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

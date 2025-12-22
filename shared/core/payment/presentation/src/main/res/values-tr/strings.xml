@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Bir sorun çıktı</string>
   <string name="payment_error_description">Bu sayfa yüklenemedi. Lütfen sayfayı yenileyin veya internet bağlantınızı denetleyin.</string>
+  <string name="proton_error_non_processable_actions">Bir ya da birkaç işlem yapılamadı. Lütfen hesabınızın oturumunu kapatıp yeniden açın.</string>
   <string name="payment_purchase_button_get">%1$s edinin</string>
   <string name="payment_purchase_button_subscribed">%1$s abonesi oldunuz.</string>
   <string name="payment_purchase_button_product_not_found">Ürün mağazada bulunamadı</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">Aboneliğiniz Google Play tarafından yönetiliyor.</string>
   <string name="payment_subscription_managed_by_apple">Aboneliğiniz Apple Store tarafından yönetiliyor.</string>
   <string name="payment_subscription_managed_by_other">Aboneliğiniz mobil uygulama içinden yönetilemez.</string>
-  <string name="proton_error_non_processable_actions">Bir ya da birkaç işlem yapılamadı. Lütfen hesabınızın oturumunu kapatıp yeniden açın.</string>
+  <string name="payment_subscription_restricted_access_title">Sınırlı erişim</string>
+  <string name="payment_subscription_restricted_access_description">Ne yazık ki, bu sayfaya erişme izniniz yok. Bir yanlışlık olduğunu düşünüyorsanız yöneticiniz ile görüşün.</string>
 </resources>

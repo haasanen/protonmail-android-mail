@@ -32,14 +32,14 @@
   <string name="dialog_remove_account_confirm">Fjern</string>
   <string name="dialog_remove_account_cancel">Annuller</string>
   <string name="feature_coming_soon">Funktion kommer snart…</string>
-  <string name="mailbox_draft_saved">Kladde gemt</string>
+  <string name="mailbox_draft_saved">Udkast gemt</string>
   <string name="mailbox_draft_discard">Kassér</string>
-  <string name="mailbox_draft_discarded">Kladde kasseret</string>
+  <string name="mailbox_draft_discarded">Udkast kasseret</string>
   <string name="mailbox_message_sending">Sender besked…</string>
   <string name="mailbox_message_sending_offline">Offline: besked sat i kø til afsendelse</string>
   <string name="mailbox_message_sending_success">Besked sendt</string>
   <string name="mailbox_message_sending_error">Fejl ved afsendelse af besked</string>
-  <string name="mailbox_message_sending_error_action">Gå til kladder</string>
+  <string name="mailbox_message_sending_error_action">Gå til udkast</string>
   <string name="notification_switched_account">Skiftet til konto %s</string>
   <string name="label_saved">Etiket gemt</string>
   <string name="label_deleted">Etiket slettet</string>

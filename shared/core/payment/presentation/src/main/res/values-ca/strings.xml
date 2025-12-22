@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">S\'ha produït un error.</string>
   <string name="payment_error_description">No hem pogut carregar aquesta pàgina. Actualitzeu la pàgina o comproveu la connexió a Internet.</string>
+  <string name="proton_error_non_processable_actions">No es poden processar una o més accions. Tanqueu la sessió i torneu-la a iniciar.</string>
   <string name="payment_purchase_button_get">Obtingueu %1$s</string>
   <string name="payment_purchase_button_subscribed">Subscrit a %1$s</string>
   <string name="payment_purchase_button_product_not_found">No s\'ha trobat el producte a la botiga.</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">La subscripció és gestionada pel Google Play.</string>
   <string name="payment_subscription_managed_by_apple">La subscripció és gestionada per l\'Apple Store.</string>
   <string name="payment_subscription_managed_by_other">La subscripció no es pot gestionar des de l\'aplicació mòbil.</string>
-  <string name="proton_error_non_processable_actions">No es poden processar una o més accions. Tanqueu la sessió i torneu-la a iniciar.</string>
+  <string name="payment_subscription_restricted_access_title">Accés restringit</string>
+  <string name="payment_subscription_restricted_access_description">No teniu permís per accedir a aquesta pàgina. Contacteu amb l\'administrador si creieu que es tracta d\'un error.</string>
 </resources>

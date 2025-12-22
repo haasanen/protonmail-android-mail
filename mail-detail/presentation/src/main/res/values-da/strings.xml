@@ -65,8 +65,8 @@ igen.</string>
   <string name="error_get_attachment_failed">Kunne ikke hente vedhæftning.</string>
   <string name="error_attachment_download_in_progress">Nuværende download skal afsluttes, før du starter et nyt.</string>
   <string name="error_get_attachment_not_enough_memory">Kunne ikke hente vedhæftet fil på grund af utilstrækkelig hukommelse</string>
-  <string name="error_relabel_message_failed">Beskeden kunne ikke ommærkes. Prøv igen</string>
-  <string name="error_relabel_conversation_failed">Samtalen kunne ikke ommærkes. Prøv igen</string>
+  <string name="error_relabel_message_failed">Det lykkedes ikke at ændre beskedens etiket. Prøv igen.</string>
+  <string name="error_relabel_conversation_failed">Det lykkedes ikke at ændre samtalens etiket. Prøv igen.</string>
   <string name="please_go_back_online_to_load_messages">Du er offline. Sørg for at være online igen for at indlæse beskeder</string>
   <string name="decryption_error">Dekryptering af besked mislykkedes.</string>
   <string name="detail_error_retrieving_message_body">Kan ikke hente besked</string>
@@ -131,10 +131,10 @@ igen.</string>
   <string name="schedule_send_tomorrow">i morgen kl. %1$s</string>
   <string name="error_cancel_schedule_send_failed">Kunne ikke annullere den planlagte afsendelsestid for denne besked.</string>
   <string name="offline_error_cancel_schedule_send_failed">Kan ikke annullere en planlagt besked, mens du er offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Rediger kladde</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Rediger udkast</string>
   <string name="message_cancel_schedule_send_dialog_cancel_button">Annuller</string>
   <string name="message_cancel_schedule_send_dialog_title">Rediger og planlæg igen</string>
-  <string name="message_cancel_schedule_send_dialog_message">Denne besked vil blive flyttet til Kladder, så du kan redigere den. Du skal planlægge igen, hvornår den skal sendes.</string>
+  <string name="message_cancel_schedule_send_dialog_message">Denne besked vil blive flyttet til udkast, så du kan redigere den. Du skal planlægge igen, hvornår den skal sendes.</string>
   <!-- RSVP widget -->
   <string name="rsvp_widget_no_title">(ingen titel)</string>
   <string name="rsvp_widget_attendance_optional">(Deltagelse valgfri)</string>

@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Er is iets fout gegaan</string>
   <string name="payment_error_description">We konden deze pagina niet laden. Vernieuw de pagina of controleer uw internetverbinding.</string>
+  <string name="proton_error_non_processable_actions">Eén of meer acties kunnen niet worden verwerkt. Meld u alstublieft af en meld u opnieuw aan bij uw account.</string>
   <string name="payment_purchase_button_get">Kies %1$s</string>
   <string name="payment_purchase_button_subscribed">Geabonneerd op %1$s</string>
   <string name="payment_purchase_button_product_not_found">Product niet gevonden in de winkel</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">Uw abonnement wordt beheerd door Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Uw abonnement wordt beheerd door Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Uw abonnement kan niet beheerd worden in de mobiele app.</string>
-  <string name="proton_error_non_processable_actions">Eén of meer acties kunnen niet worden verwerkt. Meld u alstublieft af en meld u opnieuw aan bij uw account.</string>
+  <string name="payment_subscription_restricted_access_title">Beperkte toegang</string>
+  <string name="payment_subscription_restricted_access_description">Het spijt ons, u hebt geen toestemming om toegang te krijgen tot deze pagina. Neem contact op met uw beheerder als dit niet had mogen gebeuren.</string>
 </resources>

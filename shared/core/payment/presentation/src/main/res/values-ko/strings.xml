@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">문제가 발생했습니다</string>
   <string name="payment_error_description">페이지를 로드하는데 오류가 발생했습니다. 페이지를 새로고침하거나 연결 상태를 확인하세요.</string>
+  <string name="proton_error_non_processable_actions">하나 이상의 작업을 처리할 수 없습니다. 로그아웃 한 후 다시 로그인하십시오.</string>
   <string name="payment_purchase_button_get">%1$s 구독</string>
   <string name="payment_purchase_button_subscribed">%1$s이(가) 구독됨</string>
   <string name="payment_purchase_button_product_not_found">스토어에서 제품을 찾을 수 없습니다</string>
@@ -43,5 +44,6 @@
   <string name="payment_subscription_managed_by_google">구독이 Google Play에 의해 관리됩니다.</string>
   <string name="payment_subscription_managed_by_apple">구독이 Apple App Store에 의해 관리됩니다.</string>
   <string name="payment_subscription_managed_by_other">모바일 앱에서 구독을 관리할 수 없습니다.</string>
-  <string name="proton_error_non_processable_actions">하나 이상의 작업을 처리할 수 없습니다. 로그아웃 한 후 다시 로그인하십시오.</string>
+  <string name="payment_subscription_restricted_access_title">Restricted access</string>
+  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

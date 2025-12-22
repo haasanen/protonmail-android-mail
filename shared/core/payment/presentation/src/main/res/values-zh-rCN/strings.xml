@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">出错了</string>
   <string name="payment_error_description">我们无法加载此页面，请刷新页面或检查网络连接。</string>
+  <string name="proton_error_non_processable_actions">一项或多项操作无法处理。请登出并重新登录您的账户。</string>
   <string name="payment_purchase_button_get">开通 %1$s</string>
   <string name="payment_purchase_button_subscribed">已订阅 %1$s</string>
   <string name="payment_purchase_button_product_not_found">商店中找不到产品</string>
@@ -43,5 +44,6 @@
   <string name="payment_subscription_managed_by_google">您的订阅由 Google Play 管理。</string>
   <string name="payment_subscription_managed_by_apple">您的订阅由 Apple Store 管理。</string>
   <string name="payment_subscription_managed_by_other">您的订阅无法在移动应用内进行管理。</string>
-  <string name="proton_error_non_processable_actions">一项或多项操作无法处理。请登出并重新登录您的账户。</string>
+  <string name="payment_subscription_restricted_access_title">Restricted access</string>
+  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

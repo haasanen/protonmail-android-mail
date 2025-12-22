@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Något gick fel</string>
   <string name="payment_error_description">Vi kunde inte ladda denna sida. Uppdatera sidan eller kontrollera din internetanslutning.</string>
+  <string name="proton_error_non_processable_actions">En eller flera åtgärder kan inte bearbetas. Logga ut och logga in igen på ditt konto.</string>
   <string name="payment_purchase_button_get">Skaffa %1$s</string>
   <string name="payment_purchase_button_subscribed">Prenumererar på %1$s</string>
   <string name="payment_purchase_button_product_not_found">Produkt hittades inte i butik</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">Din prenumeration är hanterad av Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Din prenumeration är hanterad av Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Din prenumeration kan inte hanteras i mobilappen.</string>
-  <string name="proton_error_non_processable_actions">En eller flera åtgärder kan inte bearbetas. Logga ut och logga in igen på ditt konto.</string>
+  <string name="payment_subscription_restricted_access_title">Begränsad åtkomst</string>
+  <string name="payment_subscription_restricted_access_description">Du har inte behörighet att komma åt denna sida. Kontakta din administratör om detta inte borde ha hänt.</string>
 </resources>

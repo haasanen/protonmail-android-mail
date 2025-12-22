@@ -37,6 +37,6 @@
   <string name="report_a_problem_leave_dialog_cancel_btn">Annuller</string>
   <string name="report_a_problem_leave_dialog_close_btn">Luk</string>
   <string name="report_a_problem_success">Tak for din rapport. Vores kundesupport kontakter dig.</string>
-  <string name="report_a_problem_generic_error">Der opstod en fejl. Prøv igen.fejl</string>
+  <string name="report_a_problem_generic_error">Der opstod en fejl. Prøv igen.</string>
   <string name="report_a_problem_offline_error">Du er i øjeblikket offline. Prøv igen med internetforbindelse.</string>
 </resources>

@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Valami rosszul sült el</string>
   <string name="payment_error_description">Nem tudtuk betölteni ezt az oldalt. Kérjük, frissítse az oldalt vagy ellenőrizze internetkapcsolatát.</string>
+  <string name="proton_error_non_processable_actions">Egy vagy több művelet nem feldolgozható. Jelentkezzen ki, majd jelentkezzen be újra a fiókjába.</string>
   <string name="payment_purchase_button_get">%1$s beszerzése</string>
   <string name="payment_purchase_button_subscribed">Feliratkozva: %1$s</string>
   <string name="payment_purchase_button_product_not_found">A termék nem található az áruházban</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">Előfizetését a Google Play kezeli.</string>
   <string name="payment_subscription_managed_by_apple">Előfizetését az Apple Store kezeli.</string>
   <string name="payment_subscription_managed_by_other">Az előfizetése nem kezelhető a mobilalkalmazásban.</string>
-  <string name="proton_error_non_processable_actions">Egy vagy több művelet nem feldolgozható. Jelentkezzen ki, majd jelentkezzen be újra a fiókjába.</string>
+  <string name="payment_subscription_restricted_access_title">Restricted access</string>
+  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

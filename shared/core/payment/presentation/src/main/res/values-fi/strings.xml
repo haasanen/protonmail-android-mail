@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Jotain meni pieleen</string>
   <string name="payment_error_description">Sivua ei voitu ladata. Päivitä sivu tai tarkista internet-yhteytesi.</string>
+  <string name="proton_error_non_processable_actions">Yhtä tai useampaa toimintoa ei voida käsitellä. Kirjaudu ulos ja uudelleen sisään tilillesi.</string>
   <string name="payment_purchase_button_get">Hanki %1$s</string>
   <string name="payment_purchase_button_subscribed">%1$s tilattu</string>
   <string name="payment_purchase_button_product_not_found">Tuotetta ei löytynyt kaupasta</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">Tilaustasi hallinnoi Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Tilauksesi hallinnoi Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Et voi hallita tilaustasi mobiilisovelluksesta.</string>
-  <string name="proton_error_non_processable_actions">Yhtä tai useampaa toimintoa ei voida käsitellä. Kirjaudu ulos ja uudelleen sisään tilillesi.</string>
+  <string name="payment_subscription_restricted_access_title">Rajoitettu pääsy</string>
+  <string name="payment_subscription_restricted_access_description">Sinulla ei ole oikeuksia käyttää tätä sivua. Ota yhteyttä järjestelmänvalvojaan, jos tämän ei olisi pitänyt tapahtua.</string>
 </resources>

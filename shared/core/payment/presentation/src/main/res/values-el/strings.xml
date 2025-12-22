@@ -19,6 +19,7 @@
 <resources>
   <string name="payment_error_title">Κάτι πήγε στραβά</string>
   <string name="payment_error_description">Δεν μπορέσαμε να φορτώσουμε αυτήν τη σελίδα. Παρακαλούμε ανανεώστε τη σελίδα ή ελέγξτε τη σύνδεσή σας στο διαδίκτυο.</string>
+  <string name="proton_error_non_processable_actions">Μία ή περισσότερες ενέργειες δεν μπορούν να επεξεργαστούν. Παρακαλούμε αποσυνδεθείτε και συνδεθείτε ξανά στον λογαριασμό σας.</string>
   <string name="payment_purchase_button_get">Αποκτήστε %1$s</string>
   <string name="payment_purchase_button_subscribed">Εγγεγραμμένοι στο %1$s</string>
   <string name="payment_purchase_button_product_not_found">Το προϊόν δε βρέθηκε στο Store</string>
@@ -45,5 +46,6 @@
   <string name="payment_subscription_managed_by_google">Η συνδρομή σας διαχειρίζεται από το Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Η συνδρομή σας διαχειρίζεται από το Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Δεν είναι δυνατή η διαχείριση της συνδρομής σας εντός της εφαρμογής για κινητές συσκευές.</string>
-  <string name="proton_error_non_processable_actions">Μία ή περισσότερες ενέργειες δεν μπορούν να επεξεργαστούν. Παρακαλούμε αποσυνδεθείτε και συνδεθείτε ξανά στον λογαριασμό σας.</string>
+  <string name="payment_subscription_restricted_access_title">Περιορισμένη πρόσβαση</string>
+  <string name="payment_subscription_restricted_access_description">Λυπούμαστε, αλλά δεν έχετε άδεια πρόσβασης σε αυτή τη σελίδα. Επικοινωνήστε με τον διαχειριστή σας αν αυτό δεν έπρεπε να συμβεί.</string>
 </resources>
