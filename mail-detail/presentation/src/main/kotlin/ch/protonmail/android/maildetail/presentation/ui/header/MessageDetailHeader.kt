@@ -444,7 +444,7 @@ private fun MessageDetailHeaderCard(
             RecipientsSection(uiModel, actions)
 
             EncryptionInfoSection(
-                uiModel = EncryptionInfoUiModel.StoredWithZeroAccessEncryption,
+                uiModel = EncryptionInfoUiModel.ProtonE2eeVerifiedContact,
                 onMoreInfoClick = {}
             )
 
