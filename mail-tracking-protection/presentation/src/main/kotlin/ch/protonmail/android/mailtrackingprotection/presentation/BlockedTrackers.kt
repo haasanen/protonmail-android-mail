@@ -78,8 +78,7 @@ private fun BlockedTrackers(
     ) {
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.Start
         ) {
             Box(
                 modifier = Modifier.width(DetailsTitleWidth),
@@ -134,8 +133,7 @@ private fun NoBlockedTrackers(onNoBlockedTrackersClick: () -> Unit, modifier: Mo
     ) {
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.Start
         ) {
             Box(
                 modifier = Modifier.width(DetailsTitleWidth),
