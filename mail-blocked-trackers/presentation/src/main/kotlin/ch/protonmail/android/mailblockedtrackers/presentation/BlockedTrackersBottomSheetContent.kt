@@ -24,6 +24,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +32,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +59,7 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.headlineSmallNorm
+import ch.protonmail.android.design.compose.theme.labelLargeNorm
 import ch.protonmail.android.mailblockedtrackers.domain.model.BlockedTracker
 import ch.protonmail.android.mailblockedtrackers.domain.model.CleanedLink
 import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
@@ -63,18 +67,22 @@ import ch.protonmail.android.mailblockedtrackers.presentation.model.TrackersUiMo
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
-fun BlockedTrackersBottomSheetContent(state: BlockedTrackersSheetState, modifier: Modifier = Modifier) {
+fun BlockedTrackersBottomSheetContent(
+    state: BlockedTrackersSheetState,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     when (state) {
         is BlockedTrackersSheetState.Requested -> when {
-            state.trackers != null -> BlockedTrackersBottomSheetContent(state.trackers, modifier)
-            else -> NoBlockedTrackersBottomSheetContent(modifier)
+            state.trackers != null -> BlockedTrackersBottomSheetContent(state.trackers, onDismiss, modifier)
+            else -> NoBlockedTrackersBottomSheetContent(modifier, onDismiss)
         }
     }
 }
 
 @Composable
-private fun NoBlockedTrackersBottomSheetContent(modifier: Modifier = Modifier) {
+private fun NoBlockedTrackersBottomSheetContent(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
 
     Column(
         modifier = modifier
@@ -84,12 +92,36 @@ private fun NoBlockedTrackersBottomSheetContent(modifier: Modifier = Modifier) {
 
         Header()
 
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+
+        CloseButton(onClick = onDismiss)
+
         BottomNavigationBarSpacer()
     }
 }
 
 @Composable
-private fun BlockedTrackersBottomSheetContent(trackers: TrackersUiModel, modifier: Modifier = Modifier) {
+private fun CloseButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(
+        modifier = modifier.fillMaxWidth(),
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.interactionBrandDefaultNorm),
+        shape = ProtonTheme.shapes.huge,
+        contentPadding = PaddingValues(ProtonDimens.Spacing.Large)
+    ) {
+        Text(
+            text = stringResource(R.string.got_it),
+            style = ProtonTheme.typography.labelLargeNorm.copy(color = ProtonTheme.colors.iconInverted)
+        )
+    }
+}
+
+@Composable
+private fun BlockedTrackersBottomSheetContent(
+    trackers: TrackersUiModel,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     val urlDialogContent = remember { mutableStateOf<Pair<String, String>?>(null) }
 
@@ -111,6 +143,10 @@ private fun BlockedTrackersBottomSheetContent(trackers: TrackersUiModel, modifie
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
         CleanedLinksDetails(trackers.links)
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+
+        CloseButton(onClick = onDismiss)
 
         BottomNavigationBarSpacer()
     }
@@ -527,12 +563,13 @@ private fun HeaderIcon() {
 @Composable
 private fun PreviewBlockedTrackersBottomSheet() {
     BlockedTrackersBottomSheetContent(
-        BlockedTrackersSheetState.Requested(TrackersUiModelSample.oneTrackerBlocked)
+        BlockedTrackersSheetState.Requested(TrackersUiModelSample.oneTrackerBlocked),
+        onDismiss = {}
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun PreviewNoBlockedTrackersBottomSheet() {
-    NoBlockedTrackersBottomSheetContent()
+    NoBlockedTrackersBottomSheetContent(onDismiss = {})
 }

@@ -499,7 +499,10 @@ fun ConversationDetailScreen(
                     )
                 )
 
-                is BlockedTrackersSheetState -> BlockedTrackersBottomSheetContent(bottomSheetContentState)
+                is BlockedTrackersSheetState -> BlockedTrackersBottomSheetContent(
+                    state = bottomSheetContentState,
+                    onDismiss = { showBottomSheet = false }
+                )
 
                 else -> Unit
             }
