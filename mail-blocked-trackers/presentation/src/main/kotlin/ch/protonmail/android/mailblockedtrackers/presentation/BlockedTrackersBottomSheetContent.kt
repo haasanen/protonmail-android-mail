@@ -530,3 +530,9 @@ private fun PreviewBlockedTrackersBottomSheet() {
         BlockedTrackersSheetState.Requested(TrackersUiModelSample.oneTrackerBlocked)
     )
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewNoBlockedTrackersBottomSheet() {
+    NoBlockedTrackersBottomSheetContent()
+}
