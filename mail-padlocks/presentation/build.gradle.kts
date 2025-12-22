@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.bundles.module.presentation)
 
     implementation(project(":mail-common:presentation"))
+    implementation(project(":mail-featureflags:domain"))
+
     implementation(project(":mail-padlocks:domain"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))

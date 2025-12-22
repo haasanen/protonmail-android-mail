@@ -84,6 +84,8 @@ import ch.protonmail.android.maillabel.presentation.ui.LabelsList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSection
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.collections.immutable.ImmutableList
 
@@ -440,6 +442,11 @@ private fun MessageDetailHeaderCard(
                 actions
             )
             RecipientsSection(uiModel, actions)
+
+            EncryptionInfoSection(
+                uiModel = EncryptionInfoUiModel.StoredWithZeroAccessEncryption,
+                onMoreInfoClick = {}
+            )
 
             BlockedTrackers(
                 MessageId(uiModel.messageIdUiModel.id),

@@ -85,6 +85,7 @@ dependencies {
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-label:presentation"))
     implementation(project(":mail-crash-record:domain"))
+    implementation(project(":mail-padlocks:presentation"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-snooze:domain"))

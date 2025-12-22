@@ -17,4 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+    <string name="padlocks_stored_with_zero_access_encryption_summary">Stored with zero access encryption</string>
+    <string name="padlocks_stored_with_zero_access_encryption_description">This message is stored in your mailbox with zero‑access encryption. Neither Proton nor anyone else can read it. However, a sender or recipient not using Proton Mail may have a non-encrypted copy stored on their email server.</string>
+
+    <string name="padlocks_show_details">Show details</string>
 </resources>
