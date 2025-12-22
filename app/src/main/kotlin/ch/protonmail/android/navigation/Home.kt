@@ -89,18 +89,16 @@ import ch.protonmail.android.mailcomposer.presentation.mapper.SendErrorReasonMap
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionState
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionStateType
 import ch.protonmail.android.mailnotifications.presentation.viewmodel.NotificationsPermissionViewModel
 import ch.protonmail.android.mailnotifications.ui.NotificationsPermissionBottomSheet
-import ch.protonmail.android.mailonboarding.domain.model.OnboardingEligibilityState
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
+import ch.protonmail.android.mailspotlight.presentation.viewmodel.HomeFeatureSpotlightViewModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
-import ch.protonmail.android.mailupselling.presentation.model.blackfriday.BlackFridayModalState
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
 import ch.protonmail.android.mailupselling.presentation.viewmodel.BlackFridayModalUpsellViewModel
 import ch.protonmail.android.navigation.deeplinks.DeepLinkNavigationEffect
@@ -168,7 +166,8 @@ fun Home(
     viewModel: HomeViewModel = hiltViewModel(),
     onboardingStepViewModel: OnboardingStepViewModel = hiltViewModel(),
     notificationsPermissionViewModel: NotificationsPermissionViewModel = hiltViewModel(),
-    blackFridayModalUpsellViewModel: BlackFridayModalUpsellViewModel = hiltViewModel()
+    blackFridayModalUpsellViewModel: BlackFridayModalUpsellViewModel = hiltViewModel(),
+    featureSpotlightViewModel: HomeFeatureSpotlightViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController().withSentryObservableEffect()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -200,7 +199,18 @@ fun Home(
     val onboardingEligibilityState by onboardingStepViewModel.onboardingEligibilityState.collectAsStateWithLifecycle()
     val notificationsPermissionsState by notificationsPermissionViewModel.state.collectAsStateWithLifecycle()
     val blackFridayEligibilityState by blackFridayModalUpsellViewModel.state.collectAsStateWithLifecycle()
+    val featureSpotlightState by featureSpotlightViewModel.state.collectAsStateWithLifecycle()
 
+    val interstitialPriority by remember {
+        derivedStateOf {
+            resolveHomeInterstitialPriority(
+                onboardingEligibilityState,
+                notificationsPermissionsState,
+                featureSpotlightState,
+                blackFridayEligibilityState
+            )
+        }
+    }
     var bottomSheetType: BottomSheetType by remember { mutableStateOf(BottomSheetType.Onboarding) }
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -447,48 +457,39 @@ fun Home(
             }
     }
 
-    LaunchedEffect(onboardingEligibilityState, notificationsPermissionsState, blackFridayEligibilityState) {
-        when {
-            onboardingEligibilityState == OnboardingEligibilityState.Required -> {
+    LaunchedEffect(interstitialPriority) {
+        // Home is a wrapper, so we can't rely on navigation here
+        if (navController.currentDestination?.route != Screen.Mailbox.route) return@LaunchedEffect
+
+        when (val priority = interstitialPriority) {
+            is HomeInterstitialPriority.Loading -> Unit
+            is HomeInterstitialPriority.Onboarding -> {
                 bottomSheetType = BottomSheetType.Onboarding
-                scope.launch {
-                    bottomSheetState.show()
-                }.invokeOnCompletion {
-                    showBottomSheet = true
-                }
+                scope.launch { bottomSheetState.show() }
+                    .invokeOnCompletion { showBottomSheet = true }
             }
 
-            notificationsPermissionsState is NotificationsPermissionState.RequiresInteraction -> {
-                val type = (notificationsPermissionsState as NotificationsPermissionState.RequiresInteraction).stateType
-                bottomSheetType = BottomSheetType.NotificationsPermissions(type)
-                scope.launch {
-                    bottomSheetState.show()
-                }.invokeOnCompletion {
-                    showBottomSheet = true
-                }
+            is HomeInterstitialPriority.NotificationsPermissions -> {
+                bottomSheetType = BottomSheetType.NotificationsPermissions(priority.type)
+                scope.launch { bottomSheetState.show() }
+                    .invokeOnCompletion { showBottomSheet = true }
             }
 
-            blackFridayEligibilityState is BlackFridayModalState.Show -> {
-                val state = blackFridayEligibilityState as BlackFridayModalState.Show
+            is HomeInterstitialPriority.FeatureSpotlight -> {
+                navController.navigate(Screen.FeatureSpotlight.route)
+            }
 
-                // This should ideally be in the screen itself but putting it here for simplicity.
-                blackFridayModalUpsellViewModel.saveModalSeenTimestamp(state.wave)
-
+            is HomeInterstitialPriority.BlackFriday -> {
+                blackFridayModalUpsellViewModel.saveModalSeenTimestamp(priority.state.wave)
                 navController.navigate(
-                    Screen.FeatureUpselling(
-                        UpsellingEntryPoint.Feature.Navbar,
-                        state.wave
-                    )
+                    Screen.FeatureUpselling(UpsellingEntryPoint.Feature.Navbar, priority.state.wave)
                 )
             }
 
-            else -> {
+            is HomeInterstitialPriority.None -> {
                 if (showBottomSheet) {
-                    scope.launch {
-                        bottomSheetState.hide()
-                    }.invokeOnCompletion {
-                        showBottomSheet = false
-                    }
+                    scope.launch { bottomSheetState.hide() }
+                        .invokeOnCompletion { showBottomSheet = false }
                 }
             }
         }

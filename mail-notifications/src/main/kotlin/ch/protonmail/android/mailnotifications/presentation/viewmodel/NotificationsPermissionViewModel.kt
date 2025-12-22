@@ -25,8 +25,8 @@ import ch.protonmail.android.mailnotifications.data.model.NotificationsPermissio
 import ch.protonmail.android.mailnotifications.data.repository.NotificationsPermissionRepository
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionState
-import ch.protonmail.android.mailnotifications.presentation.model.PermissionRequestedHolder
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionStateType
+import ch.protonmail.android.mailnotifications.presentation.model.PermissionRequestedHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -57,7 +57,7 @@ class NotificationsPermissionViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = NotificationsPermissionState.NoAction
+        initialValue = NotificationsPermissionState.Loading
     )
 
     fun trackPermissionRequested() {

@@ -23,6 +23,7 @@ import ch.protonmail.android.mailnotifications.R
 
 sealed interface NotificationsPermissionState {
 
+    data object Loading : NotificationsPermissionState
     data object Granted : NotificationsPermissionState
     data class RequiresInteraction(val stateType: NotificationsPermissionStateType) : NotificationsPermissionState
     data object NoAction : NotificationsPermissionState

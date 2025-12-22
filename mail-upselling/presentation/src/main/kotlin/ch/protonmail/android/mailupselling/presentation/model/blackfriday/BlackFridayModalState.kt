@@ -24,5 +24,5 @@ sealed interface BlackFridayModalState {
     data object NotRequired : BlackFridayModalState
     data object Loading : BlackFridayModalState
 
-    data class Show(val wave: UpsellingVisibility.Promotional.BlackFriday)
+    data class Show(val wave: UpsellingVisibility.Promotional.BlackFriday) : BlackFridayModalState
 }
