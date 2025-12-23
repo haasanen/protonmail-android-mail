@@ -91,7 +91,7 @@ private fun EncryptionInfo(
                 Text(
                     modifier = Modifier
                         .wrapContentWidth(),
-                    text = stringResource(uiModel.summary),
+                    text = stringResource(uiModel.title),
                     style = ProtonTheme.typography.bodySmallNorm
                 )
 

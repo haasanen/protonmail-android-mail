@@ -26,7 +26,7 @@ import ch.protonmail.android.mailpadlocks.presentation.R
 sealed class EncryptionInfoUiModel(
     @DrawableRes val icon: Int,
     @ColorRes val color: Int,
-    @StringRes val summary: Int,
+    @StringRes val link: Int,
     @StringRes val title: Int,
     @StringRes val description: Int
 ) {
@@ -34,7 +34,7 @@ sealed class EncryptionInfoUiModel(
     data object StoredWithZeroAccessEncryption : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_filled,
         color = R.color.charade,
-        summary = R.string.padlocks_stored_with_zero_access_encryption_summary,
+        link = R.string.padlocks_stored_with_zero_access_encryption_link,
         title = R.string.padlocks_stored_with_zero_access_encryption_summary,
         description = R.string.padlocks_stored_with_zero_access_encryption_description
     )
@@ -42,7 +42,7 @@ sealed class EncryptionInfoUiModel(
     data object ProtonE2ee : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_filled,
         color = R.color.padlock_blue,
-        summary = R.string.padlocks_proton_e2ee,
+        link = R.string.padlocks_e2ee_link,
         title = R.string.padlocks_proton_e2ee,
         description = R.string.padlocks_proton_e2ee_description
     )
@@ -50,7 +50,7 @@ sealed class EncryptionInfoUiModel(
     data object ProtonE2eeVerifiedContact : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_check_filled,
         color = R.color.padlock_blue,
-        summary = R.string.padlocks_proton_e2ee_verified_sender,
+        link = R.string.padlocks_e2ee_link,
         title = R.string.padlocks_proton_e2ee_verified_sender,
         description = R.string.padlocks_proton_e2ee_verified_sender_description
     )
@@ -58,7 +58,7 @@ sealed class EncryptionInfoUiModel(
     data object ProtonE2eeWithFailedVerification : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_exclamation_filled,
         color = R.color.padlock_blue,
-        summary = R.string.padlocks_proton_e2ee_failed_verification,
+        link = R.string.padlocks_e2ee_link,
         title = R.string.padlocks_proton_e2ee_failed_verification,
         description = R.string.padlocks_proton_e2ee_failed_verification_description
     )
@@ -66,15 +66,15 @@ sealed class EncryptionInfoUiModel(
     data object PgpE2ee : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_filled,
         color = R.color.padlock_green,
-        summary = R.string.padlocks_pgp_e2ee,
+        link = R.string.padlocks_e2ee_link,
         title = R.string.padlocks_pgp_e2ee,
         description = R.string.padlocks_pgp_e2ee_description
     )
 
-    data object PgpE2eeSinged : EncryptionInfoUiModel(
+    data object PgpE2eeSigned : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_pen_filled,
         color = R.color.padlock_green,
-        summary = R.string.padlocks_pgp_e2ee_signed,
+        link = R.string.padlocks_e2ee_link,
         title = R.string.padlocks_pgp_e2ee_signed,
         description = R.string.padlocks_pgp_e2ee_signed_description
     )
@@ -82,7 +82,7 @@ sealed class EncryptionInfoUiModel(
     data object PgpE2eeVerifiedContact : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_check_filled,
         color = R.color.padlock_green,
-        summary = R.string.padlocks_pgp_e2ee_verified_contact,
+        link = R.string.padlocks_e2ee_link,
         title = R.string.padlocks_pgp_e2ee_verified_contact,
         description = R.string.padlocks_pgp_e2ee_verified_contact_description
     )
@@ -90,7 +90,7 @@ sealed class EncryptionInfoUiModel(
     data object PgpE2eeWithFailedVerification : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_exclamation_filled,
         color = R.color.padlock_green,
-        summary = R.string.padlocks_pgp_e2ee_failed_verification,
+        link = R.string.padlocks_e2ee_link,
         title = R.string.padlocks_pgp_e2ee_failed_verification,
         description = R.string.padlocks_pgp_e2ee_failed_verification_description
     )
@@ -98,7 +98,7 @@ sealed class EncryptionInfoUiModel(
     data object PgpSigned : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_open_pen_filled,
         color = R.color.padlock_green,
-        summary = R.string.padlocks_pgp_signed,
+        link = R.string.padlocks_signed_link,
         title = R.string.padlocks_pgp_signed,
         description = R.string.padlocks_pgp_signed_description
     )
@@ -106,7 +106,7 @@ sealed class EncryptionInfoUiModel(
     data object PgpSignedVerifiedContact : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_open_check_filled,
         color = R.color.padlock_green,
-        summary = R.string.padlocks_pgp_signed_verified_contact,
+        link = R.string.padlocks_signed_link,
         title = R.string.padlocks_pgp_signed_verified_contact,
         description = R.string.padlocks_pgp_signed_verified_contact_description
     )
@@ -114,7 +114,7 @@ sealed class EncryptionInfoUiModel(
     data object PgpSignedVerificationFailed : EncryptionInfoUiModel(
         icon = R.drawable.ic_proton_lock_open_check_filled,
         color = R.color.padlock_green,
-        summary = R.string.padlocks_pgp_signed_failed_verification,
+        link = R.string.padlocks_signed_link,
         title = R.string.padlocks_pgp_signed_failed_verification,
         description = R.string.padlocks_pgp_signed_failed_verification_description
     )

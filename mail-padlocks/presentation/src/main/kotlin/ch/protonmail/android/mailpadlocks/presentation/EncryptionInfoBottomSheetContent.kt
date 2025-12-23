@@ -69,7 +69,7 @@ fun EncryptionInfoBottomSheetContent(
 }
 
 @Composable
-fun EncryptionInfoBottomSheetContent(
+private fun EncryptionInfoBottomSheetContent(
     uiModel: EncryptionInfoUiModel,
     onDismissed: () -> Unit,
     modifier: Modifier = Modifier
@@ -114,7 +114,7 @@ private fun Header(uiModel: EncryptionInfoUiModel) {
 private fun HeaderDescription(uiModel: EncryptionInfoUiModel) {
     val text = stringResource(uiModel.description)
     val linkText = stringResource(R.string.padlocks_learn_more)
-    val linkUrl = "https://proton.me/blog/what-is-end-to-end-encryption"
+    val linkUrl = stringResource(uiModel.link)
     val linkColor = ProtonTheme.colors.interactionBrandDefaultNorm
 
     val annotatedString = remember(text, linkText) {
