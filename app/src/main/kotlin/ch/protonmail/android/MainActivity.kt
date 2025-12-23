@@ -216,8 +216,10 @@ class MainActivity : AppCompatActivity() {
                     Timber.d("ReviewFlow Rating In-App Review flow completed.")
                 }
             } else {
-                val reviewErrorCode = (task.exception as ReviewException).errorCode
-                Timber.e("ReviewFlow Rating Review request failed with error: $reviewErrorCode")
+                when (val exception = task.exception) {
+                    is ReviewException -> Timber.e("In app review error: ${exception.errorCode}")
+                    else -> Timber.e("Generic error while requesting in app review: $exception")
+                }
             }
         }
     }
