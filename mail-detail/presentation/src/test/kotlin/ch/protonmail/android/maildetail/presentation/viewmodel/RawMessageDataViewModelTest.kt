@@ -23,8 +23,11 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.maildetail.domain.usecase.DownloadRawMessageData
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataState
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataType
+import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.ui.RawMessageDataScreen
 import ch.protonmail.android.maildetail.presentation.viewmodel.RawMessageDataViewModelTest.TestData.MESSAGE_ID
 import ch.protonmail.android.maildetail.presentation.viewmodel.RawMessageDataViewModelTest.TestData.RAW_DATA_TYPE_HEADERS
@@ -49,6 +52,7 @@ import kotlin.test.assertEquals
 
 class RawMessageDataViewModelTest {
 
+    private val downloadRawMessageData = mockk<DownloadRawMessageData>()
     private val getRawMessageBody = mockk<GetRawMessageBody>()
     private val getRawMessageHeaders = mockk<GetRawMessageHeaders>()
     private val savedStateHandle = mockk<SavedStateHandle> {
@@ -60,6 +64,7 @@ class RawMessageDataViewModelTest {
 
     private val rawMessageDataViewModel by lazy {
         RawMessageDataViewModel(
+            downloadRawMessageData = downloadRawMessageData,
             getRawMessageBody = getRawMessageBody,
             getRawMessageHeaders = getRawMessageHeaders,
             savedStateHandle = savedStateHandle,
@@ -86,7 +91,8 @@ class RawMessageDataViewModelTest {
             // Then
             val expected = RawMessageDataState.Data(
                 type = RawMessageDataType.Headers,
-                data = rawHeaders
+                data = rawHeaders,
+                toast = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }
@@ -122,7 +128,8 @@ class RawMessageDataViewModelTest {
             // Then
             val expected = RawMessageDataState.Data(
                 type = RawMessageDataType.HTML,
-                data = rawBody
+                data = rawBody,
+                toast = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }
@@ -141,6 +148,52 @@ class RawMessageDataViewModelTest {
             // Then
             val expected = RawMessageDataState.Error(RawMessageDataType.HTML)
             assertEquals(expected, awaitItem())
+        }
+    }
+
+    @Test
+    fun `should emit state with success toast when downloading data is successful`() = runTest {
+        // Given
+        val messageId = MessageId(MESSAGE_ID)
+        val rawBody = "raw body"
+        every { savedStateHandle.get<String>(RawMessageDataScreen.RAW_DATA_TYPE_KEY) } returns RAW_DATA_TYPE_HTML
+        coEvery { getRawMessageBody(UserIdTestData.userId, messageId) } returns rawBody.right()
+        coEvery { downloadRawMessageData("html", rawBody) } returns Unit.right()
+
+        rawMessageDataViewModel.state.test {
+            awaitItem()
+
+            // When
+            rawMessageDataViewModel.downloadData(RawMessageDataType.HTML, rawBody)
+
+            // Then
+            assertEquals(
+                R.string.raw_message_data_successful_download,
+                (awaitItem() as RawMessageDataState.Data).toast.consume()
+            )
+        }
+    }
+
+    @Test
+    fun `should emit state with failure toast when downloading data failed`() = runTest {
+        // Given
+        val messageId = MessageId(MESSAGE_ID)
+        val rawHeaders = "raw headers"
+        every { savedStateHandle.get<String>(RawMessageDataScreen.RAW_DATA_TYPE_KEY) } returns RAW_DATA_TYPE_HEADERS
+        coEvery { getRawMessageHeaders(UserIdTestData.userId, messageId) } returns rawHeaders.right()
+        coEvery { downloadRawMessageData("headers", rawHeaders) } returns DataError.Local.Unknown.left()
+
+        rawMessageDataViewModel.state.test {
+            awaitItem()
+
+            // When
+            rawMessageDataViewModel.downloadData(RawMessageDataType.Headers, rawHeaders)
+
+            // Then
+            assertEquals(
+                R.string.raw_message_data_failed_download,
+                (awaitItem() as RawMessageDataState.Data).toast.consume()
+            )
         }
     }
 

@@ -21,6 +21,9 @@ package ch.protonmail.android.maildetail.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.maildetail.domain.usecase.DownloadRawMessageData
+import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataState
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataType
 import ch.protonmail.android.maildetail.presentation.ui.RawMessageDataScreen
@@ -34,12 +37,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.deserializeOrNull
 import javax.inject.Inject
 
 @HiltViewModel
 class RawMessageDataViewModel @Inject constructor(
+    private val downloadRawMessageData: DownloadRawMessageData,
     private val getRawMessageBody: GetRawMessageBody,
     private val getRawMessageHeaders: GetRawMessageHeaders,
     private val savedStateHandle: SavedStateHandle,
@@ -59,16 +64,43 @@ class RawMessageDataViewModel @Inject constructor(
             val event = when (rawMessageDataType) {
                 RawMessageDataType.Headers -> getRawMessageHeaders(primaryUserId.first(), messageId).fold(
                     ifLeft = { RawMessageDataState.Error(rawMessageDataType) },
-                    ifRight = { RawMessageDataState.Data(rawMessageDataType, it) }
+                    ifRight = { RawMessageDataState.Data(rawMessageDataType, it, Effect.empty()) }
                 )
                 RawMessageDataType.HTML -> getRawMessageBody(primaryUserId.first(), messageId).fold(
                     ifLeft = { RawMessageDataState.Error(rawMessageDataType) },
-                    ifRight = { RawMessageDataState.Data(rawMessageDataType, it) }
+                    ifRight = { RawMessageDataState.Data(rawMessageDataType, it, Effect.empty()) }
                 )
             }
 
             mutableState.emit(event)
         }
+    }
+
+    fun downloadData(type: RawMessageDataType, data: String) = viewModelScope.launch {
+        val fileName = when (type) {
+            RawMessageDataType.Headers -> "headers"
+            RawMessageDataType.HTML -> "html"
+        }
+        downloadRawMessageData(fileName, data).fold(
+            ifLeft = {
+                mutableState.update {
+                    if (it is RawMessageDataState.Data) {
+                        it.copy(toast = Effect.of(R.string.raw_message_data_failed_download))
+                    } else {
+                        it
+                    }
+                }
+            },
+            ifRight = {
+                mutableState.update {
+                    if (it is RawMessageDataState.Data) {
+                        it.copy(toast = Effect.of(R.string.raw_message_data_successful_download))
+                    } else {
+                        it
+                    }
+                }
+            }
+        )
     }
 
     private fun requireMessageId(): MessageId {

@@ -16,20 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.presentation.model
+package ch.protonmail.android.maildetail.domain.usecase
 
-import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.maildetail.domain.repository.RawMessageDataRepository
+import javax.inject.Inject
 
-sealed class RawMessageDataState {
-    abstract val type: RawMessageDataType
+class DownloadRawMessageData @Inject constructor(
+    private val rawMessageDataRepository: RawMessageDataRepository
+) {
 
-    data class Loading(override val type: RawMessageDataType) : RawMessageDataState()
-    data class Error(override val type: RawMessageDataType) : RawMessageDataState()
-    data class Data(
-        override val type: RawMessageDataType,
-        val data: String,
-        val toast: Effect<Int>
-    ) : RawMessageDataState()
+    suspend operator fun invoke(fileName: String, data: String) =
+        rawMessageDataRepository.downloadRawData(fileName, data)
 }
-
-enum class RawMessageDataType { Headers, HTML }

@@ -16,20 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.presentation.model
+package ch.protonmail.android.maildetail.domain.repository
 
-import ch.protonmail.android.mailcommon.presentation.Effect
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
 
-sealed class RawMessageDataState {
-    abstract val type: RawMessageDataType
+interface RawMessageDataRepository {
 
-    data class Loading(override val type: RawMessageDataType) : RawMessageDataState()
-    data class Error(override val type: RawMessageDataType) : RawMessageDataState()
-    data class Data(
-        override val type: RawMessageDataType,
-        val data: String,
-        val toast: Effect<Int>
-    ) : RawMessageDataState()
+    suspend fun downloadRawData(fileName: String, data: String): Either<DataError, Unit>
 }
-
-enum class RawMessageDataType { Headers, HTML }

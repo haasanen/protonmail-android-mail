@@ -191,4 +191,6 @@
     <string name="raw_message_data_copy_action">Copy</string>
     <string name="raw_message_data_learn_more_action">Learn more</string>
     <string name="raw_message_data_error">Error loading data</string>
+    <string name="raw_message_data_successful_download">Download completed</string>
+    <string name="raw_message_data_failed_download">Download failed</string>
 </resources>

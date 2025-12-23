@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.maildetail.presentation.ui
 
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,12 +39,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -49,7 +55,10 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataState
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataType
@@ -57,12 +66,26 @@ import ch.protonmail.android.maildetail.presentation.viewmodel.RawMessageDataVie
 
 @Composable
 fun RawMessageDataScreen(onBackClick: () -> Unit, viewModel: RawMessageDataViewModel = hiltViewModel()) {
-    RawMessageDataScreen(viewModel.state.collectAsStateWithLifecycle().value, onBackClick)
+    RawMessageDataScreen(
+        viewModel.state.collectAsStateWithLifecycle().value,
+        onBackClick
+    ) { type, data -> viewModel.downloadData(type, data) }
 }
 
 @Composable
-fun RawMessageDataScreen(state: RawMessageDataState, onBackClick: () -> Unit) {
+fun RawMessageDataScreen(
+    state: RawMessageDataState,
+    onBackClick: () -> Unit,
+    onDownloadData: (RawMessageDataType, String) -> Unit
+) {
+    val context = LocalContext.current
     val isDropDownExpanded = remember { mutableStateOf(false) }
+
+    if (state is RawMessageDataState.Data) {
+        ConsumableLaunchedEffect(state.toast) {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Scaffold(
         containerColor = ProtonTheme.colors.backgroundInvertedNorm,
@@ -92,68 +115,81 @@ fun RawMessageDataScreen(state: RawMessageDataState, onBackClick: () -> Unit) {
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = { isDropDownExpanded.value = true }
-                    ) {
-                        Icon(
-                            tint = ProtonTheme.colors.iconNorm,
-                            painter = painterResource(id = R.drawable.ic_proton_three_dots_vertical),
-                            contentDescription = stringResource(
-                                id = R.string.raw_message_data_more_button_content_description
+                    if (state is RawMessageDataState.Data) {
+                        IconButton(
+                            onClick = { isDropDownExpanded.value = true }
+                        ) {
+                            Icon(
+                                tint = ProtonTheme.colors.iconNorm,
+                                painter = painterResource(id = R.drawable.ic_proton_three_dots_vertical),
+                                contentDescription = stringResource(
+                                    id = R.string.raw_message_data_more_button_content_description
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    DropdownMenu(
-                        expanded = isDropDownExpanded.value,
-                        onDismissRequest = { isDropDownExpanded.value = false },
-                        containerColor = ProtonTheme.colors.backgroundInvertedNorm
-                    ) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = stringResource(id = R.string.raw_message_data_download_action),
-                                    style = ProtonTheme.typography.bodyLargeNorm
-                                )
-                            },
-                            onClick = {},
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_proton_arrow_down_line),
-                                    contentDescription = NO_CONTENT_DESCRIPTION
+                        DropdownMenu(
+                            expanded = isDropDownExpanded.value,
+                            onDismissRequest = { isDropDownExpanded.value = false },
+                            containerColor = ProtonTheme.colors.backgroundInvertedNorm
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = stringResource(id = R.string.raw_message_data_download_action),
+                                        style = ProtonTheme.typography.bodyLargeNorm
+                                    )
+                                },
+                                onClick = {
+                                    isDropDownExpanded.value = false
+                                    onDownloadData(state.type, state.data)
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_proton_arrow_down_line),
+                                        contentDescription = NO_CONTENT_DESCRIPTION
+                                    )
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = stringResource(id = R.string.raw_message_data_copy_action),
+                                        style = ProtonTheme.typography.bodyLargeNorm
+                                    )
+                                },
+                                onClick = {
+                                    isDropDownExpanded.value = false
+                                    context.copyTextToClipboard(state.type.name, state.data)
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_proton_squares),
+                                        contentDescription = NO_CONTENT_DESCRIPTION
+                                    )
+                                }
+                            )
+                            if (state.type == RawMessageDataType.Headers) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = stringResource(id = R.string.raw_message_data_learn_more_action),
+                                            style = ProtonTheme.typography.bodyLargeNorm
+                                        )
+                                    },
+                                    onClick = {
+                                        isDropDownExpanded.value = false
+                                        openLearnMoreLink(context)
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_proton_info_circle),
+                                            contentDescription = NO_CONTENT_DESCRIPTION
+                                        )
+                                    }
                                 )
                             }
-                        )
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = stringResource(id = R.string.raw_message_data_copy_action),
-                                    style = ProtonTheme.typography.bodyLargeNorm
-                                )
-                            },
-                            onClick = {},
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_proton_squares),
-                                    contentDescription = NO_CONTENT_DESCRIPTION
-                                )
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = stringResource(id = R.string.raw_message_data_learn_more_action),
-                                    style = ProtonTheme.typography.bodyLargeNorm
-                                )
-                            },
-                            onClick = {},
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_proton_info_circle),
-                                    contentDescription = NO_CONTENT_DESCRIPTION
-                                )
-                            }
-                        )
+                        }
                     }
                 }
             )
@@ -186,6 +222,12 @@ fun RawMessageDataScreen(state: RawMessageDataState, onBackClick: () -> Unit) {
             )
         }
     }
+}
+
+private fun openLearnMoreLink(context: Context) {
+    val uri = "https://proton.me/blog/what-are-email-headers".toUri()
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    context.startActivity(intent)
 }
 
 @Preview
@@ -238,9 +280,11 @@ fun RawMessageDataScreenPreview() {
                 User-Agent: ProtonMail/Android-5.5.3
                 X-Proton-Sender-Ip: 83.212.41.102
                 X-Proton-Relay: yes
-            """.trimIndent()
+            """.trimIndent(),
+            toast = Effect.empty()
         ),
-        onBackClick = {}
+        onBackClick = {},
+        onDownloadData = { _, _ -> }
     )
 }
 

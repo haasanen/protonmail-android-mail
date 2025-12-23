@@ -16,20 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.presentation.model
+package ch.protonmail.android.maildetail.data.repository
 
-import ch.protonmail.android.mailcommon.presentation.Effect
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.data.file.ExternalFileStorage
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maildetail.domain.repository.RawMessageDataRepository
+import javax.inject.Inject
 
-sealed class RawMessageDataState {
-    abstract val type: RawMessageDataType
+class RawMessageDataRepositoryImpl @Inject constructor(
+    private val externalFileStorage: ExternalFileStorage
+) : RawMessageDataRepository {
 
-    data class Loading(override val type: RawMessageDataType) : RawMessageDataState()
-    data class Error(override val type: RawMessageDataType) : RawMessageDataState()
-    data class Data(
-        override val type: RawMessageDataType,
-        val data: String,
-        val toast: Effect<Int>
-    ) : RawMessageDataState()
+    override suspend fun downloadRawData(fileName: String, data: String): Either<DataError, Unit> =
+        externalFileStorage.saveDataToDownloads(fileName, "text/plain", data)
 }
-
-enum class RawMessageDataType { Headers, HTML }
