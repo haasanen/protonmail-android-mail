@@ -188,12 +188,6 @@ include(":test:test-data")
 include(":test:utils")
 
 buildCache {
-    if (System.getenv("CI") != "true") {
-        local {
-            removeUnusedEntriesAfterDays = 5
-        }
-    }
-
     val remoteCacheUrl = providers.environmentVariable("GRADLE_REMOTE_CACHE_URL").orNull
         ?: providers.gradleProperty("remoteCacheUrl").orNull
         ?: ""
