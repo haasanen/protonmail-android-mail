@@ -501,7 +501,7 @@ fun ConversationDetailScreen(
 
                 is BlockedTrackersSheetState -> BlockedTrackersBottomSheetContent(
                     state = bottomSheetContentState,
-                    onDismiss = { showBottomSheet = false }
+                    onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
                 )
 
                 else -> Unit
