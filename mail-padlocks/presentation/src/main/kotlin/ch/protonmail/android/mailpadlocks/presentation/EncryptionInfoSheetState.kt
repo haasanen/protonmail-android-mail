@@ -24,10 +24,10 @@ import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiMod
 
 sealed interface EncryptionInfoSheetState : BottomSheetContentState {
     data class Requested(val uiModel: EncryptionInfoUiModel) : EncryptionInfoSheetState
+}
 
-    sealed interface EncryptionInfoBottomSheetOperation : BottomSheetOperation
+sealed interface EncryptionInfoBottomSheetOperation : BottomSheetOperation
 
-    sealed interface EncryptionInfoBottomSheetEvent : EncryptionInfoBottomSheetOperation {
-        data class Ready(val uiModel: EncryptionInfoUiModel) : EncryptionInfoBottomSheetEvent
-    }
+sealed interface EncryptionInfoBottomSheetEvent : EncryptionInfoBottomSheetOperation {
+    data class Ready(val uiModel: EncryptionInfoUiModel) : EncryptionInfoBottomSheetEvent
 }

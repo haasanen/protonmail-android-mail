@@ -30,6 +30,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetEvent
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
 import javax.inject.Inject
 
@@ -91,13 +92,13 @@ class BottomSheetReducer @Inject constructor(
             is BottomSheetOperation.Dismiss -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Hide))
             is BottomSheetOperation.Requested -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Show))
 
-            is BlockedTrackersSheetState.BlockedTrackersBottomSheetEvent.Ready ->
+            is BlockedTrackersBottomSheetEvent.Ready ->
                 BottomSheetState(
                     contentState = BlockedTrackersSheetState.Requested(operation.trackers),
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
                 )
 
-            is EncryptionInfoSheetState.EncryptionInfoBottomSheetEvent.Ready ->
+            is EncryptionInfoBottomSheetEvent.Ready ->
                 BottomSheetState(
                     contentState = EncryptionInfoSheetState.Requested(operation.uiModel),
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
