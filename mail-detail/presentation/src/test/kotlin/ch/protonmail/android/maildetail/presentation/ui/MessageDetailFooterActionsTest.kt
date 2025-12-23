@@ -72,7 +72,8 @@ internal class MessageDetailFooterActionsTest {
             onDownloadImage = { _, _ -> },
             onLoadImagesAfterImageProxyFailure = {},
             onViewEntireMessageClicked = { _, _, _, _ -> },
-            onBlockedTrackersClick = {}
+            onBlockedTrackersClick = {},
+            onEncryptionInfoClick = {}
         )
 
         // When

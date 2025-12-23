@@ -48,6 +48,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import io.mockk.Called
 import io.mockk.coVerify
 import io.mockk.every
@@ -417,7 +418,11 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.EditScheduleSendMessageConfirmed(messageId)
                 affects listOf(EditScheduleSendDialog, Messages),
             ConversationDetailViewAction.PrintMessage(mockk(), MessageId(messageId.id))
-                affects listOf(BottomSheet)
+                affects listOf(BottomSheet),
+            ConversationDetailViewAction.RequestBlockedTrackersBottomSheet(null) affects listOf(BottomSheet),
+            ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(
+                EncryptionInfoUiModel.ProtonE2ee
+            ) affects listOf(BottomSheet)
         )
 
         val events = listOf(

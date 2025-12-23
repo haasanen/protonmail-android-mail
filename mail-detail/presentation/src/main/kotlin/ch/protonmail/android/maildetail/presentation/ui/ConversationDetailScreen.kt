@@ -509,7 +509,7 @@ fun ConversationDetailScreen(
 
                 is EncryptionInfoSheetState -> EncryptionInfoBottomSheetContent(
                     state = bottomSheetContentState,
-                    onDismissed = { showBottomSheet = false }
+                    onDismissed = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
                 )
 
                 else -> Unit

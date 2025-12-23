@@ -32,6 +32,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetEvent
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
 import javax.inject.Inject
 
 class BottomSheetReducer @Inject constructor(

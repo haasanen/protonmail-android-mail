@@ -27,6 +27,8 @@ import arrow.core.left
 import arrow.core.nonEmptyListOf
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
@@ -124,6 +126,9 @@ import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetEvent
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ExecuteWhenOnline
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
@@ -2285,6 +2290,80 @@ internal class ConversationDetailViewModelTest {
 
             // Then
             coVerify(exactly = 0) { blockSender(userId, any()) }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `verify request blocked trackers bottom sheet correctly sets bottom sheet state`() = runTest {
+        // Given
+        val expectedResult = ConversationDetailState.Loading.copy(
+            bottomSheetState = BottomSheetState(
+                contentState = BlockedTrackersSheetState.Requested(null),
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
+            )
+        )
+
+        viewModel.submit(ConversationDetailViewAction.RequestBlockedTrackersBottomSheet(null))
+        advanceUntilIdle()
+
+        coEvery {
+            reducer.newStateFrom(
+                any(),
+                ConversationDetailEvent.ConversationBottomSheetEvent(
+                    BlockedTrackersBottomSheetEvent.Ready(null)
+                )
+            )
+        } returns expectedResult
+
+        // When
+        viewModel.state.test {
+            viewModel.submit(
+                ConversationDetailViewAction.RequestBlockedTrackersBottomSheet(null)
+            )
+            awaitItem()
+
+            // Then
+            val lastItem = awaitItem()
+            assertEquals(expectedResult, lastItem)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `verify request encryption info bottom sheet correctly sets bottom sheet state`() = runTest {
+        // Given
+        val expectedResult = ConversationDetailState.Loading.copy(
+            bottomSheetState = BottomSheetState(
+                contentState = EncryptionInfoSheetState.Requested(EncryptionInfoUiModel.ProtonE2ee),
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
+            )
+        )
+
+        viewModel.submit(
+            ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(EncryptionInfoUiModel.ProtonE2ee)
+        )
+        advanceUntilIdle()
+
+        coEvery {
+            reducer.newStateFrom(
+                any(),
+                ConversationDetailEvent.ConversationBottomSheetEvent(
+                    EncryptionInfoBottomSheetEvent.Ready(EncryptionInfoUiModel.ProtonE2ee)
+                )
+            )
+        } returns expectedResult
+
+        // When
+        viewModel.state.test {
+            viewModel.submit(
+                ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(EncryptionInfoUiModel.ProtonE2ee)
+            )
+            awaitItem()
+
+            // Then
+            val lastItem = awaitItem()
+            assertEquals(expectedResult, lastItem)
             cancelAndIgnoreRemainingEvents()
         }
     }

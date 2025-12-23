@@ -33,6 +33,12 @@ import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetEvent
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.TrackersUiModelSample
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import io.mockk.Called
 import io.mockk.mockk
@@ -127,6 +133,28 @@ internal class BottomSheetReducerTest(
                 ),
                 expectedState = BottomSheetState(
                     SnoozeSheetState.Requested(userId = UserId("testuser"), LabelId("testlabel"), listOf()),
+                    Effect.of(BottomSheetVisibilityEffect.Show)
+                ),
+                reducesBottomSheetVisibilityEffects = true,
+                reducesMailboxMoreActions = false,
+                reducesDetailMoreActions = false
+            ),
+            TestInput(
+                currentState = null,
+                operation = BlockedTrackersBottomSheetEvent.Ready(TrackersUiModelSample.oneTrackerBlocked),
+                expectedState = BottomSheetState(
+                    BlockedTrackersSheetState.Requested(TrackersUiModelSample.oneTrackerBlocked),
+                    Effect.of(BottomSheetVisibilityEffect.Show)
+                ),
+                reducesBottomSheetVisibilityEffects = true,
+                reducesMailboxMoreActions = false,
+                reducesDetailMoreActions = false
+            ),
+            TestInput(
+                currentState = null,
+                operation = EncryptionInfoBottomSheetEvent.Ready(EncryptionInfoUiModel.ProtonE2ee),
+                expectedState = BottomSheetState(
+                    EncryptionInfoSheetState.Requested(EncryptionInfoUiModel.ProtonE2ee),
                     Effect.of(BottomSheetVisibilityEffect.Show)
                 ),
                 reducesBottomSheetVisibilityEffects = true,
