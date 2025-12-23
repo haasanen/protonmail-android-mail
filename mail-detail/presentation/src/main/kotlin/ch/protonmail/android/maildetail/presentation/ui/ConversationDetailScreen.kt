@@ -147,6 +147,9 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSh
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ContactActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.DetailMoreActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.messageBodyImageSaver
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetContent
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
@@ -504,6 +507,11 @@ fun ConversationDetailScreen(
                     onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
                 )
 
+                is EncryptionInfoSheetState -> EncryptionInfoBottomSheetContent(
+                    state = bottomSheetContentState,
+                    onDismissed = { showBottomSheet = false }
+                )
+
                 else -> Unit
             }
         }
@@ -675,6 +683,9 @@ fun ConversationDetailScreen(
                     onViewEntireMessageClicked = actions.onViewEntireMessageClicked,
                     onBlockedTrackersClick = {
                         viewModel.submit(ConversationDetailViewAction.RequestBlockedTrackersBottomSheet(it))
+                    },
+                    onEncryptionInfoClick = {
+                        viewModel.submit(ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(it))
                     }
                 )
             )
@@ -893,7 +904,8 @@ private fun ConversationDetailScreen(
                     },
                     onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure,
                     onViewEntireMessageClicked = actions.onViewEntireMessageClicked,
-                    onBlockedTrackersClick = actions.onBlockedTrackersClick
+                    onBlockedTrackersClick = actions.onBlockedTrackersClick,
+                    onEncryptionInfoClick = actions.onEncryptionInfoClick
                 )
                 val uiModel = (state.conversationState as? ConversationDetailMetadataState.Data)?.conversationUiModel
 
@@ -1323,7 +1335,8 @@ object ConversationDetailScreen {
         val onReportPhishing: (MessageId) -> Unit,
         val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
         val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
-        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit
+        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit,
+        val onEncryptionInfoClick: (EncryptionInfoUiModel) -> Unit
     ) {
 
         companion object {
@@ -1385,7 +1398,8 @@ object ConversationDetailScreen {
                 onLoadImagesAfterImageProxyFailure = {},
                 showUndoableOperationSnackbar = {},
                 onViewEntireMessageClicked = { _, _, _, _ -> },
-                onBlockedTrackersClick = {}
+                onBlockedTrackersClick = {},
+                onEncryptionInfoClick = {}
             )
         }
     }

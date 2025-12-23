@@ -31,6 +31,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
+import ch.protonmail.android.mailblockedtrackers.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -139,6 +140,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactA
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ExecuteWhenOnline
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
@@ -449,6 +451,9 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
                 is ConversationDetailViewAction.RequestBlockedTrackersBottomSheet ->
                     requestBlockedTrackersBottomSheet(action)
+
+                is ConversationDetailViewAction.RequestEncryptionInfoBottomSheet ->
+                    requestEncryptionInfoBottomSheet(action)
             }
         }
     }
@@ -998,6 +1003,16 @@ class ConversationDetailViewModel @AssistedInject constructor(
             itemIds = listOf(LabelAsItemId(operation.messageId.id)),
             entryPoint = LabelAsBottomSheetEntryPoint.Message(operation.messageId)
         )
+
+        emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
+    }
+
+    private suspend fun requestEncryptionInfoBottomSheet(
+        operation: ConversationDetailViewAction.RequestEncryptionInfoBottomSheet
+    ) {
+        emitNewStateFrom(operation)
+
+        val event = EncryptionInfoSheetState.EncryptionInfoBottomSheetEvent.Ready(operation.uiModel)
 
         emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
     }

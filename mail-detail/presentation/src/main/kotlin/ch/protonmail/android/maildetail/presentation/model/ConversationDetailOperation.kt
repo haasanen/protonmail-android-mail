@@ -52,6 +52,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface ConversationDetailOperation {
@@ -397,6 +398,10 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class UnsubscribeFromNewsletter(val messageId: MessageId) : ConversationDetailViewAction
 
     data class RequestBlockedTrackersBottomSheet(val trackers: TrackersUiModel?) :
+        ConversationDetailViewAction,
+        AffectingBottomSheet
+
+    data class RequestEncryptionInfoBottomSheet(val uiModel: EncryptionInfoUiModel) :
         ConversationDetailViewAction,
         AffectingBottomSheet
 }

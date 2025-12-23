@@ -78,6 +78,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 
 @Composable
 @Suppress("LongParameterList")
@@ -232,7 +233,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
         },
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
         onCollapseMessage = actions.onCollapse,
-        onBlockedTrackersClick = actions.onBlockedTrackersClick
+        onBlockedTrackersClick = actions.onBlockedTrackersClick,
+        onEncryptionInfoClick = actions.onEncryptionInfoClick
     )
 
     MessageDetailHeader(
@@ -419,7 +421,8 @@ object ConversationDetailItem {
         val onDownloadImage: (MessageId, String) -> Unit,
         val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
         val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
-        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit
+        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit,
+        val onEncryptionInfoClick: (EncryptionInfoUiModel) -> Unit
     )
 
     val previewActions = Actions(
@@ -458,7 +461,8 @@ object ConversationDetailItem {
         onDownloadImage = { _, _ -> },
         onLoadImagesAfterImageProxyFailure = {},
         onViewEntireMessageClicked = { _, _, _, _ -> },
-        onBlockedTrackersClick = {}
+        onBlockedTrackersClick = {},
+        onEncryptionInfoClick = {}
     )
 }
 

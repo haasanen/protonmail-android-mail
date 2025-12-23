@@ -445,7 +445,7 @@ private fun MessageDetailHeaderCard(
 
             EncryptionInfoSection(
                 uiModel = EncryptionInfoUiModel.ProtonE2eeVerifiedContact,
-                onMoreInfoClick = {}
+                onMoreInfoClick = { actions.onEncryptionInfoClick(it) }
             )
 
             BlockedTrackers(
@@ -651,7 +651,8 @@ object MessageDetailHeader {
         val onAvatarImageLoadFailed: () -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel) -> Unit,
         val onCollapseMessage: (MessageIdUiModel) -> Unit,
-        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit
+        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit,
+        val onEncryptionInfoClick: (EncryptionInfoUiModel) -> Unit
     ) {
 
         companion object {
@@ -667,7 +668,8 @@ object MessageDetailHeader {
                 onAvatarImageLoadFailed = { },
                 onParticipantClicked = { _, _, _ -> },
                 onCollapseMessage = {},
-                onBlockedTrackersClick = {}
+                onBlockedTrackersClick = {},
+                onEncryptionInfoClick = {}
             )
         }
     }

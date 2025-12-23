@@ -71,11 +71,11 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailSta
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.EditScheduledMessageDialogState
+import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyLink
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
-import ch.protonmail.android.maildetail.presentation.model.HiddenMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.model.ScrollToMessageState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import javax.inject.Inject
@@ -174,6 +174,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.RequestConversationMoveToBottomSheet,
                 is ConversationDetailViewAction.RequestSnoozeBottomSheet,
                 is ConversationDetailViewAction.RequestBlockedTrackersBottomSheet,
+                is ConversationDetailViewAction.RequestEncryptionInfoBottomSheet,
                 is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> BottomSheetOperation.Requested
 
                 is ErrorMovingConversation,

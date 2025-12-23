@@ -82,6 +82,7 @@ dependencies {
     implementation(project(":mail-message:domain"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
+    implementation(project(":mail-padlocks:presentation"))
     implementation(project(":presentation-compose"))
     implementation(project(":mail-session:domain"))
 
