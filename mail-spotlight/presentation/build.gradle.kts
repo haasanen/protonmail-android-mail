@@ -64,11 +64,15 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
+    implementation(libs.haze)
 
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-common:presentation"))
     implementation(project(":mail-spotlight:domain"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 
     testImplementation(libs.bundles.test)
+    testImplementation(project(":test:utils"))
 }

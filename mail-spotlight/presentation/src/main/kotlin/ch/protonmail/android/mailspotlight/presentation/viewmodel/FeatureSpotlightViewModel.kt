@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-internal class FeatureSpotlightViewModel @Inject constructor(
+class HomeFeatureSpotlightViewModel @Inject constructor(
     observeFeatureSpotlightDisplay: ObserveFeatureSpotlightDisplay
 ) : ViewModel() {
 

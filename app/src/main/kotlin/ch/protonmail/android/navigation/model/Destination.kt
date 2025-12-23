@@ -242,6 +242,8 @@ sealed class Destination(val route: String) {
                 .replace(UpsellingEntryPointKey.wrap(), entryPoint.serialize())
                 .replace(UpsellingTypeKey.wrap(), type.serialize())
         }
+
+        object FeatureSpotlight : Destination("featureSpotlight")
     }
 
     object Dialog {

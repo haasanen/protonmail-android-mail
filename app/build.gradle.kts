@@ -232,6 +232,7 @@ dependencies {
     implementation(project(":mail-crash-record"))
     implementation(project(":mail-sidebar"))
     implementation(project(":mail-session"))
+    implementation(project(":mail-spotlight"))
     implementation(project(":mail-legacy-migration"))
     implementation(project(":mail-upselling"))
     implementation(project(":mail-tooltip"))

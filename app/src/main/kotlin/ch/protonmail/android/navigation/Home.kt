@@ -127,6 +127,7 @@ import ch.protonmail.android.navigation.route.addEmailSignatureSettings
 import ch.protonmail.android.navigation.route.addEntireMessageBody
 import ch.protonmail.android.navigation.route.addExportLogsSettings
 import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
+import ch.protonmail.android.navigation.route.addFeatureSpotlight
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
 import ch.protonmail.android.navigation.route.addMobileSignatureSettings
@@ -360,6 +361,7 @@ fun Home(
 
             is MessageSendingStatus.SendMessageError ->
                 showErrorSendingMessageSnackbar(sendingStatus.messageId, sendingStatus.reason)
+
             is MessageSendingStatus.NoStatus -> {}
             is MessageSendingStatus.MessageSentUndoable -> {
                 showMessageSentWithUndoSnackbar(sendingStatus.messageId)
@@ -827,6 +829,7 @@ fun Home(
                             onError = { message -> scope.launch { showErrorSnackbar(message) } }
                         )
                     )
+                    addFeatureSpotlight(onBack = { navController.navigateBack() })
                 }
             }
         }

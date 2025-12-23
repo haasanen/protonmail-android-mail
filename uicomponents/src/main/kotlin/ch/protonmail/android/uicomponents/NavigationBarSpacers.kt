@@ -29,6 +29,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
+fun TopNavigationBarSpacer() {
+    Spacer(
+        modifier = Modifier.height(
+            WindowInsets
+                .navigationBars
+                .only(WindowInsetsSides.Top)
+                .asPaddingValues()
+                .calculateTopPadding()
+        )
+    )
+}
+
+@Composable
 fun BottomNavigationBarSpacer() {
     Spacer(
         modifier = Modifier.height(

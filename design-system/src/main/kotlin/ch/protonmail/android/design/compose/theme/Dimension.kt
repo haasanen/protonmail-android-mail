@@ -89,6 +89,7 @@ object ProtonDimens {
         val Small = 16.dp
         val Medium = 20.dp
         val Default = 24.dp
+        val SemiLarge = 32.dp
         val Large = 36.dp
         val MediumLarge = 40.dp
         val ExtraLarge = 48.dp

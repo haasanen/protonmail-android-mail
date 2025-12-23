@@ -23,7 +23,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailspotlight.domain.usecase.MarkFeatureSpotlightSeen
-import ch.protonmail.android.mailspotlight.presentation.viewmodel.FeatureSpotlightViewModel
+import ch.protonmail.android.mailspotlight.presentation.ui.FeatureSpotlightViewModel
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

@@ -16,10 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailspotlight.presentation.model
+package ch.protonmail.android.navigation.route
 
-sealed interface FeatureSpotlightState {
-    data object Show : FeatureSpotlightState
-    data object Hide : FeatureSpotlightState
-    data object Loading : FeatureSpotlightState
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import ch.protonmail.android.mailspotlight.presentation.ui.FeatureSpotlightScreen
+import ch.protonmail.android.navigation.model.Destination
+
+internal fun NavGraphBuilder.addFeatureSpotlight(onBack: () -> Unit) {
+    composable(Destination.Screen.FeatureSpotlight.route) { FeatureSpotlightScreen(onBack) }
 }
