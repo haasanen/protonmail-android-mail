@@ -381,6 +381,7 @@ module-legacyCore = [
     "proton-core-eventManager-domain",
     "proton-core-featureFlag-domain",
     "proton-core-mailSettings-domain",
+    "proton-core-presentation",
     "proton-core-user-domain",
     "proton-core-utilAndroidDagger",
     "proton-core-utilAndroidStrictMode",
