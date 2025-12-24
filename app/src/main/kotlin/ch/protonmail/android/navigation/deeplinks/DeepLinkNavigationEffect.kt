@@ -56,7 +56,7 @@ internal fun DeepLinkNavigationEffect(navController: NavHostController, onUserSw
                         viewModeIsConversation = true
                     )
                 ) {
-                    launchSingleTop = true
+                    popUpTo(Destination.Screen.Mailbox.route) { inclusive = false }
                 }
                 current.userSwitchedEmail?.let { onUserSwitched(it) }
                 viewModel.consume()
@@ -73,7 +73,7 @@ internal fun DeepLinkNavigationEffect(navController: NavHostController, onUserSw
                         viewModeIsConversation = false
                     )
                 ) {
-                    launchSingleTop = true
+                    popUpTo(Destination.Screen.Mailbox.route) { inclusive = false }
                 }
                 current.userSwitchedEmail?.let { onUserSwitched(it) }
                 viewModel.consume()
