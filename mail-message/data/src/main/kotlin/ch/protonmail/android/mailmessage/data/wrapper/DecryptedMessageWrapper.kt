@@ -48,7 +48,7 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
     suspend fun loadImage(url: String, imagePolicy: ImagePolicy): Either<AttachmentDataError, LocalAttachmentData> =
         when (val result = decryptedMessage.loadImage(url, imagePolicy)) {
             is AttachmentDataResult.Error -> {
-                Timber.d("DecryptedMessageWrapper: Failed to load image: $url: ${result.v1}")
+                Timber.d("DecryptedMessageWrapper: Failed to load image: ${result.v1}")
                 result.v1.toAttachmentDataError().left()
             }
 
