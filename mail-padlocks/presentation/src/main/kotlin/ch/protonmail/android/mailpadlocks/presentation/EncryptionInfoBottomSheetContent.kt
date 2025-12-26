@@ -78,12 +78,13 @@ private fun EncryptionInfoBottomSheetContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.Spacing.ExtraLarge)
+            .padding(horizontal = ProtonDimens.Spacing.ExtraLarge, vertical = ProtonDimens.Spacing.Tiny)
+            .padding(bottom = ProtonDimens.Spacing.ExtraLarge)
     ) {
 
         Header(uiModel)
 
-        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Huge))
 
         CloseButton(onClick = onDismissed)
 

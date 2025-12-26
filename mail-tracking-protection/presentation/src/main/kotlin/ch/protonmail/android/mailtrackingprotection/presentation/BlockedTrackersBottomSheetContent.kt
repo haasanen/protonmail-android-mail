@@ -89,7 +89,9 @@ private fun NoBlockedTrackersBottomSheetContent(modifier: Modifier = Modifier, o
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.Spacing.ExtraLarge)
+            .padding(horizontal = ProtonDimens.Spacing.ExtraLarge, vertical = ProtonDimens.Spacing.Tiny)
+            .padding(bottom = ProtonDimens.Spacing.ExtraLarge)
+
     ) {
 
         Header()
@@ -130,13 +132,14 @@ private fun BlockedTrackersBottomSheetContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.Spacing.ExtraLarge)
+            .padding(horizontal = ProtonDimens.Spacing.ExtraLarge, vertical = ProtonDimens.Spacing.Tiny)
+            .padding(bottom = ProtonDimens.Spacing.ExtraLarge)
             .verticalScroll(rememberScrollState())
     ) {
 
         Header()
 
-        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Huge))
 
         BlockedTrackersDetails(
             trackers.blocked,
@@ -147,7 +150,7 @@ private fun BlockedTrackersBottomSheetContent(
 
         CleanedLinksDetails(trackers.links)
 
-        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Huge))
 
         CloseButton(onClick = onDismiss)
 
