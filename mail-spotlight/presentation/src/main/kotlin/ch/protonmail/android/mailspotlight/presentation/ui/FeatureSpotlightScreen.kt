@@ -49,6 +49,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
@@ -56,6 +58,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,6 +76,7 @@ import ch.protonmail.android.mailspotlight.presentation.model.FeatureItem
 import ch.protonmail.android.mailspotlight.presentation.viewmodel.FeatureSpotlightViewModel
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import ch.protonmail.android.uicomponents.TopNavigationBarSpacer
+import dev.chrisbanes.haze.HazeProgressive
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -116,11 +120,17 @@ private fun FeatureSpotlightScreen(
 
     Box(
         modifier = modifier
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(ProtonTheme.colors.brandMinus40, ProtonTheme.colors.backgroundNorm)
+                )
+            )
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(horizontal = ProtonDimens.Spacing.Large)
                 .hazeSource(hazeState)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
@@ -135,25 +145,27 @@ private fun FeatureSpotlightScreen(
                 contentDescription = NO_CONTENT_DESCRIPTION
             )
 
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
             Text(
                 text = appVersionUiModel.text.string(),
                 style = ProtonTheme.typography.titleMedium,
-                color = ProtonTheme.colors.textWeak
+                color = ProtonTheme.colors.textWeak,
+                textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
 
             Text(
                 text = stringResource(R.string.spotlight_screen_title),
-                style = ProtonTheme.typography.titleLarge
+                style = ProtonTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Jumbo))
 
             Column(
-                modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.ExtraLarge),
+                modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large),
                 verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ExtraLarge)
             ) {
                 featureItems.forEach {
@@ -174,16 +186,24 @@ private fun FeatureSpotlightScreen(
                 .hazeEffect(
                     state = hazeState,
                     style = HazeStyle(
-                        tint = HazeTint(color = ProtonTheme.colors.backgroundNorm.copy(0.6f)),
-                        fallbackTint = HazeTint(color = ProtonTheme.colors.backgroundNorm)
+                        tint = HazeTint(color = Color.Transparent),
+                        fallbackTint = HazeTint(color = ProtonTheme.colors.backgroundNorm),
+                        noiseFactor = 0f,
+                        blurRadius = BLUR_RADIUS
                     )
-                )
+                ) {
+                    progressive = HazeProgressive.verticalGradient(
+                        preferPerformance = true,
+                        startIntensity = 0f,
+                        endIntensity = .5f
+                    )
+                }
         ) {
             ProtonTextButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = ProtonDimens.Spacing.Standard)
-                    .padding(bottom = ProtonDimens.Spacing.Standard)
+                    .padding(horizontal = ProtonDimens.Spacing.Large)
+                    .padding(bottom = ProtonDimens.Spacing.Large)
                     .background(
                         color = ProtonTheme.colors.brandNorm,
                         shape = ProtonTheme.shapes.massive
@@ -243,6 +263,8 @@ private fun FeatureRow(
         }
     }
 }
+
+private val BLUR_RADIUS = 2.dp
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
