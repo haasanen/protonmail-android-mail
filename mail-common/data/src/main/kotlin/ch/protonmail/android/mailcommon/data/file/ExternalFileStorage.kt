@@ -19,10 +19,8 @@
 package ch.protonmail.android.mailcommon.data.file
 
 import java.io.IOException
-import android.content.ContentValues
 import android.content.Context
-import android.os.Environment
-import android.provider.MediaStore
+import android.net.Uri
 import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -35,24 +33,12 @@ class ExternalFileStorage @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    suspend fun saveDataToDownloads(
-        fileName: String,
-        mimeType: String,
-        data: String
-    ): Either<DataError, Unit> = either {
+    suspend fun saveDataToDestination(destinationUri: Uri, data: String): Either<DataError, Unit> = either {
         withContext(Dispatchers.IO) {
-            val values = ContentValues().apply {
-                put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-                put(MediaStore.Downloads.MIME_TYPE, mimeType)
-                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-            }
-
-            val uri = context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
-                ?: raise(DataError.Local.FailedToStoreFile)
             try {
-                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                context.contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
                     outputStream.write(data.toByteArray())
-                }
+                } ?: raise(DataError.Local.FailedToStoreFile)
             } catch (_: IOException) {
                 raise(DataError.Local.FailedToStoreFile)
             }

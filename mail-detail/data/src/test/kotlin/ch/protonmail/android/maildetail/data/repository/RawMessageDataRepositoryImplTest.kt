@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.data.repository
 
+import android.net.Uri
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.file.ExternalFileStorage
 import io.mockk.coEvery
@@ -36,15 +37,15 @@ class RawMessageDataRepositoryImplTest {
     @Test
     fun `should call external file storage method when download raw data is called`() = runTest {
         // Given
-        val fileName = "headers"
+        val uri = mockk<Uri>()
         val data = "raw headers"
-        coEvery { externalFileStorage.saveDataToDownloads(fileName, "text/plain", data) } returns Unit.right()
+        coEvery { externalFileStorage.saveDataToDestination(uri, data) } returns Unit.right()
 
         // When
-        val actual = rawMessageDataRepository.downloadRawData(fileName, data)
+        val actual = rawMessageDataRepository.downloadRawData(uri, data)
 
         // Then
-        coVerify { externalFileStorage.saveDataToDownloads(fileName, "text/plain", data) }
+        coVerify { externalFileStorage.saveDataToDestination(uri, data) }
         assertEquals(Unit.right(), actual)
     }
 }

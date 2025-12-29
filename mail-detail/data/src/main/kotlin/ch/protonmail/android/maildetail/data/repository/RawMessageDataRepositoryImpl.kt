@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.data.repository
 
+import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.data.file.ExternalFileStorage
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -28,6 +29,6 @@ class RawMessageDataRepositoryImpl @Inject constructor(
     private val externalFileStorage: ExternalFileStorage
 ) : RawMessageDataRepository {
 
-    override suspend fun downloadRawData(fileName: String, data: String): Either<DataError, Unit> =
-        externalFileStorage.saveDataToDownloads(fileName, "text/plain", data)
+    override suspend fun downloadRawData(uri: Uri, data: String): Either<DataError, Unit> =
+        externalFileStorage.saveDataToDestination(uri, data)
 }

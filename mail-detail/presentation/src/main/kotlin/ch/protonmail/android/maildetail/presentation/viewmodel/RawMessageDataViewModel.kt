@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -76,12 +77,8 @@ class RawMessageDataViewModel @Inject constructor(
         }
     }
 
-    fun downloadData(type: RawMessageDataType, data: String) = viewModelScope.launch {
-        val fileName = when (type) {
-            RawMessageDataType.Headers -> "headers"
-            RawMessageDataType.HTML -> "html"
-        }
-        downloadRawMessageData(fileName, data).fold(
+    fun downloadData(uri: Uri, data: String) = viewModelScope.launch {
+        downloadRawMessageData(uri, data).fold(
             ifLeft = {
                 mutableState.update {
                     if (it is RawMessageDataState.Data) {

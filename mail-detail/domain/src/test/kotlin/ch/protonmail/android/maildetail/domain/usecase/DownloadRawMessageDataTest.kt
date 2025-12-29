@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
+import android.net.Uri
 import arrow.core.right
 import ch.protonmail.android.maildetail.domain.repository.RawMessageDataRepository
 import io.mockk.coEvery
@@ -36,15 +37,15 @@ class DownloadRawMessageDataTest {
     @Test
     fun `should call repository method when use case is called`() = runTest {
         // Given
-        val fileName = "headers"
+        val uri = mockk<Uri>()
         val data = "raw headers"
-        coEvery { rawMessageDataRepository.downloadRawData(fileName, data) } returns Unit.right()
+        coEvery { rawMessageDataRepository.downloadRawData(uri, data) } returns Unit.right()
 
         // When
-        val actual = downloadRawMessageData(fileName, data)
+        val actual = downloadRawMessageData(uri, data)
 
         // Then
-        coVerify { rawMessageDataRepository.downloadRawData(fileName, data) }
+        coVerify { rawMessageDataRepository.downloadRawData(uri, data) }
         assertEquals(Unit.right(), actual)
     }
 }

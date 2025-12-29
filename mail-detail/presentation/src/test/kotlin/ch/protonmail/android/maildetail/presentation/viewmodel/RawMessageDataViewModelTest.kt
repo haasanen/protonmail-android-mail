@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.left
@@ -156,16 +157,17 @@ class RawMessageDataViewModelTest {
     fun `should emit state with success toast when downloading data is successful`() = runTest {
         // Given
         val messageId = MessageId(MESSAGE_ID)
+        val uri = mockk<Uri>()
         val rawBody = "raw body"
         every { savedStateHandle.get<String>(RawMessageDataScreen.RAW_DATA_TYPE_KEY) } returns RAW_DATA_TYPE_HTML
         coEvery { getRawMessageBody(UserIdTestData.userId, messageId) } returns RawMessageData(rawBody).right()
-        coEvery { downloadRawMessageData("html", rawBody) } returns Unit.right()
+        coEvery { downloadRawMessageData(uri, rawBody) } returns Unit.right()
 
         rawMessageDataViewModel.state.test {
             awaitItem()
 
             // When
-            rawMessageDataViewModel.downloadData(RawMessageDataType.HTML, rawBody)
+            rawMessageDataViewModel.downloadData(uri, rawBody)
 
             // Then
             assertEquals(
@@ -179,16 +181,17 @@ class RawMessageDataViewModelTest {
     fun `should emit state with failure toast when downloading data failed`() = runTest {
         // Given
         val messageId = MessageId(MESSAGE_ID)
+        val uri = mockk<Uri>()
         val rawHeaders = "raw headers"
         every { savedStateHandle.get<String>(RawMessageDataScreen.RAW_DATA_TYPE_KEY) } returns RAW_DATA_TYPE_HEADERS
         coEvery { getRawMessageHeaders(UserIdTestData.userId, messageId) } returns RawMessageData(rawHeaders).right()
-        coEvery { downloadRawMessageData("headers", rawHeaders) } returns DataError.Local.Unknown.left()
+        coEvery { downloadRawMessageData(uri, rawHeaders) } returns DataError.Local.Unknown.left()
 
         rawMessageDataViewModel.state.test {
             awaitItem()
 
             // When
-            rawMessageDataViewModel.downloadData(RawMessageDataType.Headers, rawHeaders)
+            rawMessageDataViewModel.downloadData(uri, rawHeaders)
 
             // Then
             assertEquals(

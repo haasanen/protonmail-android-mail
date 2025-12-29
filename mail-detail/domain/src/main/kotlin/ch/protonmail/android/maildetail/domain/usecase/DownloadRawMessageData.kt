@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
+import android.net.Uri
 import ch.protonmail.android.maildetail.domain.repository.RawMessageDataRepository
 import javax.inject.Inject
 
@@ -25,6 +26,5 @@ class DownloadRawMessageData @Inject constructor(
     private val rawMessageDataRepository: RawMessageDataRepository
 ) {
 
-    suspend operator fun invoke(fileName: String, data: String) =
-        rawMessageDataRepository.downloadRawData(fileName, data)
+    suspend operator fun invoke(uri: Uri, data: String) = rawMessageDataRepository.downloadRawData(uri, data)
 }

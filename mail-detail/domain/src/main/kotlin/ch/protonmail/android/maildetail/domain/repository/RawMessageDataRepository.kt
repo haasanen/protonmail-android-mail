@@ -18,10 +18,11 @@
 
 package ch.protonmail.android.maildetail.domain.repository
 
+import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 
 interface RawMessageDataRepository {
 
-    suspend fun downloadRawData(fileName: String, data: String): Either<DataError, Unit>
+    suspend fun downloadRawData(uri: Uri, data: String): Either<DataError, Unit>
 }

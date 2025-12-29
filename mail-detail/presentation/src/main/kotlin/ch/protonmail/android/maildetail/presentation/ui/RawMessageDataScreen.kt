@@ -20,7 +20,10 @@ package ch.protonmail.android.maildetail.presentation.ui
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -69,14 +72,14 @@ fun RawMessageDataScreen(onBackClick: () -> Unit, viewModel: RawMessageDataViewM
     RawMessageDataScreen(
         viewModel.state.collectAsStateWithLifecycle().value,
         onBackClick
-    ) { type, data -> viewModel.downloadData(type, data) }
+    ) { uri, data -> viewModel.downloadData(uri, data) }
 }
 
 @Composable
 private fun RawMessageDataScreen(
     state: RawMessageDataState,
     onBackClick: () -> Unit,
-    onDownloadData: (RawMessageDataType, String) -> Unit
+    onDownloadData: (Uri, String) -> Unit
 ) {
     Scaffold(
         containerColor = ProtonTheme.colors.backgroundInvertedNorm,
@@ -98,10 +101,7 @@ private fun RawMessageDataScreen(
 }
 
 @Composable
-private fun RawMessageDataContent(
-    state: RawMessageDataState.Data,
-    modifier: Modifier = Modifier
-) {
+private fun RawMessageDataContent(state: RawMessageDataState.Data, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
     ConsumableLaunchedEffect(state.toast) {
@@ -133,7 +133,7 @@ private fun RawMessageDataContent(
 private fun RawMessageDataTopAppBar(
     state: RawMessageDataState,
     onBackClick: () -> Unit,
-    onDownloadData: (RawMessageDataType, String) -> Unit
+    onDownloadData: (Uri, String) -> Unit
 ) {
     ProtonTopAppBar(
         backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
@@ -168,12 +168,16 @@ private fun RawMessageDataTopAppBar(
 }
 
 @Composable
-private fun RawMessageDataTopAppBarActions(
-    state: RawMessageDataState.Data,
-    onDownloadData: (RawMessageDataType, String) -> Unit
-) {
+private fun RawMessageDataTopAppBarActions(state: RawMessageDataState.Data, onDownloadData: (Uri, String) -> Unit) {
     val context = LocalContext.current
     val isDropDownExpanded = remember { mutableStateOf(false) }
+
+    val createFileLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.CreateDocument("text/plain")
+        ) { uri ->
+            uri?.let { onDownloadData(it, state.data) }
+        }
 
     IconButton(
         onClick = { isDropDownExpanded.value = true }
@@ -201,7 +205,7 @@ private fun RawMessageDataTopAppBarActions(
             },
             onClick = {
                 isDropDownExpanded.value = false
-                onDownloadData(state.type, state.data)
+                createFileLauncher.launch(state.type.name)
             },
             leadingIcon = {
                 Icon(
