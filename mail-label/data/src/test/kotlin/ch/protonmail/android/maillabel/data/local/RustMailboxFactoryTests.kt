@@ -68,7 +68,7 @@ internal class RustMailboxFactoryTests {
     }
 
     @Test
-    fun `should create new mailbox when creating a new label (deprecated)`() = runTest {
+    fun `should populate the cache when creating a new label (deprecated)`() = runTest {
         // Given
         val userId = userId1
         val mockedSession = mockk<MailUserSessionWrapper>()
@@ -84,15 +84,15 @@ internal class RustMailboxFactoryTests {
         val mailbox = rustMailboxFactory.create(userId)
         assertEquals(mockedWrapper.right(), mailbox)
 
-        val newMailbox = rustMailboxFactory.create(userId)
-        assertEquals(mockedWrapper.right(), newMailbox)
+        val cachedMailbox = rustMailboxFactory.create(userId)
+        assertEquals(mockedWrapper.right(), cachedMailbox)
 
-        verify(exactly = 2) { createMailbox(mockedSession, localLabelId) }
+        verify(exactly = 1) { createMailbox(mockedSession, localLabelId) }
         confirmVerified(createMailbox)
     }
 
     @Test
-    fun `should create new mailbox when the user changes (deprecated)`() = runTest {
+    fun `should not hit the cache when the user changes (deprecated)`() = runTest {
         // Given
         val userId = userId1
         val newUserId = userId2
@@ -120,7 +120,7 @@ internal class RustMailboxFactoryTests {
     }
 
     @Test
-    fun `should create new mailbox when the label changes (deprecated)`() = runTest {
+    fun `should not hit the cache when the label changes (deprecated)`() = runTest {
         // Given
         val userId = userId1
         val mockedSession = mockk<MailUserSessionWrapper>()
@@ -146,7 +146,55 @@ internal class RustMailboxFactoryTests {
     }
 
     @Test
-    fun `should create new mailbox when the label changes()`() = runTest {
+    fun `should populate the cache when creating a new label()`() = runTest {
+        // Given
+        val userId = userId1
+        val mockedSession = mockk<MailUserSessionWrapper>()
+        val mockedWrapper = mockk<MailboxWrapper>()
+        val localLabelId = LocalLabelId(123u)
+
+        expectMockSession(userId, mockedSession)
+        every { createMailbox(mockedSession, localLabelId) } returns mockedWrapper.right()
+
+        // When + Then
+        val mailbox = rustMailboxFactory.create(userId, localLabelId)
+        assertEquals(mockedWrapper.right(), mailbox)
+
+        val cachedMailbox = rustMailboxFactory.create(userId, localLabelId)
+        assertEquals(mockedWrapper.right(), cachedMailbox)
+
+        verify(exactly = 1) { createMailbox(mockedSession, localLabelId) }
+        confirmVerified(createMailbox)
+    }
+
+    @Test
+    fun `should not hit the cache when the user changes()`() = runTest {
+        // Given
+        val userId = userId1
+        val newUserId = userId2
+        val localLabelId = localLabelId1
+
+        expectMockSession(userId, mockedUser1Session)
+        expectMockSession(newUserId, mockedUser2Session)
+        every { createMailbox(mockedUser1Session, localLabelId) } returns mockedUser1Mailbox.right()
+        every { createMailbox(mockedUser2Session, localLabelId) } returns mockedUser2Mailbox.right()
+
+        val mailbox = rustMailboxFactory.create(userId, localLabelId)
+        assertEquals(mockedUser1Mailbox.right(), mailbox)
+
+        // When
+        val newMailbox = rustMailboxFactory.create(newUserId, localLabelId)
+        assertEquals(mockedUser2Mailbox.right(), newMailbox)
+
+        // Then
+        assertNotEquals(mailbox, newMailbox)
+        verify(exactly = 1) { createMailbox(mockedUser1Session, localLabelId) }
+        verify(exactly = 1) { createMailbox(mockedUser2Session, localLabelId) }
+        confirmVerified(createMailbox)
+    }
+
+    @Test
+    fun `should not hit the cache when the label changes()`() = runTest {
         // Given
         val userId = userId1
         val mockedSession = mockk<MailUserSessionWrapper>()
@@ -166,6 +214,60 @@ internal class RustMailboxFactoryTests {
         assertNotEquals(mailbox, newMailbox)
         verify(exactly = 1) { createMailbox(mockedSession, localLabelId1) }
         verify(exactly = 1) { createMailbox(mockedSession, localLabelId2) }
+        confirmVerified(createMailbox)
+    }
+
+    @Test
+    fun `should skip the cache when requested and return a new mailbox instance (deprecated)`() = runTest {
+        // Given
+        val userId = userId1
+        val mockedSession = mockk<MailUserSessionWrapper>()
+        val mockedWrapper = mockk<MailboxWrapper>()
+        val localLabelId = localLabelId1
+        val labelId = labelId1
+
+        expectMockSession(userId, mockedSession)
+        coEvery { getSelectedMailLabelId().labelId } returns labelId
+        every { createMailbox(mockedSession, localLabelId) } returns mockedWrapper.right()
+
+        // When + Then
+        val initialMailbox = rustMailboxFactory.create(userId)
+        assertEquals(mockedWrapper.right(), initialMailbox)
+
+        val secondMailbox = rustMailboxFactory.createSkipCache(userId, localLabelId)
+        assertEquals(mockedWrapper.right(), secondMailbox)
+
+        val thirdMailbox = rustMailboxFactory.createSkipCache(userId, localLabelId)
+        assertEquals(mockedWrapper.right(), thirdMailbox)
+
+        verify(exactly = 3) { createMailbox(mockedSession, localLabelId) }
+        confirmVerified(createMailbox)
+    }
+
+    @Test
+    fun `should skip the cache when requested and return a new mailbox instance`() = runTest {
+        // Given
+        val userId = userId1
+        val mockedSession = mockk<MailUserSessionWrapper>()
+        val mockedWrapper = mockk<MailboxWrapper>()
+        val localLabelId = LocalLabelId(123u)
+        val labelId = LabelId("123")
+
+        expectMockSession(userId, mockedSession)
+        coEvery { getSelectedMailLabelId().labelId } returns labelId
+        every { createMailbox(mockedSession, localLabelId) } returns mockedWrapper.right()
+
+        // When + Then
+        val initialMailbox = rustMailboxFactory.create(userId, localLabelId)
+        assertEquals(mockedWrapper.right(), initialMailbox)
+
+        val secondMailbox = rustMailboxFactory.createSkipCache(userId, localLabelId)
+        assertEquals(mockedWrapper.right(), secondMailbox)
+
+        val thirdMailbox = rustMailboxFactory.createSkipCache(userId, localLabelId)
+        assertEquals(mockedWrapper.right(), thirdMailbox)
+
+        verify(exactly = 3) { createMailbox(mockedSession, localLabelId) }
         confirmVerified(createMailbox)
     }
 

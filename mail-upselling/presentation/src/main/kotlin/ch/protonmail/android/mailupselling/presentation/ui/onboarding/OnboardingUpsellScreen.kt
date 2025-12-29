@@ -43,6 +43,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -72,6 +73,17 @@ fun OnboardingUpsellScreen(onDismiss: () -> Unit, onError: (String) -> Unit) {
     val viewModel = hiltViewModel<OnboardingUpsellViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    // Handle dismiss states with LaunchedEffect to ensure single execution
+    LaunchedEffect(state) {
+        when (state) {
+            is OnboardingUpsellState.Error,
+            is OnboardingUpsellState.UnsupportedFlow -> onDismiss()
+
+            is OnboardingUpsellState.Data,
+            is OnboardingUpsellState.Loading -> Unit
+        }
+    }
+
     BottomSheetAnimatedContent(
         state = state,
         loadingState = OnboardingUpsellState.Loading,
@@ -87,7 +99,11 @@ fun OnboardingUpsellScreen(onDismiss: () -> Unit, onError: (String) -> Unit) {
 
             is OnboardingUpsellState.Loading -> OnboardingUpsellLoadingScreen(onDismiss)
 
-            is OnboardingUpsellState.Error -> onDismiss()
+            is OnboardingUpsellState.Error,
+            is OnboardingUpsellState.UnsupportedFlow -> {
+                // Handle dismissal via LaunchedEffect, as the animated content may recompose
+                // and call onDismiss() multiple times if placed here.
+            }
         }
     }
 }
