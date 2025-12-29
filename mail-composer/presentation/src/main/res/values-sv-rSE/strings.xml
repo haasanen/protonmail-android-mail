@@ -82,7 +82,7 @@
   <string name="composer_send_expiring_message_to_external_recipients_dialog_add_password">Lägg till lösenordsskydd</string>
   <string name="composer_send_expiring_message_to_external_may_fail">Vi kunde inte bekräfta att alla mottagare använder Proton Mail. Endast Proton-adresser stöder meddelandens utgångstid. I detta fall föreslår vi att du lägger till ett lösenord istället.</string>
   <string name="composer_send_expiring_message_to_external_will_fail">Vissa mottagare (%1$s) stöder inte utgångstid som standard. Lägg till ett lösenord för att aktivera utgångstid för användare som inte använder Proton Mail.</string>
-  <string name="composer_send_expiring_message_to_external_will_fail_for_all">None of the recipients support expiration by default. Add a password to enable expiration for non-Proton Mail recipients.</string>
+  <string name="composer_send_expiring_message_to_external_will_fail_for_all">Ingen av mottagarna stöder utgångstid som standard. Lägg till ett lösenord för att aktivera utgångstid för mottagare som inte använder Proton Mail.</string>
   <!-- Sender changed dialog -->
   <string name="composer_sender_changed_dialog_title">Skickar avisering</string>
   <string name="composer_sender_changed_pm_address_is_a_paid_feature">Att skicka meddelanden från @pm.me är en betald funktion. Ditt meddelande kommer att skickas från din standardadress.</string>
@@ -158,7 +158,7 @@
   <string name="composer_expiration_time_custom_time_on">På %1$s</string>
   <string name="composer_error_send_draft_generic">An unexpected error happened sending this message. Please retry.</string>
   <string name="composer_error_send_draft_invalid_sender">Inaktiverad eller ogiltig e-postadress. Kontrollera att adressen är giltig och aktiv.</string>
-  <string name="composer_error_send_draft_external_password_decrypt_error">Failed to decrypt external encryption password</string>
+  <string name="composer_error_send_draft_external_password_decrypt_error">Misslyckades att avkryptera externt krypteringslösenord</string>
   <string name="composer_error_send_draft_already_sent">Meddelande var redan skickat</string>
   <string name="composer_error_send_draft_message_does_not_exist">Utkast hittades inte. Du kan redan ha skickat eller kastat det.</string>
   <string name="composer_error_send_draft_message_too_large">Meddelande är för stort för att skickas. Minska storleken på dina bilagor.</string>

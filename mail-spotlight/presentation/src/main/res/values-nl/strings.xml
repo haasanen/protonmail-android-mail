@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="spotlight_screen_version_text">Versie %s</string>
+  <string name="spotlight_screen_title">Nieuw in Proton Mail</string>
+  <string name="spotlight_feature_item_discreet_icon_title">Onopvallend app-icoon</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Houd het standaard Proton Mail-pictogram of vermom het met een generiek pictogram voor meer privacy.</string>
+  <string name="spotlight_feature_item_tracking_protection_title">Trackerbescherming</string>
+  <string name="spotlight_feature_item_tracking_protection_description">Bekijk wie u heeft geprobeerd te monitoren met verborgen pixels en trackingkoppelingen, en hoeveel pogingen er zijn geblokkeerd.</string>
+  <string name="spotlight_feature_item_encryption_locks_title">Versleutelingssloten</string>
+  <string name="spotlight_feature_item_encryption_locks_description">Gebruik de slotpictogrammen om het type versleuteling te identificeren en te verifiëren dat uw berichten beschermt.</string>
+  <string name="spotlight_feature_item_headers_html_title">Bekijk headers en HTML</string>
+  <string name="spotlight_feature_item_headers_html_description">Controleer verdachte berichten om hun authenticiteit te bevestigen en eventuele verborgen traceerelementen bloot te leggen.</string>
+  <string name="spotlight_screen_got_it">Begrepen</string>
+</resources>

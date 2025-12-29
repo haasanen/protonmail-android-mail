@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Підтвердити</string>
   <string name="mail_settings_custom_toolbar_save_error">Не вдалося зберегти дії панелі інструментів. Спробуйте ще раз.</string>
   <string name="mail_settings_custom_toolbar_read_error">Не вдалося прочитати дії панелі інструментів. Спробуйте ще раз.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">Значок програми</string>
+  <string name="settings_app_icon_name_default">За замовчуванням</string>
+  <string name="settings_app_icon_name_discreet">Дискретний</string>
+  <string name="settings_app_icon_title_default">Значок програми – за замовчуванням</string>
+  <string name="settings_app_icon_title_discreet">Значок програми – непомітний</string>
+  <string name="settings_app_icon_description">Залиште стандартну піктограму Proton Mail або замаскуйте її більш непомітною для додаткової конфіденційності.\nУ сповіщеннях завжди буде відображатись назва та піктограма Proton Mail.</string>
+  <string name="settings_app_icon_learn_more">Дізнатися більше…</string>
+  <string name="settings_app_icon_discreet_toggle">Дискретна іконка програми</string>
+  <string name="settings_app_icon_confirmation_title">Змінити значок програми?</string>
+  <string name="settings_app_icon_confirmation_details">Це призведе до закриття програми Proton Mail та зникнення всіх сповіщень.\n\nЩоб перезапустити Proton Mail, просто торкніться значка нової програми.</string>
+  <string name="settings_app_icon_action_cancel">Скасувати</string>
+  <string name="settings_app_icon_change_icon">Змінити значок</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Сталася помилка. Спробуйте знову.</string>
 </resources>

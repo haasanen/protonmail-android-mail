@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Klassisch</string>
-  <string name="app_icon_name_dark">Dunkel</string>
-  <string name="app_icon_name_retro">Retro</string>
   <string name="app_icon_name_weather">Wetter</string>
   <string name="app_icon_name_notes">Notizen</string>
   <string name="app_icon_name_calculator">Taschenrechner</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">Diese Nachricht wird am %1$s gesendet</string>
   <string name="launcher_alert_duplicate_account_description">Der Benutzer ist bereits angemeldet</string>
   <string name="home_event_loop_error_snackbar">Deine E-Mails konnten nicht synchronisiert werden. Melde dich kurz ab und wieder an. Sollte das nicht helfen, sende uns bitte einen Fehlerbericht.</string>
-  <string name="settings_change_icon_title">App-Symbol</string>
-  <string name="settings_change_icon_description">Tarne die Proton Mail-App mit einem diskreten Symbol. Benachrichtigungen zeigen weiterhin den Standardnamen und das Standardsymbol von Proton Mail an.</string>
-  <string name="settings_change_icon_confirmation_title">App-Symbol ändern?</string>
-  <string name="settings_change_icon_confirmation_details">Dadurch wird die Proton Mail-App geschlossen und alle Benachrichtigungen verworfen.\n\nUm Proton Mail neu zu starten, tippe einfach auf dein neues App-Symbol.</string>
-  <string name="settings_change_icon_action_cancel">Abbrechen</string>
-  <string name="settings_change_icon_change_icon">Symbol ändern</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Diskretes App-Symbol</string>
 </resources>

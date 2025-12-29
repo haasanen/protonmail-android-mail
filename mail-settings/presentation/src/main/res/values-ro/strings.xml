@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Confirmare</string>
   <string name="mail_settings_custom_toolbar_save_error">Nu se pot salva acțiunile barei de unelte. Reîncercați.</string>
   <string name="mail_settings_custom_toolbar_read_error">Nu se pot citi acțiunile barei de unelte. Reîncercați.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">Pictogramă aplicație</string>
+  <string name="settings_app_icon_name_default">Implicită</string>
+  <string name="settings_app_icon_name_discreet">Discretă</string>
+  <string name="settings_app_icon_title_default">Pictogramă aplicație - implicită</string>
+  <string name="settings_app_icon_title_discreet">Pictogramă aplicație - discretă</string>
+  <string name="settings_app_icon_description">Păstrați pictograma implicită Proton Mail sau camuflați-o cu una mai discretă pentru confidențialitate sporită.\nNotificările vor afișa întotdeauna numele și pictograma Proton Mail.</string>
+  <string name="settings_app_icon_learn_more">Detalii…</string>
+  <string name="settings_app_icon_discreet_toggle">Pictogramă discretă aplicație</string>
+  <string name="settings_app_icon_confirmation_title">Modificați pictograma aplicației?</string>
+  <string name="settings_app_icon_confirmation_details">Aceasta va determina închiderea aplicației Proton Mail și anularea tuturor notificărilor.\n\nPentru a reporni Proton Mail, atingeți noua pictogramă a aplicației.</string>
+  <string name="settings_app_icon_action_cancel">Anulare</string>
+  <string name="settings_app_icon_change_icon">Modificare pictogramă</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">A apărut o eroare. Mai încercați.</string>
 </resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Stocké avec un chiffrement zéro accès</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Ce message est stocké dans votre messagerie avec un chiffrement zéro accès. Ni Proton ni personne d’autre ne peut le lire. \n\nCependant, un expéditeur ou un destinataire n\'utilisant pas Proton Mail peut avoir une copie non chiffrée stockée sur son serveur de messagerie.</string>
+  <string name="padlocks_proton_e2ee">Message chiffré de bout en bout</string>
+  <string name="padlocks_proton_e2ee_description">Comme tous les messages, il est stocké sur les serveurs Proton avec un chiffrement zéro-accès.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Chiffré de bout en bout par Proton, provenant d\'un expéditeur vérifié</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Ce message est protégé par un chiffrement automatique de bout en bout par Proton, et nous avons vérifié qu\'il a été envoyé par l\'expéditeur indiqué.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Chiffré de bout en bout par Proton avec une vérification qui n\'a pas abouti</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Ce message est protégé par le chiffrement de bout en bout automatique de Proton. Cependant, la vérification de l\'expéditeur a échoué. \nVeuillez confirmer l\'authenticité du message auprès de votre contact.</string>
+  <string name="padlocks_pgp_e2ee">Chiffré de bout en bout avec PGP</string>
+  <string name="padlocks_pgp_e2ee_description">Ce message est protégé avec le chiffrement PGP de bout en bout. Il est chiffré sur l\'appareil de l\'expéditeur et ne peut être déchiffré que par le destinataire. \n\nComme tous les messages, il est stocké sur les serveurs de Proton en utilisant le chiffrement zéro accès.</string>
+  <string name="padlocks_pgp_e2ee_signed">Chiffré de bout en bout avec PGP et signé</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Ce message est protégé avec le chiffrement PGP de bout en bout. Il est chiffré sur l\'appareil de l\'expéditeur et ne peut être déchiffré que par le destinataire. \n\nDe plus, la signature prouve au destinataire que votre message est authentique et n\'a pas été falsifié.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">Chiffré de bout en bout avec PGP provenant d\'un contact vérifié</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Ce message est protégé avec le chiffrement PGP de bout en bout. Il est chiffré sur l\'appareil de l\'expéditeur et ne peut être déchiffré que par le destinataire. \n\nDe plus, nous avons vérifié que le message a été envoyé par l\'expéditeur indiqué.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">Chiffré de bout en bout avec PGP avec une vérification qui n\'a pas abouti</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">Ce message est protégé avec le chiffrement PGP de bout en bout. Il est chiffré sur l\'appareil de l\'expéditeur et ne peut être déchiffré que par le destinataire. \n\nCependant, la vérification de l\'expéditeur n\'a pas abouti. Veuillez confirmer l\'authenticité du message auprès de votre contact.</string>
+  <string name="padlocks_pgp_signed">Message signé avec PGP</string>
+  <string name="padlocks_pgp_signed_description">Ce message n\'a pas été envoyé avec du chiffrement de bout en bout, mais il est stocké sur les serveurs de Proton en utilisant du chiffrement zéro accès. \n\nVous l\'avez également signé numériquement, prouvant au destinataire que votre message est authentique et n\'a pas été falsifié.</string>
+  <string name="padlocks_pgp_signed_verified_contact">Message signé avec PGP provenant d\'un contact vérifié</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Ce message n\'a pas été envoyé avec du chiffrement de bout en bout, mais il est stocké sur les serveurs de Proton en utilisant du chiffrement zéro accès. \n\nNous avons également vérifié que le message a été envoyé par l\'expéditeur indiqué.</string>
+  <string name="padlocks_pgp_signed_failed_verification">Message signé avec PGP avec une vérification qui n\'a pas abouti</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">Ce message n\'a pas été envoyé avec du chiffrement de bout en bout, mais il est stocké sur les serveurs de Proton en utilisant du chiffrement zéro accès. \n\nCependant, la vérification de l\'expéditeur n\'a pas abouti. Veuillez confirmer l\'authenticité du message auprès de votre contact.</string>
+  <string name="padlocks_show_details">Afficher les informations</string>
+  <string name="padlocks_learn_more">En savoir plus...</string>
+  <string name="padlocks_close_button_text">J\'ai compris</string>
+</resources>

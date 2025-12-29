@@ -44,6 +44,6 @@
   <string name="payment_subscription_managed_by_google">サブスクリプションは Google Play によって管理されています。</string>
   <string name="payment_subscription_managed_by_apple">サブスクリプションは Apple Store によって管理されています。</string>
   <string name="payment_subscription_managed_by_other">サブスクリプションはモバイル アプリ内では管理できません。</string>
-  <string name="payment_subscription_restricted_access_title">Restricted access</string>
-  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
+  <string name="payment_subscription_restricted_access_title">アクセス制限</string>
+  <string name="payment_subscription_restricted_access_description">恐れ入りますが、お客様にはこのページにアクセスする権限がありません。この事態が予期せぬものである場合は、管理者にお問い合わせください。</string>
 </resources>

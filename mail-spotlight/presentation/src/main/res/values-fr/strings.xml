@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="spotlight_screen_version_text">Version %s</string>
+  <string name="spotlight_screen_title">Nouveautés dans Proton Mail</string>
+  <string name="spotlight_feature_item_discreet_icon_title">Icône discrète</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Conservez l\'icône Proton Mail par défaut ou remplacez-la par une icône générique pour plus de confidentialité.</string>
+  <string name="spotlight_feature_item_tracking_protection_title">Protection contre le suivi</string>
+  <string name="spotlight_feature_item_tracking_protection_description">Découvrez qui a tenté de vous surveiller avec des pixels invisibles et des liens de suivi, ainsi que le nombre de tentatives qui ont été bloquées.</string>
+  <string name="spotlight_feature_item_encryption_locks_title">Cadenas de chiffrement</string>
+  <string name="spotlight_feature_item_encryption_locks_description">Utilisez les icônes de cadenas pour identifier et vérifier le type de chiffrement protégeant vos messages.</string>
+  <string name="spotlight_feature_item_headers_html_title">Voir les en-têtes et le HTML</string>
+  <string name="spotlight_feature_item_headers_html_description">Inspectez les messages suspects pour confirmer leur authenticité et découvrir les éléments de suivis cachés.</string>
+  <string name="spotlight_screen_got_it">J\'ai compris</string>
+</resources>

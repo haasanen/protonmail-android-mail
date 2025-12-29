@@ -22,10 +22,12 @@
   <string name="show_details">Mostrar detalles</string>
   <string name="trackers_protection_no_trackers_detected">Bloqueo de rastreadores: ninguno detectado</string>
   <string name="tracking_protection">Protección contra rastreadores</string>
-  <string name="tracking_protection_description">Si recibes un correo con píxeles espía (rastreadores) o enlaces de rastreo, verás el icono del escudo en los detalles del correo.</string>
+  <string name="tracking_protection_description">Te protegemos activamente contra el rastreo. Aquí puedes ver los píxeles espía que hemos bloqueado y los enlaces de seguimiento que hemos limpiado en este mensaje.</string>
   <string name="tracking_protection_learn_more">Más información...</string>
   <string name="original">original</string>
   <string name="cleaned">Saneado</string>
+  <string name="action_close_dialog_button">Cerrar</string>
+  <string name="got_it">Entendido</string>
   <plurals name="number_of_blocked_trackers">
     <item quantity="one">%s rastreador bloqueado</item>
     <item quantity="other">%s rastreadores bloqueados</item>

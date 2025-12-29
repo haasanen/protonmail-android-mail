@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Klassisk</string>
-  <string name="app_icon_name_dark">Mørk</string>
-  <string name="app_icon_name_retro">Retro</string>
   <string name="app_icon_name_weather">Vejr</string>
   <string name="app_icon_name_notes">Noter</string>
   <string name="app_icon_name_calculator">Lommeregner</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">Denne besked vil blive sendt %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Brugeren er allerede logget ind</string>
   <string name="home_event_loop_error_snackbar">Vi kunne ikke synkronisere din e-mail. Prøv at logge ud og ind igen og indsend en fejlrapport hvis det ikke virker.</string>
-  <string name="settings_change_icon_title">App-ikon</string>
-  <string name="settings_change_icon_description">Skjul Proton Mail-appen med et diskret ikon. Notifikationer vil stadig vise standard Proton Mail-navn og -ikon.</string>
-  <string name="settings_change_icon_confirmation_title">Skift app-ikon?</string>
-  <string name="settings_change_icon_confirmation_details">Dette får Proton Mail App til at lukke, og alle notifikationer vil blive afvist.\n\nTryk blot på dit nye app-ikon for at genstarte Proton Mail.</string>
-  <string name="settings_change_icon_action_cancel">Annuller</string>
-  <string name="settings_change_icon_change_icon">Skift ikon</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Diskret app-ikon</string>
 </resources>

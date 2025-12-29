@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Opgeslagen met zero-access-versleuteling</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Dit bericht is opgeslagen in uw postvak IN met zero-access versleuteling. Noch Proton, noch iemand anders kan het lezen. \n\nEchter, een afzender of ontvanger die geen Proton Mail gebruikt, kan een niet-versleutelde kopie hebben opgeslagen op hun e-mailserver.</string>
+  <string name="padlocks_proton_e2ee">End-to-end versleuteld bericht</string>
+  <string name="padlocks_proton_e2ee_description">Net als alle berichten wordt het op Proton servers opgeslagen met zero-access encryptie.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Proton end-to-end versleuteld van geverifieerde afzender</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Dit bericht is beveiligd met automatische Proton end-to-end encryptie, en we hebben geverifieerd dat het is verzonden door de vermelde afzender.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Proton end-to-end versleuteld met mislukte verificatie</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Dit bericht is beschermd met automatische Proton end-to-end encryptie. Echter, de verificatie van de afzender is mislukt. \nBevestig de authenticiteit van het bericht met uw contact.</string>
+  <string name="padlocks_pgp_e2ee">PGP end-to-end versleuteld</string>
+  <string name="padlocks_pgp_e2ee_description">Dit bericht is beschermd met PGP end-to-end encryptie. Het wordt versleuteld op het apparaat van de afzender en kan alleen door de ontvanger worden ontsleuteld. \n\nNet als alle berichten wordt het opgeslagen op Proton servers met zero-access encryptie.</string>
+  <string name="padlocks_pgp_e2ee_signed">PGP end-to-end versleuteld en ondertekend</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Dit bericht is beschermd met PGP end-to-end encryptie. Het wordt versleuteld op het apparaat van de afzender en kan alleen worden ontsleuteld door de ontvanger. \n\nBovendien bewijst de handtekening aan de ontvanger dat uw bericht echt is en niet onrechtmatig is bewerkt.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">PGP end-to-end versleuteld van geverifieerd contact</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Dit bericht is beschermd met PGP end-to-end encryptie. Het wordt versleuteld op het apparaat van de afzender en kan alleen worden ontsleuteld door de ontvanger. \n\nBovendien hebben wij geverifieerd dat het bericht is verzonden door de opgegeven afzender.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">PGP end-to-end versleuteld met mislukte verificatie</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">Dit bericht is beschermd met PGP end-to-end encryptie. Het wordt versleuteld op het apparaat van de afzender en kan alleen worden ontsleuteld door de ontvanger. \n\nDe afzender verificatie is echter mislukt. Bevestig de authenticiteit van het bericht met uw contact.</string>
+  <string name="padlocks_pgp_signed">PGP ondertekend bericht</string>
+  <string name="padlocks_pgp_signed_description">Dit bericht is niet verzonden met end-to-end encryptie, maar is opgeslagen op Proton servers met zero-access encryptie. \n\nU hebt het ook digitaal ondertekend, wat de ontvanger bewijst dat uw bericht echt is en niet onrechtmatig is bewerkt.</string>
+  <string name="padlocks_pgp_signed_verified_contact">PGP versleuteld bericht van geverifieerde afzender</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Dit bericht is niet verzonden met end-to-end encryptie, maar is opgeslagen op Proton servers met zero-access encryptie. \n\nWe hebben ook geverifieerd dat het bericht is verzonden door de opgegeven afzender.</string>
+  <string name="padlocks_pgp_signed_failed_verification">PGP ondertekend bericht met mislukte verificatie</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">Dit bericht is niet verzonden met end-to-end-encryptie, maar wordt opgeslagen op Proton servers met zero-access-encryptie. \n\nDe verificatie van de afzender is echter mislukt. Bevestig de authenticiteit van het bericht met uw contact.</string>
+  <string name="padlocks_show_details">Details tonen</string>
+  <string name="padlocks_learn_more">Meer informatie...</string>
+  <string name="padlocks_close_button_text">Begrepen</string>
+</resources>

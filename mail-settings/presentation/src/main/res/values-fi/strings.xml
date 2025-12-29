@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Vahvista</string>
   <string name="mail_settings_custom_toolbar_save_error">Työkalupalkin toimintoja ei voitu tallentaa. Yritä uudelleen.</string>
   <string name="mail_settings_custom_toolbar_read_error">Työkalupalkin toimintojen lukeminen epäonnistui. Yritä uudelleen.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">Sovelluksen kuvake</string>
+  <string name="settings_app_icon_name_default">Oletus</string>
+  <string name="settings_app_icon_name_discreet">Huomaamaton</string>
+  <string name="settings_app_icon_title_default">Sovelluksen kuvake - oletus</string>
+  <string name="settings_app_icon_title_discreet">Sovellukse kuvake - huomaamaton</string>
+  <string name="settings_app_icon_description">Pidä Proton Mailin oletuskuvake tai vaihda se huomaamattomampaan kuvakkeeseen yksityisyyden suojaamiseksi.\nIlmoitukset näyttävät aina Proton Mailin nimen ja kuvakkeen.</string>
+  <string name="settings_app_icon_learn_more">Lue lisää…</string>
+  <string name="settings_app_icon_discreet_toggle">Huomaamaton sovelluskuvake</string>
+  <string name="settings_app_icon_confirmation_title">Vaihda sovelluksen kuvake?</string>
+  <string name="settings_app_icon_confirmation_details">Tämä saa Proton Mailin sulkeutumaan ja hylkäämään kaikki ilmoitukset.\n\nUudelleenkäynnistääksesi Proton Mailin, paina uutta sovelluskuvaketta.</string>
+  <string name="settings_app_icon_action_cancel">Peruuta</string>
+  <string name="settings_app_icon_change_icon">Vaihda kuvake</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Tapahtui virhe. Yritä uudelleen.</string>
 </resources>

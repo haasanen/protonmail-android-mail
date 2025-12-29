@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Clàssic</string>
-  <string name="app_icon_name_dark">Fosc</string>
-  <string name="app_icon_name_retro">Retro</string>
   <string name="app_icon_name_weather">Temps</string>
   <string name="app_icon_name_notes">Notes</string>
   <string name="app_icon_name_calculator">Calculadora</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">Aquest missatge s\'enviarà el %1$s.</string>
   <string name="launcher_alert_duplicate_account_description">L\'usuari ja ha iniciat la sessió</string>
   <string name="home_event_loop_error_snackbar">No s\'ha pogut sincronitzar el correu. Proveu de tancar la sessió i tornar-la a iniciar. Si això no funciona, envieu un informe d\'error.</string>
-  <string name="settings_change_icon_title">Icona de l\'aplicació</string>
-  <string name="settings_change_icon_description">Opteu per una icona discreta per a l\'aplicació de Proton Mail. Les notificacions encara mostraran el nom i la icona de Proton Mail per defecte.</string>
-  <string name="settings_change_icon_confirmation_title">Voleu canviar la icona de l\'aplicació?</string>
-  <string name="settings_change_icon_confirmation_details">Això farà que es tanqui l\'aplicació del Proton Mail i que es descartin totes les notificacions.\n\nPer a reiniciar el Proton Mail, només cal que toqueu la icona de la nova aplicació.</string>
-  <string name="settings_change_icon_action_cancel">Cancel·la</string>
-  <string name="settings_change_icon_change_icon">Canvia la icona</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Icona de l\'aplicació discreta</string>
 </resources>

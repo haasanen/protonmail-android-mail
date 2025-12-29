@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Confirmer</string>
   <string name="mail_settings_custom_toolbar_save_error">La sauvegarde des actions dans la barre d\'outils n\'a pas abouti. Veuillez réessayer.</string>
   <string name="mail_settings_custom_toolbar_read_error">La lecture des actions de la barre d\'outils n\'a pas abouti. Veuillez réessayer.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">Icône de l\'application</string>
+  <string name="settings_app_icon_name_default">Par défaut</string>
+  <string name="settings_app_icon_name_discreet">Discret</string>
+  <string name="settings_app_icon_title_default">Icône de l\'application - par défaut</string>
+  <string name="settings_app_icon_title_discreet">Icône de l\'application - discrète</string>
+  <string name="settings_app_icon_description">Conservez l\'icône Proton Mail par défaut, ou déguisez-la avec une icône plus discrète pour plus de confidentialité.\nLes notifications afficheront toujours le nom et l\'icône de Proton Mail.</string>
+  <string name="settings_app_icon_learn_more">En savoir plus…</string>
+  <string name="settings_app_icon_discreet_toggle">Icône d\'application discrète</string>
+  <string name="settings_app_icon_confirmation_title">Changer l\'icône de l\'application ?</string>
+  <string name="settings_app_icon_confirmation_details">Cette action va fermer l\'application Proton Mail et toutes les notifications seront fermées.\n\nPour redémarrer Proton Mail, il suffit d\'appuyer sur la nouvelle icône de votre application.</string>
+  <string name="settings_app_icon_action_cancel">Annuler</string>
+  <string name="settings_app_icon_change_icon">Changer l\'icône</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Une erreur est survenue. Veuillez réessayer.</string>
 </resources>

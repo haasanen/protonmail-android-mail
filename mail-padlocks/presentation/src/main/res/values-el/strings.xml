@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Αποθηκευμένο με κρυπτογράφηση μηδενικής πρόσβασης</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Αυτό το μήνυμα αποθηκεύεται στο γραμματοκιβώτιό σας με κρυπτογράφηση μηδενικής πρόσβασης. Ούτε η Proton ούτε κανένας άλλος μπορεί να το διαβάσει. \n\nΩστόσο, ένας αποστολέας ή παραλήπτης που δεν χρησιμοποιεί το Proton Mail ενδέχεται να έχει ένα μη κρυπτογραφημένο αντίγραφο αποθηκευμένο στον διακομιστή ηλεκτρονικού ταχυδρομείου του.</string>
+  <string name="padlocks_proton_e2ee">Διατερματικά κρυπτογραφημένο μήνυμα</string>
+  <string name="padlocks_proton_e2ee_description">Όπως όλα τα μηνύματα, αποθηκεύεται στους διακομιστές Proton χρησιμοποιώντας κρυπτογράφηση μηδενικής πρόσβασης.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Διατερματική κρυπτογράφηση Proton από επαληθευμένο αποστολέα</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Αυτό το μήνυμα προστατεύεται με αυτόματη διατερματική κρυπτογράφηση Proton και επαληθεύσαμε ότι αποστέλλεται από τον αναφερόμενο αποστολέα.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Διατερματική κρυπτογράφηση Proton με αποτυχημένη επαλήθευση</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Αυτό το μήνυμα προστατεύεται με αυτόματη διατερματική κρυπτογράφηση Proton. Ωστόσο, η επαλήθευση του αποστολέα απέτυχε. \nΠαρακαλούμε επιβεβαιώστε την αυθεντικότητα του μηνύματος με τον επαφή σας.</string>
+  <string name="padlocks_pgp_e2ee">PGP διατερματικά κρυπτογραφημένο</string>
+  <string name="padlocks_pgp_e2ee_description">Αυτό το μήνυμα προστατεύεται με διατερματική κρυπτογράφηση PGP. Κρυπτογραφείται στη συσκευή του αποστολέα και μπορεί να αποκρυπτογραφηθεί μόνο από τον παραλήπτη.. \n\nΌπως όλα τα μηνύματα, αποθηκεύεται στους διακομιστές Proton χρησιμοποιώντας κρυπτογράφηση μηδενικής πρόσβασης.</string>
+  <string name="padlocks_pgp_e2ee_signed">PGP διατερματικά κρυπτογραφημένο και υπογεγραμμένο</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Αυτό το μήνυμα προστατεύεται με διατερματική κρυπτογράφηση PGP. Κρυπτογραφείται στη συσκευή του αποστολέα και μπορεί να αποκρυπτογραφηθεί μόνο από τον παραλήπτη. \n\nΕπιπλέον, η υπογραφή αποδεικνύει στον παραλήπτη ότι το μήνυμά σας είναι γνήσιο και δεν έχει παραποιηθεί.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">PGP διατερματικά κρυπτογραφημένο από επαληθευμένη επαφή</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Αυτό το μήνυμα προστατεύεται με διατερματική κρυπτογράφηση PGP. Κρυπτογραφείται στη συσκευή του αποστολέα και μπορεί να αποκρυπτογραφηθεί μόνο από τον παραλήπτη. \n\nΕπιπλέον, επαληθεύσαμε ότι το μήνυμα στάλθηκε από τον αναφερόμενο αποστολέα.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">Διατερματική κρυπτογράφηση PGP με αποτυχημένη επαλήθευση</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">Αυτό το μήνυμα προστατεύεται με διατερματική κρυπτογράφηση PGP. Κρυπτογραφείται στη συσκευή του αποστολέα και μπορεί να αποκρυπτογραφηθεί μόνο από τον παραλήπτη. \n\nΩστόσο, η επαλήθευση του αποστολέα απέτυχε. Επιβεβαιώστε την αυθεντικότητα του μηνύματος με τον επαφή σας.</string>
+  <string name="padlocks_pgp_signed">Μήνυμα υπογεγραμμένο με PGP</string>
+  <string name="padlocks_pgp_signed_description">Αυτό το μήνυμα δεν αποστάλη με διατερματική κρυπτογράφηση, αλλά αποθηκεύεται στους διακομιστές Proton χρησιμοποιώντας κρυπτογράφηση μηδενικής πρόσβασης. \n\nΤο έχετε επίσης υπογράψει ψηφιακά, αποδεικνύοντας στον παραλήπτη ότι το μήνυμά σας είναι γνήσιο και δεν έχει παραποιηθεί.</string>
+  <string name="padlocks_pgp_signed_verified_contact">Υπογεγραμμένο μήνυμα PGP από επαληθευμένη επαφή</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Αυτό το μήνυμα δεν απεστάλη με διατερματική κρυπτογράφηση, αλλά αποθηκεύεται στους διακομιστές Proton χρησιμοποιώντας κρυπτογράφηση μηδενικής πρόσβασης. \n\nΕπαληθεύσαμε επίσης ότι το μήνυμα απεστάλη από τον αναφερόμενο αποστολέα.</string>
+  <string name="padlocks_pgp_signed_failed_verification">Μήνυμα υπογεγραμμένο με PGP με αποτυχημένη επαλήθευση</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">Αυτό το μήνυμα δεν αποστάλη με διατερματική κρυπτογράφηση, αλλά αποθηκεύεται στους διακομιστές Proton χρησιμοποιώντας κρυπτογράφηση μηδενικής πρόσβασης. \n\nΩστόσο, η επαλήθευση του αποστολέα απέτυχε. Παρακαλούμε επιβεβαιώστε την αυθεντικότητα του μηνύματος με τον επαφή σας.</string>
+  <string name="padlocks_show_details">Εμφάνιση λεπτομερειών</string>
+  <string name="padlocks_learn_more">Μάθετε περισσότερα...</string>
+  <string name="padlocks_close_button_text">Το κατάλαβα</string>
+</resources>

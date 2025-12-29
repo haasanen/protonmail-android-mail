@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Επιβεβαίωση</string>
   <string name="mail_settings_custom_toolbar_save_error">Αδυναμία αποθήκευσης ενεργειών γραμμής εργαλείων. Παρακαλούμε δοκιμάστε ξανά.</string>
   <string name="mail_settings_custom_toolbar_read_error">Αδυναμία ανάγνωσης ενεργειών γραμμής εργαλείων. Παρακαλούμε δοκιμάστε ξανά.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">Εικονίδιο εφαρμογής</string>
+  <string name="settings_app_icon_name_default">Προεπιλεγμένο</string>
+  <string name="settings_app_icon_name_discreet">Διακριτικό</string>
+  <string name="settings_app_icon_title_default">Εικονίδιο εφαρμογής - προεπιλεγμένο</string>
+  <string name="settings_app_icon_title_discreet">Εικονίδιο εφαρμογής - διακριτικό</string>
+  <string name="settings_app_icon_description">Διατηρήστε το προεπιλεγμένο εικονίδιο του Proton Mail ή αντικαταστήστε το με ένα πιο διακριτικό για μεγαλύτερη ιδιωτικότητα.\nΟι ειδοποιήσεις θα εμφανίζουν πάντα το όνομα και το εικονίδιο του Proton Mail.</string>
+  <string name="settings_app_icon_learn_more">Μάθετε περισσότερα…</string>
+  <string name="settings_app_icon_discreet_toggle">Διακριτικό εικονίδιο εφαρμογής</string>
+  <string name="settings_app_icon_confirmation_title">Αλλαγή εικονιδίου εφαρμογής;</string>
+  <string name="settings_app_icon_confirmation_details">Αυτό θα προκαλέσει το κλείσιμο της εφαρμογής Proton Mail και όλες οι ειδοποιήσεις να απορριφθούν.\n\nΓια να επανεκκινήσετε το Proton Mail, απλώς πατήστε το εικονίδιο της νέας σας εφαρμογής.</string>
+  <string name="settings_app_icon_action_cancel">Ακύρωση</string>
+  <string name="settings_app_icon_change_icon">Αλλαγή εικονιδίου</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Παρουσιάστηκε σφάλμα. Δοκίμασε ξανά.</string>
 </resources>

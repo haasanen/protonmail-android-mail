@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">クラシック</string>
-  <string name="app_icon_name_dark">ダーク</string>
-  <string name="app_icon_name_retro">レトロ</string>
   <string name="app_icon_name_weather">ウィンター</string>
   <string name="app_icon_name_notes">ノート</string>
   <string name="app_icon_name_calculator">計算機</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">このメッセージは %1$s に送信されます</string>
   <string name="launcher_alert_duplicate_account_description">ユーザーは既にサインインしています</string>
   <string name="home_event_loop_error_snackbar">メールの同期に失敗しました。一度ログアウトしてから再度ログインしてみてください。それでも解決しない場合は、バグ報告を送信してください。</string>
-  <string name="settings_change_icon_title">アプリアイコン</string>
-  <string name="settings_change_icon_description">Proton Mailアプリを目立たないアイコンで隠します。通知にはデフォルトのProton Mailの名前とアイコンが表示されます。</string>
-  <string name="settings_change_icon_confirmation_title">アプリアイコンを変更しますか?</string>
-  <string name="settings_change_icon_confirmation_details">これにより、Proton Mail アプリが終了し、すべての通知が閉じられます。\n\nProton Mail を再起動するには、新しいアプリ アイコンをタップするだけです。</string>
-  <string name="settings_change_icon_action_cancel">キャンセル</string>
-  <string name="settings_change_icon_change_icon">アイコンを変更</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">目立たないアプリアイコン</string>
 </resources>

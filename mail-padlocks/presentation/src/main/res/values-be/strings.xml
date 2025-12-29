@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Захоўваецца з шыфраваннем нулявога доступу</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Гэта паведамленне захавана ў вашай паштовай скрыні з шыфраваннем нулявога доступу. Ні Proton, ні іншыя людзі не змогуць яго прачытаць. \n\nАднак у адпраўніка або атрымальніка можа застацца незашыфраваная копія ліста на паштовым серверы, калі іншы бок не карыстаецца Proton Mail.</string>
+  <string name="padlocks_proton_e2ee">Паведамленне зашыфравана скразным метадам</string>
+  <string name="padlocks_proton_e2ee_description">Як і ўсе астатнія паведамленні, яно захоўваецца на серверах Proton з выкарыстаннем шыфравання нулявога доступу.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Зашыфравана скразным метадам Proton ад праверанага атрымальніка</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Гэта паведамленне абаронена з дапамогай аўтаматычнага скразнога шыфравання Proton. Яго праверка паказала, што яно было адпраўлена заяўленым адпраўніком.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Зашыфравана скразным метадам Proton з няўдалай праверкай</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Гэта паведамленне абаронена аўтаматычным скразным шыфраваннем з дапамогай Proton. Аднак не ўдалося праверыць адпраўніка. \nПацвердзіце сапраўднасць паведамлення са сваім кантактам.</string>
+  <string name="padlocks_pgp_e2ee">Зашыфравана скразным метадам з дапамогай PGP</string>
+  <string name="padlocks_pgp_e2ee_description">Гэта паведамленне абаронена скразным шыфраваннем з дапамогай PGP. Яно зашыфравана на прыладзе адпраўніка і можа быць расшыфравана толькі атрымальнікам. \n\nЯк і ўсе паведамленні, яно захоўваецца на серверах Proton з выкарыстаннем шыфравання нулявога доступу.</string>
+  <string name="padlocks_pgp_e2ee_signed">Падпісана і зашыфравана скразным метадам з дапамогай PGP</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Гэта паведамленне абаронена скразным шыфраваннем з дапамогай PGP. Яно зашыфравана на прыладзе адпраўніка і можа быць расшыфравана толькі атрымальнікам. \n\nАкрамя таго, подпіс пацвярджае атрымальніку, што ваша паведамленне сапраўднае і не было падробленым.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">Зашыфравана скразным метадам з дапамогай PGP ад праверанага кантакту</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Гэта паведамленне абаронена скразным шыфраваннем з дапамогай PGP. Яно зашыфравана на прыладзе адпраўніка і можа быць расшыфравана толькі атрымальнікам. \n\nАкрамя таго, яго праверка паказала, што яно было адпраўлена заяўленым адпраўніком.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">Зашыфравана скразным метадам з дапамогай PGP з няўдалай праверкай</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">Гэта паведамленне абаронена скразным шыфраваннем з дапамогай PGP. Яно зашыфравана на прыладзе адпраўніка і можа быць расшыфравана толькі атрымальнікам. \n\nАднак не ўдалося праверыць адпраўніка. Пацвердзіце сапраўднасць паведамлення са сваім кантактам.</string>
+  <string name="padlocks_pgp_signed">Паведамленне падпісана з дапамогай PGP</string>
+  <string name="padlocks_pgp_signed_description">Гэта паведамленне не было адпраўлена з дапамогай скразнога шыфравання, але захоўваецца на серверах Proton з выкарыстаннем шыфравання нулявога доступу. \n\nНа ім таксама ёсць ваш лічбавы подпіс, які даказвае атрымальніку, што паведамленне з\'яўляецца сапраўдным і не было падробленым.</string>
+  <string name="padlocks_pgp_signed_verified_contact">Паведамленне падпісана з дапамогай PGP ад праверанаму кантакту</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Гэта паведамленне не было адпраўлена з дапамогай скразнога шыфравання, але захоўваецца на серверах Proton з выкарыстаннем шыфравання нулявога доступу. \n\nЯго праверка паказала, што яно было адпраўлена заяўленым адпраўніком.</string>
+  <string name="padlocks_pgp_signed_failed_verification">Паведамленне, падпісана з дапамогай PGP, з няўдалай праверкай</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">Гэта паведамленне не было адпраўлена з дапамогай скразнога шыфравання, але захоўваецца на серверах Proton з выкарыстаннем шыфравання нулявога доступу. \n\nАднак не ўдалося праверыць адпраўніка. Пацвердзіце сапраўднасць паведамлення са сваім кантактам.</string>
+  <string name="padlocks_show_details">Паказаць падрабязнасці</string>
+  <string name="padlocks_learn_more">Даведацца больш...</string>
+  <string name="padlocks_close_button_text">Зразумела</string>
+</resources>

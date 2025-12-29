@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Klasična</string>
-  <string name="app_icon_name_dark">Temna</string>
-  <string name="app_icon_name_retro">Retro</string>
   <string name="app_icon_name_weather">Vreme</string>
   <string name="app_icon_name_notes">Zapiski</string>
   <string name="app_icon_name_calculator">Računalo</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">To sporočilo bo poslano %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Uporabnik je že prijavljen</string>
   <string name="home_event_loop_error_snackbar">Ni nam uspelo sinhronizirati vaše pošte. Poskusite se odjaviti in ponovno prijaviti. Če to ne deluje, oddajte prijavo napake.</string>
-  <string name="settings_change_icon_title">Ikona aplikacije</string>
-  <string name="settings_change_icon_description">Prikrijte aplikacijo Proton Mail z diskretno ikono. Obvestila bodo še vedno prikazovala privzeto ime in ikono Proton Mail.</string>
-  <string name="settings_change_icon_confirmation_title">Želite zamenjati ikono aplikacije?</string>
-  <string name="settings_change_icon_confirmation_details">Aplikacija Proton Mail se bo zaprla in vsa prikazana obvestila bodo izginila.\n\nZa ponovni zagon se samo dotaknite nove ikone aplikacije.</string>
-  <string name="settings_change_icon_action_cancel">Prekliči</string>
-  <string name="settings_change_icon_change_icon">Zamenjaj ikono</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Diskretna ikona aplikacije</string>
 </resources>

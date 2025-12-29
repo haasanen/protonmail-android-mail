@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Klassiek</string>
-  <string name="app_icon_name_dark">Donker</string>
-  <string name="app_icon_name_retro">Retro</string>
   <string name="app_icon_name_weather">Weer</string>
   <string name="app_icon_name_notes">Notities</string>
   <string name="app_icon_name_calculator">Rekenmachine</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">Dit bericht zal worden verzonden op %1$s om</string>
   <string name="launcher_alert_duplicate_account_description">De gebruiker is al ingelogd.</string>
   <string name="home_event_loop_error_snackbar">We konden uw e-mail niet synchroniseren. Probeer uit te loggen en opnieuw in te loggen. Als dat niet werkt, dien dan een bugrapport in.</string>
-  <string name="settings_change_icon_title">App-icoon</string>
-  <string name="settings_change_icon_description">Vermom de Proton Mail-app met een discreet icoon. Meldingen zullen nog steeds de standaard Proton Mail naam en icoon tonen.</string>
-  <string name="settings_change_icon_confirmation_title">App-icoon wijzigen?</string>
-  <string name="settings_change_icon_confirmation_details">Hierdoor wordt de Proton Mail-app afgesloten en worden alle meldingen genegeerd.\n\nOm Proton Mail opnieuw op te starten, tikt u op uw nieuwe app-icoon.</string>
-  <string name="settings_change_icon_action_cancel">Annuleren</string>
-  <string name="settings_change_icon_change_icon">Wijzig icoon</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Discreet app-icoon</string>
 </resources>

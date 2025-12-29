@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="spotlight_screen_version_text">Versión %s</string>
+  <string name="spotlight_screen_title">Novedades en Proton Mail</string>
+  <string name="spotlight_feature_item_discreet_icon_title">Icono discreto</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Mantén el icono predeterminado de Proton Mail u ocúltalo con uno genérico para mayor privacidad.</string>
+  <string name="spotlight_feature_item_tracking_protection_title">Protección contra rastreadores</string>
+  <string name="spotlight_feature_item_tracking_protection_description">Consulta quién ha intentado monitorizarte con píxeles ocultos y enlaces de seguimiento, y cuántos intentos se han bloqueado.</string>
+  <string name="spotlight_feature_item_encryption_locks_title">Iconos de cifrado</string>
+  <string name="spotlight_feature_item_encryption_locks_description">Utiliza los iconos de candado para identificar y verificar el tipo de cifrado que protege tus mensajes.</string>
+  <string name="spotlight_feature_item_headers_html_title">Ver encabezados y HTML</string>
+  <string name="spotlight_feature_item_headers_html_description">Inspecciona mensajes sospechosos para confirmar su autenticidad y descubrir cualquier elemento de rastreo oculto.</string>
+  <string name="spotlight_screen_got_it">Entendido</string>
+</resources>

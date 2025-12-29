@@ -80,7 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">Aan</string>
   <string name="mail_settings_app_customization_mobile_signature_off">Uit</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">Handtekening inschakelen</string>
-  <string name="mail_settings_app_customization_mobile_signature_edit">Edit signature</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">Handtekening bewerken</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Systeem</string>
   <string name="mail_settings_theme_light">Licht</string>
@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Bevestigen</string>
   <string name="mail_settings_custom_toolbar_save_error">Kan de werkbalkacties niet opslaan. Probeer het opnieuw.</string>
   <string name="mail_settings_custom_toolbar_read_error">Kan werkbalkacties niet lezen. Probeer het opnieuw.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">App-icoon</string>
+  <string name="settings_app_icon_name_default">Standaard</string>
+  <string name="settings_app_icon_name_discreet">Onopvallend</string>
+  <string name="settings_app_icon_title_default">App-icoon - standaard</string>
+  <string name="settings_app_icon_title_discreet">App-icoon - onopvallend</string>
+  <string name="settings_app_icon_description">Behoud het standaard Proton Mail icoon of verberg het met een onopvallend icoon voor extra privacy.\nMeldingen zullen altijd de naam en het icoon van Proton Mail tonen.</string>
+  <string name="settings_app_icon_learn_more">Meer info</string>
+  <string name="settings_app_icon_discreet_toggle">Onopvallend app-icoon</string>
+  <string name="settings_app_icon_confirmation_title">App-icoon wijzigen?</string>
+  <string name="settings_app_icon_confirmation_details">Hierdoor wordt de Proton Mail-app afgesloten en worden alle meldingen genegeerd.\n\nOm Proton Mail opnieuw op te starten, tikt u op uw nieuwe app-icoon.</string>
+  <string name="settings_app_icon_action_cancel">Annuleren</string>
+  <string name="settings_app_icon_change_icon">Wijzig icoon</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Er ging iets fout. Probeer opnieuw.</string>
 </resources>

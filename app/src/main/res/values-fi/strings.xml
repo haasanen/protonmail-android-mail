@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Klassinen</string>
-  <string name="app_icon_name_dark">Tumma</string>
-  <string name="app_icon_name_retro">Retro</string>
   <string name="app_icon_name_weather">Sää</string>
   <string name="app_icon_name_notes">Muistiinpanot</string>
   <string name="app_icon_name_calculator">Laskin</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">Viesti lähetetään %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Käyttäjä on jo kirjautunut</string>
   <string name="home_event_loop_error_snackbar">Emme onnistuneet sähköpostisi synkronoinnissa. Yritä kirjautua ylös ja uudestaan sisään. Jos se ei onnistu, täytä virheilmoitus.</string>
-  <string name="settings_change_icon_title">Sovelluksen kuvake</string>
-  <string name="settings_change_icon_description">Naamioi Proton Mail -sovellus huomaamattomalla kuvakkeella. Ilmoituksissa näkyy edelleen Proton Mailin alkuperäinen nimi ja kuvake.</string>
-  <string name="settings_change_icon_confirmation_title">Vaihdetaanko sovelluksen kuvaketta?</string>
-  <string name="settings_change_icon_confirmation_details">Tämä saa Proton Mailin sulkeutumaan ja hylkäämään kaikki ilmoitukset.\n\nUudelleenkäynnistääksesi Proton Mailin, paina uutta sovelluskuvaketta.</string>
-  <string name="settings_change_icon_action_cancel">Peruuta</string>
-  <string name="settings_change_icon_change_icon">Vaihda kuvake</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Huomaamaton sovelluskuvake</string>
 </resources>

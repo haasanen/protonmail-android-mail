@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Bestätigen</string>
   <string name="mail_settings_custom_toolbar_save_error">Der Aktionen der Symbolleiste konnten nicht gespeichert werden. Bitte erneut versuchen.</string>
   <string name="mail_settings_custom_toolbar_read_error">Die Aktionen der Symbolleiste konnten nicht ausgelesen werden. Bitte erneut versuchen.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">App-Symbol</string>
+  <string name="settings_app_icon_name_default">Standard</string>
+  <string name="settings_app_icon_name_discreet">Unauffällig</string>
+  <string name="settings_app_icon_title_default">App-Symbol – Standard</string>
+  <string name="settings_app_icon_title_discreet">App-Symbol – unauffällig</string>
+  <string name="settings_app_icon_description">Behalte das Standard-Symbol von Proton Mail bei oder ersetze es durch ein unauffälligeres Symbol, um deine Privatsphäre zu schützen.\nIn Benachrichtigungen werden immer der Name und das Symbol von Proton Mail angezeigt.</string>
+  <string name="settings_app_icon_learn_more">Mehr erfahren…</string>
+  <string name="settings_app_icon_discreet_toggle">Unauffälliges App-Symbol</string>
+  <string name="settings_app_icon_confirmation_title">App-Symbol ändern?</string>
+  <string name="settings_app_icon_confirmation_details">Dadurch wird die Proton Mail-App geschlossen und alle Benachrichtigungen werden verworfen.\n\nUm Proton Mail neu zu starten, tippe einfach auf Ihr neues App-Symbol.</string>
+  <string name="settings_app_icon_action_cancel">Abbrechen</string>
+  <string name="settings_app_icon_change_icon">Symbol ändern</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Es ist ein Fehler aufgetreten. Versuche es erneut.</string>
 </resources>

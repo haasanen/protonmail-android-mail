@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Stocat cu criptare cu acces zero</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Acest mesaj este stocat în contul personal cu criptare cu acces zero. Nici Proton, nici altcineva nu îl poate citi.\n\nTotuși, un expeditor sau un destinatar care nu utilizează Proton Mail poate avea o copie necriptată stocată pe serverul său de e-mail.</string>
+  <string name="padlocks_proton_e2ee">Mesaj criptat bilateral</string>
+  <string name="padlocks_proton_e2ee_description">Ca toate mesajele, este stocat pe serverele Proton utilizând criptare cu acces zero.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Proton criptat bilateral de la expeditor verificat</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Acest mesaj este protejat cu criptare bilaterală automată de la Proton și expeditorul declarat a fost verificat.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Criptat bilateral de la Proton cu verificare eșuată</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Acest mesaj este protejat prin criptare bilaterală automată de la Proton. Totuși, verificarea expeditorului a eșuat.\nConfirmați autenticitatea mesajului cu persoana de contact.</string>
+  <string name="padlocks_pgp_e2ee">Criptat bilateral cu PGP</string>
+  <string name="padlocks_pgp_e2ee_description">Acest mesaj este protejat cu criptare bilaterală prin PGP. Este criptat pe dispozitivul expeditorului și poate fi decriptat doar de către destinatar.\n\nCa toate mesajele, este stocat pe serverele Proton utilizând criptare cu acces zero.</string>
+  <string name="padlocks_pgp_e2ee_signed">Criptat bilateral și semnat cu PGP</string>
+  <string name="padlocks_pgp_e2ee_signed_description">This message is protected with PGP end-to-end encryption. It is encrypted on the sender\'s device and can only be decrypted by the recipient. \n\nAdditionally, the signature proves to the recipient that your message is genuine and hasn\'t been tampered with.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">PGP end-to-end encrypted from verified contact</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">This message is protected with PGP end‑to‑end encryption. It is encrypted on the sender’s device and can only be decrypted by the recipient. \n\nAdditionally, we verified the message was sent by the stated sender.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">PGP end-to-end encrypted with failed verification</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">This message is protected with PGP end‑to‑end encryption. It is encrypted on the sender’s device and can only be decrypted by the recipient. \n\nHowever, the sender verification failed. Please confirm the authenticity of the message with your contact.</string>
+  <string name="padlocks_pgp_signed">PGP signed message</string>
+  <string name="padlocks_pgp_signed_description">This message was not sent with end-to-end encryption, but is stored on Proton servers using zero-access encryption. \n\nYou have also digitally signed it, proving to the recipient that your message is genuine and hasn\'t been tampered with.</string>
+  <string name="padlocks_pgp_signed_verified_contact">PGP-signed message from verified contact</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">This message was not sent with end-to-end-encryption, but is stored on Proton servers using zero-access-encryption. \n\nWe also verified that the message was sent by the stated sender.</string>
+  <string name="padlocks_pgp_signed_failed_verification">PGP-signed message with failed verification</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">This message was not sent with end-to-end-encryption, but is stored on Proton servers using zero-access-encryption. \n\nHowever, the sender verification failed. Please confirm the authenticity of the message with your contact.</string>
+  <string name="padlocks_show_details">Show details</string>
+  <string name="padlocks_learn_more">Learn more...</string>
+  <string name="padlocks_close_button_text">Got it</string>
+</resources>

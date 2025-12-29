@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Classique</string>
-  <string name="app_icon_name_dark">Sombre</string>
-  <string name="app_icon_name_retro">Rétro</string>
   <string name="app_icon_name_weather">Météo</string>
   <string name="app_icon_name_notes">Notes</string>
   <string name="app_icon_name_calculator">Calculatrice</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">Ce message sera envoyé le %1$s</string>
   <string name="launcher_alert_duplicate_account_description">L\'utilisateur est déjà connecté.</string>
   <string name="home_event_loop_error_snackbar">Nous n\'avons pas pu synchroniser vos messages. Essayez de vous déconnecter puis de vous reconnecter. Si cela ne fonctionne pas, veuillez soumettre un rapport de bug.</string>
-  <string name="settings_change_icon_title">Icône d\'application</string>
-  <string name="settings_change_icon_description">Optez pour une icône plus discrète pour l\'application Proton Mail. Les notifications afficheront toujours le nom et l\'icône par défaut de Proton Mail.</string>
-  <string name="settings_change_icon_confirmation_title">Changer l\'icône de l\'application ?</string>
-  <string name="settings_change_icon_confirmation_details">Cette action va fermer l\'application Proton Mail et toutes les notifications seront fermées.\n\nPour redémarrer Proton Mail, il vous suffit d\'appuyer sur la nouvelle icône de votre application.</string>
-  <string name="settings_change_icon_action_cancel">Annuler</string>
-  <string name="settings_change_icon_change_icon">Changer l\'icône</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Icône d\'application discrète</string>
 </resources>

@@ -22,10 +22,12 @@
   <string name="show_details">Ayrıntıları görüntüle</string>
   <string name="trackers_protection_no_trackers_detected">İzleyici koruması: Herhangi bir izleyici bulunamadı</string>
   <string name="tracking_protection">İzleme koruması</string>
-  <string name="tracking_protection_description">Casus pikseller (izleyiciler) veya izleme bağlantıları bulunan bir e-posta alırsanız, e-posta ayrıntılarında kalkan simgesi görürsünüz.</string>
+  <string name="tracking_protection_description">Sizi izleme etkinliklerinden koruyoruz. Burada, bu iletide engellediğimiz casus pikselleri ve temizlediğimiz izleme bağlantılarını görebilirsiniz.</string>
   <string name="tracking_protection_learn_more">Ayrıntılı bilgi alın...</string>
   <string name="original">özgün</string>
   <string name="cleaned">Temizlendi</string>
+  <string name="action_close_dialog_button">Kapat</string>
+  <string name="got_it">Anladım</string>
   <plurals name="number_of_blocked_trackers">
     <item quantity="one">%s izleyici engellendi</item>
     <item quantity="other">%s izleyici engellendi</item>

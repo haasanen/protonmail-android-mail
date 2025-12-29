@@ -22,10 +22,12 @@
   <string name="show_details">Zobrazit detaily</string>
   <string name="trackers_protection_no_trackers_detected">Ochrana před sledovacími prvky: nedetekovány žádné sledovací prvky</string>
   <string name="tracking_protection">Ochrana před sledovacími prvky</string>
-  <string name="tracking_protection_description">Pokud obdržíte e-mail obsahující sledovací pixely (sledovací prvky) nebo sledovací odkazy, uvidíte ikonu štítu v detailech e-mailu.</string>
+  <string name="tracking_protection_description">Aktivně vás chráníme před sledováním. Zde si můžete prohlédnout sledovací pixely, které jsme zablokovali, a sledovací odkazy, které jsme vyčistili v této zprávě.</string>
   <string name="tracking_protection_learn_more">Více informací...</string>
   <string name="original">původní</string>
   <string name="cleaned">Vyčištěno</string>
+  <string name="action_close_dialog_button">Zavřít</string>
+  <string name="got_it">Rozumím</string>
   <plurals name="number_of_blocked_trackers">
     <item quantity="one">%s sledovací prvek zablokován</item>
     <item quantity="few">%s sledovací prvky zablokovány</item>

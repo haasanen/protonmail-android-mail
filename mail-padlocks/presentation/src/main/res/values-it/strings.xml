@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Memorizzato con crittografia a zero accessi</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Questo messaggio è archiviato nella tua casella email con crittografia a zero accessi. Né Proton né nessun altro può leggerlo. \n\nTuttavia, un mittente o un destinatario che non utilizza Proton Mail potrebbe avere una copia non crittografata archiviata sul proprio server di posta.</string>
+  <string name="padlocks_proton_e2ee">Messaggio crittografato end-to-end</string>
+  <string name="padlocks_proton_e2ee_description">Come tutti i messaggi, è archiviato sui server di Proton utilizzando la crittografia a zero accessi.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Proton crittografato end-to-end da mittente verificato</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Questo messaggio è protetto con crittografia end-to-end automatica di Proton e abbiamo verificato che è stato inviato dal mittente dichiarato.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Proton crittografato end-to-end con verifica non riuscita</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Questo messaggio è protetto con la crittografia end-to-end automatica di Proton. Tuttavia, la verifica del mittente non è riuscita. \nTi preghiamo di confermare l\'autenticità del messaggio con il tuo contatto.</string>
+  <string name="padlocks_pgp_e2ee">PGP crittografato end-to-end</string>
+  <string name="padlocks_pgp_e2ee_description">Questo messaggio è protetto con crittografia end-to-end PGP. Viene crittografato sul dispositivo del mittente e può essere decriptato solo dal destinatario. \n\nCome tutti i messaggi, è archiviato sui server di Proton usando la crittografia a zero accessi.</string>
+  <string name="padlocks_pgp_e2ee_signed">PGP crittografato end-to-end e firmato</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Questo messaggio è protetto con crittografia end-to-end PGP. È crittografato sul dispositivo del mittente e può essere decriptato solo dal destinatario. \n\nInoltre, la firma dimostra al destinatario che il tuo messaggio è autentico e non è stato manomesso.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">PGP crittografato end-to-end da contatto verificato</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">This message is protected with PGP end‑to‑end encryption. It is encrypted on the sender’s device and can only be decrypted by the recipient. \n\nAdditionally, we verified the message was sent by the stated sender.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">PGP end-to-end encrypted with failed verification</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">This message is protected with PGP end‑to‑end encryption. It is encrypted on the sender’s device and can only be decrypted by the recipient. \n\nHowever, the sender verification failed. Please confirm the authenticity of the message with your contact.</string>
+  <string name="padlocks_pgp_signed">PGP signed message</string>
+  <string name="padlocks_pgp_signed_description">This message was not sent with end-to-end encryption, but is stored on Proton servers using zero-access encryption. \n\nYou have also digitally signed it, proving to the recipient that your message is genuine and hasn\'t been tampered with.</string>
+  <string name="padlocks_pgp_signed_verified_contact">PGP-signed message from verified contact</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">This message was not sent with end-to-end-encryption, but is stored on Proton servers using zero-access-encryption. \n\nWe also verified that the message was sent by the stated sender.</string>
+  <string name="padlocks_pgp_signed_failed_verification">PGP-signed message with failed verification</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">This message was not sent with end-to-end-encryption, but is stored on Proton servers using zero-access-encryption. \n\nHowever, the sender verification failed. Please confirm the authenticity of the message with your contact.</string>
+  <string name="padlocks_show_details">Show details</string>
+  <string name="padlocks_learn_more">Learn more...</string>
+  <string name="padlocks_close_button_text">Got it</string>
+</resources>

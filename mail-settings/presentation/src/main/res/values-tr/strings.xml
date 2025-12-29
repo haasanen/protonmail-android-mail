@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Onayla</string>
   <string name="mail_settings_custom_toolbar_save_error">Araç çubuğu işlemleri kaydedilemedi. Lütfen yeniden deneyin.</string>
   <string name="mail_settings_custom_toolbar_read_error">Araç çubuğu işlemleri okunamadı. Lütfen yeniden deneyin.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">Uygulama simgesi</string>
+  <string name="settings_app_icon_name_default">Varsayılan</string>
+  <string name="settings_app_icon_name_discreet">Göze çarpmayan</string>
+  <string name="settings_app_icon_title_default">Uygulama simgesi - varsayılan</string>
+  <string name="settings_app_icon_title_discreet">Uygulama simgesi - Göze çarpmayan</string>
+  <string name="settings_app_icon_description">Varsayılan Proton Mail simgesini kullanmayı sürdürün ya da daha fazla gizlilik sağlamak için onu göze çarpmayan bir simgeyle değiştirin.\nBildirimlerde her zaman Proton Mail adı ve simgesi görüntülenir.</string>
+  <string name="settings_app_icon_learn_more">Ayrıntılı bilgi alın…</string>
+  <string name="settings_app_icon_discreet_toggle">Göze çarpmayan uygulama simgesi</string>
+  <string name="settings_app_icon_confirmation_title">Uygulama simgesi değiştirilsin mi?</string>
+  <string name="settings_app_icon_confirmation_details">Bu işlem, Proton Mail uygulamasının kapanmasına ve tüm bildirimlerin yok sayılmasına neden olur.\n\nProton Mail uygulamasını yeniden başlatmak için yeni uygulama simgenize dokunun.</string>
+  <string name="settings_app_icon_action_cancel">İptal</string>
+  <string name="settings_app_icon_change_icon">Simgeyi değiştir</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Bir sorun çıktı. Yeniden deneyin.</string>
 </resources>

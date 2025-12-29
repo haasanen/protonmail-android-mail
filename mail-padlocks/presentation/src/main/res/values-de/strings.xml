@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Gespeichert mit Zero-Access-Verschlüsselung</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Diese Nachricht ist mit Zero-Access-Verschlüsselung in deinem Postfach gespeichert. Weder Proton noch jemand anderes kann sie lesen. \n\nEin Absender oder Empfänger, der Proton Mail nicht nutzt, könnte jedoch eine unverschlüsselte Kopie auf seinem E-Mail-Server gespeichert haben.</string>
+  <string name="padlocks_proton_e2ee">Ende-zu-Ende-verschlüsselte Nachricht</string>
+  <string name="padlocks_proton_e2ee_description">Wie alle Nachrichten ist sie mithilfe der Zero‑Access-Verschlüsselung auf Protons Servern gespeichert.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Proton Ende-zu-Ende-verschlüsselt von verifiziertem Absender</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Diese Nachricht ist mit automatischer Proton Ende-zu-Ende-Verschlüsselung geschützt, und wir haben verifiziert, dass sie vom angegebenen Absender gesendet wurde.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Proton Ende-zu-Ende-verschlüsselt mit fehlgeschlagener Verifizierung</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Diese Nachricht ist mit automatischer Proton Ende-zu-Ende-Verschlüsselung geschützt. Allerdings ist die Absenderverifizierung fehlgeschlagen.\nBitte bestätige die Authentizität der Nachricht mit deinem Kontakt.</string>
+  <string name="padlocks_pgp_e2ee">PGP Ende-zu-Ende-verschlüsselt</string>
+  <string name="padlocks_pgp_e2ee_description">Diese Nachricht ist mit PGP Ende-zu-Ende-Verschlüsselung geschützt. Sie wird auf dem Gerät des Absenders verschlüsselt und kann nur vom Empfänger entschlüsselt werden.\n\nWie alle Nachrichten ist sie mithilfe der Zero-Access-Verschlüsselung auf Protons Servern gespeichert.</string>
+  <string name="padlocks_pgp_e2ee_signed">PGP Ende-zu-Ende-verschlüsselt und signiert</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Diese Nachricht ist mit PGP Ende-zu-Ende-Verschlüsselung geschützt. Sie wird auf dem Gerät des Absenders verschlüsselt und kann nur vom Empfänger entschlüsselt werden.\n\nZusätzlich beweist die Signatur dem Empfänger, dass deine Nachricht echt ist und nicht manipuliert wurde.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">PGP Ende-zu-Ende-verschlüsselt von verifiziertem Kontakt</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Diese Nachricht ist mit PGP Ende-zu-Ende-Verschlüsselung geschützt. Sie wird auf dem Gerät des Absenders verschlüsselt und kann nur vom Empfänger entschlüsselt werden.\n\nZusätzlich haben wir überprüft, dass die Nachricht vom angegebenen Absender gesendet wurde.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">PGP Ende-zu-Ende-verschlüsselt mit fehlgeschlagener Verifizierung</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">Diese Nachricht ist mit PGP Ende-zu-Ende-Verschlüsselung geschützt. Sie wird auf dem Gerät des Absenders verschlüsselt und kann nur vom Empfänger entschlüsselt werden.\n\nAllerdings ist die Absenderverifizierung fehlgeschlagen. Bitte bestätige die Authentizität der Nachricht mit deinem Kontakt.</string>
+  <string name="padlocks_pgp_signed">PGP-signierte Nachricht</string>
+  <string name="padlocks_pgp_signed_description">Diese Nachricht wurde nicht mit Ende-zu-Ende-Verschlüsselung gesendet, aber sie ist mit Zero-Access-Verschlüsselung auf Protons Servern gespeichert.\n\nDu hast sie auch digital signiert, was dem Empfänger beweist, dass deine Nachricht echt ist und nicht manipuliert wurde.</string>
+  <string name="padlocks_pgp_signed_verified_contact">PGP-signierte Nachricht von verifiziertem Kontakt</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Diese Nachricht wurde nicht mit Ende-zu-Ende-Verschlüsselung gesendet, aber sie ist mit Zero-Access-Verschlüsselung auf Protons Servern gespeichert.\n\nWir haben auch verifiziert, dass die Nachricht vom angegebenen Absender gesendet wurde.</string>
+  <string name="padlocks_pgp_signed_failed_verification">PGP-signierte Nachricht mit fehlgeschlagener Verifizierung</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">Diese Nachricht wurde nicht mit Ende-zu-Ende-Verschlüsselung gesendet, aber sie ist mit Zero-Access-Verschlüsselung auf Protons Servern gespeichert.\n\nAllerdings ist die Absenderverifizierung fehlgeschlagen. Bitte bestätige die Authentizität der Nachricht mit deinem Kontakt.</string>
+  <string name="padlocks_show_details">Details anzeigen</string>
+  <string name="padlocks_learn_more">Mehr erfahren ...</string>
+  <string name="padlocks_close_button_text">Verstanden</string>
+</resources>

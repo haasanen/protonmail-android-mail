@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Stored with zero access encryption</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Denne besked er lagret i din postkasse med nul-adgangs-kryptering. Hverken Proton eller andre kan læse den. \n\nDog kan en afsender eller modtager, der ikke bruger Proton Mail, have en ukrypteret kopi lagret på deres mailserver.</string>
+  <string name="padlocks_proton_e2ee">End-to-end encrypted message</string>
+  <string name="padlocks_proton_e2ee_description">Like all messages, it is stored on Proton servers using zero‑access encryption.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Proton end-to-end encrypted from verified sender</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">This message is protected with automatic Proton end‑to‑end encryption, and we verified it was sent by the stated sender.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Proton end-to-end encrypted with failed verification</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Denne besked er beskyttet med automatisk Proton end-to-end-kryptering. Dog mislykkedes afsenderens bekræftelse. \nBekræft beskedens autenticitet med din kontaktperson.</string>
+  <string name="padlocks_pgp_e2ee">PGP end-to-end encrypted</string>
+  <string name="padlocks_pgp_e2ee_description">Denne besked er beskyttet med PGP end-to-end kryptering. Den er krypteret på afsenderens enhed og kan kun dekrypteres af modtageren. \n\nLigesom alle andre beskeder er den lagret på Proton-servere ved hjælp af nul-adgangs-kryptering.</string>
+  <string name="padlocks_pgp_e2ee_signed">PGP end-to-end encrypted and signed</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Denne besked er beskyttet med PGP end-to-end-kryptering. Den er krypteret på afsenderens enhed og kan kun dekrypteres af modtageren. \n\nYdermere beviser signaturen over for modtageren, at din besked er ægte og at den ikke er blevet manipuleret.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">PGP end-to-end encrypted from verified contact</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Denne besked er beskyttet med PGP end-to-end-kryptering. Den er krypteret på afsenderens enhed og kan kun dekrypteres af modtageren. \n\nYdermere blev det verificeret, at beskeden blev sendt af den angivne afsender.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">PGP end-to-end encrypted with failed verification</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">Denne besked er beskyttet med PGP end-to-end-kryptering. Den er krypteret på afsenderens enhed og kan kun dekrypteres af modtageren. \n\nImidlertid mislykkedes afsenderbekræftelsen. Bekræft beskedens ægthed med din kontaktperson.</string>
+  <string name="padlocks_pgp_signed">PGP signed message</string>
+  <string name="padlocks_pgp_signed_description">Denne besked blev sendt uden end-to-end kryptering, men den er lagret på Proton-servere ved hjælp af nul-adgangs-kryptering. \n\nDu har også digitalt signeret den, hvilket beviser over for modtageren, at din besked er ægte og at den ikke er blevet manipuleret.</string>
+  <string name="padlocks_pgp_signed_verified_contact">PGP-signed message from verified contact</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Denne besked blev sendt uden end-to-end-kryptering, men den er lagret på Proton-servere ved hjælp af nul-adgangs-kryptering. \n\nVi bekræftede også, at beskeden blev sendt af den angivne afsender.</string>
+  <string name="padlocks_pgp_signed_failed_verification">PGP-signed message with failed verification</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">Denne besked blev sendt uden end-to-end-kryptering, men den er lagret på Proton-servere med nul-adgangs-kryptering. \n\nImidlertid mislykkedes afsenderbekræftelsen. Bekræft beskedens ægthed med din kontaktperson.</string>
+  <string name="padlocks_show_details">Show details</string>
+  <string name="padlocks_learn_more">Få mere at vide...</string>
+  <string name="padlocks_close_button_text">Forstået</string>
+</resources>

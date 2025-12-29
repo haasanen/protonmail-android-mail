@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="spotlight_screen_version_text">Version %s</string>
+  <string name="spotlight_screen_title">Neuerungen bei Proton Mail</string>
+  <string name="spotlight_feature_item_discreet_icon_title">Unauffälliges Symbol</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Behalte das Standard-Symbol von Proton Mail bei oder ersetze es durch ein neutrales Symbol, um deine Privatsphäre besser zu schützen.</string>
+  <string name="spotlight_feature_item_tracking_protection_title">Tracking-Schutz</string>
+  <string name="spotlight_feature_item_tracking_protection_description">Erfahre, wer versucht, dich mit versteckten Pixeln und Tracking-Links zu überwachen, und wie viele Versuche abgewehrt wurden.</string>
+  <string name="spotlight_feature_item_encryption_locks_title">Verschlüsselungsschlösser</string>
+  <string name="spotlight_feature_item_encryption_locks_description">Verwende die Schlosssymbole, um die Art der Verschlüsselung zu identifizieren und zu überprüfen, mit der deine Nachrichten geschützt sind.</string>
+  <string name="spotlight_feature_item_headers_html_title">Kopfzeilen und HTML anzeigen</string>
+  <string name="spotlight_feature_item_headers_html_description">Überprüfe verdächtige Nachrichten, um deren Echtheit zu bestätigen und verborgene Tracking-Elemente aufzudecken.</string>
+  <string name="spotlight_screen_got_it">Verstanden</string>
+</resources>

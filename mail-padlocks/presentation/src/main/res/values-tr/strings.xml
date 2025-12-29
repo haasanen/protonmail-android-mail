@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Sıfır erişim şifrelemesi ile kaydedilmiş</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Bu ileti, e-posta kutunuza sıfır erişim şifrelemesi ile kaydedilmiş. Ne Proton ne de başka biri bu iletiyi okuyamaz. \n\nAncak, Proton Mail kullanmayan bir gönderici veya alıcının e-posta sunucularında iletinin şifrelenmemiş bir kopyası kaydedilmiş olabilir.</string>
+  <string name="padlocks_proton_e2ee">Uçtan uca şifrelenmiş ileti</string>
+  <string name="padlocks_proton_e2ee_description">Tüm iletiler gibi sıfır erişim şifrelemesi ile Proton sunucularına kaydedilir.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Doğrulanmış göndericiden Proton uçtan uca şifrelemesi</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Bu ileti otomatik Proton uçtan uca şifrelemesi ile korunuyor ve belirtilen gönderici tarafından gönderildiği doğrulanmış.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Doğrulanmamış Proton uçtan uca şifrelemesi</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Bu ileti otomatik Proton uçtan uca şifrelemesi ile korunmuş. Ancak göndericisi doğrulanamadı. \nLütfen iletişim kurduğunuz kişi ile görüşerek iletinin gerçekliğini doğrulayın.</string>
+  <string name="padlocks_pgp_e2ee">PGP ile uçtan uca şifrelenmiş</string>
+  <string name="padlocks_pgp_e2ee_description">Bu ileti PGP uçtan uca şifrelemesi ile korunuyor. Göndericinin aygıtında şifrelenmiştir ve yalnızca alıcı tarafından şifresi çözülebilir. \n\nProton sunucularında tüm iletiler gibi sıfır erişim şifrelemesi ile kaydedilir.</string>
+  <string name="padlocks_pgp_e2ee_signed">PGP ile uçtan uca şifrelenmiş ve imzalanmış</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Bu ileti PGP uçtan uca şifrelemesi ile korunuyor. Göndericinin aygıtında şifrelenmiştir ve yalnızca alıcı tarafından şifresi çözülebilir.\n\nAyrıca imzası, alıcıya iletinizin özgün olduğunu ve üzerinde oynanmadığını kanıtlar.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">Doğrulanmış kişiden PGP ile uçtan uca şifrelenmiş</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Bu ileti PGP uçtan uca şifrelemesi ile korunuyor. Göndericinin aygıtında şifrelenmiştir ve yalnızca alıcı tarafından şifresi çözülebilir.\n\nAyrıca, iletinin belirtilen gönderici tarafından gönderildiği doğrulandı.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">Doğrulanmamış PGP ile uçtan uca şifrelenmiş</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">Bu ileti PGP uçtan uca şifrelemesi ile korunuyor. Göndericinin aygıtında şifrelenmiştir ve yalnızca alıcı tarafından şifresi çözülebilir.\n\nAncak gönderici doğrulanamadı. Lütfen iletişim kurduğunuz kişi ile görüşerek iletinin gerçekliğini doğrulayın.</string>
+  <string name="padlocks_pgp_signed">PGP ile imzalanmış ileti</string>
+  <string name="padlocks_pgp_signed_description">Bu ileti uçtan uca şifreleme ile gönderilmemiş. Ancak Proton sunucularında sıfır erişim şifrelemesi ile kaydedilmiştir. \n\nAyrıca iletinizin gerçek olduğunu ve üzerinde oynanmadığını alıcıya kanıtlamak için dijital olarak imzaladınız.</string>
+  <string name="padlocks_pgp_signed_verified_contact">Doğrulanmış kişiden PGP ile imzalanmış ileti</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Bu ileti uçtan uca şifreleme ile gönderilmemiş. Ancak Proton sunucularında sıfır erişim şifrelemesi ile kaydedilmiştir. \n\nAyrıca iletinin belirtilen gönderici tarafından gönderildiği de doğrulandı.</string>
+  <string name="padlocks_pgp_signed_failed_verification">Doğrulanmamış PGP ile imzalanmış ileti</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">Bu ileti uçtan uca şifreleme ile gönderilmemiş. Ancak Proton sunucularında sıfır erişim şifrelemesi ile kaydedilmiştir.\n\nAncak gönderici doğrulanamadı. Lütfen iletişim kurduğunuz kişi ile görüşerek iletinin gerçekliğini doğrulayın.</string>
+  <string name="padlocks_show_details">Ayrıntıları görüntüle</string>
+  <string name="padlocks_learn_more">Ayrıntılı bilgi alın...</string>
+  <string name="padlocks_close_button_text">Anladım</string>
+</resources>

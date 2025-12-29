@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Bekräfta</string>
   <string name="mail_settings_custom_toolbar_save_error">Kan inte spara verktygsfältsåtgärder. Försök igen.</string>
   <string name="mail_settings_custom_toolbar_read_error">Kan inte läsa verktygsfältsåtgärder. Försök igen.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">Appikon</string>
+  <string name="settings_app_icon_name_default">Standard</string>
+  <string name="settings_app_icon_name_discreet">Diskret</string>
+  <string name="settings_app_icon_title_default">Appikon – standard</string>
+  <string name="settings_app_icon_title_discreet">Appikon – diskret</string>
+  <string name="settings_app_icon_description">Keep the default Proton Mail icon, or disguise it with a more discreet one for extra privacy.\nNotifications will always show the Proton Mail name and icon.</string>
+  <string name="settings_app_icon_learn_more">Lär dig mer …</string>
+  <string name="settings_app_icon_discreet_toggle">Diskret appikon</string>
+  <string name="settings_app_icon_confirmation_title">Ändra appikon?</string>
+  <string name="settings_app_icon_confirmation_details">Detta kommer göra att Proton Mail-appen stängs och alla aviseringar avfärdas.\n\nFör att starta om Proton Mail, tryck bara på din nya appikon.</string>
+  <string name="settings_app_icon_action_cancel">Avbryt</string>
+  <string name="settings_app_icon_change_icon">Ändra ikon</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Ett fel uppstod. Försök igen.</string>
 </resources>

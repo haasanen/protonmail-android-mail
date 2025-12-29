@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Tallennettu Zero Access -salauksella</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Tämä viesti tallennetaan postilaatikkoosi zero access -salauksella. Proton tai kukaan muu ei voi lukea sitä. \n\nLähettäjällä tai vastaanottajalla, joka ei käytä Proton Mailia, voi kuitenkin olla salaamaton kopio tallennettuna sähköpostipalvelimellaan.</string>
+  <string name="padlocks_proton_e2ee">Päästä päähän -salattu viesti</string>
+  <string name="padlocks_proton_e2ee_description">Kuten kaikki viestit, se on tallennettu Protonin servereille käyttäen zero access -salausta.</string>
+  <string name="padlocks_proton_e2ee_verified_sender">Protonin päästä päähän -salattu vahvistetulta lähettäjältä</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">Tämä viesti on suojattu automaattisella Protonin päästä päähän -salauksella, ja olemme varmistaneet, että se on lähetetty ilmoitetun lähettäjän toimesta.</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Proton päästä päähän -salattu, jonka varmennus epäonnistui</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">Tämä viesti on suojattu automaattisella Protonin päästä päähän -salauksella. Lähettäjän vahvistus kuitenkin epäonnistui. \nVahvista viestin aitous yhteyshenkilöltäsi.</string>
+  <string name="padlocks_pgp_e2ee">PGP päästä päähän salattu</string>
+  <string name="padlocks_pgp_e2ee_description">Tämä viesti on suojattu PGP päästä päähän -salauksella. Se salataan lähettäjän laitteella, ja vain vastaanottaja voi purkaa sen. \n\nKuten kaikki viestit, se tallennetaan Protonin palvelimille zero access -salauksella.</string>
+  <string name="padlocks_pgp_e2ee_signed">PGP päästä päähän salattu ja allekirjoitettu</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Tämä viesti on suojattu PGP päästä päähän -salauksella. Se salataan lähettäjän laitteella, ja vain vastaanottaja voi purkaa salauksen. \n\nLisäksi allekirjoitus todistaa vastaanottajalle, että viestisi on aito eikä sitä ole muutettu.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">PGP päästä päähän -salattu vahvistetulta yhteyshenkilöltä</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Tämä viesti on suojattu PGP päästä päähän -salauksella. Se on salattu lähettäjän laitteella, ja vain vastaanottaja voi purkaa sen. \n\nLisäksi olemme varmistaneet, että viesti on lähetetty ilmoitetun lähettäjän toimesta.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">PGP päästä päähän -salattu, mutta varmennus epäonnistui</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">Tämä viesti on suojattu PGP päästä päähän -salauksella. Se on salattu lähettäjän laitteella, ja vain vastaanottaja voi purkaa sen. \n\nLähettäjän todentaminen kuitenkin epäonnistui. Vahvista viestin aitous yhteyshenkilöltäsi.</string>
+  <string name="padlocks_pgp_signed">PGP-allekirjoitettu viesti</string>
+  <string name="padlocks_pgp_signed_description">Tämä viesti ei ole lähetetty päästä päähän -salauksella, mutta se on tallennettu Protonin palvelimille zero access -salauksella. \n\nOlet myös allekirjoittanut sen digitaalisesti, mikä todistaa vastaanottajalle, että viestisi on aito eikä sitä ole muutettu.</string>
+  <string name="padlocks_pgp_signed_verified_contact">PGP-allekirjoitettu viesti vahvistetulta yhteyshenkilöltä</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Tätä viestiä ei lähetetty päästä päähän -salauksella, mutta se on tallennettu Protonin palvelimille zero access -salauksella. \n\nOlemme myös varmistaneet, että viesti on lähetetty ilmoitetun lähettäjän toimesta.</string>
+  <string name="padlocks_pgp_signed_failed_verification">PGP-allekirjoitettu viesti, jonka vahvistus epäonnistui</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">Tätä viestiä ei lähetetty päästä päähän -salauksella, mutta se on tallennettu Protonin palvelimille zero access -salauksella. \n\nLähettäjän vahvistus kuitenkin epäonnistui. Vahvista viestin aitous yhteyshenkilöltäsi.</string>
+  <string name="padlocks_show_details">Näytä tiedot</string>
+  <string name="padlocks_learn_more">Lue lisää...</string>
+  <string name="padlocks_close_button_text">Selvä</string>
+</resources>

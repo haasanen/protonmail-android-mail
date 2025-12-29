@@ -152,6 +152,19 @@
   <string name="mail_settings_custom_toolbar_reset_confirm">Bekreft</string>
   <string name="mail_settings_custom_toolbar_save_error">Kan ikke lagre verktøylinjehandlinger. Prøv igjen.</string>
   <string name="mail_settings_custom_toolbar_read_error">Kan ikke lese verktøylinjehandlinger. Prøv igjen.</string>
+  <!-- Custom App Icon -->
+  <string name="settings_app_icon_toolbar_title">App-ikon</string>
+  <string name="settings_app_icon_name_default">Standard</string>
+  <string name="settings_app_icon_name_discreet">Diskret</string>
+  <string name="settings_app_icon_title_default">App-ikon – standard</string>
+  <string name="settings_app_icon_title_discreet">App-ikon – diskret</string>
+  <string name="settings_app_icon_description">Behold det standard Proton Mail-ikonet, eller skjul det med et mer diskret ikon for ekstra personvern.\nVarsler vil alltid vise Proton Mail-navnet og -ikonet.</string>
+  <string name="settings_app_icon_learn_more">Lær mer…</string>
+  <string name="settings_app_icon_discreet_toggle">Diskret app-ikon</string>
+  <string name="settings_app_icon_confirmation_title">Endre app-ikon?</string>
+  <string name="settings_app_icon_confirmation_details">Dette vil føre til at Proton Mail-appen lukkes og alle varsler avvises.\n\nFor å starte Proton Mail på nytt, trykk på det nye appikonet.</string>
+  <string name="settings_app_icon_action_cancel">Avbryt</string>
+  <string name="settings_app_icon_change_icon">Endre ikon</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">En feil oppstod. Prøv igjen.</string>
 </resources>

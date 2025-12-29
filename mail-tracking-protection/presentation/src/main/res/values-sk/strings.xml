@@ -22,10 +22,12 @@
   <string name="show_details">Zobraziť detaily</string>
   <string name="trackers_protection_no_trackers_detected">Ochrana pred sledovačmi: neboli zistené žiadne sledovače</string>
   <string name="tracking_protection">Ochrana pred sledovaním</string>
-  <string name="tracking_protection_description">Ak dostanete email obsahujúci špehovacie pixely (sledovače) alebo sledovacie odkazy, uvidíte ikonu štítu v podrobnostiach emailu.</string>
+  <string name="tracking_protection_description">We actively protect you from tracking. Here you can view the spy pixels we blocked and the tracking links we cleaned in this message.</string>
   <string name="tracking_protection_learn_more">Zistiť viac...</string>
   <string name="original">pôvodný</string>
   <string name="cleaned">Očistené</string>
+  <string name="action_close_dialog_button">Close</string>
+  <string name="got_it">Got it</string>
   <plurals name="number_of_blocked_trackers">
     <item quantity="one">%s sledovač zablokovaný</item>
     <item quantity="few">%s sledovače zablokované</item>

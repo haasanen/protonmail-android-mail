@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Класична</string>
-  <string name="app_icon_name_dark">Темна</string>
-  <string name="app_icon_name_retro">Ретро</string>
   <string name="app_icon_name_weather">Погода</string>
   <string name="app_icon_name_notes">Нотатки</string>
   <string name="app_icon_name_calculator">Калькулятор</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">Це повідомлення буде надіслано %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Користувач уже ввійшов</string>
   <string name="home_event_loop_error_snackbar">Не вдалося синхронізувати вашу пошту. Спробуйте вийти з облікового запису та ввійти знову. Якщо це не допоможе, надішліть звіт про помилку.</string>
-  <string name="settings_change_icon_title">Піктограма застосунку</string>
-  <string name="settings_change_icon_description">Замаскуйте застосунок Proton Mail за допомогою стриманої піктограми. Сповіщення й надалі показуватимуться з типовою назвою та піктограмою Proton Mail.</string>
-  <string name="settings_change_icon_confirmation_title">Змінити піктограму?</string>
-  <string name="settings_change_icon_confirmation_details">Ця дія призведе до закриття застосунку Proton Mail, а всі сповіщення буде відхилено.\n\nАби перезапустити Proton Mail, просто торкніться нової піктограми застосунку.</string>
-  <string name="settings_change_icon_action_cancel">Скасувати</string>
-  <string name="settings_change_icon_change_icon">Змінити піктограму</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Стримана піктограма</string>
 </resources>

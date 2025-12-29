@@ -17,9 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="app_icon_name_classic">Klassisk</string>
-  <string name="app_icon_name_dark">Mørk</string>
-  <string name="app_icon_name_retro">Retro</string>
   <string name="app_icon_name_weather">Vær</string>
   <string name="app_icon_name_notes">Notater</string>
   <string name="app_icon_name_calculator">Kalkulator</string>
@@ -50,12 +47,4 @@
   <string name="mailbox_message_scheduled_for_sending_success">Denne meldingen vil bli sendt %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Brukeren er allerede logget på</string>
   <string name="home_event_loop_error_snackbar">Vi kunne ikke synkronisere e-posten din. Prøv å logge av og på igjen. Hvis det ikke fungerer, send inn en feilrapport.</string>
-  <string name="settings_change_icon_title">Appikon</string>
-  <string name="settings_change_icon_description">Skjul Proton Mail-appen med et diskret ikon. Varsler vil fortsatt vise standardnavnet og -ikonet for Proton Mail.</string>
-  <string name="settings_change_icon_confirmation_title">Endre appikon?</string>
-  <string name="settings_change_icon_confirmation_details">Dette vil føre til at Proton Mail-appen lukkes og alle varsler avvises.\n\nFor å starte Proton Mail på nytt, trykk på det nye appikonet.</string>
-  <string name="settings_change_icon_action_cancel">Avbryt</string>
-  <string name="settings_change_icon_change_icon">Endre ikon</string>
-  <string name="settings_change_icon_header_protonmail">Proton Mail</string>
-  <string name="settings_change_icon_header_discreet">Diskret appikon</string>
 </resources>
