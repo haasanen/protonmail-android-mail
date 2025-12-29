@@ -55,10 +55,9 @@ platform :android do
         "testDebugUnitTest",
         "testUtilsUnitTest",
         "coberturaXmlReport",
-        "globalLineCoverage",
-        ":coverage:koverHtmlReport"
+        "globalLineCoverage"
       ],
-      flags: "-Pci --console=plain -x :coverage:jacocoToCobertura"
+      flags: "-Pci --console=plain"
     )
   end
 
