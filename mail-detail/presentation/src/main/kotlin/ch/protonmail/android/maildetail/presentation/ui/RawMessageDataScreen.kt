@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -47,7 +48,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -73,152 +73,179 @@ fun RawMessageDataScreen(onBackClick: () -> Unit, viewModel: RawMessageDataViewM
 }
 
 @Composable
-fun RawMessageDataScreen(
+private fun RawMessageDataScreen(
     state: RawMessageDataState,
     onBackClick: () -> Unit,
+    onDownloadData: (RawMessageDataType, String) -> Unit
+) {
+    Scaffold(
+        containerColor = ProtonTheme.colors.backgroundInvertedNorm,
+        topBar = { RawMessageDataTopAppBar(state, onBackClick, onDownloadData) }
+    ) { padding ->
+
+        when (state) {
+            is RawMessageDataState.Loading -> ProtonCenteredProgress()
+            is RawMessageDataState.Data -> RawMessageDataContent(
+                modifier = Modifier.padding(padding),
+                state = state
+            )
+            is RawMessageDataState.Error -> ProtonErrorMessage(
+                modifier = Modifier.padding(padding),
+                errorMessage = stringResource(id = R.string.raw_message_data_error)
+            )
+        }
+    }
+}
+
+@Composable
+private fun RawMessageDataContent(
+    state: RawMessageDataState.Data,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+
+    ConsumableLaunchedEffect(state.toast) {
+        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = ProtonTheme.colors.backgroundNorm)
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+        SelectionContainer {
+            Text(
+                modifier = Modifier.fillMaxSize(),
+                text = state.data,
+                style = ProtonTheme.typography.bodyMediumNorm.copy(
+                    fontFamily = FontFamily.Monospace
+                )
+            )
+        }
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+    }
+}
+
+@Composable
+private fun RawMessageDataTopAppBar(
+    state: RawMessageDataState,
+    onBackClick: () -> Unit,
+    onDownloadData: (RawMessageDataType, String) -> Unit
+) {
+    ProtonTopAppBar(
+        backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
+        title = {
+            Text(
+                text = stringResource(
+                    id = when (state.type) {
+                        RawMessageDataType.HTML -> R.string.raw_message_data_html_title
+                        RawMessageDataType.Headers -> R.string.raw_message_data_headers_title
+                    }
+                ),
+                style = ProtonTheme.typography.titleLarge
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    tint = ProtonTheme.colors.iconNorm,
+                    painter = painterResource(id = R.drawable.ic_proton_close),
+                    contentDescription = stringResource(
+                        id = R.string.raw_message_data_close_button_content_description
+                    )
+                )
+            }
+        },
+        actions = {
+            if (state is RawMessageDataState.Data) {
+                RawMessageDataTopAppBarActions(state, onDownloadData)
+            }
+        }
+    )
+}
+
+@Composable
+private fun RawMessageDataTopAppBarActions(
+    state: RawMessageDataState.Data,
     onDownloadData: (RawMessageDataType, String) -> Unit
 ) {
     val context = LocalContext.current
     val isDropDownExpanded = remember { mutableStateOf(false) }
 
-    if (state is RawMessageDataState.Data) {
-        ConsumableLaunchedEffect(state.toast) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-        }
+    IconButton(
+        onClick = { isDropDownExpanded.value = true }
+    ) {
+        Icon(
+            tint = ProtonTheme.colors.iconNorm,
+            painter = painterResource(id = R.drawable.ic_proton_three_dots_vertical),
+            contentDescription = stringResource(
+                id = R.string.raw_message_data_more_button_content_description
+            )
+        )
     }
 
-    Scaffold(
-        containerColor = ProtonTheme.colors.backgroundInvertedNorm,
-        topBar = {
-            ProtonTopAppBar(
-                backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
-                title = {
-                    Text(
-                        text = stringResource(
-                            id = when (state.type) {
-                                RawMessageDataType.HTML -> R.string.raw_message_data_html_title
-                                RawMessageDataType.Headers -> R.string.raw_message_data_headers_title
-                            }
-                        ),
-                        style = ProtonTheme.typography.titleLarge
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            tint = ProtonTheme.colors.iconNorm,
-                            painter = painterResource(id = R.drawable.ic_proton_close),
-                            contentDescription = stringResource(
-                                id = R.string.raw_message_data_close_button_content_description
-                            )
-                        )
-                    }
-                },
-                actions = {
-                    if (state is RawMessageDataState.Data) {
-                        IconButton(
-                            onClick = { isDropDownExpanded.value = true }
-                        ) {
-                            Icon(
-                                tint = ProtonTheme.colors.iconNorm,
-                                painter = painterResource(id = R.drawable.ic_proton_three_dots_vertical),
-                                contentDescription = stringResource(
-                                    id = R.string.raw_message_data_more_button_content_description
-                                )
-                            )
-                        }
-
-                        DropdownMenu(
-                            expanded = isDropDownExpanded.value,
-                            onDismissRequest = { isDropDownExpanded.value = false },
-                            containerColor = ProtonTheme.colors.backgroundInvertedNorm
-                        ) {
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = stringResource(id = R.string.raw_message_data_download_action),
-                                        style = ProtonTheme.typography.bodyLargeNorm
-                                    )
-                                },
-                                onClick = {
-                                    isDropDownExpanded.value = false
-                                    onDownloadData(state.type, state.data)
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_proton_arrow_down_line),
-                                        contentDescription = NO_CONTENT_DESCRIPTION
-                                    )
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = stringResource(id = R.string.raw_message_data_copy_action),
-                                        style = ProtonTheme.typography.bodyLargeNorm
-                                    )
-                                },
-                                onClick = {
-                                    isDropDownExpanded.value = false
-                                    context.copyTextToClipboard(state.type.name, state.data)
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_proton_squares),
-                                        contentDescription = NO_CONTENT_DESCRIPTION
-                                    )
-                                }
-                            )
-                            if (state.type == RawMessageDataType.Headers) {
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            text = stringResource(id = R.string.raw_message_data_learn_more_action),
-                                            style = ProtonTheme.typography.bodyLargeNorm
-                                        )
-                                    },
-                                    onClick = {
-                                        isDropDownExpanded.value = false
-                                        openLearnMoreLink(context)
-                                    },
-                                    leadingIcon = {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_proton_info_circle),
-                                            contentDescription = NO_CONTENT_DESCRIPTION
-                                        )
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            )
-        }
-    ) { padding ->
-
-        when (state) {
-            is RawMessageDataState.Loading -> ProtonCenteredProgress()
-            is RawMessageDataState.Data -> Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = ProtonTheme.colors.backgroundNorm)
-                    .padding(padding)
-                    .padding(horizontal = ProtonDimens.Spacing.Large)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+    DropdownMenu(
+        expanded = isDropDownExpanded.value,
+        onDismissRequest = { isDropDownExpanded.value = false },
+        containerColor = ProtonTheme.colors.backgroundInvertedNorm
+    ) {
+        DropdownMenuItem(
+            text = {
                 Text(
-                    modifier = Modifier.fillMaxSize(),
-                    text = state.data,
-                    style = ProtonTheme.typography.bodyMediumNorm.copy(
-                        fontFamily = FontFamily.Monospace
-                    )
+                    text = stringResource(id = R.string.raw_message_data_download_action),
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
-                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+            },
+            onClick = {
+                isDropDownExpanded.value = false
+                onDownloadData(state.type, state.data)
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_proton_arrow_down_line),
+                    contentDescription = NO_CONTENT_DESCRIPTION
+                )
             }
-            is RawMessageDataState.Error -> ProtonErrorMessage(
-                modifier = Modifier.padding(padding),
-                errorMessage = stringResource(id = R.string.raw_message_data_error)
+        )
+        DropdownMenuItem(
+            text = {
+                Text(
+                    text = stringResource(id = R.string.raw_message_data_copy_action),
+                    style = ProtonTheme.typography.bodyLargeNorm
+                )
+            },
+            onClick = {
+                isDropDownExpanded.value = false
+                context.copyTextToClipboard(state.type.name, state.data)
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_proton_squares),
+                    contentDescription = NO_CONTENT_DESCRIPTION
+                )
+            }
+        )
+        if (state.type == RawMessageDataType.Headers) {
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.raw_message_data_learn_more_action),
+                        style = ProtonTheme.typography.bodyLargeNorm
+                    )
+                },
+                onClick = {
+                    isDropDownExpanded.value = false
+                    openLearnMoreLink(context)
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_proton_info_circle),
+                        contentDescription = NO_CONTENT_DESCRIPTION
+                    )
+                }
             )
         }
     }
