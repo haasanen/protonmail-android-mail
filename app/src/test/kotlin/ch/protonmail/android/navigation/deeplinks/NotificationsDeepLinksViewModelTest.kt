@@ -52,7 +52,7 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -92,7 +92,7 @@ internal class NotificationsDeepLinksViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
-        every { deepLinkHandler.pending } returns flowOf(null)
+        every { deepLinkHandler.pending } returns emptyFlow()
     }
 
     @AfterTest
@@ -303,20 +303,19 @@ internal class NotificationsDeepLinksViewModelTest {
         val userId = getUserId()
         val messageId = getRemoteMessageId()
         val labelId = LabelId("1")
-        val pendingFlow = MutableStateFlow<NotificationsDeepLinkData?>(null)
+        val deepLinkData = NotificationsDeepLinkData.Message(
+            messageId = messageId.id,
+            userId = userId.id
+        )
 
-        every { deepLinkHandler.pending } returns pendingFlow
+        every { deepLinkHandler.pending } returns flowOf(deepLinkData)
+        every { deepLinkHandler.consume() } just runs
         expectPrimaryId(userId)
         expectMessage(userId, messageId, AlphaAppQAReport)
         expectSingleMessageMode(userId, false)
 
         // When
         val viewModel = viewModel()
-
-        pendingFlow.value = NotificationsDeepLinkData.Message(
-            messageId = messageId.id,
-            userId = userId.id
-        )
 
         // Then
         viewModel.state.test {
@@ -336,14 +335,14 @@ internal class NotificationsDeepLinksViewModelTest {
     fun `should navigate to inbox when pending deep link is a Group`() = runTest {
         // Given
         val userId = getUserId()
-        val pendingFlow = MutableStateFlow<NotificationsDeepLinkData?>(null)
+        val deepLinkData = NotificationsDeepLinkData.Group(userId = userId.id)
 
-        every { deepLinkHandler.pending } returns pendingFlow
+        every { deepLinkHandler.pending } returns flowOf(deepLinkData)
+        every { deepLinkHandler.consume() } just runs
         expectPrimaryId(userId)
 
         // When
         val viewModel = viewModel()
-        pendingFlow.value = NotificationsDeepLinkData.Group(userId = userId.id)
 
         // Then
         viewModel.state.test {
@@ -355,15 +354,14 @@ internal class NotificationsDeepLinksViewModelTest {
     fun `should call handler consume and reset state when consume is called`() = runTest {
         // Given
         val userId = getUserId()
-        val pendingFlow = MutableStateFlow<NotificationsDeepLinkData?>(null)
+        val deepLinkData = NotificationsDeepLinkData.Group(userId = userId.id)
 
-        every { deepLinkHandler.pending } returns pendingFlow
+        every { deepLinkHandler.pending } returns flowOf(deepLinkData)
         every { deepLinkHandler.consume() } just runs
         expectPrimaryId(userId)
 
         // When
         val viewModel = viewModel()
-        pendingFlow.value = NotificationsDeepLinkData.Group(userId = userId.id)
         viewModel.consume()
 
         // Then
@@ -374,10 +372,9 @@ internal class NotificationsDeepLinksViewModelTest {
     }
 
     @Test
-    fun `should not process null pending deep links`() = runTest {
+    fun `should not process when no pending deep links`() = runTest {
         // Given
-        val pendingFlow = MutableStateFlow<NotificationsDeepLinkData?>(null)
-        every { deepLinkHandler.pending } returns pendingFlow
+        every { deepLinkHandler.pending } returns emptyFlow()
 
         // When
         val viewModel = viewModel()

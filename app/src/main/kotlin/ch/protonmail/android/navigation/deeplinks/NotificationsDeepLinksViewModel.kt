@@ -42,7 +42,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -70,13 +69,19 @@ class NotificationsDeepLinksViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            deepLinkHandler.pending.filterNotNull().collect { data ->
+            deepLinkHandler.pending.collect { data ->
+                Timber.d("NotificationsDeepLinksViewModel: Received pending deep link $data")
                 processPendingDeepLink(data)
             }
         }
     }
 
     private fun processPendingDeepLink(data: NotificationsDeepLinkData) {
+        Timber.d("processPendingDeepLink: Processing deep link $data, current state: ${_state.value}")
+        // Reset state to Launched before processing new deep link to ensure LaunchedEffect triggers
+        // even when navigating to the same conversation/message
+        _state.value = State.Launched
+
         when (data) {
             is NotificationsDeepLinkData.Message -> {
                 navigateToDetails(data.messageId, data.userId)

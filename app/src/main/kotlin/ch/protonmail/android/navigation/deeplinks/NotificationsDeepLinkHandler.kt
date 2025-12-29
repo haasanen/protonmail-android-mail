@@ -18,38 +18,49 @@
 
 package ch.protonmail.android.navigation.deeplinks
 
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class NotificationsDeepLinkHandler @Inject constructor() {
 
-    private val _pending = MutableStateFlow<NotificationsDeepLinkData?>(null)
-    private val _unlocked = MutableStateFlow(false)
+    private val pendingChannel = Channel<NotificationsDeepLinkData>(capacity = Channel.UNLIMITED)
+    private val isUnlocked = MutableStateFlow(false)
+    private val hasPending = AtomicBoolean(false)
 
-    // Only emits when unlocked
-    val pending: Flow<NotificationsDeepLinkData?> = combine(_pending, _unlocked) { data, unlocked ->
-        if (unlocked) data else null
-    }
+    val pending: Flow<NotificationsDeepLinkData> = isUnlocked
+        .filter { it }
+        .flatMapLatest {
+            pendingChannel.receiveAsFlow()
+                .onEach { data -> Timber.d("DeepLinkHandler: Emitting pending deep link - $data") }
+        }
 
-    fun hasPending(): Boolean = _pending.value != null
+    fun hasPending(): Boolean = hasPending.get()
 
     fun setPending(data: NotificationsDeepLinkData) {
-        _pending.value = data
+        Timber.d("DeepLinkHandler: setPending called with $data, isUnlocked=${isUnlocked.value}")
+        hasPending.set(true)
+        pendingChannel.trySend(data)
     }
 
     fun setLocked() {
-        _unlocked.value = false
+        isUnlocked.value = false
     }
 
     fun setUnlocked() {
-        _unlocked.value = true
+        isUnlocked.value = true
     }
 
     fun consume() {
-        _pending.value = null
+        hasPending.set(false)
     }
 }

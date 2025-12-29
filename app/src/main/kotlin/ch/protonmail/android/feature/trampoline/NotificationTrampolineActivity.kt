@@ -92,15 +92,15 @@ internal class NotificationTrampolineActivity : AppCompatActivity() {
 
     private fun handleBackgroundNoLock(deepLinkData: NotificationsDeepLinkData?) {
         Timber.d("Trampoline: Background + no lock, navigating directly")
-        deepLinkData?.let { deepLinkHandler.setPending(it) }
         deepLinkHandler.setUnlocked()
+        deepLinkData?.let { deepLinkHandler.setPending(it) }
         launchMainActivity()
     }
 
     private fun handleForegroundNoLock(deepLinkData: NotificationsDeepLinkData?) {
         Timber.d("Trampoline: Foreground + no lock, signaling in-app navigation")
-        deepLinkData?.let { deepLinkHandler.setPending(it) }
         deepLinkHandler.setUnlocked()
+        deepLinkData?.let { deepLinkHandler.setPending(it) }
     }
 
     private fun launchLockScreen() {

@@ -23,18 +23,17 @@ import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkData
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHandler
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class NotificationDeepLinkHandlerTest {
 
     private lateinit var handler: NotificationsDeepLinkHandler
 
-    @Before
+    @BeforeTest
     fun setup() {
         handler = NotificationsDeepLinkHandler()
     }
@@ -46,21 +45,6 @@ internal class NotificationDeepLinkHandlerTest {
 
         // Then
         assertFalse(hasPending)
-    }
-
-    @Test
-    fun `initial state is locked`() = runTest {
-        // Given
-        val testData = mockk<NotificationsDeepLinkData>()
-
-        // When
-        handler.setPending(testData)
-
-        // Then
-        handler.pending.test {
-            assertNull(awaitItem())
-            cancelAndIgnoreRemainingEvents()
-        }
     }
 
     @Test
@@ -89,7 +73,7 @@ internal class NotificationDeepLinkHandlerTest {
     }
 
     @Test
-    fun `pending flow emits null when locked`() = runTest {
+    fun `pending flow does not emit when locked`() = runTest {
         // Given
         val testData = mockk<NotificationsDeepLinkData>()
         handler.setLocked()
@@ -99,14 +83,12 @@ internal class NotificationDeepLinkHandlerTest {
 
         // Then
         handler.pending.test {
-            val emission = awaitItem()
-            assertNull(emission)
-            cancelAndIgnoreRemainingEvents()
+            expectNoEvents()
         }
     }
 
     @Test
-    fun `pending flow emits data when unlocked`() = runTest {
+    fun `pending flow emits data when unlocked and data is set`() = runTest {
         // Given
         val testData = mockk<NotificationsDeepLinkData>()
         handler.setUnlocked()
@@ -116,152 +98,51 @@ internal class NotificationDeepLinkHandlerTest {
 
         // Then
         handler.pending.test {
-            val emission = awaitItem()
-            assertEquals(testData, emission)
-            cancelAndIgnoreRemainingEvents()
+            assertEquals(testData, awaitItem())
         }
     }
 
     @Test
-    fun `pending flow emits null initially when unlocked with no data`() = runTest {
+    fun `pending flow does not emit when unlocked with no data`() = runTest {
         // Given
         handler.setUnlocked()
 
         // Then
         handler.pending.test {
-            val emission = awaitItem()
-            assertNull(emission)
-            cancelAndIgnoreRemainingEvents()
+            expectNoEvents()
         }
     }
 
     @Test
-    fun `pending flow transitions from null to data when unlocked`() = runTest {
-        // Given
-        val testData = mockk<NotificationsDeepLinkData>()
-        handler.setUnlocked()
-
-        handler.pending.test {
-            // Initial state
-            assertNull(awaitItem())
-
-            // When
-            handler.setPending(testData)
-
-            // Then
-            assertEquals(testData, awaitItem())
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `pending flow transitions from data to null when locked`() = runTest {
-        // Given
-        val testData = mockk<NotificationsDeepLinkData>()
-        handler.setUnlocked()
-        handler.setPending(testData)
-
-        handler.pending.test {
-            // Initial state with data
-            assertEquals(testData, awaitItem())
-
-            // When
-            handler.setLocked()
-
-            // Then
-            assertNull(awaitItem())
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `pending flow transitions from null to data when unlocking with existing data`() = runTest {
+    fun `pending flow emits data when unlocking with existing pending data`() = runTest {
         // Given
         val testData = mockk<NotificationsDeepLinkData>()
         handler.setLocked()
         handler.setPending(testData)
 
-        handler.pending.test {
-            // Initial state (locked, null)
-            assertNull(awaitItem())
-
-            // When
-            handler.setUnlocked()
-
-            // Then
-            assertEquals(testData, awaitItem())
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `pending flow emits null after consume is called`() = runTest {
-        // Given
-        val testData = mockk<NotificationsDeepLinkData>()
+        // When
         handler.setUnlocked()
-        handler.setPending(testData)
 
+        // Then
         handler.pending.test {
-            // Initial state with data
             assertEquals(testData, awaitItem())
-
-            // When
-            handler.consume()
-
-            // Then
-            assertNull(awaitItem())
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
-    fun `setPending replaces existing data`() = runTest {
+    fun `setPending replaces existing data when unlocked`() = runTest {
         // Given
         val firstData = mockk<NotificationsDeepLinkData>(name = "first")
         val secondData = mockk<NotificationsDeepLinkData>(name = "second")
         handler.setUnlocked()
-        handler.setPending(firstData)
 
         handler.pending.test {
-            // Initial state with first data
+            // When
+            handler.setPending(firstData)
             assertEquals(firstData, awaitItem())
 
-            // When
             handler.setPending(secondData)
-
-            // Then
             assertEquals(secondData, awaitItem())
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `multiple lock unlock cycles work correctly`() = runTest {
-        // Given
-        val testData = mockk<NotificationsDeepLinkData>()
-        handler.setPending(testData)
-
-        handler.pending.test {
-            // Initial state is locked (default), so first emission is null
-            assertNull(awaitItem())
-
-            // Unlock
-            handler.setUnlocked()
-            assertEquals(testData, awaitItem())
-
-            // Lock
-            handler.setLocked()
-            assertNull(awaitItem())
-
-            // Unlock again
-            handler.setUnlocked()
-            assertEquals(testData, awaitItem())
-
-            // Lock again
-            handler.setLocked()
-            assertNull(awaitItem())
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -280,7 +161,7 @@ internal class NotificationDeepLinkHandlerTest {
     }
 
     @Test
-    fun `setLocked does not clear pending data`() {
+    fun `setLocked does not clear pending data flag`() {
         // Given
         val testData = mockk<NotificationsDeepLinkData>()
         handler.setPending(testData)
@@ -293,7 +174,7 @@ internal class NotificationDeepLinkHandlerTest {
     }
 
     @Test
-    fun `setUnlocked does not clear pending data`() {
+    fun `setUnlocked does not clear pending data flag`() {
         // Given
         val testData = mockk<NotificationsDeepLinkData>()
         handler.setPending(testData)
@@ -303,5 +184,23 @@ internal class NotificationDeepLinkHandlerTest {
 
         // Then
         assertTrue(handler.hasPending())
+    }
+
+    @Test
+    fun `pending flow stops emitting when locked after being unlocked`() = runTest {
+        // Given
+        val testData = mockk<NotificationsDeepLinkData>()
+        handler.setUnlocked()
+
+        handler.pending.test {
+            handler.setPending(testData)
+            assertEquals(testData, awaitItem())
+
+            // When
+            handler.setLocked()
+
+            // Then - no more emissions after locking
+            expectNoEvents()
+        }
     }
 }

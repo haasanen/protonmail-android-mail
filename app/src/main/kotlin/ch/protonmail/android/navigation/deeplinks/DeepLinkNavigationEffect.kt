@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.navigation.model.Destination
+import timber.log.Timber
 
 @Composable
 internal fun DeepLinkNavigationEffect(navController: NavHostController, onUserSwitched: (email: String) -> Unit) {
@@ -33,6 +34,7 @@ internal fun DeepLinkNavigationEffect(navController: NavHostController, onUserSw
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(state) {
+        Timber.d("DeepLinkNavigationEffect: State changed to $state")
         when (val current = state) {
             is NotificationsDeepLinksViewModel.State.Launched -> {}
 
@@ -46,6 +48,7 @@ internal fun DeepLinkNavigationEffect(navController: NavHostController, onUserSw
             }
 
             is NotificationsDeepLinksViewModel.State.NavigateToConversation -> {
+                Timber.d("Navigating to conversation ${current.conversationId}, scrollTo=${current.scrollToMessageId}")
                 navController.navigate(
                     Destination.Screen.Conversation(
                         conversationId = current.conversationId,
@@ -63,6 +66,7 @@ internal fun DeepLinkNavigationEffect(navController: NavHostController, onUserSw
             }
 
             is NotificationsDeepLinksViewModel.State.NavigateToMessage -> {
+                Timber.d("Navigating to message ${current.messageId} in convo ${current.conversationId}")
                 navController.navigate(
                     Destination.Screen.Conversation(
                         conversationId = current.conversationId,
