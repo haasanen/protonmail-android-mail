@@ -35,6 +35,7 @@ import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
+import ch.protonmail.android.mailmessage.domain.model.RawMessageData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
@@ -87,19 +88,19 @@ class RustMessageBodyDataSource @Inject constructor(
             }
     }
 
-    override suspend fun getRawHeaders(userId: UserId, messageId: LocalMessageId): Either<DataError, String> =
+    override suspend fun getRawHeaders(userId: UserId, messageId: LocalMessageId): Either<DataError, RawMessageData> =
         withContext(ioDispatcher) {
             return@withContext getDecryptedMessageWrapper(userId, messageId)
                 .flatMap { decryptedMessage ->
-                    decryptedMessage.rawHeaders().right()
+                    RawMessageData(decryptedMessage.rawHeaders()).right()
                 }
         }
 
-    override suspend fun getRawBody(userId: UserId, messageId: LocalMessageId): Either<DataError, String> =
+    override suspend fun getRawBody(userId: UserId, messageId: LocalMessageId): Either<DataError, RawMessageData> =
         withContext(ioDispatcher) {
             return@withContext getDecryptedMessageWrapper(userId, messageId)
                 .flatMap { decryptedMessage ->
-                    decryptedMessage.rawBody().right()
+                    RawMessageData(decryptedMessage.rawBody()).right()
                 }
         }
 

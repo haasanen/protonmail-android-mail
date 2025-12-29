@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RawMessageData
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -58,10 +59,10 @@ class RustMessageBodyRepository @Inject constructor(
             }
     }
 
-    override suspend fun getRawHeaders(userId: UserId, messageId: MessageId): Either<DataError, String> =
+    override suspend fun getRawHeaders(userId: UserId, messageId: MessageId): Either<DataError, RawMessageData> =
         messageBodyDataSource.getRawHeaders(userId, messageId.toLocalMessageId())
 
-    override suspend fun getRawBody(userId: UserId, messageId: MessageId): Either<DataError, String> =
+    override suspend fun getRawBody(userId: UserId, messageId: MessageId): Either<DataError, RawMessageData> =
         messageBodyDataSource.getRawBody(userId, messageId.toLocalMessageId())
 
 

@@ -64,11 +64,11 @@ class RawMessageDataViewModel @Inject constructor(
             val event = when (rawMessageDataType) {
                 RawMessageDataType.Headers -> getRawMessageHeaders(primaryUserId.first(), messageId).fold(
                     ifLeft = { RawMessageDataState.Error(rawMessageDataType) },
-                    ifRight = { RawMessageDataState.Data(rawMessageDataType, it, Effect.empty()) }
+                    ifRight = { RawMessageDataState.Data(rawMessageDataType, it.value, Effect.empty()) }
                 )
                 RawMessageDataType.HTML -> getRawMessageBody(primaryUserId.first(), messageId).fold(
                     ifLeft = { RawMessageDataState.Error(rawMessageDataType) },
-                    ifRight = { RawMessageDataState.Data(rawMessageDataType, it, Effect.empty()) }
+                    ifRight = { RawMessageDataState.Data(rawMessageDataType, it.value, Effect.empty()) }
                 )
             }
 

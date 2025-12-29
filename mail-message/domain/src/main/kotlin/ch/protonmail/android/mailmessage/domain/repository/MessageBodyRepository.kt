@@ -25,6 +25,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RawMessageData
 import me.proton.core.domain.entity.UserId
 
 interface MessageBodyRepository {
@@ -42,9 +43,9 @@ interface MessageBodyRepository {
         shouldLoadImagesSafely: Boolean
     ): Either<AttachmentDataError, MessageBodyImage>
 
-    suspend fun getRawHeaders(userId: UserId, messageId: MessageId): Either<DataError, String>
+    suspend fun getRawHeaders(userId: UserId, messageId: MessageId): Either<DataError, RawMessageData>
 
-    suspend fun getRawBody(userId: UserId, messageId: MessageId): Either<DataError, String>
+    suspend fun getRawBody(userId: UserId, messageId: MessageId): Either<DataError, RawMessageData>
 
     suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: MessageId): Either<DataError, Unit>
 }

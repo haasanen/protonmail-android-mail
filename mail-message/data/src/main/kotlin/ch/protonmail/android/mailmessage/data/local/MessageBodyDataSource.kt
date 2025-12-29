@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
+import ch.protonmail.android.mailmessage.domain.model.RawMessageData
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.ImagePolicy
 
@@ -43,9 +44,9 @@ interface MessageBodyDataSource {
         imagePolicy: ImagePolicy
     ): Either<AttachmentDataError, LocalAttachmentData>
 
-    suspend fun getRawHeaders(userId: UserId, messageId: LocalMessageId): Either<DataError, String>
+    suspend fun getRawHeaders(userId: UserId, messageId: LocalMessageId): Either<DataError, RawMessageData>
 
-    suspend fun getRawBody(userId: UserId, messageId: LocalMessageId): Either<DataError, String>
+    suspend fun getRawBody(userId: UserId, messageId: LocalMessageId): Either<DataError, RawMessageData>
 
     suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
 }

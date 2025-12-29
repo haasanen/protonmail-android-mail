@@ -31,6 +31,7 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAcces
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
+import ch.protonmail.android.mailmessage.domain.model.RawMessageData
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -241,7 +242,7 @@ class RustMessageBodyDataSourceTest {
         // Then
         coVerify { rustMailboxFactory.createAllMail(userId) }
         coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
-        assertEquals(result, rawHeaders.right())
+        assertEquals(result, RawMessageData(rawHeaders).right())
     }
 
     @Test
@@ -285,7 +286,7 @@ class RustMessageBodyDataSourceTest {
         // Then
         coVerify { rustMailboxFactory.createAllMail(userId) }
         coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
-        assertEquals(result, rawBody.right())
+        assertEquals(result, RawMessageData(rawBody).right())
     }
 
     @Test

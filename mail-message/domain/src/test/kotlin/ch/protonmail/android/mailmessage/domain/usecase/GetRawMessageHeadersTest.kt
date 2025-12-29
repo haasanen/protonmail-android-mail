@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.right
+import ch.protonmail.android.mailmessage.domain.model.RawMessageData
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -40,7 +41,7 @@ class GetRawMessageHeadersTest {
         // Given
         val userId = UserIdTestData.userId
         val messageId = MessageIdSample.AugWeatherForecast
-        val rawHeaders = "raw headers"
+        val rawHeaders = RawMessageData("raw headers")
         coEvery { messageBodyRepository.getRawHeaders(userId, messageId) } returns rawHeaders.right()
 
         // When

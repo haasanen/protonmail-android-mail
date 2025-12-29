@@ -33,6 +33,7 @@ import ch.protonmail.android.maildetail.presentation.viewmodel.RawMessageDataVie
 import ch.protonmail.android.maildetail.presentation.viewmodel.RawMessageDataViewModelTest.TestData.RAW_DATA_TYPE_HEADERS
 import ch.protonmail.android.maildetail.presentation.viewmodel.RawMessageDataViewModelTest.TestData.RAW_DATA_TYPE_HTML
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RawMessageData
 import ch.protonmail.android.mailmessage.domain.usecase.GetRawMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetRawMessageHeaders
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -83,7 +84,7 @@ class RawMessageDataViewModelTest {
         val messageId = MessageId(MESSAGE_ID)
         val rawHeaders = "raw headers"
         every { savedStateHandle.get<String>(RawMessageDataScreen.RAW_DATA_TYPE_KEY) } returns RAW_DATA_TYPE_HEADERS
-        coEvery { getRawMessageHeaders(UserIdTestData.userId, messageId) } returns rawHeaders.right()
+        coEvery { getRawMessageHeaders(UserIdTestData.userId, messageId) } returns RawMessageData(rawHeaders).right()
 
         // When
         rawMessageDataViewModel.state.test {
@@ -120,7 +121,7 @@ class RawMessageDataViewModelTest {
         val messageId = MessageId(MESSAGE_ID)
         val rawBody = "raw body"
         every { savedStateHandle.get<String>(RawMessageDataScreen.RAW_DATA_TYPE_KEY) } returns RAW_DATA_TYPE_HTML
-        coEvery { getRawMessageBody(UserIdTestData.userId, messageId) } returns rawBody.right()
+        coEvery { getRawMessageBody(UserIdTestData.userId, messageId) } returns RawMessageData(rawBody).right()
 
         // When
         rawMessageDataViewModel.state.test {
@@ -157,7 +158,7 @@ class RawMessageDataViewModelTest {
         val messageId = MessageId(MESSAGE_ID)
         val rawBody = "raw body"
         every { savedStateHandle.get<String>(RawMessageDataScreen.RAW_DATA_TYPE_KEY) } returns RAW_DATA_TYPE_HTML
-        coEvery { getRawMessageBody(UserIdTestData.userId, messageId) } returns rawBody.right()
+        coEvery { getRawMessageBody(UserIdTestData.userId, messageId) } returns RawMessageData(rawBody).right()
         coEvery { downloadRawMessageData("html", rawBody) } returns Unit.right()
 
         rawMessageDataViewModel.state.test {
@@ -180,7 +181,7 @@ class RawMessageDataViewModelTest {
         val messageId = MessageId(MESSAGE_ID)
         val rawHeaders = "raw headers"
         every { savedStateHandle.get<String>(RawMessageDataScreen.RAW_DATA_TYPE_KEY) } returns RAW_DATA_TYPE_HEADERS
-        coEvery { getRawMessageHeaders(UserIdTestData.userId, messageId) } returns rawHeaders.right()
+        coEvery { getRawMessageHeaders(UserIdTestData.userId, messageId) } returns RawMessageData(rawHeaders).right()
         coEvery { downloadRawMessageData("headers", rawHeaders) } returns DataError.Local.Unknown.left()
 
         rawMessageDataViewModel.state.test {
