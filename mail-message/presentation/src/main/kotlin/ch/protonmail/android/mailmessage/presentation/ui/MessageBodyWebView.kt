@@ -258,8 +258,16 @@ fun MessageBodyWebView(
                     it.settings.loadWithOverviewMode = true
                     it.settings.useWideViewPort = true
                     it.isVerticalScrollBarEnabled = false
-                    it.layoutParams = initialLayoutParams
                     it.webViewClient = client
+
+                    it.layoutParams = if (messageBodyUiModel.shouldRestrictWebViewHeight) {
+                        FrameLayout.LayoutParams(
+                            LayoutParams.WRAP_CONTENT,
+                            WEB_VIEW_FIXED_MAX_HEIGHT_RESTRICTED
+                        )
+                    } else {
+                        initialLayoutParams
+                    }
 
                     configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
                     configureLongClick(
