@@ -75,7 +75,7 @@ class MessageBodyUiModelMapper @Inject constructor(
             } else null,
             viewModePreference = viewModePreference,
             reloadMessageEffect = Effect.empty(),
-            shouldRestrictWebViewHeight = restrictMessageWebViewHeightEnabled.get() && hasMessageBodyWebViewCrashed()
+            shouldRestrictWebViewHeight = hasMessageBodyWebViewCrashed() && restrictMessageWebViewHeightEnabled.get()
         )
     }
 
@@ -97,5 +97,4 @@ class MessageBodyUiModelMapper @Inject constructor(
         MimeType.PlainText -> MimeTypeUiModel.PlainText
         MimeType.Html, MimeType.MultipartMixed -> MimeTypeUiModel.Html
     }
-
 }

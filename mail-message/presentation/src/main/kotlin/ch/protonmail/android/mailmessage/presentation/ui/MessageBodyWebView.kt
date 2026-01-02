@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.presentation.ui
 import java.io.ByteArrayInputStream
 import android.content.Context
 import android.net.Uri
-import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewGroup.LayoutParams
 import android.webkit.WebResourceRequest
@@ -39,12 +38,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -79,7 +76,6 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.mailcommon.presentation.extension.openShareIntentForUri
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
@@ -233,57 +229,52 @@ fun MessageBodyWebView(
             WEB_VIEW_FIXED_MAX_HEIGHT
         }
 
-        // WebView changes it's layout strategy based on
-        // it's layoutParams. We convert from Compose Modifier to
-        // layout params here.
-        val initialLayoutParams = FrameLayout.LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.WRAP_CONTENT
-        )
-
         Box {
             AndroidView(
-                factory = { webView },
-                update = {
-                    it.settings.builtInZoomControls = true
-                    it.settings.displayZoomControls = false
-                    it.settings.javaScriptEnabled = false
-                    it.settings.safeBrowsingEnabled = true
-                    it.settings.allowContentAccess = false
-                    it.settings.allowFileAccess = false
-                    it.settings.loadWithOverviewMode = true
-                    it.settings.useWideViewPort = true
-                    it.isVerticalScrollBarEnabled = false
-                    it.webViewClient = client
-
-                    it.layoutParams = if (messageBodyUiModel.shouldRestrictWebViewHeight) {
-                        FrameLayout.LayoutParams(
-                            LayoutParams.WRAP_CONTENT,
-                            WEB_VIEW_FIXED_MAX_HEIGHT_RESTRICTED
+                factory = { context ->
+                    FrameLayout(context).apply {
+                        addView(
+                            webView,
+                            FrameLayout.LayoutParams(
+                                LayoutParams.MATCH_PARENT,
+                                LayoutParams.WRAP_CONTENT
+                            )
                         )
-                    } else {
-                        initialLayoutParams
                     }
+                },
+                update = { container ->
+                    val webview = container.getChildAt(0) as? ZoomableWebView ?: return@AndroidView
 
-                    configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
+                    webview.settings.builtInZoomControls = true
+                    webview.settings.displayZoomControls = false
+                    webview.settings.javaScriptEnabled = false
+                    webview.settings.safeBrowsingEnabled = true
+                    webview.settings.allowContentAccess = false
+                    webview.settings.allowFileAccess = false
+                    webview.settings.loadWithOverviewMode = true
+                    webview.settings.useWideViewPort = true
+                    webview.isVerticalScrollBarEnabled = false
+                    webview.webViewClient = client
+
+                    // Set max height restriction directly on the WebView
+                    webview.maxHeight = webViewMaxHeight
+
+                    configureDarkLightMode(webview, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
                     configureLongClick(
-                        it,
+                        webview,
                         actions.onMessageBodyLinkLongClicked,
                         actions.onMessageBodyImageLongClicked
                     )
-                    configureOnTouchListener(it)
+                    configureOnTouchListener(webview)
                 },
                 modifier = Modifier
                     .testTag(MessageBodyWebViewTestTags.WebView)
-                    // there's a bug where if the message is too long the webview will crash
-                    .heightIn(max = (webViewMaxHeight - 1).pxToDp())
                     .fillMaxWidth()
                     .onSizeChanged {
                         lastMeasuredWebViewHeight = it.height
                         shouldShowViewEntireMessageButton.value = shouldAllowViewingEntireMessage &&
                             it.height >= webViewMaxHeight - 1
                     }
-                    .wrapContentSize()
             )
 
             if (shouldShowViewEntireMessageButton.value && messageBodyUiModel.shouldRestrictWebViewHeight) {
@@ -474,20 +465,6 @@ private fun ExpandCollapseBodyButton(modifier: Modifier = Modifier, onClick: () 
 private fun ExpandCollapseBodyButtonPreview() {
     ProtonTheme {
         ExpandCollapseBodyButton(onClick = {})
-    }
-}
-
-class ZoomableWebView(
-    context: Context,
-    attrs: AttributeSet? = null
-) : WebView(context, attrs) {
-
-    // When setting an OnTouchListener directly on the WebView,
-    // Android assumes you are customizing touch behavior and
-    // should be responsible for accessibility by overriding performClick().
-    override fun performClick(): Boolean {
-        super.performClick()
-        return true
     }
 }
 
