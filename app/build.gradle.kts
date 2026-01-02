@@ -192,6 +192,12 @@ configurations {
     // Remove duplicate classes (keep "org.jetbrains").
     implementation.get().exclude(mapOf("group" to "com.intellij", "module" to "annotations"))
     implementation.get().exclude(mapOf("group" to "org.intellij", "module" to "annotations"))
+
+    // Proton Core 36.0.0+ pulls `me.proton.crypto:android-golib` transitively via `me.proton.core:crypto-android`.
+    // It includes native libs that inflate APK size and is not needed by this app.
+    configureEach {
+        exclude(group = "me.proton.crypto", module = "android-golib")
+    }
 }
 
 dependencies {
