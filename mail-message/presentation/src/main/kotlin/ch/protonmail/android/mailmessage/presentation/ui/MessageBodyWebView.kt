@@ -222,11 +222,7 @@ fun MessageBodyWebView(
 
     DisposableEffect(messageId) {
         onDispose {
-            webView.apply {
-                loadUrl("about:blank")
-                stopLoading()
-                destroy()
-            }
+            webViewCleanup(webView, messageId)
         }
     }
 
@@ -414,6 +410,18 @@ private fun configureOnTouchListener(webView: ZoomableWebView) {
         }
 
         false // Let the WebView handle the event
+    }
+}
+
+private fun webViewCleanup(webView: WebView, messageId: MessageId) {
+    Timber.d("Starting clean up for webView: $messageId, attached: ${webView.isAttachedToWindow}")
+    runCatching {
+        webView.stopLoading()
+        webView.loadUrl("about:blank")
+        webView.destroy()
+        Timber.d("Clean up completed for webView: $messageId")
+    }.onFailure { e ->
+        Timber.e(e, "Failed to clean up webView: $messageId")
     }
 }
 
