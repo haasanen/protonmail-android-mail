@@ -22,6 +22,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("kotlin-parcelize")
     id("app-config-plugin")
 }
 

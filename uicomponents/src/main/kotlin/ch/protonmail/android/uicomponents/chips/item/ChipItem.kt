@@ -18,13 +18,22 @@
 
 package ch.protonmail.android.uicomponents.chips.item
 
+import android.os.Parcelable
 import androidx.compose.runtime.Stable
+import kotlinx.parcelize.Parcelize
 
 @Stable
-sealed class ChipItem(open val value: String) {
+sealed class ChipItem(open val value: String) : Parcelable {
 
+    @Parcelize
     data class Validating(override val value: String) : ChipItem(value)
+
+    @Parcelize
     data class Valid(override val value: String) : ChipItem(value)
+
+    @Parcelize
     data class Invalid(override val value: String) : ChipItem(value)
+
+    @Parcelize
     data class Counter(override val value: String) : ChipItem(value)
 }
