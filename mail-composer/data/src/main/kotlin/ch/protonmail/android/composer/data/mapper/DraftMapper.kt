@@ -128,11 +128,11 @@ fun DraftSenderAddressChangeError.toChangeSenderError() = when (this) {
 fun DraftOpenError.toOpenDraftError(): OpenDraftError = when (this) {
     is DraftOpenError.Other -> OpenDraftError.Other(this.v1.toDataError())
     is DraftOpenError.Reason -> when (this.v1) {
-        DraftOpenErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftOpenErrorReason.MESSAGE_IS_NOT_A_DRAFT,
-        DraftOpenErrorReason.REPLY_OR_FORWARD_DRAFT,
-        DraftOpenErrorReason.ADDRESS_NOT_FOUND,
-        DraftOpenErrorReason.MESSAGE_BODY_MISSING -> OpenDraftError.OpenDraftFailed
+        DraftOpenErrorReason.ADDRESS_NOT_FOUND -> OpenDraftError.CouldNotFindAddress
+        DraftOpenErrorReason.MESSAGE_BODY_MISSING -> OpenDraftError.MissingMessageBody
+        DraftOpenErrorReason.MESSAGE_DOES_NOT_EXIST -> OpenDraftError.DraftDoesNotExist
+        DraftOpenErrorReason.MESSAGE_IS_NOT_A_DRAFT -> OpenDraftError.MessageIsNotADraft
+        DraftOpenErrorReason.REPLY_OR_FORWARD_DRAFT -> OpenDraftError.ReplyOrForwardDraft
     }
 }
 

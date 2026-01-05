@@ -43,7 +43,7 @@ class CreateDraftForActionTest {
         val userId = UserIdSample.Primary
         val parentMessageId = MessageIdSample.PlainTextMessage
         val action = DraftAction.Forward(parentMessageId)
-        val expected = OpenDraftError.OpenDraftFailed
+        val expected = OpenDraftError.DraftDoesNotExist
         coEvery { draftRepository.createDraft(userId, action) } returns expected.left()
 
         // When

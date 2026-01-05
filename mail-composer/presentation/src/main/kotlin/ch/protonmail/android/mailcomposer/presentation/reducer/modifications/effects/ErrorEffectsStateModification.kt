@@ -36,8 +36,8 @@ internal sealed class UnrecoverableError(@StringRes val resId: Int) : EffectsSta
     override fun apply(state: ComposerState.Effects): ComposerState.Effects =
         state.copy(exitError = Effect.of(TextUiModel(resId)))
 
-    data object DraftContentUnavailable : UnrecoverableError(R.string.composer_error_loading_draft)
-    data object InvalidSenderAddress : UnrecoverableError(R.string.composer_error_invalid_sender)
+    data object NewDraftContentUnavailable : UnrecoverableError(R.string.composer_error_create_draft)
+    data object ExistingDraftContentUnavailable : UnrecoverableError(R.string.composer_error_loading_draft)
     data object ParentMessageMetadata : UnrecoverableError(R.string.composer_error_loading_parent_message)
 }
 

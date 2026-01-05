@@ -664,13 +664,13 @@ internal class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
-        expectInitComposerWithNewEmptyDraftFails(expectedUserId) { OpenDraftError.OpenDraftFailed }
+        expectInitComposerWithNewEmptyDraftFails(expectedUserId) { OpenDraftError.CouldNotFindAddress }
 
         // When
         val actual = viewModel().composerStates.value
 
         // Then
-        assertEquals(TextUiModel(R.string.composer_error_invalid_sender), actual.effects.exitError.consume())
+        assertEquals(TextUiModel(R.string.composer_error_create_draft), actual.effects.exitError.consume())
         verify { observeMessageAttachments wasNot Called }
         verify { updateRecipients wasNot Called }
     }
@@ -945,7 +945,7 @@ internal class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        expectInitComposerWithExistingDraftError(expectedUserId, expectedDraftId) { OpenDraftError.OpenDraftFailed }
+        expectInitComposerWithExistingDraftError(expectedUserId, expectedDraftId) { OpenDraftError.MessageIsNotADraft }
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
@@ -1397,7 +1397,7 @@ internal class ComposerViewModelTest {
         expectNoInputDraftMessageId()
         expectInputDraftAction { replyAction }
         expectNoRestoredState(savedStateHandle)
-        coEvery { createDraftForAction(expectedUserId, replyAction) } returns OpenDraftError.OpenDraftFailed.left()
+        coEvery { createDraftForAction(expectedUserId, replyAction) } returns OpenDraftError.MessageIsNotADraft.left()
 
         // When
         viewModel()

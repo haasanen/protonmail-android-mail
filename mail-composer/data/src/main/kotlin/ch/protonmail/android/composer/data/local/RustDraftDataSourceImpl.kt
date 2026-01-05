@@ -156,6 +156,7 @@ class RustDraftDataSourceImpl @Inject constructor(
                 Timber.d("rust-draft: Draft opened successfully.")
                 draftCache.add(it.draftWrapper)
             }
+            .onLeft { Timber.d("rust-draft: Unable to open draft - $it") }
             .map { it.toLocalDraftWithSyncStatus() }
     }
 
@@ -174,6 +175,7 @@ class RustDraftDataSourceImpl @Inject constructor(
 
         return createRustDraft(session, draftCreateMode)
             .onRight { draftCache.add(it) }
+            .onLeft { Timber.d("rust-draft: Unable to create draft - $it") }
             .map { it.toLocalDraft() }
     }
 

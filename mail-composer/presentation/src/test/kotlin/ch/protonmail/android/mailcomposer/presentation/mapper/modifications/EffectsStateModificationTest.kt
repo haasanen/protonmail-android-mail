@@ -101,16 +101,16 @@ internal class EffectsStateModificationTest(
         @Parameterized.Parameters(name = "{0}")
         fun data(): Collection<Array<Any>> = listOf(
             arrayOf(
-                "shows invalid sender error",
-                initialState,
-                UnrecoverableError.InvalidSenderAddress,
-                initialState.copy(exitError = Effect.of(TextUiModel(R.string.composer_error_invalid_sender)))
-            ),
-            arrayOf(
                 "shows draft content loading error",
                 initialState,
-                UnrecoverableError.DraftContentUnavailable,
+                UnrecoverableError.ExistingDraftContentUnavailable,
                 initialState.copy(exitError = Effect.of(TextUiModel(R.string.composer_error_loading_draft)))
+            ),
+            arrayOf(
+                "shows draft content creation error",
+                initialState,
+                UnrecoverableError.NewDraftContentUnavailable,
+                initialState.copy(exitError = Effect.of(TextUiModel(R.string.composer_error_create_draft)))
             ),
             arrayOf(
                 "shows parent message loading error",

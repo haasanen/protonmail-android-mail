@@ -40,7 +40,7 @@ class OpenExistingDraftTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val expected = OpenDraftError.OpenDraftFailed
+        val expected = OpenDraftError.MessageIsNotADraft
         coEvery { draftRepository.openDraft(userId, messageId) } returns expected.left()
 
         // When

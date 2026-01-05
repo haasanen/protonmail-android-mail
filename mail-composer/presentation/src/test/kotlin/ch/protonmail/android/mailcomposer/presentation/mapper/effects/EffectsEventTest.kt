@@ -53,19 +53,14 @@ internal class EffectsEventTest(
         @Parameterized.Parameters(name = "{0}")
         fun data(): Collection<Array<Any>> = listOf(
             arrayOf(
+                "OnDraftCreationFailed to modification",
+                EffectsEvent.DraftEvent.OnDraftCreationFailed,
+                ComposerStateModifications(effectsModification = UnrecoverableError.NewDraftContentUnavailable)
+            ),
+            arrayOf(
                 "OnDraftLoadingFailed to modification",
                 EffectsEvent.DraftEvent.OnDraftLoadingFailed,
-                ComposerStateModifications(effectsModification = UnrecoverableError.DraftContentUnavailable)
-            ),
-            arrayOf(
-                "OnParentLoadingFailed to modification",
-                EffectsEvent.LoadingEvent.OnParentLoadingFailed,
-                ComposerStateModifications(effectsModification = UnrecoverableError.ParentMessageMetadata)
-            ),
-            arrayOf(
-                "OnSenderAddressLoadingFailed to modification",
-                EffectsEvent.LoadingEvent.OnSenderAddressLoadingFailed,
-                ComposerStateModifications(effectsModification = UnrecoverableError.InvalidSenderAddress)
+                ComposerStateModifications(effectsModification = UnrecoverableError.ExistingDraftContentUnavailable)
             ),
             arrayOf(
                 "AttachmentEventError to modification",

@@ -63,7 +63,7 @@ class DraftRepositoryImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val expected = OpenDraftError.OpenDraftFailed
+        val expected = OpenDraftError.MissingMessageBody
         coEvery { draftDataSource.open(userId, messageId) } returns expected.left()
 
         // When

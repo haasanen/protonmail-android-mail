@@ -29,8 +29,8 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
-import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError as DomainAddAttachmentError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError as DomainAddAttachmentError
 
 internal sealed interface EffectsEvent : ComposerStateEvent {
 
@@ -40,28 +40,17 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
 
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
             effectsModification = when (this) {
-                is OnDraftLoadingFailed -> UnrecoverableError.DraftContentUnavailable
+                is OnDraftCreationFailed -> UnrecoverableError.NewDraftContentUnavailable
+                is OnDraftLoadingFailed -> UnrecoverableError.ExistingDraftContentUnavailable
                 is OnDiscardDraftRequested -> ConfirmationsEffectsStateModification.DiscardDraftConfirmationRequested
                 is OnSenderValidationError -> ContentEffectsStateModifications.OnDraftSenderValidationError(this.error)
             }
         )
 
+        data object OnDraftCreationFailed : DraftEvent
         data object OnDraftLoadingFailed : DraftEvent
         data object OnDiscardDraftRequested : DraftEvent
         data class OnSenderValidationError(val error: DraftSenderValidationError) : DraftEvent
-    }
-
-    sealed interface LoadingEvent : EffectsEvent {
-
-        override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
-            effectsModification = when (this) {
-                OnParentLoadingFailed -> UnrecoverableError.ParentMessageMetadata
-                OnSenderAddressLoadingFailed -> UnrecoverableError.InvalidSenderAddress
-            }
-        )
-
-        data object OnParentLoadingFailed : LoadingEvent
-        data object OnSenderAddressLoadingFailed : LoadingEvent
     }
 
     sealed interface AttachmentEvent : EffectsEvent {
@@ -75,6 +64,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 is InlineAttachmentsAdded -> ContentEffectsStateModifications.OnInlineAttachmentsAdded(contentIds)
                 is StripInlineAttachmentFromBody ->
                     ContentEffectsStateModifications.OnInlineAttachmentRemoved(contentId)
+
                 is OnAttachFromOptionsRequest -> BottomSheetEffectsStateModification.ShowBottomSheet
                 is OnInlineImageActionsRequested -> BottomSheetEffectsStateModification.ShowBottomSheet
                 is RemoveAttachmentError -> RecoverableError.AttachmentRemove(error)

@@ -21,6 +21,10 @@ package ch.protonmail.android.mailcomposer.domain.model
 import ch.protonmail.android.mailcommon.domain.model.DataError
 
 sealed interface OpenDraftError {
-    data object OpenDraftFailed : OpenDraftError
+    data object CouldNotFindAddress : OpenDraftError
+    data object DraftDoesNotExist : OpenDraftError
+    data object MessageIsNotADraft : OpenDraftError
+    data object MissingMessageBody : OpenDraftError
+    data object ReplyOrForwardDraft : OpenDraftError
     data class Other(val error: DataError) : OpenDraftError
 }

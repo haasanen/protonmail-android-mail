@@ -407,7 +407,7 @@ class ComposerViewModel @AssistedInject constructor(
                     )
                 )
             }
-            .onLeft { emitNewStateFor(EffectsEvent.LoadingEvent.OnSenderAddressLoadingFailed) }
+            .onLeft { emitNewStateFor(EffectsEvent.DraftEvent.OnDraftCreationFailed) }
     }
 
     private suspend fun prefillForShareDraftAction(shareDraftAction: PrefillForShare) {
@@ -503,7 +503,7 @@ class ComposerViewModel @AssistedInject constructor(
                         )
                     )
                 }
-                .onLeft { emitNewStateFor(EffectsEvent.LoadingEvent.OnParentLoadingFailed) }
+                .onLeft { emitNewStateFor(EffectsEvent.DraftEvent.OnDraftCreationFailed) }
 
             is PrefillForShare -> {
                 prefillForNewDraft().onRight {

@@ -2,6 +2,7 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
@@ -41,7 +42,7 @@ class CreateEmptyDraftTest {
         // Given
         val userId = UserIdSample.Primary
         val action = DraftAction.Compose
-        val expected = OpenDraftError.OpenDraftFailed
+        val expected = OpenDraftError.Other(DataError.Local.Unknown)
         coEvery { draftRepository.createDraft(userId, action) } returns expected.left()
 
         // When
