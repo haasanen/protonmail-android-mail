@@ -106,6 +106,7 @@ import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.composer.DraftRecipientTestData
 import io.mockk.Called
 import io.mockk.Runs
+import io.mockk.called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
@@ -168,6 +169,7 @@ internal class ComposerViewModelTest {
     private val changeSenderAddress = mockk<ChangeSenderAddress>()
     private val composerRegistry = mockk<ActiveComposerRegistry> {
         every { this@mockk.register(any()) } just Runs
+        every { isActive(any()) } returns true
     }
     private val observeMessagePasswordChanged = mockk<ObserveMessagePasswordChanged> {
         every { this@mockk.invoke() } returns flowOf()
@@ -1452,6 +1454,39 @@ internal class ComposerViewModelTest {
         verify(exactly = 1) { sanitizePastedContent.invoke(input, PasteMimeType.PlainText) }
     }
 
+
+    @Test
+    fun `should not save draft when composer is marked as inactive during debounce window`() = runTest {
+        // Given
+        val expectedDraftBody = DraftBody("I'm a message body")
+        val expectedSubject = Subject("Test subject")
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        expectNoInputDraftMessageId()
+        expectInputDraftAction { DraftAction.Compose }
+        expectNoObservedMessageAttachments()
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        ignoreRecipientsUpdates()
+
+        // When
+        val viewModel = viewModel()
+
+        performInput(skipDebounce = false) {
+            viewModel.bodyTextField.edit { append(expectedDraftBody.value) }
+            viewModel.subjectTextField.edit { append(expectedSubject.value) }
+        }
+
+        // Simulate the composer being closed (onCleared unregisters the instance)
+        every { composerRegistry.isActive(any()) } returns false
+
+        advanceDebounce()
+
+        // Then
+        verify { updateRecipients wasNot called }
+        verify { storeDraftWithBodyMock wasNot called }
+        verify { storeDraftWithSubjectMock wasNot called }
+    }
 
     // This is both used to mock the result of the "composer init" in the cases where we
     // create a new draft (eg. Compose, Reply, ComposeTo...)

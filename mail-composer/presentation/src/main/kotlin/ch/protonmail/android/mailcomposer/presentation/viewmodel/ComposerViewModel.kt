@@ -284,7 +284,12 @@ class ComposerViewModel @AssistedInject constructor(
             }
             .launchIn(viewModelScope)
 
-        combinedFlow.debounce(timeout = 1.seconds).onEach { it ->
+        combinedFlow.debounce(timeout = 1.seconds).onEach {
+            if (!isComposerActive()) {
+                Timber.d("Skipping draft save - composer is not active")
+                return@onEach
+            }
+
             pendingStoreDraftJob = viewModelScope.launch(defaultDispatcher) {
                 Timber.d("Saving draft..")
 
