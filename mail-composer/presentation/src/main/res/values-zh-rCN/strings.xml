@@ -171,4 +171,6 @@
   <string name="composer_error_send_draft_too_many_attachments">无法发送草稿 - 附件数量超过限制</string>
   <string name="composer_error_send_draft_attachments_crypto_error">无法发送草稿 - 附件加密失败。</string>
   <string name="composer_expiration_time_learn_more">了解更多</string>
+  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
+  <string name="composer_sender_address_description">Choose Sender Address</string>
 </resources>

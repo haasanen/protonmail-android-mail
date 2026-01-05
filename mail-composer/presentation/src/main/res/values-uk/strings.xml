@@ -174,4 +174,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Неможливо надіслати чернетку: досягнуто ліміту вкладень</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Неможливо надіслати чернетку: не вдалося зашифрувати вкладення.</string>
   <string name="composer_expiration_time_learn_more">Докладніше</string>
+  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
+  <string name="composer_sender_address_description">Choose Sender Address</string>
 </resources>

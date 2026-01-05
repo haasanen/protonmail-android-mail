@@ -18,9 +18,9 @@
   -->
 <resources>
   <string name="spotlight_screen_version_text">Version %s</string>
-  <string name="spotlight_screen_title">Hvad der er nyt i Proton Mail</string>
+  <string name="spotlight_screen_title">Nyt i Proton Mail</string>
   <string name="spotlight_feature_item_discreet_icon_title">Diskret ikon</string>
-  <string name="spotlight_feature_item_discreet_icon_description">Behold standard Proton Mail-ikonen, eller skjul den med en generisk ikon for bedre privatlivsbeskyttelse.</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Behold standardikonet for Proton Mail, eller maskér den med et generisk ikon for at bedre privatlivsbeskyttelse.</string>
   <string name="spotlight_feature_item_tracking_protection_title">Beskyttelse mod sporing</string>
   <string name="spotlight_feature_item_tracking_protection_description">Se, hvem der forsøgte at overvåge dig med skjulte pixels og sporingslinks, og hvor mange forsøg der blev blokeret.</string>
   <string name="spotlight_feature_item_encryption_locks_title">Krypteringslåse</string>

@@ -43,8 +43,8 @@
   <string name="composer_error_store_draft_duplicate_recipient">Kan ikke gemme udkast - En eller flere modtagere er dubletter</string>
   <string name="composer_error_store_draft_recipient_group_name">Kan ikke gemme udkast – Ugyldigt modtagergruppenavn</string>
   <string name="composer_error_store_draft_invalid_recipient">Kan ikke gemme udkast - Ugyldig(e) modtager(e)</string>
-  <string name="composer_error_store_draft_message_not_a_draft">Kan ikke gemme udkast - Denne besked er ikke en udkast</string>
-  <string name="composer_error_store_draft_generic">Kan ikke gemme udkast - Der opstod en generisk fejl</string>
+  <string name="composer_error_store_draft_message_not_a_draft">Kan ikke gemme udkast - Denne besked er ikke et udkast</string>
+  <string name="composer_error_store_draft_generic">Kan ikke gemme udkastet - Der opstod en generisk fejl</string>
   <string name="composer_error_loading_draft">Indholdet af dette udkast er ikke tilgængelig på nuværende tidspunkt, og det er ikke muligt at redigere det.</string>
   <string name="composer_add_attachments_content_description">Tilføj vedhæftninger</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importér fra…</string>
@@ -90,7 +90,7 @@
   <string name="composer_sender_changed_dialog_confirm_button">Ok</string>
   <!-- Message sending without subject dialog -->
   <string name="composer_send_without_subject_dialog_title">Skriv</string>
-  <string name="composer_send_without_subject_dialog_text">Afsend besked uden emneindhold?</string>
+  <string name="composer_send_without_subject_dialog_text">Afsend besked uden emne?</string>
   <string name="composer_send_without_subject_dialog_confirm_button">Ja</string>
   <string name="composer_send_without_subject_dialog_reject_button">Nej</string>
   <!-- Message sending error dialog -->
@@ -130,7 +130,7 @@
   <string name="composer_remove_recipient_action_item">Fjern</string>
   <string name="composer_copy_recipient_action_item">Kopiér</string>
   <string name="schedule_send_content_description">Planlæg afsendelse</string>
-  <string name="composer_error_retrieving_schedule_send_options">Generering af tidspunkterne for at \"planlægge afsendelse\" mislykkede</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generering af tidspunkterne for at \"planlægge afsendelse\" mislykkedes</string>
   <string name="composer_schedule_send_content_description">Planlæg afsendelse</string>
   <string name="composer_schedule_send_tomorrow_title">I morgen</string>
   <string name="composer_schedule_send_monday_title">Mandag</string>
@@ -160,16 +160,18 @@
   <string name="composer_error_send_draft_invalid_sender">Deaktiveret eller ugyldig e-mailadresse. Kontroller, at adressen er gyldig og aktiv.</string>
   <string name="composer_error_send_draft_external_password_decrypt_error">Kunne ikke dekryptere ekstern krypteringsadgangskode</string>
   <string name="composer_error_send_draft_already_sent">Beskeden er allerede afsendt</string>
-  <string name="composer_error_send_draft_message_does_not_exist">Udkast ikke fundet. Du kan have sendt eller kasseret det allerede.</string>
+  <string name="composer_error_send_draft_message_does_not_exist">Udkastet ikke fundet. Du kan have sendt eller kasseret det allerede.</string>
   <string name="composer_error_send_draft_message_too_large">Besked er for stor til at sende. Reducér størrelsen på dine vedhæftninger.</string>
   <string name="composer_error_send_draft_attachments_error">Vedhæftning mangler. Upload igen.</string>
   <string name="composer_error_send_draft_attachments_conversion_error">Kunne ikke konvertere vedhæftning. Upload igen.</string>
   <string name="composer_error_send_draft_invalid_recipient">Nogle modtagere er ugyldige, kontrollér modtagerne og prøv igen.</string>
-  <string name="composer_error_send_draft_schedule_send_error">Det planlagte afsendelsestidspunkt er passeret. Gå til udkast for at sende den eller planlægge det igen.</string>
+  <string name="composer_error_send_draft_schedule_send_error">Det planlagte afsendelsestidspunkt for dette udkast er passeret. Gå til Udkast for at sende det eller planlægge det igen.</string>
   <string name="composer_error_send_draft_expiration_time_too_soon">Beskedens udløbstid er for kort.</string>
   <string name="composer_error_send_draft_package_error">Problem med at sende besked. Prøv igen.</string>
   <string name="composer_error_send_draft_attachment_too_large">Kan ikke sende udkast - Vedhæftninger overskrider størrelsesgrænsen</string>
-  <string name="composer_error_send_draft_too_many_attachments">Kan ikke sende kladde - Vedhæftningsgrænse nået</string>
-  <string name="composer_error_send_draft_attachments_crypto_error">Kan ikke sende kladde - Vedhæftningskryptering mislykkedes.</string>
+  <string name="composer_error_send_draft_too_many_attachments">Kan ikke sende udkast - Vedhæftningsgrænse nået</string>
+  <string name="composer_error_send_draft_attachments_crypto_error">Kan ikke sende udkast - Vedhæftningskryptering mislykkedes.</string>
   <string name="composer_expiration_time_learn_more">Få mere at vide</string>
+  <string name="composer_enter_recipient_content_description">Indtast en modtager</string>
+  <string name="composer_sender_address_description">Vælg afsenderadresse</string>
 </resources>

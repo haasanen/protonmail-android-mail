@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">No se puede enviar el borrador - Se ha alcanzado el límite de archivos adjuntos</string>
   <string name="composer_error_send_draft_attachments_crypto_error">No se puede enviar el borrador - El cifrado del archivo adjunto falló.</string>
   <string name="composer_expiration_time_learn_more">Más información</string>
+  <string name="composer_enter_recipient_content_description">Escribe un destinatario</string>
+  <string name="composer_sender_address_description">Elegir dirección de remitente</string>
 </resources>

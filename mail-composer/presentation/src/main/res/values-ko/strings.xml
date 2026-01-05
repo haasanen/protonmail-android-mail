@@ -171,4 +171,6 @@
   <string name="composer_error_send_draft_too_many_attachments">초안을 보낼 수 없습니다 - 첨부 파일 제한에 도달했습니다</string>
   <string name="composer_error_send_draft_attachments_crypto_error">초안을 보낼 수 없음 - 첨부 파일 암호화에 실패했습니다.</string>
   <string name="composer_expiration_time_learn_more">자세히 알아보기</string>
+  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
+  <string name="composer_sender_address_description">Choose Sender Address</string>
 </resources>

@@ -93,7 +93,7 @@
     <item quantity="other">Beskeder flyttet til %s</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">Tøm papirkurven</string>
-  <string name="mailbox_action_button_clear_spam">Tøm spam</string>
+  <string name="mailbox_action_button_clear_spam">Slet spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Opgradér for automatisk at slette beskeder, der har været i papirkurv eller spam i over 30 dage</string>
   <string name="mailbox_action_clear_trash_spam_upsell_cta">Opgradér til automatisk sletning</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Beskeder i papirkurven og spam i mere end 30 dage slettes automatisk.</string>
@@ -114,7 +114,7 @@
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Advarsel</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Lagerpladsen på din Proton-konto er mere end 80% opbrugt. Frigør plads eller opgrader til mere lagerplads</string>
-  <string name="storage_second_limit_exceeded_warning_dialog_text">Lageret på din Proton-konto er mere end 90 % fyldt. Frigør plads, eller opgrader for at få mere lagerplads.</string>
+  <string name="storage_second_limit_exceeded_warning_dialog_text">Lagerpladsen på din Proton-konto er mere end 90 % fyldt. Frigør plads, eller opgrader for at få mere lagerplads.</string>
   <string name="storage_limit_warning_dialog_do_not_remind_button">Påmind mig ikke igen</string>
   <string name="storage_limit_warning_dialog_confirm_button">Ok</string>
   <!--    Storage Quota Over Warning-->

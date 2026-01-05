@@ -38,7 +38,7 @@
   </plurals>
   <string name="hide_details">Skjul detaljer</string>
   <string name="undisclosed_recipients">…</string>
-  <string name="collapsed_header_draft">(Kladde)</string>
+  <string name="collapsed_header_draft">(Udkast)</string>
   <string name="error_mark_as_read_failed">Markering som læst mislykkedes. Prøv igen.</string>
   <string name="error_mark_as_unread_failed">Markering som ulæst mislykkedes. Prøv igen.</string>
   <string name="error_star_operation_failed">Tilføjelse af stjerne mislykkedes. Prøv igen.</string>
@@ -84,7 +84,7 @@ igen.</string>
   <string name="message_blocked_sender_banner_text">Denne afsender er blevet blokeret tidligere.</string>
   <string name="message_blocked_sender_button_text">Fjern blokering</string>
   <string name="message_expiration_banner_text">Denne besked udløber om %1$s</string>
-  <string name="message_auto_delete_banner_text">Denne besked vil slettes automatisk om %1$s</string>
+  <string name="message_auto_delete_banner_text">Denne besked slettes automatisk om %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Du er ved at forlade appen og fortsætte til:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Spørg ikke igen</string>
@@ -183,4 +183,15 @@ igen.</string>
   <string name="detail_error_loading_single_message">Indlæsning af besked mislykkedes</string>
   <string name="error_downloading_image">Kunne ikke downloade billede</string>
   <string name="image_downloaded_successfully">Billede downloadet</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">Beskedoverskrifter</string>
+  <string name="raw_message_data_html_title">Besked-HTML</string>
+  <string name="raw_message_data_close_button_content_description">Luk</string>
+  <string name="raw_message_data_more_button_content_description">Mere</string>
+  <string name="raw_message_data_download_action">Download</string>
+  <string name="raw_message_data_copy_action">Kopiér</string>
+  <string name="raw_message_data_learn_more_action">Få mere at vide</string>
+  <string name="raw_message_data_error">Fejl ved indlæsning af data</string>
+  <string name="raw_message_data_successful_download">Download fuldført</string>
+  <string name="raw_message_data_failed_download">Download mislykkedes</string>
 </resources>

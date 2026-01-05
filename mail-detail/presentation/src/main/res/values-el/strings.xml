@@ -182,4 +182,15 @@
   <string name="detail_error_loading_single_message">Αποτυχία φόρτωσης μηνύματος</string>
   <string name="error_downloading_image">Αποτυχία λήψης εικόνας</string>
   <string name="image_downloaded_successfully">Η εικόνα λήφθηκε</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">Κεφαλίδες μηνύματος</string>
+  <string name="raw_message_data_html_title">HTML μηνύματος</string>
+  <string name="raw_message_data_close_button_content_description">Κλείσιμο</string>
+  <string name="raw_message_data_more_button_content_description">Περισσότερα</string>
+  <string name="raw_message_data_download_action">Λήψη</string>
+  <string name="raw_message_data_copy_action">Αντιγραφή</string>
+  <string name="raw_message_data_learn_more_action">Μάθετε περισσότερα</string>
+  <string name="raw_message_data_error">Σφάλμα κατά τη φόρτωση δεδομένων</string>
+  <string name="raw_message_data_successful_download">Η λήψη ολοκληρώθηκε</string>
+  <string name="raw_message_data_failed_download">Η λήψη απέτυχε</string>
 </resources>

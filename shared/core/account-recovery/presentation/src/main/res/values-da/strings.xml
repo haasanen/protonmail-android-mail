@@ -50,7 +50,7 @@
   <string name="account_recovery_info_grace_description">For at sikre, at det virkelig er dig, der forsøger at nulstille din adgangskode, venter vi 72 timer, før vi godkender anmodningen.\n\nHvis du ikke bad om at nulstille din adgangskode, så annullér denne anmodning nu.</string>
   <string name="account_recovery_info_cancelled_title">Nulstilling af adgangskode annulleret</string>
   <string name="account_recovery_info_cancelled_subtitle">En anmodning om nulstilling af adgangskode blev foretaget %1s.</string>
-  <string name="account_recovery_info_cancelled_description">Hvis De ikke genkender denne anmodning, kan det betyde, at en anden har adgang til din Proton-konto.\n\nSikr din konto nu.</string>
+  <string name="account_recovery_info_cancelled_description">Hvis du ikke genkender denne anmodning, kan det betyde, at en anden har adgang til din Proton-konto.\n\nSikr din konto nu.</string>
   <string name="account_recovery_info_insecure_title">Nulstilling af adgangskode tilgængelig</string>
   <string name="account_recovery_info_insecure_subtitle">Du kan nu nulstille din adgangskode. Nulstilling af adgangskode er tilgængelig indtil %1s.</string>
   <string name="account_recovery_info_insecure_description">Har du ikke anmodet om det?\n\nHvis du ikke har bedt om at få nulstillet din adgangskode, så annuller anmodningen nu.</string>

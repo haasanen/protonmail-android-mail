@@ -17,15 +17,15 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="spotlight_screen_version_text">Version %s</string>
-  <string name="spotlight_screen_title">What’s new in Proton Mail</string>
-  <string name="spotlight_feature_item_discreet_icon_title">Discreet icon</string>
-  <string name="spotlight_feature_item_discreet_icon_description">Keep the default Proton Mail icon or disguise it with a generic one for greater privacy.</string>
-  <string name="spotlight_feature_item_tracking_protection_title">Tracking protection</string>
-  <string name="spotlight_feature_item_tracking_protection_description">See who tried to monitor you with hidden pixels and tracking links, and how many attempts were blocked.</string>
-  <string name="spotlight_feature_item_encryption_locks_title">Encryption locks</string>
-  <string name="spotlight_feature_item_encryption_locks_description">Use the lock icons to identify and verify the type of encryption protecting your messages.</string>
-  <string name="spotlight_feature_item_headers_html_title">View headers and HTML</string>
-  <string name="spotlight_feature_item_headers_html_description">Inspect suspicious messages to confirm their authenticity and uncover any hidden tracking elements.</string>
-  <string name="spotlight_screen_got_it">Got it</string>
+  <string name="spotlight_screen_version_text">Versiunea %s</string>
+  <string name="spotlight_screen_title">Noutăți în Proton Mail</string>
+  <string name="spotlight_feature_item_discreet_icon_title">Pictogramă discretă</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Păstrați pictograma implicită a Proton Mail sau deghizați-o cu una generică pentru o confidențialitate sporită.</string>
+  <string name="spotlight_feature_item_tracking_protection_title">Protecție împotriva urmăririi</string>
+  <string name="spotlight_feature_item_tracking_protection_description">Vedeți cine a încercat să vă monitorizeze cu pixeli ascunși și legături web de urmărire și câte încercări au fost blocate.</string>
+  <string name="spotlight_feature_item_encryption_locks_title">Lacăte de criptare</string>
+  <string name="spotlight_feature_item_encryption_locks_description">Utilizați pictogramele de tip lacăt pentru a identifica și verifica tipul de criptare care vă protejează mesajele.</string>
+  <string name="spotlight_feature_item_headers_html_title">Vizualizați antetele și codul HTML</string>
+  <string name="spotlight_feature_item_headers_html_description">Inspectați mesaje suspecte pentru a confirma autenticitatea acestora și a descoperi eventualele elemente de urmărire ascunse.</string>
+  <string name="spotlight_screen_got_it">Am înțeles</string>
 </resources>

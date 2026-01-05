@@ -174,4 +174,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Koncept nelze odeslat - Dosažen limit počtu příloh</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Koncept nelze odeslat - Šifrování přílohy selhalo.</string>
   <string name="composer_expiration_time_learn_more">Více informací</string>
+  <string name="composer_enter_recipient_content_description">Zadejte příjemce</string>
+  <string name="composer_sender_address_description">Vyberte adresu odesílatele</string>
 </resources>

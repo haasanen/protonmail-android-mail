@@ -153,18 +153,18 @@
   <string name="mail_settings_custom_toolbar_save_error">Nie je možné uložiť akcie panela nástrojov. Skúste to znova, prosím.</string>
   <string name="mail_settings_custom_toolbar_read_error">Nie je možné čítať akcie panela nástrojov. Skúste to znova, prosím.</string>
   <!-- Custom App Icon -->
-  <string name="settings_app_icon_toolbar_title">App icon</string>
-  <string name="settings_app_icon_name_default">Default</string>
-  <string name="settings_app_icon_name_discreet">Discreet</string>
-  <string name="settings_app_icon_title_default">App icon - default</string>
-  <string name="settings_app_icon_title_discreet">App icon - discreet</string>
-  <string name="settings_app_icon_description">Keep the default Proton Mail icon, or disguise it with a more discreet one for extra privacy.\nNotifications will always show the Proton Mail name and icon.</string>
-  <string name="settings_app_icon_learn_more">Learn more…</string>
-  <string name="settings_app_icon_discreet_toggle">Discreet app icon</string>
-  <string name="settings_app_icon_confirmation_title">Change app icon?</string>
-  <string name="settings_app_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
-  <string name="settings_app_icon_action_cancel">Cancel</string>
-  <string name="settings_app_icon_change_icon">Change icon</string>
+  <string name="settings_app_icon_toolbar_title">Ikona aplikácie</string>
+  <string name="settings_app_icon_name_default">Predvolená</string>
+  <string name="settings_app_icon_name_discreet">Nenápadná</string>
+  <string name="settings_app_icon_title_default">Ikona aplikácie - predvolená</string>
+  <string name="settings_app_icon_title_discreet">Ikona aplikácie - nenápadná</string>
+  <string name="settings_app_icon_description">Ponechajte predvolenú ikonu Proton Mail alebo ju zamaskujte diskrétnejšou pre väčšie súkromie.\nNotifikácie vždy zobrazia názov a ikonu Proton Mail.</string>
+  <string name="settings_app_icon_learn_more">Zistiť viac…</string>
+  <string name="settings_app_icon_discreet_toggle">Nenápadná ikona aplikácie</string>
+  <string name="settings_app_icon_confirmation_title">Zmeniť ikonu aplikácie?</string>
+  <string name="settings_app_icon_confirmation_details">Aplikácia Proton Mail sa zatvorí a všetky oznámenia budú zrušené.\n\nAk chcete aplikáciu Proton Mail znovu spustiť, stačí kliknúť na novú ikonu aplikácie.</string>
+  <string name="settings_app_icon_action_cancel">Zrušiť</string>
+  <string name="settings_app_icon_change_icon">Zmeniť ikonu</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Vyskytla sa chyba. Skúste znova.</string>
 </resources>

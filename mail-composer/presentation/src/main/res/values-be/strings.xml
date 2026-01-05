@@ -174,4 +174,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Немагчыма адправіць чарнавік. Дасягнута абмежаванне па колькасці далучэнняў</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Немагчыма адправіць чарнавік. Адбыўся збой пры шыфраванні далучэння.</string>
   <string name="composer_expiration_time_learn_more">Даведацца больш</string>
+  <string name="composer_enter_recipient_content_description">Увядзіце атрымальніка</string>
+  <string name="composer_sender_address_description">Выберыце адрас адпраўніка</string>
 </resources>

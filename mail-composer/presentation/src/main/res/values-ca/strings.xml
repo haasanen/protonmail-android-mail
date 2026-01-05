@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">No s\'ha pogut enviar l\'esborrany: s\'ha assolit el límit de fitxers adjunts</string>
   <string name="composer_error_send_draft_attachments_crypto_error">No s\'ha pogut enviar l\'esborrany: el xifratge dels fitxers adjunts ha fallat</string>
   <string name="composer_expiration_time_learn_more">Més informació</string>
+  <string name="composer_enter_recipient_content_description">Introduïu un destinatari</string>
+  <string name="composer_sender_address_description">Trieu l\'adreça del remitent</string>
 </resources>

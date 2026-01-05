@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Nem sikerült elküldeni a piszkozatot - Túl sok melléklet</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Nem sikerült elküldeni a piszkozatot - A melléklet titkosítása meghiúsult.</string>
   <string name="composer_expiration_time_learn_more">További információk</string>
+  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
+  <string name="composer_sender_address_description">Choose Sender Address</string>
 </resources>

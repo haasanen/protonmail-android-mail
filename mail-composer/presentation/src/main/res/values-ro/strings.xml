@@ -173,4 +173,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Ciorna nu se poate trimite - Limita de atașamente a fost atinsă.</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Ciorna nu se poate trimite - Criptarea atașamentului a eșuat.</string>
   <string name="composer_expiration_time_learn_more">Detalii</string>
+  <string name="composer_enter_recipient_content_description">Introduceți un destinatar</string>
+  <string name="composer_sender_address_description">Alegeți adresa expeditorului</string>
 </resources>

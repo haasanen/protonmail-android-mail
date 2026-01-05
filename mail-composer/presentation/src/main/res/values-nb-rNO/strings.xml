@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Kan ikke sende utkast – vedleggsgrensen er nådd</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Kan ikke sende utkast – vedleggskryptering mislyktes.</string>
   <string name="composer_expiration_time_learn_more">Lær mer</string>
+  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
+  <string name="composer_sender_address_description">Choose Sender Address</string>
 </resources>

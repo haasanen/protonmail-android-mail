@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Kan concept niet opslaan - Bijlagelimiet bereikt</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Kan concept niet verzenden - Versleuteling van bijlage mislukt.</string>
   <string name="composer_expiration_time_learn_more">Meer informatie</string>
+  <string name="composer_enter_recipient_content_description">Voer een ontvanger in</string>
+  <string name="composer_sender_address_description">Kies afzenderadres</string>
 </resources>

@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Invio della bozza non riuscito. Limite di allegati superato.</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Invio della bozza non riuscito. Crittografia dell\'allegato non riuscita.</string>
   <string name="composer_expiration_time_learn_more">Scopri di più</string>
+  <string name="composer_enter_recipient_content_description">Inserisci un destinatario</string>
+  <string name="composer_sender_address_description">Scegli l\'indirizzo del mittente</string>
 </resources>

@@ -34,7 +34,7 @@
   <string name="padlocks_pgp_e2ee_failed_verification">PGP end-to-end versleuteld met mislukte verificatie</string>
   <string name="padlocks_pgp_e2ee_failed_verification_description">Dit bericht is beschermd met PGP end-to-end encryptie. Het wordt versleuteld op het apparaat van de afzender en kan alleen worden ontsleuteld door de ontvanger. \n\nDe afzender verificatie is echter mislukt. Bevestig de authenticiteit van het bericht met uw contact.</string>
   <string name="padlocks_pgp_signed">PGP ondertekend bericht</string>
-  <string name="padlocks_pgp_signed_description">Dit bericht is niet verzonden met end-to-end encryptie, maar is opgeslagen op Proton servers met zero-access encryptie. \n\nU hebt het ook digitaal ondertekend, wat de ontvanger bewijst dat uw bericht echt is en niet onrechtmatig is bewerkt.</string>
+  <string name="padlocks_pgp_signed_description">Dit bericht is niet verzonden met end-to-end encryptie, maar is opgeslagen op Proton servers met zero-access encryptie. \n\nU heeft het ook digitaal ondertekend, wat de ontvanger bewijst dat uw bericht echt is en niet onrechtmatig is bewerkt.</string>
   <string name="padlocks_pgp_signed_verified_contact">PGP versleuteld bericht van geverifieerde afzender</string>
   <string name="padlocks_pgp_signed_verified_contact_description">Dit bericht is niet verzonden met end-to-end encryptie, maar is opgeslagen op Proton servers met zero-access encryptie. \n\nWe hebben ook geverifieerd dat het bericht is verzonden door de opgegeven afzender.</string>
   <string name="padlocks_pgp_signed_failed_verification">PGP ondertekend bericht met mislukte verificatie</string>

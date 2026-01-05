@@ -22,12 +22,12 @@
   <string name="show_details">Näytä tiedot</string>
   <string name="trackers_protection_no_trackers_detected">Seurannan suojaus: seurantoja ei havaittu</string>
   <string name="tracking_protection">Seurannan suojaus</string>
-  <string name="tracking_protection_description">We actively protect you from tracking. Here you can view the spy pixels we blocked and the tracking links we cleaned in this message.</string>
+  <string name="tracking_protection_description">Suojaamme sinua aktiivisesti seurannalta. Täällä voit tarkastella tässä viestissä estettyjä vakoilupikseleitä ja puhdistettuja seurantalinkkejä.</string>
   <string name="tracking_protection_learn_more">Lue lisää...</string>
   <string name="original">alkuperäinen</string>
   <string name="cleaned">Puhdistettu</string>
-  <string name="action_close_dialog_button">Close</string>
-  <string name="got_it">Got it</string>
+  <string name="action_close_dialog_button">Sulje</string>
+  <string name="got_it">Selvä</string>
   <plurals name="number_of_blocked_trackers">
     <item quantity="one">%s seuranta estetty</item>
     <item quantity="other">%s seurantaa estetty</item>

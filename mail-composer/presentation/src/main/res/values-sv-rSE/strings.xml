@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Unable to send draft - Attachment limit reached</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Kan inte skicka utkast – Bilagekrypteringen misslyckades.</string>
   <string name="composer_expiration_time_learn_more">Lär dig mer</string>
+  <string name="composer_enter_recipient_content_description">Ange en mottagare</string>
+  <string name="composer_sender_address_description">Välj avsändaradress</string>
 </resources>

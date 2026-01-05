@@ -182,4 +182,15 @@
   <string name="detail_error_loading_single_message">Misslyckades ladda meddelande</string>
   <string name="error_downloading_image">Misslyckades att ladda ner bild</string>
   <string name="image_downloaded_successfully">Bild nedladdad</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">Meddelanderubriker</string>
+  <string name="raw_message_data_html_title">Meddelande-HTML</string>
+  <string name="raw_message_data_close_button_content_description">Stäng</string>
+  <string name="raw_message_data_more_button_content_description">Mer</string>
+  <string name="raw_message_data_download_action">Ladda ner</string>
+  <string name="raw_message_data_copy_action">Kopiera</string>
+  <string name="raw_message_data_learn_more_action">Lär dig mer</string>
+  <string name="raw_message_data_error">Fel vid laddning av data</string>
+  <string name="raw_message_data_successful_download">Nedladdning slutförd</string>
+  <string name="raw_message_data_failed_download">Nedladdning misslyckades</string>
 </resources>

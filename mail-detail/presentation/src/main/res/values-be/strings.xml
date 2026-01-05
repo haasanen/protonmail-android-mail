@@ -188,4 +188,15 @@
   <string name="detail_error_loading_single_message">Не ўдалося загрузіць паведамленне</string>
   <string name="error_downloading_image">Не ўдалося спампаваць відарыс</string>
   <string name="image_downloaded_successfully">Відарыс спампаваны</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">Загалоўкі паведамлення</string>
+  <string name="raw_message_data_html_title">Паведамленне HTML</string>
+  <string name="raw_message_data_close_button_content_description">Закрыць</string>
+  <string name="raw_message_data_more_button_content_description">Больш</string>
+  <string name="raw_message_data_download_action">Спампаваць</string>
+  <string name="raw_message_data_copy_action">Скапіяваць</string>
+  <string name="raw_message_data_learn_more_action">Даведацца больш</string>
+  <string name="raw_message_data_error">Памылка загрузкі даных</string>
+  <string name="raw_message_data_successful_download">Спампоўванне завершана</string>
+  <string name="raw_message_data_failed_download">Збой спампоўвання</string>
 </resources>

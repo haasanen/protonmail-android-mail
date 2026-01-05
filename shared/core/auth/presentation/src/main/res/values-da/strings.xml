@@ -99,7 +99,7 @@
   <string name="auth_signup_congratulations_title">Tillykke!</string>
   <string name="auth_signup_start_using_proton">Begynd at bruge Proton</string>
   <string name="auth_signup_validation_password">Adgangskode må ikke være tom.</string>
-  <string name="auth_signup_validation_passwords_do_not_match">Adgangskoder matcher ikke.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Adgangskoder er ikke ens.</string>
   <string name="auth_signup_validation_password_input_invalid">Ugyldigt adgangskodeinput.</string>
   <string name="auth_signup_validation_username">Indtast et brugernavn</string>
   <string name="auth_signup_validation_email">E-mail må ikke være tom.</string>
@@ -108,7 +108,7 @@
   <string name="auth_signup_username_unavailable_error">Brugernavn er allerede taget. Vælg et andet brugernavn.</string>
   <string name="auth_signup_recovery_email_validation_error">E-mailbekræftelse mislykkedes</string>
   <string name="auth_signup_recovery_phone_validation_error">Validering af telefonnummer mislykkedes</string>
-  <string name="auth_signup_createpassword_error_password_not_equal">Adgangskoder er ikke ens. Prøv venligst igen.</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Adgangskoder er ikke ens. Prøv igen.</string>
   <string name="auth_signup_general_error">Noget gik galt. Prøv igen.</string>
   <string name="auth_signup_countries_search">Søg land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kunne ikke konfigurere brugeren.</string>

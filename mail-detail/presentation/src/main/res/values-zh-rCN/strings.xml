@@ -179,4 +179,15 @@
   <string name="detail_error_loading_single_message">邮件加载失败</string>
   <string name="error_downloading_image">下载图片失败</string>
   <string name="image_downloaded_successfully">图片已下载</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">Message headers</string>
+  <string name="raw_message_data_html_title">Message HTML</string>
+  <string name="raw_message_data_close_button_content_description">Close</string>
+  <string name="raw_message_data_more_button_content_description">More</string>
+  <string name="raw_message_data_download_action">Download</string>
+  <string name="raw_message_data_copy_action">Copy</string>
+  <string name="raw_message_data_learn_more_action">Learn more</string>
+  <string name="raw_message_data_error">Error loading data</string>
+  <string name="raw_message_data_successful_download">Download completed</string>
+  <string name="raw_message_data_failed_download">Download failed</string>
 </resources>

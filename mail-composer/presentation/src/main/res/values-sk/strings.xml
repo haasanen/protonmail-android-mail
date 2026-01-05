@@ -174,4 +174,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Koncept nie je možné odoslať – bol dosiahnutý limit príloh.</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Koncept nie je možné odoslať – šifrovanie prílohy zlyhalo.</string>
   <string name="composer_expiration_time_learn_more">Zistiť viac</string>
+  <string name="composer_enter_recipient_content_description">Zadajte príjemcu</string>
+  <string name="composer_sender_address_description">Vyberte adresu odosielateľa</string>
 </resources>

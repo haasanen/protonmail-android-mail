@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Αδυναμία αποστολής πρόχειρου - Τα όριο συνημμένων έχει επιτευχθεί</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Αδυναμία αποστολής πρόχειρου - Η κρυπτογράφηση του συνημμένου απέτυχε.</string>
   <string name="composer_expiration_time_learn_more">Μάθετε περισσότερα</string>
+  <string name="composer_enter_recipient_content_description">Εισάγετε έναν παραλήπτη</string>
+  <string name="composer_sender_address_description">Επιλέξτε Διεύθυνση Αποστολέα</string>
 </resources>

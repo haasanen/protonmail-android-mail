@@ -23,7 +23,7 @@
   <string name="spotlight_feature_item_discreet_icon_description">Behold Proton Mail-standardikonet, eller skjul det med et generisk ikon for økt personvern.</string>
   <string name="spotlight_feature_item_tracking_protection_title">Sporingsbeskyttelse</string>
   <string name="spotlight_feature_item_tracking_protection_description">Se hvem som prøvde å overvåke deg med skjulte piksler og sporingskoblinger, og hvor mange forsøk som ble blokkert.</string>
-  <string name="spotlight_feature_item_encryption_locks_title">Krypteringslås</string>
+  <string name="spotlight_feature_item_encryption_locks_title">Krypteringslåser</string>
   <string name="spotlight_feature_item_encryption_locks_description">Bruk låsikonene til å identifisere og verifisere krypteringstypen som beskytter meldingene dine.</string>
   <string name="spotlight_feature_item_headers_html_title">Vis overskrifter og HTML</string>
   <string name="spotlight_feature_item_headers_html_description">Inspiser mistenkelige meldinger for å bekrefte deres ekthet og avsløre eventuelle skjulte sporingskomponenter.</string>

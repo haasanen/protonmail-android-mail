@@ -174,4 +174,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Osnutka ni mogoče poslati – Doseženo je največje dovoljeno število priponk</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Osnutka ni mogoče poslati – Šifriranje priponke ni uspelo.</string>
   <string name="composer_expiration_time_learn_more">Več o tem</string>
+  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
+  <string name="composer_sender_address_description">Choose Sender Address</string>
 </resources>

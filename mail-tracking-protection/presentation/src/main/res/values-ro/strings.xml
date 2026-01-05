@@ -22,12 +22,12 @@
   <string name="show_details">Afișare detalii</string>
   <string name="trackers_protection_no_trackers_detected">Protecție împotriva urmăririi: nu s-au detectat unelte de urmărire.</string>
   <string name="tracking_protection">Protecție împotriva urmăririi</string>
-  <string name="tracking_protection_description">We actively protect you from tracking. Here you can view the spy pixels we blocked and the tracking links we cleaned in this message.</string>
+  <string name="tracking_protection_description">Vă protejăm în mod activ împotriva urmăririi. Aici puteți vizualiza pixelii-spion pe care i-am blocat și legăturile web de urmărire pe care le-am curățat în acest mesaj.</string>
   <string name="tracking_protection_learn_more">Detalii...</string>
   <string name="original">original</string>
   <string name="cleaned">Curățat</string>
-  <string name="action_close_dialog_button">Close</string>
-  <string name="got_it">Got it</string>
+  <string name="action_close_dialog_button">Închidere</string>
+  <string name="got_it">Am înțeles</string>
   <plurals name="number_of_blocked_trackers">
     <item quantity="one">Unelte de urmărire blocate: %s</item>
     <item quantity="few">Unelte de urmărire blocate: %s</item>

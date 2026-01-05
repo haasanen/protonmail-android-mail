@@ -171,4 +171,6 @@
   <string name="composer_error_send_draft_too_many_attachments">下書きを送信できません - 添付ファイル数の上限に達しました</string>
   <string name="composer_error_send_draft_attachments_crypto_error">下書きを送信できません - 添付ファイルの暗号化に失敗しました。</string>
   <string name="composer_expiration_time_learn_more">より詳しく</string>
+  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
+  <string name="composer_sender_address_description">Choose Sender Address</string>
 </resources>

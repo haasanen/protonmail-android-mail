@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="padlocks_stored_with_zero_access_encryption_summary">Uloženo s šifrováním s nulovým přístupem</string>
-  <string name="padlocks_stored_with_zero_access_encryption_description">Tato zpráva je uložena ve vaší e-mailové schránce s šifrováním s nulovým přístupem. Ani Proton, ani nikdo jiný ji nemůže přečíst. \n\nAvšak odesílatel nebo příjemce, který nepoužívá Proton Mail, může mít nezašifrovanou kopii uloženou na svém e-mailovém serveru.</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">Tato zpráva je uložena ve vaší e-mailové schránce s šifrováním s nulovým přístupem. Ani Proton, ani nikdo jiný ji nemůže přečíst. \n\nOdesílatel nebo příjemce, který nepoužívá Proton Mail, však může mít nezašifrovanou kopii uloženou na svém e-mailovém serveru.</string>
   <string name="padlocks_proton_e2ee">Koncově šifrovaná zpráva</string>
   <string name="padlocks_proton_e2ee_description">Stejně jako všechny zprávy je uložena na serverech Protonu pomocí šifrování s nulovým přístupem.</string>
   <string name="padlocks_proton_e2ee_verified_sender">Koncově šifrováno aplikací Proton od ověřeného odesílatele</string>
@@ -26,18 +26,18 @@
   <string name="padlocks_proton_e2ee_failed_verification">Koncově šifrováno aplikací Proton s neúspěšným ověřením</string>
   <string name="padlocks_proton_e2ee_failed_verification_description">Tato zpráva je chráněna automatickým koncovým šifrováním aplikací Proton. Ověření odesílatele však selhalo. \nPotvrďte prosím pravost zprávy u svého kontaktu.</string>
   <string name="padlocks_pgp_e2ee">PGP koncově šifrované</string>
-  <string name="padlocks_pgp_e2ee_description">Tato zpráva je chráněna PGP koncovým šifrováním. Je zašifrována na zařízení odesílatele a může být dešifrována pouze příjemcem. \n\nStejně jako všechny zprávy je uložena na serverech Proton s použitím šifrování s nulovým přístupem.</string>
+  <string name="padlocks_pgp_e2ee_description">Tato zpráva je chráněna PGP koncovým šifrováním. Je zašifrována na zařízení odesílatele a může být dešifrována pouze příjemcem. \n\nStejně jako všechny zprávy je uložena na serverech Protonu pomocí šifrování s nulovým přístupem.</string>
   <string name="padlocks_pgp_e2ee_signed">PGP koncově šifrované a podepsané</string>
-  <string name="padlocks_pgp_e2ee_signed_description">Tato zpráva je chráněna PGP koncovým šifrováním. Je zašifrována na zařízení odesílatele a může být dešifrována pouze příjemcem. \n\nDále podpis dokazuje příjemci, že vaše zpráva je pravá a nebyla pozměněna bez dovolení.</string>
-  <string name="padlocks_pgp_e2ee_verified_contact">PGP koncově šifrováno od ověřeného kontaktu</string>
-  <string name="padlocks_pgp_e2ee_verified_contact_description">Tato zpráva je chráněna PGP koncovým šifrováním. Je zašifrována na zařízení odesílatele a může být dešifrována pouze příjemcem. \n\nDále jsme ověřili, že zpráva byla odeslána uvedeným odesílatelem.</string>
-  <string name="padlocks_pgp_e2ee_failed_verification">PGP koncově šifrováno s neúspěšným ověřením</string>
+  <string name="padlocks_pgp_e2ee_signed_description">Tato zpráva je chráněna PGP koncovým šifrováním. Je zašifrována na zařízení odesílatele a může být dešifrována pouze příjemcem. \n\nPodpis přitom dokazuje příjemci, že vaše zpráva je pravá a nebyla neoprávněně pozměněna.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">PGP koncově šifrované od ověřeného kontaktu</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">Tato zpráva je chráněna PGP koncovým šifrováním. Je zašifrována na zařízení odesílatele a může být dešifrována pouze příjemcem. \n\nOvěřili jsme také, že zpráva byla odeslána uvedeným odesílatelem.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">PGP koncově šifrované s neúspěšným ověřením</string>
   <string name="padlocks_pgp_e2ee_failed_verification_description">Tato zpráva je chráněna PGP koncovým šifrováním. Je zašifrována na zařízení odesílatele a může být dešifrována pouze příjemcem. \n\nOvěření odesílatele však selhalo. Potvrďte prosím pravost zprávy u svého kontaktu.</string>
   <string name="padlocks_pgp_signed">PGP podepsaná zpráva</string>
-  <string name="padlocks_pgp_signed_description">Tato zpráva nebyla odeslána s koncovým šifrováním, ale je uložena na serverech Proton s šifrováním s nulovým přístupem. \n\nTaké jste ji digitálně podepsali, což příjemci dokazuje, že vaše zpráva je pravá a nebyla pozměněna bez dovolení.</string>
-  <string name="padlocks_pgp_signed_verified_contact">PGP-podepsaná zpráva od ověřeného odesílatele</string>
-  <string name="padlocks_pgp_signed_verified_contact_description">Tato zpráva nebyla odeslána s koncovým šifrováním, ale je uložena na serverech Proton pomocí šifrování s nulovým přístupem. \n\nTaké jsme ověřili, že zpráva byla odeslána uvedeným odesílatelem.</string>
-  <string name="padlocks_pgp_signed_failed_verification">Zpráva podepsaná PGP s neúspěšným ověřením</string>
+  <string name="padlocks_pgp_signed_description">Tato zpráva nebyla odeslána s koncovým šifrováním, ale je uložena na serverech Proton s šifrováním s nulovým přístupem. \n\nTaké jste ji digitálně podepsali, což příjemci dokazuje, že vaše zpráva je pravá a nebyla neoprávněně pozměněna.</string>
+  <string name="padlocks_pgp_signed_verified_contact">PGP-podepsaná zpráva od ověřeného kontaktu</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">Tato zpráva nebyla odeslána s koncovým šifrováním, ale je uložena na serverech Proton pomocí šifrování s nulovým přístupem. \n\nOvěřili jsme také, že zpráva byla odeslána uvedeným odesílatelem.</string>
+  <string name="padlocks_pgp_signed_failed_verification">PGP-podepsaná zpráva s neúspěšným ověřením</string>
   <string name="padlocks_pgp_signed_failed_verification_description">Tato zpráva nebyla odeslána s koncovým šifrováním, ale je uložena na serverech Proton pomocí šifrování s nulovým přístupem. \n\nOvěření odesílatele však selhalo. Potvrďte prosím pravost zprávy u svého kontaktu.</string>
   <string name="padlocks_show_details">Zobrazit detaily</string>
   <string name="padlocks_learn_more">Více informací...</string>

@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Não foi possível enviar o rascunho – Limite de anexos atingido</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Não foi possível enviar o rascunho – Falha na criptografia do anexo.</string>
   <string name="composer_expiration_time_learn_more">Saiba mais</string>
+  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
+  <string name="composer_sender_address_description">Choose Sender Address</string>
 </resources>

@@ -36,7 +36,7 @@
   <string name="action_forward_description">Encaminhar</string>
   <string name="action_mark_read_description">Marcar como lido</string>
   <string name="action_mark_unread_description">Marcar como não lido</string>
-  <string name="action_star_description">Favorito</string>
+  <string name="action_star_description">Favoritar</string>
   <string name="action_unstar_description">Remover favorito</string>
   <string name="action_label_description">Marcar como</string>
   <string name="action_move_description">Mover para</string>

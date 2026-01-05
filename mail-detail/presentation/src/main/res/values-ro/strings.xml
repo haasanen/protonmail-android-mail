@@ -185,4 +185,15 @@
   <string name="detail_error_loading_single_message">Încărcarea mesajului a eșuat.</string>
   <string name="error_downloading_image">Eșuare descărcare imagine</string>
   <string name="image_downloaded_successfully">Imagine descărcată</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">Antete mesaj</string>
+  <string name="raw_message_data_html_title">Mesaj HTML</string>
+  <string name="raw_message_data_close_button_content_description">Închidere</string>
+  <string name="raw_message_data_more_button_content_description">Mai multe</string>
+  <string name="raw_message_data_download_action">Descărcare</string>
+  <string name="raw_message_data_copy_action">Copiere</string>
+  <string name="raw_message_data_learn_more_action">Detalii</string>
+  <string name="raw_message_data_error">Eroare la încărcarea datelor.</string>
+  <string name="raw_message_data_successful_download">Descărcare finalizată.</string>
+  <string name="raw_message_data_failed_download">Descărcare eșuată.</string>
 </resources>

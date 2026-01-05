@@ -182,4 +182,15 @@
   <string name="detail_error_loading_single_message">Le message n\'a pas pu être chargé.</string>
   <string name="error_downloading_image">L\'image n\'a pas pu être téléchargée.</string>
   <string name="image_downloaded_successfully">L\'image a été téléchargée</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">En-têtes du message</string>
+  <string name="raw_message_data_html_title">Message HTML</string>
+  <string name="raw_message_data_close_button_content_description">Fermer</string>
+  <string name="raw_message_data_more_button_content_description">Plus</string>
+  <string name="raw_message_data_download_action">Télécharger</string>
+  <string name="raw_message_data_copy_action">Copier</string>
+  <string name="raw_message_data_learn_more_action">En savoir plus</string>
+  <string name="raw_message_data_error">Une erreur s\'est produite pendant le chargement des données.</string>
+  <string name="raw_message_data_successful_download">Le téléchargement est terminé.</string>
+  <string name="raw_message_data_failed_download">Le téléchargement n\'a pas abouti.</string>
 </resources>

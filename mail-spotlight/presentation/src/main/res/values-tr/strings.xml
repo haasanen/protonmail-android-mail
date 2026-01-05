@@ -17,15 +17,15 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="spotlight_screen_version_text">Sürüm %s</string>
-  <string name="spotlight_screen_title">Proton Mail\'deki yenilikler</string>
-  <string name="spotlight_feature_item_discreet_icon_title">Ağzı sıkı simgesi</string>
-  <string name="spotlight_feature_item_discreet_icon_description">Varsayılan Proton Mail simgesini koruyun veya daha fazla gizlilik için genel bir simgeyle gizleyin.</string>
+  <string name="spotlight_screen_version_text">%s sürümü</string>
+  <string name="spotlight_screen_title">Proton Mail yenilikleri</string>
+  <string name="spotlight_feature_item_discreet_icon_title">Göze çarpmayan simge</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Varsayılan Proton Mail simgesini kullanın ya da daha fazla gizlilik için göze çarpmayan bir simgeyle gizleyin.</string>
   <string name="spotlight_feature_item_tracking_protection_title">İzleme koruması</string>
-  <string name="spotlight_feature_item_tracking_protection_description">Gizli pikseller ve izleme bağlantıları ile sizi izlemeye çalışanları ve kaç denemenin engellendiğini görün.</string>
+  <string name="spotlight_feature_item_tracking_protection_description">Gizli pikseller ve izleme bağlantıları ile sizi izlemeye çalışanları ve kaç girişimin engellendiğini görün.</string>
   <string name="spotlight_feature_item_encryption_locks_title">Şifreleme kilitleri</string>
   <string name="spotlight_feature_item_encryption_locks_description">İletilerinizi koruyan şifreleme türünü tanımlamak ve doğrulamak için kilit simgelerini kullanın.</string>
-  <string name="spotlight_feature_item_headers_html_title">Üst bilgiyi ve HTML\'yi görüntüle</string>
-  <string name="spotlight_feature_item_headers_html_description">Şüpheli iletileri inceleyerek gerçekliklerini doğrulayın ve gizli izleme öğelerini ortaya çıkarın.</string>
+  <string name="spotlight_feature_item_headers_html_title">Üst bilgilere ve HTML koduna bakın</string>
+  <string name="spotlight_feature_item_headers_html_description">Şüpheli iletileri inceleyerek gerçekliklerini doğrulayın ve gizli izleme ögelerini ortaya çıkarın.</string>
   <string name="spotlight_screen_got_it">Anladım</string>
 </resources>

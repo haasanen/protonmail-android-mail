@@ -182,4 +182,15 @@
   <string name="detail_error_loading_single_message">Laden van bericht is mislukt</string>
   <string name="error_downloading_image">Downloaden van afbeelding mislukt</string>
   <string name="image_downloaded_successfully">Afbeelding gedownload</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">Berichtkoppen</string>
+  <string name="raw_message_data_html_title">Bericht-HTML</string>
+  <string name="raw_message_data_close_button_content_description">Sluiten</string>
+  <string name="raw_message_data_more_button_content_description">Meer</string>
+  <string name="raw_message_data_download_action">Downloaden</string>
+  <string name="raw_message_data_copy_action">Kopiëren</string>
+  <string name="raw_message_data_learn_more_action">Meer info</string>
+  <string name="raw_message_data_error">Fout bij het laden van gegevens</string>
+  <string name="raw_message_data_successful_download">Download voltooid</string>
+  <string name="raw_message_data_failed_download">Download mislukt</string>
 </resources>

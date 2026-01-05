@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Taslak gönderilemedi. Ek dosya sayısı sınırına ulaşıldı</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Taslak gönderilemedi. Ek dosya şifrelenemedi.</string>
   <string name="composer_expiration_time_learn_more">Ayrıntılı bilgi alın</string>
+  <string name="composer_enter_recipient_content_description">Alıcıyı girin</string>
+  <string name="composer_sender_address_description">Gönderici Adresini Seçin</string>
 </resources>

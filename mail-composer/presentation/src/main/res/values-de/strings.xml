@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Entwurf konnte nicht gesendet werden – Anzahl Anlagen überschritten</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Entwurf konnte nicht gesendet werden – Verschlüsselung des Anhangs fehlgeschlagen.</string>
   <string name="composer_expiration_time_learn_more">Mehr erfahren</string>
+  <string name="composer_enter_recipient_content_description">Empfänger eingeben</string>
+  <string name="composer_sender_address_description">Absenderadresse auswählen</string>
 </resources>

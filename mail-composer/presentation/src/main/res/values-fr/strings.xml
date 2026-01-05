@@ -172,4 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Impossible d\'envoyer le brouillon. La limite de pièces jointes est atteinte</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Impossible d\'envoyer le brouillon. Le chiffrement de la pièce jointe n\'a pas abouti.</string>
   <string name="composer_expiration_time_learn_more">En savoir plus</string>
+  <string name="composer_enter_recipient_content_description">Saisir un destinataire</string>
+  <string name="composer_sender_address_description">Choisir l\'adresse de l\'expéditeur</string>
 </resources>

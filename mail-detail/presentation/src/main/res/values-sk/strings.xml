@@ -188,4 +188,15 @@
   <string name="detail_error_loading_single_message">Načítanie správy zlyhalo</string>
   <string name="error_downloading_image">Stiahnutie obrázku zlyhalo</string>
   <string name="image_downloaded_successfully">Obrázok stiahnutý</string>
+  <!-- Raw message data screen -->
+  <string name="raw_message_data_headers_title">Hlavičky správ</string>
+  <string name="raw_message_data_html_title">HTML správy</string>
+  <string name="raw_message_data_close_button_content_description">Zavrieť</string>
+  <string name="raw_message_data_more_button_content_description">Viac</string>
+  <string name="raw_message_data_download_action">Stiahnuť</string>
+  <string name="raw_message_data_copy_action">Kopírovať</string>
+  <string name="raw_message_data_learn_more_action">Zistiť viac</string>
+  <string name="raw_message_data_error">Chyba pri načítaní údajov</string>
+  <string name="raw_message_data_successful_download">Sťahovanie dokončené</string>
+  <string name="raw_message_data_failed_download">Sťahovanie zlyhalo</string>
 </resources>
