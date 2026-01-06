@@ -35,6 +35,7 @@ import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepos
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
 import ch.protonmail.android.composer.data.repository.RustComposerCspRepository
 import ch.protonmail.android.composer.data.repository.SendingStatusRepositoryImpl
+import ch.protonmail.android.composer.data.usecase.RustSanitizePastedContent
 import ch.protonmail.android.mailcomposer.domain.repository.ActiveComposerRepository
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
@@ -44,6 +45,7 @@ import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import ch.protonmail.android.mailcomposer.domain.repository.SendingStatusRepository
+import ch.protonmail.android.mailcomposer.domain.usecase.SanitizePastedContent
 import dagger.Binds
 import dagger.Module
 import dagger.Reusable
@@ -56,6 +58,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ViewModelComponent::class)
 abstract class MailComposerModule {
+
+    @Binds
+    @ViewModelScoped
+    abstract fun bindsSanitizePastedContent(impl: RustSanitizePastedContent): SanitizePastedContent
 
     @Binds
     @ViewModelScoped
