@@ -26,12 +26,15 @@ const val JAVASCRIPT_CALLBACK_INTERFACE_NAME = "MessageBodyInterface"
 
 @Keep
 class JavascriptCallback(
+    private val sanitizePastedText: (String?, String) -> String,
     private val onMessageBodyChanged: (String) -> Unit,
     private val onCursorPositionChanged: (Float, Float) -> Unit,
     private val onInlineImageRemoved: (String) -> Unit,
     private val onInlineImageClicked: (String) -> Unit,
     private val onInlineImagePasted: (String) -> Unit
 ) {
+    @JavascriptInterface
+    fun onSanitizePastedText(mimeType: String?, text: String): String = sanitizePastedText(mimeType, text)
 
     @JavascriptInterface
     fun onBodyUpdated(body: String) {

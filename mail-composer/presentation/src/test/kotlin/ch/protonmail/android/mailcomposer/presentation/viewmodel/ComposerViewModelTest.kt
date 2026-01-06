@@ -43,6 +43,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
+import ch.protonmail.android.mailcomposer.domain.model.PasteMimeType
 import ch.protonmail.android.mailcomposer.domain.model.RecipientValidityError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
@@ -71,6 +72,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachmen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveRecipientsValidation
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
+import ch.protonmail.android.mailcomposer.domain.usecase.SanitizePastedContent
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
@@ -197,6 +199,7 @@ internal class ComposerViewModelTest {
             )
         }
     }
+    private val sanitizePastedContent = mockk<SanitizePastedContent>()
     private val reducer = ComposerStateReducer()
 
     @BeforeTest
@@ -247,6 +250,7 @@ internal class ComposerViewModelTest {
         getMessageExpirationTime,
         canSendWithExpirationTime,
         convertInlineImageToAttachment,
+        sanitizePastedContent,
         observePrimaryUserIdMock
     )
 
@@ -1408,6 +1412,46 @@ internal class ComposerViewModelTest {
         verify { updateRecipients wasNot Called }
         coVerify { preloadContactSuggestions wasNot Called }
     }
+
+    @Test
+    fun `sanitizePastedText delegates and returns sanitized text`() = runTest {
+        // Given
+        expectedUserId { UserIdSample.Primary }
+        expectRestoredState(savedStateHandle)
+        expectNoInputDraftAction()
+        expectInputDraftMessageId { MessageIdSample.EmptyDraft }
+        val input = "Hello,\n\nThis is line 2.\nBest regards"
+        val expected = "Hello,<br><br>This is line 2.<br>Best regards"
+        every { sanitizePastedContent.invoke(input, PasteMimeType.Html) } returns expected
+
+        // When
+        val result = viewModel().sanitizePastedText("text/html", input)
+
+        // Then
+        assertEquals(expected, result)
+        verify(exactly = 1) { sanitizePastedContent.invoke(input, PasteMimeType.Html) }
+    }
+
+    @Test
+    fun `sanitizePastedText returns input as fallback when delegated use case raises exception`() = runTest {
+        // Given
+        expectedUserId { UserIdSample.Primary }
+        expectRestoredState(savedStateHandle)
+        expectNoInputDraftAction()
+        expectInputDraftMessageId { MessageIdSample.EmptyDraft }
+        val input = "<b>Hello</b>"
+        every {
+            sanitizePastedContent.invoke(input, PasteMimeType.PlainText)
+        } throws RuntimeException("failure in sanitization")
+
+        // When
+        val result = viewModel().sanitizePastedText("text/plain", input)
+
+        // Then
+        assertEquals(input, result)
+        verify(exactly = 1) { sanitizePastedContent.invoke(input, PasteMimeType.PlainText) }
+    }
+
 
     // This is both used to mock the result of the "composer init" in the cases where we
     // create a new draft (eg. Compose, Reply, ComposeTo...)

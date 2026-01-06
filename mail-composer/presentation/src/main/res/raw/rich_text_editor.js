@@ -378,39 +378,6 @@ function debugLog(message) {
 }
 
 /*******************************************************************************
- * HTML Sanitizer object
- ******************************************************************************/
-const HtmlSanitizer = {
-    /**
-     * Removes all `srcset` attributes from <img> tags.
-     *
-     * Rationale:
-     * Some pasted HTML (e.g., from Wikipedia) includes `srcset` attributes
-     * with scheme-relative URLs such as `//upload.wikimedia.org/...`., causing images
-     * to fail loading and appear as empty frames.
-     */
-    removeSrcSetAttribute(html) {
-        const regex = /(?<![\w-])srcset\s*=\s*(?:"[^"]*"|'[^']*')/gi;
-        return html.replace(regex, '');
-    },
-
-    /**
-     * Removes all inline style attributes,
-     */
-    removeStyleAttributes(html) {
-        const regex = /(?<![\w-])style\s*=\s*(?:"[^"]*"|'[^']*')/gi;
-        return html.replace(regex, '');
-    },
-
-    /**
-     * Performs full sanitization by removing both `srcset` and `style` attributes.
-     */
-    sanitize(html) {
-        return this.removeStyleAttributes(this.removeSrcSetAttribute(html));
-    }
-};
-
-/*******************************************************************************
  * Functions to handle content pasting into the editor
  ******************************************************************************/
 function handleFilePaste(item) {
@@ -441,7 +408,9 @@ function handleFilePaste(item) {
 function handleTextPaste(item) {
     item.getAsString(function (text) {
         const rawText = text || "";
-        const sanitizedText = HtmlSanitizer.sanitize(rawText);
+        const mimeType = item.type || "text/plain";
+        const sanitizedText =  $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onSanitizePastedText(mimeType, rawText) || rawText;
+
         insertHtmlAtCurrentPosition(sanitizedText);
     });
 }

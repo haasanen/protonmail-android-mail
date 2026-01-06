@@ -114,6 +114,9 @@ fun EditableMessageBodyWebView(
 
     val javascriptCallback = remember {
         JavascriptCallback(
+            sanitizePastedText = { mimeType, text ->
+                webViewActions.sanitizePastedText(mimeType, text)
+            },
             onMessageBodyChanged = { body ->
                 webViewActions.onMessageBodyChanged(body)
                 bodyContentVersion++
@@ -273,6 +276,7 @@ private fun configureDarkLightMode(webView: WebView, isInDarkTheme: Boolean) {
 object EditableMessageBodyWebView {
 
     data class Actions(
+        val sanitizePastedText: (mimeType: String?, text: String) -> String,
         val loadImage: (contentId: String) -> MessageBodyImage?,
         val onMessageBodyChanged: (body: String) -> Unit,
         val onWebViewParamsChanged: (params: EditorViewDrawingState) -> Unit,

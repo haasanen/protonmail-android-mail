@@ -402,6 +402,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 visibleWebViewHeightPx = visibleBounds.height.coerceAtLeast(0f)
                             },
                             loadImage = { viewModel.loadImage(it) },
+                            sanitizePastedText = { mimeType, text ->
+                                viewModel.sanitizePastedText(mimeType, text)
+                            },
                             onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
                             onInlineImageRemoved = {
                                 viewModel.submit(ComposerAction.InlineAttachmentDeletedFromBody(it))

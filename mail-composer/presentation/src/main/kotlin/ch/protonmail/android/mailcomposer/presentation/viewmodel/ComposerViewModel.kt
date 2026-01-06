@@ -45,6 +45,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.DraftHead
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
+import ch.protonmail.android.mailcomposer.domain.model.PasteMimeType
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -74,6 +75,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachmen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveRecipientsValidation
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
+import ch.protonmail.android.mailcomposer.domain.usecase.SanitizePastedContent
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
@@ -188,6 +190,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val getMessageExpirationTime: GetMessageExpirationTime,
     private val canSendWithExpirationTime: CanSendWithExpirationTime,
     private val convertInlineToAttachment: ConvertInlineImageToAttachment,
+    private val sanitizePastedContent: SanitizePastedContent,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -958,6 +961,13 @@ class ComposerViewModel @AssistedInject constructor(
         Timber
             .tag("ComposerViewModel")
             .d("Action ${action::class.java.simpleName} ${System.identityHashCode(action)} - $message")
+    }
+
+    fun sanitizePastedText(mimeType: String?, text: String): String {
+        val pasteMimeType = PasteMimeType.fromJs(mimeType)
+        return runCatching { sanitizePastedContent(text, pasteMimeType) }
+            .onFailure { Timber.e(it, "sanitizePastedContent failed!") }
+            .getOrElse { text }
     }
 
     @AssistedFactory
