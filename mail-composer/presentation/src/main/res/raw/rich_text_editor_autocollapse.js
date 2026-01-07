@@ -493,9 +493,10 @@ function handleFilePaste(item) {
 }
 
 function handleTextPaste(item) {
+    const mimeType = item.type || "text/plain";
+
     item.getAsString(function (text) {
         const rawText = text || "";
-        const mimeType = item.type || "text/plain";
         const sanitizedText =  $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onSanitizePastedText(mimeType, rawText) || rawText;
 
         insertHtmlAtCurrentPosition(sanitizedText);
