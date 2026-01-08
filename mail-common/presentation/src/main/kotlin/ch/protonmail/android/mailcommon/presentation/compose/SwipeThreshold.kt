@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 
 object SwipeThreshold {
 
-    const val SWIPE_THRESHOLD_PERCENTAGE = 0.3f
+    const val SWIPE_THRESHOLD_PERCENTAGE = 0.25f
 
     @Composable
     fun defaultPositionalThreshold(): (totalDistance: Float) -> Float {

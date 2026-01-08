@@ -35,10 +35,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,8 +52,10 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import me.proton.core.mailsettings.domain.entity.SwipeAction
+import kotlin.math.abs
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -71,54 +70,38 @@ fun SwipeableItem(
     val haptic = LocalHapticFeedback.current
     val threshold = SwipeThreshold.SWIPE_THRESHOLD_PERCENTAGE
 
-    // Ensure the action is triggered only once - multiple confirmValueChange calls may happen.
-    var actionTriggered by remember { mutableStateOf(false) }
-
     val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { dismissBoxValue ->
-            if (!actionTriggered) {
-                swipeActionsUiModel?.let {
-                    when (dismissBoxValue) {
-                        SwipeToDismissBoxValue.StartToEnd -> {
-                            callbackForSwipeAction(it.start.swipeAction, swipeActionCallbacks)()
-                            actionTriggered = true
-                        }
-
-                        SwipeToDismissBoxValue.EndToStart -> {
-                            callbackForSwipeAction(it.end.swipeAction, swipeActionCallbacks)()
-                            actionTriggered = true
-                        }
-
-                        SwipeToDismissBoxValue.Settled -> Unit
-                    }
-                }
-            }
-            false // Always reject - keep the item in place for visual feedback
-        },
         positionalThreshold = { _ -> width * threshold },
         enableFling = false
     )
 
-    // Reset action trigger flag when the user finishes the swipe action
-    LaunchedEffect(dismissState.targetValue) {
-        if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) {
-            actionTriggered = false
-        }
-    }
+    LaunchedEffect(dismissState.dismissDirection, swipingEnabled, width, swipeActionsUiModel) {
+        if (!swipingEnabled) return@LaunchedEffect
+        if (dismissState.dismissDirection == SwipeToDismissBoxValue.Settled) return@LaunchedEffect
 
-    val progressFlow = remember { snapshotFlow { dismissState.progress } }
-    var hapticTriggered by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        progressFlow
-            .filter { it > threshold }
-            .collect {
-                if (it == 1.0f) {
-                    hapticTriggered = false
-                } else if (!hapticTriggered) {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    hapticTriggered = true
-                }
+        val direction = dismissState.dismissDirection
+
+        // dismissState.requireOffset() is the only available API to calculate the swipe fraction.
+        // However, early reading of dismissState.requireOffset may cause exception. Therefore we call it only after
+        // the swipe direction has been determined ( not settled). This means user started swiping.
+        snapshotFlow { runCatching { dismissState.requireOffset() }.getOrNull() }
+            .filterNotNull()
+            .first { offset ->
+                val fraction = (abs(offset) / width).coerceIn(0f, 1f)
+                fraction >= threshold
             }
+
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
+        swipeActionsUiModel?.let {
+            when (direction) {
+                SwipeToDismissBoxValue.StartToEnd ->
+                    callbackForSwipeAction(it.start.swipeAction, swipeActionCallbacks)()
+                SwipeToDismissBoxValue.EndToStart ->
+                    callbackForSwipeAction(it.end.swipeAction, swipeActionCallbacks)()
+                else -> Unit
+            }
+        }
     }
 
     val enableDismissFromStartToEnd = swipeActionsUiModel?.start?.let {
@@ -127,6 +110,7 @@ fun SwipeableItem(
     val enableDismissFromEndToStart = swipeActionsUiModel?.end?.let {
         it.swipeAction != SwipeAction.None && it.isEnabled
     } ?: false
+
 
     SwipeToDismissBox(
         modifier = modifier,
@@ -193,7 +177,7 @@ fun SwipeableItem(
 @Suppress("Deprecation")
 private fun rememberSwipeToDismissBoxState(
     initialValue: SwipeToDismissBoxValue = SwipeToDismissBoxValue.Settled,
-    confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = { true },
+    confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = { false },
     positionalThreshold: (totalDistance: Float) -> Float = SwipeToDismissBoxDefaults.positionalThreshold,
     enableFling: Boolean = false
 ): SwipeToDismissBoxState {
