@@ -23,5 +23,5 @@ sealed interface BlockedTrackersState {
 
     data object NoTrackersBlocked : BlockedTrackersState
 
-    data class TrackersBlocked(val uiModel: TrackersUiModel) : BlockedTrackersState
+    data class TrackersBlocked(val uiModel: BlockedElementsUiModel) : BlockedTrackersState
 }

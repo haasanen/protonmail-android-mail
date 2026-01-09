@@ -22,11 +22,11 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomSheetContentSta
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 
 sealed interface BlockedTrackersSheetState : BottomSheetContentState {
-    data class Requested(val trackers: TrackersUiModel?) : BlockedTrackersSheetState
+    data class Requested(val elements: BlockedElementsUiModel?) : BlockedTrackersSheetState
 }
 
 sealed interface BlockedTrackersBottomSheetOperation : BottomSheetOperation
 
 sealed interface BlockedTrackersBottomSheetEvent : BlockedTrackersBottomSheetOperation {
-    data class Ready(val trackers: TrackersUiModel?) : BlockedTrackersBottomSheetEvent
+    data class Ready(val elements: BlockedElementsUiModel?) : BlockedTrackersBottomSheetEvent
 }

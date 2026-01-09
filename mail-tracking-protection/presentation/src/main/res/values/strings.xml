@@ -17,13 +17,12 @@
   -->
 
 <resources>
-    <string name="trackers_blocked_links_cleaned_numbers">%s trackers blocked, %s links cleaned</string>
-    <string name="trackers_protection">Tracker protection:</string>
+    <string name="trackers_protection">Tracking protection:</string>
     <string name="show_details">Show details</string>
-    <string name="trackers_protection_no_trackers_detected">Tracker protection: no trackers detected</string>
+    <string name="trackers_protection_no_trackers_detected">Tracking protection: no trackers detected</string>
     <string name="tracking_protection">Tracking protection</string>
     <string name="tracking_protection_description">We actively protect you from tracking. Here you can view the spy pixels we blocked and the tracking links we cleaned in this message.</string>
-    <string name="tracking_protection_learn_more">Learn  more...</string>
+    <string name="tracking_protection_learn_more">Learn more…</string>
     <string name="original">original</string>
     <string name="cleaned">Cleaned</string>
     <string name="action_close_dialog_button">Close</string>

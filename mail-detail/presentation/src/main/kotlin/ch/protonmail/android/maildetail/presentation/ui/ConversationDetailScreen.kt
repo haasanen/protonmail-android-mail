@@ -84,8 +84,6 @@ import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.ui.OpenAttachmentInput
 import ch.protonmail.android.mailattachments.presentation.ui.fileOpener
 import ch.protonmail.android.mailattachments.presentation.ui.fileSaver
-import ch.protonmail.android.mailtrackingprotection.presentation.BlockedTrackersBottomSheetContent
-import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
@@ -138,7 +136,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.model.BodyImageUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -152,6 +149,9 @@ import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
+import ch.protonmail.android.mailtrackingprotection.presentation.BlockedElementsBottomSheetContent
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -504,7 +504,7 @@ fun ConversationDetailScreen(
                     )
                 )
 
-                is BlockedTrackersSheetState -> BlockedTrackersBottomSheetContent(
+                is BlockedTrackersSheetState -> BlockedElementsBottomSheetContent(
                     state = bottomSheetContentState,
                     onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
                 )
@@ -1339,7 +1339,7 @@ object ConversationDetailScreen {
         val onReportPhishing: (MessageId) -> Unit,
         val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
         val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
-        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit,
+        val onBlockedTrackersClick: (BlockedElementsUiModel?) -> Unit,
         val onEncryptionInfoClick: (EncryptionInfoUiModel) -> Unit
     ) {
 

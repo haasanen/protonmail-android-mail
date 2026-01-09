@@ -18,13 +18,16 @@
 
 package ch.protonmail.android.mailtrackingprotection.presentation
 
-import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedTracker
 import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackerUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinksUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
+import kotlinx.collections.immutable.toImmutableList
 
 object TrackersUiModelSample {
 
-    private val blockedTracker = BlockedTracker(
+    private val blockedTracker = BlockedTrackerUiModel(
         "tracker.com",
         listOf(
             "tracker.com/track1",
@@ -34,7 +37,7 @@ object TrackersUiModelSample {
     )
 
     @Suppress("MaxLineLength")
-    private val blockedTracker1 = BlockedTracker(
+    private val blockedTracker1 = BlockedTrackerUiModel(
         "tracker1.com",
         listOf(
             "tracker1.com/track1",
@@ -48,14 +51,23 @@ object TrackersUiModelSample {
     )
 
     val oneTrackerBlocked = TrackersUiModel(
-        blocked = listOf(blockedTracker),
-        links = emptyList()
+        items = listOf(blockedTracker).toImmutableList(),
+        isExpandable = true
     )
 
-    val trackersAndLinks = TrackersUiModel(
-        blocked = listOf(blockedTracker, blockedTracker1),
-        links = listOf(cleanedLink)
+    val multipleTrackersBlocker = TrackersUiModel(
+        items = listOf(blockedTracker, blockedTracker1).toImmutableList(),
+        isExpandable = true
     )
 
+    val cleanedLinks = CleanedLinksUiModel(
+        items = listOf(cleanedLink).toImmutableList(),
+        isExpandable = true
+    )
+
+    val trackersAndLinks = BlockedElementsUiModel(
+        trackers = multipleTrackersBlocker,
+        links = cleanedLinks
+    )
 }
 

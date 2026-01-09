@@ -141,9 +141,9 @@ internal class BottomSheetReducerTest(
             ),
             TestInput(
                 currentState = null,
-                operation = BlockedTrackersBottomSheetEvent.Ready(TrackersUiModelSample.oneTrackerBlocked),
+                operation = BlockedTrackersBottomSheetEvent.Ready(TrackersUiModelSample.trackersAndLinks),
                 expectedState = BottomSheetState(
-                    BlockedTrackersSheetState.Requested(TrackersUiModelSample.oneTrackerBlocked),
+                    BlockedTrackersSheetState.Requested(TrackersUiModelSample.trackersAndLinks),
                     Effect.of(BottomSheetVisibilityEffect.Show)
                 ),
                 reducesBottomSheetVisibilityEffects = true,

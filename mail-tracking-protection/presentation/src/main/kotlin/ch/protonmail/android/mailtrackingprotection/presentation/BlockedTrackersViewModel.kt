@@ -20,33 +20,60 @@ package ch.protonmail.android.mailtrackingprotection.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersState
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTrackersEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailtrackingprotection.domain.repository.TrackersProtectionRepository
+import ch.protonmail.android.mailtrackingprotection.presentation.mapper.TrackersUiModelMapper
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 
-@HiltViewModel
-class BlockedTrackersViewModel @Inject constructor(
-    @IsShowBlockedTrackersEnabled val showBlockedTrackersFeatureFlag: FeatureFlag<Boolean>
+@HiltViewModel(assistedFactory = BlockedTrackersViewModel.Factory::class)
+internal class BlockedTrackersViewModel @AssistedInject constructor(
+    observePrimaryUserId: ObservePrimaryUserId,
+    private val trackersProtectionRepository: TrackersProtectionRepository,
+    @IsShowBlockedTrackersEnabled private val showBlockedTrackersFeatureFlag: FeatureFlag<Boolean>,
+    @Assisted private val messageId: MessageId
 ) : ViewModel() {
 
-    private val mutableState = MutableStateFlow<BlockedTrackersState>(BlockedTrackersState.Unknown)
+    val state: StateFlow<BlockedTrackersState> = observePrimaryUserId()
+        .filterNotNull()
+        .flatMapLatest { userId ->
+            if (!showBlockedTrackersFeatureFlag.get()) {
+                return@flatMapLatest flowOf(BlockedTrackersState.Unknown)
+            }
 
-    val state: StateFlow<BlockedTrackersState> = mutableState
-
-    fun loadBlockedTrackers(messageId: MessageId) {
-        viewModelScope.launch {
-            if (showBlockedTrackersFeatureFlag.get()) {
-                mutableState.emit(BlockedTrackersState.TrackersBlocked(TrackersUiModelSample.trackersAndLinks))
-            } else {
-                mutableState.emit(BlockedTrackersState.Unknown)
+            trackersProtectionRepository.observeTrackersForMessage(userId, messageId).mapLatest { either ->
+                either.fold(
+                    ifLeft = { BlockedTrackersState.Unknown },
+                    ifRight = { trackers ->
+                        if (trackers.isEmpty()) return@fold BlockedTrackersState.NoTrackersBlocked
+                        BlockedTrackersState.TrackersBlocked(TrackersUiModelMapper.toUiModel(trackers))
+                    }
+                )
             }
         }
-    }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis),
+            BlockedTrackersState.Unknown
+        )
 
+    @AssistedFactory
+    interface Factory {
+
+        fun create(messageId: MessageId): BlockedTrackersViewModel
+    }
 }

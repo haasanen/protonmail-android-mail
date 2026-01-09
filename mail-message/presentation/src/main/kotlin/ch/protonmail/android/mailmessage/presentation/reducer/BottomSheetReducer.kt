@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.presentation.reducer
 
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
@@ -33,6 +32,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSh
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetEvent
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import javax.inject.Inject
 
 class BottomSheetReducer @Inject constructor(
@@ -95,7 +95,7 @@ class BottomSheetReducer @Inject constructor(
 
             is BlockedTrackersBottomSheetEvent.Ready ->
                 BottomSheetState(
-                    contentState = BlockedTrackersSheetState.Requested(operation.trackers),
+                    contentState = BlockedTrackersSheetState.Requested(operation.elements),
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
                 )
 

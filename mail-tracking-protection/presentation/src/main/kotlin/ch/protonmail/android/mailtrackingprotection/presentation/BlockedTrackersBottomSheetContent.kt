@@ -31,11 +31,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,14 +63,15 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 import ch.protonmail.android.design.compose.theme.labelLargeNorm
-import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedTracker
 import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
+import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinksUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
-fun BlockedTrackersBottomSheetContent(
+fun BlockedElementsBottomSheetContent(
     state: BlockedTrackersSheetState,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
@@ -77,7 +79,7 @@ fun BlockedTrackersBottomSheetContent(
 
     when (state) {
         is BlockedTrackersSheetState.Requested -> when {
-            state.trackers != null -> BlockedTrackersBottomSheetContent(state.trackers, onDismiss, modifier)
+            state.elements != null -> BlockedTrackersBottomSheetContent(state.elements, onDismiss, modifier)
             else -> NoBlockedTrackersBottomSheetContent(modifier, onDismiss)
         }
     }
@@ -122,7 +124,7 @@ private fun CloseButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 
 @Composable
 private fun BlockedTrackersBottomSheetContent(
-    trackers: TrackersUiModel,
+    blockedElements: BlockedElementsUiModel,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -142,13 +144,13 @@ private fun BlockedTrackersBottomSheetContent(
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Huge))
 
         BlockedTrackersDetails(
-            trackers.blocked,
+            blockedElements.trackers,
             onUrlClick = { domain, url -> urlDialogContent.value = Pair(domain, url) }
         )
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
-        CleanedLinksDetails(trackers.links)
+        CleanedLinksDetails(blockedElements.links)
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Huge))
 
@@ -184,12 +186,12 @@ private fun TrackerUrlDialog(
             }
         },
         title = domain,
-        text = { ProtonAlertDialogText(url) }
+        text = { SelectionContainer { ProtonAlertDialogText(url) } }
     )
 }
 
 @Composable
-private fun CleanedLinksDetails(links: List<CleanedLink>, modifier: Modifier = Modifier) {
+private fun CleanedLinksDetails(links: CleanedLinksUiModel, modifier: Modifier = Modifier) {
 
     val isExpanded = remember { mutableStateOf(false) }
 
@@ -198,7 +200,7 @@ private fun CleanedLinksDetails(links: List<CleanedLink>, modifier: Modifier = M
             .fillMaxWidth()
             .clip(ProtonTheme.shapes.large)
             .background(
-                color = ProtonTheme.colors.backgroundNorm,
+                color = ProtonTheme.colors.backgroundInvertedSecondary,
                 shape = ProtonTheme.shapes.large
             )
             .padding(ProtonDimens.Spacing.ModeratelyLarger)
@@ -211,7 +213,7 @@ private fun CleanedLinksDetails(links: List<CleanedLink>, modifier: Modifier = M
         )
 
         AnimatedContent(isExpanded.value) {
-            if (isExpanded.value) {
+            if (it) {
                 CleanedLinksDetailsList(links)
             }
         }
@@ -220,13 +222,13 @@ private fun CleanedLinksDetails(links: List<CleanedLink>, modifier: Modifier = M
 }
 
 @Composable
-private fun CleanedLinksDetailsList(links: List<CleanedLink>) {
+private fun CleanedLinksDetailsList(links: CleanedLinksUiModel) {
 
     Column {
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
 
-        for (link in links) {
+        for (link in links.items) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
 
@@ -340,13 +342,14 @@ private fun ClickableLink(url: String) {
 
 @Composable
 private fun CleanedLinksDetailsHeader(
-    links: List<CleanedLink>,
+    links: CleanedLinksUiModel,
     isExpanded: Boolean,
     onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .clickable(
+                enabled = links.isExpandable,
                 onClick = onClick,
                 interactionSource = null,
                 indication = null
@@ -356,29 +359,31 @@ private fun CleanedLinksDetailsHeader(
         Text(
             text = pluralStringResource(
                 R.plurals.number_of_cleaned_links,
-                links.size,
-                links.size
+                links.items.size,
+                links.items.size
             ),
             style = ProtonTheme.typography.bodyLargeNorm
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        val chevronIcon = when {
-            isExpanded -> R.drawable.ic_proton_chevron_down
-            else -> R.drawable.ic_proton_chevron_up
+        if (links.isExpandable) {
+            val chevronIcon = when {
+                isExpanded -> R.drawable.ic_proton_chevron_down
+                else -> R.drawable.ic_proton_chevron_up
+            }
+            Icon(
+                painter = painterResource(id = chevronIcon),
+                contentDescription = null,
+                tint = ProtonTheme.colors.iconNorm
+            )
         }
-        Icon(
-            painter = painterResource(id = chevronIcon),
-            contentDescription = null,
-            tint = ProtonTheme.colors.iconNorm
-        )
     }
 }
 
 @Composable
 private fun BlockedTrackersDetails(
-    trackers: List<BlockedTracker>,
+    trackers: TrackersUiModel,
     onUrlClick: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -390,7 +395,7 @@ private fun BlockedTrackersDetails(
             .fillMaxWidth()
             .clip(ProtonTheme.shapes.large)
             .background(
-                color = ProtonTheme.colors.backgroundNorm,
+                color = ProtonTheme.colors.backgroundInvertedSecondary,
                 shape = ProtonTheme.shapes.large
             )
             .padding(ProtonDimens.Spacing.ModeratelyLarger)
@@ -403,22 +408,21 @@ private fun BlockedTrackersDetails(
         )
 
         AnimatedContent(isExpanded.value) {
-            if (isExpanded.value) {
+            if (it) {
                 BlockedTrackersDetailsList(trackers, onUrlClick)
             }
         }
-
     }
 }
 
 @Composable
-private fun BlockedTrackersDetailsList(trackers: List<BlockedTracker>, onUrlClick: (String, String) -> Unit) {
+private fun BlockedTrackersDetailsList(trackers: TrackersUiModel, onUrlClick: (String, String) -> Unit) {
 
     Column {
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
 
-        for (tracker in trackers) {
+        for (tracker in trackers.items) {
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -453,21 +457,21 @@ private fun BlockedTrackersDetailsList(trackers: List<BlockedTracker>, onUrlClic
                 )
             }
 
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
         }
-
     }
 }
 
 @Composable
 private fun BlockedTrackersDetailsHeader(
-    trackers: List<BlockedTracker>,
+    trackers: TrackersUiModel,
     isExpanded: Boolean,
     onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .clickable(
+                enabled = trackers.isExpandable,
                 onClick = onClick,
                 interactionSource = null,
                 indication = null
@@ -477,23 +481,25 @@ private fun BlockedTrackersDetailsHeader(
         Text(
             text = pluralStringResource(
                 R.plurals.number_of_blocked_trackers,
-                trackers.size,
-                trackers.size
+                trackers.items.size,
+                trackers.items.size
             ),
             style = ProtonTheme.typography.bodyLargeNorm
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        val chevronIcon = when {
-            isExpanded -> R.drawable.ic_proton_chevron_down
-            else -> R.drawable.ic_proton_chevron_up
+        if (trackers.isExpandable) {
+            val chevronIcon = when {
+                isExpanded -> R.drawable.ic_proton_chevron_down
+                else -> R.drawable.ic_proton_chevron_up
+            }
+            Icon(
+                painter = painterResource(id = chevronIcon),
+                contentDescription = null,
+                tint = ProtonTheme.colors.iconNorm
+            )
         }
-        Icon(
-            painter = painterResource(id = chevronIcon),
-            contentDescription = null,
-            tint = ProtonTheme.colors.iconNorm
-        )
     }
 }
 
@@ -559,6 +565,7 @@ private fun HeaderIcon() {
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_shield_2_check_filled),
+            tint = ProtonTheme.colors.iconNorm,
             contentDescription = null,
             modifier = Modifier.size(ProtonDimens.IconSize.Large)
         )
@@ -568,8 +575,8 @@ private fun HeaderIcon() {
 @Preview(showBackground = true)
 @Composable
 private fun PreviewBlockedTrackersBottomSheet() {
-    BlockedTrackersBottomSheetContent(
-        BlockedTrackersSheetState.Requested(TrackersUiModelSample.oneTrackerBlocked),
+    BlockedElementsBottomSheetContent(
+        BlockedTrackersSheetState.Requested(TrackersUiModelSample.trackersAndLinks),
         onDismiss = {}
     )
 }

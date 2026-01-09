@@ -62,8 +62,6 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.mailtrackingprotection.presentation.BlockedTrackers
-import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
@@ -86,6 +84,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSection
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.BlockedTrackingElements
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
 import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.collections.immutable.ImmutableList
 
@@ -448,7 +448,7 @@ private fun MessageDetailHeaderCard(
                 onMoreInfoClick = { actions.onEncryptionInfoClick(it) }
             )
 
-            BlockedTrackers(
+            BlockedTrackingElements(
                 MessageId(uiModel.messageIdUiModel.id),
                 onBlockedTrackersClick = { actions.onBlockedTrackersClick(it) },
                 onNoBlockedTrackersClick = { actions.onBlockedTrackersClick(null) }
@@ -651,7 +651,7 @@ object MessageDetailHeader {
         val onAvatarImageLoadFailed: () -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel) -> Unit,
         val onCollapseMessage: (MessageIdUiModel) -> Unit,
-        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit,
+        val onBlockedTrackersClick: (BlockedElementsUiModel?) -> Unit,
         val onEncryptionInfoClick: (EncryptionInfoUiModel) -> Unit
     ) {
 

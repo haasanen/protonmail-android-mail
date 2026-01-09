@@ -1021,7 +1021,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
     ) {
         emitNewStateFrom(operation)
 
-        val event = BlockedTrackersBottomSheetEvent.Ready(operation.trackers)
+        val event = BlockedTrackersBottomSheetEvent.Ready(operation.elements)
 
         emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
     }

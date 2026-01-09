@@ -55,7 +55,6 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
-import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
@@ -79,6 +78,7 @@ import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
 
 @Composable
 @Suppress("LongParameterList")
@@ -421,7 +421,7 @@ object ConversationDetailItem {
         val onDownloadImage: (MessageId, String) -> Unit,
         val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
         val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
-        val onBlockedTrackersClick: (TrackersUiModel?) -> Unit,
+        val onBlockedTrackersClick: (BlockedElementsUiModel?) -> Unit,
         val onEncryptionInfoClick: (EncryptionInfoUiModel) -> Unit
     )
 

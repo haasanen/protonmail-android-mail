@@ -62,17 +62,21 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     debugImplementation(libs.bundles.compose.debug)
-
     implementation(libs.bundles.module.presentation)
 
+    implementation(libs.dagger.hilt.android)
+
+    implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-featureflags:domain"))
     implementation(project(":mail-message:domain"))
-
+    implementation(project(":mail-session:domain"))
     implementation(project(":mail-tracking-protection:domain"))
+
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 
+    testImplementation(project(":test:utils"))
     testImplementation(libs.bundles.test)
 }

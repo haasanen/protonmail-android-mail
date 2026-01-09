@@ -24,7 +24,6 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentOpenMode
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
-import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
@@ -32,17 +31,17 @@ import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailconversation.domain.entity.HiddenMessagesBanner
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingBlockSenderDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingDeleteDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingEditScheduleMessageDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingErrorBar
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingHiddenMessagesBanner
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessageBar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessages
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingReportPhishingDialog
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingBlockSenderDialog
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingHiddenMessagesBanner
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
@@ -53,6 +52,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface ConversationDetailOperation {
@@ -397,7 +397,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class UnsubscribeFromNewsletter(val messageId: MessageId) : ConversationDetailViewAction
 
-    data class RequestBlockedTrackersBottomSheet(val trackers: TrackersUiModel?) :
+    data class RequestBlockedTrackersBottomSheet(val elements: BlockedElementsUiModel?) :
         ConversationDetailViewAction,
         AffectingBottomSheet
 

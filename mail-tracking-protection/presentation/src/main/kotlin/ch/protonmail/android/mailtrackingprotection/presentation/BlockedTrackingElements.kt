@@ -27,11 +27,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,38 +39,41 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersState
-import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersState
 
 @Composable
-fun BlockedTrackers(
+fun BlockedTrackingElements(
     messageId: MessageId,
-    viewModel: BlockedTrackersViewModel = hiltViewModel(),
-    onBlockedTrackersClick: (TrackersUiModel) -> Unit,
+    onBlockedTrackersClick: (BlockedElementsUiModel) -> Unit,
     onNoBlockedTrackersClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
-    val state = viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(messageId) {
-        viewModel.loadBlockedTrackers(messageId)
+    val viewModel = hiltViewModel<BlockedTrackersViewModel, BlockedTrackersViewModel.Factory>(
+        key = messageId.id
+    ) { factory ->
+        factory.create(messageId)
     }
+
+    val state = viewModel.state.collectAsStateWithLifecycle()
 
     when (val current = state.value) {
         BlockedTrackersState.NoTrackersBlocked -> NoBlockedTrackers(onNoBlockedTrackersClick, modifier)
-        is BlockedTrackersState.TrackersBlocked -> BlockedTrackers(current.uiModel, onBlockedTrackersClick, modifier)
-        BlockedTrackersState.Unknown -> { }
+        is BlockedTrackersState.TrackersBlocked ->
+            BlockedTrackingElements(current.uiModel, onBlockedTrackersClick, modifier)
+
+        BlockedTrackersState.Unknown -> {}
     }
 }
 
 @Composable
-private fun BlockedTrackers(
-    uiModel: TrackersUiModel,
-    onBlockedTrackersClick: (TrackersUiModel) -> Unit,
+private fun BlockedTrackingElements(
+    uiModel: BlockedElementsUiModel,
+    onBlockedTrackersClick: (BlockedElementsUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -90,7 +93,6 @@ private fun BlockedTrackers(
                 )
             }
             Column {
-
                 Text(
                     modifier = Modifier
                         .wrapContentWidth(),
@@ -98,14 +100,21 @@ private fun BlockedTrackers(
                     style = ProtonTheme.typography.bodySmallNorm
                 )
 
+                val trackersText = pluralStringResource(
+                    R.plurals.number_of_blocked_trackers,
+                    uiModel.trackers.items.size,
+                    uiModel.trackers.items.size
+                )
+                val linksText = pluralStringResource(
+                    R.plurals.number_of_cleaned_links,
+                    uiModel.links.items.size,
+                    uiModel.links.items.size
+                )
+
                 Text(
                     modifier = Modifier
                         .wrapContentWidth(),
-                    text = stringResource(
-                        R.string.trackers_blocked_links_cleaned_numbers,
-                        uiModel.blocked.size,
-                        uiModel.links.size
-                    ),
+                    text = "$trackersText, $linksText",
                     style = ProtonTheme.typography.bodySmallNorm
                 )
 
@@ -127,7 +136,6 @@ private fun BlockedTrackers(
 
 @Composable
 private fun NoBlockedTrackers(onNoBlockedTrackersClick: () -> Unit, modifier: Modifier = Modifier) {
-
     Column(
         verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ModeratelyLarge)
     ) {
@@ -171,15 +179,15 @@ private fun NoBlockedTrackers(onNoBlockedTrackersClick: () -> Unit, modifier: Mo
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewBlockedTrackers() {
-    BlockedTrackers(
-        uiModel = TrackersUiModelSample.oneTrackerBlocked,
+private fun PreviewBlockedTrackers() {
+    BlockedTrackingElements(
+        uiModel = TrackersUiModelSample.trackersAndLinks,
         onBlockedTrackersClick = {}
     )
 }
 
 @Preview
 @Composable
-fun PreviewNoBlockedTrackers() {
+private fun PreviewNoBlockedTrackers() {
     NoBlockedTrackers(onNoBlockedTrackersClick = {})
 }
