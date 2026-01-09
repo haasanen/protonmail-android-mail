@@ -84,13 +84,10 @@ class RustMessageBodyDataSourceTest {
             false,
             0uL,
             0uL,
-            0uL,
-            0uL,
             transformOpts,
             bodyBanners
         )
         val localMimeType = LocalMimeType.TEXT_PLAIN
-
 
         val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
             coEvery { body(any()) } returns bodyOutput.right()
