@@ -35,7 +35,10 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +78,12 @@ fun SwipeableItem(
         enableFling = false
     )
 
+    var swipeThresholdReachedDirection by remember { mutableStateOf(SwipeToDismissBoxValue.Settled) }
+
     LaunchedEffect(dismissState.dismissDirection, swipingEnabled, width, swipeActionsUiModel) {
+        // Reset the state
+        swipeThresholdReachedDirection = SwipeToDismissBoxValue.Settled
+
         if (!swipingEnabled) return@LaunchedEffect
         if (dismissState.dismissDirection == SwipeToDismissBoxValue.Settled) return@LaunchedEffect
 
@@ -90,6 +98,8 @@ fun SwipeableItem(
                 val fraction = (abs(offset) / width).coerceIn(0f, 1f)
                 fraction >= threshold
             }
+
+        swipeThresholdReachedDirection = direction
 
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
@@ -140,7 +150,7 @@ fun SwipeableItem(
             }
 
             val scale by animateFloatAsState(
-                targetValue = when (dismissState.targetValue) {
+                targetValue = when (swipeThresholdReachedDirection) {
                     SwipeToDismissBoxValue.Settled -> 0.75f
                     SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart -> 1f
                 },
