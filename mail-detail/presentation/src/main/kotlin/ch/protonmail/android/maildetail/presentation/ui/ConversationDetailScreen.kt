@@ -149,9 +149,9 @@ import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
-import ch.protonmail.android.mailtrackingprotection.presentation.BlockedElementsBottomSheetContent
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsSheetState
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
+import ch.protonmail.android.mailtrackingprotection.presentation.ui.bottomsheet.BlockedElementsBottomSheetContent
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -504,7 +504,7 @@ fun ConversationDetailScreen(
                     )
                 )
 
-                is BlockedTrackersSheetState -> BlockedElementsBottomSheetContent(
+                is BlockedElementsSheetState -> BlockedElementsBottomSheetContent(
                     state = bottomSheetContentState,
                     onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
                 )

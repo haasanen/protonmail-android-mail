@@ -27,8 +27,6 @@ import arrow.core.left
 import arrow.core.nonEmptyListOf
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
@@ -138,6 +136,8 @@ import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfi
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsSheetState
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
 import ch.protonmail.android.testdata.action.ActionUiModelTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactActionsGroupsSample
@@ -2299,7 +2299,7 @@ internal class ConversationDetailViewModelTest {
         // Given
         val expectedResult = ConversationDetailState.Loading.copy(
             bottomSheetState = BottomSheetState(
-                contentState = BlockedTrackersSheetState.Requested(null),
+                contentState = BlockedElementsSheetState.Requested(null),
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
             )
         )

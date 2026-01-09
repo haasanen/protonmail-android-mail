@@ -18,11 +18,14 @@
 
 package ch.protonmail.android.mailtrackingprotection.presentation.model
 
+import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetContentState
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 
-sealed interface BlockedTrackersSheetState : BottomSheetContentState {
-    data class Requested(val elements: BlockedElementsUiModel?) : BlockedTrackersSheetState
+@Stable
+sealed interface BlockedElementsSheetState : BottomSheetContentState {
+
+    data class Requested(val elements: BlockedElementsUiModel?) : BlockedElementsSheetState
 }
 
 sealed interface BlockedTrackersBottomSheetOperation : BottomSheetOperation

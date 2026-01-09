@@ -84,8 +84,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSection
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
-import ch.protonmail.android.mailtrackingprotection.presentation.BlockedTrackingElements
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.ui.BlockedTrackingElements
 import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.collections.immutable.ImmutableList
 

@@ -37,8 +37,8 @@ import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheet
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.TrackersUiModelSample
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsSheetState
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersSheetState
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import io.mockk.Called
 import io.mockk.mockk
@@ -143,7 +143,7 @@ internal class BottomSheetReducerTest(
                 currentState = null,
                 operation = BlockedTrackersBottomSheetEvent.Ready(TrackersUiModelSample.trackersAndLinks),
                 expectedState = BottomSheetState(
-                    BlockedTrackersSheetState.Requested(TrackersUiModelSample.trackersAndLinks),
+                    BlockedElementsSheetState.Requested(TrackersUiModelSample.trackersAndLinks),
                     Effect.of(BottomSheetVisibilityEffect.Show)
                 ),
                 reducesBottomSheetVisibilityEffects = true,

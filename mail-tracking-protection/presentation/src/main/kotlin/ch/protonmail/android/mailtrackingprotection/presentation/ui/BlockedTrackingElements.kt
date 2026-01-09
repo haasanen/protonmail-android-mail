@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailtrackingprotection.presentation
+package ch.protonmail.android.mailtrackingprotection.presentation.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +42,9 @@ import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailtrackingprotection.presentation.BlockedTrackersViewModel
+import ch.protonmail.android.mailtrackingprotection.presentation.R
+import ch.protonmail.android.mailtrackingprotection.presentation.TrackersUiModelSample
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersState
 
