@@ -368,16 +368,22 @@ fun ConversationDetailScreen(
                     state = bottomSheetContentState,
                     actions = DetailMoreActionsBottomSheetContent.Actions(
                         onReply = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.onReply(it)
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onReply(it)
+                            }
                         },
                         onReplyAll = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.onReplyAll(it)
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onReplyAll(it)
+                            }
                         },
                         onForward = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.onForward(it)
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onForward(it)
+                            }
                         },
                         onMarkUnread = { viewModel.submit(ConversationDetailViewAction.MarkMessageUnread(it)) },
                         onStarMessage = { viewModel.submit(ConversationDetailViewAction.StarMessage(it)) },
@@ -440,12 +446,16 @@ fun ConversationDetailScreen(
                         },
                         onCloseSheet = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) },
                         onCustomizeToolbar = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.onCustomizeToolbar()
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onCustomizeToolbar()
+                            }
                         },
                         onCustomizeMessageToolbar = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.onCustomizeMessageToolbar()
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onCustomizeMessageToolbar()
+                            }
                         },
                         onSaveConversationAsPdf = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
@@ -454,8 +464,18 @@ fun ConversationDetailScreen(
                         onSnooze = {
                             viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet)
                         },
-                        onViewHeaders = actions.onViewMessageHeaders,
-                        onViewHtml = actions.onViewMessageHtml
+                        onViewHeaders = { messageId ->
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onViewMessageHeaders(messageId)
+                            }
+                        },
+                        onViewHtml = { messageId ->
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onViewMessageHtml(messageId)
+                            }
+                        }
                     )
                 )
 
@@ -477,12 +497,16 @@ fun ConversationDetailScreen(
                             actions.showSnackbar(message, ProtonSnackbarType.NORM)
                         },
                         onAddContactClicked = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.onAddContact(BasicContactInfo(it.name, it.address))
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onAddContact(BasicContactInfo(it.name, it.address))
+                            }
                         },
                         onNewMessageClicked = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.onComposeNewMessage(it.address)
+                            scope.launch {
+                                bottomSheetState.hide()
+                                actions.onComposeNewMessage(it.address)
+                            }
                         },
                         onBlockClicked = { participant, messageId, contactId ->
                             viewModel.submit(
