@@ -46,9 +46,19 @@ android {
 }
 
 dependencies {
+    compileOnly(libs.proton.rust.core)
+
     implementation(project(":mail-tracking-protection:domain"))
+    implementation(project(":mail-common:data"))
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-message:data"))
+    implementation(project(":mail-message:domain"))
+    implementation(project(":mail-session:domain"))
 
     implementation(libs.bundles.module.data)
+    implementation(libs.proton.core.domain)
 
+    testImplementation(project(":test:utils"))
     testImplementation(libs.bundles.test)
+    testImplementation(libs.proton.rust.core)
 }
