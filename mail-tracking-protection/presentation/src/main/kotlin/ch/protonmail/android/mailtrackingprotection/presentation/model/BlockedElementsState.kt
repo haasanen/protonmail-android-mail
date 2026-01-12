@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailtrackingprotection.presentation.model
 
-sealed interface BlockedTrackersState {
-    data object Unknown : BlockedTrackersState
+sealed interface BlockedElementsState {
+    data object Unknown : BlockedElementsState
 
-    data object NoTrackersBlocked : BlockedTrackersState
+    data object NoBlockedElements : BlockedElementsState
 
-    data class TrackersBlocked(val uiModel: BlockedElementsUiModel) : BlockedTrackersState
+    data class BlockedElements(val uiModel: BlockedElementsUiModel) : BlockedElementsState
 }

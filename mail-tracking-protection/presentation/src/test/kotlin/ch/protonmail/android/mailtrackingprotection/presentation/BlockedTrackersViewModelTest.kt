@@ -25,9 +25,11 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedPrivacyItems
 import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedTracker
-import ch.protonmail.android.mailtrackingprotection.domain.repository.TrackersProtectionRepository
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersState
+import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
+import ch.protonmail.android.mailtrackingprotection.domain.repository.PrivacyInfoRepository
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
@@ -51,7 +53,7 @@ internal class BlockedTrackersViewModelTest {
     private val mockFeatureFlag = mockk<FeatureFlag<Boolean>> {
         coEvery { this@mockk.get() } returns true
     }
-    private val mockRepository = mockk<TrackersProtectionRepository>()
+    private val mockRepository = mockk<PrivacyInfoRepository>()
     private val mockObservePrimaryUserId = mockk<ObservePrimaryUserId>()
 
     @Test
@@ -59,12 +61,12 @@ internal class BlockedTrackersViewModelTest {
         // Given
         every { mockObservePrimaryUserId() } returns flowOf(testUserId)
         every {
-            mockRepository.observeTrackersForMessage(testUserId, testMessageId)
-        } returns flowOf(emptyList<BlockedTracker>().right())
+            mockRepository.observePrivacyItemsForMessage(testUserId, testMessageId)
+        } returns flowOf(BlockedPrivacyItems(emptyList(), emptyList()).right())
 
         val viewModel = BlockedTrackersViewModel(
             showBlockedTrackersFeatureFlag = mockFeatureFlag,
-            trackersProtectionRepository = mockRepository,
+            privacyInfoRepository = mockRepository,
             observePrimaryUserId = mockObservePrimaryUserId,
             messageId = testMessageId
         )
@@ -72,25 +74,30 @@ internal class BlockedTrackersViewModelTest {
         // When/Then
         viewModel.state.test {
             val state = awaitItem()
-            assertTrue(state is BlockedTrackersState.NoTrackersBlocked)
+            assertTrue(state is BlockedElementsState.NoBlockedElements)
         }
     }
 
     @Test
-    fun `state emits TrackersBlocked when repository returns trackers`() = runTest {
+    fun `state emits BlockedElements when repository returns items`() = runTest {
         // Given
-        val trackers = listOf(
-            BlockedTracker("tracker1.com", listOf("https://tracker1.com/pixel")),
-            BlockedTracker("tracker2.com", listOf("https://tracker2.com/pixel"))
+        val items = BlockedPrivacyItems(
+            trackers = listOf(
+                BlockedTracker("tracker1.com", listOf("https://tracker1.com/pixel")),
+                BlockedTracker("tracker2.com", listOf("https://tracker2.com/pixel"))
+            ),
+            urls = listOf(
+                CleanedLink("original.com/utm=123", "original.com")
+            )
         )
         every { mockObservePrimaryUserId() } returns flowOf(testUserId)
         every {
-            mockRepository.observeTrackersForMessage(testUserId, testMessageId)
-        } returns flowOf(trackers.right())
+            mockRepository.observePrivacyItemsForMessage(testUserId, testMessageId)
+        } returns flowOf(items.right())
 
         val viewModel = BlockedTrackersViewModel(
             showBlockedTrackersFeatureFlag = mockFeatureFlag,
-            trackersProtectionRepository = mockRepository,
+            privacyInfoRepository = mockRepository,
             observePrimaryUserId = mockObservePrimaryUserId,
             messageId = testMessageId
         )
@@ -98,8 +105,9 @@ internal class BlockedTrackersViewModelTest {
         // When/Then
         viewModel.state.test {
             val state = awaitItem()
-            assertTrue(state is BlockedTrackersState.TrackersBlocked)
+            assertTrue(state is BlockedElementsState.BlockedElements)
             assertEquals(2, state.uiModel.trackers.items.size)
+            assertEquals(1, state.uiModel.links.items.size)
         }
     }
 
@@ -108,13 +116,10 @@ internal class BlockedTrackersViewModelTest {
         // Given
         coEvery { mockFeatureFlag.get() } returns false
         every { mockObservePrimaryUserId() } returns flowOf(testUserId)
-        every {
-            mockRepository.observeTrackersForMessage(testUserId, testMessageId)
-        } returns flowOf(emptyList<BlockedTracker>().right())
 
         val viewModel = BlockedTrackersViewModel(
             showBlockedTrackersFeatureFlag = mockFeatureFlag,
-            trackersProtectionRepository = mockRepository,
+            privacyInfoRepository = mockRepository,
             observePrimaryUserId = mockObservePrimaryUserId,
             messageId = testMessageId
         )
@@ -122,7 +127,7 @@ internal class BlockedTrackersViewModelTest {
         // When/Then
         viewModel.state.test {
             val state = awaitItem()
-            assertTrue(state is BlockedTrackersState.Unknown)
+            assertTrue(state is BlockedElementsState.Unknown)
         }
     }
 
@@ -131,12 +136,12 @@ internal class BlockedTrackersViewModelTest {
         // Given
         every { mockObservePrimaryUserId() } returns flowOf(testUserId)
         every {
-            mockRepository.observeTrackersForMessage(testUserId, testMessageId)
+            mockRepository.observePrivacyItemsForMessage(testUserId, testMessageId)
         } returns flowOf(DataError.Remote.NoNetwork.left())
 
         val viewModel = BlockedTrackersViewModel(
             showBlockedTrackersFeatureFlag = mockFeatureFlag,
-            trackersProtectionRepository = mockRepository,
+            privacyInfoRepository = mockRepository,
             observePrimaryUserId = mockObservePrimaryUserId,
             messageId = testMessageId
         )
@@ -144,7 +149,7 @@ internal class BlockedTrackersViewModelTest {
         // When/Then
         viewModel.state.test {
             val state = awaitItem()
-            assertTrue(state is BlockedTrackersState.Unknown)
+            assertTrue(state is BlockedElementsState.Unknown)
         }
     }
 }

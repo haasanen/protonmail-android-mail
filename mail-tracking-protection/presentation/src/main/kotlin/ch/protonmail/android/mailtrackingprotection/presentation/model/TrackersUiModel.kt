@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailtrackingprotection.presentation.model
 
 import androidx.compose.runtime.Stable
-import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Stable
 data class BlockedElementsUiModel(
@@ -32,13 +32,32 @@ data class BlockedElementsUiModel(
 data class TrackersUiModel(
     val items: ImmutableList<BlockedTrackerUiModel>,
     val isExpandable: Boolean
-)
+) {
+
+    companion object {
+
+        val Empty = TrackersUiModel(persistentListOf(), false)
+    }
+}
 
 @Stable
 data class BlockedTrackerUiModel(val domain: String, val urls: List<String>)
 
 @Stable
 data class CleanedLinksUiModel(
-    val items: ImmutableList<CleanedLink>,
+    val items: ImmutableList<CleanedLinkUiModel>,
     val isExpandable: Boolean
 )
+
+@Stable
+data class CleanedLinkUiModel(
+    val original: OriginalLinkValue,
+    val cleaned: CleanedLinkValue
+)
+
+@JvmInline
+value class OriginalLinkValue(val value: String)
+
+@JvmInline
+value class CleanedLinkValue(val value: String)
+

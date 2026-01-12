@@ -25,9 +25,9 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTra
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailtrackingprotection.domain.repository.TrackersProtectionRepository
-import ch.protonmail.android.mailtrackingprotection.presentation.mapper.TrackersUiModelMapper
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersState
+import ch.protonmail.android.mailtrackingprotection.domain.repository.PrivacyInfoRepository
+import ch.protonmail.android.mailtrackingprotection.presentation.mapper.BlockedElementsUiModelMapper
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -43,24 +43,24 @@ import kotlinx.coroutines.flow.stateIn
 @HiltViewModel(assistedFactory = BlockedTrackersViewModel.Factory::class)
 internal class BlockedTrackersViewModel @AssistedInject constructor(
     observePrimaryUserId: ObservePrimaryUserId,
-    private val trackersProtectionRepository: TrackersProtectionRepository,
+    private val privacyInfoRepository: PrivacyInfoRepository,
     @IsShowBlockedTrackersEnabled private val showBlockedTrackersFeatureFlag: FeatureFlag<Boolean>,
     @Assisted private val messageId: MessageId
 ) : ViewModel() {
 
-    val state: StateFlow<BlockedTrackersState> = observePrimaryUserId()
+    val state: StateFlow<BlockedElementsState> = observePrimaryUserId()
         .filterNotNull()
         .flatMapLatest { userId ->
             if (!showBlockedTrackersFeatureFlag.get()) {
-                return@flatMapLatest flowOf(BlockedTrackersState.Unknown)
+                return@flatMapLatest flowOf(BlockedElementsState.Unknown)
             }
 
-            trackersProtectionRepository.observeTrackersForMessage(userId, messageId).mapLatest { either ->
+            privacyInfoRepository.observePrivacyItemsForMessage(userId, messageId).mapLatest { either ->
                 either.fold(
-                    ifLeft = { BlockedTrackersState.Unknown },
-                    ifRight = { trackers ->
-                        if (trackers.isEmpty()) return@fold BlockedTrackersState.NoTrackersBlocked
-                        BlockedTrackersState.TrackersBlocked(TrackersUiModelMapper.toUiModel(trackers))
+                    ifLeft = { BlockedElementsState.Unknown },
+                    ifRight = { privacyItems ->
+                        if (privacyItems.isEmpty) return@fold BlockedElementsState.NoBlockedElements
+                        BlockedElementsState.BlockedElements(BlockedElementsUiModelMapper.toUiModel(privacyItems))
                     }
                 )
             }
@@ -68,7 +68,7 @@ internal class BlockedTrackersViewModel @AssistedInject constructor(
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(stopTimeoutMillis),
-            BlockedTrackersState.Unknown
+            BlockedElementsState.Unknown
         )
 
     @AssistedFactory

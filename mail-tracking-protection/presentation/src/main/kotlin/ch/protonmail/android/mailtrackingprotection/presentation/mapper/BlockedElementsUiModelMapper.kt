@@ -18,25 +18,39 @@
 
 package ch.protonmail.android.mailtrackingprotection.presentation.mapper
 
+import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedPrivacyItems
 import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedTracker
 import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackerUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinkUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinkValue
 import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinksUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.OriginalLinkValue
 import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import kotlinx.collections.immutable.toImmutableList
 
-internal object TrackersUiModelMapper {
+internal object BlockedElementsUiModelMapper {
 
-    fun toUiModel(trackers: List<BlockedTracker>): BlockedElementsUiModel {
+    fun toUiModel(items: BlockedPrivacyItems): BlockedElementsUiModel {
         val trackersUiModel = TrackersUiModel(
-            items = trackers.map { BlockedTrackerUiModel(it.domain, it.urls) }.toImmutableList(),
-            isExpandable = trackers.isNotEmpty()
+            items = items.trackers.map { it.toUiModel() }.toImmutableList(),
+            isExpandable = items.trackers.isNotEmpty()
         )
+
         val linksUiModel = CleanedLinksUiModel(
-            items = emptyList<CleanedLink>().toImmutableList(),
-            isExpandable = false
+            items = items.urls.map { it.toUiModel() }.toImmutableList(),
+            isExpandable = items.urls.isNotEmpty()
         )
+
         return BlockedElementsUiModel(trackersUiModel, linksUiModel)
+    }
+
+    private fun BlockedTracker.toUiModel() = BlockedTrackerUiModel(domain, urls)
+
+    private fun CleanedLink.toUiModel(): CleanedLinkUiModel {
+        val originalValue = OriginalLinkValue(original)
+        val cleanedValue = CleanedLinkValue(cleaned)
+        return CleanedLinkUiModel(originalValue, cleanedValue)
     }
 }

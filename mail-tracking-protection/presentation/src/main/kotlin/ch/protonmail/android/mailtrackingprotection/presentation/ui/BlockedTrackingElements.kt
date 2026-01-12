@@ -45,8 +45,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailtrackingprotection.presentation.BlockedTrackersViewModel
 import ch.protonmail.android.mailtrackingprotection.presentation.R
 import ch.protonmail.android.mailtrackingprotection.presentation.TrackersUiModelSample
+import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsState
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
-import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersState
 
 @Composable
 fun BlockedTrackingElements(
@@ -57,7 +57,7 @@ fun BlockedTrackingElements(
 ) {
 
     val viewModel = hiltViewModel<BlockedTrackersViewModel, BlockedTrackersViewModel.Factory>(
-        key = messageId.id
+        key = "blockedTrackingElements_${messageId.id}"
     ) { factory ->
         factory.create(messageId)
     }
@@ -65,11 +65,11 @@ fun BlockedTrackingElements(
     val state = viewModel.state.collectAsStateWithLifecycle()
 
     when (val current = state.value) {
-        BlockedTrackersState.NoTrackersBlocked -> NoBlockedTrackers(onNoBlockedTrackersClick, modifier)
-        is BlockedTrackersState.TrackersBlocked ->
+        BlockedElementsState.NoBlockedElements -> NoBlockedTrackers(onNoBlockedTrackersClick, modifier)
+        is BlockedElementsState.BlockedElements ->
             BlockedTrackingElements(current.uiModel, onBlockedTrackersClick, modifier)
 
-        BlockedTrackersState.Unknown -> {}
+        BlockedElementsState.Unknown -> {}
     }
 }
 

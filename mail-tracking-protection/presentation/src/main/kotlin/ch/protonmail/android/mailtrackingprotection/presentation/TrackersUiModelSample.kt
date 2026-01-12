@@ -18,10 +18,12 @@
 
 package ch.protonmail.android.mailtrackingprotection.presentation
 
-import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackerUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinkUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinkValue
 import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinksUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.OriginalLinkValue
 import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import kotlinx.collections.immutable.toImmutableList
 
@@ -37,7 +39,7 @@ object TrackersUiModelSample {
     )
 
     @Suppress("MaxLineLength")
-    private val blockedTracker1 = BlockedTrackerUiModel(
+    private val blockedTracker2 = BlockedTrackerUiModel(
         "tracker1.com",
         listOf(
             "tracker1.com/track1",
@@ -45,23 +47,23 @@ object TrackersUiModelSample {
         )
     )
 
-    private val cleanedLink = CleanedLink(
-        "https://website.com/page/tracker",
-        "https://website.com/page"
+    private val cleanedLink = CleanedLinkUiModel(
+        original = OriginalLinkValue("https://website.com/page/tracker"),
+        cleaned = CleanedLinkValue("https://website.com/page")
     )
 
-    val oneTrackerBlocked = TrackersUiModel(
-        items = listOf(blockedTracker).toImmutableList(),
-        isExpandable = true
+    private val cleanedLink2 = CleanedLinkUiModel(
+        original = OriginalLinkValue("https://website2.com/page/tracker"),
+        cleaned = CleanedLinkValue("https://website2.com/page")
     )
 
     val multipleTrackersBlocker = TrackersUiModel(
-        items = listOf(blockedTracker, blockedTracker1).toImmutableList(),
+        items = listOf(blockedTracker, blockedTracker2).toImmutableList(),
         isExpandable = true
     )
 
     val cleanedLinks = CleanedLinksUiModel(
-        items = listOf(cleanedLink).toImmutableList(),
+        items = listOf(cleanedLink, cleanedLink2).toImmutableList(),
         isExpandable = true
     )
 
