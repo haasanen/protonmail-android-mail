@@ -17,13 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s izleyici engellendi, %s bağlantı temizlendi</string>
-  <string name="trackers_protection">İzleyici koruması:</string>
+  <string name="trackers_protection">İzleme koruması:</string>
   <string name="show_details">Ayrıntıları görüntüle</string>
   <string name="trackers_protection_no_trackers_detected">İzleyici koruması: Herhangi bir izleyici bulunamadı</string>
   <string name="tracking_protection">İzleme koruması</string>
   <string name="tracking_protection_description">Sizi izleme etkinliklerinden koruyoruz. Burada, bu iletide engellediğimiz casus pikselleri ve temizlediğimiz izleme bağlantılarını görebilirsiniz.</string>
-  <string name="tracking_protection_learn_more">Ayrıntılı bilgi alın...</string>
+  <string name="tracking_protection_learn_more">Ayrıntılı bilgi alın…</string>
   <string name="original">özgün</string>
   <string name="cleaned">Temizlendi</string>
   <string name="action_close_dialog_button">Kapat</string>

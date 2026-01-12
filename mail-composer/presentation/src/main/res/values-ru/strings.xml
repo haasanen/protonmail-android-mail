@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Отправить сообщение</string>
   <string name="composer_expand_recipients_button">Показать других получателей</string>
   <string name="composer_error_invalid_email">Email address is invalid or does not exist</string>
-  <string name="composer_error_invalid_sender">Адрес отправителя недействителен</string>
   <string name="change_sender_button_content_description">Изменить отправителя</string>
   <string name="composer_change_sender_paid_feature">Перейдите на платный тариф, чтобы изменить адрес отправителя</string>
   <string name="composer_error_store_draft_sender_address">Адрес отправителя не сохранён</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Unable to save draft - This message is not a draft</string>
   <string name="composer_error_store_draft_generic">Unable to save draft - A generic error occurred</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">Содержимое этого черновика в данный момент недоступно, редактирование невозможно.</string>
   <string name="composer_add_attachments_content_description">Добавить вложения</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Импортировать из…</string>

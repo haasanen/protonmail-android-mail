@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Üzenet küldése</string>
   <string name="composer_expand_recipients_button">Más címzettek megjelenítése</string>
   <string name="composer_error_invalid_email">Az e-mail cím érvénytelen vagy nem létezik.</string>
-  <string name="composer_error_invalid_sender">A küldő cím érvénytelen</string>
   <string name="change_sender_button_content_description">Feladó módosítása</string>
   <string name="composer_change_sender_paid_feature">Váltson előfizetéses csomagra a feladó címének megváltoztatásához</string>
   <string name="composer_error_store_draft_sender_address">A feladó címe nem lett elmentve</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Unable to save draft - This message is not a draft</string>
   <string name="composer_error_store_draft_generic">Unable to save draft - A generic error occurred</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">Ennek a piszkozatnak a tartalma jelenleg nem érhető el, a szerkesztés nem lehetséges.</string>
   <string name="composer_add_attachments_content_description">Melléklet hozzáadása</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importálás innen…</string>

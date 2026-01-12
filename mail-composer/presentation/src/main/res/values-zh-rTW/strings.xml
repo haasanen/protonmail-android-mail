@@ -28,7 +28,6 @@
   <string name="send_message_content_description">傳送郵件訊息</string>
   <string name="composer_expand_recipients_button">顯示其他收件者</string>
   <string name="composer_error_invalid_email">電子郵件地址無效或不存在</string>
-  <string name="composer_error_invalid_sender">寄件者電子郵件位址無效</string>
   <string name="change_sender_button_content_description">變更寄件人</string>
   <string name="composer_change_sender_paid_feature">升級至付費方案以變更寄件者地址</string>
   <string name="composer_error_store_draft_sender_address">未儲存寄件者地址</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">無法儲存草稿 - 收件者無效</string>
   <string name="composer_error_store_draft_message_not_a_draft">無法儲存草稿 - 此訊息並非草稿</string>
   <string name="composer_error_store_draft_generic">無法儲存草稿 - 發生一般錯誤</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">此草稿的內容目前無法使用，無法編輯。</string>
   <string name="composer_add_attachments_content_description">新增附件</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">匯入自……</string>

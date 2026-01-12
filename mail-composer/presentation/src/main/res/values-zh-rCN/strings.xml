@@ -28,7 +28,6 @@
   <string name="send_message_content_description">发送邮件</string>
   <string name="composer_expand_recipients_button">显示其他收件人</string>
   <string name="composer_error_invalid_email">邮箱地址无效或不存在</string>
-  <string name="composer_error_invalid_sender">发件人地址无效</string>
   <string name="change_sender_button_content_description">更改发件地址</string>
   <string name="composer_change_sender_paid_feature">升级到付费方案即可更改发件人地址</string>
   <string name="composer_error_store_draft_sender_address">无法存储此草稿的发件人地址</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">无法存稿 - 无效的收件人</string>
   <string name="composer_error_store_draft_message_not_a_draft">无法存稿 - 此邮件不是草稿</string>
   <string name="composer_error_store_draft_generic">无法存稿 - 出现一般错误</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">此草稿的内容暂时无法加载，无法进行编辑。</string>
   <string name="composer_add_attachments_content_description">添加附件</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">导入自…</string>

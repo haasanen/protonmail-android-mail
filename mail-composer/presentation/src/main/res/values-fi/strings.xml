@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Lähetä viesti</string>
   <string name="composer_expand_recipients_button">Näytä muut vastaanottajat</string>
   <string name="composer_error_invalid_email">Annettu sähköpostiosoite ei ole kelvollinen tai sitä ei ole olemassa</string>
-  <string name="composer_error_invalid_sender">Lähettäjän osoite on virheellinen</string>
   <string name="change_sender_button_content_description">Vaihda lähettäjä</string>
   <string name="composer_change_sender_paid_feature">Päivitä maksulliseen tilaukseen muuttaaksesi lähettäjän osoitetta</string>
   <string name="composer_error_store_draft_sender_address">Luonnoksen lähetysosoitteen tallennus epäonnistui</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Luonnosta ei voi tallentaa – Virheellinen vastaanottaja</string>
   <string name="composer_error_store_draft_message_not_a_draft">Luonnosta ei voi tallentaa – Tämä viesti ei ole luonnos</string>
   <string name="composer_error_store_draft_generic">Luonnosta ei voi tallentaa – Yleinen virhe</string>
+  <string name="composer_error_create_draft">Jotain meni vikaan. Uutta luonnosta ei voitu luoda.</string>
   <string name="composer_error_loading_draft">Tämän luonnoksen sisältö ei ole tällä hetkellä saatavilla, joten muokkaaminen ei ole mahdollista.</string>
   <string name="composer_add_attachments_content_description">Lisää liitteitä</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Tuo lähteestä…</string>

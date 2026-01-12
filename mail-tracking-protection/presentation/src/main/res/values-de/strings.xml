@@ -17,13 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s Tracker blockiert, %s Links bereinigt</string>
-  <string name="trackers_protection">Tracker-Schutz:</string>
+  <string name="trackers_protection">Tracking-Schutz:</string>
   <string name="show_details">Details anzeigen</string>
-  <string name="trackers_protection_no_trackers_detected">Tracker-Schutz: keine Tracker erkannt</string>
+  <string name="trackers_protection_no_trackers_detected">Tracking-Schutz: keine Tracker erkannt</string>
   <string name="tracking_protection">Tracker-Schutz</string>
   <string name="tracking_protection_description">Wir schützen dich aktiv vor Tracking. Hier kannst du die von uns gesperrten Zählpixel und die in dieser Nachricht bereinigten Tracking-Links einsehen.</string>
-  <string name="tracking_protection_learn_more">Mehr erfahren ...</string>
+  <string name="tracking_protection_learn_more">Mehr erfahren…</string>
   <string name="original">Original</string>
   <string name="cleaned">Bereinigt</string>
   <string name="action_close_dialog_button">Schließen</string>

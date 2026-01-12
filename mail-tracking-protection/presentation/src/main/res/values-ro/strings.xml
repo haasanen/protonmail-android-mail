@@ -17,13 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s unelte de urmărire blocate, %s legături web curățate</string>
   <string name="trackers_protection">Protecție împotriva urmăririi:</string>
   <string name="show_details">Afișare detalii</string>
   <string name="trackers_protection_no_trackers_detected">Protecție împotriva urmăririi: nu s-au detectat unelte de urmărire.</string>
   <string name="tracking_protection">Protecție împotriva urmăririi</string>
   <string name="tracking_protection_description">Vă protejăm în mod activ împotriva urmăririi. Aici puteți vizualiza pixelii-spion pe care i-am blocat și legăturile web de urmărire pe care le-am curățat în acest mesaj.</string>
-  <string name="tracking_protection_learn_more">Detalii...</string>
+  <string name="tracking_protection_learn_more">Detalii…</string>
   <string name="original">original</string>
   <string name="cleaned">Curățat</string>
   <string name="action_close_dialog_button">Închidere</string>

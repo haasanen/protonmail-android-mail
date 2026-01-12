@@ -17,13 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s ιχνηλάτες αποκλείστηκαν, %s σύνδεσμοι εκκαθαρίστηκαν</string>
   <string name="trackers_protection">Προστασία από ιχνηλάτες:</string>
   <string name="show_details">Εμφάνιση λεπτομερειών</string>
   <string name="trackers_protection_no_trackers_detected">Προστασία από ιχνηλάτες: δεν εντοπίστηκαν ιχνηλάτες</string>
   <string name="tracking_protection">Προστασία από ιχνηλάτες</string>
   <string name="tracking_protection_description">Σας προστατεύουμε ενεργά από την παρακολούθηση. Εδώ μπορείτε να δείτε τα pixel παρακολούθησης που αποκλείσαμε και τους συνδέσμους παρακολούθησης που καθαρίσαμε σε αυτό το μήνυμα.</string>
-  <string name="tracking_protection_learn_more">Μάθετε περισσότερα...</string>
+  <string name="tracking_protection_learn_more">Μάθετε περισσότερα…</string>
   <string name="original">Αρχικό</string>
   <string name="cleaned">Καθαρίστηκαν</string>
   <string name="action_close_dialog_button">Κλείσιμο</string>

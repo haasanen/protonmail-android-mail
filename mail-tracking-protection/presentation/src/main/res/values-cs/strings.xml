@@ -17,13 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s zablokovaných sledovacích prvků, %s vyčištěných odkazů</string>
-  <string name="trackers_protection">Ochrana před sledovacími prvky:</string>
+  <string name="trackers_protection">Ochrana před sledováním:</string>
   <string name="show_details">Zobrazit detaily</string>
-  <string name="trackers_protection_no_trackers_detected">Ochrana před sledovacími prvky: nedetekovány žádné sledovací prvky</string>
+  <string name="trackers_protection_no_trackers_detected">Ochrana před sledováním: zatím žádné sledovací prvky</string>
   <string name="tracking_protection">Ochrana před sledovacími prvky</string>
   <string name="tracking_protection_description">Aktivně vás chráníme před sledováním. Zde si můžete prohlédnout sledovací pixely, které jsme zablokovali, a sledovací odkazy, které jsme vyčistili v této zprávě.</string>
-  <string name="tracking_protection_learn_more">Více informací...</string>
+  <string name="tracking_protection_learn_more">Více informací…</string>
   <string name="original">původní</string>
   <string name="cleaned">Vyčištěno</string>
   <string name="action_close_dialog_button">Zavřít</string>

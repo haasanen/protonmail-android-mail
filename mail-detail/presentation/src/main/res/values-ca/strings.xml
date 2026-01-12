@@ -185,10 +185,10 @@
   <!-- Raw message data screen -->
   <string name="raw_message_data_headers_title">Capçaleres del missatge</string>
   <string name="raw_message_data_html_title">HTML del missatge</string>
-  <string name="raw_message_data_close_button_content_description">Tanqueu-ho</string>
+  <string name="raw_message_data_close_button_content_description">Tanca</string>
   <string name="raw_message_data_more_button_content_description">Més</string>
-  <string name="raw_message_data_download_action">Descarregueu-ho</string>
-  <string name="raw_message_data_copy_action">Copieu-ho</string>
+  <string name="raw_message_data_download_action">Descarrega</string>
+  <string name="raw_message_data_copy_action">Copia</string>
   <string name="raw_message_data_learn_more_action">Més informació</string>
   <string name="raw_message_data_error">S\'ha produït un error en carregar les dades</string>
   <string name="raw_message_data_successful_download">S\'ha completat la descàrrega</string>

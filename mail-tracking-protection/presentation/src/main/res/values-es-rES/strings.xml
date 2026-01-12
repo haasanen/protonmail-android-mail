@@ -17,10 +17,9 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s rastreadores bloqueados, %s enlaces limpiados</string>
   <string name="trackers_protection">Protección contra rastreadores:</string>
   <string name="show_details">Mostrar detalles</string>
-  <string name="trackers_protection_no_trackers_detected">Bloqueo de rastreadores: ninguno detectado</string>
+  <string name="trackers_protection_no_trackers_detected">Protección contra rastreadores: ninguno detectado</string>
   <string name="tracking_protection">Protección contra rastreadores</string>
   <string name="tracking_protection_description">Te protegemos activamente contra el rastreo. Aquí puedes ver los píxeles espía que hemos bloqueado y los enlaces de seguimiento que hemos limpiado en este mensaje.</string>
   <string name="tracking_protection_learn_more">Más información...</string>

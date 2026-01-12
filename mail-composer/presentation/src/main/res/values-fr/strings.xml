@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Envoyer le message</string>
   <string name="composer_expand_recipients_button">Afficher les autres destinataires</string>
   <string name="composer_error_invalid_email">L\'adresse e-mail n\'est pas correcte ou n\'existe pas</string>
-  <string name="composer_error_invalid_sender">L\'adresse de l\'expéditeur n\'est pas valide.</string>
   <string name="change_sender_button_content_description">Modifier l\'expéditeur</string>
   <string name="composer_change_sender_paid_feature">Passez à un abonnement payant pour modifier l\'adresse de l\'expéditeur.</string>
   <string name="composer_error_store_draft_sender_address">L\'enregistrement de l\'adresse de l\'expéditeur n\'a pas abouti.</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">L\'enregistrement du brouillon n\'a pas abouti. Le ou les destinataires ne sont pas valides.</string>
   <string name="composer_error_store_draft_message_not_a_draft">L\'enregistrement du brouillon n\'a pas abouti. Ce message n\'est pas un brouillon</string>
   <string name="composer_error_store_draft_generic">L\'enregistrement du brouillon n\'a pas abouti. Une erreur générique s\'est produite</string>
+  <string name="composer_error_create_draft">Une erreur s\'est produite. Impossible de créer un nouveau brouillon.</string>
   <string name="composer_error_loading_draft">Le contenu de ce brouillon n\'est pas disponible pour l\'instant. La modification n\'est pas possible.</string>
   <string name="composer_add_attachments_content_description">Ajouter des pièces jointes</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importer depuis…</string>

@@ -28,7 +28,6 @@
   <string name="send_message_content_description">İleti gönder</string>
   <string name="composer_expand_recipients_button">Diğer alıcıları görüntüle</string>
   <string name="composer_error_invalid_email">E-posta adresi geçersiz ya da bulunamadı.</string>
-  <string name="composer_error_invalid_sender">Gönderici adresi geçersiz</string>
   <string name="change_sender_button_content_description">Göndericiyi değiştir</string>
   <string name="composer_change_sender_paid_feature">Gönderici adresini değiştirmek için ücretli bir tarifeye yükseltin</string>
   <string name="composer_error_store_draft_sender_address">Gönderici adresi kaydedilemedi</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Taslak kaydedilemedi. Alıcılar geçersiz</string>
   <string name="composer_error_store_draft_message_not_a_draft">Taslak kaydedilemedi. Bu ileti bir taslak değil</string>
   <string name="composer_error_store_draft_generic">Taslak kaydedilemedi. Genel bir sorun çıktı</string>
+  <string name="composer_error_create_draft">Bir sorun çıktı. Yeni bir taslak oluşturulamadı.</string>
   <string name="composer_error_loading_draft">Bu taslağın içeriği şu anda kullanılamıyor, düzenleme yapılamıyor.</string>
   <string name="composer_add_attachments_content_description">Dosyalar ekle</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Şuradan içe aktar…</string>
@@ -172,6 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Taslak gönderilemedi. Ek dosya sayısı sınırına ulaşıldı</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Taslak gönderilemedi. Ek dosya şifrelenemedi.</string>
   <string name="composer_expiration_time_learn_more">Ayrıntılı bilgi alın</string>
-  <string name="composer_enter_recipient_content_description">Alıcıyı girin</string>
-  <string name="composer_sender_address_description">Gönderici Adresini Seçin</string>
+  <string name="composer_enter_recipient_content_description">Bir alıcı yazın</string>
+  <string name="composer_sender_address_description">Gönderici adresini seçin</string>
 </resources>

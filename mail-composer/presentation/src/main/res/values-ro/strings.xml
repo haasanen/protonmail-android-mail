@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Trimitere mesaj</string>
   <string name="composer_expand_recipients_button">Afișare alți destinatari</string>
   <string name="composer_error_invalid_email">Adresa de e-mail nu este validă sau nu există</string>
-  <string name="composer_error_invalid_sender">Adresa expeditorului nu este validă.</string>
   <string name="change_sender_button_content_description">Modificare expeditor</string>
   <string name="composer_change_sender_paid_feature">Treceți la un plan cu plată pentru a schimba adresa expeditorului.</string>
   <string name="composer_error_store_draft_sender_address">Adresa expeditorului nu a fost salvată.</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Ciorna nu se poate salva - Destinatari nevalizi.</string>
   <string name="composer_error_store_draft_message_not_a_draft">Ciorna nu se poate salva - Acest mesaj nu este o ciornă.</string>
   <string name="composer_error_store_draft_generic">Ciorna nu se poate salva - A apărut o eroare generică.</string>
+  <string name="composer_error_create_draft">A apărut o problemă. Nu s-a putut crea o nouă ciornă.</string>
   <string name="composer_error_loading_draft">Conținutul acestei ciorne nu este disponibil momentan. Editarea nu este posibilă.</string>
   <string name="composer_add_attachments_content_description">Adăugare atașamente</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importare din…</string>

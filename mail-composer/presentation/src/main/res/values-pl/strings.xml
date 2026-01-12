@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Wyślij wiadomość</string>
   <string name="composer_expand_recipients_button">Pokaż innych odbiorców</string>
   <string name="composer_error_invalid_email">Adres e-mail nie jest prawidłowy lub nie istnieje</string>
-  <string name="composer_error_invalid_sender">Adres nadawcy jest nieprawidłowy</string>
   <string name="change_sender_button_content_description">Zmień nadawcę</string>
   <string name="composer_change_sender_paid_feature">Ulepsz do płatnego planu, aby zmienić adres nadawcy</string>
   <string name="composer_error_store_draft_sender_address">Adres nadawcy nie został zapisany</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Nie można zapisać szkicu. Odbiorcy są nieprawidłowi</string>
   <string name="composer_error_store_draft_message_not_a_draft">Nie można zapisać szkicu. Wiadomość nie jest szkicem</string>
   <string name="composer_error_store_draft_generic">Nie można zapisać szkicu. Wystąpił błąd</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">Zawartość szkicu nie jest obecnie dostępna. Edycja nie jest możliwa.</string>
   <string name="composer_add_attachments_content_description">Dodaj załączniki</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importuj z…</string>

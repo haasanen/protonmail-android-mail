@@ -184,13 +184,13 @@
   <string name="image_downloaded_successfully">Görsel indirildi</string>
   <!-- Raw message data screen -->
   <string name="raw_message_data_headers_title">İleti üst bilgileri</string>
-  <string name="raw_message_data_html_title">İleti HTML\'i</string>
+  <string name="raw_message_data_html_title">İleti HTML kodu</string>
   <string name="raw_message_data_close_button_content_description">Kapat</string>
-  <string name="raw_message_data_more_button_content_description">Daha fazla</string>
+  <string name="raw_message_data_more_button_content_description">Diğer</string>
   <string name="raw_message_data_download_action">İndir</string>
   <string name="raw_message_data_copy_action">Kopyala</string>
   <string name="raw_message_data_learn_more_action">Ayrıntılı bilgi alın</string>
-  <string name="raw_message_data_error">Veriler yüklenirken hata oluştu</string>
+  <string name="raw_message_data_error">Veriler yüklenirken sorun çıktı</string>
   <string name="raw_message_data_successful_download">İndirme tamamlandı</string>
-  <string name="raw_message_data_failed_download">İndirme başarısız oldu</string>
+  <string name="raw_message_data_failed_download">İndirme tamamlanamadı</string>
 </resources>

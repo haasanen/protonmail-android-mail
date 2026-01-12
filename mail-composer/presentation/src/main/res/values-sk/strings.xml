@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Odoslať správu</string>
   <string name="composer_expand_recipients_button">Zobraziť ostatných príjemcov</string>
   <string name="composer_error_invalid_email">Emailová adresa nie je platná alebo neexistuje</string>
-  <string name="composer_error_invalid_sender">Adresa odosielateľa je neplatná</string>
   <string name="change_sender_button_content_description">Zmeniť odosielateľa</string>
   <string name="composer_change_sender_paid_feature">Na zmenu adresy odosielateľa prejdite na platený plán</string>
   <string name="composer_error_store_draft_sender_address">Adresa odosielateľa nebola uložená</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Koncept nie je možné uložiť –neplatný príjemca(ovia)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Koncept nie je možné uložiť – táto správa nie je koncept</string>
   <string name="composer_error_store_draft_generic">Koncept nie je možné uložiť – došlo k všeobecnej chybe</string>
+  <string name="composer_error_create_draft">Niečo sa pokazilo. Nie je možné vytvoriť nový koncept.</string>
   <string name="composer_error_loading_draft">Obsah tohto konceptu nie je momentálne dostupný, úprava nie je možná.</string>
   <string name="composer_add_attachments_content_description">Pripojiť prílohy</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importovať z…</string>

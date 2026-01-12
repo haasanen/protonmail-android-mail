@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Надіслати повідомлення</string>
   <string name="composer_expand_recipients_button">Показати інших отримувачів</string>
   <string name="composer_error_invalid_email">Вказана адреса не дійсна або не існує</string>
-  <string name="composer_error_invalid_sender">Адреса відправника недійсна</string>
   <string name="change_sender_button_content_description">Змінити відправника</string>
   <string name="composer_change_sender_paid_feature">Перейдіть на платний тариф, щоби змінити адресу відправника</string>
   <string name="composer_error_store_draft_sender_address">Адресу відправника не збережено</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Не вдалося зберегти чернетку: неправильний(-і) отримувач(-і)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Неможливо зберегти чернетку: це повідомлення не є чернеткою</string>
   <string name="composer_error_store_draft_generic">Не вдалося зберегти чернетку: сталася загальна помилка</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">Наразі вміст цієї чернетки недоступний, редагування неможливе.</string>
   <string name="composer_add_attachments_content_description">Додати вкладення</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Імпортувати з…</string>

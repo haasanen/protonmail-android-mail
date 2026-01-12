@@ -28,7 +28,6 @@
   <string name="send_message_content_description">メッセージを送信</string>
   <string name="composer_expand_recipients_button">他の受信者を表示する</string>
   <string name="composer_error_invalid_email">メールアドレスが無効または存在しません</string>
-  <string name="composer_error_invalid_sender">送信者アドレスが無効</string>
   <string name="change_sender_button_content_description">送信者を変更</string>
   <string name="composer_change_sender_paid_feature">送信者アドレスを変更するには有料プランへのアップグレードが必要です</string>
   <string name="composer_error_store_draft_sender_address">下書きの送信元アドレスの保存に失敗しました</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">下書きを保存できません - 無効な宛先です</string>
   <string name="composer_error_store_draft_message_not_a_draft">下書きを保存できません - このメッセージは下書きではありません</string>
   <string name="composer_error_store_draft_generic">下書きを保存できませんでした - 一般的なエラーが発生しました。</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">この下書きの内容は現時点では利用できません、編集はできません。</string>
   <string name="composer_add_attachments_content_description">添付ファイルの追加</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">インポート...</string>
@@ -171,6 +171,6 @@
   <string name="composer_error_send_draft_too_many_attachments">下書きを送信できません - 添付ファイル数の上限に達しました</string>
   <string name="composer_error_send_draft_attachments_crypto_error">下書きを送信できません - 添付ファイルの暗号化に失敗しました。</string>
   <string name="composer_expiration_time_learn_more">より詳しく</string>
-  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
-  <string name="composer_sender_address_description">Choose Sender Address</string>
+  <string name="composer_enter_recipient_content_description">受信者を入力してください</string>
+  <string name="composer_sender_address_description">送信者アドレスを選択</string>
 </resources>

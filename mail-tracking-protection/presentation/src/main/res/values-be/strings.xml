@@ -17,13 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">Заблакіравана праграм сачэння: %s; ачышчана спасылак: %s</string>
-  <string name="trackers_protection">Абарона ад праграм сачэння:</string>
+  <string name="trackers_protection">Tracking protection:</string>
   <string name="show_details">Паказаць падрабязнасці</string>
-  <string name="trackers_protection_no_trackers_detected">Абарона ад праграм сачэння: праграм сачэння не выяўлена</string>
+  <string name="trackers_protection_no_trackers_detected">Tracking protection: no trackers detected</string>
   <string name="tracking_protection">Абарона ад праграм сачэння</string>
   <string name="tracking_protection_description">Наша сістэма актыўна абараняе вас ад праграм сачэння. Тут вы можаце праглядзець шпіёнскія пікселі, якія мы заблакіравалі, а таксама спасылкі для адсочвання, якія былі ачышчаны ў гэтым паведамленні.</string>
-  <string name="tracking_protection_learn_more">Даведацца больш...</string>
+  <string name="tracking_protection_learn_more">Learn more…</string>
   <string name="original">арыгінальны</string>
   <string name="cleaned">Ачышчана</string>
   <string name="action_close_dialog_button">Закрыць</string>

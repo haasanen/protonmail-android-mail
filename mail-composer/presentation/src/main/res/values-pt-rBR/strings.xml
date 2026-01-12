@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Enviar mensagem</string>
   <string name="composer_expand_recipients_button">Mostrar outros destinatários</string>
   <string name="composer_error_invalid_email">O endereço de e-mail não é válido ou não existe</string>
-  <string name="composer_error_invalid_sender">O endereço do remetente não é válido.</string>
   <string name="change_sender_button_content_description">Alterar o remetente</string>
   <string name="composer_change_sender_paid_feature">Faça upgrade para um plano pago para alterar o endereço do remetente</string>
   <string name="composer_error_store_draft_sender_address">O endereço do remetente não foi salvo</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Não foi possível salvar o rascunho - Destinatário(s) inválido(s)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Não foi possível salvar o rascunho - A mensagem não é um rascunho</string>
   <string name="composer_error_store_draft_generic">Não foi possível salvar o rascunho - Erro genérico</string>
+  <string name="composer_error_create_draft">Algo deu errado. Não foi possível criar um rascunho.</string>
   <string name="composer_error_loading_draft">O conteúdo deste rascunho não está disponível no momento. Não é possível editar.</string>
   <string name="composer_add_attachments_content_description">Adicionar anexos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar de…</string>
@@ -172,6 +172,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Não foi possível enviar o rascunho – Limite de anexos atingido</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Não foi possível enviar o rascunho – Falha na criptografia do anexo.</string>
   <string name="composer_expiration_time_learn_more">Saiba mais</string>
-  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
-  <string name="composer_sender_address_description">Choose Sender Address</string>
+  <string name="composer_enter_recipient_content_description">Insira um destinatário</string>
+  <string name="composer_sender_address_description">Escolher endereço do remetente</string>
 </resources>

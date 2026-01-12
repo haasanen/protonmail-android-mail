@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Αποστολή μηνύματος</string>
   <string name="composer_expand_recipients_button">Εμφάνιση άλλων παραληπτών</string>
   <string name="composer_error_invalid_email">Η ηλεκτρονική διεύθυνση δεν είναι έγκυρη ή δεν υπάρχει</string>
-  <string name="composer_error_invalid_sender">Μη έγκυρη διεύθυνση αποστολέα</string>
   <string name="change_sender_button_content_description">Αλλαγή αποστολέα</string>
   <string name="composer_change_sender_paid_feature">Αναβαθμίστε σε πλάνο επί πληρωμή για αλλαγή της διεύθυνσης αποστολέα</string>
   <string name="composer_error_store_draft_sender_address">Αποτυχία αποθήκευσης της διεύθυνσης αποστολέα</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Αδυναμία αποθήκευσης πρόχειρου - Μη έγκυρος/οι παραλήπτης/ες</string>
   <string name="composer_error_store_draft_message_not_a_draft">Αδυναμία αποθήκευσης πρόχειρου - Αυτό το μήνυμα δεν είναι πρόχειρο</string>
   <string name="composer_error_store_draft_generic">Αδυναμία αποθήκευσης πρόχειρου - Προέκυψε ένα γενικό σφάλμα</string>
+  <string name="composer_error_create_draft">Κάτι πήγε στραβά. Δεν είναι δυνατή η δημιουργία νέου πρόχειρου.</string>
   <string name="composer_error_loading_draft">Το περιεχόμενο αυτού του πρόχειρου δεν είναι διαθέσιμο προς το παρόν, η επεξεργασία δεν είναι εφικτή.</string>
   <string name="composer_add_attachments_content_description">Προσθήκη συνημμένων</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Εισαγωγή από…</string>

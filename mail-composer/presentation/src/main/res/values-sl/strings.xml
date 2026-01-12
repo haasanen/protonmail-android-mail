@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Pošlji sporočilo</string>
   <string name="composer_expand_recipients_button">Prikaži ostale prejemnike</string>
   <string name="composer_error_invalid_email">E-poštni naslov je neveljaven ali ne obstaja</string>
-  <string name="composer_error_invalid_sender">Pošiljateljev naslov ni veljaven</string>
   <string name="change_sender_button_content_description">Spremeni pošiljatelja</string>
   <string name="composer_change_sender_paid_feature">Za spreminjanje naslova pošiljatelja nadgradite na plačljiv paket</string>
   <string name="composer_error_store_draft_sender_address">Pošiljateljev naslov ni bil shranjen</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Osnutka ni mogoče shraniti – Neveljaven prejemnik ali prejemniki</string>
   <string name="composer_error_store_draft_message_not_a_draft">Osnutka ni mogoče shraniti – To sporočilo ni osnutek</string>
   <string name="composer_error_store_draft_generic">Osnutka ni mogoče shraniti – Prišlo je do splošne napake</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">Vsebina tega osnutka trenutno ni na voljo, urejanje ni mogoče.</string>
   <string name="composer_add_attachments_content_description">Dodaj priponke</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Uvozi iz ...</string>

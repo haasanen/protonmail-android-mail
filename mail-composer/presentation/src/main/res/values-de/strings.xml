@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Nachricht senden</string>
   <string name="composer_expand_recipients_button">Andere Empfänger anzeigen</string>
   <string name="composer_error_invalid_email">E-Mail-Adresse ist ungültig oder existiert nicht</string>
-  <string name="composer_error_invalid_sender">Absenderadresse ist ungültig</string>
   <string name="change_sender_button_content_description">Absender ändern</string>
   <string name="composer_change_sender_paid_feature">Auf ein kostenpflichtiges Abo umsteigen, um die Absenderadresse ändern zu können</string>
   <string name="composer_error_store_draft_sender_address">Absenderadresse wurde nicht gespeichert</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Entwurf konnte nicht gespeichert werden – Ungültige(r) Empfänger</string>
   <string name="composer_error_store_draft_message_not_a_draft">Entwurf konnte nicht gespeichert werden – Diese Nachricht ist kein Entwurf</string>
   <string name="composer_error_store_draft_generic">Entwurf konnte nicht gespeichert werden – Ein allgemeiner Fehler ist aufgetreten</string>
+  <string name="composer_error_create_draft">Ein Problem ist aufgetreten. Neuer Entwurf konnte nicht erstellt werden.</string>
   <string name="composer_error_loading_draft">Der Inhalt dieses Entwurfs ist zu diesem Zeitpunkt nicht verfügbar, eine Bearbeitung ist daher nicht möglich.</string>
   <string name="composer_add_attachments_content_description">Anhänge hinzufügen</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importieren aus…</string>

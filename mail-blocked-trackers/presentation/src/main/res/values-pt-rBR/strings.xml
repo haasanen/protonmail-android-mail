@@ -17,12 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s trackers blocked, %s links cleaned</string>
+  <string name="trackers_blocked_links_cleaned_numbers">%s rastreadores bloqueados, %s links limpos</string>
   <string name="trackers_protection">Proteção contra rastreadores:</string>
   <string name="show_details">Mostrar detalhes</string>
-  <string name="trackers_protection_no_trackers_detected">Tracker protection: no trackers detected</string>
+  <string name="trackers_protection_no_trackers_detected">Proteção contra rastreadores: nenhum rastreador detectado</string>
   <string name="tracking_protection">Proteção contra rastreadores</string>
-  <string name="tracking_protection_description">If you receive an email containing spy pixels (trackers) or tracking links, you’ll see the shield icon in email details.</string>
+  <string name="tracking_protection_description">Se você receber um e-mail contendo pixels espiões (rastreadores) ou links de rastreamento, você verá o ícone de escudo nos detalhes do e-mail.</string>
   <string name="tracking_protection_learn_more">Saiba mais...</string>
   <string name="original">original</string>
   <string name="cleaned">Limpo</string>

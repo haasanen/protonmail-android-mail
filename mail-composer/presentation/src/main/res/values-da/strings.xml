@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Send besked</string>
   <string name="composer_expand_recipients_button">Vis andre modtagere</string>
   <string name="composer_error_invalid_email">E-mailadresse er ugyldig eller findes ikke</string>
-  <string name="composer_error_invalid_sender">Afsenderadresse er ugyldig</string>
   <string name="change_sender_button_content_description">Skift afsender</string>
   <string name="composer_change_sender_paid_feature">Opgradér til et betalt abonnement for at ændre afsenderadressen</string>
   <string name="composer_error_store_draft_sender_address">Afsenderadresse blev ikke gemt</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Kan ikke gemme udkast - Ugyldig(e) modtager(e)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Kan ikke gemme udkast - Denne besked er ikke et udkast</string>
   <string name="composer_error_store_draft_generic">Kan ikke gemme udkastet - Der opstod en generisk fejl</string>
+  <string name="composer_error_create_draft">Noget gik galt. Et nyt udkast blev ikke oprettet.</string>
   <string name="composer_error_loading_draft">Indholdet af dette udkast er ikke tilgængelig på nuværende tidspunkt, og det er ikke muligt at redigere det.</string>
   <string name="composer_add_attachments_content_description">Tilføj vedhæftninger</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importér fra…</string>

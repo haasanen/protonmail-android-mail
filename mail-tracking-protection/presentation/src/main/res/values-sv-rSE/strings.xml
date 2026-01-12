@@ -17,10 +17,9 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s spårare blockerade, %s länkar rensade</string>
   <string name="trackers_protection">Spårningsskydd:</string>
   <string name="show_details">Visa detaljer</string>
-  <string name="trackers_protection_no_trackers_detected">Spårskydd: inga spårare upptäcktes</string>
+  <string name="trackers_protection_no_trackers_detected">Spårningsskydd: inga spårare upptäcktes</string>
   <string name="tracking_protection">Spårningsskydd</string>
   <string name="tracking_protection_description">Vi skyddar dig aktivt från spårning. Här kan du se de spionpixlar vi blockerade och de spårningslänkar vi rensade i detta meddelande.</string>
   <string name="tracking_protection_learn_more">Lär dig mer …</string>

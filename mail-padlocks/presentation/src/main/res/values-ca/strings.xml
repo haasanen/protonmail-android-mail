@@ -25,13 +25,13 @@
   <string name="padlocks_proton_e2ee_verified_sender_description">Aquest missatge està protegit amb el xifratge automàtic d\'extrem a extrem de Proton, i hem verificat que l\'ha enviat el remitent indicat.</string>
   <string name="padlocks_proton_e2ee_failed_verification">Xifrat d\'extrem a extrem de Proton amb verificació fallida</string>
   <string name="padlocks_proton_e2ee_failed_verification_description">Aquest missatge està protegit amb el xifratge automàtic d\'extrem a extrem de Proton. Tanmateix, la verificació del remitent ha fallat. \nConfirmeu l\'autenticitat del missatge amb el vostre contacte.</string>
-  <string name="padlocks_pgp_e2ee">PGP xifrat d\'extrem a extrem</string>
+  <string name="padlocks_pgp_e2ee">Xifrat d\'extrem a extrem amb PGP</string>
   <string name="padlocks_pgp_e2ee_description">Aquest missatge està protegit amb xifratge PGP d\'extrem a extrem. Està xifrat al dispositiu del remitent i només el pot desxifrar el destinatari. \n\nCom tots els missatges, està emmagatzemat als servidors de Proton mitjançant xifratge d\'accés zero.</string>
-  <string name="padlocks_pgp_e2ee_signed">PGP xifrat d’extrem a extrem i signat</string>
+  <string name="padlocks_pgp_e2ee_signed">Xifrat d\'extrem a extrem i signat amb PGP</string>
   <string name="padlocks_pgp_e2ee_signed_description">Aquest missatge està protegit amb xifratge PGP d\'extrem a extrem. Es xifra al dispositiu del remitent i només el pot desxifrar el destinatari.\n\nA més, la signatura demostra al destinatari que el vostre missatge és autèntic i que no s\'ha manipulat.</string>
-  <string name="padlocks_pgp_e2ee_verified_contact">PGP xifrat d\'extrem a extrem des d\'un contacte verificat</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">Xifrat d\'extrem a extrem amb PGP d\'un contacte verificat</string>
   <string name="padlocks_pgp_e2ee_verified_contact_description">Aquest missatge està protegit amb xifratge PGP d\'extrem a extrem. Està xifrat al dispositiu del remitent i només el pot desxifrar el destinatari. \n\nA més, hem verificat que el missatge ha estat enviat pel remitent indicat.</string>
-  <string name="padlocks_pgp_e2ee_failed_verification">PGP xifrat d’extrem a extrem amb verificació fallida</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">Xifrat d\'extrem a extrem amb PGP amb verificació fallida</string>
   <string name="padlocks_pgp_e2ee_failed_verification_description">Aquest missatge està protegit amb xifratge PGP d\'extrem a extrem. Està xifrat al dispositiu del remitent i només el pot desxifrar el destinatari. \n\nTanmateix, la verificació del remitent ha fallat. Si us plau, confirmeu l\'autenticitat del missatge amb el vostre contacte.</string>
   <string name="padlocks_pgp_signed">Missatge signat amb PGP</string>
   <string name="padlocks_pgp_signed_description">Aquest missatge no s\'ha enviat amb xifratge d\'extrem a extrem, però s\'emmagatzema als servidors de Proton mitjançant el xifratge d\'accés zero.\n\nTambé l\'heu signat digitalment, cosa que demostra al destinatari que el vostre missatge és autèntic i que no s\'ha manipulat.</string>
@@ -40,6 +40,6 @@
   <string name="padlocks_pgp_signed_failed_verification">Missatge signat amb PGP amb verificació fallida</string>
   <string name="padlocks_pgp_signed_failed_verification_description">Aquest missatge no s\'ha enviat amb xifratge d\'extrem a extrem, però s\'emmagatzema als servidors de Proton amb xifratge d\'accés zero. \n\nTanmateix, la verificació del remitent ha fallat. Confirmeu l\'autenticitat del missatge amb el vostre contacte.</string>
   <string name="padlocks_show_details">Mostra els detalls</string>
-  <string name="padlocks_learn_more">Per saber-ne més...</string>
+  <string name="padlocks_learn_more">Més informació...</string>
   <string name="padlocks_close_button_text">D\'acord</string>
 </resources>

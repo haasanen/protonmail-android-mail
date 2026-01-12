@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Invia il messaggio</string>
   <string name="composer_expand_recipients_button">Mostra gli altri destinatari</string>
   <string name="composer_error_invalid_email">Indirizzo email non valido</string>
-  <string name="composer_error_invalid_sender">Indirizzo mittente non valido</string>
   <string name="change_sender_button_content_description">Cambia il mittente</string>
   <string name="composer_change_sender_paid_feature">Passa a un piano a pagamento per cambiare l\'indirizzo mittente</string>
   <string name="composer_error_store_draft_sender_address">Salvataggio del mittente della bozza non riuscito</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Salvataggio della bozza non riuscito. Destinatario non valido.</string>
   <string name="composer_error_store_draft_message_not_a_draft">Questo messaggio non è una bozza</string>
   <string name="composer_error_store_draft_generic">Salvataggio della bozza non riuscito. Si è verificato un errore.</string>
+  <string name="composer_error_create_draft">Si è verificato un errore. Impossibile creare una nuova bozza.</string>
   <string name="composer_error_loading_draft">Caricamento del contenuto della bozza non riuscito. Modifica non disponibile.</string>
   <string name="composer_add_attachments_content_description">Aggiungi degli allegati</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importa da...</string>

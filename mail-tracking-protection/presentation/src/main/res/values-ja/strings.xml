@@ -17,13 +17,12 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">%s個のリンクをクリーンアップし、%s個のトラッカーをブロックしました</string>
-  <string name="trackers_protection">トラッカー防止数:</string>
+  <string name="trackers_protection">Tracking protection:</string>
   <string name="show_details">詳細を表示</string>
-  <string name="trackers_protection_no_trackers_detected">トラッカー防止数: トラッカーは検出されませんでした</string>
+  <string name="trackers_protection_no_trackers_detected">Tracking protection: no trackers detected</string>
   <string name="tracking_protection">トラッキング防止</string>
   <string name="tracking_protection_description">We actively protect you from tracking. Here you can view the spy pixels we blocked and the tracking links we cleaned in this message.</string>
-  <string name="tracking_protection_learn_more">もっと詳しく...</string>
+  <string name="tracking_protection_learn_more">Learn more…</string>
   <string name="original">オリジナル</string>
   <string name="cleaned">クリア済み</string>
   <string name="action_close_dialog_button">Close</string>

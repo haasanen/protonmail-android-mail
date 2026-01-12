@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Enviar mensagem</string>
   <string name="composer_expand_recipients_button">Mostrar os outros destinatários</string>
   <string name="composer_error_invalid_email">Email address is invalid or does not exist</string>
-  <string name="composer_error_invalid_sender">O endereço do remetente é inválido</string>
   <string name="change_sender_button_content_description">Alterar o remetente</string>
   <string name="composer_change_sender_paid_feature">Melhore para um plano pago para alterar o endereço do remetente.</string>
   <string name="composer_error_store_draft_sender_address">O endereço do remetente não foi guardado</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Unable to save draft - Invalid recipient(s)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Unable to save draft - This message is not a draft</string>
   <string name="composer_error_store_draft_generic">Unable to save draft - A generic error occurred</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">O conteúdo deste rascunho não está disponível no momento. A edição não é possível.</string>
   <string name="composer_add_attachments_content_description">Adicionar anexos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar de…</string>

@@ -17,16 +17,15 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="trackers_blocked_links_cleaned_numbers">S’han bloquejat %s rastrejadors i s’han netejat %s enllaços</string>
   <string name="trackers_protection">Protecció contra rastrejadors:</string>
   <string name="show_details">Mostra els detalls</string>
-  <string name="trackers_protection_no_trackers_detected">Protecció contra rastrejadors: no s’ha detectat cap rastrejador</string>
+  <string name="trackers_protection_no_trackers_detected">Protecció contra rastrejadors: no se n\'ha detectat cap</string>
   <string name="tracking_protection">Protecció contra rastrejadors</string>
   <string name="tracking_protection_description">Us protegim activament del rastreig. Aquí podeu veure els píxels espia que hem bloquejat i els enllaços de rastreig que hem netejat en aquest missatge.</string>
-  <string name="tracking_protection_learn_more">Més informació...</string>
+  <string name="tracking_protection_learn_more">Per saber-ne més…</string>
   <string name="original">original</string>
   <string name="cleaned">S\'ha netejat</string>
-  <string name="action_close_dialog_button">Tanqueu</string>
+  <string name="action_close_dialog_button">Tanca</string>
   <string name="got_it">D\'acord</string>
   <plurals name="number_of_blocked_trackers">
     <item quantity="one">S\'ha bloquejat %s rastrejador</item>

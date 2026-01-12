@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Envia missatge</string>
   <string name="composer_expand_recipients_button">Mostra els altres destinataris</string>
   <string name="composer_error_invalid_email">L\'adreça de correu no és vàlida o no existeix</string>
-  <string name="composer_error_invalid_sender">L\'adreça del remitent no és vàlida</string>
   <string name="change_sender_button_content_description">Canvia el remitent</string>
   <string name="composer_change_sender_paid_feature">Milloreu a un pla de pagament per canviar l\'adreça del remitent.</string>
   <string name="composer_error_store_draft_sender_address">No s\'ha pogut desar l\'adreça del remitent.</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">No s\'ha pogut desar l\'esborrany - Destinatari(s) no vàlids</string>
   <string name="composer_error_store_draft_message_not_a_draft">No s\'ha pogut desar l\'esborrany - Aquest missatge no és un esborrany</string>
   <string name="composer_error_store_draft_generic">No s\'ha pogut desar l\'esborrany - S\'ha produït un error genèric</string>
+  <string name="composer_error_create_draft">Alguna cosa ha anat malament. No s\'ha pogut crear un esborrany nou.</string>
   <string name="composer_error_loading_draft">El contingut d\'aquest esborrany no està disponible en aquest moment, no es pot editar.</string>
   <string name="composer_add_attachments_content_description">Afegiu fitxers adjunts</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar des de…</string>

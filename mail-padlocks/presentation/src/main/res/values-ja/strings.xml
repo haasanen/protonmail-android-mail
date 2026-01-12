@@ -17,17 +17,17 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="padlocks_stored_with_zero_access_encryption_summary">Stored with zero access encryption</string>
-  <string name="padlocks_stored_with_zero_access_encryption_description">This message is stored in your mailbox with zero‑access encryption. Neither Proton nor anyone else can read it. \n\nHowever, a sender or recipient not using Proton Mail may have a non-encrypted copy stored on their email server.</string>
-  <string name="padlocks_proton_e2ee">End-to-end encrypted message</string>
-  <string name="padlocks_proton_e2ee_description">Like all messages, it is stored on Proton servers using zero‑access encryption.</string>
-  <string name="padlocks_proton_e2ee_verified_sender">Proton end-to-end encrypted from verified sender</string>
-  <string name="padlocks_proton_e2ee_verified_sender_description">This message is protected with automatic Proton end‑to‑end encryption, and we verified it was sent by the stated sender.</string>
-  <string name="padlocks_proton_e2ee_failed_verification">Proton end-to-end encrypted with failed verification</string>
-  <string name="padlocks_proton_e2ee_failed_verification_description">This message is protected with automatic Proton end‑to‑end encryption. However, the sender verification failed. \nPlease confirm the authenticity of the message with your contact.</string>
-  <string name="padlocks_pgp_e2ee">PGP end-to-end encrypted</string>
-  <string name="padlocks_pgp_e2ee_description">This message is protected with PGP end-to-end encryption. It is encrypted on the sender\'s device and can only be decrypted by the recipient. \n\nLike all messages, it is stored on Proton servers using zero-access encryption.</string>
-  <string name="padlocks_pgp_e2ee_signed">PGP end-to-end encrypted and signed</string>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">ゼロアクセス暗号化で保存</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">このメッセージはゼロアクセス暗号化でメールボックスに保存されます。Protonも他のユーザーもこのメッセージを読むことはできません。\n\nただし、Proton Mailを使用していない送信者または受信者は、暗号化されていないコピーをメールサーバーに保存している可能性があります。</string>
+  <string name="padlocks_proton_e2ee">エンドツーエンド暗号化メッセージ</string>
+  <string name="padlocks_proton_e2ee_description">すべてのメッセージと同様に、ゼロアクセス暗号化を使用して Proton サーバーに保存されます。</string>
+  <string name="padlocks_proton_e2ee_verified_sender">検証済みの送信者からのProtonエンドツーエンド暗号化</string>
+  <string name="padlocks_proton_e2ee_verified_sender_description">このメッセージは自動 Proton エンドツーエンド暗号化で保護されており、記載された送信者から送信されたことが確認されました。</string>
+  <string name="padlocks_proton_e2ee_failed_verification">Protonのエンドツーエンド暗号化は検証に失敗した</string>
+  <string name="padlocks_proton_e2ee_failed_verification_description">このメッセージは自動Protonエンドツーエンド暗号化で保護されています。ただし、送信者の検証に失敗しました。\nメッセージの信頼性については、連絡先にご確認ください。</string>
+  <string name="padlocks_pgp_e2ee">PGPエンドツーエンド暗号化</string>
+  <string name="padlocks_pgp_e2ee_description">このメッセージはPGPエンドツーエンド暗号化で保護されています。送信者のデバイスで暗号化され、受信者のみが復号できます。\n\nすべてのメッセージと同様に、このメッセージはゼロアクセス暗号化を使用してProtonサーバーに保存されます。</string>
+  <string name="padlocks_pgp_e2ee_signed">PGPエンドツーエンド暗号化および署名</string>
   <string name="padlocks_pgp_e2ee_signed_description">This message is protected with PGP end-to-end encryption. It is encrypted on the sender\'s device and can only be decrypted by the recipient. \n\nAdditionally, the signature proves to the recipient that your message is genuine and hasn\'t been tampered with.</string>
   <string name="padlocks_pgp_e2ee_verified_contact">PGP end-to-end encrypted from verified contact</string>
   <string name="padlocks_pgp_e2ee_verified_contact_description">This message is protected with PGP end‑to‑end encryption. It is encrypted on the sender’s device and can only be decrypted by the recipient. \n\nAdditionally, we verified the message was sent by the stated sender.</string>

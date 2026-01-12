@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Kirim pesan</string>
   <string name="composer_expand_recipients_button">Tampilkan penerima lainnya</string>
   <string name="composer_error_invalid_email">Alamat email tidak valid atau tidak ada</string>
-  <string name="composer_error_invalid_sender">Alamat pengirim tidak valid</string>
   <string name="change_sender_button_content_description">Ubah pengirim</string>
   <string name="composer_change_sender_paid_feature">Tingkatkan ke paket berbayar untuk mengubah alamat pengirim</string>
   <string name="composer_error_store_draft_sender_address">Alamat pengirim tidak disimpan</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Draf tidak dapat disimpan - Penerima tidak valid</string>
   <string name="composer_error_store_draft_message_not_a_draft">Draf tidak dapat disimpan - Pesan ini bukan draf</string>
   <string name="composer_error_store_draft_generic">Draf tidak dapat disimpan - Terjadi suatu kesalahan umum</string>
+  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
   <string name="composer_error_loading_draft">Konten draf ini sedang tidak tersedia saat ini, penyuntingan tidak dimungkinkan.</string>
   <string name="composer_add_attachments_content_description">Tambah lampiran</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Impor dari…</string>

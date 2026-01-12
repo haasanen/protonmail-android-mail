@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Enviar mensaje</string>
   <string name="composer_expand_recipients_button">Mostrar los otros destinatarios</string>
   <string name="composer_error_invalid_email">La dirección de correo electrónico indicada no es válida o no existe</string>
-  <string name="composer_error_invalid_sender">La dirección del remitente no es válida.</string>
   <string name="change_sender_button_content_description">Cambiar el remitente</string>
   <string name="composer_change_sender_paid_feature">Mejora a un plan de pago para cambiar la dirección del remitente</string>
   <string name="composer_error_store_draft_sender_address">Error al guardar la dirección del remitente</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">No se puede guardar borrador - Destinatario(s) no válido(s)</string>
   <string name="composer_error_store_draft_message_not_a_draft">No se puede guardar el borrador - Este mensaje no es un borrador</string>
   <string name="composer_error_store_draft_generic">No se pudo guardar el borrador - Ocurrió un error genérico</string>
+  <string name="composer_error_create_draft">Algo ha salido mal. No se ha podido crear un nuevo borrador.</string>
   <string name="composer_error_loading_draft">El contenido de este borrador no está disponible en este momento, no es posible editarlo.</string>
   <string name="composer_add_attachments_content_description">Añadir archivos adjuntos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar desde…</string>

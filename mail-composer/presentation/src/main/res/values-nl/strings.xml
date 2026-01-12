@@ -28,7 +28,6 @@
   <string name="send_message_content_description">Verzend bericht</string>
   <string name="composer_expand_recipients_button">Andere ontvangers weergeven</string>
   <string name="composer_error_invalid_email">Het opgegeven adres is niet geldig of bestaat niet</string>
-  <string name="composer_error_invalid_sender">Adres verzender is ongeldig</string>
   <string name="change_sender_button_content_description">Verander afzender</string>
   <string name="composer_change_sender_paid_feature">Upgrade naar een betaald abonnement om het adres van de afzender te veranderen</string>
   <string name="composer_error_store_draft_sender_address">Adres van de afzender werd niet bewaard</string>
@@ -45,6 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Kan concept niet opslaan - Ongeldige ontvanger(s)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Kan concept niet opslaan - Dit bericht is geen concept</string>
   <string name="composer_error_store_draft_generic">Kan concept niet opslaan - Er is een algemene fout opgetreden</string>
+  <string name="composer_error_create_draft">Er ging iets mis. Kan geen nieuw concept aanmaken.</string>
   <string name="composer_error_loading_draft">De inhoud van dit concept is op dit moment niet beschikbaar, bewerken is niet mogelijk.</string>
   <string name="composer_add_attachments_content_description">Bestanden toevoegen</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importeren van…</string>
