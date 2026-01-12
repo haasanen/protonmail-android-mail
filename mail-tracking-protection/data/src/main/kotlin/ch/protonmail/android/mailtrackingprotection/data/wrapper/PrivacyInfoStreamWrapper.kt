@@ -16,16 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailtrackingprotection.domain.repository
+package ch.protonmail.android.mailtrackingprotection.data.wrapper
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedTracker
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.PrivacyInfo
+import uniffi.proton_mail_uniffi.WatchPrivacyInfoStream
+import uniffi.proton_mail_uniffi.WatchPrivacyInfoStreamNextAsyncResult
 
-interface TrackersProtectionRepository {
+class PrivacyInfoStreamWrapper(private val stream: WatchPrivacyInfoStream) {
 
-    fun observeTrackersForMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, List<BlockedTracker>>>
+    fun initialInfo(): PrivacyInfo = stream.initialInfo()
+
+    suspend fun nextAsync(): WatchPrivacyInfoStreamNextAsyncResult = stream.nextAsync()
 }

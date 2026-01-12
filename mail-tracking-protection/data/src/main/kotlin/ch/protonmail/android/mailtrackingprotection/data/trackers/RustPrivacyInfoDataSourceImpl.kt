@@ -23,27 +23,27 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailtrackingprotection.data.wrapper.RustTrackersWrapper
+import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoWrapper
+import ch.protonmail.android.mailtrackingprotection.data.wrapper.RustPrivacyInfoWrapper
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.TrackerDomain
-import uniffi.proton_mail_uniffi.WatchTrackerInfoStreamNextAsyncResult
+import uniffi.proton_mail_uniffi.WatchPrivacyInfoStreamNextAsyncResult
 import javax.inject.Inject
 
-class RustTrackersDataSourceImpl @Inject constructor() : RustTrackersDataSource {
+class RustPrivacyInfoDataSourceImpl @Inject constructor() : RustPrivacyInfoDataSource {
 
-    override fun observeTrackers(
-        rustTrackersWrapper: RustTrackersWrapper,
+    override fun observePrivacyInfo(
+        rustPrivacyInfoWrapper: RustPrivacyInfoWrapper,
         messageId: LocalMessageId
-    ): Flow<Either<DataError, List<TrackerDomain>>> = callbackFlow {
-        Timber.d("rust-tracker-protection: Starting tracking protection observation")
+    ): Flow<Either<DataError, PrivacyInfoWrapper>> = callbackFlow {
+        Timber.d("rust-privacy-protection: Starting tracking protection observation")
 
-        rustTrackersWrapper.watchTrackerInfoStream(messageId).onLeft { error ->
-            Timber.e("rust-tracker-protection: Failed to create stream watcher: $error")
+        rustPrivacyInfoWrapper.watchTrackerInfoStream(messageId).onLeft { error ->
+            Timber.e("rust-privacy-protection: Failed to create stream watcher: $error")
             trySend(error.left()).onFailure { throwable ->
                 Timber.w("Failed to send error: $throwable")
                 close(throwable)
@@ -52,35 +52,31 @@ class RustTrackersDataSourceImpl @Inject constructor() : RustTrackersDataSource 
             close()
             return@callbackFlow
         }.onRight { stream ->
-            Timber.d("rust-tracker-protection: Created tracking info watcher")
+            Timber.d("rust-privacy-protection: Created privacy info watcher")
 
-            val initialInfo = stream.initialInfo()?.trackers
-            if (initialInfo != null) send(initialInfo.right())
+            val initialInfo = stream.initialInfo()
+            val wrapped = PrivacyInfoWrapper(initialInfo)
+            if (wrapped != null) send(wrapped.right())
 
             while (isActive) {
                 when (val nextValueResult = stream.nextAsync()) {
-                    is WatchTrackerInfoStreamNextAsyncResult.Error -> {
-                        Timber.w("rust-tracker-protection: received new watcher error - ${nextValueResult.v1}")
+                    is WatchPrivacyInfoStreamNextAsyncResult.Error -> {
+                        Timber.w("rust-privacy-protection: received new watcher error - ${nextValueResult.v1}")
                         close()
                         return@callbackFlow
                     }
 
-                    WatchTrackerInfoStreamNextAsyncResult.Ok -> {
-                        rustTrackersWrapper.getTrackerInfoForMessage(messageId).onLeft { error ->
-                            Timber.w("rust-tracker-protection: error on getting next value - $error")
-                            close()
-                            return@callbackFlow
-                        }.onRight { trackerInfo ->
-                            val update = trackerInfo?.trackers
-                            if (update != null) send(update.right())
-                        }
+                    is WatchPrivacyInfoStreamNextAsyncResult.Ok -> {
+                        val wrapped = PrivacyInfoWrapper(nextValueResult.v1)
+                        if (wrapped != null) send(wrapped.right())
                     }
                 }
             }
         }
 
         awaitClose {
-            Timber.d("rust-tracker-protection: Closing watcher")
+            Timber.d("rust-privacy-protection: Closing watcher")
         }
     }
 }
+

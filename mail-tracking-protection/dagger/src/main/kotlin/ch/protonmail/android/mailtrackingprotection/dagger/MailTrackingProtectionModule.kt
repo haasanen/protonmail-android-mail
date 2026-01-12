@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailtrackingprotection.dagger
 
-import ch.protonmail.android.mailtrackingprotection.data.trackers.RustTrackersDataSource
-import ch.protonmail.android.mailtrackingprotection.data.trackers.RustTrackersDataSourceImpl
-import ch.protonmail.android.mailtrackingprotection.data.trackers.TrackersProtectionRepositoryImpl
-import ch.protonmail.android.mailtrackingprotection.domain.repository.TrackersProtectionRepository
+import ch.protonmail.android.mailtrackingprotection.data.trackers.PrivacyInfoRepositoryImpl
+import ch.protonmail.android.mailtrackingprotection.data.trackers.RustPrivacyInfoDataSource
+import ch.protonmail.android.mailtrackingprotection.data.trackers.RustPrivacyInfoDataSourceImpl
+import ch.protonmail.android.mailtrackingprotection.domain.repository.PrivacyInfoRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -36,9 +36,9 @@ object MailTrackingProtectionModule {
     internal interface BindsModule {
 
         @Binds
-        fun bindDataSource(impl: RustTrackersDataSourceImpl): RustTrackersDataSource
+        fun bindDataSource(impl: RustPrivacyInfoDataSourceImpl): RustPrivacyInfoDataSource
 
         @Binds
-        fun bindRepository(impl: TrackersProtectionRepositoryImpl): TrackersProtectionRepository
+        fun bindRepository(impl: PrivacyInfoRepositoryImpl): PrivacyInfoRepository
     }
 }

@@ -16,15 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailtrackingprotection.data.mapper
+package ch.protonmail.android.mailtrackingprotection.data.trackers
 
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoWrapper
-import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedPrivacyItems
-import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedTracker
-import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
+import ch.protonmail.android.mailtrackingprotection.data.wrapper.RustPrivacyInfoWrapper
+import kotlinx.coroutines.flow.Flow
 
-internal fun PrivacyInfoWrapper.toDomainPrivacyInfo(): BlockedPrivacyItems {
-    val trackers = trackerInfo.trackers.map { BlockedTracker(it.name, it.urls) }
-    val urls = strippedUtmInfo.links.map { CleanedLink(it.originalUrl, it.cleanedUrl) }
-    return BlockedPrivacyItems(trackers, urls)
+interface RustPrivacyInfoDataSource {
+
+    fun observePrivacyInfo(
+        rustPrivacyInfoWrapper: RustPrivacyInfoWrapper,
+        messageId: LocalMessageId
+    ): Flow<Either<DataError, PrivacyInfoWrapper>>
 }

@@ -16,19 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailtrackingprotection.data.trackers
+package ch.protonmail.android.mailtrackingprotection.domain.model
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailtrackingprotection.data.wrapper.RustTrackersWrapper
-import kotlinx.coroutines.flow.Flow
-import uniffi.proton_mail_uniffi.TrackerDomain
+data class BlockedPrivacyItems(
+    val trackers: List<BlockedTracker>,
+    val urls: List<CleanedLink>
+) {
 
-interface RustTrackersDataSource {
-
-    fun observeTrackers(
-        rustTrackersWrapper: RustTrackersWrapper,
-        messageId: LocalMessageId
-    ): Flow<Either<DataError, List<TrackerDomain>>>
+    val isEmpty = trackers.isEmpty() && urls.isEmpty()
 }
