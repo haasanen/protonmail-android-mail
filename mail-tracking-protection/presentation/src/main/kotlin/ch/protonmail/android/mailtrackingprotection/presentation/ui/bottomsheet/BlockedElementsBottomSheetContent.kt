@@ -51,10 +51,11 @@ import ch.protonmail.android.mailtrackingprotection.presentation.R
 import ch.protonmail.android.mailtrackingprotection.presentation.TrackersUiModelSample
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsSheetState
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.ui.bottomsheet.components.BlockedTrackersDetails
 import ch.protonmail.android.mailtrackingprotection.presentation.ui.bottomsheet.components.CleanedLinksDetails
 import ch.protonmail.android.mailtrackingprotection.presentation.ui.bottomsheet.components.CloseButton
-import ch.protonmail.android.mailtrackingprotection.presentation.ui.bottomsheet.components.TrackerUrlDialog
+import ch.protonmail.android.mailtrackingprotection.presentation.ui.bottomsheet.components.PrivacyInfoDialog
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
@@ -86,6 +87,13 @@ private fun NoBlockedElementsBottomSheetContent(modifier: Modifier = Modifier, o
         Header()
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+
+        BlockedTrackersDetails(
+            trackers = TrackersUiModel.Empty,
+            onUrlClick = { _, _ -> }
+        )
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
         CloseButton(onClick = onDismiss)
 
@@ -121,7 +129,10 @@ private fun BlockedElementsBottomSheetContent(
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
-        CleanedLinksDetails(blockedElements.links)
+        CleanedLinksDetails(
+            links = blockedElements.links,
+            onLinkClick = { label, url -> urlDialogContent.value = Pair(label, url) }
+        )
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Huge))
 
@@ -131,7 +142,7 @@ private fun BlockedElementsBottomSheetContent(
     }
 
     urlDialogContent.value?.let { domainUrlPair ->
-        TrackerUrlDialog(
+        PrivacyInfoDialog(
             domain = domainUrlPair.first,
             url = domainUrlPair.second,
             onDismiss = { urlDialogContent.value = null }

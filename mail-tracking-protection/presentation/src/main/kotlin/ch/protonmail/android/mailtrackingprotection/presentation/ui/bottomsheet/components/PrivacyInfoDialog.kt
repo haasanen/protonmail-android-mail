@@ -27,7 +27,7 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.mailtrackingprotection.presentation.R
 
 @Composable
-internal fun TrackerUrlDialog(
+internal fun PrivacyInfoDialog(
     domain: String,
     url: String,
     onDismiss: () -> Unit,

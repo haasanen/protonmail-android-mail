@@ -19,8 +19,10 @@
 package ch.protonmail.android.mailtrackingprotection.presentation.ui.bottomsheet.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.mailtrackingprotection.presentation.R
@@ -37,10 +40,11 @@ import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersU
 internal fun BlockedTrackersDetailsHeader(
     trackers: TrackersUiModel,
     isExpanded: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clickable(
                 enabled = trackers.isExpandable,
                 onClick = onClick,
@@ -62,14 +66,19 @@ internal fun BlockedTrackersDetailsHeader(
 
         if (trackers.isExpandable) {
             val chevronIcon = when {
-                isExpanded -> R.drawable.ic_proton_chevron_down
-                else -> R.drawable.ic_proton_chevron_up
+                isExpanded -> R.drawable.ic_proton_chevron_up
+                else -> R.drawable.ic_proton_chevron_down
             }
-            Icon(
-                painter = painterResource(id = chevronIcon),
-                contentDescription = null,
-                tint = ProtonTheme.colors.iconNorm
-            )
+            Box(
+                modifier = Modifier.size(ProtonDimens.IconSize.Default),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = chevronIcon),
+                    contentDescription = null,
+                    tint = ProtonTheme.colors.iconNorm
+                )
+            }
         }
     }
 }

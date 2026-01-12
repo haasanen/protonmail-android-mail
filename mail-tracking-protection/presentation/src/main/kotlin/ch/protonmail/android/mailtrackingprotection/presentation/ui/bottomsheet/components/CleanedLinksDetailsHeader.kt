@@ -37,10 +37,11 @@ import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLi
 internal fun CleanedLinksDetailsHeader(
     links: CleanedLinksUiModel,
     isExpanded: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clickable(
                 enabled = links.isExpandable,
                 onClick = onClick,
@@ -62,8 +63,8 @@ internal fun CleanedLinksDetailsHeader(
 
         if (links.isExpandable) {
             val chevronIcon = when {
-                isExpanded -> R.drawable.ic_proton_chevron_down
-                else -> R.drawable.ic_proton_chevron_up
+                isExpanded -> R.drawable.ic_proton_chevron_up
+                else -> R.drawable.ic_proton_chevron_down
             }
             Icon(
                 painter = painterResource(id = chevronIcon),

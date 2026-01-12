@@ -32,15 +32,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailtrackingprotection.presentation.TrackersUiModelSample
-import ch.protonmail.android.mailtrackingprotection.presentation.model.TrackersUiModel
+import ch.protonmail.android.mailtrackingprotection.presentation.model.CleanedLinksUiModel
 
 @Composable
-internal fun BlockedTrackersDetails(
-    trackers: TrackersUiModel,
-    onUrlClick: (String, String) -> Unit,
+internal fun CleanedLinksDetails(
+    links: CleanedLinksUiModel,
+    onLinkClick: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     val isExpanded = remember { mutableStateOf(false) }
 
     Column(
@@ -53,19 +52,27 @@ internal fun BlockedTrackersDetails(
             )
     ) {
 
-        BlockedTrackersDetailsHeader(
-            trackers,
+        CleanedLinksDetailsHeader(
+            links,
             isExpanded.value,
             onClick = { isExpanded.value = !isExpanded.value },
-            modifier = Modifier.padding(ProtonDimens.Spacing.ModeratelyLarger)
+            modifier = Modifier
+                .padding(horizontal = ProtonDimens.Spacing.ModeratelyLarger)
+                .then(
+                    if (isExpanded.value) {
+                        Modifier.padding(top = ProtonDimens.Spacing.ModeratelyLarger)
+                    } else {
+                        Modifier.padding(vertical = ProtonDimens.Spacing.ModeratelyLarger)
+                    }
+                )
         )
 
         AnimatedContent(isExpanded.value) {
             if (it) {
-                BlockedTrackersDetailsList(
-                    trackers = trackers,
-                    onUrlClick = onUrlClick,
-                    modifier = Modifier.padding(bottom = ProtonDimens.Spacing.ModeratelyLarger)
+                CleanedLinksDetailsList(
+                    modifier = Modifier.padding(vertical = ProtonDimens.Spacing.ModeratelyLarger),
+                    links = links,
+                    onLinkClick = onLinkClick
                 )
             }
         }
@@ -75,8 +82,8 @@ internal fun BlockedTrackersDetails(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewBlockedTrackersDetails() {
-    BlockedTrackersDetails(
-        trackers = TrackersUiModelSample.trackersAndLinks.trackers,
-        onUrlClick = { _, _ -> }
+    CleanedLinksDetails(
+        links = TrackersUiModelSample.trackersAndLinks.links,
+        onLinkClick = { _, _ -> }
     )
 }
