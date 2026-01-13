@@ -29,10 +29,10 @@ import uniffi.uniffi_common.UserApiServiceError.BadRequest
 import uniffi.uniffi_common.UserApiServiceError.Forbidden
 import uniffi.uniffi_common.UserApiServiceError.Internal
 import uniffi.uniffi_common.UserApiServiceError.InternalServerError
+import uniffi.uniffi_common.UserApiServiceError.NetworkFailure
 import uniffi.uniffi_common.UserApiServiceError.NotFound
 import uniffi.uniffi_common.UserApiServiceError.NotImplemented
 import uniffi.uniffi_common.UserApiServiceError.OtherHttpError
-import uniffi.uniffi_common.UserApiServiceError.OtherNetwork
 import uniffi.uniffi_common.UserApiServiceError.ServiceUnavailable
 import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
 import uniffi.uniffi_common.UserApiServiceError.Unauthorized
@@ -85,6 +85,6 @@ fun UserApiServiceError.toObservabilityValue(): PaymentObservabilityValue {
         is NotImplemented,
         is ServiceUnavailable -> PaymentObservabilityValue.HTTP5XX
         is OtherHttpError,
-        is OtherNetwork -> PaymentObservabilityValue.UNKNOWN
+        is NetworkFailure -> PaymentObservabilityValue.UNKNOWN
     }
 }

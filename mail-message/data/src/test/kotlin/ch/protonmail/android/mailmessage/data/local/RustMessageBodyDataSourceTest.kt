@@ -83,7 +83,6 @@ class RustMessageBodyDataSourceTest {
             "message body",
             false,
             0uL,
-            0uL,
             transformOpts,
             bodyBanners
         )

@@ -44,7 +44,7 @@ import uniffi.uniffi_common.UserApiServiceError.InternalServerError
 import uniffi.uniffi_common.UserApiServiceError.NotFound
 import uniffi.uniffi_common.UserApiServiceError.NotImplemented
 import uniffi.uniffi_common.UserApiServiceError.OtherHttpError
-import uniffi.uniffi_common.UserApiServiceError.OtherNetwork
+import uniffi.uniffi_common.UserApiServiceError.NetworkFailure
 import uniffi.uniffi_common.UserApiServiceError.ServiceUnavailable
 import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
 import uniffi.uniffi_common.UserApiServiceError.Unauthorized
@@ -97,7 +97,7 @@ fun UserApiServiceError.getErrorMessage() = when (this) {
     is Unauthorized -> v1
     is UnprocessableEntity -> v1
     is Internal -> v1
-    is OtherNetwork -> v1
+    is NetworkFailure -> v1
     is TooManyRequests -> v1
     is Forbidden -> v1
 }
