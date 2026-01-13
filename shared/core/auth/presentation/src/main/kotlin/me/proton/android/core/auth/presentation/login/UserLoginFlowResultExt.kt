@@ -41,21 +41,21 @@ import uniffi.uniffi_common.UserApiServiceError.BadRequest
 import uniffi.uniffi_common.UserApiServiceError.Forbidden
 import uniffi.uniffi_common.UserApiServiceError.Internal
 import uniffi.uniffi_common.UserApiServiceError.InternalServerError
+import uniffi.uniffi_common.UserApiServiceError.NetworkFailure
 import uniffi.uniffi_common.UserApiServiceError.NotFound
 import uniffi.uniffi_common.UserApiServiceError.NotImplemented
 import uniffi.uniffi_common.UserApiServiceError.OtherHttpError
-import uniffi.uniffi_common.UserApiServiceError.NetworkFailure
 import uniffi.uniffi_common.UserApiServiceError.ServiceUnavailable
 import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
 import uniffi.uniffi_common.UserApiServiceError.Unauthorized
 import uniffi.uniffi_common.UserApiServiceError.UnprocessableEntity
 
 fun LoginError.getErrorMessage(context: Context): String = when (this) {
-    is LoginError.FlowLogin -> v1.getErrorMessage()
-    is LoginError.FlowTotp -> v1.getErrorMessage()
-    is LoginError.FlowFido -> v1.getErrorMessage()
-    is LoginError.UserFetch -> v1.getErrorMessage()
-    is LoginError.KeySecretSaltFetch -> v1.getErrorMessage()
+    is LoginError.FlowLogin -> v1.getErrorMessage(context)
+    is LoginError.FlowTotp -> v1.getErrorMessage(context)
+    is LoginError.FlowFido -> v1.getErrorMessage(context)
+    is LoginError.UserFetch -> v1.getErrorMessage(context)
+    is LoginError.KeySecretSaltFetch -> v1.getErrorMessage(context)
     is LoginError.AuthStore -> v1
     is LoginError.Other -> v1
     is LoginError.InvalidState -> "LoginError.InvalidState"
@@ -86,7 +86,7 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
     }
 }
 
-fun UserApiServiceError.getErrorMessage() = when (this) {
+fun UserApiServiceError.getErrorMessage(context: Context) = when (this) {
     is BadRequest -> v1
     is OtherHttpError -> v2
     is BadGateway -> v1
@@ -97,9 +97,9 @@ fun UserApiServiceError.getErrorMessage() = when (this) {
     is Unauthorized -> v1
     is UnprocessableEntity -> v1
     is Internal -> v1
-    is NetworkFailure -> v1
     is TooManyRequests -> v1
     is Forbidden -> v1
+    is NetworkFailure -> context.getString(R.string.presentation_general_connection_error)
 }
 
 fun UnexpectedError.getErrorMessage() = when (this) {
@@ -129,7 +129,7 @@ private fun OtherErrorReason.getErrorMessage(context: Context) = when (this) {
 
 fun ProtonError.getErrorMessage(context: Context) = when (this) {
     is OtherReason -> v1.getErrorMessage(context)
-    is ServerError -> v1.getErrorMessage()
+    is ServerError -> v1.getErrorMessage(context)
     is Unexpected -> v1.getErrorMessage()
     is Network -> context.getString(R.string.presentation_general_connection_error)
     is NonProcessableActions -> context.getString(R.string.proton_error_non_processable_actions)
