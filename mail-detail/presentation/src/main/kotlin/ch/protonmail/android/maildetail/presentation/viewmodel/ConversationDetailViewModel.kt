@@ -381,7 +381,6 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 is ConversationDetailViewAction.DeleteRequested -> handleDeleteRequestedAction()
                 is ConversationDetailViewAction.DeleteDialogDismissed,
                 is ConversationDetailViewAction.DeleteMessageRequested,
-                is ConversationDetailViewAction.DismissBottomSheet,
                 is MessageBodyLinkClicked,
                 is ScrollRequestCompleted,
                 is ConversationDetailViewAction.ReportPhishing,
@@ -457,7 +456,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun handlePrintMessage(context: Context, messageId: MessageId) {
+    private fun handlePrintMessage(context: Context, messageId: MessageId) {
         val conversationState = state.value.conversationState
         val messagesState = state.value.messagesState
 
@@ -481,7 +480,6 @@ class ConversationDetailViewModel @AssistedInject constructor(
                 } else {
                     Timber.e("Can't print a message that is not expanded")
                 }
-                emitNewStateFrom(ConversationDetailViewAction.DismissBottomSheet)
             }
         }
     }

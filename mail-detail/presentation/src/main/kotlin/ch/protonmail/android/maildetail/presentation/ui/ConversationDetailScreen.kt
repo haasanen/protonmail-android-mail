@@ -206,6 +206,16 @@ fun ConversationDetailScreen(
     topBarState.title.value = uiModel?.subject ?: DetailScreenTopBar.NoTitle
     topBarState.isStarred.value = uiModel?.isStarred
 
+    fun dismissBottomSheet(continuation: () -> Unit = {}) {
+        scope.launch { bottomSheetState.hide() }
+            .invokeOnCompletion {
+                if (!bottomSheetState.isVisible) {
+                    showBottomSheet = false
+                }
+                continuation()
+            }
+    }
+
     ConsumableLaunchedEffect(effect = topBarState.topBarStarClickEffect.value) { starred ->
         if (starred) {
             viewModel.submit(ConversationDetailViewAction.Star)
@@ -217,16 +227,7 @@ fun ConversationDetailScreen(
     state.bottomSheetState?.let {
         ConsumableLaunchedEffect(effect = it.bottomSheetVisibilityEffect) { bottomSheetEffect ->
             when (bottomSheetEffect) {
-                BottomSheetVisibilityEffect.Hide -> {
-                    scope
-                        .launch { bottomSheetState.hide() }
-                        .invokeOnCompletion {
-                            if (!bottomSheetState.isVisible) {
-                                showBottomSheet = false
-                            }
-                        }
-                }
-
+                BottomSheetVisibilityEffect.Hide -> dismissBottomSheet()
                 BottomSheetVisibilityEffect.Show -> showBottomSheet = true
             }
         }
@@ -235,13 +236,13 @@ fun ConversationDetailScreen(
     DisposableEffect(Unit) {
         onDispose {
             if (bottomSheetState.currentValue != SheetValue.Hidden) {
-                viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                dismissBottomSheet()
             }
         }
     }
 
     BackHandler(bottomSheetState.isVisible) {
-        viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+        dismissBottomSheet()
     }
 
     BackHandler(!bottomSheetState.isVisible && isSystemBackButtonClickEnabled.value) {
@@ -312,7 +313,7 @@ fun ConversationDetailScreen(
                             val action = ConversationDetailViewAction.MoveToCompleted(mailLabelText, entryPoint)
                             viewModel.submit(action)
                         },
-                        onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
+                        onDismiss = { dismissBottomSheet() }
                     )
 
                     MoveToBottomSheetScreen(providedData = initialData, actions = actions)
@@ -334,7 +335,7 @@ fun ConversationDetailScreen(
                                 ConversationDetailViewAction.LabelAsCompleted(wasArchived, entryPoint)
                             )
                         },
-                        onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
+                        onDismiss = { dismissBottomSheet() }
                     )
 
                     LabelAsBottomSheetScreen(providedData = initialData, actions = actions)
@@ -368,20 +369,17 @@ fun ConversationDetailScreen(
                     state = bottomSheetContentState,
                     actions = DetailMoreActionsBottomSheetContent.Actions(
                         onReply = {
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onReply(it)
                             }
                         },
                         onReplyAll = {
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onReplyAll(it)
                             }
                         },
                         onForward = {
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onForward(it)
                             }
                         },
@@ -390,8 +388,9 @@ fun ConversationDetailScreen(
                         onUnStarMessage = { viewModel.submit(ConversationDetailViewAction.UnStarMessage(it)) },
                         onMoveToInbox = { viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Inbox(it)) },
                         onSaveMessageAsPdf = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
+                            dismissBottomSheet {
+                                actions.showFeatureMissingSnackbar()
+                            }
                         },
                         onLabel = {
                             viewModel.submit(ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(it))
@@ -421,7 +420,11 @@ fun ConversationDetailScreen(
                         onDelete = { viewModel.submit(ConversationDetailViewAction.DeleteMessageRequested(it)) },
                         onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Spam(it)) },
                         onMove = { viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(it)) },
-                        onPrint = { viewModel.submit(ConversationDetailViewAction.PrintMessage(context, it)) },
+                        onPrint = {
+                            dismissBottomSheet {
+                                viewModel.submit(ConversationDetailViewAction.PrintMessage(context, it))
+                            }
+                        },
                         onReportPhishing = { viewModel.submit(ConversationDetailViewAction.ReportPhishing(it)) },
 
                         onMarkReadConversation = { viewModel.submit(ConversationDetailViewAction.MarkRead) },
@@ -441,38 +444,36 @@ fun ConversationDetailScreen(
                         onStarConversation = { viewModel.submit(ConversationDetailViewAction.Star) },
                         onUnStarConversation = { viewModel.submit(ConversationDetailViewAction.UnStar) },
                         onPrintConversation = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
+                            dismissBottomSheet {
+                                actions.showFeatureMissingSnackbar()
+                            }
                         },
-                        onCloseSheet = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) },
+                        onCloseSheet = { dismissBottomSheet() },
                         onCustomizeToolbar = {
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onCustomizeToolbar()
                             }
                         },
                         onCustomizeMessageToolbar = {
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onCustomizeMessageToolbar()
                             }
                         },
                         onSaveConversationAsPdf = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
+                            dismissBottomSheet {
+                                actions.showFeatureMissingSnackbar()
+                            }
                         },
                         onSnooze = {
                             viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet)
                         },
                         onViewHeaders = { messageId ->
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onViewMessageHeaders(messageId)
                             }
                         },
                         onViewHtml = { messageId ->
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onViewMessageHtml(messageId)
                             }
                         }
@@ -486,25 +487,25 @@ fun ConversationDetailScreen(
                             val message = context.getString(R.string.contact_actions_copy_address_performed)
                             context.copyTextToClipboard(label = message, text = it)
 
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showSnackbar(message, ProtonSnackbarType.NORM)
+                            dismissBottomSheet {
+                                actions.showSnackbar(message, ProtonSnackbarType.NORM)
+                            }
                         },
                         onCopyNameClicked = {
                             val message = context.getString(R.string.contact_actions_copy_name_performed)
                             context.copyTextToClipboard(label = message, text = it)
 
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showSnackbar(message, ProtonSnackbarType.NORM)
+                            dismissBottomSheet {
+                                actions.showSnackbar(message, ProtonSnackbarType.NORM)
+                            }
                         },
                         onAddContactClicked = {
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onAddContact(BasicContactInfo(it.name, it.address))
                             }
                         },
                         onNewMessageClicked = {
-                            scope.launch {
-                                bottomSheetState.hide()
+                            dismissBottomSheet {
                                 actions.onComposeNewMessage(it.address)
                             }
                         },
@@ -530,12 +531,12 @@ fun ConversationDetailScreen(
 
                 is BlockedElementsSheetState -> BlockedElementsBottomSheetContent(
                     state = bottomSheetContentState,
-                    onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
+                    onDismiss = { dismissBottomSheet() }
                 )
 
                 is EncryptionInfoSheetState -> EncryptionInfoBottomSheetContent(
                     state = bottomSheetContentState,
-                    onDismissed = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
+                    onDismissed = { dismissBottomSheet() }
                 )
 
                 else -> Unit

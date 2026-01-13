@@ -211,7 +211,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object DeleteDialogDismissed : ConversationDetailViewAction, AffectingDeleteDialog
     object DeleteConfirmed : ConversationDetailViewAction, AffectingDeleteDialog, AffectingBottomSheet
     object RequestConversationMoveToBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
-    object DismissBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
 
     object RequestConversationLabelAsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     data class RequestMessageMoreActionsBottomSheet(

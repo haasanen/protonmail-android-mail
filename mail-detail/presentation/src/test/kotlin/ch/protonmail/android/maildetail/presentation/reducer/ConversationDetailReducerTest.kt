@@ -357,7 +357,6 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.MarkRead affects listOf(BottomSheet),
             ConversationDetailViewAction.MarkUnread affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestConversationMoveToBottomSheet affects BottomSheet,
-            ConversationDetailViewAction.DismissBottomSheet affects BottomSheet,
             ConversationDetailViewAction.MoveToCompleted(
                 MailLabelText(""), MoveToBottomSheetEntryPoint.Conversation
             ) affects listOf(BottomSheet, MessageBar),

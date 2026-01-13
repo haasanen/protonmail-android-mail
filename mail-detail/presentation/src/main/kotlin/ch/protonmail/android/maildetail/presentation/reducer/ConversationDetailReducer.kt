@@ -192,7 +192,6 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.Star,
                 is ConversationDetailViewAction.UnStar,
                 is ConversationDetailViewAction.ReportPhishing,
-                is ConversationDetailViewAction.DismissBottomSheet,
                 is ConversationDetailViewAction.SwitchViewMode,
                 is ConversationDetailViewAction.MarkMessageUnread,
                 is ConversationDetailViewAction.DeleteConfirmed,

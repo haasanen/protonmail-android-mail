@@ -2076,21 +2076,20 @@ internal class ConversationDetailViewModelIntegrationTest {
             advanceUntilIdle()
 
             // Then
-            val newExpandedState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
-            val expandedMessage = newExpandedState.messages.first { it.messageId == messages.first().messageId }
-            assertIs<Expanded>(expandedMessage)
-            assertEquals(
-                messages.first().messageBodyUiModel.attachments,
-                expandedMessage.messageBodyUiModel.attachments
-            )
-            assertFalse(expandedMessage.messageBodyUiModel.shouldShowExpandCollapseButton)
-
-            viewModel.submit(ConversationDetailViewAction.PrintMessage(context, messageId))
             val newItem = awaitItem()
             val conversationState = newItem.conversationState as ConversationDetailMetadataState.Data
-            val messageState = newItem.messagesState as ConversationDetailsMessagesState.Data
+            val messagesState = newItem.messagesState as ConversationDetailsMessagesState.Data
+            val message = messagesState.messages.first { it.messageId == messages.first().messageId }
 
-            val message = messageState.messages.first() as Expanded
+            assertIs<Expanded>(message)
+            assertEquals(
+                messages.first().messageBodyUiModel.attachments,
+                message.messageBodyUiModel.attachments
+            )
+            assertFalse(message.messageBodyUiModel.shouldShowExpandCollapseButton)
+
+            viewModel.submit(ConversationDetailViewAction.PrintMessage(context, messageId))
+            advanceUntilIdle()
 
             verify {
                 printMessage(
