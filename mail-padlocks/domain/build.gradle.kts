@@ -47,8 +47,10 @@ android {
 
 dependencies {
     implementation(project(":mail-common:domain"))
+    implementation(project(":mail-message:domain"))
 
     implementation(libs.bundles.module.domain)
+    implementation(libs.proton.core.domain)
 
     testImplementation(libs.bundles.test)
 }
