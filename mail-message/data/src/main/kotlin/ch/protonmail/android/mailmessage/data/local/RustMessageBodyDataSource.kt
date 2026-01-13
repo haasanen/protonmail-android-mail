@@ -24,6 +24,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalPrivacyLock
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
@@ -103,6 +104,16 @@ class RustMessageBodyDataSource @Inject constructor(
                     RawMessageData(decryptedMessage.rawBody()).right()
                 }
         }
+
+    override suspend fun getPrivacyLock(
+        userId: UserId,
+        messageId: LocalMessageId
+    ): Either<DataError, LocalPrivacyLock?> = withContext(ioDispatcher) {
+        getDecryptedMessageWrapper(userId, messageId)
+            .flatMap { decryptedMessage ->
+                decryptedMessage.privacyLocks().right()
+            }
+    }
 
     override suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =
         withContext(ioDispatcher) {

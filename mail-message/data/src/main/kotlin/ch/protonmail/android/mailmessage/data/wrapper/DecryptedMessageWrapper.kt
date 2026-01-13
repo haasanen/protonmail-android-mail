@@ -59,6 +59,8 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
 
     fun attachments(): List<AttachmentMetadata> = decryptedMessage.attachments()
 
+    suspend fun privacyLocks() = decryptedMessage.privacyLock()
+
     suspend fun identifyRsvp() = decryptedMessage.identifyRsvp()
 
     fun rawHeaders() = decryptedMessage.rawHeaders()

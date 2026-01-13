@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.local
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalPrivacyLock
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
@@ -47,6 +48,8 @@ interface MessageBodyDataSource {
     suspend fun getRawHeaders(userId: UserId, messageId: LocalMessageId): Either<DataError, RawMessageData>
 
     suspend fun getRawBody(userId: UserId, messageId: LocalMessageId): Either<DataError, RawMessageData>
+
+    suspend fun getPrivacyLock(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalPrivacyLock?>
 
     suspend fun unsubscribeFromNewsletter(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
 }
