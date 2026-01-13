@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -18,16 +18,24 @@
 
 package ch.protonmail.android.mailpadlocks.presentation
 
-import ch.protonmail.android.mailcommon.presentation.model.BottomSheetContentState
-import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 
-sealed interface EncryptionInfoSheetState : BottomSheetContentState {
-    data class Requested(val uiModel: EncryptionInfoUiModel.WithLock) : EncryptionInfoSheetState
-}
 
-sealed interface EncryptionInfoBottomSheetOperation : BottomSheetOperation
+internal object EncryptionInfoUiModelSample {
 
-sealed interface EncryptionInfoBottomSheetEvent : EncryptionInfoBottomSheetOperation {
-    data class Ready(val uiModel: EncryptionInfoUiModel.WithLock) : EncryptionInfoBottomSheetEvent
+    val StoredWithZeroAccessEncryption = EncryptionInfoUiModel.WithLock(
+        icon = R.drawable.ic_proton_lock_filled,
+        color = R.color.charade,
+        link = R.string.padlocks_stored_with_zero_access_encryption_link,
+        title = R.string.padlocks_stored_with_zero_access_encryption_summary,
+        description = R.string.padlocks_stored_with_zero_access_encryption_description
+    )
+
+    val ProtonE2ee = EncryptionInfoUiModel.WithLock(
+        icon = R.drawable.ic_proton_lock_filled,
+        color = R.color.padlock_blue,
+        link = R.string.padlocks_e2ee_link,
+        title = R.string.padlocks_proton_e2ee,
+        description = R.string.padlocks_proton_e2ee_description
+    )
 }

@@ -24,6 +24,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowEncryption
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpadlocks.domain.usecase.GetPrivacyLockForMessage
+import ch.protonmail.android.mailpadlocks.presentation.mapper.EncryptionInfoUiModelMapper
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.assisted.Assisted
@@ -56,10 +57,12 @@ class EncryptionInfoViewModel @AssistedInject constructor(
 
                 emit(EncryptionInfoState.Loading)
 
-                // Temporarily show placeholder
                 getPrivacyLockForMessage(userId, messageId).fold(
                     ifLeft = { emit(EncryptionInfoState.Disabled) },
-                    ifRight = { emit(EncryptionInfoState.Enabled) }
+                    ifRight = {
+                        val uiModel = EncryptionInfoUiModelMapper.fromPrivacyLock(it)
+                        emit(EncryptionInfoState.Enabled(uiModel))
+                    }
                 )
             }
         }

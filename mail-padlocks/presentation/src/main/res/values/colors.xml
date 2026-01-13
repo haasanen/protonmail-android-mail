@@ -19,6 +19,7 @@
   -->
 
 <resources>
+    <color name="padlock_black">@color/icon_norm</color>
     <color name="padlock_green">#39BA71</color>
     <color name="padlock_blue">#2C96F5</color>
 </resources>

@@ -652,7 +652,7 @@ object MessageDetailHeader {
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?, MessageIdUiModel) -> Unit,
         val onCollapseMessage: (MessageIdUiModel) -> Unit,
         val onBlockedTrackersClick: (BlockedElementsUiModel?) -> Unit,
-        val onEncryptionInfoClick: (EncryptionInfoUiModel) -> Unit
+        val onEncryptionInfoClick: (EncryptionInfoUiModel.WithLock) -> Unit
     ) {
 
         companion object {

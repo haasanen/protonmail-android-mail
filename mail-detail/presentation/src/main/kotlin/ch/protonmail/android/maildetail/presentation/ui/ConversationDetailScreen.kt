@@ -1365,7 +1365,7 @@ object ConversationDetailScreen {
         val onLoadImagesAfterImageProxyFailure: (MessageId) -> Unit,
         val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
         val onBlockedTrackersClick: (BlockedElementsUiModel?) -> Unit,
-        val onEncryptionInfoClick: (EncryptionInfoUiModel) -> Unit
+        val onEncryptionInfoClick: (EncryptionInfoUiModel.WithLock) -> Unit
     ) {
 
         companion object {

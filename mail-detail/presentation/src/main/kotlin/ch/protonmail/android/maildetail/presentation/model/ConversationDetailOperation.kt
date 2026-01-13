@@ -400,7 +400,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         ConversationDetailViewAction,
         AffectingBottomSheet
 
-    data class RequestEncryptionInfoBottomSheet(val uiModel: EncryptionInfoUiModel) :
+    data class RequestEncryptionInfoBottomSheet(val uiModel: EncryptionInfoUiModel.WithLock) :
         ConversationDetailViewAction,
         AffectingBottomSheet
 }

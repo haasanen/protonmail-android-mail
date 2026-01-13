@@ -70,7 +70,7 @@ fun EncryptionInfoBottomSheetContent(
 
 @Composable
 private fun EncryptionInfoBottomSheetContent(
-    uiModel: EncryptionInfoUiModel,
+    uiModel: EncryptionInfoUiModel.WithLock,
     onDismissed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -93,7 +93,7 @@ private fun EncryptionInfoBottomSheetContent(
 }
 
 @Composable
-private fun Header(uiModel: EncryptionInfoUiModel) {
+private fun Header(uiModel: EncryptionInfoUiModel.WithLock) {
 
     Column {
         HeaderIcon(uiModel)
@@ -112,7 +112,7 @@ private fun Header(uiModel: EncryptionInfoUiModel) {
 }
 
 @Composable
-private fun HeaderDescription(uiModel: EncryptionInfoUiModel) {
+private fun HeaderDescription(uiModel: EncryptionInfoUiModel.WithLock) {
     val text = stringResource(uiModel.description)
     val linkText = stringResource(R.string.padlocks_learn_more)
     val linkUrl = stringResource(uiModel.link)
@@ -141,7 +141,7 @@ private fun HeaderDescription(uiModel: EncryptionInfoUiModel) {
 }
 
 @Composable
-private fun HeaderIcon(uiModel: EncryptionInfoUiModel) {
+private fun HeaderIcon(uiModel: EncryptionInfoUiModel.WithLock) {
     Box(
         modifier = Modifier
             .size(ProtonDimens.IconSize.Huge)
@@ -177,12 +177,11 @@ private fun CloseButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun PreviewEncryptionInfoBottomSheet() {
     EncryptionInfoBottomSheetContent(
-        state = EncryptionInfoSheetState.Requested(EncryptionInfoUiModel.PgpE2eeWithFailedVerification),
+        state = EncryptionInfoSheetState.Requested(EncryptionInfoUiModelSample.StoredWithZeroAccessEncryption),
         onDismissed = {}
     )
 }

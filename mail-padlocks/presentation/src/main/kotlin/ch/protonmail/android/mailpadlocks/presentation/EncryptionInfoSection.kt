@@ -49,7 +49,7 @@ import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiMod
 @Composable
 fun EncryptionInfoSection(
     messageId: MessageId,
-    onMoreInfoClick: (EncryptionInfoUiModel) -> Unit,
+    onMoreInfoClick: (EncryptionInfoUiModel.WithLock) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -60,26 +60,33 @@ fun EncryptionInfoSection(
     }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    when (state) {
-        EncryptionInfoState.Enabled -> Text("Enabled")
-        is EncryptionInfoState.Disabled -> Text("Disabled")
-        EncryptionInfoState.Loading -> Text("loading")
+    when (val capturedState = state) {
+        is EncryptionInfoState.Enabled -> {
+            if (capturedState.uiModel is EncryptionInfoUiModel.WithLock) {
+                EncryptionInfo(
+                    uiModel = capturedState.uiModel,
+                    onMoreInfoClick = { onMoreInfoClick(capturedState.uiModel) },
+                    modifier = modifier
+                )
+            }
+        }
+
+        is EncryptionInfoState.Loading, // for Loading state we'll need a shimmer
+        is EncryptionInfoState.Disabled -> Unit
     }
 }
 
 @Composable
 private fun EncryptionInfo(
-    uiModel: EncryptionInfoUiModel,
+    uiModel: EncryptionInfoUiModel.WithLock,
     onMoreInfoClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.ModeratelyLarge)
     ) {
-        Row(
-            modifier = modifier,
-            horizontalArrangement = Arrangement.Start
-        ) {
+        Row(horizontalArrangement = Arrangement.Start) {
             Box(
                 modifier = Modifier.width(DetailsTitleWidth),
                 contentAlignment = Alignment.Center
@@ -118,7 +125,7 @@ private fun EncryptionInfo(
 @Composable
 fun PreviewEncryptionInfo() {
     EncryptionInfo(
-        uiModel = EncryptionInfoUiModel.StoredWithZeroAccessEncryption,
+        uiModel = EncryptionInfoUiModelSample.StoredWithZeroAccessEncryption,
         onMoreInfoClick = { }
     )
 }

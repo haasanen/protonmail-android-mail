@@ -51,7 +51,7 @@
     <string name="padlocks_pgp_signed_failed_verification_description">This message was not sent with end-to-end-encryption, but is stored on Proton servers using zero-access-encryption. \n\nHowever, the sender verification failed. Please confirm the authenticity of the message with your contact.</string>
 
     <string name="padlocks_show_details">Show details</string>
-    <string name="padlocks_learn_more">Learn more...</string>
+    <string name="padlocks_learn_more">Learn more</string>
     <string name="padlocks_close_button_text">Got it</string>
     <string name="padlocks_stored_with_zero_access_encryption_link" translatable="false">https://proton.me/blog/zero-access-encryption</string>
     <string name="padlocks_e2ee_link" translatable="false">https://proton.me/blog/what-is-end-to-end-encryption</string>
