@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -41,26 +42,28 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.DetailsTitleWidth
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoState
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 
 @Composable
 fun EncryptionInfoSection(
-    uiModel: EncryptionInfoUiModel,
+    messageId: MessageId,
     onMoreInfoClick: (EncryptionInfoUiModel) -> Unit,
-    viewModel: EncryptionInfoViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
 
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val viewModel = hiltViewModel<EncryptionInfoViewModel, EncryptionInfoViewModel.Factory>(
+        key = "encryptionInfo_${messageId.id}"
+    ) { factory ->
+        factory.create(messageId = messageId)
+    }
 
-    when (state.value) {
-        EncryptionInfoState.Enabled -> EncryptionInfo(
-            uiModel = uiModel,
-            onMoreInfoClick = { onMoreInfoClick(uiModel) },
-            modifier = modifier
-        )
-        is EncryptionInfoState.Disabled -> {}
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    when (state) {
+        EncryptionInfoState.Enabled -> Text("Enabled")
+        is EncryptionInfoState.Disabled -> Text("Disabled")
+        EncryptionInfoState.Loading -> Text("loading")
     }
 }
 

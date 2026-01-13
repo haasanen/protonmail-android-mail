@@ -22,35 +22,57 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowEncryptionInfoEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailpadlocks.domain.usecase.GetPrivacyLockForMessage
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoState
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 
-@HiltViewModel
-class EncryptionInfoViewModel @Inject constructor(
-    @IsShowEncryptionInfoEnabled val showEncryptionInfoFeatureFlag: FeatureFlag<Boolean>
+@HiltViewModel(assistedFactory = EncryptionInfoViewModel.Factory::class)
+class EncryptionInfoViewModel @AssistedInject constructor(
+    observePrimaryUserId: ObservePrimaryUserId,
+    private val getPrivacyLockForMessage: GetPrivacyLockForMessage,
+    @IsShowEncryptionInfoEnabled private val showEncryptionInfoFeatureFlag: FeatureFlag<Boolean>,
+    @Assisted private val messageId: MessageId
 ) : ViewModel() {
 
-    private val mutableState = MutableStateFlow<EncryptionInfoState>(EncryptionInfoState.Disabled)
+    val state: StateFlow<EncryptionInfoState> = observePrimaryUserId()
+        .filterNotNull()
+        .flatMapLatest { userId ->
+            flow {
+                if (!showEncryptionInfoFeatureFlag.get()) {
+                    emit(EncryptionInfoState.Disabled)
+                    return@flow
+                }
 
-    val state: StateFlow<EncryptionInfoState> = mutableState
+                emit(EncryptionInfoState.Loading)
 
-    init {
-        checkEncryptionInfoFeatureFlag()
-    }
-
-    private fun checkEncryptionInfoFeatureFlag() {
-        viewModelScope.launch {
-            if (showEncryptionInfoFeatureFlag.get()) {
-                mutableState.emit(EncryptionInfoState.Enabled)
-            } else {
-                mutableState.emit(EncryptionInfoState.Disabled)
+                // Temporarily show placeholder
+                getPrivacyLockForMessage(userId, messageId).fold(
+                    ifLeft = { emit(EncryptionInfoState.Disabled) },
+                    ifRight = { emit(EncryptionInfoState.Enabled) }
+                )
             }
         }
-    }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            EncryptionInfoState.Loading
+        )
 
+    @AssistedFactory
+    interface Factory {
+
+        fun create(messageId: MessageId): EncryptionInfoViewModel
+    }
 }
 

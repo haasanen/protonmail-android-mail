@@ -20,6 +20,7 @@ package ch.protonmail.android.mailpadlocks.presentation.model
 
 sealed interface EncryptionInfoState {
 
+    data object Loading : EncryptionInfoState
     data object Enabled : EncryptionInfoState
     data object Disabled : EncryptionInfoState
 }

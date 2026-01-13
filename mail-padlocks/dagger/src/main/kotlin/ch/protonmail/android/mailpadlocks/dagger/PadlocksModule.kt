@@ -23,17 +23,19 @@ import ch.protonmail.android.mailpadlocks.domain.repository.PrivacyLockRepositor
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module(includes = [PadlocksModule.BindsModule::class])
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object PadlocksModule {
 
     @Module
-    @InstallIn(SingletonComponent::class)
+    @InstallIn(ViewModelComponent::class)
     internal interface BindsModule {
 
         @Binds
+        @ViewModelScoped
         fun bindRepository(impl: RustPrivacyLockRepositoryImpl): PrivacyLockRepository
     }
 }

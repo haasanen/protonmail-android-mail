@@ -18,4 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class MessageIdUiModel(val id: String)
