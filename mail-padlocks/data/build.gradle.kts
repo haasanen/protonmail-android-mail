@@ -46,9 +46,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-padlocks:domain"))
 
+    compileOnly(libs.proton.rust.core)
     implementation(libs.bundles.module.data)
 
     testImplementation(libs.bundles.test)

@@ -72,6 +72,10 @@ import uniffi.proton_mail_uniffi.NonDefaultWeekStart
 import uniffi.proton_mail_uniffi.PartialDate
 import uniffi.proton_mail_uniffi.PgpScheme
 import uniffi.proton_mail_uniffi.PmSignature
+import uniffi.proton_mail_uniffi.PrivacyLock
+import uniffi.proton_mail_uniffi.PrivacyLockColor
+import uniffi.proton_mail_uniffi.PrivacyLockIcon
+import uniffi.proton_mail_uniffi.PrivacyLockTooltip
 import uniffi.proton_mail_uniffi.RemoteId
 import uniffi.proton_mail_uniffi.RsvpAnswer
 import uniffi.proton_mail_uniffi.RsvpAttendance
@@ -243,4 +247,7 @@ typealias LocalHiddenMessagesBanner = HiddenMessagesBanner
 typealias LocalAttachmentDataError = AttachmentDataError
 typealias LocalAttachmentDataErrorProxyFailed = AttachmentDataError.ProxyFailed
 typealias LocalAttachmentDataErrorOther = AttachmentDataError.Other
-
+typealias LocalPrivacyLock = PrivacyLock
+typealias LocalPrivacyLockColor = PrivacyLockColor
+typealias LocalPrivacyLockIcon = PrivacyLockIcon
+typealias LocalPrivacyLockTooltip = PrivacyLockTooltip
