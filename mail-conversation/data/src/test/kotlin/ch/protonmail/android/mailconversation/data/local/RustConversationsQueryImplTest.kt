@@ -45,13 +45,18 @@ class RustConversationsQueryImplTest {
     private val createRustConversationPaginator = mockk<CreateRustConversationPaginator>()
     private val rustMailboxFactory = mockk<RustMailboxFactory>()
     private val invalidationRepository = mockk<PageInvalidationRepository>()
-
+    private val scrollerRegistry = mockk<ConversationScrollerRegistry> {
+        coEvery { register(any()) } just Runs
+        coEvery { unregister(any()) } just Runs
+        coEvery { disconnectAll() } just Runs
+    }
 
     private val rustConversationsQuery = RustConversationsQueryImpl(
         rustMailboxFactory,
         createRustConversationPaginator,
         CoroutineScope(mainDispatcherRule.testDispatcher),
-        invalidationRepository
+        invalidationRepository,
+        scrollerRegistry
     )
 
     @Test

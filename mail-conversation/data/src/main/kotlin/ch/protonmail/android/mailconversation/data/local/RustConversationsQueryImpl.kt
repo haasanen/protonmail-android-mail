@@ -62,7 +62,8 @@ class RustConversationsQueryImpl @Inject constructor(
     private val rustMailboxFactory: RustMailboxFactory,
     private val createRustConversationPaginator: CreateRustConversationPaginator,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope,
-    private val invalidationRepository: PageInvalidationRepository
+    private val invalidationRepository: PageInvalidationRepository,
+    private val scrollerRegistry: ConversationScrollerRegistry
 ) : RustConversationsQuery {
 
     private var paginatorState: PaginatorState? = null
@@ -168,6 +169,8 @@ class RustConversationsQueryImpl @Inject constructor(
             callback = conversationsUpdatedCallback(scrollerOnUpdateHandler)
         )
             .onRight {
+                scrollerRegistry.register(it)
+
                 paginatorState = PaginatorState(
                     paginatorWrapper = it,
                     pageDescriptor = pageDescriptor,
@@ -241,14 +244,20 @@ class RustConversationsQueryImpl @Inject constructor(
     override fun observeScrollerFetchNewStatus(): Flow<ConversationScrollerStatusUpdate> =
         scrollerFetchNewStatusFlow.filterNotNull()
 
-    private fun destroy() {
-        if (paginatorState == null) {
+    private suspend fun destroy() {
+        val paginator = paginatorState?.paginatorWrapper
+
+        if (paginator == null) {
             Timber.d("rust-conversation-query: no paginator to destroy")
         } else {
             Timber.d("rust-conversation-query: disconnecting and destroying paginator")
-            paginatorState?.paginatorWrapper?.disconnect()
+            scrollerRegistry.unregister(paginator)
+            paginator.disconnect()
             paginatorState = null
         }
+
+        // Ensure no leaked scrollers remain registered.
+        scrollerRegistry.disconnectAll()
     }
 
     private fun invalidateLoadedItems() {
