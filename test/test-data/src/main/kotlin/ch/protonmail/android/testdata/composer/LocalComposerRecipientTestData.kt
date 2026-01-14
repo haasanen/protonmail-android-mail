@@ -21,6 +21,7 @@ package ch.protonmail.android.testdata.composer
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.ComposerRecipientSingle
 import uniffi.proton_mail_uniffi.ComposerRecipientValidState
+import uniffi.proton_mail_uniffi.PrivacyLock
 
 object LocalComposerRecipientTestData {
 
@@ -49,7 +50,11 @@ object LocalComposerRecipientTestData {
         name = "John"
     )
 
-    private fun build(address: String, name: String) = ComposerRecipient.Single(
-        ComposerRecipientSingle(name, address, ComposerRecipientValidState.Validating)
+    private fun build(
+        address: String,
+        name: String,
+        privacyLock: PrivacyLock? = null
+    ) = ComposerRecipient.Single(
+        ComposerRecipientSingle(name, address, ComposerRecipientValidState.Validating, privacyLock)
     )
 }
