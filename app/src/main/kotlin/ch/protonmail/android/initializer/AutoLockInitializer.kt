@@ -19,6 +19,7 @@
 package ch.protonmail.android.initializer
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -30,11 +31,18 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import timber.log.Timber
 
 class AutoLockInitializer : Initializer<Unit>, LifecycleEventObserver {
 
-    private var autoLockCheckPendingState: AutoLockCheckPendingState? = null
-    private var startAutoLockCountdown: StartAutoLockCountdown? = null
+    @VisibleForTesting
+    internal var autoLockCheckPendingState: AutoLockCheckPendingState? = null
+
+    @VisibleForTesting
+    internal var startAutoLockCountdown: StartAutoLockCountdown? = null
+
+    private var stoppedSinceLastResume = false
+    private var firstResume = true
 
     override fun create(context: Context) {
         autoLockCheckPendingState = EntryPointAccessors.fromApplication(
@@ -54,8 +62,23 @@ class AutoLockInitializer : Initializer<Unit>, LifecycleEventObserver {
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
-            Lifecycle.Event.ON_RESUME -> autoLockCheckPendingState?.triggerAutoLockCheck()
+            Lifecycle.Event.ON_RESUME -> {
+                val shouldTrigger = firstResume || stoppedSinceLastResume
+                firstResume = false
+                stoppedSinceLastResume = false
+
+                if (shouldTrigger) {
+                    Timber.d("auto-lock: Triggering auto lock check after resume")
+                    autoLockCheckPendingState?.triggerAutoLockCheck()
+                } else {
+                    Timber.d("auto-lock: Skipping auto lock check after resume, no prior STOP")
+                }
+            }
+
             Lifecycle.Event.ON_STOP -> {
+                stoppedSinceLastResume = true
+                Timber.d("auto-lock: App moved to background, starting auto-lock countdown")
+
                 autoLockCheckPendingState?.clearSkip()
                 startAutoLockCountdown?.invoke()
             }
