@@ -36,7 +36,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -48,21 +47,20 @@ fun MessageWebViewLongPressDialog(actions: MessageWebViewLongPressDialog.Actions
     BasicAlertDialog(onDismissRequest = actions.onDismissed) {
         Box(
             modifier = Modifier
-                .background(ProtonTheme.colors.backgroundNorm)
-                .clip(ProtonTheme.shapes.medium)
+                .background(
+                    color = ProtonTheme.colors.backgroundInvertedNorm,
+                    shape = ProtonTheme.shapes.huge
+                )
+                .clip(ProtonTheme.shapes.huge)
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 DialogLinkHeader(linkUri = linkUri)
-
-                MailDivider()
 
                 DialogLinkRow(
                     text = stringResource(id = R.string.message_link_long_click_copy),
                     uriAction = actions.onCopyClicked,
                     linkUri = linkUri
                 )
-
-                MailDivider()
 
                 DialogLinkRow(
                     text = stringResource(id = R.string.message_link_long_click_share),

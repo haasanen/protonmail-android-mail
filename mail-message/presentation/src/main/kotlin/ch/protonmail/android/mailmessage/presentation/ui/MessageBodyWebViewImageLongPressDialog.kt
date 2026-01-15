@@ -50,8 +50,11 @@ fun MessageWebViewImageLongPressDialog(
     BasicAlertDialog(onDismissRequest = onDismissed) {
         Box(
             modifier = Modifier
-                .background(ProtonTheme.colors.backgroundNorm)
-                .clip(ProtonTheme.shapes.medium)
+                .background(
+                    color = ProtonTheme.colors.backgroundInvertedNorm,
+                    shape = ProtonTheme.shapes.huge
+                )
+                .clip(ProtonTheme.shapes.huge)
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(
