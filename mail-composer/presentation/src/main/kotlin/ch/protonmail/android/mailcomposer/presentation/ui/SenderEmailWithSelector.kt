@@ -43,7 +43,7 @@ import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.uicomponents.chips.ChipsTestTags
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsTestTags
 
 @Composable
 internal fun SenderEmailWithSelector(

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,16 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.uicomponents.chips
+package ch.protonmail.android.mailcomposer.presentation.ui.chips
 
-object ChipsTestTags {
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 
-    const val BasicTextField = "BasicTextField"
-    const val FieldPrefix = "FieldPrefix"
-    const val InputChip = "InputChip"
-    const val InputChipLeadingIcon = "InputChipLeadingIcon"
-    const val InputChipTrailingIcon = "InputChipTraiilingIcon"
-    const val InputChipText = "InputChipText"
-    const val BaseSuggestionChip = "InputChip0"
-    const val AdditionalSuggestionChip = "InputChip1"
+/**
+ * Extension used to specify whether the field is valid or not as a custom [SemanticsPropertyKey].
+ */
+internal var SemanticsPropertyReceiver.isValidField by ChipsSemanticsPropertyKeys.isValidField
+
+internal object ChipsSemanticsPropertyKeys {
+
+    val isValidField = SemanticsPropertyKey<Boolean?>("IsValidFieldKey")
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,20 +16,20 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.uicomponents.chips
+package ch.protonmail.android.mailcomposer.presentation.ui.chips
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItemsList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.util.kotlin.takeIfNotBlank
 
 @Stable
-class ChipsListState(
+internal class ChipsListState(
     private val onListChanged: (List<ChipItem>) -> Unit
 ) {
 

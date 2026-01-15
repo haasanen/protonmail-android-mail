@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.uicomponents.chips.icons
+package ch.protonmail.android.mailcomposer.presentation.ui.chips.icon
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -27,8 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.uicomponents.chips.ChipsTestTags
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsTestTags
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 
 @Composable
 internal fun TrailingChipIcon(chipItem: ChipItem) {

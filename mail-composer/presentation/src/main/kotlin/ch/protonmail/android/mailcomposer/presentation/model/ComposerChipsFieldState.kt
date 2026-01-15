@@ -21,8 +21,8 @@ package ch.protonmail.android.mailcomposer.presentation.model
 import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.uicomponents.chips.ChipsListState
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsListState
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 
 internal data class ComposerChipsFieldState(
     val listState: ChipsListState,
@@ -33,7 +33,7 @@ internal data class ComposerChipsFieldState(
 )
 
 @Immutable
-data class InvalidRecipientsError(
+internal data class InvalidRecipientsError(
     val recipients: List<ChipItem.Invalid>,
     val errorMessage: TextUiModel
 )

@@ -63,13 +63,10 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.ui.RecipientChipActionsBottomSheetContent
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsList
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
-import ch.protonmail.android.uicomponents.chips.ChipsListState
-import ch.protonmail.android.uicomponents.chips.ChipsListTextField
-import ch.protonmail.android.uicomponents.chips.ChipsTestTags
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
@@ -77,7 +74,7 @@ import me.proton.core.util.kotlin.takeIfNotBlank
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComposerChipsListField(
+internal fun ComposerChipsListField(
     label: String,
     chipsList: ImmutableList<ChipItem>,
     modifier: Modifier = Modifier,
@@ -307,7 +304,7 @@ private fun ChipsListContent(
     }
 }
 
-object ComposerChipsListField {
+internal object ComposerChipsListField {
     data class Actions(
         val onSuggestionTermTyped: (String) -> Unit,
         val onSuggestionsDismissed: () -> Unit,

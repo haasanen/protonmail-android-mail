@@ -28,9 +28,9 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerChipsFieldState
 import ch.protonmail.android.mailcomposer.presentation.model.InvalidRecipientsError
-import ch.protonmail.android.uicomponents.chips.ChipsListState
-import ch.protonmail.android.uicomponents.chips.ChipsListState.Companion.ChipsCreationRegex
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsListState
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsListState.Companion.ChipsCreationRegex
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ComposerChipsListViewModel @Inject constructor() : ViewModel() {
+internal class ComposerChipsListViewModel @Inject constructor() : ViewModel() {
 
     internal val textFieldState = TextFieldState()
 

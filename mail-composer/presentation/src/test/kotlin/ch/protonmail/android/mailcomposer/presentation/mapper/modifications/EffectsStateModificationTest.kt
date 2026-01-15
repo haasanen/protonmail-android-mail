@@ -52,6 +52,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
@@ -88,7 +89,9 @@ internal class EffectsStateModificationTest(
                 DraftBody("Decrypted body of this draft")
             ),
             DraftMimeType.Html,
-            RecipientsTo(listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch"))),
+            RecipientsTo(
+                listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch", privacyLock = PrivacyLock.None))
+            ),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())
         )

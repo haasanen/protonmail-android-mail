@@ -23,9 +23,9 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.InvalidRecipientsError
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItemsList
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule

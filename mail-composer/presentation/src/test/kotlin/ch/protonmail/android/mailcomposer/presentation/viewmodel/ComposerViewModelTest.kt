@@ -100,6 +100,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
@@ -1694,7 +1695,8 @@ internal class ComposerViewModelTest {
         private fun buildSingleRecipient(
             name: String,
             address: String,
-            validity: DraftRecipientValidity = DraftRecipientValidity.Validating
-        ) = DraftRecipient.SingleRecipient(name, address, validity)
+            validity: DraftRecipientValidity = DraftRecipientValidity.Validating,
+            privacyLock: PrivacyLock = PrivacyLock.None
+        ) = DraftRecipient.SingleRecipient(name, address, validity, privacyLock)
     }
 }

@@ -43,14 +43,14 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ActionGroup
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ActionGroupItem
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
-fun RecipientChipActionsBottomSheetContent(
+internal fun RecipientChipActionsBottomSheetContent(
     chipItem: ChipItem,
     onCopy: (ChipItem) -> Unit,
     onRemove: (ChipItem) -> Unit,

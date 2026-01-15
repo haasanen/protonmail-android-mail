@@ -33,8 +33,8 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.pressKey
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsTestTags
 import ch.protonmail.android.test.utils.ComposeTestRuleHolder
-import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uitest.robot.composer.model.chips.RecipientChipEntry
 import ch.protonmail.android.uitest.robot.composer.model.chips.RecipientChipEntryModel
 import ch.protonmail.android.uitest.robot.composer.model.chips.RecipientChipValidationState.Invalid

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.uicomponents.chips
+package ch.protonmail.android.mailcomposer.presentation.ui.chips
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,13 +47,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.uicomponents.chips.icons.LeadingChipIcon
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import ch.protonmail.android.uicomponents.chips.item.assistChipColor
-import ch.protonmail.android.uicomponents.chips.item.inputChipBorder
-import ch.protonmail.android.uicomponents.chips.item.suggestionChipColor
-import ch.protonmail.android.uicomponents.chips.item.suggestionsTextStyle
-import ch.protonmail.android.uicomponents.chips.item.textStyle
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.icon.LeadingChipIcon
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.assistChipColor
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.inputChipBorder
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.suggestionChipColor
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.suggestionsTextStyle
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.textStyle
 import ch.protonmail.android.uicomponents.thenIf
 
 @Composable

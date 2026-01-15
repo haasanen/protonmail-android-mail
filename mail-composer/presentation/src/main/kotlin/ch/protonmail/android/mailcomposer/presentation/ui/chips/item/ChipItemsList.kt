@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,24 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.uicomponents.chips.item
+package ch.protonmail.android.mailcomposer.presentation.ui.chips.item
 
-import android.os.Parcelable
 import androidx.compose.runtime.Stable
-import kotlinx.parcelize.Parcelize
 
 @Stable
-sealed class ChipItem(open val value: String) : Parcelable {
+internal sealed class ChipItemsList {
 
-    @Parcelize
-    data class Validating(override val value: String) : ChipItem(value)
+    data object Empty : ChipItemsList()
 
-    @Parcelize
-    data class Valid(override val value: String) : ChipItem(value)
+    data class Focused(val items: List<ChipItem>) : ChipItemsList()
 
-    @Parcelize
-    data class Invalid(override val value: String) : ChipItem(value)
+    @Stable
+    sealed class Unfocused : ChipItemsList() {
 
-    @Parcelize
-    data class Counter(override val value: String) : ChipItem(value)
+        data class Single(val item: ChipItem) : Unfocused()
+        data class Multiple(val item: ChipItem, val counter: ChipItem) : Unfocused()
+    }
 }

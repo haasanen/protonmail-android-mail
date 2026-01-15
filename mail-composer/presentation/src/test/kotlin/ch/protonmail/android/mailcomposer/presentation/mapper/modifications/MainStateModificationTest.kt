@@ -35,6 +35,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 import kotlinx.collections.immutable.toImmutableList
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -69,7 +70,9 @@ internal class MainStateModificationTest(
                 DraftBody("Decrypted body of this draft")
             ),
             DraftMimeType.Html,
-            RecipientsTo(listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch"))),
+            RecipientsTo(
+                listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch", privacyLock = PrivacyLock.None))
+            ),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())
         )

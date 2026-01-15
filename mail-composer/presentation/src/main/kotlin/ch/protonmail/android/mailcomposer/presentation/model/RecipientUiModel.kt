@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import kotlinx.collections.immutable.toImmutableList
 
 sealed class RecipientUiModel(

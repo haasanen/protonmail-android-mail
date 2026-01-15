@@ -26,8 +26,8 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsTestTags
 import ch.protonmail.android.test.utils.ComposeTestRuleHolder
-import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uitest.util.assertions.CustomSemanticsPropertyKeyNames
 import ch.protonmail.android.uitest.util.child
 import ch.protonmail.android.uitest.util.extensions.getKeyValueByName

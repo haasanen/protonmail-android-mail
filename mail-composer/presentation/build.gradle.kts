@@ -23,6 +23,7 @@ plugins {
     kotlin("kapt")
     kotlin("android")
     kotlin("plugin.serialization")
+    id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")

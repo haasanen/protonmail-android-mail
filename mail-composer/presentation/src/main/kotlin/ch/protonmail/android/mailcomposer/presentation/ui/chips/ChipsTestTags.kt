@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,21 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.uicomponents.chips.item
+package ch.protonmail.android.mailcomposer.presentation.ui.chips
 
-import androidx.compose.runtime.Stable
+internal object ChipsTestTags {
 
-@Stable
-sealed class ChipItemsList {
-
-    data object Empty : ChipItemsList()
-
-    data class Focused(val items: List<ChipItem>) : ChipItemsList()
-
-    @Stable
-    sealed class Unfocused : ChipItemsList() {
-
-        data class Single(val item: ChipItem) : Unfocused()
-        data class Multiple(val item: ChipItem, val counter: ChipItem) : Unfocused()
-    }
+    const val BasicTextField = "BasicTextField"
+    const val FieldPrefix = "FieldPrefix"
+    const val InputChip = "InputChip"
+    const val InputChipLeadingIcon = "InputChipLeadingIcon"
+    const val InputChipTrailingIcon = "InputChipTraiilingIcon"
+    const val InputChipText = "InputChipText"
+    const val BaseSuggestionChip = "InputChip0"
+    const val AdditionalSuggestionChip = "InputChip1"
 }
