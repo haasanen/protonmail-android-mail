@@ -32,6 +32,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 
 object DraftFieldsTestData {
 
@@ -71,7 +72,8 @@ object DraftFieldsTestData {
         DraftRecipient.SingleRecipient(
             name = "",
             address = it,
-            validity = DraftRecipientValidity.Validating
+            validity = DraftRecipientValidity.Validating,
+            privacyLock = PrivacyLock.None
         )
     }
 }

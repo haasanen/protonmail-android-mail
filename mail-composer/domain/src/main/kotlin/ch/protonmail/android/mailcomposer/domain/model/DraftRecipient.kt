@@ -18,14 +18,18 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
+
 sealed interface DraftRecipient {
     data class GroupRecipient(
         val name: String,
         val recipients: List<SingleRecipient>
     ) : DraftRecipient
+
     data class SingleRecipient(
         val name: String?,
         val address: String,
-        val validity: DraftRecipientValidity = DraftRecipientValidity.Validating
+        val validity: DraftRecipientValidity = DraftRecipientValidity.Validating,
+        val privacyLock: PrivacyLock
     ) : DraftRecipient
 }

@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.model
 
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -113,8 +114,8 @@ internal class RecipientsStateManagerTest {
         val recipientsStateManager = RecipientsStateManager()
 
         val rawToList = listOf(
-            DraftRecipient.SingleRecipient(name = "", address = "a@bb.cc"),
-            DraftRecipient.SingleRecipient(name = "", address = "@@")
+            DraftRecipient.SingleRecipient(name = "", address = "a@bb.cc", privacyLock = PrivacyLock.None),
+            DraftRecipient.SingleRecipient(name = "", address = "@@", privacyLock = PrivacyLock.None)
         )
         val expectedToList: List<RecipientUiModel> = listOf(
             RecipientUiModel.Validating("a@bb.cc"),
@@ -122,10 +123,10 @@ internal class RecipientsStateManagerTest {
         )
 
         val rawCcList = listOf(
-            DraftRecipient.SingleRecipient(name = "", address = "one@two.three"),
-            DraftRecipient.SingleRecipient(name = "", address = "123"),
-            DraftRecipient.SingleRecipient(name = "", address = "two@three.four"),
-            DraftRecipient.SingleRecipient(name = "", address = "three@four.five")
+            DraftRecipient.SingleRecipient(name = "", address = "one@two.three", privacyLock = PrivacyLock.None),
+            DraftRecipient.SingleRecipient(name = "", address = "123", privacyLock = PrivacyLock.None),
+            DraftRecipient.SingleRecipient(name = "", address = "two@three.four", privacyLock = PrivacyLock.None),
+            DraftRecipient.SingleRecipient(name = "", address = "three@four.five", privacyLock = PrivacyLock.None)
         )
         val expectedCcList: List<RecipientUiModel> = listOf(
             RecipientUiModel.Validating("one@two.three"),
@@ -135,9 +136,9 @@ internal class RecipientsStateManagerTest {
         )
 
         val rawBccList = listOf(
-            DraftRecipient.SingleRecipient(name = "", address = "aaa"),
-            DraftRecipient.SingleRecipient(name = "", address = "test@example.com"),
-            DraftRecipient.SingleRecipient(name = "", address = "com@example.test")
+            DraftRecipient.SingleRecipient(name = "", address = "aaa", privacyLock = PrivacyLock.None),
+            DraftRecipient.SingleRecipient(name = "", address = "test@example.com", privacyLock = PrivacyLock.None),
+            DraftRecipient.SingleRecipient(name = "", address = "com@example.test", privacyLock = PrivacyLock.None)
         )
         val expectedBccList: List<RecipientUiModel> = listOf(
             RecipientUiModel.Validating("aaa"),

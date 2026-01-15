@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.mapper
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailpadlocks.presentation.mapper.EncryptionInfoUiModelMapper
 
 internal object RecipientUiModelMapper {
 
@@ -34,9 +35,13 @@ internal object RecipientUiModelMapper {
         is DraftRecipient.SingleRecipient -> singleRecipientToUiModel(recipient)
     }
 
-    private fun singleRecipientToUiModel(recipient: DraftRecipient.SingleRecipient) = when (recipient.validity) {
-        is DraftRecipientValidity.Invalid -> RecipientUiModel.Invalid(recipient.address)
-        DraftRecipientValidity.Valid -> RecipientUiModel.Valid(recipient.address)
-        DraftRecipientValidity.Validating -> RecipientUiModel.Validating(recipient.address)
+    private fun singleRecipientToUiModel(recipient: DraftRecipient.SingleRecipient): RecipientUiModel {
+        val encryptionInfo = EncryptionInfoUiModelMapper.fromPrivacyLock(recipient.privacyLock)
+
+        return when (recipient.validity) {
+            is DraftRecipientValidity.Invalid -> RecipientUiModel.Invalid(recipient.address, encryptionInfo)
+            DraftRecipientValidity.Valid -> RecipientUiModel.Valid(recipient.address, encryptionInfo)
+            DraftRecipientValidity.Validating -> RecipientUiModel.Validating(recipient.address, encryptionInfo)
+        }
     }
 }

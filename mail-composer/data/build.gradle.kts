@@ -62,6 +62,8 @@ dependencies {
     implementation(project(":mail-composer:domain"))
     implementation(project(":mail-message:data"))
     implementation(project(":mail-message:domain"))
+    implementation(project(":mail-padlocks:data"))
+    implementation(project(":mail-padlocks:domain"))
 
     testImplementation(libs.proton.rust.core)
     testImplementation(libs.bundles.test)

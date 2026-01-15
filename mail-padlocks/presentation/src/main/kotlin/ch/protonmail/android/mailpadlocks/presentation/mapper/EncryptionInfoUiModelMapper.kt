@@ -30,7 +30,7 @@ import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiMod
 import ch.protonmail.android.mailpadlocks.presentation.model.TooltipDescription
 import kotlinx.collections.immutable.toPersistentList
 
-internal object EncryptionInfoUiModelMapper {
+object EncryptionInfoUiModelMapper {
 
     // Reusable addendum descriptions
     private object Addendum {

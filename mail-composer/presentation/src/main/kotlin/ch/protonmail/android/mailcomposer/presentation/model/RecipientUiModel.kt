@@ -18,19 +18,35 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import kotlinx.collections.immutable.toImmutableList
 
-sealed class RecipientUiModel(open val address: String) {
-    data class Valid(override val address: String) : RecipientUiModel(address)
-    data class Invalid(override val address: String) : RecipientUiModel(address)
-    data class Validating(override val address: String) : RecipientUiModel(address)
+sealed class RecipientUiModel(
+    open val address: String,
+    open val encryptionInfo: EncryptionInfoUiModel
+) {
+
+    data class Valid(
+        override val address: String,
+        override val encryptionInfo: EncryptionInfoUiModel = EncryptionInfoUiModel.NoLock
+    ) : RecipientUiModel(address, encryptionInfo)
+
+    data class Invalid(
+        override val address: String,
+        override val encryptionInfo: EncryptionInfoUiModel = EncryptionInfoUiModel.NoLock
+    ) : RecipientUiModel(address, encryptionInfo)
+
+    data class Validating(
+        override val address: String,
+        override val encryptionInfo: EncryptionInfoUiModel = EncryptionInfoUiModel.NoLock
+    ) : RecipientUiModel(address, encryptionInfo)
 }
 
-fun List<RecipientUiModel>.toImmutableChipList() = this.map { it.toChipItem() }.toImmutableList()
+internal fun List<RecipientUiModel>.toImmutableChipList() = this.map { it.toChipItem() }.toImmutableList()
 
 private fun RecipientUiModel.toChipItem(): ChipItem = when (this) {
-    is RecipientUiModel.Invalid -> ChipItem.Invalid(address)
+    is RecipientUiModel.Invalid -> ChipItem.Invalid(address) // TODO HERE
     is RecipientUiModel.Valid -> ChipItem.Valid(address)
     is RecipientUiModel.Validating -> ChipItem.Validating(address)
 }

@@ -25,6 +25,8 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.domain.model.RecipientValidityError
 import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
+import ch.protonmail.android.mailpadlocks.data.mapper.toPrivacyLock
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.ComposerRecipientSingle
 import uniffi.proton_mail_uniffi.ComposerRecipientValidState
@@ -45,7 +47,8 @@ fun List<LocalComposerRecipient>.toSingleRecipients(): List<DraftRecipient.Singl
         DraftRecipient.SingleRecipient(
             name = localRecipient.displayName,
             address = localRecipient.address,
-            validity = localRecipient.validState.toDraftRecipientValidity()
+            validity = localRecipient.validState.toDraftRecipientValidity(),
+            privacyLock = localRecipient.privacyLock?.toPrivacyLock() ?: PrivacyLock.None
         )
     }
 
@@ -62,7 +65,8 @@ fun List<LocalComposerRecipient>.toComposerRecipients(): List<DraftRecipient> = 
 private fun ComposerRecipientSingle.toSingleDraftRecipient() = DraftRecipient.SingleRecipient(
     name = this.displayName,
     address = this.address,
-    validity = this.validState.toDraftRecipientValidity()
+    validity = this.validState.toDraftRecipientValidity(),
+    privacyLock = this.privacyLock?.toPrivacyLock() ?: PrivacyLock.None
 )
 
 private fun ComposerRecipientValidState.toDraftRecipientValidity() = when (this) {

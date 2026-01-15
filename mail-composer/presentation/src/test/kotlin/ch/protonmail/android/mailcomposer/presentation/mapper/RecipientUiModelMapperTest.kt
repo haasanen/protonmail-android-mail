@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.domain.model.RecipientValidityError
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -72,8 +73,8 @@ internal class RecipientUiModelMapperTest {
         // When
         val actual = RecipientUiModelMapper.mapFromDraftRecipients(
             listOf(
-                DraftRecipient.SingleRecipient(validAddress1.reversed(), validAddress1),
-                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2)
+                DraftRecipient.SingleRecipient(validAddress1.reversed(), validAddress1, privacyLock = PrivacyLock.None),
+                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2, privacyLock = PrivacyLock.None)
             )
         )
 
@@ -97,9 +98,10 @@ internal class RecipientUiModelMapperTest {
                 DraftRecipient.SingleRecipient(
                     invalidAddress.reversed(),
                     invalidAddress,
-                    DraftRecipientValidity.Invalid(RecipientValidityError.Format)
+                    DraftRecipientValidity.Invalid(RecipientValidityError.Format),
+                    privacyLock = PrivacyLock.None
                 ),
-                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2)
+                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2, privacyLock = PrivacyLock.None)
             )
         )
 
@@ -119,13 +121,14 @@ internal class RecipientUiModelMapperTest {
         // When
         val actual = RecipientUiModelMapper.mapFromDraftRecipients(
             listOf(
-                DraftRecipient.SingleRecipient(validAddress1.reversed(), validAddress1),
+                DraftRecipient.SingleRecipient(validAddress1.reversed(), validAddress1, privacyLock = PrivacyLock.None),
                 DraftRecipient.SingleRecipient(
                     invalidAddress.reversed(),
                     invalidAddress,
-                    DraftRecipientValidity.Invalid(RecipientValidityError.Format)
+                    DraftRecipientValidity.Invalid(RecipientValidityError.Format),
+                    privacyLock = PrivacyLock.None
                 ),
-                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2)
+                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2, privacyLock = PrivacyLock.None)
             )
         )
 

@@ -20,6 +20,7 @@ package ch.protonmail.android.testdata.composer
 
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 
 object DraftRecipientTestData {
 
@@ -58,10 +59,14 @@ object DraftRecipientTestData {
         name = ""
     )
 
-    fun build(address: String = "email@pm.me", name: String) = DraftRecipient.SingleRecipient(
+    fun build(
+        address: String = "email@pm.me",
+        name: String,
+        privacyLock: PrivacyLock = PrivacyLock.None
+    ) = DraftRecipient.SingleRecipient(
         name,
         address,
-        DraftRecipientValidity.Validating
+        DraftRecipientValidity.Validating,
+        privacyLock
     )
-
 }

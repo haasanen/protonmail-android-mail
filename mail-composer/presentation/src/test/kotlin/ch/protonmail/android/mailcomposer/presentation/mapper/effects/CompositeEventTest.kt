@@ -48,6 +48,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
@@ -81,7 +82,9 @@ internal class CompositeEventTest(
                 DraftBody("Decrypted body of this draft")
             ),
             DraftMimeType.Html,
-            RecipientsTo(listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch"))),
+            RecipientsTo(
+                listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch", privacyLock = PrivacyLock.None))
+            ),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())
         )

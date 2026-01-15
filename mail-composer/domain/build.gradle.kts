@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-message:domain"))
+    implementation(project(":mail-padlocks:domain"))
     implementation(project(":mail-featureflags:domain"))
 
     testImplementation(libs.bundles.test)

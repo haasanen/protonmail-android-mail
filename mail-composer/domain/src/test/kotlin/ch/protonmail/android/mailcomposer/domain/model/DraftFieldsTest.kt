@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
+import ch.protonmail.android.mailpadlocks.domain.PrivacyLock
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -37,7 +38,7 @@ class DraftFieldsTest {
         recipientsBcc = RecipientsBcc(emptyList())
     )
 
-    private val recipient = DraftRecipient.SingleRecipient("Name", "you@proton.ch")
+    private val recipient = DraftRecipient.SingleRecipient("Name", "you@proton.ch", privacyLock = PrivacyLock.None)
 
     @Test
     fun `when has no recipientsTo or recipientsCc or recipientsBcc then hasRecipient is false`() {
