@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItemsList
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.util.kotlin.takeIfNotBlank
 
@@ -38,10 +39,39 @@ internal class ChipsListState(
     private val focusedState: MutableState<Boolean> = mutableStateOf(false)
 
     fun updateItems(newItems: List<ChipItem>) {
-        if (newItems != items.toList()) {
-            items.clear()
-            items.addAll(newItems)
+        val mergedItems = newItems.map { newItem ->
+            val existingItem = items.find { it.value == newItem.value }
+            mergeEncryptionInfo(existingItem, newItem)
         }
+
+        if (mergedItems != items.toList()) {
+            items.clear()
+            items.addAll(mergedItems)
+        }
+    }
+
+    /**
+     * Preserves existing encryption info when the new item has NoLock but existing has WithLock.
+     * This prevents the lock icon from flashing during re-validation.
+     */
+    private fun mergeEncryptionInfo(existingItem: ChipItem?, newItem: ChipItem): ChipItem {
+        if (existingItem == null) return newItem
+
+        val existingHasLock = existingItem.encryptionInfo is EncryptionInfoUiModel.WithLock
+        val newHasNoLock = newItem.encryptionInfo is EncryptionInfoUiModel.NoLock
+
+        if (existingHasLock && newHasNoLock) {
+            return newItem.withEncryptionInfo(existingItem.encryptionInfo)
+        }
+
+        return newItem
+    }
+
+    private fun ChipItem.withEncryptionInfo(encryptionInfo: EncryptionInfoUiModel): ChipItem = when (this) {
+        is ChipItem.Valid -> copy(encryptionInfo = encryptionInfo)
+        is ChipItem.Invalid -> copy(encryptionInfo = encryptionInfo)
+        is ChipItem.Validating -> copy(encryptionInfo = encryptionInfo)
+        is ChipItem.Counter -> this
     }
 
     fun getItems(): ChipItemsList = when {
