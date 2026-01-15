@@ -35,7 +35,7 @@ import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsB
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetEvent
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
-import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoUiModelSample
 import ch.protonmail.android.mailtrackingprotection.presentation.TrackersUiModelSample
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsSheetState
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
@@ -152,9 +152,11 @@ internal class BottomSheetReducerTest(
             ),
             TestInput(
                 currentState = null,
-                operation = EncryptionInfoBottomSheetEvent.Ready(EncryptionInfoUiModel.ProtonE2ee),
+                operation = EncryptionInfoBottomSheetEvent.Ready(
+                    EncryptionInfoUiModelSample.StoredWithZeroAccessEncryption
+                ),
                 expectedState = BottomSheetState(
-                    EncryptionInfoSheetState.Requested(EncryptionInfoUiModel.ProtonE2ee),
+                    EncryptionInfoSheetState.Requested(EncryptionInfoUiModelSample.StoredWithZeroAccessEncryption),
                     Effect.of(BottomSheetVisibilityEffect.Show)
                 ),
                 reducesBottomSheetVisibilityEffects = true,

@@ -48,7 +48,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
-import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoUiModelSample
 import io.mockk.Called
 import io.mockk.coVerify
 import io.mockk.every
@@ -420,7 +420,7 @@ class ConversationDetailReducerTest(
                 affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestBlockedTrackersBottomSheet(null) affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(
-                EncryptionInfoUiModel.ProtonE2ee
+                EncryptionInfoUiModelSample.StoredWithZeroAccessEncryption
             ) affects listOf(BottomSheet)
         )
 

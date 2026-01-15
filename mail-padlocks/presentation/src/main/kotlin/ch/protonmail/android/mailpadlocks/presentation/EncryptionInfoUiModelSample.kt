@@ -20,7 +20,7 @@ package ch.protonmail.android.mailpadlocks.presentation
 
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 
-internal object EncryptionInfoUiModelSample {
+object EncryptionInfoUiModelSample {
 
     val StoredWithZeroAccessEncryption = EncryptionInfoUiModel.WithLock(
         icon = R.drawable.ic_proton_lock_filled,

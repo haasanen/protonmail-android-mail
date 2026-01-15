@@ -60,7 +60,7 @@ internal class EncryptionInfoUiModelMapperIconTest(
         val privacyLock = PrivacyLock.Value(
             icon = domainIcon,
             color = PrivacyLockColor.Black,
-            tooltip = PrivacyLockTooltip.None
+            tooltip = PrivacyLockTooltip.ZeroAccess
         )
 
         // When
@@ -128,7 +128,7 @@ internal class EncryptionInfoUiModelMapperColorTest(
         val privacyLock = PrivacyLock.Value(
             icon = PrivacyLockIcon.ClosedLock,
             color = domainColor,
-            tooltip = PrivacyLockTooltip.None
+            tooltip = PrivacyLockTooltip.ZeroAccess
         )
 
         // When

@@ -126,7 +126,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactA
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetEvent
 import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
-import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoUiModelSample
 import ch.protonmail.android.mailsession.domain.usecase.ExecuteWhenOnline
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
@@ -2333,15 +2333,16 @@ internal class ConversationDetailViewModelTest {
     @Test
     fun `verify request encryption info bottom sheet correctly sets bottom sheet state`() = runTest {
         // Given
+        val uiModel = EncryptionInfoUiModelSample.StoredWithZeroAccessEncryption
         val expectedResult = ConversationDetailState.Loading.copy(
             bottomSheetState = BottomSheetState(
-                contentState = EncryptionInfoSheetState.Requested(EncryptionInfoUiModel.ProtonE2ee),
+                contentState = EncryptionInfoSheetState.Requested(uiModel),
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
             )
         )
 
         viewModel.submit(
-            ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(EncryptionInfoUiModel.ProtonE2ee)
+            ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(uiModel)
         )
         advanceUntilIdle()
 
@@ -2349,7 +2350,7 @@ internal class ConversationDetailViewModelTest {
             reducer.newStateFrom(
                 any(),
                 ConversationDetailEvent.ConversationBottomSheetEvent(
-                    EncryptionInfoBottomSheetEvent.Ready(EncryptionInfoUiModel.ProtonE2ee)
+                    EncryptionInfoBottomSheetEvent.Ready(uiModel)
                 )
             )
         } returns expectedResult
@@ -2357,7 +2358,7 @@ internal class ConversationDetailViewModelTest {
         // When
         viewModel.state.test {
             viewModel.submit(
-                ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(EncryptionInfoUiModel.ProtonE2ee)
+                ConversationDetailViewAction.RequestEncryptionInfoBottomSheet(uiModel)
             )
             awaitItem()
 
