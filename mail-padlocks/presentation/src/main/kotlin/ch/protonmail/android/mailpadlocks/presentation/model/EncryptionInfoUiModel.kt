@@ -31,8 +31,13 @@ sealed interface EncryptionInfoUiModel {
     data class WithLock(
         @DrawableRes val icon: Int,
         @ColorRes val color: Int,
-        @StringRes val link: Int,
         @StringRes val title: Int,
-        @StringRes val description: Int
+        val descriptions: List<TooltipDescription>
     ) : EncryptionInfoUiModel
 }
+
+data class TooltipDescription(
+    @StringRes val text: Int,
+    @StringRes val linkText: Int? = null,
+    @StringRes val linkUrl: Int? = null
+)

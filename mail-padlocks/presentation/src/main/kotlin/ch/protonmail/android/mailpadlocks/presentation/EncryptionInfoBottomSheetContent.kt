@@ -42,7 +42,6 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -50,6 +49,7 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 import ch.protonmail.android.design.compose.theme.labelLargeNorm
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailpadlocks.presentation.model.TooltipDescription
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 
 @Composable
@@ -94,7 +94,6 @@ private fun EncryptionInfoBottomSheetContent(
 
 @Composable
 private fun Header(uiModel: EncryptionInfoUiModel.WithLock) {
-
     Column {
         HeaderIcon(uiModel)
 
@@ -105,35 +104,42 @@ private fun Header(uiModel: EncryptionInfoUiModel.WithLock) {
             style = ProtonTheme.typography.headlineSmallNorm
         )
 
-        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
-
-        HeaderDescription(uiModel)
+        uiModel.descriptions.forEach { description ->
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+            DescriptionText(description)
+        }
     }
 }
 
 @Composable
-private fun HeaderDescription(uiModel: EncryptionInfoUiModel.WithLock) {
-    val text = stringResource(uiModel.description)
-    val linkText = stringResource(R.string.padlocks_learn_more)
-    val linkUrl = stringResource(uiModel.link)
-    val linkColor = ProtonTheme.colors.interactionBrandDefaultNorm
+private fun DescriptionText(description: TooltipDescription) {
+    if (description.linkText == null || description.linkUrl == null) {
+        Text(
+            text = stringResource(description.text),
+            style = ProtonTheme.typography.bodyLargeNorm
+        )
+        return
+    }
 
-    val annotatedString = remember(text, linkText) {
+    val linkColor = ProtonTheme.colors.interactionBrandDefaultNorm
+    val linkText = stringResource(description.linkText)
+    val linkUrl = stringResource(description.linkUrl)
+    val formatted = stringResource(description.text, linkText)
+    val start = formatted.indexOf(linkText)
+
+    val annotatedString = remember(formatted, linkText) {
         buildAnnotatedString {
-            append(text)
-            append(" ")
-            withLink(
-                LinkAnnotation.Url(
-                    url = linkUrl,
-                    styles = TextLinkStyles(
-                        style = SpanStyle(color = linkColor)
-                    )
+            append(formatted)
+            if (start >= 0) {
+                addLink(
+                    LinkAnnotation.Url(linkUrl, TextLinkStyles(SpanStyle(color = linkColor))),
+                    start = start,
+                    end = start + linkText.length
                 )
-            ) {
-                append(linkText)
             }
         }
     }
+
     Text(
         text = annotatedString,
         style = ProtonTheme.typography.bodyLargeNorm
