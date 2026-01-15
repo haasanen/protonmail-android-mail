@@ -18,46 +18,78 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui.chips.icon
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.uicomponents.R
 
 @Composable
 internal fun LeadingChipIcon(chipItem: ChipItem) {
-    when (chipItem) {
-        is ChipItem.Invalid -> Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.ic_proton_exclamation_circle),
-            contentDescription = null,
-            modifier = Modifier
-                .size(ProtonDimens.IconSize.Small)
-                .testTag(ChipsTestTags.InputChipLeadingIcon),
-            tint = ProtonTheme.colors.notificationError
-        )
+    val iconState = chipItem.toIconState()
 
-        is ChipItem.Valid -> when (val encryptionInfo = chipItem.encryptionInfo) {
-            is EncryptionInfoUiModel.WithLock -> Icon(
-                imageVector = ImageVector.vectorResource(encryptionInfo.icon),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(ProtonDimens.IconSize.Small)
-                    .testTag(ChipsTestTags.InputChipLeadingIcon),
-                tint = colorResource(encryptionInfo.color)
-            )
+    Crossfade(
+        targetState = iconState,
+        animationSpec = tween(durationMillis = 200),
+        label = "ChipIconCrossfade"
+    ) { state ->
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            when (state) {
+                is ChipIconState.Invalid -> Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_proton_exclamation_circle),
+                    contentDescription = null,
+                    modifier = Modifier.size(ProtonDimens.IconSize.Small),
+                    tint = ProtonTheme.colors.notificationError
+                )
 
-            EncryptionInfoUiModel.NoLock -> Unit
+                is ChipIconState.Lock -> Icon(
+                    imageVector = ImageVector.vectorResource(state.icon),
+                    contentDescription = null,
+                    modifier = Modifier.size(ProtonDimens.IconSize.Small),
+                    tint = colorResource(state.color)
+                )
+
+                ChipIconState.Loading -> CircularProgressIndicator(
+                    modifier = Modifier.size(ProtonDimens.IconSize.Small),
+                    strokeWidth = 2.dp,
+                    color = ProtonTheme.colors.iconWeak
+                )
+
+                ChipIconState.None -> Unit
+            }
         }
-
-        else -> Unit
     }
+}
+
+private fun ChipItem.toIconState(): ChipIconState = when (this) {
+    is ChipItem.Invalid -> ChipIconState.Invalid
+    is ChipItem.Validating -> ChipIconState.Loading
+    is ChipItem.Valid -> when (val info = encryptionInfo) {
+        is EncryptionInfoUiModel.WithLock -> ChipIconState.Lock(info.icon, info.color)
+        EncryptionInfoUiModel.NoLock -> ChipIconState.None
+    }
+
+    is ChipItem.Counter -> ChipIconState.None
+}
+
+private sealed interface ChipIconState {
+    data object Invalid : ChipIconState
+    data object Loading : ChipIconState
+    data class Lock(val icon: Int, val color: Int) : ChipIconState
+    data object None : ChipIconState
 }
