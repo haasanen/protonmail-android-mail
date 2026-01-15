@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.ui.chips
 
 import android.content.ClipData
+import android.os.Parcelable
 import android.view.Gravity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -67,9 +68,13 @@ import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsList
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoBottomSheetContent
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoSheetState
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import me.proton.core.util.kotlin.takeIfNotBlank
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,10 +103,10 @@ internal fun ComposerChipsListField(
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState()
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var bottomSheetData by rememberSaveable { mutableStateOf<ChipItem?>(null) }
+    var bottomSheetContent by rememberSaveable { mutableStateOf<ChipBottomSheetContent?>(null) }
 
-    bottomSheetData?.let {
-        LaunchedEffect(bottomSheetData) {
+    bottomSheetContent?.let {
+        LaunchedEffect(bottomSheetContent) {
             showBottomSheet = true
             bottomSheetState.show()
         }
@@ -111,7 +116,7 @@ internal fun ComposerChipsListField(
         coroutineScope.launch {
             showBottomSheet = false
             bottomSheetState.hide()
-            bottomSheetData = null
+            bottomSheetContent = null
         }
     }
 
@@ -125,22 +130,36 @@ internal fun ComposerChipsListField(
         dismissOnBack = true,
         sheetState = bottomSheetState,
         sheetContent = {
-            bottomSheetData?.let { data ->
-                RecipientChipActionsBottomSheetContent(
-                    chipItem = data,
-                    onCopy = { chipItem ->
-                        coroutineScope.launch {
-                            clipboardManager.setClipEntry(
-                                ClipData.newPlainText(chipItem.value, chipItem.value).toClipEntry()
-                            )
+            when (val content = bottomSheetContent) {
+                is ChipBottomSheetContent.ChipActions -> {
+                    RecipientChipActionsBottomSheetContent(
+                        chipItem = content.chipItem,
+                        onCopy = { chipItem ->
+                            coroutineScope.launch {
+                                clipboardManager.setClipEntry(
+                                    ClipData.newPlainText(chipItem.value, chipItem.value).toClipEntry()
+                                )
+                            }
+                            resetBottomSheetState()
+                        },
+                        onRemove = { chipItem ->
+                            listState.onDelete(chipItem)
+                            resetBottomSheetState()
+                        },
+                        onEncryptionInfoClicked = { encryptionInfo ->
+                            bottomSheetContent = ChipBottomSheetContent.EncryptionInfo(encryptionInfo)
                         }
-                        resetBottomSheetState()
-                    },
-                    onRemove = { chipItem ->
-                        listState.onDelete(chipItem)
-                        resetBottomSheetState()
-                    }
-                )
+                    )
+                }
+
+                is ChipBottomSheetContent.EncryptionInfo -> {
+                    EncryptionInfoBottomSheetContent(
+                        state = EncryptionInfoSheetState.Requested(content.encryptionInfo),
+                        onDismissed = { resetBottomSheetState() }
+                    )
+                }
+
+                null -> Unit
             }
         }
     ) {
@@ -151,7 +170,9 @@ internal fun ComposerChipsListField(
             nextFocusRequester = nextFocusRequester,
             focusOnClick = focusOnClick,
             actions = actions,
-            onChipItemClicked = { chipItem -> bottomSheetData = chipItem },
+            onChipItemClicked = { chipItem ->
+                bottomSheetContent = ChipBottomSheetContent.ChipActions(chipItem)
+            },
             contactSuggestionState = contactSuggestionState,
             textFieldState = textFieldState,
             listState = listState,
@@ -324,4 +345,11 @@ internal object ComposerChipsListField {
             )
         }
     }
+}
+
+@Parcelize
+private sealed class ChipBottomSheetContent : Parcelable {
+
+    data class ChipActions(val chipItem: ChipItem) : ChipBottomSheetContent()
+    data class EncryptionInfo(val encryptionInfo: EncryptionInfoUiModel.WithLock) : ChipBottomSheetContent()
 }

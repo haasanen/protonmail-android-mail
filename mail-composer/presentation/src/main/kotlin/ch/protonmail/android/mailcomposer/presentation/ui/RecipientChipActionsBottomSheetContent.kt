@@ -28,8 +28,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,19 +41,23 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ActionGroup
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ActionGroupItem
+import ch.protonmail.android.mailpadlocks.presentation.EncryptionInfoUiModelSample
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.uicomponents.BottomNavigationBarSpacer
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
+@Suppress("UseComposableActions")
 internal fun RecipientChipActionsBottomSheetContent(
     chipItem: ChipItem,
     onCopy: (ChipItem) -> Unit,
     onRemove: (ChipItem) -> Unit,
+    onEncryptionInfoClicked: (EncryptionInfoUiModel.WithLock) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -61,7 +65,9 @@ internal fun RecipientChipActionsBottomSheetContent(
         modifier = modifier
             .fillMaxWidth()
             .background(ProtonTheme.colors.backgroundInvertedNorm)
-            .padding(ProtonDimens.Spacing.Large)
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .padding(top = ProtonDimens.Spacing.Standard)
+            .padding(bottom = ProtonDimens.Spacing.Large)
     ) {
         Column(
             modifier = modifier
@@ -79,16 +85,14 @@ internal fun RecipientChipActionsBottomSheetContent(
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = ProtonTheme.typography.titleLargeNorm,
+                style = ProtonTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
-
-            val actions = persistentListOf(Actions.Copy, Actions.Remove)
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
 
             ActionGroup(
                 modifier = Modifier,
-                items = actions,
+                items = persistentListOf(Actions.Copy, Actions.Remove),
                 onItemClicked = { source ->
                     when (source) {
                         Actions.Copy -> onCopy(chipItem)
@@ -103,6 +107,35 @@ internal fun RecipientChipActionsBottomSheetContent(
                     contentDescription = stringResource(action.description),
                     onClick = onClick
                 )
+            }
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
+
+            val encryptionInfo = chipItem.encryptionInfo
+            if (encryptionInfo is EncryptionInfoUiModel.WithLock) {
+                ActionGroup(
+                    modifier = Modifier,
+                    items = persistentListOf(encryptionInfo),
+                    onItemClicked = { source ->
+                        onEncryptionInfoClicked(source)
+                    }
+                ) { item, onClick ->
+                    ActionGroupItem(
+                        modifier = Modifier,
+                        icon = R.drawable.ic_proton_info_circle,
+                        description = stringResource(item.title),
+                        contentDescription = stringResource(item.title),
+                        onClick = onClick,
+                        secondaryContent = {
+                            Text(
+                                text = stringResource(R.string.composer_encryption_info_learn_more),
+                                style = ProtonTheme.typography.bodySmallNorm,
+                                color = ProtonTheme.colors.interactionBrandDefaultNorm
+                            )
+                        }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
             }
 
             BottomNavigationBarSpacer()
@@ -120,9 +153,10 @@ private enum class Actions(@DrawableRes val icon: Int, @StringRes val descriptio
 private fun PreviewInlineActions() {
     ProtonTheme {
         RecipientChipActionsBottomSheetContent(
-            chipItem = ChipItem.Valid("test@proton.me"),
+            chipItem = ChipItem.Valid("test@proton.me", EncryptionInfoUiModelSample.StoredWithZeroAccessEncryption),
             onCopy = {},
-            onRemove = {}
+            onRemove = {},
+            onEncryptionInfoClicked = {}
         )
     }
 }

@@ -24,11 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.ChipsTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.item.ChipItem
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.uicomponents.R
 
 @Composable
@@ -36,12 +38,25 @@ internal fun LeadingChipIcon(chipItem: ChipItem) {
     when (chipItem) {
         is ChipItem.Invalid -> Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_proton_exclamation_circle),
-            null,
+            contentDescription = null,
             modifier = Modifier
                 .size(ProtonDimens.IconSize.Small)
                 .testTag(ChipsTestTags.InputChipLeadingIcon),
             tint = ProtonTheme.colors.notificationError
         )
+
+        is ChipItem.Valid -> when (val encryptionInfo = chipItem.encryptionInfo) {
+            is EncryptionInfoUiModel.WithLock -> Icon(
+                imageVector = ImageVector.vectorResource(encryptionInfo.icon),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(ProtonDimens.IconSize.Small)
+                    .testTag(ChipsTestTags.InputChipLeadingIcon),
+                tint = colorResource(encryptionInfo.color)
+            )
+
+            EncryptionInfoUiModel.NoLock -> Unit
+        }
 
         else -> Unit
     }

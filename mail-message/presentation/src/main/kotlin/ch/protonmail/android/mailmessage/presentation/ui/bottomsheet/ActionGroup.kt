@@ -23,7 +23,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,7 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -81,7 +83,8 @@ fun ActionGroupItem(
     @DrawableRes icon: Int,
     description: String,
     contentDescription: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    secondaryContent: @Composable (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
@@ -99,7 +102,7 @@ fun ActionGroupItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -109,15 +112,23 @@ fun ActionGroupItem(
                 painter = painterResource(id = icon),
                 contentDescription = contentDescription
             )
-            Text(
+            Column(
                 modifier = Modifier
                     .testTag(MoreActionsBottomSheetTestTags.LabelIcon)
-                    .weight(1f),
-                text = description,
-                style = ProtonTheme.typography.bodyLargeWeak,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+                    .weight(1f)
+            ) {
+                Text(
+                    text = description,
+                    style = ProtonTheme.typography.bodyLargeNorm,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (secondaryContent != null) {
+                    Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
+                    secondaryContent()
+                }
+            }
         }
     }
 }
