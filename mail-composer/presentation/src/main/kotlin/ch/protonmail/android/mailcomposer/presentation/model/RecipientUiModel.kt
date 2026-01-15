@@ -46,7 +46,7 @@ sealed class RecipientUiModel(
 internal fun List<RecipientUiModel>.toImmutableChipList() = this.map { it.toChipItem() }.toImmutableList()
 
 private fun RecipientUiModel.toChipItem(): ChipItem = when (this) {
-    is RecipientUiModel.Invalid -> ChipItem.Invalid(address) // TODO HERE
-    is RecipientUiModel.Valid -> ChipItem.Valid(address)
-    is RecipientUiModel.Validating -> ChipItem.Validating(address)
+    is RecipientUiModel.Invalid -> ChipItem.Invalid(address, encryptionInfo)
+    is RecipientUiModel.Valid -> ChipItem.Valid(address, encryptionInfo)
+    is RecipientUiModel.Validating -> ChipItem.Validating(address, encryptionInfo)
 }

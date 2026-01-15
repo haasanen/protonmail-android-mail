@@ -20,20 +20,36 @@ package ch.protonmail.android.mailcomposer.presentation.ui.chips.item
 
 import android.os.Parcelable
 import androidx.compose.runtime.Stable
+import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import kotlinx.parcelize.Parcelize
 
 @Stable
-internal sealed class ChipItem(open val value: String) : Parcelable {
+internal sealed class ChipItem(
+    open val value: String,
+    open val encryptionInfo: EncryptionInfoUiModel
+) : Parcelable {
 
     @Parcelize
-    data class Validating(override val value: String) : ChipItem(value)
+    data class Validating(
+        override val value: String,
+        override val encryptionInfo: EncryptionInfoUiModel = EncryptionInfoUiModel.NoLock
+    ) : ChipItem(value, encryptionInfo)
 
     @Parcelize
-    data class Valid(override val value: String) : ChipItem(value)
+    data class Valid(
+        override val value: String,
+        override val encryptionInfo: EncryptionInfoUiModel = EncryptionInfoUiModel.NoLock
+    ) : ChipItem(value, encryptionInfo)
 
     @Parcelize
-    data class Invalid(override val value: String) : ChipItem(value)
+    data class Invalid(
+        override val value: String,
+        override val encryptionInfo: EncryptionInfoUiModel = EncryptionInfoUiModel.NoLock
+    ) : ChipItem(value, encryptionInfo)
 
     @Parcelize
-    data class Counter(override val value: String) : ChipItem(value)
+    data class Counter(
+        override val value: String,
+        override val encryptionInfo: EncryptionInfoUiModel = EncryptionInfoUiModel.NoLock
+    ) : ChipItem(value, encryptionInfo)
 }

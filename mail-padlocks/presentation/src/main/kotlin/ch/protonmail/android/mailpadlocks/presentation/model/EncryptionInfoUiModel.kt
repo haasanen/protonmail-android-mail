@@ -18,17 +18,21 @@
 
 package ch.protonmail.android.mailpadlocks.presentation.model
 
+import android.os.Parcelable
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Stable
+import kotlinx.parcelize.Parcelize
 import kotlinx.collections.immutable.ImmutableList
 
 @Stable
-sealed interface EncryptionInfoUiModel {
+sealed interface EncryptionInfoUiModel : Parcelable {
 
+    @Parcelize
     data object NoLock : EncryptionInfoUiModel
 
+    @Parcelize
     data class WithLock(
         @DrawableRes val icon: Int,
         @ColorRes val color: Int,
@@ -37,8 +41,9 @@ sealed interface EncryptionInfoUiModel {
     ) : EncryptionInfoUiModel
 }
 
+@Parcelize
 data class TooltipDescription(
     @StringRes val text: Int,
     @StringRes val linkText: Int? = null,
     @StringRes val linkUrl: Int? = null
-)
+) : Parcelable
