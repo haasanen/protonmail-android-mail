@@ -77,7 +77,7 @@ internal class ComposerChipsListViewModel @Inject constructor() : ViewModel() {
         }
 
     private fun onListChanged(list: List<ChipItem>) {
-        val deduplicatedList = list.distinct()
+        val deduplicatedList = list.distinctBy { it.value }
         val duplicateRemovalWarning = if (deduplicatedList.size != list.size) {
             Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
         } else {
