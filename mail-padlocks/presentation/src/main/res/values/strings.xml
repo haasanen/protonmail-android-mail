@@ -147,7 +147,7 @@
     <!-- Links -->
     <string name="padlocks_e2ee_link" translatable="false">https://proton.me/blog/what-is-end-to-end-encryption</string>
     <string name="padlocks_signed_link" translatable="false">https://proton.me/blog/what-is-a-digital-signature</string>
-    <string name="padlocks_verified_contact_link" translatable="false">https://proton.me/support/verified-contacts</string>
+    <string name="padlocks_verified_contact_link" translatable="false">https://proton.me/support/address-verification</string>
     <string name="padlocks_sender_verification_failed_link" translatable="false">https://proton.me/support/sender-verification-failed</string>
     <string name="padlocks_stored_with_zero_access_encryption_link" translatable="false">https://proton.me/blog/zero-access-encryption</string>
 </resources>
