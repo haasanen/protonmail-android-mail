@@ -50,7 +50,6 @@ fun LocalPrivacyLockIcon.toPrivacyLockIcon() = when (this) {
 }
 
 fun LocalPrivacyLockTooltip.toPrivacyLockTooltip() = when (this) {
-    LocalPrivacyLockTooltip.NONE -> PrivacyLockTooltip.None
     LocalPrivacyLockTooltip.SEND_E2E -> PrivacyLockTooltip.SendE2e
     LocalPrivacyLockTooltip.SEND_E2E_VERIFIED_RECIPIENT -> PrivacyLockTooltip.SendE2eVerifiedRecipient
     LocalPrivacyLockTooltip.SEND_SIGN_ONLY -> PrivacyLockTooltip.SendSignOnly
