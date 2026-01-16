@@ -73,6 +73,7 @@ import timber.log.Timber
 
 @Composable
 internal fun ComposerForm(
+    composerInstanceId: String,
     changeFocusToField: Effect<FocusedFieldType>,
     senderEmail: String,
     draftType: DraftMimeType,
@@ -92,7 +93,9 @@ internal fun ComposerForm(
     viewportCoordinateAlignmentEnabled: Boolean
 ) {
 
-    val recipientsViewModel = hiltViewModel<RecipientsViewModel, RecipientsViewModel.Factory> { factory ->
+    val recipientsViewModel = hiltViewModel<RecipientsViewModel, RecipientsViewModel.Factory>(
+        key = "recipientsViewModel_$composerInstanceId"
+    ) { factory ->
         factory.create(recipientsStateManager)
     }
 

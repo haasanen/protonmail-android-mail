@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
-import java.util.UUID
 import android.net.Uri
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
@@ -176,6 +175,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
     private val buildDraftDisplayBody: BuildDraftDisplayBody,
+    @Assisted private val composerInstanceId: String,
     @Assisted private val recipientsStateManager: RecipientsStateManager,
     private val discardDraft: DiscardDraft,
     private val getDraftId: GetDraftId,
@@ -228,7 +228,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val primaryUserId = observePrimaryUserId().filterNotNull()
     private val isEncryptionInfoEnabled = viewModelScope.async { showEncryptionInfoFeatureFlag.get() }
     private val composerActionsChannel = Channel<ComposerAction>(Channel.BUFFERED)
-    private val composerInstanceUuid = UUID.randomUUID()
 
     private val mutableComposerStates = MutableStateFlow(
         ComposerStates(
@@ -243,7 +242,7 @@ class ComposerViewModel @AssistedInject constructor(
 
 
     init {
-        composerRegistry.register(composerInstanceUuid)
+        composerRegistry.register(composerInstanceId)
 
         viewModelScope.launch {
             emitNewStateFor(MainEvent.InitialLoadingToggled)
@@ -264,7 +263,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     override fun onCleared() {
         Timber.tag("ComposerViewModel").d("Composer VM cleared from memory, unregistering as active instance")
-        composerRegistry.unregister(composerInstanceUuid)
+        composerRegistry.unregister(composerInstanceId)
         super.onCleared()
     }
 
@@ -954,7 +953,7 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun isComposerActive(): Boolean = composerRegistry.isActive(composerInstanceUuid)
+    private fun isComposerActive(): Boolean = composerRegistry.isActive(composerInstanceId)
 
     private suspend fun primaryUserId() = primaryUserId.first()
 
@@ -1004,7 +1003,7 @@ class ComposerViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
 
-        fun create(recipientsStateManager: RecipientsStateManager): ComposerViewModel
+        fun create(composerInstanceId: String, recipientsStateManager: RecipientsStateManager): ComposerViewModel
     }
 
     companion object {

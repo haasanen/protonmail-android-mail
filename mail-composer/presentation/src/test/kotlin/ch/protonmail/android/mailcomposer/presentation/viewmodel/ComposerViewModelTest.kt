@@ -237,6 +237,7 @@ internal class ComposerViewModelTest {
         createEmptyDraft,
         createDraftForAction,
         buildDraftDisplayBody,
+        "test-composer-instance-id",
         recipientsStateManager,
         discardDraft,
         getDraftId,

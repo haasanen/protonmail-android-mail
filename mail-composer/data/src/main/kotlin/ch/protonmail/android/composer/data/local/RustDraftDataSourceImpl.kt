@@ -115,6 +115,7 @@ class RustDraftDataSourceImpl @Inject constructor(
     val mutablePasswordChangedSignal = MutableSharedFlow<Unit>()
 
     private val mutableRecipientsUpdatedFlow = MutableSharedFlow<ValidatedRecipients>(
+        replay = 1,
         extraBufferCapacity = 2,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )

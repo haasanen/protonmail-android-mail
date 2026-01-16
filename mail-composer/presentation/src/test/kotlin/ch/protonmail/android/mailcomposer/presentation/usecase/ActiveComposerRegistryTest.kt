@@ -1,6 +1,5 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
-import java.util.UUID
 import ch.protonmail.android.mailcomposer.domain.usecase.IsComposerInstanceActive
 import ch.protonmail.android.mailcomposer.domain.usecase.RegisterComposerInstance
 import ch.protonmail.android.mailcomposer.domain.usecase.UnregisterComposerInstance
@@ -27,40 +26,40 @@ class ActiveComposerRegistryTest {
     @Test
     fun `forwards register call to register instance use case`() {
         // Given
-        val id = UUID.randomUUID()
-        every { registerComposerRegistry.invoke(id.toString()) } just Runs
+        val id = "test-composer-instance-id"
+        every { registerComposerRegistry.invoke(id) } just Runs
 
         // When
         activeComposerRegistry.register(id)
 
         // Then
-        verify { registerComposerRegistry(id.toString()) }
+        verify { registerComposerRegistry(id) }
     }
 
     @Test
     fun `forwards unregister call to unregister instance use case`() {
         // Given
-        val id = UUID.randomUUID()
-        every { unregisterComposerRegistry.invoke(id.toString()) } just Runs
+        val id = "test-composer-instance-id"
+        every { unregisterComposerRegistry.invoke(id) } just Runs
 
         // When
         activeComposerRegistry.unregister(id)
 
         // Then
-        verify { unregisterComposerRegistry(id.toString()) }
+        verify { unregisterComposerRegistry(id) }
     }
 
     @Test
     fun `forwards isActive call to isActive instance use case`() {
         // Given
-        val id = UUID.randomUUID()
-        every { isComposerInstanceActive.invoke(id.toString()) } returns true
+        val id = "test-composer-instance-id"
+        every { isComposerInstanceActive.invoke(id) } returns true
 
         // When
         val result = activeComposerRegistry.isActive(id)
 
         // Then
         assertTrue(result)
-        verify { isComposerInstanceActive(id.toString()) }
+        verify { isComposerInstanceActive(id) }
     }
 }

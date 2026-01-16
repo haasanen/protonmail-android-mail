@@ -105,9 +105,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val view = LocalView.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val composerInstanceId = rememberSaveable { java.util.UUID.randomUUID().toString() }
     val recipientsStateManager = remember { RecipientsStateManager() }
-    val viewModel = hiltViewModel<ComposerViewModel, ComposerViewModel.Factory> { factory ->
-        factory.create(recipientsStateManager)
+    val viewModel = hiltViewModel<ComposerViewModel, ComposerViewModel.Factory>(
+        key = "composerViewModel_$composerInstanceId"
+    ) { factory ->
+        factory.create(composerInstanceId, recipientsStateManager)
     }
     val composerStates by viewModel.composerStates.collectAsStateWithLifecycle()
     val mainState = composerStates.main
@@ -376,6 +379,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     // Not showing the form till we're done loading ensure it does receive the
                     // right "initial values" from state when displayed
                     ComposerForm(
+                        composerInstanceId = composerInstanceId,
                         modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
                         changeFocusToField = effectsState.changeFocusToField,
                         initialFocusField = mainState.initialFocusedField,

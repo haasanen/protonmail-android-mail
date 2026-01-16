@@ -23,7 +23,9 @@ import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcomposer.domain.repository.ActiveComposerRepository
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class DraftCache @Inject constructor(
     private val activeComposerRepository: ActiveComposerRepository
 ) {

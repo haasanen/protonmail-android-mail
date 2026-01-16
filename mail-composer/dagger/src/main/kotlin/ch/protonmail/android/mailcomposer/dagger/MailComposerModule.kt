@@ -90,6 +90,10 @@ abstract class MailComposerModule {
     abstract fun bindsRustAttachmentDataSource(impl: RustAttachmentDataSourceImpl): RustAttachmentDataSource
 
     @Binds
+    @ViewModelScoped
+    abstract fun bindsRustDraftDataSource(impl: RustDraftDataSourceImpl): RustDraftDataSource
+
+    @Binds
     @Reusable
     abstract fun bindsCspRepository(impl: RustComposerCspRepository): ComposerCspRepository
 }
@@ -115,10 +119,6 @@ abstract class SendingStatusModule {
     @Binds
     @Singleton
     abstract fun bindContactsPermissionRepository(repo: ContactsPermissionRepositoryImpl): ContactsPermissionRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindsRustDraftDataSource(impl: RustDraftDataSourceImpl): RustDraftDataSource
 
     @Binds
     @Singleton
