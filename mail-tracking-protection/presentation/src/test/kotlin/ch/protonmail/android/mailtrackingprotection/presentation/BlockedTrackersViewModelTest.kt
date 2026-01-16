@@ -112,7 +112,7 @@ internal class BlockedTrackersViewModelTest {
     }
 
     @Test
-    fun `state emits Unknown when feature flag is disabled`() = runTest {
+    fun `state emits Disabled when feature flag is disabled`() = runTest {
         // Given
         coEvery { mockFeatureFlag.get() } returns false
         every { mockObservePrimaryUserId() } returns flowOf(testUserId)
@@ -127,7 +127,7 @@ internal class BlockedTrackersViewModelTest {
         // When/Then
         viewModel.state.test {
             val state = awaitItem()
-            assertTrue(state is BlockedElementsState.Unknown)
+            assertTrue(state is BlockedElementsState.Disabled)
         }
     }
 
@@ -149,7 +149,7 @@ internal class BlockedTrackersViewModelTest {
         // When/Then
         viewModel.state.test {
             val state = awaitItem()
-            assertTrue(state is BlockedElementsState.Unknown)
+            assertTrue(state is BlockedElementsState.Disabled)
         }
     }
 }

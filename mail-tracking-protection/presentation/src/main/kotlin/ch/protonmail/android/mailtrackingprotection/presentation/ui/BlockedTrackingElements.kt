@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailtrackingprotection.presentation.ui
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +31,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -62,14 +65,22 @@ fun BlockedTrackingElements(
         factory.create(messageId)
     }
 
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    when (val current = state.value) {
-        BlockedElementsState.NoBlockedElements -> NoBlockedTrackers(onNoBlockedTrackersClick, modifier)
-        is BlockedElementsState.BlockedElements ->
-            BlockedTrackingElements(current.uiModel, onBlockedTrackersClick, modifier)
+    if (state is BlockedElementsState.Disabled) return
 
-        BlockedElementsState.Unknown -> {}
+    Crossfade(
+        targetState = state,
+        animationSpec = tween(durationMillis = 300),
+        label = "blocked_tracking_transition"
+    ) { currentState ->
+        when (currentState) {
+            BlockedElementsState.Disabled -> Unit
+            BlockedElementsState.Loading -> BlockedTrackingElementsSkeleton(modifier = modifier)
+            BlockedElementsState.NoBlockedElements -> NoBlockedTrackers(onNoBlockedTrackersClick, modifier)
+            is BlockedElementsState.BlockedElements ->
+                BlockedTrackingElements(currentState.uiModel, onBlockedTrackersClick, modifier)
+        }
     }
 }
 

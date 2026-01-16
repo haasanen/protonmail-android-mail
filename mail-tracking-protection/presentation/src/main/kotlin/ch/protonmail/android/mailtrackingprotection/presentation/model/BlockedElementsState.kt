@@ -19,7 +19,8 @@
 package ch.protonmail.android.mailtrackingprotection.presentation.model
 
 sealed interface BlockedElementsState {
-    data object Unknown : BlockedElementsState
+    data object Disabled : BlockedElementsState
+    data object Loading : BlockedElementsState
 
     data object NoBlockedElements : BlockedElementsState
 

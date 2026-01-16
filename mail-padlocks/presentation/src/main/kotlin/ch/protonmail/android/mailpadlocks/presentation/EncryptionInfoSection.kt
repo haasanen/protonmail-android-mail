@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailpadlocks.presentation
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,19 +62,27 @@ fun EncryptionInfoSection(
     }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    when (val capturedState = state) {
-        is EncryptionInfoState.Enabled -> {
-            if (capturedState.uiModel is EncryptionInfoUiModel.WithLock) {
-                EncryptionInfo(
-                    uiModel = capturedState.uiModel,
-                    onMoreInfoClick = { onMoreInfoClick(capturedState.uiModel) },
-                    modifier = modifier
-                )
-            }
-        }
 
-        is EncryptionInfoState.Loading, // for Loading state we'll need a shimmer
-        is EncryptionInfoState.Disabled -> Unit
+    if (state is EncryptionInfoState.Disabled) return
+
+    Crossfade(
+        targetState = state,
+        animationSpec = tween(durationMillis = 300),
+        label = "encryption_info_transition"
+    ) { currentState ->
+        when (currentState) {
+            is EncryptionInfoState.Loading -> EncryptionInfoSkeleton(modifier = modifier)
+            is EncryptionInfoState.Enabled -> {
+                if (currentState.uiModel is EncryptionInfoUiModel.WithLock) {
+                    EncryptionInfo(
+                        uiModel = currentState.uiModel,
+                        onMoreInfoClick = { onMoreInfoClick(currentState.uiModel) },
+                        modifier = modifier
+                    )
+                }
+            }
+            is EncryptionInfoState.Disabled -> Unit
+        }
     }
 }
 

@@ -52,12 +52,12 @@ internal class BlockedTrackersViewModel @AssistedInject constructor(
         .filterNotNull()
         .flatMapLatest { userId ->
             if (!showBlockedTrackersFeatureFlag.get()) {
-                return@flatMapLatest flowOf(BlockedElementsState.Unknown)
+                return@flatMapLatest flowOf(BlockedElementsState.Disabled)
             }
 
             privacyInfoRepository.observePrivacyItemsForMessage(userId, messageId).mapLatest { either ->
                 either.fold(
-                    ifLeft = { BlockedElementsState.Unknown },
+                    ifLeft = { BlockedElementsState.Disabled },
                     ifRight = { privacyItems ->
                         if (privacyItems.isEmpty) return@fold BlockedElementsState.NoBlockedElements
                         BlockedElementsState.BlockedElements(BlockedElementsUiModelMapper.toUiModel(privacyItems))
@@ -68,7 +68,7 @@ internal class BlockedTrackersViewModel @AssistedInject constructor(
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(stopTimeoutMillis),
-            BlockedElementsState.Unknown
+            BlockedElementsState.Loading
         )
 
     @AssistedFactory
