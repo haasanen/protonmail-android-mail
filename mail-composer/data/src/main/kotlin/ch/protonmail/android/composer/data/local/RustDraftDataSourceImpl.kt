@@ -78,7 +78,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AttachmentDataResult
@@ -137,6 +136,13 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
+    private fun registerRecipientCallbacks() {
+        val draft = draftCache.get()
+        draft.recipientsTo().registerCallback(recipientsUpdatedCallback)
+        draft.recipientsCc().registerCallback(recipientsUpdatedCallback)
+        draft.recipientsBcc().registerCallback(recipientsUpdatedCallback)
+    }
+
     override suspend fun getMessageId(): Either<DataError, MessageId> =
         when (val result = draftCache.get().messageId()) {
             is DraftMessageIdResult.Error -> result.v1.toDataError().left()
@@ -155,6 +161,7 @@ class RustDraftDataSourceImpl @Inject constructor(
             .onRight {
                 Timber.d("rust-draft: Draft opened successfully.")
                 draftCache.add(it.draftWrapper)
+                registerRecipientCallbacks()
             }
             .onLeft { Timber.d("rust-draft: Unable to open draft - $it") }
             .map { it.toLocalDraftWithSyncStatus() }
@@ -174,7 +181,10 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
 
         return createRustDraft(session, draftCreateMode)
-            .onRight { draftCache.add(it) }
+            .onRight {
+                draftCache.add(it)
+                registerRecipientCallbacks()
+            }
             .onLeft { Timber.d("rust-draft: Unable to create draft - $it") }
             .map { it.toLocalDraft() }
     }
@@ -201,23 +211,14 @@ class RustDraftDataSourceImpl @Inject constructor(
             is VoidDraftSaveResult.Ok -> Unit.right()
         }
 
-    override suspend fun updateToRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> {
-        val recipientsToWrapper = draftCache.get().recipientsTo()
-        recipientsToWrapper.registerCallback(recipientsUpdatedCallback)
-        return updateRecipients(recipientsToWrapper, recipients)
-    }
+    override suspend fun updateToRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> =
+        updateRecipients(draftCache.get().recipientsTo(), recipients)
 
-    override suspend fun updateCcRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> {
-        val recipientsCcWrapper = draftCache.get().recipientsCc()
-        recipientsCcWrapper.registerCallback(recipientsUpdatedCallback)
-        return updateRecipients(recipientsCcWrapper, recipients)
-    }
+    override suspend fun updateCcRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> =
+        updateRecipients(draftCache.get().recipientsCc(), recipients)
 
-    override suspend fun updateBccRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> {
-        val recipientsBccWrapper = draftCache.get().recipientsBcc()
-        recipientsBccWrapper.registerCallback(recipientsUpdatedCallback)
-        return updateRecipients(recipientsBccWrapper, recipients)
-    }
+    override suspend fun updateBccRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> =
+        updateRecipients(draftCache.get().recipientsBcc(), recipients)
 
     override suspend fun listSenderAddresses(): Either<DataError, LocalSenderAddresses> =
         when (val result = draftCache.get().listSenderAddresses()) {
@@ -230,13 +231,6 @@ class RustDraftDataSourceImpl @Inject constructor(
             is DraftChangeSenderAddressResult.Error -> result.v1.toChangeSenderError().left()
             DraftChangeSenderAddressResult.Ok -> Unit.right()
         }
-
-
-    // Will emit based on a mutableFlow which is updated by the callback above;
-    // Requests again the data from rust library, maps it to the new entity and exposes to the view
-    // RecipientEntity will probably be used also in LocalDraft to follow (to convey groups + Validation info to UI)
-    override suspend fun observeRecipientsValidation(): Flow<List<DraftRecipient>> = flowOf(emptyList())
-
 
     override suspend fun send(): Either<SendDraftError, Unit> = when (val result = draftCache.get().send()) {
         is VoidDraftSendResult.Error -> result.v1.toDraftSendError().left()

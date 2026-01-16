@@ -57,7 +57,6 @@ interface RustDraftDataSource {
     suspend fun discard(userId: UserId, messageId: MessageId): Either<DiscardDraftError, Unit>
     suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit>
     suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>
-    suspend fun observeRecipientsValidation(): Flow<List<DraftRecipient>>
     suspend fun send(): Either<SendDraftError, Unit>
     suspend fun scheduleSend(timestamp: Long): Either<SendDraftError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<UndoSendError, Unit>

@@ -124,5 +124,4 @@ class DraftRepositoryImpl @Inject constructor(
                 DraftAddressValidationError.CAN_NOT_RECEIVE -> DraftSenderValidationError.AddressCanNotSend(it.email)
             }
         }
-
 }

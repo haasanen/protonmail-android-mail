@@ -150,9 +150,13 @@ class RustDraftDataSourceImplTest {
         coEvery { toRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Alice)
         coEvery { ccRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Bob)
         coEvery { bccRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { toRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { ccRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { bccRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedWrapperWithSyncStatus.right()
         every { draftCache.add(expectedDraftWrapper) } just Runs
+        every { draftCache.get() } returns expectedDraftWrapper
 
         // When
         val actual = dataSource.open(userId, messageId)
@@ -180,15 +184,57 @@ class RustDraftDataSourceImplTest {
         )
         val expectedWrapperWithSyncStatus = DraftWrapperWithSyncStatus(expectedDraftWrapper, DraftSyncStatus.SYNCED)
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { recipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedWrapperWithSyncStatus.right()
         every { draftCache.add(expectedDraftWrapper) } just Runs
+        every { draftCache.get() } returns expectedDraftWrapper
 
         // When
         dataSource.open(userId, messageId)
 
         // Then
         verify { draftCache.add(expectedDraftWrapper) }
+    }
+
+    @Test
+    fun `recipient validation callbacks are registered when draft is opened successfully`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.RustJobApplication
+        val localMessageId = MessageIdSample.RustJobApplication.toLocalMessageId()
+        val expected = LocalDraftTestData.JobApplicationDraft
+        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            subject = expected.subject,
+            sender = expected.sender,
+            head = expected.bodyFields.head.value,
+            body = expected.bodyFields.body.value,
+            toRecipientsWrapper = toRecipientsWrapperMock,
+            ccRecipientsWrapper = ccRecipientsWrapperMock,
+            bccRecipientsWrapper = bccRecipientsWrapperMock
+        )
+        val expectedWrapperWithSyncStatus = DraftWrapperWithSyncStatus(expectedDraftWrapper, DraftSyncStatus.SYNCED)
+        coEvery { toRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { ccRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { bccRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { toRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { ccRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { bccRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedWrapperWithSyncStatus.right()
+        every { draftCache.add(expectedDraftWrapper) } just Runs
+        every { draftCache.get() } returns expectedDraftWrapper
+
+        // When
+        dataSource.open(userId, messageId)
+
+        // Then
+        verify { toRecipientsWrapperMock.registerCallback(any()) }
+        verify { ccRecipientsWrapperMock.registerCallback(any()) }
+        verify { bccRecipientsWrapperMock.registerCallback(any()) }
     }
 
     @Test
@@ -232,7 +278,6 @@ class RustDraftDataSourceImplTest {
         val expected = LocalDraftTestData.JobApplicationDraft
         val subject = expected.subject
         val sender = expected.sender
-        val body = expected.bodyFields
         val recipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val expectedDraftWrapper = expectDraftWrapperReturns(
             subject = subject,
@@ -245,9 +290,11 @@ class RustDraftDataSourceImplTest {
             messageId = messageId.toLocalMessageId()
         )
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { recipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
         every { draftCache.add(expectedDraftWrapper) } just Runs
+        every { draftCache.get() } returns expectedDraftWrapper
 
         // When
         val actual = dataSource.create(userId, action)
@@ -275,15 +322,57 @@ class RustDraftDataSourceImplTest {
             bccRecipientsWrapper = recipientsWrapperMock
         )
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { recipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
         every { draftCache.add(expectedDraftWrapper) } just Runs
+        every { draftCache.get() } returns expectedDraftWrapper
 
         // When
         dataSource.create(userId, action)
 
         // Then
         verify { draftCache.add(expectedDraftWrapper) }
+    }
+
+    @Test
+    fun `recipient validation callbacks are registered when draft is created successfully`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.RustJobApplication
+        val action = DraftAction.Forward(messageId)
+        val localDraftCreateMode = DraftCreateMode.Forward(messageId.toLocalMessageId())
+        val expected = LocalDraftTestData.JobApplicationDraft
+        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            subject = expected.subject,
+            sender = expected.sender,
+            head = expected.bodyFields.head.value,
+            body = expected.bodyFields.body.value,
+            toRecipientsWrapper = toRecipientsWrapperMock,
+            ccRecipientsWrapper = ccRecipientsWrapperMock,
+            bccRecipientsWrapper = bccRecipientsWrapperMock
+        )
+        coEvery { toRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { ccRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { bccRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { toRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { ccRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { bccRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
+        every { draftCache.add(expectedDraftWrapper) } just Runs
+        every { draftCache.get() } returns expectedDraftWrapper
+
+        // When
+        dataSource.create(userId, action)
+
+        // Then
+        verify { toRecipientsWrapperMock.registerCallback(any()) }
+        verify { ccRecipientsWrapperMock.registerCallback(any()) }
+        verify { bccRecipientsWrapperMock.registerCallback(any()) }
     }
 
     @Test
@@ -559,7 +648,6 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             toRecipientsWrapper = toRecipientsWrapperMock
         )
-        coEvery { toRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { toRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { toRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { toRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
@@ -590,7 +678,6 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             ccRecipientsWrapper = ccRecipientsWrapperMock
         )
-        coEvery { ccRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { ccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { ccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { ccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
@@ -621,7 +708,6 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             bccRecipientsWrapper = bccRecipientsWrapperMock
         )
-        coEvery { bccRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { bccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { bccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { bccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
@@ -654,7 +740,6 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             bccRecipientsWrapper = bccRecipientsWrapperMock
         )
-        coEvery { bccRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { bccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { bccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { bccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
@@ -1046,21 +1131,35 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `ignore recipients updates when callback is fired after rust draft was already closed`() = runTest {
         // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.RustJobApplication
+        val action = DraftAction.Compose
+        val localDraftCreateMode = DraftCreateMode.Empty
         val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>(relaxed = true)
+        val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>(relaxed = true)
+        val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>(relaxed = true)
         val expectedDraftWrapper = expectDraftWrapperReturns(
-            toRecipientsWrapper = toRecipientsWrapperMock
+            toRecipientsWrapper = toRecipientsWrapperMock,
+            ccRecipientsWrapper = ccRecipientsWrapperMock,
+            bccRecipientsWrapper = bccRecipientsWrapperMock
         )
 
-        // Setup: initially cache returns a valid draft
+        // Setup: capture the callback during draft creation
         val callbackSlot = slot<ComposerRecipientValidationCallback>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
+        every { draftCache.add(expectedDraftWrapper) } just Runs
         every { draftCache.get() } returns expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.registerCallback(capture(callbackSlot)) } just Runs
+        coEvery { ccRecipientsWrapperMock.registerCallback(any()) } just Runs
+        coEvery { bccRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { toRecipientsWrapperMock.recipients() } returns emptyList()
-        coEvery { toRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
-        coEvery { toRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
+        coEvery { ccRecipientsWrapperMock.recipients() } returns emptyList()
+        coEvery { bccRecipientsWrapperMock.recipients() } returns emptyList()
 
-        dataSource.updateToRecipients(emptyList())
+        dataSource.create(userId, action)
 
+        // Simulate draft being closed
         every { draftCache.get() } answers { throw IllegalStateException("No draft cached") }
 
         // When
