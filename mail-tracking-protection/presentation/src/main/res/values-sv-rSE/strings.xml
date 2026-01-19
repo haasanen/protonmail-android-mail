@@ -22,9 +22,10 @@
   <string name="trackers_protection_no_trackers_detected">Spårningsskydd: inga spårare upptäcktes</string>
   <string name="tracking_protection">Spårningsskydd</string>
   <string name="tracking_protection_description">Vi skyddar dig aktivt från spårning. Här kan du se de spionpixlar vi blockerade och de spårningslänkar vi rensade i detta meddelande.</string>
-  <string name="tracking_protection_learn_more">Lär dig mer …</string>
-  <string name="original">original</string>
+  <string name="tracking_protection_learn_more">Lär dig mer</string>
+  <string name="original">Original</string>
   <string name="cleaned">Rensad</string>
+  <string name="open_link">Öppna länk</string>
   <string name="action_close_dialog_button">Stäng</string>
   <string name="got_it">Jag förstår</string>
   <plurals name="number_of_blocked_trackers">

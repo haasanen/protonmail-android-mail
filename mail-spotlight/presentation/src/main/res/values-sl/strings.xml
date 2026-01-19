@@ -17,15 +17,15 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="spotlight_screen_version_text">Version %s</string>
-  <string name="spotlight_screen_title">What’s new in Proton Mail</string>
-  <string name="spotlight_feature_item_discreet_icon_title">Discreet icon</string>
-  <string name="spotlight_feature_item_discreet_icon_description">Keep the default Proton Mail icon or disguise it with a generic one for greater privacy.</string>
-  <string name="spotlight_feature_item_tracking_protection_title">Tracking protection</string>
-  <string name="spotlight_feature_item_tracking_protection_description">See who tried to monitor you with hidden pixels and tracking links, and how many attempts were blocked.</string>
-  <string name="spotlight_feature_item_encryption_locks_title">Encryption locks</string>
-  <string name="spotlight_feature_item_encryption_locks_description">Use the lock icons to identify and verify the type of encryption protecting your messages.</string>
-  <string name="spotlight_feature_item_headers_html_title">View headers and HTML</string>
-  <string name="spotlight_feature_item_headers_html_description">Inspect suspicious messages to confirm their authenticity and uncover any hidden tracking elements.</string>
-  <string name="spotlight_screen_got_it">Got it</string>
+  <string name="spotlight_screen_version_text">Različica %s</string>
+  <string name="spotlight_screen_title">Kaj je novega v Proton Mailu</string>
+  <string name="spotlight_feature_item_discreet_icon_title">Diskretna ikona</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Obdržite privzeto ikono aplikacije Proton Mail ali jo za večjo zasebnost prikrijte z generično ikono.</string>
+  <string name="spotlight_feature_item_tracking_protection_title">Zaščita pred sledenjem</string>
+  <string name="spotlight_feature_item_tracking_protection_description">Oglejte si, kdo vas je poskušal nadzorovati s skritimi slikovnimi pikami in sledilnimi povezavami ter koliko poskusov takšnega sledenja je bilo preprečenih.</string>
+  <string name="spotlight_feature_item_encryption_locks_title">Ključavnice šifriranja</string>
+  <string name="spotlight_feature_item_encryption_locks_description">S pomočjo ikon ključavnice prepoznajte in preverite vrsto šifriranja, s katero so zaščitena vaša sporočila.</string>
+  <string name="spotlight_feature_item_headers_html_title">Prikaži glave in HTML</string>
+  <string name="spotlight_feature_item_headers_html_description">Preglejte sumljiva sporočila, da se prepričate o njihovi verodostojnosti in odkrijete morebitne skrite elemente za sledenje.</string>
+  <string name="spotlight_screen_got_it">Razumem</string>
 </resources>

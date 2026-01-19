@@ -22,9 +22,10 @@
   <string name="trackers_protection_no_trackers_detected">Tracking-Schutz: keine Tracker erkannt</string>
   <string name="tracking_protection">Tracker-Schutz</string>
   <string name="tracking_protection_description">Wir schützen dich aktiv vor Tracking. Hier kannst du die von uns gesperrten Zählpixel und die in dieser Nachricht bereinigten Tracking-Links einsehen.</string>
-  <string name="tracking_protection_learn_more">Mehr erfahren…</string>
+  <string name="tracking_protection_learn_more">Mehr erfahren</string>
   <string name="original">Original</string>
   <string name="cleaned">Bereinigt</string>
+  <string name="open_link">Link öffnen</string>
   <string name="action_close_dialog_button">Schließen</string>
   <string name="got_it">Verstanden</string>
   <plurals name="number_of_blocked_trackers">

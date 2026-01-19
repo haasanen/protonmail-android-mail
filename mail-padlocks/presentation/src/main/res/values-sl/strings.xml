@@ -17,29 +17,29 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="padlocks_stored_with_zero_access_encryption_summary">Stored with zero access encryption</string>
-  <string name="padlocks_stored_with_zero_access_encryption_description">This message is stored in your mailbox with zero‑access encryption. Neither Proton nor anyone else can read it. \n\nHowever, a sender or recipient not using Proton Mail may have a non-encrypted copy stored on their email server.</string>
-  <string name="padlocks_proton_e2ee">End-to-end encrypted message</string>
-  <string name="padlocks_proton_e2ee_description">Like all messages, it is stored on Proton servers using zero‑access encryption.</string>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Shranjeno s šifriranjem brez dostopa (zero-access)</string>
+  <string name="padlocks_stored_with_zero_access_encryption_description">To sporočilo je shranjeno v vašem poštnem nabiralniku s šifriranjem brez dostopa. Prebrati ga ne more niti Proton niti nihče drug. \n\nLahko pa ima pošiljatelj ali prejemnik, ki ne uporablja Proton Maila, na svojem poštnem strežniku shranjeno nešifrirano kopijo.</string>
+  <string name="padlocks_proton_e2ee">Od konca do konca šifrirano sporočilo</string>
+  <string name="padlocks_proton_e2ee_description">Kot vsa sporočila je shranjeno na Protonovih strežnikih s šifriranjem brez dostopa.</string>
   <string name="padlocks_proton_e2ee_verified_sender">Proton end-to-end encrypted from verified sender</string>
   <string name="padlocks_proton_e2ee_verified_sender_description">This message is protected with automatic Proton end‑to‑end encryption, and we verified it was sent by the stated sender.</string>
   <string name="padlocks_proton_e2ee_failed_verification">Proton end-to-end encrypted with failed verification</string>
   <string name="padlocks_proton_e2ee_failed_verification_description">This message is protected with automatic Proton end‑to‑end encryption. However, the sender verification failed. \nPlease confirm the authenticity of the message with your contact.</string>
-  <string name="padlocks_pgp_e2ee">PGP end-to-end encrypted</string>
-  <string name="padlocks_pgp_e2ee_description">This message is protected with PGP end-to-end encryption. It is encrypted on the sender\'s device and can only be decrypted by the recipient. \n\nLike all messages, it is stored on Proton servers using zero-access encryption.</string>
-  <string name="padlocks_pgp_e2ee_signed">PGP end-to-end encrypted and signed</string>
-  <string name="padlocks_pgp_e2ee_signed_description">This message is protected with PGP end-to-end encryption. It is encrypted on the sender\'s device and can only be decrypted by the recipient. \n\nAdditionally, the signature proves to the recipient that your message is genuine and hasn\'t been tampered with.</string>
-  <string name="padlocks_pgp_e2ee_verified_contact">PGP end-to-end encrypted from verified contact</string>
-  <string name="padlocks_pgp_e2ee_verified_contact_description">This message is protected with PGP end‑to‑end encryption. It is encrypted on the sender’s device and can only be decrypted by the recipient. \n\nAdditionally, we verified the message was sent by the stated sender.</string>
-  <string name="padlocks_pgp_e2ee_failed_verification">PGP end-to-end encrypted with failed verification</string>
-  <string name="padlocks_pgp_e2ee_failed_verification_description">This message is protected with PGP end‑to‑end encryption. It is encrypted on the sender’s device and can only be decrypted by the recipient. \n\nHowever, the sender verification failed. Please confirm the authenticity of the message with your contact.</string>
-  <string name="padlocks_pgp_signed">PGP signed message</string>
-  <string name="padlocks_pgp_signed_description">This message was not sent with end-to-end encryption, but is stored on Proton servers using zero-access encryption. \n\nYou have also digitally signed it, proving to the recipient that your message is genuine and hasn\'t been tampered with.</string>
-  <string name="padlocks_pgp_signed_verified_contact">PGP-signed message from verified contact</string>
-  <string name="padlocks_pgp_signed_verified_contact_description">This message was not sent with end-to-end-encryption, but is stored on Proton servers using zero-access-encryption. \n\nWe also verified that the message was sent by the stated sender.</string>
+  <string name="padlocks_pgp_e2ee">Šifrirano od konca do konca s PGP</string>
+  <string name="padlocks_pgp_e2ee_description">To sporočilo je zaščiteno s PGP-šifriranjem od konca do konca. Šifrirano je bilo na pošiljateljevi napravi, dešifrira pa ga lahko zgolj prejemnik. \n\nKot vsa sporočila je shranjeno na Protonovih strežnikih s šifriranjem brez dostopa.</string>
+  <string name="padlocks_pgp_e2ee_signed">Šifrirano od konca do konca s PGP in podpisano</string>
+  <string name="padlocks_pgp_e2ee_signed_description">To sporočilo je zaščiteno s PGP-šifriranjem od konca do konca. Šifrirano je bilo na pošiljateljevi napravi, dešifrira pa ga lahko zgolj prejemnik. \n\nPoleg tega podpis zagotavlja prejemniku, da je vaše sporočilo pristno in da vanj ni nihče posegal.</string>
+  <string name="padlocks_pgp_e2ee_verified_contact">Šifrirano od konca do konca s PGP, od preverjenega stika</string>
+  <string name="padlocks_pgp_e2ee_verified_contact_description">To sporočilo je zaščiteno s PGP-šifriranjem od konca do konca. Šifrirano je bilo na pošiljateljevi napravi, dešifrira pa ga lahko zgolj prejemnik. \n\nPoleg tega smo preverili, da sporočilo res prihaja od navedenega pošiljatelja.</string>
+  <string name="padlocks_pgp_e2ee_failed_verification">Šifrirano od konca do konca s PGP, neuspešno preverjanje</string>
+  <string name="padlocks_pgp_e2ee_failed_verification_description">To sporočilo je zaščiteno s PGP-šifriranjem od konca do konca. Šifrirano je bilo na pošiljateljevi napravi, dešifrira pa ga lahko zgolj prejemnik. \n\nVendar pa preverjanje pošiljatelja ni uspelo. Pri stiku se prepričajte o pristnosti sporočila.</string>
+  <string name="padlocks_pgp_signed">Sporočilo, podpisano s PGP</string>
+  <string name="padlocks_pgp_signed_description">To sporočilo ni bilo poslano s šifriranjem od konca do konca, vendar je shranjeno na Protonovih strežnikih z uporabo šifriranja brez dostopa. \n\nPoleg tega ste ga digitalno podpisali, kar zagotavlja prejemniku, da je sporočilo pristno in da vanj ni nihče posegal..</string>
+  <string name="padlocks_pgp_signed_verified_contact">Sporočilo, podpisano s PGP, od preverjenega stika</string>
+  <string name="padlocks_pgp_signed_verified_contact_description">To sporočilo ni bilo poslano s šifriranjem od konca do konca, je pa shranjeno na Protonovih strežnikih z uporabo šifriranja brez dostopa. \n\nPotrdili smo tudi, da sporočilo prihaja od navedenega pošiljatelja.</string>
   <string name="padlocks_pgp_signed_failed_verification">PGP-signed message with failed verification</string>
-  <string name="padlocks_pgp_signed_failed_verification_description">This message was not sent with end-to-end-encryption, but is stored on Proton servers using zero-access-encryption. \n\nHowever, the sender verification failed. Please confirm the authenticity of the message with your contact.</string>
-  <string name="padlocks_show_details">Show details</string>
-  <string name="padlocks_learn_more">Learn more...</string>
-  <string name="padlocks_close_button_text">Got it</string>
+  <string name="padlocks_pgp_signed_failed_verification_description">To sporočilo ni bilo poslano s šifriranjem od konca do konca, je pa shranjeno na Protonovih strežnikih z uporabo šifriranja brez dostopa. \n\nnPreverjanje pošiljatelja ni uspelo. Pri stiku se prepričajte o pristnosti sporočila.</string>
+  <string name="padlocks_show_details">Prikaži podrobnosti</string>
+  <string name="padlocks_learn_more">Več o tem ...</string>
+  <string name="padlocks_close_button_text">Razumem</string>
 </resources>

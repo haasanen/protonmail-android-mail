@@ -22,9 +22,10 @@
   <string name="trackers_protection_no_trackers_detected">Ochrana před sledováním: zatím žádné sledovací prvky</string>
   <string name="tracking_protection">Ochrana před sledovacími prvky</string>
   <string name="tracking_protection_description">Aktivně vás chráníme před sledováním. Zde si můžete prohlédnout sledovací pixely, které jsme zablokovali, a sledovací odkazy, které jsme vyčistili v této zprávě.</string>
-  <string name="tracking_protection_learn_more">Více informací…</string>
-  <string name="original">původní</string>
+  <string name="tracking_protection_learn_more">Více informací</string>
+  <string name="original">Původní</string>
   <string name="cleaned">Vyčištěno</string>
+  <string name="open_link">Otevřít odkaz</string>
   <string name="action_close_dialog_button">Zavřít</string>
   <string name="got_it">Rozumím</string>
   <plurals name="number_of_blocked_trackers">

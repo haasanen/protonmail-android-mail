@@ -22,9 +22,10 @@
   <string name="trackers_protection_no_trackers_detected">Beskyttelse mod sporing: Ingen trackere registreret</string>
   <string name="tracking_protection">Beskyttelse mod sporing</string>
   <string name="tracking_protection_description">Vi beskytter dig aktivt mod sporing. Her kan du se de blokerede spionpixels og de sporingslinks, vi rensede i denne besked.</string>
-  <string name="tracking_protection_learn_more">Få mere at vide…</string>
-  <string name="original">original</string>
+  <string name="tracking_protection_learn_more">Få mere at vide</string>
+  <string name="original">Original</string>
   <string name="cleaned">Renset</string>
+  <string name="open_link">Åbn link</string>
   <string name="action_close_dialog_button">Luk</string>
   <string name="got_it">Forstået</string>
   <plurals name="number_of_blocked_trackers">

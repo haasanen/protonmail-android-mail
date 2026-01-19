@@ -22,9 +22,10 @@
   <string name="trackers_protection_no_trackers_detected">Protection contre les traqueurs : aucun traqueur détecté</string>
   <string name="tracking_protection">Protection contre les traqueurs</string>
   <string name="tracking_protection_description">Nous vous protégeons activement contre le suivi. Ici, vous pouvez voir les pixels espions que nous avons bloqués et les liens de suivi que nous avons nettoyés dans ce message.</string>
-  <string name="tracking_protection_learn_more">En savoir plus…</string>
-  <string name="original">original</string>
+  <string name="tracking_protection_learn_more">En savoir plus</string>
+  <string name="original">Original</string>
   <string name="cleaned">Nettoyé</string>
+  <string name="open_link">Ouvrir le lien</string>
   <string name="action_close_dialog_button">Fermer</string>
   <string name="got_it">J\'ai compris</string>
   <plurals name="number_of_blocked_trackers">

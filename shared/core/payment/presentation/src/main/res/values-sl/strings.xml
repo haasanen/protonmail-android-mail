@@ -50,6 +50,6 @@
   <string name="payment_subscription_managed_by_google">Vašo naročnino upravlja Google Play.</string>
   <string name="payment_subscription_managed_by_apple">Vašo naročnino upravlja Apple Store.</string>
   <string name="payment_subscription_managed_by_other">Naročnine ni mogoče upravljati v mobilni aplikaciji.</string>
-  <string name="payment_subscription_restricted_access_title">Restricted access</string>
-  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
+  <string name="payment_subscription_restricted_access_title">Omejen dostop</string>
+  <string name="payment_subscription_restricted_access_description">Žal nimate dovoljenja za dostop do te strani. Če se to ne bi smelo zgoditi, se obrnite na skrbnika svojega sistema.</string>
 </resources>

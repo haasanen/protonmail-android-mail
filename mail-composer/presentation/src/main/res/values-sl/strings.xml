@@ -44,7 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Osnutka ni mogoče shraniti – Neveljaven prejemnik ali prejemniki</string>
   <string name="composer_error_store_draft_message_not_a_draft">Osnutka ni mogoče shraniti – To sporočilo ni osnutek</string>
   <string name="composer_error_store_draft_generic">Osnutka ni mogoče shraniti – Prišlo je do splošne napake</string>
-  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
+  <string name="composer_error_create_draft">Prišlo je do napake. Novega osnutka ni bilo mogoče ustvariti.</string>
   <string name="composer_error_loading_draft">Vsebina tega osnutka trenutno ni na voljo, urejanje ni mogoče.</string>
   <string name="composer_add_attachments_content_description">Dodaj priponke</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Uvozi iz ...</string>
@@ -174,6 +174,6 @@
   <string name="composer_error_send_draft_too_many_attachments">Osnutka ni mogoče poslati – Doseženo je največje dovoljeno število priponk</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Osnutka ni mogoče poslati – Šifriranje priponke ni uspelo.</string>
   <string name="composer_expiration_time_learn_more">Več o tem</string>
-  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
-  <string name="composer_sender_address_description">Choose Sender Address</string>
+  <string name="composer_enter_recipient_content_description">Vnesite prejemnika</string>
+  <string name="composer_sender_address_description">Izberi naslov pošiljatelja</string>
 </resources>
