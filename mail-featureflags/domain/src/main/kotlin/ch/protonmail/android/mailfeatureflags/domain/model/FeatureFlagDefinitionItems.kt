@@ -98,19 +98,10 @@ data object ShowRatingBoosterEnabled : FeatureFlagDefinition(
     defaultValue = false
 )
 
-data object ShowBlockedTrackers : FeatureFlagDefinition(
-    key = "MailAndroidV7ShowBlockedTrackers",
-    name = "Show blocked trackers",
+data object PrivacyBundle2601 : FeatureFlagDefinition(
+    key = "MailAndroidV7PrivacyBundle2601",
+    name = "Enable Privacy bundle v1",
     category = FeatureFlagCategory.Details,
-    description = "Enable the 'show blocked trackers' feature",
+    description = "Enable padlocks + blocked trackers in details/composer.",
     defaultValue = false
 )
-
-data object ShowEncryptionInfo : FeatureFlagDefinition(
-    key = "MailAndroidV7ShowEncryptionInfo",
-    name = "Show encryption info",
-    category = FeatureFlagCategory.Details,
-    description = "Enable the 'show encryption info' (aka. padlocks) feature",
-    defaultValue = false
-)
-

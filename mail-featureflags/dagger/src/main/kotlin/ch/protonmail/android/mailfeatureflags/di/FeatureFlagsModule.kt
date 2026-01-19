@@ -31,9 +31,8 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDb
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsInjectCssOverrideEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsPrivacyBundle2601Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRestrictMessageWebViewHeightEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTrackersEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowEncryptionInfoEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowRatingBoosterEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.ComposerAutoCollapseQuotedText
@@ -44,9 +43,8 @@ import ch.protonmail.android.mailfeatureflags.domain.model.InjectDetailCssOverri
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.PrivacyBundle2601
 import ch.protonmail.android.mailfeatureflags.domain.model.RestrictMessageWebViewHeight
-import ch.protonmail.android.mailfeatureflags.domain.model.ShowBlockedTrackers
-import ch.protonmail.android.mailfeatureflags.domain.model.ShowEncryptionInfo
 import ch.protonmail.android.mailfeatureflags.domain.model.ShowRatingBoosterEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.UpsellingEnabled
 import dagger.Module
@@ -179,25 +177,13 @@ object FeatureFlagsModule {
         factory.create(key = ShowRatingBoosterEnabled.key, false)
 
     @Provides
-    @IntoSet
     @Singleton
-    fun provideShowBlockedTrackersDefinition(): FeatureFlagDefinition = ShowBlockedTrackers
-
-    @Provides
-    @Singleton
-    @IsShowBlockedTrackersEnabled
-    fun provideShowBlockedTrackersEnabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(ShowBlockedTrackers.key, false)
+    @IsPrivacyBundle2601Enabled
+    fun providePrivacyBundle2601Enabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(PrivacyBundle2601.key, false)
 
     @Provides
     @IntoSet
     @Singleton
-    fun provideShowEncryptionInfoDefinition(): FeatureFlagDefinition = ShowEncryptionInfo
-
-    @Provides
-    @Singleton
-    @IsShowEncryptionInfoEnabled
-    fun provideShowEncryptionInfoEnabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(ShowEncryptionInfo.key, false)
-
+    fun providePrivacyBundle2601EnabledDef(): FeatureFlagDefinition = PrivacyBundle2601
 }

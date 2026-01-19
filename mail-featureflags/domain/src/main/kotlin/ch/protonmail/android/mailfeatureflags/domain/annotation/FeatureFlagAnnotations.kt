@@ -62,8 +62,4 @@ annotation class IsShowRatingBoosterEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsShowBlockedTrackersEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class IsShowEncryptionInfoEnabled
+annotation class IsPrivacyBundle2601Enabled

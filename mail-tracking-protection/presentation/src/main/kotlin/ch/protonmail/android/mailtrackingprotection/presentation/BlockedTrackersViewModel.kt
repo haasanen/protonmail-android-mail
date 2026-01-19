@@ -21,7 +21,7 @@ package ch.protonmail.android.mailtrackingprotection.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowBlockedTrackersEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsPrivacyBundle2601Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.stateIn
 internal class BlockedTrackersViewModel @AssistedInject constructor(
     observePrimaryUserId: ObservePrimaryUserId,
     private val privacyInfoRepository: PrivacyInfoRepository,
-    @IsShowBlockedTrackersEnabled private val showBlockedTrackersFeatureFlag: FeatureFlag<Boolean>,
+    @IsPrivacyBundle2601Enabled private val showBlockedTrackersFeatureFlag: FeatureFlag<Boolean>,
     @Assisted private val messageId: MessageId
 ) : ViewModel() {
 

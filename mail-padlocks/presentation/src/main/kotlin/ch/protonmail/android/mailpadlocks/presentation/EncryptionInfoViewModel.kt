@@ -20,7 +20,7 @@ package ch.protonmail.android.mailpadlocks.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowEncryptionInfoEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsPrivacyBundle2601Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpadlocks.domain.usecase.GetPrivacyLockForMessage
@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.stateIn
 class EncryptionInfoViewModel @AssistedInject constructor(
     observePrimaryUserId: ObservePrimaryUserId,
     private val getPrivacyLockForMessage: GetPrivacyLockForMessage,
-    @IsShowEncryptionInfoEnabled private val showEncryptionInfoFeatureFlag: FeatureFlag<Boolean>,
+    @IsPrivacyBundle2601Enabled private val showEncryptionInfoFeatureFlag: FeatureFlag<Boolean>,
     @Assisted private val messageId: MessageId
 ) : ViewModel() {
 

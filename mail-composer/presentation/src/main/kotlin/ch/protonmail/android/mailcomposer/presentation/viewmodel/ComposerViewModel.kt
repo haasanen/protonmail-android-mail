@@ -110,7 +110,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.PreloadContactSuggestions
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShowEncryptionInfoEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsPrivacyBundle2601Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
@@ -190,7 +190,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val observeMessagePasswordChanged: ObserveMessagePasswordChanged,
     private val isMessagePasswordSet: IsMessagePasswordSet,
     private val observeRecipientsValidation: ObserveRecipientsValidation,
-    @IsShowEncryptionInfoEnabled private val showEncryptionInfoFeatureFlag: FeatureFlag<Boolean>,
+    @IsPrivacyBundle2601Enabled private val showEncryptionInfoFeatureFlag: FeatureFlag<Boolean>,
     private val getDraftSenderValidationError: GetDraftSenderValidationError,
     private val preloadContactSuggestions: PreloadContactSuggestions,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
