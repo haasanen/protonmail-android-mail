@@ -20,25 +20,38 @@ package ch.protonmail.android.feature.spotlight
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsFeatureSpotlightEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailspotlight.domain.usecase.ObserveFeatureSpotlightDisplay
 import ch.protonmail.android.mailspotlight.presentation.model.FeatureSpotlightState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeFeatureSpotlightViewModel @Inject constructor(
-    observeFeatureSpotlightDisplay: ObserveFeatureSpotlightDisplay
+    observeFeatureSpotlightDisplay: ObserveFeatureSpotlightDisplay,
+    @IsFeatureSpotlightEnabled private val isEnabled: FeatureFlag<Boolean>
 ) : ViewModel() {
 
-    val state: StateFlow<FeatureSpotlightState> = observeFeatureSpotlightDisplay().map { preferenceEither ->
-        preferenceEither.fold(
-            ifLeft = { FeatureSpotlightState.Hide },
-            ifRight = { if (it.show) FeatureSpotlightState.Show else FeatureSpotlightState.Hide }
-        )
+    val state: StateFlow<FeatureSpotlightState> = flow {
+        if (!isEnabled.get()) {
+            emit(FeatureSpotlightState.Hide)
+        } else {
+            emitAll(
+                observeFeatureSpotlightDisplay().map { preferenceEither ->
+                    preferenceEither.fold(
+                        ifLeft = { FeatureSpotlightState.Hide },
+                        ifRight = { if (it.show) FeatureSpotlightState.Show else FeatureSpotlightState.Hide }
+                    )
+                }
+            )
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Lazily,

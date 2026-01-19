@@ -105,3 +105,11 @@ data object PrivacyBundle2601 : FeatureFlagDefinition(
     description = "Enable padlocks + blocked trackers in details/composer.",
     defaultValue = false
 )
+
+data object FeatureSpotlight : FeatureFlagDefinition(
+    key = "MailAndroidV7FeatureSpotlight",
+    name = "Enable the feature spotlight",
+    category = FeatureFlagCategory.Details,
+    description = "Show a what's new screen on startup when available.",
+    defaultValue = false
+)

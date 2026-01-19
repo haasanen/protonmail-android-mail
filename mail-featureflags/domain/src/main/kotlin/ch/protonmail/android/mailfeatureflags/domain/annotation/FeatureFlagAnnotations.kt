@@ -63,3 +63,7 @@ annotation class IsShowRatingBoosterEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsPrivacyBundle2601Enabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsFeatureSpotlightEnabled
