@@ -323,7 +323,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
 fun ConversationScrollerUpdate.List.toScrollerUpdate(): ScrollerUpdate<LocalConversation> =
     when (val listResult = this.v1) {
-        is ConversationScrollerListUpdate.Append -> ScrollerUpdate.Append(listResult.v1)
+        is ConversationScrollerListUpdate.Append -> ScrollerUpdate.Append(listResult.items)
         is ConversationScrollerListUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(
             listResult.idx.toInt(),
             listResult.items
@@ -334,7 +334,7 @@ fun ConversationScrollerUpdate.List.toScrollerUpdate(): ScrollerUpdate<LocalConv
             listResult.items
         )
 
-        ConversationScrollerListUpdate.None -> ScrollerUpdate.None
+        is ConversationScrollerListUpdate.None -> ScrollerUpdate.None
         is ConversationScrollerListUpdate.ReplaceRange -> ScrollerUpdate.ReplaceRange(
             listResult.from.toInt(),
             listResult.to.toInt(),

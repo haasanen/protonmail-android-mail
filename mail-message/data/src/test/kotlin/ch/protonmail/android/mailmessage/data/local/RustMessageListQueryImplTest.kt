@@ -94,7 +94,14 @@ class RustMessageListQueryImplTest {
         showSpamTrash: Boolean = false
     ): MessagePaginatorWrapper = mockk {
         coEvery { nextPage() } answers {
-            callback.captured.onUpdate(MessageScrollerUpdate.List(MessageScrollerListUpdate.Append(items)))
+            callback.captured.onUpdate(
+                MessageScrollerUpdate.List(
+                    MessageScrollerListUpdate.Append(
+                        items = items,
+                        scrollerId = DefaultScrollerId
+                    )
+                )
+            )
             Unit.right()
         }
         coEvery { destroy() } just Runs
@@ -110,7 +117,13 @@ class RustMessageListQueryImplTest {
         showSpamTrash: Boolean = false
     ): MessagePaginatorWrapper = mockk {
         coEvery { reload() } answers {
-            callback.captured.onUpdate(MessageScrollerUpdate.List(MessageScrollerListUpdate.ReplaceFrom(idx, items)))
+            callback.captured.onUpdate(
+                MessageScrollerUpdate.List(
+                    MessageScrollerListUpdate.ReplaceFrom(
+                        idx = idx, items = items, scrollerId = DefaultScrollerId
+                    )
+                )
+            )
             Unit.right()
         }
         coEvery { destroy() } just Runs
@@ -398,7 +411,13 @@ class RustMessageListQueryImplTest {
         rustMessageListQuery.getMessages(userId, pageKey)
 
         // Then
-        callback.captured.onUpdate(MessageScrollerUpdate.List(MessageScrollerListUpdate.ReplaceBefore(1u, emptyList())))
+        callback.captured.onUpdate(
+            MessageScrollerUpdate.List(
+                MessageScrollerListUpdate.ReplaceBefore(
+                    idx = 1u, items = emptyList(), scrollerId = DefaultScrollerId
+                )
+            )
+        )
         advanceUntilIdle()
 
         coVerify { invalidationRepository.submit(PageInvalidationEvent.MessagesInvalidated) }
@@ -414,10 +433,18 @@ class RustMessageListQueryImplTest {
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { nextPage() } answers {
                 CoroutineScope(mainDispatcherRule.testDispatcher).launch {
-                    callback.captured.onUpdate(MessageScrollerUpdate.List(MessageScrollerListUpdate.None))
+                    callback.captured.onUpdate(
+                        MessageScrollerUpdate.List(
+                            MessageScrollerListUpdate.None(DefaultScrollerId)
+                        )
+                    )
                     delay(NONE_FOLLOWUP_GRACE_MS - 100)
                     callback.captured.onUpdate(
-                        MessageScrollerUpdate.List(MessageScrollerListUpdate.ReplaceBefore(0u, expectedFollowUp))
+                        MessageScrollerUpdate.List(
+                            MessageScrollerListUpdate.ReplaceBefore(
+                                idx = 0u, items = expectedFollowUp, scrollerId = DefaultScrollerId
+                            )
+                        )
                     )
                 }
                 Unit.right()
@@ -451,13 +478,20 @@ class RustMessageListQueryImplTest {
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { nextPage() } answers {
                 CoroutineScope(mainDispatcherRule.testDispatcher).launch {
-                    callback.captured.onUpdate(MessageScrollerUpdate.List(MessageScrollerListUpdate.None))
+                    callback.captured.onUpdate(
+                        MessageScrollerUpdate.List(
+                            MessageScrollerListUpdate.None(DefaultScrollerId)
+                        )
+                    )
                     delay(NONE_FOLLOWUP_GRACE_MS + 100)
                     callback.captured.onUpdate(
                         MessageScrollerUpdate.List(
                             MessageScrollerListUpdate.ReplaceBefore(
-                                0u,
-                                listOf(LocalMessageTestData.OctWeatherForecast)
+                                idx = 0u,
+                                items = listOf(
+                                    LocalMessageTestData.OctWeatherForecast
+                                ),
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -483,5 +517,10 @@ class RustMessageListQueryImplTest {
 
         // Then
         assertEquals(emptyList<Message>().right(), actual)
+    }
+
+    companion object {
+
+        private const val DefaultScrollerId = "scroller-id"
     }
 }

@@ -89,7 +89,10 @@ class RustConversationsQueryImplTest {
                     delay(100) // Simulate callback delay compared to nextPage invocation
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
-                            ConversationScrollerListUpdate.Append(expectedConversations)
+                            ConversationScrollerListUpdate.Append(
+                                items = expectedConversations,
+                                scrollerId = DefaultScrollerId
+                            )
                         )
                     )
                 }
@@ -128,7 +131,10 @@ class RustConversationsQueryImplTest {
                     delay(100) // Simulate callback delay compared to nextPage invocation
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
-                            ConversationScrollerListUpdate.Append(expectedConversations)
+                            ConversationScrollerListUpdate.Append(
+                                items = expectedConversations,
+                                scrollerId = DefaultScrollerId
+                            )
                         )
                     )
                 }
@@ -168,8 +174,9 @@ class RustConversationsQueryImplTest {
                 callbackSlot.captured.onUpdate(
                     ConversationScrollerUpdate.List(
                         ConversationScrollerListUpdate.ReplaceFrom(
-                            0uL,
-                            expectedConversations
+                            idx = 0uL,
+                            items = expectedConversations,
+                            scrollerId = DefaultScrollerId
                         )
                     )
                 )
@@ -217,7 +224,8 @@ class RustConversationsQueryImplTest {
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.Append(
-                                expectedPage
+                                items = expectedPage,
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -266,7 +274,8 @@ class RustConversationsQueryImplTest {
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.Append(
-                                firstPage
+                                items = firstPage,
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -316,7 +325,8 @@ class RustConversationsQueryImplTest {
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.Append(
-                                firstPage
+                                items = firstPage,
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -363,7 +373,8 @@ class RustConversationsQueryImplTest {
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.Append(
-                                firstPage
+                                items = firstPage,
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -412,7 +423,8 @@ class RustConversationsQueryImplTest {
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.Append(
-                                firstPage
+                                items = firstPage,
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -438,7 +450,13 @@ class RustConversationsQueryImplTest {
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
         callbackSlot.captured.onUpdate(
-            ConversationScrollerUpdate.List(ConversationScrollerListUpdate.ReplaceBefore(2uL, firstPage))
+            ConversationScrollerUpdate.List(
+                ConversationScrollerListUpdate.ReplaceBefore(
+                    idx = 2uL,
+                    items = firstPage,
+                    scrollerId = DefaultScrollerId
+                )
+            )
         )
 
         // Then
@@ -462,7 +480,8 @@ class RustConversationsQueryImplTest {
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.Append(
-                                firstPage
+                                items = firstPage,
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -490,8 +509,9 @@ class RustConversationsQueryImplTest {
         callbackSlot.captured.onUpdate(
             ConversationScrollerUpdate.List(
                 ConversationScrollerListUpdate.ReplaceFrom(
-                    2uL,
-                    firstPage
+                    idx = 2uL,
+                    items = firstPage,
+                    scrollerId = DefaultScrollerId
                 )
             )
         )
@@ -516,13 +536,18 @@ class RustConversationsQueryImplTest {
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { nextPage() } answers {
                 CoroutineScope(mainDispatcherRule.testDispatcher).launch {
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.List(ConversationScrollerListUpdate.None))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.None(DefaultScrollerId)
+                        )
+                    )
                     delay(NONE_FOLLOWUP_GRACE_MS - 100)
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.ReplaceBefore(
-                                0uL,
-                                expectedFollowUp
+                                idx = 0uL,
+                                items = expectedFollowUp,
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -562,13 +587,18 @@ class RustConversationsQueryImplTest {
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { nextPage() } answers {
                 CoroutineScope(mainDispatcherRule.testDispatcher).launch {
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.List(ConversationScrollerListUpdate.None))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.None(DefaultScrollerId)
+                        )
+                    )
                     delay(NONE_FOLLOWUP_GRACE_MS + 100)
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.ReplaceBefore(
-                                0uL,
-                                listOf(LocalConversationTestData.OctConversation)
+                                idx = 0uL,
+                                items = listOf(LocalConversationTestData.OctConversation),
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -611,12 +641,17 @@ class RustConversationsQueryImplTest {
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { nextPage() } answers {
                 CoroutineScope(mainDispatcherRule.testDispatcher).launch {
-                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.List(ConversationScrollerListUpdate.None))
+                    callbackSlot.captured.onUpdate(
+                        ConversationScrollerUpdate.List(
+                            ConversationScrollerListUpdate.None(DefaultScrollerId)
+                        )
+                    )
                     delay(NONE_FOLLOWUP_GRACE_MS + 100)
                     callbackSlot.captured.onUpdate(
                         ConversationScrollerUpdate.List(
                             ConversationScrollerListUpdate.Append(
-                                lateItems
+                                items = lateItems,
+                                scrollerId = DefaultScrollerId
                             )
                         )
                     )
@@ -644,5 +679,10 @@ class RustConversationsQueryImplTest {
         // Late Append causes invalidation
         testScheduler.advanceUntilIdle()
         coVerify(exactly = 1) { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) }
+    }
+
+    companion object {
+
+        private const val DefaultScrollerId = "scroller-id"
     }
 }

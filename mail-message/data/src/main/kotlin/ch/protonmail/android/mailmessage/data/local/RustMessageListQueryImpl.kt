@@ -311,10 +311,10 @@ class RustMessageListQueryImpl @Inject constructor(
 
 
 fun MessageScrollerUpdate.List.toScrollerUpdate(): ScrollerUpdate<Message> = when (val listResult = this.v1) {
-    is MessageScrollerListUpdate.Append -> Append(listResult.v1)
+    is MessageScrollerListUpdate.Append -> Append(listResult.items)
     is MessageScrollerListUpdate.ReplaceFrom -> ReplaceFrom(listResult.idx.toInt(), listResult.items)
     is MessageScrollerListUpdate.ReplaceBefore -> ReplaceBefore(listResult.idx.toInt(), listResult.items)
-    MessageScrollerListUpdate.None -> ScrollerUpdate.None
+    is MessageScrollerListUpdate.None -> ScrollerUpdate.None
     is MessageScrollerListUpdate.ReplaceRange -> ReplaceRange(
         listResult.from.toInt(),
         listResult.to.toInt(),
