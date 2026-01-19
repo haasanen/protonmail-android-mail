@@ -22,6 +22,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Stable
+import kotlinx.collections.immutable.ImmutableList
 
 @Stable
 sealed interface EncryptionInfoUiModel {
@@ -32,7 +33,7 @@ sealed interface EncryptionInfoUiModel {
         @DrawableRes val icon: Int,
         @ColorRes val color: Int,
         @StringRes val title: Int,
-        val descriptions: List<TooltipDescription>
+        val descriptions: ImmutableList<TooltipDescription>
     ) : EncryptionInfoUiModel
 }
 

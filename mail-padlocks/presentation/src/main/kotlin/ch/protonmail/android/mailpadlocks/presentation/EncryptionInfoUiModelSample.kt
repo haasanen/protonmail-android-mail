@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailpadlocks.presentation
 
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
+import ch.protonmail.android.mailpadlocks.presentation.model.TooltipDescription
+import kotlinx.collections.immutable.toPersistentList
 
 object EncryptionInfoUiModelSample {
 
@@ -26,6 +28,6 @@ object EncryptionInfoUiModelSample {
         icon = R.drawable.ic_proton_lock_filled,
         color = R.color.charade,
         title = R.string.padlocks_stored_with_zero_access_encryption_summary,
-        descriptions = listOf()
+        descriptions = listOf<TooltipDescription>().toPersistentList()
     )
 }

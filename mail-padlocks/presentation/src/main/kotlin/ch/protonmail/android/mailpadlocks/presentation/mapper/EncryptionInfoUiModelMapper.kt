@@ -28,6 +28,7 @@ import ch.protonmail.android.mailpadlocks.domain.PrivacyLockTooltip
 import ch.protonmail.android.mailpadlocks.presentation.R
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.mailpadlocks.presentation.model.TooltipDescription
+import kotlinx.collections.immutable.toPersistentList
 
 internal object EncryptionInfoUiModelMapper {
 
@@ -86,7 +87,7 @@ internal object EncryptionInfoUiModelMapper {
                 icon = icon,
                 color = color,
                 title = tooltipValues.title,
-                descriptions = tooltipValues.descriptions
+                descriptions = tooltipValues.descriptions.toPersistentList()
             )
         }
     }
