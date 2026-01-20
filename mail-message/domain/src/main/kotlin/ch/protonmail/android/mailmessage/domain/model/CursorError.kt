@@ -25,6 +25,5 @@ fun PaginationError.toConversationCursorError() = when (this) {
     PaginationError.Offline -> ConversationCursorError.Offline
     PaginationError.NonProcessableActions -> ConversationCursorError.InvalidState
     PaginationError.PaginationDataNotSynced -> ConversationCursorError.InvalidState
-    PaginationError.PaginatorAlreadyTerminated -> ConversationCursorError.InvalidState
     is PaginationError.Other -> ConversationCursorError.Other(this.error)
 }
