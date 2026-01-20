@@ -23,14 +23,13 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.MessageBodyDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDataError
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.RawMessageData
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import uniffi.proton_mail_uniffi.ImagePolicy
 import javax.inject.Inject
 
@@ -54,7 +53,6 @@ class RustMessageBodyRepository @Inject constructor(
         val imagePolicy = if (shouldLoadImagesSafely) ImagePolicy.SAFE else ImagePolicy.UNSAFE
         return messageBodyDataSource.loadImage(userId, messageId.toLocalMessageId(), url, imagePolicy)
             .map { localAttachmentData ->
-                Timber.d("RustMessage: Loaded image: $url; mime ${localAttachmentData.mime};")
                 MessageBodyImage(localAttachmentData.data, localAttachmentData.mime)
             }
     }

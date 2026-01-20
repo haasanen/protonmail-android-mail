@@ -78,8 +78,6 @@ class WebAccountSettingsViewModel @Inject constructor(
         }
             .onEach { newState ->
                 _state.value = newState
-
-                Timber.d("web-settings: State changed: $newState")
             }
             .launchIn(viewModelScope)
     }

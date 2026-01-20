@@ -363,7 +363,6 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError, Unit> =
         withContext(ioDispatcher) {
-            Timber.d("rust-message: executing delete message for $messageIds")
             // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
             // the current labelId is not needed to delete messages and is planned to be dropped on this API
             val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
@@ -425,7 +424,6 @@ class RustMessageDataSourceImpl @Inject constructor(
             return DataError.Local.NoUserSession.left()
         }
 
-        Timber.d("rust-message: Blocking address $email")
         return rustBlockAddress(session, email)
     }
 
@@ -436,7 +434,6 @@ class RustMessageDataSourceImpl @Inject constructor(
             return DataError.Local.NoDataCached.left()
         }
 
-        Timber.d("rust-message: Unblocking address $email")
         return rustUnblockAddress(mailbox, email)
     }
 

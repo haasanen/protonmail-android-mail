@@ -94,7 +94,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -233,7 +232,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 is BottomSheetType.ScheduleSendOptions -> {
                     val actions = ScheduleSendBottomSheetContent.Actions(
                         onScheduleSendConfirmed = {
-                            Timber.d("Schedule send confirmed, to happen at $it")
                             viewModel.submit(ComposerAction.OnScheduleSend(it))
                         },
                         onPickCustomTimeRequested = {

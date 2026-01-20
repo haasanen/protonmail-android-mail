@@ -515,7 +515,6 @@ class ComposerViewModel @AssistedInject constructor(
         return when (draftAction) {
             Compose -> prefillForNewDraft()
             is ComposeToAddresses -> {
-                Timber.d("composer: prefilling for compose To")
                 prefillForNewDraft().onRight {
                     prefillForComposeToAction(draftAction.extractRecipients())
                 }
@@ -782,7 +781,6 @@ class ComposerViewModel @AssistedInject constructor(
         deleteInlineAttachment(contentId)
             .onLeft { Timber.w("Failed to delete inline attachment: $contentId reason: $it") }
             .onRight {
-                Timber.d("Inline attachment $contentId removed!")
                 if (stripFromBody) {
                     emitNewStateFor(EffectsEvent.AttachmentEvent.StripInlineAttachmentFromBody(contentId))
                 }

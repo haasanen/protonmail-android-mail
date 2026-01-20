@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -43,8 +44,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.ViewMode
-import timber.log.Timber
 
 @HiltViewModel(assistedFactory = LabelAsViewModel.Factory::class)
 internal class LabelAsViewModel @AssistedInject constructor(
@@ -63,7 +62,6 @@ internal class LabelAsViewModel @AssistedInject constructor(
         viewModelScope.launch {
             val entryPoint = initialData.entryPoint
             val content = getInitialStateForEntryPoint(entryPoint).getOrElse {
-                Timber.d("Unable to fetch LabelAs bottom sheet content.")
                 return@launch emitNewStateFrom(LabelAsOperation.LabelAsEvent.LoadingError)
             }
 

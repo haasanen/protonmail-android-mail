@@ -35,8 +35,6 @@ import ch.protonmail.android.mailcomposer.presentation.viewmodel.CameraPicturePi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import timber.log.Timber
-
 
 @Composable
 fun CameraPicturePicker(
@@ -95,7 +93,6 @@ fun CameraPicturePicker(
     val cameraIntent = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
-            Timber.d("image from camera, success: $success")
             if (success) {
                 onCaptured(fileUri)
             }

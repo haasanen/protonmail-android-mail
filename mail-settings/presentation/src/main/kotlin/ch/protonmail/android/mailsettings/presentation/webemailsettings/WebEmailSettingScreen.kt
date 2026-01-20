@@ -35,7 +35,6 @@ import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsSc
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import me.proton.core.util.kotlin.exhaustive
-import timber.log.Timber
 
 @Composable
 fun WebEmailSettingScreen(
@@ -65,7 +64,6 @@ fun WebEmailSettingScreen(
     state: WebSettingsState,
     actions: WebSettingsScreenActions
 ) {
-    Timber.d("web-email-settings: WebEmailSettingScreen: $state")
     Scaffold(
         modifier = modifier,
         topBar = {

@@ -88,13 +88,7 @@ class RustSnoozeDataSource @Inject constructor(
                     Timber.d("rust-snooze: snoozeConversation ERROR: $ids  $this")
                 }
 
-                is SnoozeConversationsResult.Ok -> Unit.right().apply {
-                    Timber.d(
-                        "rust-snooze: snoozeConversation SUCCESS: labelid $labelId conversationIDs $ids time ${
-                            snoozeTime.epochSeconds
-                        }"
-                    )
-                }
+                is SnoozeConversationsResult.Ok -> Unit.right()
             }
         }.mapLeft { left ->
             return@withContext SnoozeError.Other().left()

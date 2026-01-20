@@ -78,7 +78,6 @@ class ContactListViewModel @Inject constructor(
     }
 
     private suspend fun handleOnDeleteContactConfirmed(contactId: ContactId) {
-        Timber.d("Deleting contact with id: $contactId")
         deleteContact(primaryUserId(), contactId)
 
         emitNewStateFor(ContactListEvent.DeleteContactConfirmed)

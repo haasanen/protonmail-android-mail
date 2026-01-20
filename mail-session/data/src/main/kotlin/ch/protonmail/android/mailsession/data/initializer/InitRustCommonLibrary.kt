@@ -55,8 +55,6 @@ class InitRustCommonLibrary @Inject constructor(
 ) {
 
     fun init() {
-        Timber.d("rust-session: Let the rust begin...")
-
         initializeRustTlsModule()
 
         val databasePath = databasesBaseDirectory.absolutePath
@@ -96,12 +94,7 @@ class InitRustCommonLibrary @Inject constructor(
                 Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
             }
 
-            is CreateMailSessionResult.Ok -> {
-                Timber.d("rust-session: Mail session created! (hash: ${result.v1.hashCode()})")
-                Timber.d("rust-session: Storing mail session to In Memory Session Repository...")
-
-                mailSessionRepository.setMailSession(result.v1)
-            }
+            is CreateMailSessionResult.Ok -> mailSessionRepository.setMailSession(result.v1)
         }
     }
 

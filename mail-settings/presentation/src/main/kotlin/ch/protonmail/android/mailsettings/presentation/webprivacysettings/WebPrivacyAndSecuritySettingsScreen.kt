@@ -35,7 +35,6 @@ import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsSc
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import me.proton.core.util.kotlin.exhaustive
-import timber.log.Timber
 
 @Composable
 fun WebPrivacyAndSecuritySettingsScreen(
@@ -66,7 +65,6 @@ fun WebPrivacyAndSecuritySettingsScreen(
     state: WebSettingsState,
     actions: WebSettingsScreenActions
 ) {
-    Timber.d("web-spam-settings: WebPrivacyAndSecuritySettingsScreen: $state")
     Scaffold(
         modifier = modifier,
         topBar = {

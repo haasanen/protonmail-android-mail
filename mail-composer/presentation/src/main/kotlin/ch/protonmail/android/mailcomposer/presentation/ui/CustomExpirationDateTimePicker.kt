@@ -78,7 +78,6 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinMonth
 import kotlinx.datetime.toLocalDateTime
-import timber.log.Timber
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -92,9 +91,7 @@ fun CustomExpirationDateTimePicker(
     val timeZone = remember { TimeZone.currentSystemDefault() }
     val localDateTime = remember(initialTime) {
         val instant = Instant.fromEpochMilliseconds(initialTime.toEpochMilliseconds())
-        val localDateTime = instant.toLocalDateTime(timeZone)
-        Timber.d("customtime: RECEIVE to local date time $localDateTime // instant: $instant")
-        localDateTime
+        instant.toLocalDateTime(timeZone)
     }
     val shownDialogType = rememberSaveable { mutableStateOf(DialogType.SelectDate) }
 
@@ -149,7 +146,6 @@ fun CustomExpirationDateTimePicker(
                     val timeZone = TimeZone.currentSystemDefault()
                     val timestamp = Instant.fromEpochSeconds(dateTime.toInstant(timeZone).epochSeconds)
                     val expirationTime = ExpirationTimeUiModel(ExpirationTimeOption.Custom, timestamp)
-                    Timber.d("customtime: SET intant $timestamp")
                     onTimePicked(expirationTime)
                 }
             },

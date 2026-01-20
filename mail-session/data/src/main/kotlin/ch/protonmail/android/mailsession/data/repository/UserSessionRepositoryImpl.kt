@@ -158,7 +158,7 @@ class UserSessionRepositoryImpl @Inject constructor(
                 if (initialized.value != null) {
                     return initialized.value
                 } else {
-                    Timber.i(
+                    Timber.d(
                         "user-session: initialized user context not ready yet for userId=$userId, " +
                             "falling back to full initialization"
                     )
@@ -184,7 +184,7 @@ class UserSessionRepositoryImpl @Inject constructor(
             }
 
             is Either.Right -> {
-                Timber.i(
+                Timber.d(
                     "user-session: user context successfully initialized for userId=$userId"
                 )
                 result.value
