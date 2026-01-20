@@ -37,11 +37,9 @@ class AccountsTooltipViewModel @Inject constructor(
     private val markAccountTooltipAsSeen: MarkAccountTooltipAsSeen
 ) : ViewModel() {
 
-    val state: StateFlow<AccountsTooltipState> = observeAccountsTooltip().map { preferenceEither ->
-        preferenceEither.fold(
-            ifLeft = { AccountsTooltipState.Hide },
-            ifRight = { if (it.display) AccountsTooltipState.Show else AccountsTooltipState.Hide }
-        )
+    // To be removed in 7.8.0, hiding in 7.7.x
+    val state: StateFlow<AccountsTooltipState> = observeAccountsTooltip().map { _ ->
+        AccountsTooltipState.Hide
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Lazily,
