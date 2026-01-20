@@ -24,10 +24,13 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.PreferencesError
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailspotlight.domain.model.FeatureSpotlightDisplay
+import ch.protonmail.android.mailspotlight.domain.usecase.IsRecentAppInstall
+import ch.protonmail.android.mailspotlight.domain.usecase.MarkFeatureSpotlightSeen
 import ch.protonmail.android.mailspotlight.domain.usecase.ObserveFeatureSpotlightDisplay
 import ch.protonmail.android.mailspotlight.presentation.model.FeatureSpotlightState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -43,6 +46,10 @@ internal class HomeFeatureSpotlightViewModelTest {
 
     private val mockFeatureFlag = mockk<FeatureFlag<Boolean>>()
     private val mockObserveFeatureSpotlightDisplay = mockk<ObserveFeatureSpotlightDisplay>()
+    private val mockIsRecentAppInstall = mockk<IsRecentAppInstall>()
+    private val mockMarkFeatureSpotlightSeen = mockk<MarkFeatureSpotlightSeen> {
+        coEvery { this@mockk.invoke() } returns Unit.right()
+    }
 
     @Test
     fun `should emit Hide when feature flag is disabled`() = runTest {
@@ -55,12 +62,14 @@ internal class HomeFeatureSpotlightViewModelTest {
         viewModel.state.test {
             assertEquals(FeatureSpotlightState.Hide, awaitItem())
         }
+        coVerify(exactly = 0) { mockMarkFeatureSpotlightSeen() }
     }
 
     @Test
     fun `should emit Show when feature flag is enabled and preference is show`() = runTest {
         // Given
         coEvery { mockFeatureFlag.get() } returns true
+        every { mockIsRecentAppInstall() } returns false
         every { mockObserveFeatureSpotlightDisplay() } returns flowOf(FeatureSpotlightDisplay(show = true).right())
 
         val viewModel = buildViewModel()
@@ -69,12 +78,14 @@ internal class HomeFeatureSpotlightViewModelTest {
         viewModel.state.test {
             assertEquals(FeatureSpotlightState.Show, awaitItem())
         }
+        coVerify(exactly = 0) { mockMarkFeatureSpotlightSeen() }
     }
 
     @Test
     fun `should emit Hide when feature flag is enabled and preference is hide`() = runTest {
         // Given
         coEvery { mockFeatureFlag.get() } returns true
+        every { mockIsRecentAppInstall() } returns false
         every { mockObserveFeatureSpotlightDisplay() } returns flowOf(FeatureSpotlightDisplay(show = false).right())
 
         val viewModel = buildViewModel()
@@ -89,6 +100,7 @@ internal class HomeFeatureSpotlightViewModelTest {
     fun `should emit Hide when feature flag is enabled and preference returns error`() = runTest {
         // Given
         coEvery { mockFeatureFlag.get() } returns true
+        every { mockIsRecentAppInstall() } returns false
         every { mockObserveFeatureSpotlightDisplay() } returns flowOf(PreferencesError.left())
 
         val viewModel = buildViewModel()
@@ -99,8 +111,41 @@ internal class HomeFeatureSpotlightViewModelTest {
         }
     }
 
+    @Test
+    fun `should emit Hide and mark seen when feature flag is enabled and app is recent install`() = runTest {
+        // Given
+        coEvery { mockFeatureFlag.get() } returns true
+        every { mockIsRecentAppInstall() } returns true
+
+        val viewModel = buildViewModel()
+
+        // When/Then
+        viewModel.state.test {
+            assertEquals(FeatureSpotlightState.Hide, awaitItem())
+        }
+        coVerify(exactly = 1) { mockMarkFeatureSpotlightSeen() }
+    }
+
+    @Test
+    fun `should observe spotlight display when feature flag enabled and not recent install`() = runTest {
+        // Given
+        coEvery { mockFeatureFlag.get() } returns true
+        every { mockIsRecentAppInstall() } returns false
+        every { mockObserveFeatureSpotlightDisplay() } returns flowOf(FeatureSpotlightDisplay(show = true).right())
+
+        val viewModel = buildViewModel()
+
+        // When/Then
+        viewModel.state.test {
+            assertEquals(FeatureSpotlightState.Show, awaitItem())
+        }
+        coVerify(exactly = 0) { mockMarkFeatureSpotlightSeen() }
+    }
+
     private fun buildViewModel() = HomeFeatureSpotlightViewModel(
         observeFeatureSpotlightDisplay = mockObserveFeatureSpotlightDisplay,
-        isEnabled = mockFeatureFlag
+        isEnabled = mockFeatureFlag,
+        isRecentAppInstall = mockIsRecentAppInstall,
+        markFeatureSpotlightSeen = mockMarkFeatureSpotlightSeen
     )
 }

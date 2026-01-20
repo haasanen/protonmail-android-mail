@@ -22,6 +22,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsFeatureSpotlightEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
+import ch.protonmail.android.mailspotlight.domain.usecase.IsRecentAppInstall
+import ch.protonmail.android.mailspotlight.domain.usecase.MarkFeatureSpotlightSeen
 import ch.protonmail.android.mailspotlight.domain.usecase.ObserveFeatureSpotlightDisplay
 import ch.protonmail.android.mailspotlight.presentation.model.FeatureSpotlightState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,11 +38,16 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeFeatureSpotlightViewModel @Inject constructor(
     observeFeatureSpotlightDisplay: ObserveFeatureSpotlightDisplay,
-    @IsFeatureSpotlightEnabled private val isEnabled: FeatureFlag<Boolean>
+    @IsFeatureSpotlightEnabled private val isEnabled: FeatureFlag<Boolean>,
+    private val isRecentAppInstall: IsRecentAppInstall,
+    private val markFeatureSpotlightSeen: MarkFeatureSpotlightSeen
 ) : ViewModel() {
 
     val state: StateFlow<FeatureSpotlightState> = flow {
         if (!isEnabled.get()) {
+            emit(FeatureSpotlightState.Hide)
+        } else if (isRecentAppInstall()) {
+            markFeatureSpotlightSeen()
             emit(FeatureSpotlightState.Hide)
         } else {
             emitAll(

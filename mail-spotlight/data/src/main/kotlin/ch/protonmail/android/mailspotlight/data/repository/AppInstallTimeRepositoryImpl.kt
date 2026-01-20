@@ -27,8 +27,7 @@ class AppInstallTimeRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : AppInstallTimeRepository {
 
-    override fun getFirstInstallTime(): Long =
-        context.packageManager
-            .getPackageInfo(context.packageName, 0)
-            .firstInstallTime
+    override fun getFirstInstallTime(): Long = context.packageManager
+        .getPackageInfo(context.packageName, 0)
+        .firstInstallTime
 }
