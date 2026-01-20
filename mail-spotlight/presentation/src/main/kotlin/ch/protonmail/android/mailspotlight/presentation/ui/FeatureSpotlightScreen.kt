@@ -49,7 +49,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
@@ -120,11 +119,7 @@ private fun FeatureSpotlightScreen(
 
     Box(
         modifier = modifier
-            .background(
-                Brush.linearGradient(
-                    colors = listOf(ProtonTheme.colors.brandMinus40, ProtonTheme.colors.backgroundNorm)
-                )
-            )
+            .background(ProtonTheme.colors.backgroundNorm)
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
     ) {
         Column(
@@ -237,15 +232,16 @@ private fun FeatureRow(
             modifier = Modifier
                 .size(ProtonDimens.IconSize.Large)
                 .background(
-                    color = ProtonTheme.colors.brandMinus40,
+                    color = ProtonTheme.colors.backgroundDeep,
                     shape = ProtonTheme.shapes.large
                 ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = icon),
+                tint = ProtonTheme.colors.iconNorm,
                 contentDescription = null,
-                Modifier.size(ProtonDimens.IconSize.Small)
+                modifier = Modifier.size(ProtonDimens.IconSize.Small)
             )
         }
 
