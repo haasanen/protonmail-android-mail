@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction
-import me.proton.core.auth.fido.domain.entity.Fido2AuthenticationOptions
 import me.proton.core.auth.fido.domain.entity.Fido2PublicKeyCredentialRequestOptions
 import me.proton.core.auth.fido.domain.entity.SecondFactorProof
 import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey
@@ -44,8 +43,6 @@ import me.proton.core.presentation.utils.errorToast
 import javax.inject.Inject
 import kotlin.jvm.optionals.getOrNull
 
-private const val DID_LAUNCH_FIDO_DIALOG_ARG = "DID_LAUNCH_FIDO_DIALOG_ARG"
-
 @AndroidEntryPoint
 class SecondFactorActivity : ProtonActivity() {
 
@@ -58,19 +55,43 @@ class SecondFactorActivity : ProtonActivity() {
 
     private val secondFactoryViewModel: SecondFactorInputViewModel by viewModels()
 
-    private var didLaunchFidoDialog = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        didLaunchFidoDialog = savedInstanceState?.getBoolean(DID_LAUNCH_FIDO_DIALOG_ARG) ?: false
         performTwoFaWithSecurityKey.getOrNull()?.register(this, ::onTwoFaWithSecurityKeyResult)
         addOnBackPressedCallback { onClose() }
 
         lifecycleScope.launch {
             mutableAction.collect { action ->
                 when (action) {
-                    is Fido2InputAction.ReadSecurityKey -> onLaunchFidoDialog(action.options)
+                    is Fido2InputAction.ReadSecurityKey -> {
+                        val launchResult =
+                            performTwoFaWithSecurityKey.getOrNull()?.invoke(
+                                this@SecondFactorActivity,
+                                action.options.publicKey
+                            )
+
+                        secondFactoryViewModel.onFidoLaunchResult(launchResult)
+
+                        when (launchResult) {
+                            is LaunchResult.Failure ->
+                                onError(
+                                    launchResult.exception.localizedMessage
+                                        ?: getString(R.string.auth_login_general_error)
+                                )
+
+                            is LaunchResult.Success -> Unit
+                            null -> {
+                                onError(getString(R.string.auth_login_general_error))
+                                mutableAction.tryEmit(
+                                    Fido2InputAction.SecurityKeyResult(
+                                        result = PerformTwoFaWithSecurityKey.Result.EmptyResult,
+                                        proof = null
+                                    )
+                                )
+                            }
+                        }
+                    }
+
                     else -> Unit
                 }
             }
@@ -95,43 +116,6 @@ class SecondFactorActivity : ProtonActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(DID_LAUNCH_FIDO_DIALOG_ARG, didLaunchFidoDialog)
-    }
-
-    private suspend fun onLaunchFidoDialog(options: Fido2AuthenticationOptions) {
-        if (didLaunchFidoDialog) return
-
-        val launchResult = performTwoFaWithSecurityKey.getOrNull()?.invoke(
-            this@SecondFactorActivity,
-            options.publicKey
-        )
-
-        secondFactoryViewModel.onFidoLaunchResult(launchResult)
-
-        when (launchResult) {
-            is LaunchResult.Failure -> onError(
-                launchResult.exception.localizedMessage
-                    ?: getString(R.string.auth_login_general_error)
-            )
-
-            is LaunchResult.Success -> {
-                didLaunchFidoDialog = true
-            }
-
-            null -> {
-                onError(getString(R.string.auth_login_general_error))
-                mutableAction.tryEmit(
-                    Fido2InputAction.SecurityKeyResult(
-                        result = PerformTwoFaWithSecurityKey.Result.EmptyResult,
-                        proof = null
-                    )
-                )
-            }
-        }
-    }
-
     private fun onClose() {
         setResult(Activity.RESULT_CANCELED)
         finish()
@@ -150,8 +134,6 @@ class SecondFactorActivity : ProtonActivity() {
         result: PerformTwoFaWithSecurityKey.Result,
         options: Fido2PublicKeyCredentialRequestOptions
     ) {
-        didLaunchFidoDialog = false
-
         when (result) {
             is PerformTwoFaWithSecurityKey.Result.Success -> onResultSuccess(result = result, options = options)
             else -> mutableAction.tryEmit(Fido2InputAction.SecurityKeyResult(result = result, proof = null))
