@@ -25,9 +25,11 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoState
 import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoWrapper
 import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedTracker
 import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
+import ch.protonmail.android.mailtrackingprotection.domain.model.PrivacyItemsResult
 import ch.protonmail.android.mailtrackingprotection.domain.repository.PrivacyInfoRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
@@ -105,16 +107,17 @@ internal class PrivacyInfoRepositoryImplTest {
         coEvery { mockUserSessionRepository.getUserSession(testUserId) } returns mockUserSession
         every {
             mockDataSource.observePrivacyInfo(any(), any())
-        } returns flowOf(privacyInfoWrapper.right())
+        } returns flowOf(PrivacyInfoState.Detected(privacyInfoWrapper).right())
 
         // When/Then
         repository.observePrivacyItemsForMessage(testUserId, testMessageId).test {
-            val privacyItems = awaitItem().getOrNull()
+            val result = awaitItem().getOrNull()
 
             // Then
-            assertNotNull(privacyItems)
-            assertEquals(expectedTrackers, privacyItems.trackers)
-            assertEquals(expectedCleanedLinks, privacyItems.urls)
+            assertNotNull(result)
+            assertTrue(result is PrivacyItemsResult.Detected)
+            assertEquals(expectedTrackers, result.items.trackers)
+            assertEquals(expectedCleanedLinks, result.items.urls)
             awaitComplete()
         }
     }
@@ -133,17 +136,18 @@ internal class PrivacyInfoRepositoryImplTest {
         coEvery { mockUserSessionRepository.getUserSession(testUserId) } returns mockUserSession
         every {
             mockDataSource.observePrivacyInfo(any(), any())
-        } returns flowOf(privacyInfoWrapper.right())
+        } returns flowOf(PrivacyInfoState.Detected(privacyInfoWrapper).right())
 
         // When/Then
         repository.observePrivacyItemsForMessage(testUserId, testMessageId).test {
-            val privacyItems = awaitItem().getOrNull()
+            val result = awaitItem().getOrNull()
 
             // Then
-            assertNotNull(privacyItems)
-            assertTrue(privacyItems.trackers.isEmpty())
-            assertTrue(privacyItems.urls.isEmpty())
-            assertTrue(privacyItems.isEmpty)
+            assertNotNull(result)
+            assertTrue(result is PrivacyItemsResult.Detected)
+            assertTrue(result.items.trackers.isEmpty())
+            assertTrue(result.items.urls.isEmpty())
+            assertTrue(result.items.isEmpty)
             awaitComplete()
         }
     }
@@ -205,16 +209,17 @@ internal class PrivacyInfoRepositoryImplTest {
         coEvery { mockUserSessionRepository.getUserSession(testUserId) } returns mockUserSession
         every {
             mockDataSource.observePrivacyInfo(any(), any())
-        } returns flowOf(privacyInfoWrapper.right())
+        } returns flowOf(PrivacyInfoState.Detected(privacyInfoWrapper).right())
 
         // When/Then
         repository.observePrivacyItemsForMessage(testUserId, testMessageId).test {
-            val privacyItems = awaitItem().getOrNull()
+            val result = awaitItem().getOrNull()
 
             // Then
-            assertNotNull(privacyItems)
-            assertEquals(expectedTrackers, privacyItems.trackers)
-            assertTrue(privacyItems.urls.isEmpty())
+            assertNotNull(result)
+            assertTrue(result is PrivacyItemsResult.Detected)
+            assertEquals(expectedTrackers, result.items.trackers)
+            assertTrue(result.items.urls.isEmpty())
             awaitComplete()
         }
     }
@@ -240,16 +245,55 @@ internal class PrivacyInfoRepositoryImplTest {
         coEvery { mockUserSessionRepository.getUserSession(testUserId) } returns mockUserSession
         every {
             mockDataSource.observePrivacyInfo(any(), any())
-        } returns flowOf(privacyInfoWrapper.right())
+        } returns flowOf(PrivacyInfoState.Detected(privacyInfoWrapper).right())
 
         // When/Then
         repository.observePrivacyItemsForMessage(testUserId, testMessageId).test {
-            val privacyItems = awaitItem().getOrNull()
+            val result = awaitItem().getOrNull()
 
             // Then
-            assertNotNull(privacyItems)
-            assertTrue(privacyItems.trackers.isEmpty())
-            assertEquals(expectedCleanedLinks, privacyItems.urls)
+            assertNotNull(result)
+            assertTrue(result is PrivacyItemsResult.Detected)
+            assertTrue(result.items.trackers.isEmpty())
+            assertEquals(expectedCleanedLinks, result.items.urls)
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `observe trackers returns Pending when data source emits Pending`() = runTest {
+        // Given
+        coEvery { mockUserSessionRepository.getUserSession(testUserId) } returns mockUserSession
+        every {
+            mockDataSource.observePrivacyInfo(any(), any())
+        } returns flowOf(PrivacyInfoState.Pending.right())
+
+        // When/Then
+        repository.observePrivacyItemsForMessage(testUserId, testMessageId).test {
+            val result = awaitItem().getOrNull()
+
+            // Then
+            assertNotNull(result)
+            assertTrue(result is PrivacyItemsResult.Pending)
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `observe trackers returns Disabled when data source emits Disabled`() = runTest {
+        // Given
+        coEvery { mockUserSessionRepository.getUserSession(testUserId) } returns mockUserSession
+        every {
+            mockDataSource.observePrivacyInfo(any(), any())
+        } returns flowOf(PrivacyInfoState.Disabled.right())
+
+        // When/Then
+        repository.observePrivacyItemsForMessage(testUserId, testMessageId).test {
+            val result = awaitItem().getOrNull()
+
+            // Then
+            assertNotNull(result)
+            assertTrue(result is PrivacyItemsResult.Disabled)
             awaitComplete()
         }
     }

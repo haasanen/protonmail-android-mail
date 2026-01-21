@@ -21,7 +21,7 @@ package ch.protonmail.android.mailtrackingprotection.data.trackers
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoWrapper
+import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoState
 import ch.protonmail.android.mailtrackingprotection.data.wrapper.RustPrivacyInfoWrapper
 import kotlinx.coroutines.flow.Flow
 
@@ -30,5 +30,5 @@ interface RustPrivacyInfoDataSource {
     fun observePrivacyInfo(
         rustPrivacyInfoWrapper: RustPrivacyInfoWrapper,
         messageId: LocalMessageId
-    ): Flow<Either<DataError, PrivacyInfoWrapper>>
+    ): Flow<Either<DataError, PrivacyInfoState>>
 }

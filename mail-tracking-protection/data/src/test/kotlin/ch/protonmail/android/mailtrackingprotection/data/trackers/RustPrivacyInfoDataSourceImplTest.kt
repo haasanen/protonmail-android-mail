@@ -23,6 +23,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoState
 import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoStreamWrapper
 import ch.protonmail.android.mailtrackingprotection.data.wrapper.RustPrivacyInfoWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -36,10 +37,12 @@ import uniffi.proton_mail_uniffi.PrivacyInfo
 import uniffi.proton_mail_uniffi.StrippedUtmInfo
 import uniffi.proton_mail_uniffi.TrackerDomain
 import uniffi.proton_mail_uniffi.TrackerInfo
+import uniffi.proton_mail_uniffi.TrackerInfoWithStatus
 import uniffi.proton_mail_uniffi.UtmLink
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 internal class RustPrivacyInfoDataSourceImplTest {
@@ -62,12 +65,12 @@ internal class RustPrivacyInfoDataSourceImplTest {
     }
 
     @Test
-    fun `observe privacy info returns flow of privacy info successfully with initial info`() = runTest {
+    fun `observe privacy info returns Detected state with initial info`() = runTest {
         // Given
         val trackerInfo = TrackerInfo(listOf(testTrackerDomain), 0UL)
         val strippedUtmInfo = StrippedUtmInfo(listOf(testUtmLink))
         val privacyInfo = mockk<PrivacyInfo> {
-            every { trackers } returns trackerInfo
+            every { trackers } returns TrackerInfoWithStatus.Detected(trackerInfo)
             every { utmLinks } returns strippedUtmInfo
         }
 
@@ -77,17 +80,38 @@ internal class RustPrivacyInfoDataSourceImplTest {
         // When
         dataSource.observePrivacyInfo(mockWrapper, testMessageId).test {
             // Then
-            val result = awaitItem()
-            assertTrue(result.isRight())
-            val privacyInfoWrapper = result.getOrNull()!!
-            assertEquals(listOf(testTrackerDomain), privacyInfoWrapper.trackerInfo.trackers)
-            assertEquals(listOf(testUtmLink), privacyInfoWrapper.strippedUtmInfo.links)
+            val result = awaitItem().getOrNull()
+            assertTrue(result is PrivacyInfoState.Detected)
+            assertEquals(listOf(testTrackerDomain), result.info.trackerInfo.trackers)
+            assertEquals(listOf(testUtmLink), result.info.strippedUtmInfo.links)
             awaitComplete()
         }
     }
 
     @Test
-    fun `observe privacy info returns flow of error when watch stream fails`() = runTest {
+    fun `observe privacy info returns Pending when trackers is Detected but utm links is null`() = runTest {
+        // Given
+        val trackerInfo = TrackerInfo(listOf(testTrackerDomain), 0UL)
+        val privacyInfo = mockk<PrivacyInfo> {
+            every { trackers } returns TrackerInfoWithStatus.Detected(trackerInfo)
+            every { utmLinks } returns null
+        }
+
+        coEvery { mockWrapper.watchTrackerInfoStream(testMessageId) } returns mockStream.right()
+        every { mockStream.initialInfo() } returns privacyInfo
+
+        // When
+        dataSource.observePrivacyInfo(mockWrapper, testMessageId).test {
+            // Then
+            val result = awaitItem().getOrNull()
+            assertNotNull(result)
+            assertTrue(result is PrivacyInfoState.Pending)
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `observe privacy info returns error when watch stream fails`() = runTest {
         // Given
         val expected = DataError.Local.NoUserSession
         coEvery { mockWrapper.watchTrackerInfoStream(testMessageId) } returns expected.left()
@@ -103,10 +127,10 @@ internal class RustPrivacyInfoDataSourceImplTest {
     }
 
     @Test
-    fun `observe privacy info skips emission when privacy info has null trackers`() = runTest {
+    fun `observe privacy info returns Pending when trackers status is Pending`() = runTest {
         // Given
         val privacyInfo = mockk<PrivacyInfo> {
-            every { trackers } returns null
+            every { trackers } returns TrackerInfoWithStatus.Pending
             every { utmLinks } returns StrippedUtmInfo(listOf(testUtmLink))
         }
 
@@ -116,16 +140,19 @@ internal class RustPrivacyInfoDataSourceImplTest {
         // When
         dataSource.observePrivacyInfo(mockWrapper, testMessageId).test {
             // Then
+            val result = awaitItem().getOrNull()
+            assertNotNull(result)
+            assertTrue(result is PrivacyInfoState.Pending)
             awaitComplete()
         }
     }
 
     @Test
-    fun `observe privacy info skips emission when privacy info has null utm links`() = runTest {
+    fun `observe privacy info returns Disabled when trackers status is Disabled`() = runTest {
         // Given
         val privacyInfo = mockk<PrivacyInfo> {
-            every { trackers } returns TrackerInfo(listOf(testTrackerDomain), 0UL)
-            every { utmLinks } returns null
+            every { trackers } returns TrackerInfoWithStatus.Disabled
+            every { utmLinks } returns StrippedUtmInfo(listOf(testUtmLink))
         }
 
         coEvery { mockWrapper.watchTrackerInfoStream(testMessageId) } returns mockStream.right()
@@ -134,6 +161,9 @@ internal class RustPrivacyInfoDataSourceImplTest {
         // When
         dataSource.observePrivacyInfo(mockWrapper, testMessageId).test {
             // Then
+            val result = awaitItem().getOrNull()
+            assertNotNull(result)
+            assertTrue(result is PrivacyInfoState.Disabled)
             awaitComplete()
         }
     }

@@ -23,6 +23,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoState
 import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoWrapper
 import ch.protonmail.android.mailtrackingprotection.data.wrapper.RustPrivacyInfoWrapper
 import kotlinx.coroutines.channels.awaitClose
@@ -39,7 +40,7 @@ class RustPrivacyInfoDataSourceImpl @Inject constructor() : RustPrivacyInfoDataS
     override fun observePrivacyInfo(
         rustPrivacyInfoWrapper: RustPrivacyInfoWrapper,
         messageId: LocalMessageId
-    ): Flow<Either<DataError, PrivacyInfoWrapper>> = callbackFlow {
+    ): Flow<Either<DataError, PrivacyInfoState>> = callbackFlow {
         Timber.d("rust-privacy-protection: Starting tracking protection observation")
 
         rustPrivacyInfoWrapper.watchTrackerInfoStream(messageId).onLeft { error ->
@@ -55,8 +56,7 @@ class RustPrivacyInfoDataSourceImpl @Inject constructor() : RustPrivacyInfoDataS
             Timber.d("rust-privacy-protection: Created privacy info watcher")
 
             val initialInfo = stream.initialInfo()
-            val wrapped = PrivacyInfoWrapper(initialInfo)
-            if (wrapped != null) send(wrapped.right())
+            send(PrivacyInfoWrapper.fromPrivacyInfo(initialInfo).right())
 
             while (isActive) {
                 when (val nextValueResult = stream.nextAsync()) {
@@ -67,8 +67,7 @@ class RustPrivacyInfoDataSourceImpl @Inject constructor() : RustPrivacyInfoDataS
                     }
 
                     is WatchPrivacyInfoStreamNextAsyncResult.Ok -> {
-                        val wrapped = PrivacyInfoWrapper(nextValueResult.v1)
-                        if (wrapped != null) send(wrapped.right())
+                        send(PrivacyInfoWrapper.fromPrivacyInfo(nextValueResult.v1).right())
                     }
                 }
             }

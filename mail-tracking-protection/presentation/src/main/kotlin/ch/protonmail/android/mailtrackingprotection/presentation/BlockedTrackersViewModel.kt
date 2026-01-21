@@ -25,6 +25,7 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsPrivacyBundle2
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailtrackingprotection.domain.model.PrivacyItemsResult
 import ch.protonmail.android.mailtrackingprotection.domain.repository.PrivacyInfoRepository
 import ch.protonmail.android.mailtrackingprotection.presentation.mapper.BlockedElementsUiModelMapper
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsState
@@ -58,10 +59,7 @@ internal class BlockedTrackersViewModel @AssistedInject constructor(
             privacyInfoRepository.observePrivacyItemsForMessage(userId, messageId).mapLatest { either ->
                 either.fold(
                     ifLeft = { BlockedElementsState.Disabled },
-                    ifRight = { privacyItems ->
-                        if (privacyItems.isEmpty) return@fold BlockedElementsState.NoBlockedElements
-                        BlockedElementsState.BlockedElements(BlockedElementsUiModelMapper.toUiModel(privacyItems))
-                    }
+                    ifRight = { result -> result.toState() }
                 )
             }
         }
@@ -70,6 +68,15 @@ internal class BlockedTrackersViewModel @AssistedInject constructor(
             SharingStarted.WhileSubscribed(stopTimeoutMillis),
             BlockedElementsState.Loading
         )
+
+    private fun PrivacyItemsResult.toState(): BlockedElementsState = when (this) {
+        is PrivacyItemsResult.Pending -> BlockedElementsState.Loading
+        is PrivacyItemsResult.Disabled -> BlockedElementsState.Disabled
+        is PrivacyItemsResult.Detected -> {
+            if (items.isEmpty) BlockedElementsState.NoBlockedElements
+            else BlockedElementsState.BlockedElements(BlockedElementsUiModelMapper.toUiModel(items))
+        }
+    }
 
     @AssistedFactory
     interface Factory {

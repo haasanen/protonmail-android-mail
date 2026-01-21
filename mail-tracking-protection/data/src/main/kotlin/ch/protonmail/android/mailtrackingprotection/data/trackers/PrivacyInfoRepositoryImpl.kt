@@ -19,16 +19,15 @@
 package ch.protonmail.android.mailtrackingprotection.data.trackers
 
 import arrow.core.Either
-import arrow.core.flatMap
 import arrow.core.left
-import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailtrackingprotection.data.mapper.toDomainPrivacyInfo
+import ch.protonmail.android.mailtrackingprotection.data.wrapper.PrivacyInfoState
 import ch.protonmail.android.mailtrackingprotection.data.wrapper.RustPrivacyInfoWrapper
-import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedPrivacyItems
+import ch.protonmail.android.mailtrackingprotection.domain.model.PrivacyItemsResult
 import ch.protonmail.android.mailtrackingprotection.domain.repository.PrivacyInfoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -46,7 +45,7 @@ class PrivacyInfoRepositoryImpl @Inject constructor(
     override fun observePrivacyItemsForMessage(
         userId: UserId,
         messageId: MessageId
-    ): Flow<Either<DataError, BlockedPrivacyItems>> = flow {
+    ): Flow<Either<DataError, PrivacyItemsResult>> = flow {
         val userSession = userSessionRepository.getUserSession(userId) ?: run {
             emit(DataError.Local.NoUserSession.left())
             return@flow
@@ -56,9 +55,15 @@ class PrivacyInfoRepositoryImpl @Inject constructor(
 
         emitAll(
             dataSource.observePrivacyInfo(trackersWrapper, messageId.toLocalMessageId()).map { either ->
-                either.flatMap { privacyInfo -> privacyInfo.toDomainPrivacyInfo().right() }
+                either.map { privacyInfoState -> privacyInfoState.toDomainResult() }
             }
         )
     }.distinctUntilChanged()
+
+    private fun PrivacyInfoState.toDomainResult(): PrivacyItemsResult = when (this) {
+        is PrivacyInfoState.Pending -> PrivacyItemsResult.Pending
+        is PrivacyInfoState.Detected -> PrivacyItemsResult.Detected(info.toDomainPrivacyInfo())
+        is PrivacyInfoState.Disabled -> PrivacyItemsResult.Disabled
+    }
 }
 

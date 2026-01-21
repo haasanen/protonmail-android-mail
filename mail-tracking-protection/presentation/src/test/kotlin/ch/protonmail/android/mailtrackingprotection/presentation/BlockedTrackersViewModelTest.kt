@@ -28,6 +28,7 @@ import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedPrivacyItems
 import ch.protonmail.android.mailtrackingprotection.domain.model.BlockedTracker
 import ch.protonmail.android.mailtrackingprotection.domain.model.CleanedLink
+import ch.protonmail.android.mailtrackingprotection.domain.model.PrivacyItemsResult
 import ch.protonmail.android.mailtrackingprotection.domain.repository.PrivacyInfoRepository
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -62,7 +63,7 @@ internal class BlockedTrackersViewModelTest {
         every { mockObservePrimaryUserId() } returns flowOf(testUserId)
         every {
             mockRepository.observePrivacyItemsForMessage(testUserId, testMessageId)
-        } returns flowOf(BlockedPrivacyItems(emptyList(), emptyList()).right())
+        } returns flowOf(PrivacyItemsResult.Detected(BlockedPrivacyItems(emptyList(), emptyList())).right())
 
         val viewModel = BlockedTrackersViewModel(
             showBlockedTrackersFeatureFlag = mockFeatureFlag,
@@ -93,7 +94,7 @@ internal class BlockedTrackersViewModelTest {
         every { mockObservePrimaryUserId() } returns flowOf(testUserId)
         every {
             mockRepository.observePrivacyItemsForMessage(testUserId, testMessageId)
-        } returns flowOf(items.right())
+        } returns flowOf(PrivacyItemsResult.Detected(items).right())
 
         val viewModel = BlockedTrackersViewModel(
             showBlockedTrackersFeatureFlag = mockFeatureFlag,
@@ -132,12 +133,56 @@ internal class BlockedTrackersViewModelTest {
     }
 
     @Test
-    fun `state emits Unknown when repository returns error`() = runTest {
+    fun `state emits Disabled when repository returns error`() = runTest {
         // Given
         every { mockObservePrimaryUserId() } returns flowOf(testUserId)
         every {
             mockRepository.observePrivacyItemsForMessage(testUserId, testMessageId)
         } returns flowOf(DataError.Remote.NoNetwork.left())
+
+        val viewModel = BlockedTrackersViewModel(
+            showBlockedTrackersFeatureFlag = mockFeatureFlag,
+            privacyInfoRepository = mockRepository,
+            observePrimaryUserId = mockObservePrimaryUserId,
+            messageId = testMessageId
+        )
+
+        // When/Then
+        viewModel.state.test {
+            val state = awaitItem()
+            assertTrue(state is BlockedElementsState.Disabled)
+        }
+    }
+
+    @Test
+    fun `state emits Loading when repository returns Pending`() = runTest {
+        // Given
+        every { mockObservePrimaryUserId() } returns flowOf(testUserId)
+        every {
+            mockRepository.observePrivacyItemsForMessage(testUserId, testMessageId)
+        } returns flowOf(PrivacyItemsResult.Pending.right())
+
+        val viewModel = BlockedTrackersViewModel(
+            showBlockedTrackersFeatureFlag = mockFeatureFlag,
+            privacyInfoRepository = mockRepository,
+            observePrimaryUserId = mockObservePrimaryUserId,
+            messageId = testMessageId
+        )
+
+        // When/Then
+        viewModel.state.test {
+            val state = awaitItem()
+            assertTrue(state is BlockedElementsState.Loading)
+        }
+    }
+
+    @Test
+    fun `state emits Disabled when repository returns Disabled`() = runTest {
+        // Given
+        every { mockObservePrimaryUserId() } returns flowOf(testUserId)
+        every {
+            mockRepository.observePrivacyItemsForMessage(testUserId, testMessageId)
+        } returns flowOf(PrivacyItemsResult.Disabled.right())
 
         val viewModel = BlockedTrackersViewModel(
             showBlockedTrackersFeatureFlag = mockFeatureFlag,

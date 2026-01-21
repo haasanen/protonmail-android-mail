@@ -21,6 +21,7 @@ package ch.protonmail.android.mailtrackingprotection.data.wrapper
 import uniffi.proton_mail_uniffi.PrivacyInfo
 import uniffi.proton_mail_uniffi.StrippedUtmInfo
 import uniffi.proton_mail_uniffi.TrackerInfo
+import uniffi.proton_mail_uniffi.TrackerInfoWithStatus
 
 data class PrivacyInfoWrapper(
     val trackerInfo: TrackerInfo,
@@ -29,11 +30,16 @@ data class PrivacyInfoWrapper(
 
     companion object {
 
-        internal operator fun invoke(rawPrivacyInfo: PrivacyInfo): PrivacyInfoWrapper? {
-            val trackers = rawPrivacyInfo.trackers
-            val utmLinks = rawPrivacyInfo.utmLinks
-            if (trackers == null || utmLinks == null) return null
-            return PrivacyInfoWrapper(trackers, utmLinks)
+        internal fun fromPrivacyInfo(rawPrivacyInfo: PrivacyInfo): PrivacyInfoState {
+            return when (val trackers = rawPrivacyInfo.trackers) {
+                is TrackerInfoWithStatus.Disabled -> PrivacyInfoState.Disabled
+                is TrackerInfoWithStatus.Pending -> PrivacyInfoState.Pending
+                is TrackerInfoWithStatus.Detected -> {
+                    val utmLinks = rawPrivacyInfo.utmLinks
+                        ?: return PrivacyInfoState.Pending
+                    PrivacyInfoState.Detected(PrivacyInfoWrapper(trackers.v1, utmLinks))
+                }
+            }
         }
     }
 }

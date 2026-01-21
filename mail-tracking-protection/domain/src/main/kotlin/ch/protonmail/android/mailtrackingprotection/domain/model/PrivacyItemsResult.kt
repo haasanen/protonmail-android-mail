@@ -16,16 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailtrackingprotection.domain.repository
+package ch.protonmail.android.mailtrackingprotection.domain.model
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailtrackingprotection.domain.model.PrivacyItemsResult
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
-
-interface PrivacyInfoRepository {
-
-    fun observePrivacyItemsForMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, PrivacyItemsResult>>
+sealed interface PrivacyItemsResult {
+    data object Pending : PrivacyItemsResult
+    data class Detected(val items: BlockedPrivacyItems) : PrivacyItemsResult
+    data object Disabled : PrivacyItemsResult
 }

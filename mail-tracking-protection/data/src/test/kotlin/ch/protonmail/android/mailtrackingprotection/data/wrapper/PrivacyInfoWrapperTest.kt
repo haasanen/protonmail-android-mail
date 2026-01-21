@@ -18,62 +18,70 @@
 
 package ch.protonmail.android.mailtrackingprotection.data.wrapper
 
+import io.mockk.every
+import io.mockk.mockk
 import uniffi.proton_mail_uniffi.PrivacyInfo
 import uniffi.proton_mail_uniffi.StrippedUtmInfo
 import uniffi.proton_mail_uniffi.TrackerDomain
 import uniffi.proton_mail_uniffi.TrackerInfo
+import uniffi.proton_mail_uniffi.TrackerInfoWithStatus
 import uniffi.proton_mail_uniffi.UtmLink
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 internal class PrivacyInfoWrapperTest {
 
     @Test
-    fun `should return null on null trackerInfo`() {
+    fun `should return Pending when trackers status is Pending`() {
         // Given
-        val trackerInfo = null
         val links = StrippedUtmInfo(listOf())
-        val privacyInfo = PrivacyInfo(trackerInfo, links)
+        val privacyInfo = mockk<PrivacyInfo> {
+            every { trackers } returns TrackerInfoWithStatus.Pending
+            every { utmLinks } returns links
+        }
 
         // When
-        val result = PrivacyInfoWrapper(privacyInfo)
+        val result = PrivacyInfoWrapper.fromPrivacyInfo(privacyInfo)
 
         // Then
-        assertNull(result)
+        assertTrue(result is PrivacyInfoState.Pending)
     }
 
     @Test
-    fun `should return null on null links`() {
+    fun `should return Disabled when trackers status is Disabled`() {
+        // Given
+        val links = StrippedUtmInfo(listOf())
+        val privacyInfo = mockk<PrivacyInfo> {
+            every { trackers } returns TrackerInfoWithStatus.Disabled
+            every { utmLinks } returns links
+        }
+
+        // When
+        val result = PrivacyInfoWrapper.fromPrivacyInfo(privacyInfo)
+
+        // Then
+        assertTrue(result is PrivacyInfoState.Disabled)
+    }
+
+    @Test
+    fun `should return Pending when trackers is Detected but links is null`() {
         // Given
         val trackerInfo = TrackerInfo(listOf(), 0UL)
-        val links = null
-        val privacyInfo = PrivacyInfo(trackerInfo, links)
+        val privacyInfo = mockk<PrivacyInfo> {
+            every { trackers } returns TrackerInfoWithStatus.Detected(trackerInfo)
+            every { utmLinks } returns null
+        }
 
         // When
-        val result = PrivacyInfoWrapper(privacyInfo)
+        val result = PrivacyInfoWrapper.fromPrivacyInfo(privacyInfo)
 
         // Then
-        assertNull(result)
+        assertTrue(result is PrivacyInfoState.Pending)
     }
 
     @Test
-    fun `should return null on both null fields`() {
-        // Given
-        val trackerInfo = null
-        val links = null
-        val privacyInfo = PrivacyInfo(trackerInfo, links)
-
-        // When
-        val result = PrivacyInfoWrapper(privacyInfo)
-
-        // Then
-        assertNull(result)
-    }
-
-    @Test
-    fun `should return the proper wrapped value`() {
+    fun `should return Detected with proper wrapped value`() {
         // Given
         val trackerInfo = TrackerInfo(
             trackers = listOf(
@@ -86,14 +94,17 @@ internal class PrivacyInfoWrapperTest {
             links = listOf(UtmLink("example.com/?utm=123456", "example.com"))
         )
 
-        val privacyInfo = PrivacyInfo(trackerInfo, links)
+        val privacyInfo = mockk<PrivacyInfo> {
+            every { trackers } returns TrackerInfoWithStatus.Detected(trackerInfo)
+            every { utmLinks } returns links
+        }
 
         // When
-        val result = PrivacyInfoWrapper(privacyInfo)
+        val result = PrivacyInfoWrapper.fromPrivacyInfo(privacyInfo)
 
         // Then
-        assertNotNull(result)
-        assertEquals(trackerInfo, result.trackerInfo)
-        assertEquals(links, result.strippedUtmInfo)
+        assertTrue(result is PrivacyInfoState.Detected)
+        assertEquals(trackerInfo, result.info.trackerInfo)
+        assertEquals(links, result.info.strippedUtmInfo)
     }
 }
