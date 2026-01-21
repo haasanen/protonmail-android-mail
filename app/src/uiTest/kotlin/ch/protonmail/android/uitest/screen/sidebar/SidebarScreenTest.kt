@@ -29,6 +29,7 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.AppInformation
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -121,7 +122,7 @@ internal class SidebarScreenTest : HiltInstrumentedTest() {
         icon = R.drawable.ic_proton_folder_filled,
         iconTint = Color(0),
         isSelected = false,
-        count = 0,
+        count = CappedNumberUiModel.Zero,
         isVisible = true,
         isExpanded = false,
         iconPaddingStart = 0.dp
@@ -133,7 +134,7 @@ internal class SidebarScreenTest : HiltInstrumentedTest() {
         icon = R.drawable.ic_proton_circle_filled,
         iconTint = Color(0),
         isSelected = false,
-        count = 0,
+        count = CappedNumberUiModel.Zero,
         isVisible = true,
         isExpanded = false,
         iconPaddingStart = 0.dp

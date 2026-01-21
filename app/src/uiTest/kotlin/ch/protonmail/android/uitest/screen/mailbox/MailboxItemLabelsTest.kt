@@ -20,13 +20,14 @@ package ch.protonmail.android.uitest.screen.mailbox
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithText
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.previewdata.MailboxItemLabelsPreviewData
 import ch.protonmail.android.maillabel.presentation.ui.LabelsList
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
-import ch.protonmail.android.design.compose.theme.ProtonTheme
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.test.Test
 
 @RegressionTest
@@ -52,7 +53,7 @@ internal class MailboxItemLabelsTest : HiltInstrumentedTest() {
     private fun setupWithState(labels: List<LabelUiModel>) {
         composeTestRule.setContent {
             ProtonTheme {
-                LabelsList(labels = labels)
+                LabelsList(labels = labels.toImmutableList())
             }
         }
     }

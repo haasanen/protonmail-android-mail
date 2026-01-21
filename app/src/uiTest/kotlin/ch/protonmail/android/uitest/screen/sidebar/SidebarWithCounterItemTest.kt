@@ -20,7 +20,10 @@ package ch.protonmail.android.uitest.screen.sidebar
 
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarLazy
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarItemWithCounterTestTags
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarLabelItems
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelItems
@@ -28,8 +31,6 @@ import ch.protonmail.android.test.annotations.suite.SmokeTest
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
-import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarLazy
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Test
 
 @SmokeTest
@@ -43,19 +44,19 @@ internal class SidebarWithCounterItemTest : HiltInstrumentedTest() {
     @Test
     fun sidebarSystemLabelCounterDisplaysValueWhenAvailable() {
         // Given
-        val systemFolder = MailLabelUiModelTestData.spamFolder.copy(count = CounterValue)
+        val systemFolder = MailLabelUiModelTestData.spamFolder.copy(count = counterValue)
 
         // When
         setupLabelItem(systemFolder)
 
         // Then
-        countersNode.assertTextEquals(CounterValueText)
+        countersNode.assertTextEquals(counterValue.value.toString())
     }
 
     @Test
-    fun sidebarSystemLabelItemDisplaysNoCounterValueWhenNull() {
+    fun sidebarSystemLabelItemDisplaysNoCounterValueWhenEmpty() {
         // Given
-        val systemFolder = MailLabelUiModelTestData.spamFolder.copy(count = null)
+        val systemFolder = MailLabelUiModelTestData.spamFolder.copy(count = emptyValue)
 
         // When
         setupLabelItem(systemFolder)
@@ -67,50 +68,27 @@ internal class SidebarWithCounterItemTest : HiltInstrumentedTest() {
     @Test
     fun sidebarSystemLabelItemDisplaysCappedCounterValueWhenAboveThreshold() {
         // Given
-        val systemFolder = MailLabelUiModelTestData.spamFolder.copy(count = CounterValueAboveThreshold)
+        val systemFolder = MailLabelUiModelTestData.spamFolder.copy(count = counterValueCapped)
 
         // When
         setupLabelItem(systemFolder)
 
         // Then
-        countersNode.assertTextEquals(CounterValueTextCapped)
+        countersNode.assertTextEquals(counterValueCapped.cap.toString())
     }
 
     @Test
     fun sidebarCustomLabelCounterDisplaysValueWhenAvailable() {
         // Given
-        val customLabel = MailLabelUiModelTestData.customLabelList.first().copy(count = CounterValue)
+        val customLabel = MailLabelUiModelTestData.customLabelList.first().copy(count = counterValue)
 
         // When
         setupLabelItem(customLabel)
 
         // Then
-        countersNode.assertTextEquals(CounterValueText)
+        countersNode.assertTextEquals(counterValue.value.toString())
     }
 
-    @Test
-    fun sidebarCustomLabelItemDisplaysNoCounterValueWhenNull() {
-        // Given
-        val customLabel = MailLabelUiModelTestData.customLabelList.first().copy(count = null)
-
-        // When
-        setupLabelItem(customLabel)
-
-        // Then
-        countersNode.assertDoesNotExist()
-    }
-
-    @Test
-    fun sidebarCustomLabelItemDisplaysCappedCounterValueWhenAboveThreshold() {
-        // Given
-        val customLabel = MailLabelUiModelTestData.customLabelList.first().copy(count = CounterValueAboveThreshold)
-
-        // When
-        setupLabelItem(customLabel)
-
-        // Then
-        countersNode.assertTextEquals(CounterValueTextCapped)
-    }
 
     private fun setupLabelItem(item: MailLabelUiModel) {
         composeTestRule.setContent {
@@ -127,9 +105,8 @@ internal class SidebarWithCounterItemTest : HiltInstrumentedTest() {
 
     private companion object {
 
-        const val CounterValue = 10
-        const val CounterValueText = CounterValue.toString()
-        const val CounterValueAboveThreshold = 10_000
-        const val CounterValueTextCapped = "9999+"
+        val emptyValue = CappedNumberUiModel.Empty
+        val counterValue = CappedNumberUiModel.Exact(10)
+        val counterValueCapped = CappedNumberUiModel.Capped(9999)
     }
 }

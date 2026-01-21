@@ -25,23 +25,29 @@ import arrow.core.nonEmptyListOf
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
+import ch.protonmail.android.mailtooltip.presentation.model.AccountsTooltipState
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
+import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import ch.protonmail.android.uitest.models.avatar.AvatarInitial
 import ch.protonmail.android.uitest.models.folders.MailLabelEntry
 import ch.protonmail.android.uitest.models.mailbox.MailboxListItemEntry
@@ -91,7 +97,12 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
             shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty
+            avatarImagesUiModel = AvatarImagesUiModel.Empty,
+            paginatorInvalidationEffect = Effect.empty(),
+            loadingBarState = LoadingBarUiState.Hide,
+            displayAttachment = Effect.empty(),
+            displayAttachmentError = Effect.empty(),
+            attachmentOpeningStarted = Effect.empty(),
         )
         val mailboxState = MailboxStateSampleData.Loading.copy(mailboxListState = mailboxListState)
         val items = listOf(MailboxItemUiModelTestData.readMailboxItemUiModel)
@@ -115,7 +126,12 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
             shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty
+            avatarImagesUiModel = AvatarImagesUiModel.Empty,
+            paginatorInvalidationEffect = Effect.empty(),
+            loadingBarState = LoadingBarUiState.Hide,
+            displayAttachment = Effect.empty(),
+            displayAttachmentError = Effect.empty(),
+            attachmentOpeningStarted = Effect.empty(),
         )
         val mailboxState = MailboxStateSampleData.Loading.copy(mailboxListState = mailboxListState)
         val label = LabelUiModelSample.News
@@ -158,18 +174,30 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
                     shouldShowFab = true,
-                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                    paginatorInvalidationEffect = Effect.empty(),
+                    loadingBarState = LoadingBarUiState.Hide,
+                    displayAttachment = Effect.empty(),
+                    displayAttachmentError = Effect.empty(),
+                    attachmentOpeningStarted = Effect.empty(),
                 ),
                 topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
                     currentLabelName = systemLabel.text(),
                     primaryAvatarItem = null
                 ),
                 unreadFilterState = UnreadFilterState.Loading,
-                bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
-                actionResult = Effect.empty(),
+                showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Loading,
+                bottomAppBarState = BottomBarState.Data.Hidden(
+                    BottomBarTarget.Mailbox,
+                    emptyList<ActionUiModel>().toImmutableList()
+                ),
                 deleteDialogState = DeleteDialogState.Hidden,
+                clearAllDialogState = DeleteDialogState.Hidden,
                 bottomSheetState = null,
-                error = Effect.empty()
+                actionResult = Effect.empty(),
+                composerNavigationState = MailboxComposerNavigationState.Enabled(),
+                error = Effect.empty(),
+                showRatingBooster = Effect.empty()
             )
         }
 
@@ -178,8 +206,11 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             ManagedState(stateManager = stateManager) { mailboxState ->
                 MailboxScreen(
                     mailboxState = mailboxState,
+                    accountsTooltipState = AccountsTooltipState.Loading,
+                    fabHostState = ProtonFabHostState(),
                     mailboxListItems = itemsFlow.collectAsLazyPagingItems(),
-                    actions = MailboxScreen.Actions.Empty
+                    actions = MailboxScreen.Actions.Empty,
+                    isInterstitialActive = { false }
                 )
             }
         }
@@ -212,8 +243,11 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
 
             MailboxScreen(
                 mailboxState = state,
+                accountsTooltipState = AccountsTooltipState.Loading,
+                fabHostState = ProtonFabHostState(),
                 mailboxListItems = mailboxItems,
-                actions = MailboxScreen.Actions.Empty
+                actions = MailboxScreen.Actions.Empty,
+                isInterstitialActive = { false }
             )
         }
     }

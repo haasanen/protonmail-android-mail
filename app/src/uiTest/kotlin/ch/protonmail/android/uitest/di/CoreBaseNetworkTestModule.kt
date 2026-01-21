@@ -20,20 +20,14 @@ package ch.protonmail.android.uitest.di
 
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import io.mockk.spyk
-import me.proton.core.network.data.NetworkManager
-import me.proton.core.network.data.di.SharedOkHttpClient
 import me.proton.core.network.domain.NetworkManager
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
-import javax.inject.Singleton
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
@@ -62,15 +56,4 @@ class BaseNetworkTestModule {
             init(null, arrayOf(testX509TrustManager), SecureRandom())
         }.socketFactory
     }
-
-    @Provides
-    @Singleton
-    @SharedOkHttpClient
-    internal fun provideOkHttpClient(@TestClientSSLSocketFactory sslSocketFactory: SSLSocketFactory): OkHttpClient =
-        OkHttpClient.Builder().sslSocketFactory(sslSocketFactory, testX509TrustManager).build()
-
-    @Provides
-    @Singleton
-    internal fun provideNetworkManager(@ApplicationContext context: Context): NetworkManager =
-        spyk(NetworkManager(context))
 }

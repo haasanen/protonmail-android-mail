@@ -53,7 +53,7 @@ class MessageBodyTest : HiltInstrumentedTest() {
                         onExpandCollapseButtonClicked = {},
                         onMessageBodyLinkClicked = { _ -> },
                         onShowAllAttachments = {},
-                        onAttachmentClicked = { _ -> },
+                        onAttachmentClicked = { _, _ -> },
                         onToggleAttachmentsExpandCollapseMode = {},
                         loadImage = { _, _ -> null },
                         onReply = { _ -> },
@@ -62,8 +62,10 @@ class MessageBodyTest : HiltInstrumentedTest() {
                         onLoadRemoteContent = { _ -> },
                         onLoadEmbeddedImages = { _ -> },
                         onLoadRemoteAndEmbeddedContent = { _ -> },
-                        onOpenInProtonCalendar = { _ -> },
-                        onPrint = { _ -> }
+                        onPrint = { _ -> },
+                        onDownloadImage = { _, _ -> },
+                        onLoadImagesAfterImageProxyFailure = { _ -> },
+                        onViewEntireMessageClicked = { _, _, _, _ -> }
                     ),
                     onMessageBodyLoaded = { _, _ -> }
                 )
@@ -91,7 +93,7 @@ class MessageBodyTest : HiltInstrumentedTest() {
                         onExpandCollapseButtonClicked = {},
                         onMessageBodyLinkClicked = { _ -> },
                         onShowAllAttachments = {},
-                        onAttachmentClicked = { _ -> },
+                        onAttachmentClicked = { _, _ -> },
                         onToggleAttachmentsExpandCollapseMode = {},
                         loadImage = { _, _ -> null },
                         onReply = { _ -> },
@@ -100,8 +102,10 @@ class MessageBodyTest : HiltInstrumentedTest() {
                         onLoadRemoteContent = { _ -> },
                         onLoadEmbeddedImages = { _ -> },
                         onLoadRemoteAndEmbeddedContent = { _ -> },
-                        onOpenInProtonCalendar = { _ -> },
-                        onPrint = { _ -> }
+                        onPrint = { _ -> },
+                        onDownloadImage = { _, _ -> },
+                        onLoadImagesAfterImageProxyFailure = { _ -> },
+                        onViewEntireMessageClicked = { _, _, _, _ -> },
                     ),
                     onMessageBodyLoaded = { _, _ -> }
                 )

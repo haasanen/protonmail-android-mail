@@ -20,6 +20,8 @@ package ch.protonmail.android.uitest.screen.mailbox
 
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.UnreadItemsFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.UnreadItemsFilterTestTags
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
@@ -27,7 +29,6 @@ import ch.protonmail.android.test.annotations.suite.RustReadyTest
 import ch.protonmail.android.test.annotations.suite.SmokeTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Test
 
 @RustReadyTest
@@ -72,7 +73,7 @@ internal class MailboxUnreadFiltersTest : HiltInstrumentedTest() {
             ProtonTheme {
                 UnreadItemsFilter(
                     state = UnreadFilterState.Data(
-                        unreadCount = count,
+                        unreadCount = CappedNumberUiModel.Exact(count),
                         isFilterEnabled = false
                     ),
                     onFilterDisabled = {},

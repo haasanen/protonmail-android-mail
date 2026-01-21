@@ -228,7 +228,8 @@ internal class MockedDetailRemoteContentTests : MockedNetworkTest(loginType = Lo
             isUnread = false,
             mimeType = MimeType.Html,
             banners = emptyList(),
-            hasQuotedText = false
+            hasQuotedText = false,
+            hasCalendarInvite = false
         )
     }
 

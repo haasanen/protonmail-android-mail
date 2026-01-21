@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui.chips
 
-internal object ChipsTestTags {
+object ChipsTestTags {
 
     const val BasicTextField = "BasicTextField"
     const val FieldPrefix = "FieldPrefix"

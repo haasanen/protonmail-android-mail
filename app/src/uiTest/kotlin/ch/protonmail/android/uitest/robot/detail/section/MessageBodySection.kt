@@ -96,11 +96,6 @@ internal class MessageBodySection : ComposeSectionRobot() {
                 .assertIsDisplayed()
         }
 
-        fun bodyReloadButtonIsDisplayed() {
-            composeTestRule.onNodeWithText(R.string.reload)
-                .assertIsDisplayed()
-        }
-
         fun bodyDecryptionErrorMessageIsDisplayed() {
             composeTestRule.onNodeWithText(R.string.decryption_error)
                 .assertIsDisplayed()

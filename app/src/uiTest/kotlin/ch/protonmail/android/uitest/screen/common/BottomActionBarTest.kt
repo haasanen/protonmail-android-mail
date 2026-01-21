@@ -20,12 +20,13 @@ package ch.protonmail.android.uitest.screen.common
 
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
+import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.test.annotations.suite.RegressionTest
-import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.testdata.action.ActionUiModelTestData
 import ch.protonmail.android.uitest.robot.common.BottomActionBarRobot
 import ch.protonmail.android.uitest.robot.common.verify
+import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.collections.immutable.toImmutableList
 import org.junit.Test
@@ -62,6 +63,7 @@ internal class BottomActionBarTest : HiltInstrumentedTest() {
     fun whenBottomBarStateIsDataUpToMaxActionsAreShowed() {
         // given
         val state = BottomBarState.Data.Shown(
+            target = BottomBarTarget.Mailbox,
             listOf(
                 ActionUiModelTestData.star,
                 ActionUiModelTestData.delete,
