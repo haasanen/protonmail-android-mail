@@ -68,15 +68,15 @@ abstract class MailComposerModule {
     abstract fun bindsDraftRepository(impl: DraftRepositoryImpl): DraftRepository
 
     @Binds
-    @Reusable
+    @ViewModelScoped
     abstract fun bindsAttachmentRepository(impl: AttachmentRepositoryImpl): AttachmentRepository
 
     @Binds
-    @Reusable
+    @ViewModelScoped
     abstract fun bindsMessagePasswordRepository(impl: MessagePasswordRepositoryImpl): MessagePasswordRepository
 
     @Binds
-    @Reusable
+    @ViewModelScoped
     abstract fun bindsMessageExpirationTimeRepository(
         impl: MessageExpirationTimeRepositoryImpl
     ): MessageExpirationTimeRepository
