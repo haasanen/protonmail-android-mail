@@ -99,6 +99,7 @@ class RustDraftDataSourceImplTest {
     private val enqueuer = mockk<Enqueuer>()
     private val rustDraftUndoSend = mockk<RustDraftUndoSend>()
     private val draftCache = mockk<DraftCache>()
+    private val composerSignals = mockk<ComposerSignals>(relaxUnitFun = true)
 
     private val dataSource = RustDraftDataSourceImpl(
         userSessionRepository,
@@ -107,7 +108,8 @@ class RustDraftDataSourceImplTest {
         discardRustDraft,
         rustDraftUndoSend,
         enqueuer,
-        draftCache
+        draftCache,
+        composerSignals
     )
 
     @Test
@@ -987,13 +989,11 @@ class RustDraftDataSourceImplTest {
         every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.setPassword(password, hint) } returns VoidDraftPasswordResult.Ok
 
-        dataSource.mutablePasswordChangedSignal.test {
-            // When
-            dataSource.setMessagePassword(MessagePassword(password, hint))
+        // When
+        dataSource.setMessagePassword(MessagePassword(password, hint))
 
-            // Then
-            awaitItem()
-        }
+        // Then
+        coVerify { composerSignals.emitPasswordChanged() }
     }
 
     @Test
@@ -1036,13 +1036,11 @@ class RustDraftDataSourceImplTest {
         every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.removePassword() } returns VoidDraftPasswordResult.Ok
 
-        dataSource.mutablePasswordChangedSignal.test {
-            // When
-            dataSource.removeMessagePassword()
+        // When
+        dataSource.removeMessagePassword()
 
-            // Then
-            awaitItem()
-        }
+        // Then
+        coVerify { composerSignals.emitPasswordChanged() }
     }
 
     @Test

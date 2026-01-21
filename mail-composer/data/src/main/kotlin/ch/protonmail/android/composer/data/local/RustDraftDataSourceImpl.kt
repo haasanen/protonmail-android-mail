@@ -19,7 +19,6 @@
 package ch.protonmail.android.composer.data.local
 
 import java.time.Duration
-import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.raise.either
@@ -76,7 +75,6 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -108,11 +106,9 @@ class RustDraftDataSourceImpl @Inject constructor(
     private val discardRustDraft: DiscardRustDraft,
     private val rustDraftUndoSend: RustDraftUndoSend,
     private val enqueuer: Enqueuer,
-    private val draftCache: DraftCache
+    private val draftCache: DraftCache,
+    private val composerSignals: ComposerSignals
 ) : RustDraftDataSource {
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val mutablePasswordChangedSignal = MutableSharedFlow<Unit>()
 
     private val mutableRecipientsUpdatedFlow = MutableSharedFlow<ValidatedRecipients>(
         replay = 1,
@@ -277,7 +273,7 @@ class RustDraftDataSourceImpl @Inject constructor(
             is DraftScheduleSendOptionsResult.Ok -> result.v1.right()
         }
 
-    override fun observePasswordUpdatedSignal(): Flow<Unit> = mutablePasswordChangedSignal.filterNotNull()
+    override fun observePasswordUpdatedSignal(): Flow<Unit> = composerSignals.observePasswordChanged()
 
     override fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients> {
         Timber.tag("RecipientValidation").d("Registering recipients observer on data source...")
@@ -297,7 +293,7 @@ class RustDraftDataSourceImpl @Inject constructor(
             is VoidDraftPasswordResult.Error -> result.v1.toMessagePasswordError().left()
             VoidDraftPasswordResult.Ok -> Unit.right()
         }.also {
-            mutablePasswordChangedSignal.emit(Unit)
+            composerSignals.emitPasswordChanged()
         }
 
     override suspend fun removeMessagePassword(): Either<MessagePasswordError, Unit> =
@@ -305,7 +301,7 @@ class RustDraftDataSourceImpl @Inject constructor(
             is VoidDraftPasswordResult.Error -> result.v1.toMessagePasswordError().left()
             VoidDraftPasswordResult.Ok -> Unit.right()
         }.also {
-            mutablePasswordChangedSignal.emit(Unit)
+            composerSignals.emitPasswordChanged()
         }
 
     override suspend fun getMessagePassword(): Either<DataError, MessagePassword?> =
