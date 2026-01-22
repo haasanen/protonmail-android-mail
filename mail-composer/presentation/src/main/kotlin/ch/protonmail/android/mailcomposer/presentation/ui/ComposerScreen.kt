@@ -288,7 +288,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 ComposerBottomBar(
                     isMessagePasswordSet = accessoriesState.isMessagePasswordSet,
                     isMessageExpirationTimeSet = accessoriesState.expirationTime.isExpirationTimeSet(),
-                    actions = bottomBarActions
+                    actions = bottomBarActions,
+                    enabled = mainState.loadingType == ComposerState.LoadingType.None
                 )
             },
             snackbarHost = {

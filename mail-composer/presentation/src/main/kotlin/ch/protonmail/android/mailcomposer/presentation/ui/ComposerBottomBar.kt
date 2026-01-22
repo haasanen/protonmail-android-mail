@@ -59,8 +59,11 @@ fun ComposerBottomBar(
     isMessagePasswordSet: Boolean,
     isMessageExpirationTimeSet: Boolean,
     actions: ComposerBottomBar.Actions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
+    val effectiveActions = if (enabled) actions else ComposerBottomBar.Actions.Empty
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -74,11 +77,11 @@ fun ComposerBottomBar(
                 .padding(horizontal = ProtonDimens.Spacing.Small),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AttachmentsButton(onClick = actions.onAddAttachmentsClick)
-            AddPasswordButton(isMessagePasswordSet, actions.onSetMessagePasswordClick)
-            SetExpirationButton(isMessageExpirationTimeSet, actions.onSetExpirationTimeClick)
+            AttachmentsButton(onClick = effectiveActions.onAddAttachmentsClick)
+            AddPasswordButton(isMessagePasswordSet, effectiveActions.onSetMessagePasswordClick)
+            SetExpirationButton(isMessageExpirationTimeSet, effectiveActions.onSetExpirationTimeClick)
             Spacer(modifier = Modifier.weight(1f))
-            DiscardDraftButton(actions.onDiscardDraftClicked)
+            DiscardDraftButton(effectiveActions.onDiscardDraftClicked)
         }
     }
 }
