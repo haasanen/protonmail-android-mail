@@ -231,7 +231,7 @@ class RustMessageListQueryImpl @Inject constructor(
             Timber.d("rust-message-query: no paginator to destroy")
         } else {
             Timber.d("rust-message-query: disconnecting and destroying paginator")
-            paginatorState?.paginatorWrapper?.destroy()
+            paginatorState?.paginatorWrapper?.disconnect()
             paginatorState = null
         }
     }

@@ -61,7 +61,7 @@ class MailboxMessagePaginatorWrapper(
             is MessageScrollerCursorResult.Ok -> MailMessageCursorWrapper(result.v1).right()
         }
 
-    override fun destroy() {
+    override fun disconnect() {
         rustPaginator.handle().disconnect()
         rustPaginator.terminate()
     }

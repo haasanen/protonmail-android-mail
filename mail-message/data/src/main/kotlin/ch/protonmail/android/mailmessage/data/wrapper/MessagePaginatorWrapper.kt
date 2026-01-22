@@ -32,7 +32,7 @@ interface MessagePaginatorWrapper {
 
     suspend fun getCursor(conversationId: LocalConversationId): Either<PaginationError, MailMessageCursorWrapper>
 
-    fun destroy()
+    fun disconnect()
 
     fun filterUnread(filterUnread: Boolean)
 

@@ -104,7 +104,7 @@ class RustMessageListQueryImplTest {
             )
             Unit.right()
         }
-        coEvery { destroy() } just Runs
+        coEvery { disconnect() } just Runs
         coEvery { filterUnread(filterUnread) } just Runs
         coEvery { showSpamAndTrash(showSpamTrash) } just Runs
     }
@@ -126,7 +126,7 @@ class RustMessageListQueryImplTest {
             )
             Unit.right()
         }
-        coEvery { destroy() } just Runs
+        coEvery { disconnect() } just Runs
         coEvery { filterUnread(filterUnread) } just Runs
         coEvery { showSpamAndTrash(showSpamTrash) } just Runs
     }
@@ -271,7 +271,7 @@ class RustMessageListQueryImplTest {
                 callback = any()
             )
         }
-        coVerify { paginator.destroy() }
+        coVerify { paginator.disconnect() }
     }
 
     @Test
@@ -385,7 +385,7 @@ class RustMessageListQueryImplTest {
 
         // Then
         coVerify(exactly = 1) { createRustSearchPaginator(mailbox, "invoice", any()) }
-        coVerify { paginator.destroy() }
+        coVerify { paginator.disconnect() }
         coVerify(exactly = 1) { createRustSearchPaginator(mailbox, "report", any()) }
     }
 
@@ -449,7 +449,7 @@ class RustMessageListQueryImplTest {
                 }
                 Unit.right()
             }
-            coEvery { destroy() } just Runs
+            coEvery { disconnect() } just Runs
             coEvery { filterUnread(false) } just Runs
             coEvery { showSpamAndTrash(false) } just Runs
         }
@@ -498,7 +498,7 @@ class RustMessageListQueryImplTest {
                 }
                 Unit.right()
             }
-            coEvery { destroy() } just Runs
+            coEvery { disconnect() } just Runs
             coEvery { filterUnread(false) } just Runs
             coEvery { showSpamAndTrash(false) } just Runs
         }
