@@ -350,7 +350,7 @@ object EncryptionInfoUiModelMapper {
 
                 TooltipValues(
                     title = R.string.padlocks_proton_sent_e2ee,
-                    descriptions = listOf(mainDescription, Addendum.AlwaysE2ee)
+                    descriptions = listOf(mainDescription)
                 )
             }
 
