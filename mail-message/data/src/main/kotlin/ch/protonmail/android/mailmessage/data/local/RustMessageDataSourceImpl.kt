@@ -154,10 +154,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         userId: UserId,
         pageKey: PageKey
     ): Either<PaginationError, List<LocalMessageMetadata>> = withContext(ioDispatcher) {
-        Timber.d("rust-message: getMessages for pageKey: $pageKey")
-        val messages = rustMessageListQuery.getMessages(userId, pageKey)
-        Timber.d("rust-message: paginator returned ${messages.map { it.joinToString { it.id.toString() } }}")
-        return@withContext messages
+        rustMessageListQuery.getMessages(userId, pageKey)
     }
 
     override suspend fun observeMessage(
