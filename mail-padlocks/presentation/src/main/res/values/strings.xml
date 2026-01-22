@@ -119,7 +119,7 @@
     <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">end-to-end encrypted</string>
 
     <!-- Additional descriptions -->
-    <string name="padlocks_proton_always_e2ee">Emails exchanged between Proton users are always end-to-end encrypted.</string>
+    <string name="padlocks_proton_always_e2ee">Emails exchanged between Proton users are automatically end-to-end encrypted.</string>
 
     <string name="padlocks_non_encrypted_copy">However, a sender or recipient not using Proton Mail may have a non-encrypted copy stored on their email server.</string>
 
