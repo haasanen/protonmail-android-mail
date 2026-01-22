@@ -52,7 +52,7 @@ class ScrollerOnUpdateHandlerTest {
     @Test
     fun `when there is no pending request triggers invalidate`() = runTest {
         // Given
-        val update = ScrollerUpdate.None
+        val update = ScrollerUpdate.None(scrollerId = DefaultScrollerId)
         val snapshot = emptyList<ScrollerItem>()
 
         // When
@@ -67,7 +67,7 @@ class ScrollerOnUpdateHandlerTest {
         // Given
         val pending = pendingAppendRequest()
         val items = listOf(ScrollerItem("1"), ScrollerItem("2"))
-        val update = ScrollerUpdate.Append(items)
+        val update = ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items)
         val snapshot = listOf(ScrollerItem("99")) // ignored in this path
 
         // When
@@ -83,7 +83,7 @@ class ScrollerOnUpdateHandlerTest {
     fun `when immediate Append None is received, completes with empty list`() = runTest {
         // Given
         val pending = pendingAppendRequest()
-        val update = ScrollerUpdate.None
+        val update = ScrollerUpdate.None(scrollerId = DefaultScrollerId)
         val snapshot = listOf(ScrollerItem("1")) // ignored
 
         // When
@@ -99,7 +99,10 @@ class ScrollerOnUpdateHandlerTest {
     fun `when Append Error is received, completes with error`() = runTest {
         // Given
         val pending = pendingAppendRequest()
-        val update = ScrollerUpdate.Error(MailScrollerError.Other(ProtonError.Network))
+        val update = ScrollerUpdate.Error(
+            scrollerId = DefaultScrollerId,
+            error = MailScrollerError.Other(ProtonError.Network)
+        )
         val snapshot = emptyList<ScrollerItem>() // ignored
 
         // When
@@ -116,7 +119,11 @@ class ScrollerOnUpdateHandlerTest {
         runTest {
             // Given
             val pending = pendingAppendRequest()
-            val update = ScrollerUpdate.ReplaceFrom(idx = 0, items = listOf(ScrollerItem("42")))
+            val update = ScrollerUpdate.ReplaceFrom(
+                scrollerId = DefaultScrollerId,
+                idx = 0,
+                items = listOf(ScrollerItem("42"))
+            )
             val snapshot = listOf(ScrollerItem("7"))
 
             // When
@@ -134,7 +141,7 @@ class ScrollerOnUpdateHandlerTest {
             // Given
             val pending = pendingRefreshRequest()
             val items = listOf(ScrollerItem("10"), ScrollerItem("11"))
-            val update = ScrollerUpdate.ReplaceFrom(idx = 0, items = items)
+            val update = ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = 0, items = items)
             val snapshot = listOf(ScrollerItem("99"))
 
             // When
@@ -151,7 +158,7 @@ class ScrollerOnUpdateHandlerTest {
         // Given
         val pending = pendingRefreshRequest()
         val items = listOf(ScrollerItem("10"), ScrollerItem("11"))
-        val update = ScrollerUpdate.Append(items = items)
+        val update = ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items)
         val snapshot = listOf(ScrollerItem("9"), ScrollerItem("10"), ScrollerItem("11"))
 
         // When
@@ -168,7 +175,12 @@ class ScrollerOnUpdateHandlerTest {
         // Given
         val pending = pendingRefreshRequest()
         val items = listOf(ScrollerItem("10"), ScrollerItem("11"))
-        val update = ScrollerUpdate.ReplaceRange(fromIdx = 0, toIdx = 3, items = items)
+        val update = ScrollerUpdate.ReplaceRange(
+            scrollerId = DefaultScrollerId,
+            fromIdx = 0,
+            toIdx = 3,
+            items = items
+        )
         val snapshot = listOf(ScrollerItem("9"), ScrollerItem("10"), ScrollerItem("11"))
 
         // When
@@ -184,7 +196,11 @@ class ScrollerOnUpdateHandlerTest {
     fun `when unexpected response is received for Refresh, completes with snapshot`() = runTest {
         // Given
         val pending = pendingRefreshRequest()
-        val update = ScrollerUpdate.ReplaceFrom(idx = 5, items = listOf(ScrollerItem("1")))
+        val update = ScrollerUpdate.ReplaceFrom(
+            scrollerId = DefaultScrollerId,
+            idx = 5,
+            items = listOf(ScrollerItem("1"))
+        )
         val snapshot = listOf(ScrollerItem("100"), ScrollerItem("101"))
 
         // When
@@ -200,7 +216,7 @@ class ScrollerOnUpdateHandlerTest {
     fun `when None is received for Refresh request, completes with snapshot`() = runTest {
         // Given
         val pending = pendingRefreshRequest()
-        val update = ScrollerUpdate.None
+        val update = ScrollerUpdate.None(scrollerId = DefaultScrollerId)
         val snapshot = listOf(ScrollerItem("200"))
 
         // When
@@ -217,7 +233,10 @@ class ScrollerOnUpdateHandlerTest {
         // Note: For refresh we use getItems, and getItems should never fail with error
         // Given
         val pending = pendingRefreshRequest()
-        val update = ScrollerUpdate.Error(MailScrollerError.Other(ProtonError.Network))
+        val update = ScrollerUpdate.Error(
+            scrollerId = DefaultScrollerId,
+            error = MailScrollerError.Other(ProtonError.Network)
+        )
         val snapshot = listOf(ScrollerItem("300"), ScrollerItem("301"))
 
         // When
@@ -233,7 +252,7 @@ class ScrollerOnUpdateHandlerTest {
     fun `Append None with empty snapshot invokes onPossibleAppendFollowUp`() = runTest {
         // Given
         val pending = pendingAppendRequest()
-        val update = ScrollerUpdate.None
+        val update = ScrollerUpdate.None(scrollerId = DefaultScrollerId)
         val snapshot = emptyList<ScrollerItem>()
         val onFollowUp = mockk<() -> Unit>(relaxed = true)
 
@@ -249,7 +268,7 @@ class ScrollerOnUpdateHandlerTest {
     fun `Append None with non-empty snapshot does NOT invoke onPossibleAppendFollowUp`() = runTest {
         // Given
         val pending = pendingAppendRequest()
-        val update = ScrollerUpdate.None
+        val update = ScrollerUpdate.None(scrollerId = DefaultScrollerId)
         val snapshot = listOf(ScrollerItem("preloaded"))
         val onFollowUp = mockk<() -> Unit>(relaxed = true)
 
@@ -266,7 +285,7 @@ class ScrollerOnUpdateHandlerTest {
         // Given
         val items = listOf(ScrollerItem("A"), ScrollerItem("B"))
         val pending = pendingAppendWithFollowUp()
-        val update = ScrollerUpdate.ReplaceBefore(idx = 0, items = items)
+        val update = ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = 0, items = items)
         val snapshot = emptyList<ScrollerItem>()
 
         // When
@@ -281,7 +300,10 @@ class ScrollerOnUpdateHandlerTest {
     @Test
     fun `when there is no pending request and Error Other arrives, does NOT invalidate`() = runTest {
         // Given
-        val update = ScrollerUpdate.Error(MailScrollerError.Other(ProtonError.Network))
+        val update = ScrollerUpdate.Error(
+            scrollerId = DefaultScrollerId,
+            error = MailScrollerError.Other(ProtonError.Network)
+        )
         val snapshot = emptyList<ScrollerItem>()
 
         // When
@@ -294,7 +316,10 @@ class ScrollerOnUpdateHandlerTest {
     @Test
     fun `when there is no pending request and Error Reason DIRTY arrives, invalidates`() = runTest {
         // Given
-        val update = ScrollerUpdate.Error(MailScrollerError.Reason(MailScrollerErrorReason.NOT_SYNCED))
+        val update = ScrollerUpdate.Error(
+            scrollerId = DefaultScrollerId,
+            error = MailScrollerError.Reason(MailScrollerErrorReason.NOT_SYNCED)
+        )
         val snapshot = emptyList<ScrollerItem>()
 
         // When
@@ -302,5 +327,9 @@ class ScrollerOnUpdateHandlerTest {
 
         // Then
         verify(exactly = 1) { invalidate.invoke() }
+    }
+
+    companion object {
+        private const val DefaultScrollerId = "scroller-id"
     }
 }

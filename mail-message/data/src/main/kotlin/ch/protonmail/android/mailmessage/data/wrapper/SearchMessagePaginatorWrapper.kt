@@ -63,7 +63,9 @@ class SearchMessagePaginatorWrapper(
         is SearchScrollerCursorResult.Ok -> MailMessageCursorWrapper(result.v1).right()
     }
 
-    override fun destroy() {
+    override fun disconnect() {
+        Timber.d("search-paginator: Disconnecting paginator with id=%s", rustPaginator.id())
+
         rustPaginator.handle().disconnect()
         rustPaginator.terminate()
     }
@@ -82,5 +84,7 @@ class SearchMessagePaginatorWrapper(
         Timber.d("search-paginator: Updating search keyword to: $keyword")
         rustPaginator.changeKeywords(PaginatorSearchOptions(keyword))
     }
+
+    override fun getScrollerId(): String = rustPaginator.id()
 
 }

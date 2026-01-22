@@ -44,12 +44,12 @@ class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroll
         is ConversationScrollerSupportsIncludeFilterResult.Ok -> result.v1
     }
 
-    suspend fun nextPage(): Either<PaginationError, Unit> = when (val result = rustPaginator.fetchMore()) {
+    fun nextPage(): Either<PaginationError, Unit> = when (val result = rustPaginator.fetchMore()) {
         is ConversationScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
         is ConversationScrollerFetchMoreResult.Ok -> Unit.right()
     }
 
-    suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.getItems()) {
+    fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.getItems()) {
         is ConversationScrollerGetItemsResult.Error -> result.v1.toPaginationError().left()
         is ConversationScrollerGetItemsResult.Ok -> Unit.right()
     }
@@ -61,17 +61,22 @@ class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroll
         }
 
     fun filterUnread(filterUnread: Boolean) {
+        Timber.d("conversation-paginator: Changing unread filter to %s id=%s", filterUnread, rustPaginator.id())
         val filter = if (filterUnread) ReadFilter.UNREAD else ReadFilter.ALL
         rustPaginator.changeFilter(filter)
     }
 
     fun showSpamAndTrash(show: Boolean) {
+        Timber.d("conversation-paginator: Changing show spam and trash to %s id=%s", show, rustPaginator.id())
         val includeSwitch = if (show) IncludeSwitch.WITH_SPAM_AND_TRASH else IncludeSwitch.DEFAULT
         rustPaginator.changeInclude(includeSwitch)
     }
 
     fun disconnect() {
+        Timber.d("conversation-paginator: Disconnecting paginator with id=%s", rustPaginator.id())
         rustPaginator.handle().disconnect()
         rustPaginator.terminate()
     }
+
+    fun getScrollerId(): String = rustPaginator.id()
 }

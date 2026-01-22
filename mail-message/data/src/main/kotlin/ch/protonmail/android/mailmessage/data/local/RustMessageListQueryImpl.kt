@@ -36,10 +36,7 @@ import ch.protonmail.android.mailpagination.data.model.scroller.isCompleted
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerCache
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerOnUpdateHandler
 import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate
-import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate.Append
-import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate.ReplaceBefore
-import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate.ReplaceFrom
-import ch.protonmail.android.mailpagination.data.scroller.ScrollerUpdate.ReplaceRange
+import ch.protonmail.android.mailpagination.data.scroller.itemCount
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
@@ -172,6 +169,7 @@ class RustMessageListQueryImpl @Inject constructor(
                 callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
             )
         }.onRight { wrapper ->
+            Timber.d("rust-message-query: Paginator instance created, id=${wrapper.getScrollerId()}")
             paginatorState = PaginatorState(
                 paginatorWrapper = wrapper,
                 pageDescriptor = pageDescriptor,
@@ -183,10 +181,9 @@ class RustMessageListQueryImpl @Inject constructor(
     private fun messagesUpdatedCallback(onUpdateHandler: ScrollerOnUpdateHandler<Message>) =
         object : MessageScrollerLiveQueryCallback {
             override fun onUpdate(update: MessageScrollerUpdate) {
-                Timber.d("rust-message-query: Received paginator update: ${update.javaClass.simpleName}")
                 coroutineScope.launch {
                     paginatorMutex.withLock {
-                        val update = when (update) {
+                        val scrollerUpdate = when (update) {
                             is MessageScrollerUpdate.Status -> {
                                 Timber.d("rust-message-query: Scroller fetch new status update: ${update.v1}")
                                 scrollerFetchNewStatusFlow.value = update.v1
@@ -198,10 +195,19 @@ class RustMessageListQueryImpl @Inject constructor(
                             is MessageScrollerUpdate.Error -> update.toScrollerUpdate()
                         }
 
-                        val snapshot = paginatorState?.scrollerCache?.applyUpdate(update) ?: emptyList()
+                        Timber.d(
+                            "rust-message-query: Received paginator update: %s with %d items, " +
+                                "current cache: %d scrollerId=%s",
+                            update.debugTypeName(),
+                            scrollerUpdate.itemCount(),
+                            paginatorState?.scrollerCache?.itemCount() ?: 0,
+                            scrollerUpdate.scrollerId
+                        )
+
+                        val snapshot = paginatorState?.scrollerCache?.applyUpdate(scrollerUpdate) ?: emptyList()
                         val pending = paginatorState?.pendingRequest
 
-                        onUpdateHandler.handleUpdate(pending, update, snapshot) {
+                        onUpdateHandler.handleUpdate(pending, scrollerUpdate, snapshot) {
                             // We need to wait for the follow-up response
                             if (pending?.type == RequestType.Append) {
                                 Timber.d("rust-message-query: Triggering follow-up after immediate Append None")
@@ -230,7 +236,10 @@ class RustMessageListQueryImpl @Inject constructor(
         if (paginatorState == null) {
             Timber.d("rust-message-query: no paginator to destroy")
         } else {
-            Timber.d("rust-message-query: disconnecting and destroying paginator")
+            Timber.d(
+                "rust-message-query: disconnecting and destroying paginator with id=%s",
+                paginatorState?.paginatorWrapper?.getScrollerId()
+            )
             paginatorState?.paginatorWrapper?.disconnect()
             paginatorState = null
         }
@@ -309,17 +318,55 @@ class RustMessageListQueryImpl @Inject constructor(
     }
 }
 
-
 fun MessageScrollerUpdate.List.toScrollerUpdate(): ScrollerUpdate<Message> = when (val listResult = this.v1) {
-    is MessageScrollerListUpdate.Append -> Append(listResult.items)
-    is MessageScrollerListUpdate.ReplaceFrom -> ReplaceFrom(listResult.idx.toInt(), listResult.items)
-    is MessageScrollerListUpdate.ReplaceBefore -> ReplaceBefore(listResult.idx.toInt(), listResult.items)
-    is MessageScrollerListUpdate.None -> ScrollerUpdate.None
-    is MessageScrollerListUpdate.ReplaceRange -> ReplaceRange(
-        listResult.from.toInt(),
-        listResult.to.toInt(),
-        listResult.items
+    is MessageScrollerListUpdate.Append -> ScrollerUpdate.Append(
+        scrollerId = listResult.scrollerId,
+        items = listResult.items
+    )
+
+    is MessageScrollerListUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(
+        scrollerId = listResult.scrollerId,
+        idx = listResult.idx.toInt(),
+        items = listResult.items
+    )
+
+    is MessageScrollerListUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(
+        scrollerId = listResult.scrollerId,
+        idx = listResult.idx.toInt(),
+        items = listResult.items
+    )
+
+    is MessageScrollerListUpdate.ReplaceRange -> ScrollerUpdate.ReplaceRange(
+        scrollerId = listResult.scrollerId,
+        fromIdx = listResult.from.toInt(),
+        toIdx = listResult.to.toInt(),
+        items = listResult.items
+    )
+
+    is MessageScrollerListUpdate.None -> ScrollerUpdate.None(
+        scrollerId = listResult.scrollerId
     )
 }
 
-fun MessageScrollerUpdate.Error.toScrollerUpdate(): ScrollerUpdate<Message> = ScrollerUpdate.Error(this.error)
+fun MessageScrollerUpdate.Error.toScrollerUpdate(): ScrollerUpdate<Message> = ScrollerUpdate.Error(
+    error = this.error
+)
+
+fun MessageScrollerUpdate.debugTypeName(): String = when (this) {
+    is MessageScrollerUpdate.List -> this.v1.debugTypeName()
+    is MessageScrollerUpdate.Status -> this.v1.debugTypeName()
+    is MessageScrollerUpdate.Error -> "Error"
+}
+
+fun MessageScrollerListUpdate.debugTypeName(): String = when (this) {
+    is MessageScrollerListUpdate.None -> "None"
+    is MessageScrollerListUpdate.Append -> "Append"
+    is MessageScrollerListUpdate.ReplaceFrom -> "ReplaceFrom"
+    is MessageScrollerListUpdate.ReplaceBefore -> "ReplaceBefore"
+    is MessageScrollerListUpdate.ReplaceRange -> "ReplaceRange"
+}
+
+fun MessageScrollerStatusUpdate.debugTypeName(): String = when (this) {
+    MessageScrollerStatusUpdate.FETCH_NEW_START -> "FETCH_NEW_START"
+    MessageScrollerStatusUpdate.FETCH_NEW_END -> "FETCH_NEW_END"
+}

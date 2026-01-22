@@ -22,6 +22,7 @@ import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
@@ -95,6 +96,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -137,6 +139,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -179,6 +182,7 @@ class RustConversationsQueryImplTest {
             coEvery { this@mockk.reload() } returns Unit.right()
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -229,6 +233,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -280,6 +285,7 @@ class RustConversationsQueryImplTest {
             coEvery { this@mockk.disconnect() } just Runs
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -330,6 +336,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.disconnect() } just Runs
             coEvery { this@mockk.filterUnread(any()) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -379,6 +386,7 @@ class RustConversationsQueryImplTest {
             coEvery { this@mockk.disconnect() } just Runs
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(any()) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
@@ -428,6 +436,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
@@ -485,6 +494,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
@@ -551,6 +561,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
@@ -602,6 +613,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
@@ -655,6 +667,7 @@ class RustConversationsQueryImplTest {
             }
             coEvery { this@mockk.filterUnread(false) } just Runs
             coEvery { this@mockk.showSpamAndTrash(false) } just Runs
+            every { this@mockk.getScrollerId() } returns DefaultScrollerId
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()

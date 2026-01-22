@@ -42,7 +42,9 @@ class ScrollerCacheTest {
         val cache = ScrollerCache<ScrollerItem>()
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1"), snap)
@@ -52,10 +54,10 @@ class ScrollerCacheTest {
     fun `multiple appends preserve ordering`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1")))
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.Append(items("C1", "D1")))
+        val snap = cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("C1", "D1")))
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
@@ -65,10 +67,14 @@ class ScrollerCacheTest {
     fun `ReplaceFrom within bounds replaces tail from idx`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+        cache.applyUpdate(
+            ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1", "D1"))
+        )
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceFrom(idx = 2, items = items("E1", "F1")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = 2, items = items("E1", "F1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "E1", "F1"), snap)
@@ -78,10 +84,12 @@ class ScrollerCacheTest {
     fun `ReplaceFrom at size appends`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1")))
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceFrom(idx = 2, items = items("C1", "D1")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = 2, items = items("C1", "D1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
@@ -91,11 +99,15 @@ class ScrollerCacheTest {
     fun `ReplaceFrom idx 0 replaces all with given items including empty`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1")))
 
         // When
-        val snap1 = cache.applyUpdate(ScrollerUpdate.ReplaceFrom(idx = 0, items = items("D1")))
-        val snap2 = cache.applyUpdate(ScrollerUpdate.ReplaceFrom(idx = 0, items = emptyList()))
+        val snap1 = cache.applyUpdate(
+            ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = 0, items = items("D1"))
+        )
+        val snap2 = cache.applyUpdate(
+            ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = 0, items = emptyList())
+        )
 
         // Then
         assertSnapshotIds(listOf("D1"), snap1)
@@ -106,11 +118,15 @@ class ScrollerCacheTest {
     fun `ReplaceFrom negative or greater than size is ignored`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1")))
 
         // When
-        cache.applyUpdate(ScrollerUpdate.ReplaceFrom(idx = -1, items = items("X1")))
-        cache.applyUpdate(ScrollerUpdate.ReplaceFrom(idx = 10, items = items("Y1")))
+        cache.applyUpdate(
+            ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = -1, items = items("X1"))
+        )
+        cache.applyUpdate(
+            ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = 10, items = items("Y1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1"), cache.snapshot)
@@ -120,10 +136,14 @@ class ScrollerCacheTest {
     fun `ReplaceBefore within bounds replaces head before idx`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+        cache.applyUpdate(
+            ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1", "D1"))
+        )
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceBefore(idx = 2, items = items("E1", "F1")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = 2, items = items("E1", "F1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("E1", "F1", "C1", "D1"), snap)
@@ -133,10 +153,12 @@ class ScrollerCacheTest {
     fun `ReplaceBefore at size replaces all`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1")))
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceBefore(idx = 3, items = items("D1", "E1")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = 3, items = items("D1", "E1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("D1", "E1"), snap)
@@ -146,10 +168,12 @@ class ScrollerCacheTest {
     fun `ReplaceBefore idx 0 prepends items`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("C1", "D1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("C1", "D1")))
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceBefore(idx = 0, items = items("A1", "B1")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = 0, items = items("A1", "B1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
@@ -161,7 +185,9 @@ class ScrollerCacheTest {
         val cache = ScrollerCache<ScrollerItem>()
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceBefore(idx = 0, items = items("A1")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = 0, items = items("A1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("A1"), snap)
@@ -171,11 +197,15 @@ class ScrollerCacheTest {
     fun `ReplaceBefore negative or greater than size is ignored`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1")))
 
         // When
-        cache.applyUpdate(ScrollerUpdate.ReplaceBefore(idx = -1, items = items("X1")))
-        cache.applyUpdate(ScrollerUpdate.ReplaceBefore(idx = 10, items = items("Y1")))
+        cache.applyUpdate(
+            ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = -1, items = items("X1"))
+        )
+        cache.applyUpdate(
+            ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = 10, items = items("Y1"))
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1"), cache.snapshot)
@@ -185,10 +215,16 @@ class ScrollerCacheTest {
     fun `ReplaceRange replaces given items when they are in items bounds treating from inclusive, to exclusive`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+        cache.applyUpdate(
+            ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1", "D1"))
+        )
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceRange(fromIdx = 1, toIdx = 3, items = items("B2", "C2")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceRange(
+                scrollerId = DefaultScrollerId, fromIdx = 1, toIdx = 3, items = items("B2", "C2")
+            )
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B2", "C2", "D1"), snap)
@@ -198,10 +234,16 @@ class ScrollerCacheTest {
     fun `ReplaceRange with negative from index is ignored`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+        cache.applyUpdate(
+            ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1", "D1"))
+        )
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceRange(fromIdx = -1, toIdx = 2, items = items("B2", "C2")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceRange(
+                scrollerId = DefaultScrollerId, fromIdx = -1, toIdx = 2, items = items("B2", "C2")
+            )
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
@@ -211,10 +253,16 @@ class ScrollerCacheTest {
     fun `ReplaceRange with to index greater than size is ignored`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+        cache.applyUpdate(
+            ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1", "D1"))
+        )
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceRange(fromIdx = 0, toIdx = 5, items = items("B2", "C2")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceRange(
+                scrollerId = DefaultScrollerId, fromIdx = 0, toIdx = 5, items = items("B2", "C2")
+            )
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
@@ -224,10 +272,16 @@ class ScrollerCacheTest {
     fun `ReplaceRange with from index greater than to index is ignored`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1", "D1")))
+        cache.applyUpdate(
+            ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1", "D1"))
+        )
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.ReplaceRange(fromIdx = 2, toIdx = 1, items = items("B2", "C2")))
+        val snap = cache.applyUpdate(
+            ScrollerUpdate.ReplaceRange(
+                scrollerId = DefaultScrollerId, fromIdx = 2, toIdx = 1, items = items("B2", "C2")
+            )
+        )
 
         // Then
         assertSnapshotIds(listOf("A1", "B1", "C1", "D1"), snap)
@@ -237,10 +291,10 @@ class ScrollerCacheTest {
     fun `None is a no-op`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1")))
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.None)
+        val snap = cache.applyUpdate(ScrollerUpdate.None(scrollerId = DefaultScrollerId))
 
         // Then
         assertSnapshotIds(listOf("A1"), snap)
@@ -250,10 +304,10 @@ class ScrollerCacheTest {
     fun `Error is a no-op`() {
         // Given
         val cache = ScrollerCache<ScrollerItem>()
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1")))
 
         // When
-        val snap = cache.applyUpdate(ScrollerUpdate.Error(error))
+        val snap = cache.applyUpdate(ScrollerUpdate.Error(scrollerId = DefaultScrollerId, error = error))
 
         // Then
         assertSnapshotIds(listOf("A1", "B1"), snap)
@@ -266,22 +320,34 @@ class ScrollerCacheTest {
 
         // When
         // 1) Start with A1,B1,C1
-        cache.applyUpdate(ScrollerUpdate.Append(items("A1", "B1", "C1")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("A1", "B1", "C1")))
         // 2) ReplaceFrom from idx=1 with D1,E1  => A1, D1, E1
-        cache.applyUpdate(ScrollerUpdate.ReplaceFrom(idx = 1, items = items("D1", "E1")))
+        cache.applyUpdate(
+            ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = 1, items = items("D1", "E1"))
+        )
         // 3) Prepend via ReplaceBefore idx=0 with B2 => B2, A1, D1, E1
-        cache.applyUpdate(ScrollerUpdate.ReplaceBefore(idx = 0, items = items("B2")))
+        cache.applyUpdate(
+            ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = 0, items = items("B2"))
+        )
         // 4) Append F2,G2 => B2, A1, D1, E1, F2, G2
-        cache.applyUpdate(ScrollerUpdate.Append(items("F2", "G2")))
+        cache.applyUpdate(ScrollerUpdate.Append(scrollerId = DefaultScrollerId, items = items("F2", "G2")))
         // 5) ReplaceBefore idx=3 with H2 => H2, E1, F2, G2
-        cache.applyUpdate(ScrollerUpdate.ReplaceBefore(idx = 3, items = items("H2")))
+        cache.applyUpdate(
+            ScrollerUpdate.ReplaceBefore(scrollerId = DefaultScrollerId, idx = 3, items = items("H2"))
+        )
         // 6) Error & None do nothing
-        cache.applyUpdate(ScrollerUpdate.Error(error = error))
-        cache.applyUpdate(ScrollerUpdate.None)
+        cache.applyUpdate(ScrollerUpdate.Error(scrollerId = DefaultScrollerId, error = error))
+        cache.applyUpdate(ScrollerUpdate.None(scrollerId = DefaultScrollerId))
         // 7) ReplaceFrom idx=size appends I2 => H2,E1,F2,G2,I2
-        cache.applyUpdate(ScrollerUpdate.ReplaceFrom(idx = cache.snapshot.size, items = items("I2")))
+        cache.applyUpdate(
+            ScrollerUpdate.ReplaceFrom(scrollerId = DefaultScrollerId, idx = cache.snapshot.size, items = items("I2"))
+        )
 
         // Then
         assertSnapshotIds(listOf("H2", "E1", "F2", "G2", "I2"), cache.snapshot)
+    }
+
+    companion object {
+        private const val DefaultScrollerId = "scroller-id"
     }
 }

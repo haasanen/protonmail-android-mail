@@ -170,6 +170,10 @@ class RustConversationsQueryImpl @Inject constructor(
             callback = conversationsUpdatedCallback(scrollerOnUpdateHandler)
         )
             .onRight {
+                Timber.d(
+                    "rust-conversation-query: Paginator instance created, id=%s",
+                    it.getScrollerId()
+                )
                 paginatorState = PaginatorState(
                     paginatorWrapper = it,
                     pageDescriptor = pageDescriptor,
@@ -196,10 +200,12 @@ class RustConversationsQueryImpl @Inject constructor(
                         }
 
                         Timber.d(
-                            "rust-conversation-query: Received paginator update: %s with %d items, current cache: %d",
-                            update.javaClass.simpleName,
+                            "rust-conversation-query: Received paginator update: %s with %d items, " +
+                                "current cache: %d scrollerId=%s",
+                            update.debugTypeName(),
                             scrollerUpdate.itemCount(),
-                            paginatorState?.scrollerCache?.itemCount() ?: 0
+                            paginatorState?.scrollerCache?.itemCount() ?: 0,
+                            scrollerUpdate.scrollerId
                         )
 
                         // Update internal cache
@@ -247,7 +253,10 @@ class RustConversationsQueryImpl @Inject constructor(
         if (paginatorState == null) {
             Timber.d("rust-conversation-query: no paginator to destroy")
         } else {
-            Timber.d("rust-conversation-query: disconnecting and destroying paginator")
+            Timber.d(
+                "rust-conversation-query: disconnecting and destroying paginator with id=%s",
+                paginatorState?.paginatorWrapper?.getScrollerId()
+            )
             paginatorState?.paginatorWrapper?.disconnect()
             paginatorState = null
         }
@@ -316,25 +325,54 @@ class RustConversationsQueryImpl @Inject constructor(
 
 fun ConversationScrollerUpdate.List.toScrollerUpdate(): ScrollerUpdate<LocalConversation> =
     when (val listResult = this.v1) {
-        is ConversationScrollerListUpdate.Append -> ScrollerUpdate.Append(listResult.items)
+        is ConversationScrollerListUpdate.Append -> ScrollerUpdate.Append(
+            scrollerId = listResult.scrollerId,
+            items = listResult.items
+        )
+
         is ConversationScrollerListUpdate.ReplaceFrom -> ScrollerUpdate.ReplaceFrom(
-            listResult.idx.toInt(),
-            listResult.items
+            scrollerId = listResult.scrollerId,
+            idx = listResult.idx.toInt(),
+            items = listResult.items
         )
 
         is ConversationScrollerListUpdate.ReplaceBefore -> ScrollerUpdate.ReplaceBefore(
-            listResult.idx.toInt(),
-            listResult.items
+            scrollerId = listResult.scrollerId,
+            idx = listResult.idx.toInt(),
+            items = listResult.items
         )
 
-        is ConversationScrollerListUpdate.None -> ScrollerUpdate.None
         is ConversationScrollerListUpdate.ReplaceRange -> ScrollerUpdate.ReplaceRange(
-            listResult.from.toInt(),
-            listResult.to.toInt(),
-            listResult.items
+            scrollerId = listResult.scrollerId,
+            fromIdx = listResult.from.toInt(),
+            toIdx = listResult.to.toInt(),
+            items = listResult.items
+        )
+
+        is ConversationScrollerListUpdate.None -> ScrollerUpdate.None(
+            scrollerId = listResult.scrollerId
         )
     }
 
-fun ConversationScrollerUpdate.Error.toScrollerUpdate(): ScrollerUpdate<LocalConversation> =
-    ScrollerUpdate.Error(this.error)
+fun ConversationScrollerUpdate.Error.toScrollerUpdate(): ScrollerUpdate<LocalConversation> = ScrollerUpdate.Error(
+    error = this.error
+)
 
+fun ConversationScrollerUpdate.debugTypeName(): String = when (this) {
+    is ConversationScrollerUpdate.List -> this.v1.debugTypeName()
+    is ConversationScrollerUpdate.Status -> this.v1.debugTypeName()
+    is ConversationScrollerUpdate.Error -> "Error"
+}
+
+fun ConversationScrollerListUpdate.debugTypeName(): String = when (this) {
+    is ConversationScrollerListUpdate.None -> "None"
+    is ConversationScrollerListUpdate.Append -> "Append"
+    is ConversationScrollerListUpdate.ReplaceFrom -> "ReplaceFrom"
+    is ConversationScrollerListUpdate.ReplaceBefore -> "ReplaceBefore"
+    is ConversationScrollerListUpdate.ReplaceRange -> "ReplaceRange"
+}
+
+fun ConversationScrollerStatusUpdate.debugTypeName(): String = when (this) {
+    ConversationScrollerStatusUpdate.FETCH_NEW_START -> "FETCH_NEW_START"
+    ConversationScrollerStatusUpdate.FETCH_NEW_END -> "FETCH_NEW_END"
+}

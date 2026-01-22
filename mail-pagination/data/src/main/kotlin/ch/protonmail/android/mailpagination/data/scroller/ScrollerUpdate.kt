@@ -21,12 +21,44 @@ package ch.protonmail.android.mailpagination.data.scroller
 import uniffi.proton_mail_uniffi.MailScrollerError
 
 sealed class ScrollerUpdate<out T> {
-    data object None : ScrollerUpdate<Nothing>()
-    data class Append<T>(val items: List<T>) : ScrollerUpdate<T>()
-    data class ReplaceFrom<T>(val idx: Int, val items: List<T>) : ScrollerUpdate<T>()
-    data class ReplaceBefore<T>(val idx: Int, val items: List<T>) : ScrollerUpdate<T>()
-    data class ReplaceRange<T>(val fromIdx: Int, val toIdx: Int, val items: List<T>) : ScrollerUpdate<T>()
-    data class Error(val error: MailScrollerError) : ScrollerUpdate<Nothing>()
+    abstract val scrollerId: String
+
+    data class None(
+        override val scrollerId: String
+    ) : ScrollerUpdate<Nothing>()
+
+    data class Append<T>(
+        override val scrollerId: String,
+        val items: List<T>
+    ) : ScrollerUpdate<T>()
+
+    data class ReplaceFrom<T>(
+        override val scrollerId: String,
+        val idx: Int,
+        val items: List<T>
+    ) : ScrollerUpdate<T>()
+
+    data class ReplaceBefore<T>(
+        override val scrollerId: String,
+        val idx: Int,
+        val items: List<T>
+    ) : ScrollerUpdate<T>()
+
+    data class ReplaceRange<T>(
+        override val scrollerId: String,
+        val fromIdx: Int,
+        val toIdx: Int,
+        val items: List<T>
+    ) : ScrollerUpdate<T>()
+
+    data class Error(
+        val error: MailScrollerError,
+        override val scrollerId: String = NO_SCROLLER_IN_ERROR
+    ) : ScrollerUpdate<Nothing>()
+
+    companion object {
+        const val NO_SCROLLER_IN_ERROR = "no_scroller_in_error"
+    }
 }
 
 fun <T> ScrollerUpdate<T>.itemCount(): Int = when (this) {

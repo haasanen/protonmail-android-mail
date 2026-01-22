@@ -41,6 +41,7 @@ import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
@@ -107,6 +108,7 @@ class RustMessageListQueryImplTest {
         coEvery { disconnect() } just Runs
         coEvery { filterUnread(filterUnread) } just Runs
         coEvery { showSpamAndTrash(showSpamTrash) } just Runs
+        every { getScrollerId() } returns DefaultScrollerId
     }
 
     private fun paginatorWrapperWithReloadEmittingReplaceFrom(
@@ -129,6 +131,7 @@ class RustMessageListQueryImplTest {
         coEvery { disconnect() } just Runs
         coEvery { filterUnread(filterUnread) } just Runs
         coEvery { showSpamAndTrash(showSpamTrash) } just Runs
+        every { getScrollerId() } returns DefaultScrollerId
     }
 
     @Test
@@ -452,6 +455,7 @@ class RustMessageListQueryImplTest {
             coEvery { disconnect() } just Runs
             coEvery { filterUnread(false) } just Runs
             coEvery { showSpamAndTrash(false) } just Runs
+            every { getScrollerId() } returns DefaultScrollerId
         }
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
@@ -501,6 +505,7 @@ class RustMessageListQueryImplTest {
             coEvery { disconnect() } just Runs
             coEvery { filterUnread(false) } just Runs
             coEvery { showSpamAndTrash(false) } just Runs
+            every { getScrollerId() } returns DefaultScrollerId
         }
         coEvery { invalidationRepository.submit(PageInvalidationEvent.MessagesInvalidated) } just Runs
 

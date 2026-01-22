@@ -62,6 +62,7 @@ class MailboxMessagePaginatorWrapper(
         }
 
     override fun disconnect() {
+        Timber.d("message-paginator: Disconnecting paginator with id=%s", rustPaginator.id())
         rustPaginator.handle().disconnect()
         rustPaginator.terminate()
     }
@@ -81,4 +82,6 @@ class MailboxMessagePaginatorWrapper(
     override fun updateKeyword(keyword: String) {
         Timber.w("message-paginator: Called updateKeyword on a message paginator, which is illegal. No-op.")
     }
+
+    override fun getScrollerId(): String = rustPaginator.id()
 }

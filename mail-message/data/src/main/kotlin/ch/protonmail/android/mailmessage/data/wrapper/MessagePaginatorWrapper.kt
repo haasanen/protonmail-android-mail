@@ -39,4 +39,6 @@ interface MessagePaginatorWrapper {
     fun showSpamAndTrash(show: Boolean)
 
     fun updateKeyword(keyword: String)
+
+    fun getScrollerId(): String
 }
