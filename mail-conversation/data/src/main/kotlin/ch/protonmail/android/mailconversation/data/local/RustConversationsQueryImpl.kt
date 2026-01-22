@@ -23,7 +23,7 @@ import arrow.core.left
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
+import ch.protonmail.android.mailconversation.data.ConversationQueryCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
@@ -57,11 +57,13 @@ import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.ConversationScrollerStatusUpdate
 import uniffi.proton_mail_uniffi.ConversationScrollerUpdate
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class RustConversationsQueryImpl @Inject constructor(
     private val rustMailboxFactory: RustMailboxFactory,
     private val createRustConversationPaginator: CreateRustConversationPaginator,
-    @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope,
+    @ConversationQueryCoroutineScope private val coroutineScope: CoroutineScope,
     private val invalidationRepository: PageInvalidationRepository
 ) : RustConversationsQuery {
 
