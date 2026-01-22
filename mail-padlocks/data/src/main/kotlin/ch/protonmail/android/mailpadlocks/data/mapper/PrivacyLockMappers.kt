@@ -51,12 +51,16 @@ fun LocalPrivacyLockIcon.toPrivacyLockIcon() = when (this) {
 
 fun LocalPrivacyLockTooltip.toPrivacyLockTooltip() = when (this) {
     LocalPrivacyLockTooltip.SEND_E2E -> PrivacyLockTooltip.SendE2e
+    LocalPrivacyLockTooltip.SEND_E2E_EXTERNAL -> PrivacyLockTooltip.SendE2eExternal
+    LocalPrivacyLockTooltip.SEND_E2E_EO -> PrivacyLockTooltip.SendE2eEo
+
     LocalPrivacyLockTooltip.SEND_E2E_VERIFIED_RECIPIENT -> PrivacyLockTooltip.SendE2eVerifiedRecipient
     LocalPrivacyLockTooltip.SEND_SIGN_ONLY -> PrivacyLockTooltip.SendSignOnly
     LocalPrivacyLockTooltip.SEND_ZERO_ACCESS_ENCRYPTION_DISABLED -> PrivacyLockTooltip.SendZeroAccessEncryptionDisabled
     LocalPrivacyLockTooltip.ZERO_ACCESS -> PrivacyLockTooltip.ZeroAccess
     LocalPrivacyLockTooltip.ZERO_ACCESS_SENT_BY_PROTON -> PrivacyLockTooltip.ZeroAccessSentByProton
     LocalPrivacyLockTooltip.RECEIVE_E2E -> PrivacyLockTooltip.ReceiveE2e
+    LocalPrivacyLockTooltip.RECEIVE_E2E_EXTERNAL -> PrivacyLockTooltip.ReceiveE2eExternal
     LocalPrivacyLockTooltip.RECEIVE_E2E_VERIFIED_RECIPIENT -> PrivacyLockTooltip.ReceiveE2eVerifiedRecipient
     LocalPrivacyLockTooltip.RECEIVE_E2E_VERIFICATION_FAILED -> PrivacyLockTooltip.ReceiveE2eVerificationFailed
     LocalPrivacyLockTooltip.RECEIVE_E2E_VERIFICATION_FAILED_NO_SIGNATURE ->

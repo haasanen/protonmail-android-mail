@@ -132,6 +132,32 @@ object EncryptionInfoUiModelMapper {
                 )
             }
 
+            PrivacyLockTooltip.SendE2eEo -> {
+                val mainDescription = TooltipDescription(
+                    text = R.string.padlocks_proton_send_e2ee_description,
+                    linkText = R.string.padlocks_proton_send_e2ee_description_link_text,
+                    linkUrl = R.string.padlocks_e2ee_link
+                )
+
+                TooltipValues(
+                    title = R.string.padlocks_proton_send_e2ee,
+                    descriptions = listOf(mainDescription)
+                )
+            }
+
+            PrivacyLockTooltip.SendE2eExternal -> {
+                val mainDescription = TooltipDescription(
+                    text = R.string.padlocks_proton_send_e2ee_description,
+                    linkText = R.string.padlocks_proton_send_e2ee_description_link_text,
+                    linkUrl = R.string.padlocks_e2ee_link
+                )
+
+                TooltipValues(
+                    title = R.string.padlocks_proton_send_e2ee,
+                    descriptions = listOf(mainDescription)
+                )
+            }
+
             PrivacyLockTooltip.SendE2eVerifiedRecipient -> {
                 val mainDescription = TooltipDescription(
                     text = R.string.padlocks_proton_send_e2ee_verified_recipient_description,
@@ -207,6 +233,19 @@ object EncryptionInfoUiModelMapper {
                 TooltipValues(
                     title = R.string.padlocks_proton_receive_e2ee,
                     descriptions = listOf(mainDescription, Addendum.AlwaysE2ee)
+                )
+            }
+
+            PrivacyLockTooltip.ReceiveE2eExternal -> {
+                val mainDescription = TooltipDescription(
+                    text = R.string.padlocks_proton_receive_e2ee_description,
+                    linkText = R.string.padlocks_proton_receive_e2ee_description_link_text,
+                    linkUrl = R.string.padlocks_e2ee_link
+                )
+
+                TooltipValues(
+                    title = R.string.padlocks_proton_receive_e2ee,
+                    descriptions = listOf(mainDescription)
                 )
             }
 
