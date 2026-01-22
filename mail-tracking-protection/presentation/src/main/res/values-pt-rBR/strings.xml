@@ -21,7 +21,7 @@
   <string name="show_details">Mostrar detalhes</string>
   <string name="trackers_protection_no_trackers_detected">Proteção contra rastreadores: nenhum rastreador detectado</string>
   <string name="tracking_protection">Proteção contra rastreadores</string>
-  <string name="tracking_protection_description">We actively protect you from tracking. Here you can view the spy pixels we blocked and the tracking links we cleaned in this message.</string>
+  <string name="tracking_protection_description">Protegemos você ativamente contra rastreamento. Aqui, você pode ver os pixels espiões que bloqueamos e os links de rastreamento que limpamos nesta mensagem.</string>
   <string name="tracking_protection_learn_more">Saiba mais</string>
   <string name="original">Original</string>
   <string name="cleaned">Limpo</string>

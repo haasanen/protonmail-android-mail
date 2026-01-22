@@ -174,4 +174,5 @@
   <string name="composer_expiration_time_learn_more">Més informació</string>
   <string name="composer_enter_recipient_content_description">Introduïu un destinatari</string>
   <string name="composer_sender_address_description">Trieu l\'adreça del remitent</string>
+  <string name="composer_encryption_info_learn_more">Més informació</string>
 </resources>

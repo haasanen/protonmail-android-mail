@@ -174,4 +174,5 @@
   <string name="composer_expiration_time_learn_more">Μάθετε περισσότερα</string>
   <string name="composer_enter_recipient_content_description">Εισάγετε έναν παραλήπτη</string>
   <string name="composer_sender_address_description">Επιλέξτε Διεύθυνση Αποστολέα</string>
+  <string name="composer_encryption_info_learn_more">Μάθετε περισσότερα</string>
 </resources>

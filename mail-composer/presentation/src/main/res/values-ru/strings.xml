@@ -176,4 +176,5 @@
   <string name="composer_expiration_time_learn_more">Learn more</string>
   <string name="composer_enter_recipient_content_description">Enter a recipient</string>
   <string name="composer_sender_address_description">Choose Sender Address</string>
+  <string name="composer_encryption_info_learn_more">Learn more</string>
 </resources>

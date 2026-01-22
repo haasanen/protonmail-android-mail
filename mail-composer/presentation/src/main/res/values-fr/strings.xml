@@ -174,4 +174,5 @@
   <string name="composer_expiration_time_learn_more">En savoir plus</string>
   <string name="composer_enter_recipient_content_description">Saisir un destinataire</string>
   <string name="composer_sender_address_description">Choisir l\'adresse de l\'expéditeur</string>
+  <string name="composer_encryption_info_learn_more">En savoir plus</string>
 </resources>

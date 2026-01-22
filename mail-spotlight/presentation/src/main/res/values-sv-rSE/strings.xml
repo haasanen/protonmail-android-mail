@@ -25,7 +25,7 @@
   <string name="spotlight_feature_item_tracking_protection_description">Se vem som försökte övervaka dig med dolda pixlar och spårningslänkar, och hur många försök som blockerades.</string>
   <string name="spotlight_feature_item_encryption_locks_title">Krypteringslås</string>
   <string name="spotlight_feature_item_encryption_locks_description">Använd låsikoner för att identifiera och verifiera vilken typ av kryptering som skyddar dina meddelanden.</string>
-  <string name="spotlight_feature_item_headers_html_title">View headers and HTML</string>
+  <string name="spotlight_feature_item_headers_html_title">Visa rubriker och HTML</string>
   <string name="spotlight_feature_item_headers_html_description">Inspect suspicious messages to confirm their authenticity and uncover any hidden tracking elements.</string>
   <string name="spotlight_screen_got_it">Jag förstår</string>
 </resources>

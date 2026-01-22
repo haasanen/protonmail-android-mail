@@ -174,4 +174,5 @@
   <string name="composer_expiration_time_learn_more">Lär dig mer</string>
   <string name="composer_enter_recipient_content_description">Ange en mottagare</string>
   <string name="composer_sender_address_description">Välj avsändaradress</string>
+  <string name="composer_encryption_info_learn_more">Lär dig mer</string>
 </resources>

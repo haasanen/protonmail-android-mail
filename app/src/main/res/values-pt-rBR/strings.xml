@@ -46,5 +46,5 @@
   <string name="mailbox_message_scheduling_offline">Off-line: mensagem na fila para agendamento</string>
   <string name="mailbox_message_scheduled_for_sending_success">Esta mensagem será enviada em %1$s</string>
   <string name="launcher_alert_duplicate_account_description">O usuário já iniciou sessão</string>
-  <string name="home_event_loop_error_snackbar">We couldn\'t sync your mail. Try logging out and back in again. If that doesn\'t work, please submit a bug report.</string>
+  <string name="home_event_loop_error_snackbar">Não foi possível sincronizar seu e-mail. Tente sair e entrar novamente. Se isso não funcionar, envie um relatório de erro.</string>
 </resources>

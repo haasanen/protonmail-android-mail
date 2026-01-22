@@ -44,7 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">下書きを保存できません - 無効な宛先です</string>
   <string name="composer_error_store_draft_message_not_a_draft">下書きを保存できません - このメッセージは下書きではありません</string>
   <string name="composer_error_store_draft_generic">下書きを保存できませんでした - 一般的なエラーが発生しました。</string>
-  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
+  <string name="composer_error_create_draft">何か問題が発生しました。新しい下書きの作成ができませんでした。</string>
   <string name="composer_error_loading_draft">この下書きの内容は現時点では利用できません、編集はできません。</string>
   <string name="composer_add_attachments_content_description">添付ファイルの追加</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">インポート...</string>
@@ -173,4 +173,5 @@
   <string name="composer_expiration_time_learn_more">より詳しく</string>
   <string name="composer_enter_recipient_content_description">受信者を入力してください</string>
   <string name="composer_sender_address_description">送信者アドレスを選択</string>
+  <string name="composer_encryption_info_learn_more">Learn more</string>
 </resources>

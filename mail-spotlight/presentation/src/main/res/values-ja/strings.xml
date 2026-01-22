@@ -17,15 +17,15 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="spotlight_screen_version_text">Version %s</string>
-  <string name="spotlight_screen_title">What’s new in Proton Mail</string>
-  <string name="spotlight_feature_item_discreet_icon_title">Discreet icon</string>
-  <string name="spotlight_feature_item_discreet_icon_description">Keep the default Proton Mail icon or disguise it with a generic one for greater privacy.</string>
-  <string name="spotlight_feature_item_tracking_protection_title">Tracking protection</string>
-  <string name="spotlight_feature_item_tracking_protection_description">See who tried to monitor you with hidden pixels and tracking links, and how many attempts were blocked.</string>
-  <string name="spotlight_feature_item_encryption_locks_title">Encryption locks</string>
-  <string name="spotlight_feature_item_encryption_locks_description">Use the lock icons to identify and verify the type of encryption protecting your messages.</string>
-  <string name="spotlight_feature_item_headers_html_title">View headers and HTML</string>
-  <string name="spotlight_feature_item_headers_html_description">Inspect suspicious messages to confirm their authenticity and uncover any hidden tracking elements.</string>
-  <string name="spotlight_screen_got_it">Got it</string>
+  <string name="spotlight_screen_version_text">バージョン %s</string>
+  <string name="spotlight_screen_title">Proton Mailの新機能</string>
+  <string name="spotlight_feature_item_discreet_icon_title">目立たないアイコン</string>
+  <string name="spotlight_feature_item_discreet_icon_description">Proton Mailのデフォルトアイコンをそのまま使用するか、プライバシーを高めるために一般的なアイコンに偽装してください。</string>
+  <string name="spotlight_feature_item_tracking_protection_title">トラッキング防止</string>
+  <string name="spotlight_feature_item_tracking_protection_description">隠されたピクセルやトラッキングリンクであなたを監視しようとした人物を確認し、ブロックされた試行回数を確認できます。</string>
+  <string name="spotlight_feature_item_encryption_locks_title">暗号化ロック</string>
+  <string name="spotlight_feature_item_encryption_locks_description">ロックアイコンを使用して、メッセージを保護する暗号化の種類を特定し、検証してください。</string>
+  <string name="spotlight_feature_item_headers_html_title">ヘッダーとHTMLを表示</string>
+  <string name="spotlight_feature_item_headers_html_description">疑わしいメッセージを検査して、その正当性を確認し、隠されたトラッキング要素を明らかにします。</string>
+  <string name="spotlight_screen_got_it">分かりました</string>
 </resources>
