@@ -153,9 +153,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun getMessages(
         userId: UserId,
         pageKey: PageKey
-    ): Either<PaginationError, List<LocalMessageMetadata>> = withContext(ioDispatcher) {
-        rustMessageListQuery.getMessages(userId, pageKey)
-    }
+    ): Either<PaginationError, List<LocalMessageMetadata>> = rustMessageListQuery.getMessages(userId, pageKey)
 
     override suspend fun observeMessage(
         userId: UserId,
