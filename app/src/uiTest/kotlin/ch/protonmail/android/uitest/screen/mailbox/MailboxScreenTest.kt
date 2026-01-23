@@ -43,7 +43,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
-import ch.protonmail.android.mailtooltip.presentation.model.AccountsTooltipState
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -206,11 +205,9 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             ManagedState(stateManager = stateManager) { mailboxState ->
                 MailboxScreen(
                     mailboxState = mailboxState,
-                    accountsTooltipState = AccountsTooltipState.Loading,
                     fabHostState = ProtonFabHostState(),
                     mailboxListItems = itemsFlow.collectAsLazyPagingItems(),
-                    actions = MailboxScreen.Actions.Empty,
-                    isInterstitialActive = { false }
+                    actions = MailboxScreen.Actions.Empty
                 )
             }
         }
@@ -243,11 +240,9 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
 
             MailboxScreen(
                 mailboxState = state,
-                accountsTooltipState = AccountsTooltipState.Loading,
                 fabHostState = ProtonFabHostState(),
                 mailboxListItems = mailboxItems,
-                actions = MailboxScreen.Actions.Empty,
-                isInterstitialActive = { false }
+                actions = MailboxScreen.Actions.Empty
             )
         }
     }

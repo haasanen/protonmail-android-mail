@@ -24,7 +24,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawn
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -85,7 +84,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -112,7 +110,6 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
@@ -136,6 +133,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
+import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
@@ -173,9 +171,6 @@ import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMore
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
-import ch.protonmail.android.mailtooltip.presentation.model.AccountsTooltipState
-import ch.protonmail.android.mailtooltip.presentation.ui.AccountsTooltip
-import ch.protonmail.android.mailtooltip.presentation.viewmodel.AccountsTooltipViewModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.fab.LazyFab
@@ -195,12 +190,9 @@ fun MailboxScreen(
     actions: MailboxScreen.Actions,
     onEvent: (AccountSwitchEvent) -> Unit,
     viewModel: MailboxViewModel = hiltViewModel(),
-    accountsTooltipViewModel: AccountsTooltipViewModel = hiltViewModel(),
-    fabHostState: ProtonFabHostState,
-    isInterstitialActive: () -> Boolean
+    fabHostState: ProtonFabHostState
 ) {
     val mailboxState = viewModel.state.collectAsStateWithLifecycle().value
-    val accountsTooltipState by accountsTooltipViewModel.state.collectAsStateWithLifecycle()
 
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -238,7 +230,6 @@ fun MailboxScreen(
             actions.navigateToComposer()
         }
     }
-
 
     ConsumableLaunchedEffect(mailboxState.showRatingBooster) {
         actions.onShowRatingBooster()
@@ -309,8 +300,7 @@ fun MailboxScreen(
         onClearAllConfirmed = { viewModel.submit(MailboxViewAction.ClearAllConfirmed) },
         onClearAllDismissed = { viewModel.submit(MailboxViewAction.ClearAllDismissed) },
         onSnooze = { viewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet) },
-        validateUserSession = { viewModel.submit(MailboxViewAction.ValidateUserSession) },
-        onDismissAccountsTooltip = { accountsTooltipViewModel.onDismiss() }
+        validateUserSession = { viewModel.submit(MailboxViewAction.ValidateUserSession) }
     )
 
     val lifecycle = LocalLifecycleOwner.current
@@ -449,12 +439,10 @@ fun MailboxScreen(
     ) {
         MailboxScreen(
             mailboxState = mailboxState,
-            accountsTooltipState = accountsTooltipState,
             fabHostState = fabHostState,
             mailboxListItems = mailboxListItems,
             actions = completeActions,
-            modifier = modifier.semantics { testTagsAsResourceId = true },
-            isInterstitialActive = isInterstitialActive
+            modifier = modifier.semantics { testTagsAsResourceId = true }
         )
     }
 }
@@ -462,12 +450,10 @@ fun MailboxScreen(
 @Composable
 fun MailboxScreen(
     mailboxState: MailboxState,
-    accountsTooltipState: AccountsTooltipState,
     fabHostState: ProtonFabHostState,
     mailboxListItems: LazyPagingItems<MailboxItemUiModel>,
     actions: MailboxScreen.Actions,
-    modifier: Modifier = Modifier,
-    isInterstitialActive: () -> Boolean
+    modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -480,8 +466,6 @@ fun MailboxScreen(
             lazyListState.firstVisibleItemIndex > 0
         }
     }
-
-    val showTooltip = accountsTooltipState == AccountsTooltipState.Show && !isInterstitialActive()
 
     val stickyHeaderActions = MailboxStickyHeader.Actions(
         onUnreadFilterEnabled = actions.onEnableUnreadFilter,
@@ -543,9 +527,6 @@ fun MailboxScreen(
             ) {
 
                 MailboxTopAppBar(
-                    modifier = Modifier.onGloballyPositioned {
-                        topAppBarBounds = it.boundsInParent()
-                    },
                     state = mailboxState.topAppBarState,
                     actions = MailboxTopAppBar.Actions(
                         onOpenMenu = actions.openDrawerMenu,
@@ -575,13 +556,6 @@ fun MailboxScreen(
                         WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
                     )
                 )
-
-            }
-
-            Crossfade(showTooltip) { show ->
-                if (show) {
-                    AccountsTooltip(anchorBounds = topAppBarBounds, onDismiss = actions.onDismissAccountsTooltip)
-                }
             }
         },
         bottomBar = {
@@ -1326,7 +1300,6 @@ object MailboxScreen {
         val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onCustomizeToolbar: () -> Unit,
         val validateUserSession: () -> Unit,
-        val onDismissAccountsTooltip: () -> Unit,
         val onShowRatingBooster: () -> Unit
     ) {
 
@@ -1392,7 +1365,6 @@ object MailboxScreen {
                 onCustomizeToolbar = {},
                 onActionBarVisibilityChanged = {},
                 validateUserSession = {},
-                onDismissAccountsTooltip = {},
                 onShowRatingBooster = {}
             )
         }
@@ -1411,10 +1383,8 @@ private fun MailboxScreenPreview(@PreviewParameter(MailboxPreviewProvider::class
         MailboxScreen(
             mailboxListItems = mailboxPreview.items.collectAsLazyPagingItems(),
             mailboxState = mailboxPreview.state,
-            accountsTooltipState = AccountsTooltipState.Loading,
             fabHostState = ProtonFabHostState(),
-            actions = MailboxScreen.Actions.Empty,
-            isInterstitialActive = { false }
+            actions = MailboxScreen.Actions.Empty
         )
     }
 }

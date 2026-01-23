@@ -726,8 +726,7 @@ fun Home(
                         onEvent = eventHandler,
                         showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
                         onActionBarVisibilityChanged = updatePadding,
-                        onShowRatingBooster = activityActions.launchRatingBooster,
-                        isInterstitialActive = { interstitialPriority !is HomeInterstitialPriority.None }
+                        onShowRatingBooster = activityActions.launchRatingBooster
                     )
                     addAccountsManager(
                         navController,

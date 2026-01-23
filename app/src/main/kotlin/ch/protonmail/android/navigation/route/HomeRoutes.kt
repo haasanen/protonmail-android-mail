@@ -129,8 +129,7 @@ internal fun NavGraphBuilder.addMailbox(
     showSnackbar: (type: SnackbarType) -> Unit,
     showFeatureMissingSnackbar: () -> Unit,
     onActionBarVisibilityChanged: (Boolean) -> Unit,
-    onShowRatingBooster: () -> Unit,
-    isInterstitialActive: () -> Boolean
+    onShowRatingBooster: () -> Unit
 ) {
     composable(
         route = Destination.Screen.Mailbox.route,
@@ -182,8 +181,7 @@ internal fun NavGraphBuilder.addMailbox(
                 onShowRatingBooster = onShowRatingBooster
             ),
             onEvent = onEvent,
-            fabHostState = fabHostState,
-            isInterstitialActive = isInterstitialActive
+            fabHostState = fabHostState
         )
     }
 }

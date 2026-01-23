@@ -151,11 +151,6 @@ include(":mail-spotlight:data")
 include(":mail-spotlight:domain")
 include(":mail-spotlight:presentation")
 
-include(":mail-tooltip:dagger")
-include(":mail-tooltip:data")
-include(":mail-tooltip:domain")
-include(":mail-tooltip:presentation")
-
 include(":mail-upselling:dagger")
 include(":mail-upselling:data")
 include(":mail-upselling:domain")
