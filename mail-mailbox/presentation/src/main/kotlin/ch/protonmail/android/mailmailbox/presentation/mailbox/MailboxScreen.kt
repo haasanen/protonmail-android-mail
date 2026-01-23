@@ -809,10 +809,9 @@ private fun MailboxSwipeRefresh(
         onRefresh = onRefresh
     ) {
         when (currentViewState) {
-            is MailboxScreenState.Loading ->
-                MailboxSkeletonLoading(
-                    modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)
-                )
+            is MailboxScreenState.Loading -> MailboxSkeletonLoading(
+                modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)
+            )
 
             is MailboxScreenState.Error -> MailboxError(
                 errorMessage = stringResource(id = R.string.mailbox_error_message_generic)
