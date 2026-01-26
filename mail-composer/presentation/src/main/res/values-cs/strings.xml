@@ -176,5 +176,5 @@
   <string name="composer_expiration_time_learn_more">Více informací</string>
   <string name="composer_enter_recipient_content_description">Zadejte příjemce</string>
   <string name="composer_sender_address_description">Vyberte adresu odesílatele</string>
-  <string name="composer_encryption_info_learn_more">Learn more</string>
+  <string name="composer_encryption_info_learn_more">Více informací</string>
 </resources>

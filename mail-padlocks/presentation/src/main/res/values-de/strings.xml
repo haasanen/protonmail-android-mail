@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Diese E-Mail befindet sich %s auf dem Gerät des Absenders und kann nur vom Empfänger entschlüsselt werden. Proton kann den Inhalt der E-Mail zu keinem Zeitpunkt einsehen.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">Ende-zu-Ende-verschlüsselt</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">E-Mails zwischen Proton-Benutzern sind immer Ende-zu-Ende-verschlüsselt</string>
+  <string name="padlocks_proton_always_e2ee">E-Mails, die zwischen Proton-Nutzern ausgetauscht werden, werden automatisch Ende-zu-Ende verschlüsselt.</string>
   <string name="padlocks_non_encrypted_copy">Allerdings kann es sein, dass ein Absender oder Empfänger, der Proton Mail nicht verwendet, eine unverschlüsselte Kopie auf seinem E-Mail-Server gespeichert hat.</string>
   <string name="padlocks_sender_verified_contact">Der Absender ist ein %s, dessen Verschlüsselungsschlüssel Sie als vertrauenswürdig eingestuft haben.</string>
   <string name="padlocks_sender_verified_contact_link_text">bestätigter Kontakt</string>

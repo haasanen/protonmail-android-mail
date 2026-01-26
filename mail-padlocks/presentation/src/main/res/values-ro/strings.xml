@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Acest e-mail este %s pe dispozitivul expeditorului și poate fi decriptat doar de către destinatar. Proton nu poate vedea conținutul acestuia în niciun moment.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">criptat bilateral</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Mesajele transmise între utilizatorii Proton sunt întotdeauna criptate bilateral.</string>
+  <string name="padlocks_proton_always_e2ee">E-mailurile transmise între utilizatorii Proton sunt criptate automat bilateral.</string>
   <string name="padlocks_non_encrypted_copy">Totuși, un expeditor sau destinatar care nu utilizează Proton Mail ar putea avea o copie necriptată stocată pe serverul său de e-mail.</string>
   <string name="padlocks_sender_verified_contact">Expeditorul este un %s ale cărui chei de criptare le-ați aprobat.</string>
   <string name="padlocks_sender_verified_contact_link_text">contact verificat</string>

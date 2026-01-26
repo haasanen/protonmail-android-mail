@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Αυτό το email είναι %s στη συσκευή του αποστολέα και μπορεί να αποκρυπτογραφηθεί μόνο από τον παραλήπτη. Η Proton δεν μπορεί να δει το περιεχόμενο του ηλεκτρονικού μηνύματος σε καμία περίπτωση.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">διατερματικά κρυπτογραφημένο</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Τα μηνύματα ηλεκτρονικού ταχυδρομείου που ανταλλάσσονται μεταξύ των χρηστών του Proton είναι πάντα κρυπτογραφημένα από άκρο σε άκρο.</string>
+  <string name="padlocks_proton_always_e2ee">Τα μηνύματα ηλεκτρονικού ταχυδρομείου που ανταλλάσσονται μεταξύ των χρηστών του Proton κρυπτογραφούνται αυτόματα διατερματικά.</string>
   <string name="padlocks_non_encrypted_copy">Ωστόσο, ένας αποστολέας ή παραλήπτης που δε χρησιμοποιεί το Proton Mail ενδέχεται να έχει αποθηκεύσει ένα μη κρυπτογραφημένο αντίγραφο στον διακομιστή ηλεκτρονικού ταχυδρομείου του.</string>
   <string name="padlocks_sender_verified_contact">Ο αποστολέας είναι ένας %s του οποίου τα κλειδιά κρυπτογράφησης έχετε εμπιστευτεί.</string>
   <string name="padlocks_sender_verified_contact_link_text">επαληθευμένη επαφή</string>

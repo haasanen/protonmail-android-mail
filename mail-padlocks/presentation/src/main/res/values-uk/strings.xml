@@ -17,7 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="padlocks_stored_with_zero_access_encryption_summary">Stored with zero access encryption</string>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">Збережено з нульовим шифруванням доступу</string>
   <string name="padlocks_proton_send_e2ee">End-to-end encrypted</string>
   <string name="padlocks_proton_send_e2ee_description">This email is %s on the sender\'s device and can only be decrypted by the recipient. Proton can\'t see the contents of the email at any time.</string>
   <string name="padlocks_proton_send_e2ee_description_link_text">end-to-end-encrypted</string>
@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">This email is %s on the sender\'s device and can only be decrypted by the recipient. Proton can\'t see the contents of the email at any time.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">end-to-end encrypted</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Emails exchanged between Proton users are always end-to-end encrypted.</string>
+  <string name="padlocks_proton_always_e2ee">Emails exchanged between Proton users are automatically end-to-end encrypted.</string>
   <string name="padlocks_non_encrypted_copy">However, a sender or recipient not using Proton Mail may have a non-encrypted copy stored on their email server.</string>
   <string name="padlocks_sender_verified_contact">The sender is a %s whose encryption keys you have trusted.</string>
   <string name="padlocks_sender_verified_contact_link_text">verified contact</string>
@@ -107,7 +107,7 @@
   <string name="padlocks_recipients_verified_contacts_link_text">verified contacts</string>
   <string name="padlocks_zero_access_addendum">This email is stored on Proton servers with %s. Neither Proton nor anyone else can read it.</string>
   <string name="padlocks_zero_access_addendum_link_text">zero access encryption</string>
-  <string name="padlocks_show_details">Show details</string>
-  <string name="padlocks_close_button_text">Got it</string>
+  <string name="padlocks_show_details">Показати деталі</string>
+  <string name="padlocks_close_button_text">Зрозуміло</string>
   <!-- Links -->
 </resources>
