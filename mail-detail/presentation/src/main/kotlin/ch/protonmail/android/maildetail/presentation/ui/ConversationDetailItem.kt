@@ -534,11 +534,9 @@ fun Modifier.reveal(
                 // Guard against detached node - can happen when LazyColumn recycles items
                 // during reveal animation (race condition exposed in Compose 1.10+)
                 if (coordinates?.isAttached != false) {
-                    runCatching {
-                        placeable.placeRelative(0, 0)
-                    }.onFailure {
-                        Timber.e("Failed to call placeRelative on ConversationDetailItem - $it")
-                    }
+                    placeable.placeRelative(0, 0)
+                } else {
+                    Timber.e("Node unattached - skipping placeRelative call.")
                 }
             }
         }
