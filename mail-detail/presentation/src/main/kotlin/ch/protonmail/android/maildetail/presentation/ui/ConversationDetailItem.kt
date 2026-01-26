@@ -530,10 +530,11 @@ fun Modifier.reveal(
             }
 
             layout(placeable.width, height) {
-                placeable.placeRelative(
-                    0,
-                    0
-                )
+                // Guard against detached node - can happen when LazyColumn recycles items
+                // during reveal animation (race condition exposed in Compose 1.10+)
+                if (coordinates?.isAttached != false) {
+                    placeable.placeRelative(0, 0)
+                }
             }
         }
 }
