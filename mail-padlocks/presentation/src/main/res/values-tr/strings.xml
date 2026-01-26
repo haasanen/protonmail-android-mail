@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Bu e-posta gönderenin cihazında %s olarak bulunur ve yalnızca alıcı tarafından şifresi çözülebilir. Proton e-postanın içeriğini hiçbir zaman göremez.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">uçtan uca şifrelenmiş</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Proton kullanıcıları arasında gönderilen e-postalar her zaman uçtan uca şifrelenir</string>
+  <string name="padlocks_proton_always_e2ee">Proton kullanıcıları arasında gönderilen e-postalar otomatik olarak uçtan uca şifrelenir.</string>
   <string name="padlocks_non_encrypted_copy">Ancak, Proton Mail kullanmayan bir gönderen veya alıcı, e-posta sunucusunda şifrelenmemiş bir kopyasını saklıyor olabilir.</string>
   <string name="padlocks_sender_verified_contact">Gönderici, şifreleme anahtarlarına güvendiğiniz %s türünde bir kişidir.</string>
   <string name="padlocks_sender_verified_contact_link_text">doğrulanmış kişi</string>

@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">This email is %s on the sender\'s device and can only be decrypted by the recipient. Proton can\'t see the contents of the email at any time.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">end-to-end encrypted</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Emails exchanged between Proton users are always end-to-end encrypted.</string>
+  <string name="padlocks_proton_always_e2ee">Los correos electrónicos intercambiados entre usuarios de Proton se cifran automáticamente de extremo a extremo.</string>
   <string name="padlocks_non_encrypted_copy">However, a sender or recipient not using Proton Mail may have a non-encrypted copy stored on their email server.</string>
   <string name="padlocks_sender_verified_contact">The sender is a %s whose encryption keys you have trusted.</string>
   <string name="padlocks_sender_verified_contact_link_text">verified contact</string>

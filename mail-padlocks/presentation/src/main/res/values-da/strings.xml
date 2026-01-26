@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Denne e-mail er %s på afsenderens enhed og kan kun dekrypteres af modtageren. Proton kan ikke på noget tidspunkt se indholdet af e-mailen.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">end-to-end encrypted</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">E-mails, der udveksles mellem Proton-brugere, er altid end-to-end-krypterede.</string>
+  <string name="padlocks_proton_always_e2ee">E-mails, der udveksles mellem Proton-brugere, er automatisk end-to-end-krypterede.</string>
   <string name="padlocks_non_encrypted_copy">En afsender eller modtager, der ikke bruger Proton Mail, kan dog have en ukrypteret kopi lagret på sin mailserver.</string>
   <string name="padlocks_sender_verified_contact">The sender is a %s whose encryption keys you have trusted.</string>
   <string name="padlocks_sender_verified_contact_link_text">verified contact</string>

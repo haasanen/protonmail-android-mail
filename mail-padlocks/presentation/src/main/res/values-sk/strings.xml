@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Tento email je %s na odosielateľovom zariadení a môže ho dešifrovať iba príjemca. Proton nikdy nevidí obsah emailu.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">end-to-end šifrovaný</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Emaily medzi používateľmi Proton sú vždy end-to-end šifrované.</string>
+  <string name="padlocks_proton_always_e2ee">Emaily medzi používateľmi Proton sú automaticky end-to-end šifrované.</string>
   <string name="padlocks_non_encrypted_copy">Avšak odosielateľ alebo príjemca, ktorý nepoužíva Proton Mail, môže mať na svojom emailovom serveri uloženú nezašifrovanú kópiu.</string>
   <string name="padlocks_sender_verified_contact">Odosielateľ je %s, ktorého šifrovacie kľúče ste si overili.</string>
   <string name="padlocks_sender_verified_contact_link_text">overený kontakt</string>

@@ -93,17 +93,17 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Este correo electrónico está %s en el dispositivo del remitente y solo el destinatario puede descifrarlo. Proton no puede ver el contenido del mensaje en ningún momento.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">cifrado de extremo a extremo</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Los correos electrónicos intercambiados entre usuarios de Proton siempre están cifrados de extremo a extremo.</string>
+  <string name="padlocks_proton_always_e2ee">Los correos electrónicos intercambiados entre usuarios de Proton se cifran automáticamente de extremo a extremo.</string>
   <string name="padlocks_non_encrypted_copy">Sin embargo, un remitente o destinatario que no usa Proton Mail puede tener una copia no cifrada almacenada en su servidor de correo electrónico.</string>
-  <string name="padlocks_sender_verified_contact">El remitente es un %s cuyas claves de cifrado ha validado.</string>
+  <string name="padlocks_sender_verified_contact">El remitente es un %s cuyas claves de cifrado ha validado usted.</string>
   <string name="padlocks_sender_verified_contact_link_text">contacto verificado</string>
   <string name="padlocks_sender_verification_failed">La %s. Confirme la autenticidad del correo electrónico con su contacto.</string>
   <string name="padlocks_sender_verification_failed_link_text">verificación del remitente falló</string>
   <string name="padlocks_sender_verification_failed_no_signature">La %s porque no estaba firmado. Confirme la autenticidad del correo electrónico con su contacto.</string>
   <string name="padlocks_sender_verification_failed_no_signature_link_text">verificación del remitente falló</string>
-  <string name="padlocks_recipient_verified_contact">El destinatario es un %s cuyas claves de cifrado ha validado.</string>
+  <string name="padlocks_recipient_verified_contact">El destinatario es un %s cuyas claves de cifrado ha validado usted.</string>
   <string name="padlocks_recipient_verified_contact_link_text">contacto verificado</string>
-  <string name="padlocks_recipients_verified_contacts">Los destinatarios son %s cuyas claves de cifrado ha validado.</string>
+  <string name="padlocks_recipients_verified_contacts">Los destinatarios son %s cuyas claves de cifrado ha validado usted.</string>
   <string name="padlocks_recipients_verified_contacts_link_text">contactos verificado</string>
   <string name="padlocks_zero_access_addendum">Este correo electrónico se almacena en los servidores de Proton con %s. Ni Proton ni nadie más puede leerlo.</string>
   <string name="padlocks_zero_access_addendum_link_text">cifrado de acceso cero</string>

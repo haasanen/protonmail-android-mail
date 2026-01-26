@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Ce message est %s sur l\'appareil de l\'expéditeur et ne peut être déchiffré que par le destinataire. Proton ne peut à aucun moment voir le contenu du message.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">chiffré de bout en bout</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Les e-mails échangés entre utilisateurs Proton sont toujours chiffrés de bout en bout.</string>
+  <string name="padlocks_proton_always_e2ee">Les e-mails échangés entre utilisateurs Proton sont automatiquement chiffrés de bout en bout.</string>
   <string name="padlocks_non_encrypted_copy">Cependant, un expéditeur ou un destinataire n\'utilisant pas Proton Mail peut avoir une copie non chiffrée stockée sur son serveur de messagerie.</string>
   <string name="padlocks_sender_verified_contact">L\'expéditeur est un %s dont vous approuvez les clés de chiffrement.</string>
   <string name="padlocks_sender_verified_contact_link_text">contact vérifié</string>

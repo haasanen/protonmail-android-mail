@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Aquest correu electrònic està %s al dispositiu del remitent i només el pot desxifrar el destinatari. Proton no pot veure el contingut del correu en cap moment.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">xifrat d’extrem a extrem</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Els correus electrònics intercanviats entre usuaris de Proton sempre estan xifrats d’extrem a extrem.</string>
+  <string name="padlocks_proton_always_e2ee">Els correus electrònics intercanviats entre usuaris de Proton es xifren automàticament d’extrem a extrem.</string>
   <string name="padlocks_non_encrypted_copy">No obstant, un remitent o destinatari que no utilitzi Proton Mail pot tenir una còpia no xifrada emmagatzemada al seu servidor de correu electrònic.</string>
   <string name="padlocks_sender_verified_contact">El remitent és un %s les claus de xifratge del qual heu considerat de confiança.</string>
   <string name="padlocks_sender_verified_contact_link_text">contacte verificat</string>
