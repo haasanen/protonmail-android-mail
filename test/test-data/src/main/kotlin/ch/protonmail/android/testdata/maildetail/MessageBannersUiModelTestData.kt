@@ -32,6 +32,7 @@ object MessageBannersUiModelTestData {
     val messageBannersUiModel = build(
         shouldShowPhishingBanner = true,
         shouldShowSpamBanner = true,
+        shouldShowDomainAuthFailBanner = true,
         shouldShowBlockedSenderBanner = true,
         expirationBannerUiModel = ExpirationBannerUiModel.Expiration(Instant.DISTANT_FUTURE),
         autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(Instant.DISTANT_FUTURE),
@@ -43,6 +44,7 @@ object MessageBannersUiModelTestData {
     fun build(
         shouldShowPhishingBanner: Boolean,
         shouldShowSpamBanner: Boolean,
+        shouldShowDomainAuthFailBanner: Boolean,
         shouldShowBlockedSenderBanner: Boolean,
         expirationBannerUiModel: ExpirationBannerUiModel,
         autoDeleteBannerUiModel: AutoDeleteBannerUiModel,
@@ -52,6 +54,7 @@ object MessageBannersUiModelTestData {
     ) = MessageBannersUiModel(
         shouldShowPhishingBanner = shouldShowPhishingBanner,
         shouldShowSpamBanner = shouldShowSpamBanner,
+        shouldShowDomainAuthFailBanner = shouldShowDomainAuthFailBanner,
         shouldShowBlockedSenderBanner = shouldShowBlockedSenderBanner,
         expirationBannerUiModel = expirationBannerUiModel,
         autoDeleteBannerUiModel = autoDeleteBannerUiModel,

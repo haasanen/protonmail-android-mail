@@ -1,5 +1,7 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +21,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.net.toUri
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonBanner
@@ -54,6 +57,8 @@ fun MessageBanners(
     onUnsnoozeMessage: () -> Unit,
     onUnsubscribeFromNewsletter: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Column {
         if (messageBannersUiModel.shouldShowPhishingBanner) {
             ProtonBannerWithButton(
@@ -81,6 +86,25 @@ fun MessageBanners(
                 buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
                 borderColorIsBackgroundColor = true,
                 onButtonClicked = { onMarkMessageAsLegitimate(false) }
+            )
+        }
+        if (messageBannersUiModel.shouldShowDomainAuthFailBanner) {
+            ProtonBannerWithButton(
+                icon = R.drawable.ic_proton_info_circle,
+                iconTint = ProtonTheme.colors.iconInverted,
+                iconSize = ProtonDimens.IconSize.Medium,
+                text = stringResource(R.string.message_auth_fail_banner_text),
+                buttonText = stringResource(R.string.message_auth_fail_banner_button),
+                textStyle = ProtonTheme.typography.bodyMediumInverted,
+                backgroundColor = ProtonTheme.colors.notificationError,
+                buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
+                borderColorIsBackgroundColor = true,
+                onButtonClicked = {
+                    openLink(
+                        context,
+                        DOMAIN_AUTH_FAILED_KB_LINK
+                    )
+                }
             )
         }
         when (val uiModel = messageBannersUiModel.expirationBannerUiModel) {
@@ -282,6 +306,14 @@ private fun AlreadyUnsubscribedFromNewsletterBanner() {
     )
 }
 
+private fun openLink(context: Context, link: String) {
+    val intent = Intent(Intent.ACTION_VIEW, link.toUri())
+    context.startActivity(intent)
+}
+
+private const val DOMAIN_AUTH_FAILED_KB_LINK =
+    "https://proton.me/support/email-has-failed-its-domains-authentication-requirements-warning"
+
 private const val PHISHING_BANNER_BUTTON_BACKGROUND = 0x33FFFFFF
 
 @Preview(
@@ -296,6 +328,7 @@ fun PreviewMessageBanners() {
             MessageBannersUiModel(
                 shouldShowPhishingBanner = true,
                 shouldShowSpamBanner = true,
+                shouldShowDomainAuthFailBanner = true,
                 shouldShowBlockedSenderBanner = true,
                 expirationBannerUiModel = ExpirationBannerUiModel.Expiration(
                     expiresAt = Clock.System.now()

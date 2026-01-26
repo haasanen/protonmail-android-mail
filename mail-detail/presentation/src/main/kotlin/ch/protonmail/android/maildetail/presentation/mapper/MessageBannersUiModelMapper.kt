@@ -38,6 +38,7 @@ class MessageBannersUiModelMapper @Inject constructor(
     fun toUiModel(messageBanners: List<MessageBanner>) = MessageBannersUiModel(
         shouldShowPhishingBanner = messageBanners.contains(MessageBanner.PhishingAttempt),
         shouldShowSpamBanner = messageBanners.contains(MessageBanner.Spam),
+        shouldShowDomainAuthFailBanner = messageBanners.contains(MessageBanner.DomainAuthFail),
         shouldShowBlockedSenderBanner = messageBanners.contains(MessageBanner.BlockedSender),
         expirationBannerUiModel = toExpirationBannerUiModel(messageBanners),
         autoDeleteBannerUiModel = toAutoDeleteBannerUiModel(messageBanners),

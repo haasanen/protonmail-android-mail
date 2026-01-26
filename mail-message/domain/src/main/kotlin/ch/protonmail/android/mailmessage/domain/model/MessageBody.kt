@@ -47,6 +47,8 @@ sealed interface MessageBanner {
     data object PhishingAttempt : MessageBanner
     data object Spam : MessageBanner
 
+    data object DomainAuthFail : MessageBanner
+
     data class Expiry(val expiresAt: Instant) : MessageBanner
     data class AutoDelete(val deletesAt: Instant) : MessageBanner
 

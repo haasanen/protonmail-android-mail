@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBanner
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerAutoDelete
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerBlockedSender
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerDomainAuthFail
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerEmbeddedImages
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerExpiry
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerPhishingAttempt
@@ -220,6 +221,7 @@ private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
     return when (this) {
         is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(timestamp.toInstant())
         is LocalMessageBannerBlockedSender -> MessageBanner.BlockedSender
+        is LocalMessageBannerDomainAuthFail -> MessageBanner.DomainAuthFail
         is LocalMessageBannerEmbeddedImages -> MessageBanner.EmbeddedImages
         is LocalMessageBannerExpiry -> MessageBanner.Expiry(timestamp.toInstant())
         is LocalMessageBannerPhishingAttempt -> MessageBanner.PhishingAttempt

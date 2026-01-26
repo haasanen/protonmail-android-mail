@@ -303,6 +303,7 @@ object ConversationDetailMessageUiModelSample {
     ) = MessageBannersUiModel(
         shouldShowPhishingBanner = true,
         shouldShowSpamBanner = false,
+        shouldShowDomainAuthFailBanner = false,
         shouldShowBlockedSenderBanner = false,
         expirationBannerUiModel = ExpirationBannerUiModel.NoExpiration,
         autoDeleteBannerUiModel = AutoDeleteBannerUiModel.NoAutoDelete,

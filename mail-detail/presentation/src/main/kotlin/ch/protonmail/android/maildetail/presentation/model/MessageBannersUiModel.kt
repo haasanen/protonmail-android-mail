@@ -24,6 +24,7 @@ import kotlin.time.Instant
 data class MessageBannersUiModel(
     val shouldShowPhishingBanner: Boolean,
     val shouldShowSpamBanner: Boolean,
+    val shouldShowDomainAuthFailBanner: Boolean,
     val shouldShowBlockedSenderBanner: Boolean,
     val expirationBannerUiModel: ExpirationBannerUiModel,
     val autoDeleteBannerUiModel: AutoDeleteBannerUiModel,

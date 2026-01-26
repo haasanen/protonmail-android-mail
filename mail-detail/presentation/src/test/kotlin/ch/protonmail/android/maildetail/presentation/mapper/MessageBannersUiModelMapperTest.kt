@@ -264,4 +264,27 @@ class MessageBannersUiModelMapperTest {
             result.unsubscribeFromNewsletterBannerUiModel
         )
     }
+
+    @Test
+    fun `should map to ui model with domain auth failed banner when banners list contains it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.DomainAuthFail)
+        )
+
+        // Then
+        assertTrue(result.shouldShowDomainAuthFailBanner)
+    }
+
+
+    @Test
+    fun `should map to ui model with no domain auth failed banner when banners list does not contain it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
+        )
+
+        // Then
+        assertFalse(result.shouldShowDomainAuthFailBanner)
+    }
 }
