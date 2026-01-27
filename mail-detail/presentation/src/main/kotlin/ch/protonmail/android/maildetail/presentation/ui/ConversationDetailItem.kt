@@ -79,6 +79,7 @@ import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
+import timber.log.Timber
 
 @Composable
 @Suppress("LongParameterList")
@@ -530,10 +531,13 @@ fun Modifier.reveal(
             }
 
             layout(placeable.width, height) {
-                placeable.placeRelative(
-                    0,
-                    0
-                )
+                // Guard against detached node - can happen when LazyColumn recycles items
+                // during reveal animation (race condition exposed in Compose 1.10+)
+                if (coordinates?.isAttached != false) {
+                    placeable.placeRelative(0, 0)
+                } else {
+                    Timber.e("Node unattached - skipping placeRelative call.")
+                }
             }
         }
 }
