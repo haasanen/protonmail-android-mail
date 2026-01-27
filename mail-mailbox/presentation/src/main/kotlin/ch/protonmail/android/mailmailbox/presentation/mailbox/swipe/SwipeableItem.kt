@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,13 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.presentation.mailbox
+package ch.protonmail.android.mailmailbox.presentation.mailbox.swipe
 
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,6 +46,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -78,16 +81,67 @@ fun SwipeableItem(
         enableFling = false
     )
 
-    var swipeThresholdReachedDirection by remember { mutableStateOf(SwipeToDismissBoxValue.Settled) }
+    var lifecycle: SwipeLifecycleState by remember { mutableStateOf(SwipeLifecycleState.Idle) }
+    var prevDirection by remember { mutableStateOf(SwipeToDismissBoxValue.Settled) }
 
-    LaunchedEffect(dismissState.dismissDirection, swipingEnabled, width, swipeActionsUiModel) {
-        // Reset the state
-        swipeThresholdReachedDirection = SwipeToDismissBoxValue.Settled
+    fun dispatch(event: SwipeLifecycleEvent) {
+        lifecycle = SwipeLifecycleReducer.reduce(lifecycle, event)
+    }
 
+    // Swipe disabled
+    LaunchedEffect(swipingEnabled) {
+        if (!swipingEnabled) {
+            dispatch(SwipeLifecycleEvent.SwipingDisabled)
+        }
+    }
+
+    // Direction change events
+    LaunchedEffect(dismissState.dismissDirection, swipingEnabled) {
         if (!swipingEnabled) return@LaunchedEffect
-        if (dismissState.dismissDirection == SwipeToDismissBoxValue.Settled) return@LaunchedEffect
 
-        val direction = dismissState.dismissDirection
+        val newDirection = dismissState.dismissDirection
+
+        val gestureStarted =
+            prevDirection == SwipeToDismissBoxValue.Settled &&
+                newDirection != SwipeToDismissBoxValue.Settled
+
+        if (gestureStarted) {
+            dispatch(SwipeLifecycleEvent.GestureStarted(newDirection))
+        } else {
+            dispatch(SwipeLifecycleEvent.DirectionChanged(newDirection))
+        }
+
+        prevDirection = newDirection
+    }
+
+    // Finger up detection
+    val releaseDetectorModifier = Modifier.pointerInput(swipingEnabled) {
+        if (!swipingEnabled) return@pointerInput
+
+        awaitPointerEventScope {
+            while (true) {
+                awaitFirstDown(requireUnconsumed = false)
+
+                while (true) {
+                    val event = awaitPointerEvent(PointerEventPass.Final)
+                    val anyPressed = event.changes.any { it.pressed }
+                    if (!anyPressed) {
+                        dispatch(SwipeLifecycleEvent.PointerReleased)
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    // Threshold reached
+    LaunchedEffect(lifecycle, swipingEnabled, width) {
+        if (!swipingEnabled) return@LaunchedEffect
+
+        // Only arm while actively swiping
+        val swipingState = lifecycle as? SwipeLifecycleState.Swiping ?: return@LaunchedEffect
+        val direction = swipingState.direction
+        if (direction == SwipeToDismissBoxValue.Settled) return@LaunchedEffect
 
         // dismissState.requireOffset() is the only available API to calculate the swipe fraction.
         // However, early reading of dismissState.requireOffset may cause exception. Therefore we call it only after
@@ -99,31 +153,40 @@ fun SwipeableItem(
                 fraction >= threshold
             }
 
-        swipeThresholdReachedDirection = direction
-
+        dispatch(SwipeLifecycleEvent.ThresholdReached(direction))
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
 
-        swipeActionsUiModel?.let {
-            when (direction) {
-                SwipeToDismissBoxValue.StartToEnd ->
-                    callbackForSwipeAction(it.start.swipeAction, swipeActionCallbacks)()
-                SwipeToDismissBoxValue.EndToStart ->
-                    callbackForSwipeAction(it.end.swipeAction, swipeActionCallbacks)()
-                else -> Unit
-            }
+    // Execute on finger release
+    LaunchedEffect(lifecycle, swipingEnabled, swipeActionsUiModel) {
+        if (!swipingEnabled) return@LaunchedEffect
+
+        val ready = lifecycle as? SwipeLifecycleState.ReadyToExecute ?: return@LaunchedEffect
+        val uiModel = swipeActionsUiModel ?: return@LaunchedEffect
+
+        when (ready.direction) {
+            SwipeToDismissBoxValue.StartToEnd ->
+                callbackForSwipeAction(uiModel.start.swipeAction, swipeActionCallbacks)()
+
+            SwipeToDismissBoxValue.EndToStart ->
+                callbackForSwipeAction(uiModel.end.swipeAction, swipeActionCallbacks)()
+
+            SwipeToDismissBoxValue.Settled -> Unit
         }
+
+        dispatch(SwipeLifecycleEvent.ActionExecuted)
     }
 
     val enableDismissFromStartToEnd = swipeActionsUiModel?.start?.let {
         it.swipeAction != SwipeAction.None && it.isEnabled
     } ?: false
+
     val enableDismissFromEndToStart = swipeActionsUiModel?.end?.let {
         it.swipeAction != SwipeAction.None && it.isEnabled
     } ?: false
 
-
     SwipeToDismissBox(
-        modifier = modifier,
+        modifier = modifier.then(releaseDetectorModifier),
         state = dismissState,
         gesturesEnabled = swipingEnabled,
         enableDismissFromStartToEnd = enableDismissFromStartToEnd,
@@ -150,10 +213,7 @@ fun SwipeableItem(
             }
 
             val scale by animateFloatAsState(
-                targetValue = when (swipeThresholdReachedDirection) {
-                    SwipeToDismissBoxValue.Settled -> 0.75f
-                    SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart -> 1f
-                },
+                targetValue = lifecycle.scaleTarget,
                 animationSpec = tween(durationMillis = 500),
                 label = "swipe_scale"
             )
@@ -194,9 +254,7 @@ private fun rememberSwipeToDismissBoxState(
     val density = if (enableFling) LocalDensity.current else Density(Float.POSITIVE_INFINITY)
     return rememberSaveable(
         saver = SwipeToDismissBoxState.Saver(
-            confirmValueChange = confirmValueChange,
-            density = density,
-            positionalThreshold = positionalThreshold
+            confirmValueChange = confirmValueChange, density = density, positionalThreshold = positionalThreshold
         )
     ) {
         SwipeToDismissBoxState(initialValue, density, confirmValueChange, positionalThreshold)
