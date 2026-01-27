@@ -80,7 +80,7 @@
   <string name="mail_settings_app_customization_mobile_signature_on">켬</string>
   <string name="mail_settings_app_customization_mobile_signature_off">끔</string>
   <string name="mail_settings_app_customization_mobile_signature_enable">서명 활성화</string>
-  <string name="mail_settings_app_customization_mobile_signature_edit">Edit signature</string>
+  <string name="mail_settings_app_customization_mobile_signature_edit">서명 수정</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">시스템</string>
   <string name="mail_settings_theme_light">라이트</string>
@@ -153,18 +153,18 @@
   <string name="mail_settings_custom_toolbar_save_error">도구 모음 작업을 저장하지 못했습니다. 다시 시도해 주세요.</string>
   <string name="mail_settings_custom_toolbar_read_error">도구 모음 작업을 읽을 수 없습니다. 다시 시도해 주십시오.</string>
   <!-- Custom App Icon -->
-  <string name="settings_app_icon_toolbar_title">App icon</string>
-  <string name="settings_app_icon_name_default">Default</string>
-  <string name="settings_app_icon_name_discreet">Discreet</string>
-  <string name="settings_app_icon_title_default">App icon - default</string>
-  <string name="settings_app_icon_title_discreet">App icon - discreet</string>
-  <string name="settings_app_icon_description">Keep the default Proton Mail icon, or disguise it with a more discreet one for extra privacy.\nNotifications will always show the Proton Mail name and icon.</string>
-  <string name="settings_app_icon_learn_more">Learn more…</string>
-  <string name="settings_app_icon_discreet_toggle">Discreet app icon</string>
-  <string name="settings_app_icon_confirmation_title">Change app icon?</string>
-  <string name="settings_app_icon_confirmation_details">This will cause the Proton Mail app to close and all notifications to be dismissed.\n\nTo restart Proton Mail, just tap your new app icon.</string>
-  <string name="settings_app_icon_action_cancel">Cancel</string>
-  <string name="settings_app_icon_change_icon">Change icon</string>
+  <string name="settings_app_icon_toolbar_title">앱 아이콘</string>
+  <string name="settings_app_icon_name_default">기본</string>
+  <string name="settings_app_icon_name_discreet">숨김</string>
+  <string name="settings_app_icon_title_default">앱 아이콘 - 기본</string>
+  <string name="settings_app_icon_title_discreet">앱 아이콘 - 숨김</string>
+  <string name="settings_app_icon_description">기본 Proton Mail 아이콘을 유지하거나, 추가 개인정보 보호를 위해 다른 숨김 아이콘으로 변경할 수 있습니다.\n알림에는 항상 Proton Mail 이름과 아이콘으로 표시됩니다.</string>
+  <string name="settings_app_icon_learn_more">자세히 알아보기...</string>
+  <string name="settings_app_icon_discreet_toggle">숨겨진 앱 아이콘</string>
+  <string name="settings_app_icon_confirmation_title">앱 아이콘을 변경하시겠어요?</string>
+  <string name="settings_app_icon_confirmation_details">이 작업은 Proton Mail 앱을 종료시키고 모든 알림을 해제합니다.\n\nProton Mail을 다시 시작하려면 새 앱 아이콘을 탭하세요.</string>
+  <string name="settings_app_icon_action_cancel">취소</string>
+  <string name="settings_app_icon_change_icon">아이콘 변경</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">오류 발생. 다시 시도하세요.</string>
 </resources>

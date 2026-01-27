@@ -18,13 +18,13 @@
   -->
 <resources>
   <string name="padlocks_stored_with_zero_access_encryption_summary">Збережено з нульовим шифруванням доступу</string>
-  <string name="padlocks_proton_send_e2ee">End-to-end encrypted</string>
-  <string name="padlocks_proton_send_e2ee_description">This email is %s on the sender\'s device and can only be decrypted by the recipient. Proton can\'t see the contents of the email at any time.</string>
-  <string name="padlocks_proton_send_e2ee_description_link_text">end-to-end-encrypted</string>
-  <string name="padlocks_proton_send_e2ee_verified_recipient">End-to-end encrypted to verified recipient</string>
-  <string name="padlocks_proton_send_e2ee_verified_recipient_description">This email is %s on the sender\'s device and can only be decrypted by the recipient. Proton can\'t see the contents of the email at any time.</string>
-  <string name="padlocks_proton_send_e2ee_verified_recipient_description_link_text">end-to-end-encrypted</string>
-  <string name="padlocks_proton_send_sign_only">PGP-signed email</string>
+  <string name="padlocks_proton_send_e2ee">Наскрізне шифрування</string>
+  <string name="padlocks_proton_send_e2ee_description">Цей електронний лист є %s на пристрої відправника і може бути розшифрований лише одержувачем. Proton ніколи не може бачити вміст електронного листа.</string>
+  <string name="padlocks_proton_send_e2ee_description_link_text">наскрізне шифрування</string>
+  <string name="padlocks_proton_send_e2ee_verified_recipient">Наскрізно зашифроване для підтвердженого одержувача</string>
+  <string name="padlocks_proton_send_e2ee_verified_recipient_description">Цей електронний лист є %s на пристрої відправника і може бути розшифрований лише одержувачем. Proton ніколи не може бачити вміст електронного листа.</string>
+  <string name="padlocks_proton_send_e2ee_verified_recipient_description_link_text">наскрізно шифрований</string>
+  <string name="padlocks_proton_send_sign_only">Електронний лист, підписаний PGP</string>
   <string name="padlocks_proton_send_sign_only_description">You have %s this email, proving to the recipient that your email is genuine and hasn\'t been tampered with.</string>
   <string name="padlocks_proton_send_sign_only_description_link_text">digitally signed</string>
   <string name="padlocks_proton_send_recipient_pgp_signed">PGP-signed email</string>

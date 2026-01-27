@@ -44,7 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">초안을 저장할 수 없음 - 유효하지 않은 수신인 그룹 이름입니다</string>
   <string name="composer_error_store_draft_message_not_a_draft">초안을 저장할 수 없음 - 이 메시지가 초안이 아닙니다</string>
   <string name="composer_error_store_draft_generic">초안을 저장할 수 없음 - 일반적인 오류가 발생했습니다</string>
-  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
+  <string name="composer_error_create_draft">문제가 발생하여 새 초안을 만들 수 없습니다.</string>
   <string name="composer_error_loading_draft">해당 초안의 내용은 현재 사용 불가하며 편집할 수 없습니다.</string>
   <string name="composer_add_attachments_content_description">첨부 파일 추가</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">다음에서 가져오기…</string>
@@ -171,7 +171,7 @@
   <string name="composer_error_send_draft_too_many_attachments">초안을 보낼 수 없습니다 - 첨부 파일 제한에 도달했습니다</string>
   <string name="composer_error_send_draft_attachments_crypto_error">초안을 보낼 수 없음 - 첨부 파일 암호화에 실패했습니다.</string>
   <string name="composer_expiration_time_learn_more">자세히 알아보기</string>
-  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
-  <string name="composer_sender_address_description">Choose Sender Address</string>
-  <string name="composer_encryption_info_learn_more">Learn more</string>
+  <string name="composer_enter_recipient_content_description">수신자 입력</string>
+  <string name="composer_sender_address_description">발신자 주소 선택</string>
+  <string name="composer_encryption_info_learn_more">자세히 알아보기</string>
 </resources>
