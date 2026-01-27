@@ -117,13 +117,12 @@ private fun OnboardingScreen(
             Triple(pagerState.currentPage, pagerState.targetPage, viewCount)
         }
             .distinctUntilChanged()
-            .map { (currentPage, targetPage) ->
-
-                val fromPage = currentPage + 1
+            .map { (_, targetPage) ->
                 val toPage = targetPage + 1
 
-                // return true if we're showing upselling and are about to swipe to last page
-                isEligibleForUpselling && fromPage == viewCount - 1 && toPage == viewCount
+                // return true if we're showing upselling and are navigating to last page
+                // (handles both swipe gestures and button taps with animations disabled)
+                isEligibleForUpselling && toPage == viewCount
             }
             .collect { isSwipingToUpsellingPage = it }
     }
