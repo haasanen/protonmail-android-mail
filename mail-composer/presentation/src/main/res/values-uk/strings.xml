@@ -44,7 +44,7 @@
   <string name="composer_error_store_draft_invalid_recipient">Не вдалося зберегти чернетку: неправильний(-і) отримувач(-і)</string>
   <string name="composer_error_store_draft_message_not_a_draft">Неможливо зберегти чернетку: це повідомлення не є чернеткою</string>
   <string name="composer_error_store_draft_generic">Не вдалося зберегти чернетку: сталася загальна помилка</string>
-  <string name="composer_error_create_draft">Something went wrong. Unable to create a new draft.</string>
+  <string name="composer_error_create_draft">Щось пішло не так. Не вдалося створити нову чернетку.</string>
   <string name="composer_error_loading_draft">Наразі вміст цієї чернетки недоступний, редагування неможливе.</string>
   <string name="composer_add_attachments_content_description">Додати вкладення</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Імпортувати з…</string>
@@ -174,7 +174,7 @@
   <string name="composer_error_send_draft_too_many_attachments">Неможливо надіслати чернетку: досягнуто ліміту вкладень</string>
   <string name="composer_error_send_draft_attachments_crypto_error">Неможливо надіслати чернетку: не вдалося зашифрувати вкладення.</string>
   <string name="composer_expiration_time_learn_more">Докладніше</string>
-  <string name="composer_enter_recipient_content_description">Enter a recipient</string>
-  <string name="composer_sender_address_description">Choose Sender Address</string>
+  <string name="composer_enter_recipient_content_description">Введіть отримувача</string>
+  <string name="composer_sender_address_description">Виберіть адресу відправника</string>
   <string name="composer_encryption_info_learn_more">Learn more</string>
 </resources>
