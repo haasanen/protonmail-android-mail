@@ -41,9 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
@@ -212,6 +214,7 @@ fun EditableMessageBodyWebView(
         val height = if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
         val layoutParams = FrameLayout.LayoutParams(width, height)
         val context = LocalContext.current
+        val surfaceColor = ProtonTheme.colors.backgroundNorm.toArgb()
 
         AndroidView(
             factory = { context ->
@@ -227,6 +230,7 @@ fun EditableMessageBodyWebView(
                     this.layoutParams = layoutParams
                     this.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
                     this.webViewClient = client
+                    this.setBackgroundColor(surfaceColor)
 
                     isFocusable = true
                     isFocusableInTouchMode = true
