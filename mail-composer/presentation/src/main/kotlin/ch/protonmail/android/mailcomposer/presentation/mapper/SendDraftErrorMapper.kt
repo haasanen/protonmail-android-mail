@@ -24,24 +24,24 @@ import ch.protonmail.android.mailcomposer.presentation.R
 
 internal object SendDraftErrorMapper {
 
-    fun toTextUiModel(sendDraftError: SendDraftError): TextUiModel {
+    fun toTextUiModel(sendDraftError: SendDraftError): TextUiModel = when (sendDraftError) {
+        is SendDraftError.BadRequest -> TextUiModel.Text(sendDraftError.message)
+        SendDraftError.AlreadySent -> TextUiModel.TextRes(R.string.composer_error_send_draft_already_sent)
+        SendDraftError.AttachmentsError -> TextUiModel.TextRes(R.string.composer_error_send_draft_attachments_error)
+        SendDraftError.PackageError -> TextUiModel.TextRes(R.string.composer_error_send_draft_package_error)
+        SendDraftError.ExpirationTimeTooSoon ->
+            TextUiModel.TextRes(R.string.composer_error_send_draft_expiration_time_too_soon)
 
-        val textRes = when (sendDraftError) {
-            SendDraftError.AlreadySent -> R.string.composer_error_send_draft_already_sent
-            SendDraftError.AttachmentsError -> R.string.composer_error_send_draft_attachments_error
-            SendDraftError.PackageError -> R.string.composer_error_send_draft_package_error
-            SendDraftError.ExpirationTimeTooSoon -> R.string.composer_error_send_draft_expiration_time_too_soon
-            SendDraftError.ExternalPasswordDecryptError ->
-                R.string.composer_error_send_draft_external_password_decrypt_error
+        SendDraftError.ExternalPasswordDecryptError ->
+            TextUiModel.TextRes(R.string.composer_error_send_draft_external_password_decrypt_error)
 
-            SendDraftError.InvalidRecipient -> R.string.composer_error_send_draft_invalid_recipient
-            SendDraftError.InvalidSenderAddress -> R.string.composer_error_send_draft_invalid_sender
-            SendDraftError.MessageIsTooLarge -> R.string.composer_error_send_draft_message_too_large
-            is SendDraftError.Other -> R.string.composer_error_send_draft_generic
-            SendDraftError.ScheduleSendError -> R.string.composer_error_send_draft_schedule_send_error
-            SendDraftError.MessageNotExisting -> R.string.composer_error_send_draft_message_does_not_exist
-        }
+        SendDraftError.InvalidRecipient -> TextUiModel.TextRes(R.string.composer_error_send_draft_invalid_recipient)
+        SendDraftError.InvalidSenderAddress -> TextUiModel.TextRes(R.string.composer_error_send_draft_invalid_sender)
+        SendDraftError.MessageIsTooLarge -> TextUiModel.TextRes(R.string.composer_error_send_draft_message_too_large)
+        SendDraftError.ScheduleSendError -> TextUiModel.TextRes(R.string.composer_error_send_draft_schedule_send_error)
+        SendDraftError.MessageNotExisting ->
+            TextUiModel.TextRes(R.string.composer_error_send_draft_message_does_not_exist)
 
-        return TextUiModel.TextRes(textRes)
+        is SendDraftError.Other -> TextUiModel.TextRes(R.string.composer_error_send_draft_generic)
     }
 }

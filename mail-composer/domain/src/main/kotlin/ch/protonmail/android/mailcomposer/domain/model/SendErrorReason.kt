@@ -46,6 +46,7 @@ sealed interface SendErrorReason {
         val details: String
 
         data class AddressDoesNotHavePrimaryKey(override val details: String) : ErrorWithMessage
+        data class BadRequest(override val details: String) : ErrorWithMessage
         data class RecipientEmailInvalid(override val details: String) : ErrorWithMessage
         data class ProtonRecipientDoesNotExist(override val details: String) : ErrorWithMessage
         data class AddressDisabled(override val details: String) : ErrorWithMessage

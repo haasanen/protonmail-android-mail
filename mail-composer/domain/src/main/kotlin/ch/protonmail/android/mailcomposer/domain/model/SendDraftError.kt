@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 
 sealed interface SendDraftError {
     data object AlreadySent : SendDraftError
+    data class BadRequest(val message: String) : SendDraftError
     data object InvalidSenderAddress : SendDraftError
     data object InvalidRecipient : SendDraftError
     data object AttachmentsError : SendDraftError

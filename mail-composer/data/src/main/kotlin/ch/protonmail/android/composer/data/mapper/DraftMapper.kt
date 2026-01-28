@@ -138,7 +138,7 @@ fun DraftOpenError.toOpenDraftError(): OpenDraftError = when (this) {
 
 fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
     is DraftSendError.Other -> SendDraftError.Other(this.v1.toDataError())
-    is DraftSendError.Reason -> when (this.v1) {
+    is DraftSendError.Reason -> when (val error = this.v1) {
         is DraftSendErrorReason.AlreadySent,
         is DraftSendErrorReason.MessageAlreadySent,
         is DraftSendErrorReason.MessageIsNotADraft -> SendDraftError.AlreadySent
@@ -160,6 +160,7 @@ fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
         DraftSendErrorReason.EoPasswordDecrypt -> SendDraftError.ExternalPasswordDecryptError
         DraftSendErrorReason.ExpirationTimeTooSoon -> SendDraftError.ExpirationTimeTooSoon
         DraftSendErrorReason.MessageTooLarge -> SendDraftError.MessageIsTooLarge
+        is DraftSendErrorReason.BadRequest -> SendDraftError.BadRequest(error.v1)
     }
 }
 
