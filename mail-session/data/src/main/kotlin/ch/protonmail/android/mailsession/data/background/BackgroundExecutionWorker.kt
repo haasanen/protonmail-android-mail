@@ -51,40 +51,21 @@ internal class BackgroundExecutionWorker @AssistedInject constructor(
 
             // Consider as a success if aborted in foreground/no logged in accounts.
             BackgroundExecutionStatus.AbortedInForeground,
-            BackgroundExecutionStatus.SkippedNoActiveContexts -> Result.success()
-
-            // Resolve the result based on pending work/unsent messages.
-            // This is necessary as the worker might have never obtained proper connectivity,
-            // so we need to force a couple of retries to make sure that it actually got network access.
-            // See https://issuetracker.google.com/issues/445324855
+            BackgroundExecutionStatus.SkippedNoActiveContexts,
             BackgroundExecutionStatus.AbortedInBackground,
             BackgroundExecutionStatus.Executed,
-            BackgroundExecutionStatus.TimedOut -> resolveResult(result.hasUnsentMessages, result.hasPendingActions)
-        }
-    }
-
-
-    private fun resolveResult(hasUnsentMessages: Boolean, hasPendingActions: Boolean): Result {
-        val hasUncompletedWork = hasUnsentMessages || hasPendingActions
-
-        if (!hasUncompletedWork) {
-            return Result.success()
-        }
-
-        logger.d("Uncompleted work - unsentMessages: $hasUnsentMessages, pendingActions: $hasPendingActions")
-
-        return if (runAttemptCount < RETRY_LIMIT) {
-            logger.d("Work scheduled for retry - ${runAttemptCount + 1}/$RETRY_LIMIT")
-            Result.retry()
-        } else {
-            logger.d("Not scheduling for retry - attempts threshold reached")
-            Result.success()
+            BackgroundExecutionStatus.TimedOut -> {
+                logger.d(
+                    "Execution completed - unsentMessages: %s, pendingActions: %s",
+                    result.hasUnsentMessages, result.hasPendingActions
+                )
+                Result.success()
+            }
         }
     }
 
     private companion object {
 
-        const val RETRY_LIMIT = 3
         private val logger = Timber.tag("BackgroundExecutionWorker")
     }
 }
