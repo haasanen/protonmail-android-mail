@@ -178,6 +178,21 @@ internal class SwipeLifecycleReducerTest {
     }
 
     @Test
+    fun `ThresholdRevoked while Armed transitions back to Swiping`() {
+        // Given
+        val initial = SwipeLifecycleState.Armed(SwipeToDismissBoxValue.StartToEnd)
+
+        // When
+        val result = SwipeLifecycleReducer.reduce(
+            state = initial,
+            event = SwipeLifecycleEvent.ThresholdRevoked(SwipeToDismissBoxValue.EndToStart)
+        )
+
+        // Then
+        assertEquals(SwipeLifecycleState.Swiping(SwipeToDismissBoxValue.StartToEnd), result)
+    }
+
+    @Test
     fun `PointerReleased while Armed transitions to ReadyToExecute keeping direction`() {
         // Given & When
         val result = SwipeLifecycleReducer.reduce(
@@ -190,7 +205,7 @@ internal class SwipeLifecycleReducerTest {
     }
 
     @Test
-    fun `PointerReleased is ignored when not Armed`() {
+    fun `PointerReleased returns Idle when not Armed`() {
         // Given
         val initialStates = listOf(
             SwipeLifecycleState.Idle,
@@ -201,7 +216,7 @@ internal class SwipeLifecycleReducerTest {
         // When & Then
         initialStates.forEach { state ->
             val result = SwipeLifecycleReducer.reduce(state, SwipeLifecycleEvent.PointerReleased)
-            assertEquals(state, result)
+            assertEquals(SwipeLifecycleState.Idle, result)
         }
     }
 

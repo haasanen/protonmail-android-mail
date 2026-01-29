@@ -134,27 +134,46 @@ fun SwipeableItem(
         }
     }
 
-    // Threshold reached
-    LaunchedEffect(lifecycle, swipingEnabled, width) {
-        if (!swipingEnabled) return@LaunchedEffect
+    // Swiping -> Threshold reached
+    if (lifecycle is SwipeLifecycleState.Swiping && swipingEnabled) {
+        LaunchedEffect(width) {
 
-        // Only arm while actively swiping
-        val swipingState = lifecycle as? SwipeLifecycleState.Swiping ?: return@LaunchedEffect
-        val direction = swipingState.direction
-        if (direction == SwipeToDismissBoxValue.Settled) return@LaunchedEffect
+            val direction = lifecycle.direction
+            if (lifecycle.direction == SwipeToDismissBoxValue.Settled) return@LaunchedEffect
 
-        // dismissState.requireOffset() is the only available API to calculate the swipe fraction.
-        // However, early reading of dismissState.requireOffset may cause exception. Therefore we call it only after
-        // the swipe direction has been determined ( not settled). This means user started swiping.
-        snapshotFlow { runCatching { dismissState.requireOffset() }.getOrNull() }
-            .filterNotNull()
-            .first { offset ->
-                val fraction = (abs(offset) / width).coerceIn(0f, 1f)
-                fraction >= threshold
-            }
+            // dismissState.requireOffset() is the only available API to calculate the swipe fraction.
+            // However, early reading of dismissState.requireOffset may cause exception. Therefore we call it only after
+            // the swipe direction has been determined ( not settled). This means user started swiping.
+            snapshotFlow { runCatching { dismissState.requireOffset() }.getOrNull() }
+                .filterNotNull()
+                .first { offset ->
+                    val fraction = (abs(offset) / width).coerceIn(0f, 1f)
+                    fraction >= threshold
+                }
 
-        dispatch(SwipeLifecycleEvent.ThresholdReached(direction))
-        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            dispatch(SwipeLifecycleEvent.ThresholdReached(direction))
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
+    }
+
+
+    // Armed -> Swiped back under threshold -> Threshold revoked
+    if (lifecycle is SwipeLifecycleState.Armed) {
+        LaunchedEffect(width) {
+
+            val direction = lifecycle.direction
+            if (lifecycle.direction == SwipeToDismissBoxValue.Settled) return@LaunchedEffect
+
+            snapshotFlow { runCatching { dismissState.requireOffset() }.getOrNull() }
+                .filterNotNull()
+                .first { offset ->
+                    val fraction = (abs(offset) / width).coerceIn(0f, 1f)
+                    fraction < threshold
+                }
+
+            dispatch(SwipeLifecycleEvent.ThresholdRevoked(direction))
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
     }
 
     // Execute on finger release

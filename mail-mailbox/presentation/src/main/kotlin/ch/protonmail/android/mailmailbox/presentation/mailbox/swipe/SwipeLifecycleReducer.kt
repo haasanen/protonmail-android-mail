@@ -67,10 +67,18 @@ internal object SwipeLifecycleReducer {
                 }
             }
 
+            is SwipeLifecycleEvent.ThresholdRevoked -> {
+                // User swiped back under threshold
+                when (state) {
+                    is SwipeLifecycleState.Armed -> SwipeLifecycleState.Swiping(direction = state.direction)
+                    else -> state
+                }
+            }
+
             SwipeLifecycleEvent.PointerReleased -> {
                 when (state) {
                     is SwipeLifecycleState.Armed -> SwipeLifecycleState.ReadyToExecute(direction = state.direction)
-                    else -> state
+                    else -> SwipeLifecycleState.Idle
                 }
             }
 

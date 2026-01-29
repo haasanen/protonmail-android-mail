@@ -27,6 +27,8 @@ internal sealed interface SwipeLifecycleEvent {
 
     data class ThresholdReached(val direction: SwipeToDismissBoxValue) : SwipeLifecycleEvent
 
+    data class ThresholdRevoked(val direction: SwipeToDismissBoxValue) : SwipeLifecycleEvent
+
     data object PointerReleased : SwipeLifecycleEvent
 
     data object ActionExecuted : SwipeLifecycleEvent
