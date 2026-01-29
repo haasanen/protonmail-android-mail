@@ -134,8 +134,11 @@ platform :android do
       package_name: "ch.protonmail.android",
       track: "internal",
       apk: "./signedArtifacts/app-prod-release.apk",
+      mapping_paths: [
+        "./app/build/outputs/mapping/prodRelease/mapping.txt",
+        "./app/build/outputs/native-debug-symbols/prodRelease/native-debug-symbols.zip"
+      ],
       json_key: "/tmp/play_store_service_account.json"
     )
   end
 end
-
