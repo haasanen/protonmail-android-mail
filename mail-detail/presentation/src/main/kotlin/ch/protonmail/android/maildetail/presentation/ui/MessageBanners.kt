@@ -90,7 +90,7 @@ fun MessageBanners(
         }
         if (messageBannersUiModel.shouldShowDomainAuthFailBanner) {
             ProtonBannerWithButton(
-                icon = R.drawable.ic_proton_info_circle,
+                icon = R.drawable.ic_proton_exclamation_circle,
                 iconTint = ProtonTheme.colors.iconInverted,
                 iconSize = ProtonDimens.IconSize.Medium,
                 text = stringResource(R.string.message_auth_fail_banner_text),
