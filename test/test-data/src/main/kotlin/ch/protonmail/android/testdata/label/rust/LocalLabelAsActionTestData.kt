@@ -33,18 +33,21 @@ object LocalLabelAsActionTestData {
         unselectedLabelAsActionId,
         "unselected",
         LabelColor("#fff"),
+        0.toUInt(),
         IsSelected.UNSELECTED
     )
     val selectedAction = LabelAsAction(
         selectedLabelAsActionId,
         "selected",
         LabelColor("#aaa"),
+        0.toUInt(),
         IsSelected.SELECTED
     )
     val partiallySelectedAction = LabelAsAction(
         partiallySelectedLabelAsActionId,
         "partial",
         LabelColor("#000"),
+        0.toUInt(),
         IsSelected.PARTIAL
     )
 }

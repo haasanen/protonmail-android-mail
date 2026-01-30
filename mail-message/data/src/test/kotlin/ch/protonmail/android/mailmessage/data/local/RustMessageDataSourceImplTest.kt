@@ -495,8 +495,8 @@ internal class RustMessageDataSourceImplTest {
         val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val expected = listOf(
-            LabelAsAction(Id(1uL), "label", LabelColor("#fff"), IsSelected.UNSELECTED),
-            LabelAsAction(Id(2uL), "label2", LabelColor("#000"), IsSelected.SELECTED)
+            LabelAsAction(Id(1uL), "label", LabelColor("#fff"), 0.toUInt(), IsSelected.UNSELECTED),
+            LabelAsAction(Id(2uL), "label2", LabelColor("#000"), 0.toUInt(), IsSelected.SELECTED)
         )
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
