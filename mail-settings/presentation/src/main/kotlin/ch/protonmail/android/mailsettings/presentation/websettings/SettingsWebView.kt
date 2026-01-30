@@ -130,7 +130,7 @@ fun SettingWebView(
                 it.settings.domStorageEnabled = false
                 it.settings.loadWithOverviewMode = true
                 it.settings.allowFileAccess = false
-                it.settings.allowContentAccess = true
+                it.settings.allowContentAccess = false
                 it.settings.useWideViewPort = true
                 it.settings.safeBrowsingEnabled = true
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
