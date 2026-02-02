@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">Este e-mail está %s no dispositivo do remetente e só pode ser descriptografado pelo destinatário. A Proton não consegue ver o conteúdo do e-mail a qualquer momento.</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">criptografado de ponta a ponta</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Emails exchanged between Proton users are automatically end-to-end encrypted.</string>
+  <string name="padlocks_proton_always_e2ee">Os e-mails trocados entre os usuários do Proton são automaticamente criptografados de ponta a ponta.</string>
   <string name="padlocks_non_encrypted_copy">No entanto, um remetente ou destinatário que não usa o Proton Mail pode ter uma cópia não criptografada armazenada em seu servidor de e-mail.</string>
   <string name="padlocks_sender_verified_contact">O remetente é um %s cujas chaves de criptografia você confiou.</string>
   <string name="padlocks_sender_verified_contact_link_text">contato verificado</string>

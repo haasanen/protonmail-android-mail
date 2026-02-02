@@ -17,7 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="padlocks_stored_with_zero_access_encryption_summary">Stored with zero access encryption</string>
+  <string name="padlocks_stored_with_zero_access_encryption_summary">已通过零访问加密存储</string>
   <string name="padlocks_proton_send_e2ee">端到端加密</string>
   <string name="padlocks_proton_send_e2ee_description">此电子邮件在发件人的设备上是 %s，并且只能由收件人解密。Proton 无法在任何时候查看电子邮件的内容。</string>
   <string name="padlocks_proton_send_e2ee_description_link_text">端到端加密</string>
@@ -93,7 +93,7 @@
   <string name="padlocks_proton_sent_recipient_e2ee_descripton">此电子邮件在发件人的设备上是 %s，并且只能由收件人解密。Proton 无法在任何时候查看电子邮件的内容。</string>
   <string name="padlocks_proton_sent_recipient_e2ee_description_link_text">已端到端加密</string>
   <!-- Additional descriptions -->
-  <string name="padlocks_proton_always_e2ee">Emails exchanged between Proton users are automatically end-to-end encrypted.</string>
+  <string name="padlocks_proton_always_e2ee">Proton 用户之间交换的电子邮件是自动端到端加密的。</string>
   <string name="padlocks_non_encrypted_copy">但是，未使用 Proton Mail 的发件人或收件人可能在其电子邮件服务器上存储了非加密副本。</string>
   <string name="padlocks_sender_verified_contact">发件人是您已信任的加密密钥的%s。</string>
   <string name="padlocks_sender_verified_contact_link_text">已验证的联系人</string>
@@ -107,7 +107,7 @@
   <string name="padlocks_recipients_verified_contacts_link_text">已验证的联系人</string>
   <string name="padlocks_zero_access_addendum">此电子邮件已在 Proton 服务器使用%s存储。Proton 或任何其他人均无法读取。</string>
   <string name="padlocks_zero_access_addendum_link_text">零访问加密</string>
-  <string name="padlocks_show_details">Show details</string>
-  <string name="padlocks_close_button_text">Got it</string>
+  <string name="padlocks_show_details">查看详情</string>
+  <string name="padlocks_close_button_text">了解</string>
   <!-- Links -->
 </resources>

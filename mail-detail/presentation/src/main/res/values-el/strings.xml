@@ -84,6 +84,8 @@
   <string name="message_blocked_sender_button_text">Κατάργηση από αποκλεισμό</string>
   <string name="message_expiration_banner_text">Αυτό το μήνυμα θα λήξει σε %1$s</string>
   <string name="message_auto_delete_banner_text">Αυτό το μήνυμα θα διαγραφεί αυτόματα σε %1$s</string>
+  <string name="message_auth_fail_banner_text">Αυτό το μήνυμα δεν πληροί τις απαιτήσεις πιστοποίησης του τομέα του. Μπορεί να έχει πλαστογραφηθεί ή να έχει προωθηθεί ακατάλληλα!</string>
+  <string name="message_auth_fail_banner_button">Μάθετε περισσότερα</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Πρόκειται να αποχωρήσετε από την εφαρμογή και να πλοηγηθείτε στο:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Να μην ερωτηθώ ξανά</string>

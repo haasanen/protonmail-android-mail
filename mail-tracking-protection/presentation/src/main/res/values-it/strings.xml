@@ -24,16 +24,16 @@
   <string name="tracking_protection_description">Ti proteggiamo attivamente dal tracciamento. Qui puoi visualizzare i pixel spia che abbiamo bloccato e i link di tracciamento che abbiamo ripulito in questo messaggio.</string>
   <string name="tracking_protection_learn_more">Per saperne di più</string>
   <string name="original">Originale</string>
-  <string name="cleaned">Ripulito</string>
+  <string name="cleaned">Pulito</string>
   <string name="open_link">Apri link</string>
   <string name="action_close_dialog_button">Chiudi</string>
   <string name="got_it">Ho capito</string>
   <plurals name="number_of_blocked_trackers">
-    <item quantity="one">%s tracker bloccato</item>
-    <item quantity="other">%s tracker bloccati</item>
+    <item quantity="one">%s tracker bloccato</item>
+    <item quantity="other">%s tracker bloccati</item>
   </plurals>
   <plurals name="number_of_cleaned_links">
-    <item quantity="one">%s link pulito</item>
-    <item quantity="other">%s link puliti</item>
+    <item quantity="one">%s link pulito</item>
+    <item quantity="other">%s link puliti</item>
   </plurals>
 </resources>

@@ -19,12 +19,12 @@
 <resources>
   <string name="trackers_blocked_links_cleaned_numbers">%s trackers blocked, %s links cleaned</string>
   <string name="trackers_protection">Tracker protection:</string>
-  <string name="show_details">Show details</string>
+  <string name="show_details">查看详情</string>
   <string name="trackers_protection_no_trackers_detected">Tracker protection: no trackers detected</string>
   <string name="tracking_protection">Tracking protection</string>
   <string name="tracking_protection_description">If you receive an email containing spy pixels (trackers) or tracking links, you’ll see the shield icon in email details.</string>
   <string name="tracking_protection_learn_more">Learn  more...</string>
-  <string name="original">original</string>
+  <string name="original">原始</string>
   <string name="cleaned">Cleaned</string>
   <plurals name="number_of_blocked_trackers">
     <item quantity="other">%s trackers blocked</item>

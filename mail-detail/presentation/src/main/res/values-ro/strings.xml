@@ -86,6 +86,8 @@
   <string name="message_blocked_sender_button_text">Deblocare</string>
   <string name="message_expiration_banner_text">Acest mesaj va expira peste %1$s</string>
   <string name="message_auto_delete_banner_text">Acest mesaj va fi șters automat peste %1$s.</string>
+  <string name="message_auth_fail_banner_text">Acest e-mail nu a reușit să îndeplinească cerințele de autentificare ale domeniului său. Este posibil să fie un e-mail de înșelare sau o redirecționare incorectă!</string>
+  <string name="message_auth_fail_banner_button">Detalii</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Urmează să părăsiți aplicația și să accesați:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Nu mă mai întreba</string>

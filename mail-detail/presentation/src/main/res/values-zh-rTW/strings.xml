@@ -82,6 +82,8 @@
   <string name="message_blocked_sender_button_text">解除封鎖</string>
   <string name="message_expiration_banner_text">此郵件的有效期限尚餘 %1$s</string>
   <string name="message_auto_delete_banner_text">此郵件將會自動於%1$s刪除</string>
+  <string name="message_auth_fail_banner_text">此電郵未能通過其網域的驗證要求。它可能是遭人偽造或不當轉寄！</string>
+  <string name="message_auth_fail_banner_button">Learn more</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">您將離開應用程式並導覽到:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">下次無需再詢問</string>

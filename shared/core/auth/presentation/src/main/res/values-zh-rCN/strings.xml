@@ -56,7 +56,7 @@
   <string name="auth_second_factor_recovery_label">恢复码</string>
   <string name="auth_second_factor_switch_to_recovery">使用恢复码</string>
   <string name="auth_second_factor_switch_to_totp">使用 2FA 验证码</string>
-  <string name="auth_second_factor_insert_security_key">请出示与您的 Proton 账户关联的安全密钥。</string>
+  <string name="auth_second_factor_insert_security_key">请出示与您的 Proton 账户关联的安全密钥。 </string>
   <string name="auth_second_factor_insert_security_key_link">了解详情</string>
   <string name="auth_second_factor_incorrect_code">验证码错误，请重试。</string>
   <string name="auth_two_pass_title">解锁您的邮箱</string>

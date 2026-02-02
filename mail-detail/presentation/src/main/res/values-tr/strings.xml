@@ -84,6 +84,8 @@
   <string name="message_blocked_sender_button_text">Engellemeyi kaldır</string>
   <string name="message_expiration_banner_text">Bu ileti %1$s içinde silinecek</string>
   <string name="message_auto_delete_banner_text">Bu ileti %1$s içinde otomatik olarak silinecek</string>
+  <string name="message_auth_fail_banner_text">Bu e-posta etki alanının kimlik doğrulama gereksinimlerini karşılayamadı. E-posta sahte ya da yanlış bir şekilde iletilmiş olabilir!</string>
+  <string name="message_auth_fail_banner_button">Ayrıntılı bilgi alın</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Uygulamadan ayrılarak şuraya gitmek üzeresiniz:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Bir daha sorma</string>

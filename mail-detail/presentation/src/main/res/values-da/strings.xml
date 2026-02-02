@@ -85,6 +85,8 @@ igen.</string>
   <string name="message_blocked_sender_button_text">Fjern blokering</string>
   <string name="message_expiration_banner_text">Denne besked udløber om %1$s</string>
   <string name="message_auto_delete_banner_text">Denne besked slettes automatisk om %1$s</string>
+  <string name="message_auth_fail_banner_text">Denne e-mail bestod ikke sit domænes godkendelseskrav. Den kan være falsk eller ukorrekt videresendt!</string>
+  <string name="message_auth_fail_banner_button">Få mere at vide</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Du er ved at forlade appen og fortsætte til:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Spørg ikke igen</string>

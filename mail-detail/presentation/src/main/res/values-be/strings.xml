@@ -88,6 +88,8 @@
   <string name="message_blocked_sender_button_text">Разблакіраваць</string>
   <string name="message_expiration_banner_text">Тэрмін дзеяння гэтага паведамлення міне праз %1$s</string>
   <string name="message_auto_delete_banner_text">Гэта паведамленне будзе аўтаматычна выдалена за %1$s</string>
+  <string name="message_auth_fail_banner_text">Гэты ліст не прайшоў праверку на адпаведнасць нашым патрабаванням да аўтэнтыфікацыі свайго дамена. Ён можа быць падроблены або перасланы неналежным чынам!</string>
+  <string name="message_auth_fail_banner_button">Даведацца больш</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Вы збіраецеся выйсці з праграмы і перайсці ў:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Больш не пытаць</string>

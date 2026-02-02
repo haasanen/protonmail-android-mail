@@ -153,8 +153,8 @@
   <string name="mail_settings_custom_toolbar_save_error">无法保存工具栏操作，请重试。</string>
   <string name="mail_settings_custom_toolbar_read_error">无法读取工具栏操作，请重试。</string>
   <!-- Custom App Icon -->
-  <string name="settings_app_icon_toolbar_title">App icon</string>
-  <string name="settings_app_icon_name_default">Default</string>
+  <string name="settings_app_icon_toolbar_title">应用图标</string>
+  <string name="settings_app_icon_name_default">默认</string>
   <string name="settings_app_icon_name_discreet">Discreet</string>
   <string name="settings_app_icon_title_default">App icon - default</string>
   <string name="settings_app_icon_title_discreet">App icon - discreet</string>

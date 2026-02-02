@@ -82,6 +82,8 @@
   <string name="message_blocked_sender_button_text">차단 해제</string>
   <string name="message_expiration_banner_text">메시지가 %1$s에 만료됨</string>
   <string name="message_auto_delete_banner_text">메시지가 %1$s에 자동으로 삭제됨</string>
+  <string name="message_auth_fail_banner_text">This email has failed its domain\'s authentication requirements. It may be spoofed or improperly forwarded!</string>
+  <string name="message_auth_fail_banner_button">Learn more</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">앱을 나가고 다음으로 이동하려고 하고 있습니다:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">다시 묻지 않기</string>
@@ -185,9 +187,9 @@
   <string name="raw_message_data_close_button_content_description">닫기</string>
   <string name="raw_message_data_more_button_content_description">더 보기</string>
   <string name="raw_message_data_download_action">다운로드</string>
-  <string name="raw_message_data_copy_action">Copy</string>
-  <string name="raw_message_data_learn_more_action">Learn more</string>
-  <string name="raw_message_data_error">Error loading data</string>
-  <string name="raw_message_data_successful_download">Download completed</string>
-  <string name="raw_message_data_failed_download">Download failed</string>
+  <string name="raw_message_data_copy_action">복사</string>
+  <string name="raw_message_data_learn_more_action">자세히 알아보기</string>
+  <string name="raw_message_data_error">데이터 로딩 중 오류 발생</string>
+  <string name="raw_message_data_successful_download">다운로드 완료</string>
+  <string name="raw_message_data_failed_download">다운로드 실패</string>
 </resources>

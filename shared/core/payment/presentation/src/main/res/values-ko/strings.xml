@@ -44,6 +44,6 @@
   <string name="payment_subscription_managed_by_google">구독이 Google Play에 의해 관리됩니다.</string>
   <string name="payment_subscription_managed_by_apple">구독이 Apple App Store에 의해 관리됩니다.</string>
   <string name="payment_subscription_managed_by_other">모바일 앱에서 구독을 관리할 수 없습니다.</string>
-  <string name="payment_subscription_restricted_access_title">Restricted access</string>
-  <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
+  <string name="payment_subscription_restricted_access_title">제한된 접근</string>
+  <string name="payment_subscription_restricted_access_description">죄송합니다. 이 페이지에 접근할 권한이 없습니다. 예상치 못한 접근 제한일 경우 관리자에게 문의하세요.</string>
 </resources>

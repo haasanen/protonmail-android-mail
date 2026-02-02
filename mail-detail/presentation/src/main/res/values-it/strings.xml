@@ -84,6 +84,8 @@
   <string name="message_blocked_sender_button_text">Sblocca</string>
   <string name="message_expiration_banner_text">Questo messaggio scadrà tra %1$s</string>
   <string name="message_auto_delete_banner_text">Questo messaggio verrà eliminato automaticamente tra %1$s</string>
+  <string name="message_auth_fail_banner_text">Quest\'email non ha superato i requisiti d\'autenticazione del suo dominio. Potrebbe esser falsificata o inoltrata impropriamente!</string>
+  <string name="message_auth_fail_banner_button">Scopri di più</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Sei sicuro di voler uscire dall\'app e continuare nel seguente sito?</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Non chiederlo di nuovo</string>
