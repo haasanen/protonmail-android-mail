@@ -18,22 +18,13 @@
 
 package ch.protonmail.android.mailcontentsearch.presentation.settings
 
-sealed interface ContentSearchSettingsEvent : ContentSearchSettingsOperation {
+sealed interface ContentSearchSettingsOperation
 
-    sealed interface Data : ContentSearchSettingsEvent {
-        data class ContentLoaded(
-            val isContentSearchEnabled: Boolean,
-            val isAllowMobileDataEnabled: Boolean
-        ) : Data
-        data class ContentSearchToggled(val newValue: Boolean) : Data
-        data class AllowMobileDataToggled(val newValue: Boolean) : Data
-        data object LocalSearchDataCleared : Data
-        data class IndexingProgress(val percentage: Double?, val isActive: Boolean) : Data
-        data class BlockedByOtherUserChanged(val isBlocked: Boolean) : Data
-    }
+sealed interface ContentSearchSettingsViewAction : ContentSearchSettingsOperation {
 
-    sealed interface Error : ContentSearchSettingsEvent {
-        data object LoadingError : Error
-        data object UpdateError : Error
-    }
+    data class ToggleContentSearch(val enabled: Boolean) : ContentSearchSettingsViewAction
+
+    data class ToggleAllowMobileData(val enabled: Boolean) : ContentSearchSettingsViewAction
+
+    data object ClearLocalData : ContentSearchSettingsViewAction
 }
