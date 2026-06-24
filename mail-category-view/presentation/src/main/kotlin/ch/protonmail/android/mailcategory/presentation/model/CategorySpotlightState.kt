@@ -18,19 +18,12 @@
 
 package ch.protonmail.android.mailcategory.presentation.model
 
-import ch.protonmail.android.mailcommon.presentation.Effect
+import androidx.compose.runtime.Immutable
 
-sealed interface CategoryViewState {
+@Immutable
+sealed interface CategorySpotlightState {
 
-    sealed interface Available : CategoryViewState {
-        data object Loading : Available
+    data object Hidden : CategorySpotlightState
 
-        data class Data(
-            val categories: List<CategoryItemUiModel>,
-            val spotlightState: CategorySpotlightState = CategorySpotlightState.Hidden,
-            val resetScrollEffect: Effect<Unit> = Effect.empty()
-        ) : Available
-    }
-
-    data object NotAvailable : CategoryViewState
+    data class Shown(val category: CategoryItemUiModel) : CategorySpotlightState
 }
