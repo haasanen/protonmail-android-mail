@@ -25,14 +25,13 @@ import ch.protonmail.android.mailcontentsearch.domain.repository.ContentSearchSe
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class DisableContentSearch @Inject constructor(
+class EnableContentSearch @Inject constructor(
     private val settingsRepository: ContentSearchSettingsRepository,
     private val preferencesRepository: ContentSearchPreferencesRepository
 ) {
 
-    // Disabling clears the flag and records the deliberate opt-out so auto-enable does not turn it
-    // back on. The running sweep observes the change, drops this account and pauses it — there is no
-    // per-account worker to cancel.
+    // Enabling turns the flag on and clears any explicit opt-out, so an account the user previously
+    // disabled is treated as opted-in again. Symmetric to [DisableContentSearch], which records the opt-out.
     suspend operator fun invoke(userId: UserId): Either<DataError, Unit> =
-        settingsRepository.setEnabled(userId, false).onRight { preferencesRepository.markUserOptedOut(userId) }
+        settingsRepository.setEnabled(userId, true).onRight { preferencesRepository.clearUserOptedOut(userId) }
 }
