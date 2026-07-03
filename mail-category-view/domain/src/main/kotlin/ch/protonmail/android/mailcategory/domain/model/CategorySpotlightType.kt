@@ -16,16 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcategory.domain.repository
+package ch.protonmail.android.mailcategory.domain.model
 
-import arrow.core.Either
-import ch.protonmail.android.mailcategory.domain.model.CategorySpotlightType
-import ch.protonmail.android.mailcommon.domain.model.PreferencesError
-import kotlinx.coroutines.flow.Flow
-
-interface CategorySpotlightRepository {
-
-    fun observeHasBeenSeen(type: CategorySpotlightType): Flow<Either<PreferencesError, Boolean>>
-
-    suspend fun markSeen(type: CategorySpotlightType): Either<PreferencesError, Unit>
+/**
+ * The category-view onboarding banners. Each is dismissed independently and tracked with its own
+ * "seen" preference. [UnseenCategory] has priority over [Personalise] when both are eligible to show.
+ */
+enum class CategorySpotlightType {
+    UnseenCategory,
+    Personalise
 }
