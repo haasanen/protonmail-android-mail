@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -19,13 +19,22 @@
 package ch.protonmail.android.mailfeatureflags.domain
 
 /**
- * This entity wraps all the known Feature Flag values providers priority.
+ * Manages device-local, developer-only feature-flag overrides (debug menu only).
  *
- * Reminder: higher priority takes precedence when resolving a Feature Flag value.
+ * Overrides are applied by the underlying provider itself, so reading a flag already reflects
+ * any override; this manager only sets, clears and lists them.
  */
-object FeatureFlagProviderPriority {
+interface FeatureFlagOverrideManager {
 
-    const val DataStoreProvider = Int.MAX_VALUE // Local overrides always have the top priority.
-    const val RustProvider = 0
-    const val HardcodedProvider = Int.MIN_VALUE
+    /**
+     * Currently overridden flags keyed by flag name, with the overridden boolean value
+     * (`null` when only a variant is forced).
+     */
+    suspend fun overriddenFlags(): Map<String, Boolean?>
+
+    suspend fun setOverride(key: String, enabled: Boolean)
+
+    suspend fun clearOverride(key: String)
+
+    suspend fun clearAllOverrides()
 }
