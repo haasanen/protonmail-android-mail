@@ -19,21 +19,29 @@
 package ch.protonmail.android.mailcontentsearch.domain.usecase
 
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
-import ch.protonmail.android.mailcontentsearch.domain.model.EnqueueIndexingResult
-import ch.protonmail.android.mailcontentsearch.domain.repository.ContentIndexingScheduler
+import ch.protonmail.android.mailcontentsearch.domain.repository.ContentSearchRepository
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-class StartContentIndexing @Inject constructor(
-    private val scheduler: ContentIndexingScheduler,
-    private val getContentSearchIndexingStatus: GetContentSearchIndexingStatus,
-    private val isContentSearchAllowedOnMobileData: IsContentSearchAllowedOnMobileData
-) {
+internal class GetContentSearchIndexingStatusTest {
 
-    suspend operator fun invoke(userId: UserId): EnqueueIndexingResult {
-        if (getContentSearchIndexingStatus(userId) is ContentIndexingState.Completed) {
-            return EnqueueIndexingResult.AlreadySynced
-        }
-        return scheduler.enqueue(userId = userId, allowMobileData = isContentSearchAllowedOnMobileData())
+    private val userId = UserId("user-1")
+    private val repository = mockk<ContentSearchRepository>()
+    private val getContentSearchIndexingStatus = GetContentSearchIndexingStatus(repository)
+
+    @Test
+    fun `returns the indexing status reported by the repository`() = runTest {
+        // Given
+        coEvery { repository.getIndexingStatus(userId) } returns ContentIndexingState.Completed
+
+        // When
+        val result = getContentSearchIndexingStatus(userId)
+
+        // Then
+        assertEquals(ContentIndexingState.Completed, result)
     }
 }

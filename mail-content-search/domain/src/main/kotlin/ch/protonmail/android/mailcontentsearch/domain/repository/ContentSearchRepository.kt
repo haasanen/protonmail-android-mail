@@ -16,24 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontentsearch.domain.usecase
+package ch.protonmail.android.mailcontentsearch.domain.repository
 
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
-import ch.protonmail.android.mailcontentsearch.domain.model.EnqueueIndexingResult
-import ch.protonmail.android.mailcontentsearch.domain.repository.ContentIndexingScheduler
+import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
 
-class StartContentIndexing @Inject constructor(
-    private val scheduler: ContentIndexingScheduler,
-    private val getContentSearchIndexingStatus: GetContentSearchIndexingStatus,
-    private val isContentSearchAllowedOnMobileData: IsContentSearchAllowedOnMobileData
-) {
+interface ContentSearchRepository {
 
-    suspend operator fun invoke(userId: UserId): EnqueueIndexingResult {
-        if (getContentSearchIndexingStatus(userId) is ContentIndexingState.Completed) {
-            return EnqueueIndexingResult.AlreadySynced
-        }
-        return scheduler.enqueue(userId = userId, allowMobileData = isContentSearchAllowedOnMobileData())
-    }
+    suspend fun clearLocalData(userId: UserId): Either<DataError, Unit>
+
+    fun observeIndexingStatus(userId: UserId): Flow<ContentIndexingState>
+
+    suspend fun getIndexingStatus(userId: UserId): ContentIndexingState
 }

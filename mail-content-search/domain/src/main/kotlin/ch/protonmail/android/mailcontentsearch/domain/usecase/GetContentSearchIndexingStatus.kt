@@ -19,21 +19,13 @@
 package ch.protonmail.android.mailcontentsearch.domain.usecase
 
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
-import ch.protonmail.android.mailcontentsearch.domain.model.EnqueueIndexingResult
-import ch.protonmail.android.mailcontentsearch.domain.repository.ContentIndexingScheduler
+import ch.protonmail.android.mailcontentsearch.domain.repository.ContentSearchRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class StartContentIndexing @Inject constructor(
-    private val scheduler: ContentIndexingScheduler,
-    private val getContentSearchIndexingStatus: GetContentSearchIndexingStatus,
-    private val isContentSearchAllowedOnMobileData: IsContentSearchAllowedOnMobileData
+class GetContentSearchIndexingStatus @Inject constructor(
+    private val repository: ContentSearchRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId): EnqueueIndexingResult {
-        if (getContentSearchIndexingStatus(userId) is ContentIndexingState.Completed) {
-            return EnqueueIndexingResult.AlreadySynced
-        }
-        return scheduler.enqueue(userId = userId, allowMobileData = isContentSearchAllowedOnMobileData())
-    }
+    suspend operator fun invoke(userId: UserId): ContentIndexingState = repository.getIndexingStatus(userId)
 }
