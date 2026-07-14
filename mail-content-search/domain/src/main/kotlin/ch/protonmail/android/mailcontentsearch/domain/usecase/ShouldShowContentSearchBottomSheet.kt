@@ -16,21 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontentsearch.domain.repository
+package ch.protonmail.android.mailcontentsearch.domain.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
-import kotlinx.coroutines.flow.Flow
+import ch.protonmail.android.mailcontentsearch.domain.repository.ContentSearchRepository
 import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-interface ContentSearchRepository {
+/**
+ * Whether the "Getting emails ready" bottomsheet should be offered for [userId], on top of the
+ * feature flag and per-user enabled checks.
+ */
+class ShouldShowContentSearchBottomSheet @Inject constructor(
+    private val repository: ContentSearchRepository
+) {
 
-    suspend fun clearLocalData(userId: UserId): Either<DataError, Unit>
-
-    fun observeIndexingStatus(userId: UserId): Flow<ContentIndexingState>
-
-    suspend fun getIndexingStatus(userId: UserId): ContentIndexingState
-
-    suspend fun shouldShowMobileBottomSheet(userId: UserId): Boolean
+    suspend operator fun invoke(userId: UserId): Boolean = repository.shouldShowMobileBottomSheet(userId)
 }
