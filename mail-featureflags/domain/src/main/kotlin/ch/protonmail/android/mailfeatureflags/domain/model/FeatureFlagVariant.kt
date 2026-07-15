@@ -16,37 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailtelemetry.domain.model
+package ch.protonmail.android.mailfeatureflags.domain.model
 
-data class GeneralDimensions(
-    val upsellEntryPoint: UpsellEntryPoint,
-    val planBeforeUpgrade: String,
-    val modalVariant: UpsellModalVariant,
-    val upsellExperimentFlag: UpsellExperimentFlag
+data class FeatureFlagVariant(
+    val name: String,
+    val enabled: Boolean,
+    val payload: FeatureFlagVariantPayload?
 )
 
-data class UpsellExperimentFlag(
-    val flagName: String
+data class FeatureFlagVariantPayload(
+    val type: FeatureFlagVariantPayloadType,
+    val value: String
 )
 
-enum class UpsellEntryPoint {
-
-    AUTO_DELETE_MESSAGES,
-    CONTACT_GROUPS,
-    DOLLAR_PROMO,
-    FOLDERS_CREATION,
-    LABELS_CREATION,
-    MAILBOX_TOP_BAR,
-    MAILBOX_TOP_BAR_PROMO,
-    NAVBAR_UPSELL,
-    MOBILE_SIGNATURE_EDIT,
-    POST_ONBOARDING,
-    SCHEDULE_SEND,
-    SNOOZE
-}
-
-enum class UpsellModalVariant {
-
-    COMPARISON_PLUS,
-    COMPARISON_UNLIMITED
+enum class FeatureFlagVariantPayloadType {
+    JSON,
+    CSV,
+    STRING,
+    NUMBER
 }
