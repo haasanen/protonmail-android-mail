@@ -16,18 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcategory.presentation.model
+package ch.protonmail.android.feature.spotlight
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
-sealed interface CategorySpotlightState {
-
-    data object Hidden : CategorySpotlightState
-
-    sealed interface Shown : CategorySpotlightState {
-
-        // Unseen-dot onboarding banner, tied to a specific category with unread messages.
-        data class UnseenCategory(val category: CategoryItemUiModel) : Shown
-    }
+sealed interface RecategoriseSpotlightState {
+    data object Loading : RecategoriseSpotlightState
+    data object Show : RecategoriseSpotlightState
+    data object Hide : RecategoriseSpotlightState
 }
