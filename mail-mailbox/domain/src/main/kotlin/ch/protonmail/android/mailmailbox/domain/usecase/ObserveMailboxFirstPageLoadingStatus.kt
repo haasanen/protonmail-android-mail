@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -19,29 +19,27 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.mailmailbox.domain.mapper.toMailboxFetchNewStatus
-import ch.protonmail.android.mailmailbox.domain.model.MailboxFetchNewStatus
+import ch.protonmail.android.mailmailbox.domain.mapper.toMailboxFirstPageLoadingStatus
+import ch.protonmail.android.mailmailbox.domain.model.MailboxFirstPageLoadingStatus
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
-class ObserveMailboxFetchNewStatus @Inject constructor(
+class ObserveMailboxFirstPageLoadingStatus @Inject constructor(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository
 ) {
 
-    operator fun invoke(): Flow<MailboxFetchNewStatus> {
-        val conversationFlow: Flow<MailboxFetchNewStatus> =
+    operator fun invoke(): Flow<MailboxFirstPageLoadingStatus> {
+        val conversationFlow: Flow<MailboxFirstPageLoadingStatus> =
             conversationRepository.observeScrollerFetchNewStatus()
-                .mapNotNull { status ->
-                    status.toMailboxFetchNewStatus()
-                }
+                .mapNotNull { status -> status.toMailboxFirstPageLoadingStatus() }
 
-        val messageFlow: Flow<MailboxFetchNewStatus> =
+        val messageFlow: Flow<MailboxFirstPageLoadingStatus> =
             messageRepository.observeScrollerFetchNewStatus()
-                .mapNotNull { status -> status.toMailboxFetchNewStatus() }
+                .mapNotNull { status -> status.toMailboxFirstPageLoadingStatus() }
 
         return merge(conversationFlow, messageFlow)
     }

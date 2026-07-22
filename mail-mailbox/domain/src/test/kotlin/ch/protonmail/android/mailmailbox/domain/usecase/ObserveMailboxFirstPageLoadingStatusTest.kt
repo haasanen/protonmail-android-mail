@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 import app.cash.turbine.test
 import ch.protonmail.android.mailconversation.domain.model.ConversationScrollerFetchNewStatus
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.mailmailbox.domain.model.MailboxFetchNewStatus
+import ch.protonmail.android.mailmailbox.domain.model.MailboxFirstPageLoadingStatus
 import ch.protonmail.android.mailmailbox.domain.model.ScrollerType
 import ch.protonmail.android.mailmessage.domain.model.MessageScrollerFetchNewStatus
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -31,19 +31,19 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class ObserveMailboxFetchNewStatusTest {
+class ObserveMailboxFirstPageLoadingStatusTest {
 
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
 
-    private val useCase: ObserveMailboxFetchNewStatus =
-        ObserveMailboxFetchNewStatus(
+    private val useCase: ObserveMailboxFirstPageLoadingStatus =
+        ObserveMailboxFirstPageLoadingStatus(
             conversationRepository = conversationRepository,
             messageRepository = messageRepository
         )
 
     @Test
-    fun `conversation scroller events are converted to mailbox events`() = runTest {
+    fun `conversation first page loading events are converted to mailbox events`() = runTest {
         // Given
         val conversationFlow = MutableSharedFlow<ConversationScrollerFetchNewStatus>()
         val messageFlow = MutableSharedFlow<MessageScrollerFetchNewStatus>()
@@ -52,20 +52,20 @@ class ObserveMailboxFetchNewStatusTest {
 
         // When
         useCase().test {
-            conversationFlow.emit(ConversationScrollerFetchNewStatus.FetchNewStarted(111L))
+            conversationFlow.emit(ConversationScrollerFetchNewStatus.FirstPageLoadingStarted(111L))
 
             // Then
             assertEquals(
-                MailboxFetchNewStatus.Started(111L, ScrollerType.Conversation),
+                MailboxFirstPageLoadingStatus.Started(111L, ScrollerType.Conversation),
                 awaitItem()
             )
 
             // When
-            conversationFlow.emit(ConversationScrollerFetchNewStatus.FetchNewEnded(222L))
+            conversationFlow.emit(ConversationScrollerFetchNewStatus.FirstPageLoadingEnded(222L))
 
             // Then
             assertEquals(
-                MailboxFetchNewStatus.Ended(222L, ScrollerType.Conversation),
+                MailboxFirstPageLoadingStatus.Ended(222L, ScrollerType.Conversation),
                 awaitItem()
             )
 
@@ -74,7 +74,7 @@ class ObserveMailboxFetchNewStatusTest {
     }
 
     @Test
-    fun `message scroller events are converted to mailbox events`() = runTest {
+    fun `message first page loading events are converted to mailbox events`() = runTest {
         // Given
         val conversationFlow = MutableSharedFlow<ConversationScrollerFetchNewStatus>()
         val messageFlow = MutableSharedFlow<MessageScrollerFetchNewStatus>()
@@ -83,20 +83,20 @@ class ObserveMailboxFetchNewStatusTest {
 
         // When
         useCase().test {
-            messageFlow.emit(MessageScrollerFetchNewStatus.FetchNewStarted(500L))
+            messageFlow.emit(MessageScrollerFetchNewStatus.FirstPageLoadingStarted(500L))
 
             // Then
             assertEquals(
-                MailboxFetchNewStatus.Started(500L, ScrollerType.Message),
+                MailboxFirstPageLoadingStatus.Started(500L, ScrollerType.Message),
                 awaitItem()
             )
 
             // When
-            messageFlow.emit(MessageScrollerFetchNewStatus.FetchNewEnded(900L))
+            messageFlow.emit(MessageScrollerFetchNewStatus.FirstPageLoadingEnded(900L))
 
             // Then
             assertEquals(
-                MailboxFetchNewStatus.Ended(900L, ScrollerType.Message),
+                MailboxFirstPageLoadingStatus.Ended(900L, ScrollerType.Message),
                 awaitItem()
             )
 
@@ -105,32 +105,7 @@ class ObserveMailboxFetchNewStatusTest {
     }
 
     @Test
-    fun `first page loading events are ignored so the loading bar is unaffected`() = runTest {
-        // Given
-        val conversationFlow = MutableSharedFlow<ConversationScrollerFetchNewStatus>()
-        val messageFlow = MutableSharedFlow<MessageScrollerFetchNewStatus>()
-        every { conversationRepository.observeScrollerFetchNewStatus() } returns conversationFlow
-        every { messageRepository.observeScrollerFetchNewStatus() } returns messageFlow
-
-        // When
-        useCase().test {
-            conversationFlow.emit(ConversationScrollerFetchNewStatus.FirstPageLoadingStarted(1L))
-            messageFlow.emit(MessageScrollerFetchNewStatus.FirstPageLoadingEnded(2L))
-            // Only the fetch-new event should surface.
-            conversationFlow.emit(ConversationScrollerFetchNewStatus.FetchNewStarted(3L))
-
-            // Then
-            assertEquals(
-                MailboxFetchNewStatus.Started(3L, ScrollerType.Conversation),
-                awaitItem()
-            )
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `message and conversation events are merged and emitted in arrival order`() = runTest {
+    fun `fetch new events are ignored`() = runTest {
         // Given
         val conversationFlow = MutableSharedFlow<ConversationScrollerFetchNewStatus>()
         val messageFlow = MutableSharedFlow<MessageScrollerFetchNewStatus>()
@@ -140,20 +115,13 @@ class ObserveMailboxFetchNewStatusTest {
         // When
         useCase().test {
             conversationFlow.emit(ConversationScrollerFetchNewStatus.FetchNewStarted(1L))
-            messageFlow.emit(MessageScrollerFetchNewStatus.FetchNewStarted(2L))
-            conversationFlow.emit(ConversationScrollerFetchNewStatus.FetchNewEnded(3L))
+            messageFlow.emit(MessageScrollerFetchNewStatus.FetchNewEnded(2L))
+            // Only the first-page-loading event should surface.
+            messageFlow.emit(MessageScrollerFetchNewStatus.FirstPageLoadingStarted(3L))
 
             // Then
             assertEquals(
-                MailboxFetchNewStatus.Started(1L, ScrollerType.Conversation),
-                awaitItem()
-            )
-            assertEquals(
-                MailboxFetchNewStatus.Started(2L, ScrollerType.Message),
-                awaitItem()
-            )
-            assertEquals(
-                MailboxFetchNewStatus.Ended(3L, ScrollerType.Conversation),
+                MailboxFirstPageLoadingStatus.Started(3L, ScrollerType.Message),
                 awaitItem()
             )
 
