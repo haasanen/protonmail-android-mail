@@ -16,27 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.di
+package ch.protonmail.android.api
 
-import ch.protonmail.android.api.AccountApiProvider
-import ch.protonmail.android.api.AccountWelcomeProvider
-import ch.protonmail.android.api.NewAccountApiProvider
-import ch.protonmail.android.api.NewAccountWelcomeProvider
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import androidx.compose.runtime.Composable
+import ch.protonmail.android.navigation.LauncherViewModel
 
-@Module
-@InstallIn(SingletonComponent::class)
-interface AccountBindings {
+interface AccountWelcomeProvider {
 
-    @Binds
-    @Singleton
-    abstract fun provideAccountApiProvider(impl: NewAccountApiProvider): AccountApiProvider
-
-    @Binds
-    @Singleton
-    abstract fun provideAccountWelcomeProvider(impl: NewAccountWelcomeProvider): AccountWelcomeProvider
+    @Composable
+    fun Welcome(
+        viewModel: LauncherViewModel,
+        signedInContent: @Composable () -> Unit
+    )
 }
