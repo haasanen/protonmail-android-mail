@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,29 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    `kotlin-dsl`
-}
-
-repositories {
-    google()
-    mavenCentral()
-}
-
-dependencies {
-    // Provided by the consuming build's buildscript classpath, so only needed to compile against.
-    compileOnly(libs.android.tools.build)
-}
-
-gradlePlugin {
-    plugins {
-        create("versionPlugin") {
-            id = "app-config-plugin"
-            implementationClass = "ch.protonmail.android.mail.plugin.ApplicationConfigPlugin"
-        }
-        create("accountSdkPlugin") {
-            id = "account-sdk-plugin"
-            implementationClass = "ch.protonmail.android.mail.plugin.AccountSdkPlugin"
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
         }
     }
 }
+
+rootProject.name = "build-plugin"
