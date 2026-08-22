@@ -304,9 +304,9 @@ dependencies {
     kspAndroidTest(project(":test:robot:ksp:processor"))
 }
 
-fun isSentryAutoUploadEnabled(): Boolean = gradle.startParameter.taskNames.any {
-    it.contains("release", true)
-}
+fun isSentryAutoUploadEnabled(): Boolean =
+    gradle.startParameter.taskNames.any { it.contains("release", true) } &&
+        System.getenv("SENTRY_AUTH_TOKEN") != null
 
 sentry {
     autoInstallation {
