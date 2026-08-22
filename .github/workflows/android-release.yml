@@ -20,7 +20,7 @@ on:
         options: [prod, alpha, dev]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: android-build-${{ github.ref }}
@@ -85,3 +85,21 @@ jobs:
           name: proton-mail-${{ inputs.flavor || 'prod' }}
           path: ${{ steps.artifact.outputs.name }}
           retention-days: 30
+
+      - name: Publish GitHub Release
+        if: ${{ (inputs.flavor || 'prod') == 'prod' }}
+        env:
+          GH_TOKEN: ***
+        run: |
+          SHA=$(git rev-parse --short=7 HEAD)
+          TAG="build-${SHA}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; replacing assets."
+            gh release delete "$TAG" --yes --cleanup-tag
+          fi
+          gh release create "$TAG" \
+            --title "proton-mail-${{ inputs.flavor || 'prod' }}-${SHA}" \
+            --notes "Automated CI build ${{ inputs.flavor || 'prod' }} @ ${SHA} (run ${{ github.run_id }}). Direct download of this build." \
+            --latest=false \
+            "${{ steps.artifact.outputs.name }}"
+          echo "Published: https://github.com/${{ github.repository }}/releases/tag/$TAG"
