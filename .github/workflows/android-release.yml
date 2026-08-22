@@ -88,6 +88,8 @@ jobs:
 
       - name: Publish GitHub Release
         if: ${{ (inputs.flavor || 'prod') == 'prod' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           SHA=$(git rev-parse --short=7 HEAD)
           TAG="build-${SHA}"
