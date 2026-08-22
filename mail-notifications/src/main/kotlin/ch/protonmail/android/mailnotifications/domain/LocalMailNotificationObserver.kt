@@ -107,14 +107,6 @@ class LocalMailNotificationObserver @Inject constructor(
         }
     }
 
-    @Synchronized
-    fun stop() {
-        accountsJob?.cancel()
-        accountsJob = null
-        watchedAccounts.values.forEach { it.cancel() }
-        watchedAccounts.clear()
-    }
-
     private fun startWatching(userId: UserId, userEmail: String) {
         watchedAccounts.computeIfAbsent(userId) {
             coroutineScope.launch { watch(it, userEmail) }
