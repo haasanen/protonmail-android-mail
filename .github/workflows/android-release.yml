@@ -112,7 +112,7 @@ jobs:
         run: |
           SHA=$(git rev-parse --short=7 HEAD)
           TAG="${VERSION}-${SHA}-notif-fix"
-          NOTES=$(printf '%s\n' "### What's new" "" "- New-mail notifications without Google Play Services. Upstream, new-mail notifications arrive only via FCM push (a Google Play service); on a device without Google Play Store the app syncs mail but never notifies. This build posts the new-mail notification locally, from the app's own background sync, so it works without Google Play Services." "- Two-factor authentication: when the security-key (FIDO2) method cannot start because the device's FIDO2 service is unavailable, the sign-in screen now switches to the one-time-code method automatically, instead of showing only an error. On a device without Google Play Services the one-time code is the working method; this build no longer leaves you stuck on a method the device cannot provide." "" "Built from upstream ${VERSION} plus the features above.")
+          NOTES=$(printf '%s\n' "### What's new" "" "- New-mail notifications without Google Play Services. Upstream, new-mail notifications arrive only via FCM push (a Google Play service); on a device without Google Play Store the app syncs mail but never notifies. This build posts the new-mail notification locally, from the app's own background sync, so it works without Google Play Services." "" "Built from upstream ${VERSION} plus the feature above.")
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release $TAG already exists; replacing assets."
             gh release delete "$TAG" --yes --cleanup-tag
