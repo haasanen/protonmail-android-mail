@@ -124,9 +124,29 @@ class SecondFactorInputViewModel @Inject constructor(
         recordLoginScreenView(LoginScreenId.SECOND_FACTOR)
     }
 
-    internal fun onFidoLaunchResult(result: LaunchResult?) = viewModelScope.launch {
-        val fidoStatus = result?.toFidoResultStatus() ?: FidoLaunchResultStatus.FAILURE
-        recordFidoLaunchResult(fidoStatus)
+    internal fun onFidoLaunchResult(result: LaunchResult?, failureMessage: String? = null) =
+        viewModelScope.launch {
+            val fidoStatus = result?.toFidoResultStatus() ?: FidoLaunchResultStatus.FAILURE
+            recordFidoLaunchResult(fidoStatus)
+            if (result is LaunchResult.Failure) {
+                val otpTabIndex = userAvailableTabs.indexOf(SecondFactorTab.Otp)
+                if (otpTabIndex >= 0 && isFidoServiceUnavailable(failureMessage)) {
+                    // The security-key method runs through the device's FIDO2
+                    // service, which is missing on a device without a usable
+                    // Google Play Services. Switch to the one-time-code tab so
+                    // the user is not stuck on a method this device cannot
+                    // provide.
+                    perform(SelectTab(otpTabIndex))
+                }
+            }
+        }
+
+    private fun isFidoServiceUnavailable(message: String?): Boolean {
+        val lowered = message?.lowercase() ?: return false
+        return "fido" in lowered &&
+            ("not available on this device" in lowered ||
+                "service_invalid" in lowered ||
+                "serviceinvalid" in lowered)
     }
 }
 
