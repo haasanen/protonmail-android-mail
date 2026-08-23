@@ -35,6 +35,7 @@ import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureS
 import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
 import ch.protonmail.android.mailevents.presentation.AppOpenLifecycleObserver
 import ch.protonmail.android.mailnotifications.domain.FirebaseMessagingTokenLifecycleObserver
+import ch.protonmail.android.mailnotifications.domain.LocalMailNotificationObserver
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -58,6 +59,8 @@ internal class App : Application() {
 
     @Inject
     lateinit var firebaseLifecycleObserver: Provider<FirebaseMessagingTokenLifecycleObserver>
+    @Inject
+    lateinit var localMailNotificationObserver: Provider<LocalMailNotificationObserver>
 
     @Inject
     lateinit var eventLoopLifecycleObserver: Provider<RustEventLoopErrorLifecycleObserver>
@@ -82,6 +85,7 @@ internal class App : Application() {
         addLogsFileHandlerObserver()
         addDatabaseObserver()
         addFirebaseTokenLifecycleObserver()
+        startLocalMailNotificationObserver()
         addEventLoopObserver()
         addAppOpenLifecycleObserver()
 
@@ -100,6 +104,10 @@ internal class App : Application() {
 
     private fun addFirebaseTokenLifecycleObserver() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(firebaseLifecycleObserver.get())
+    }
+
+    private fun startLocalMailNotificationObserver() {
+        localMailNotificationObserver.get().start()
     }
 
     private fun addEventLoopObserver() {
