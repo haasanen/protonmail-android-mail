@@ -108,10 +108,7 @@ class SecondFactorActivity : ProtonActivity() {
             options.publicKey
         )
 
-        secondFactoryViewModel.onFidoLaunchResult(
-            launchResult,
-            (launchResult as? LaunchResult.Failure)?.exception?.localizedMessage
-        )
+        secondFactoryViewModel.onFidoLaunchResult(launchResult)
 
         when (launchResult) {
             is LaunchResult.Failure -> onError(
