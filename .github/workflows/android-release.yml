@@ -1,0 +1,122 @@
+#
+# Builds the Proton Mail for Android app on GitHub Actions and publishes the
+# signed APK as a downloadable build artifact.
+#
+# Trigger: automatically on every push to main, and manually via
+# "Actions" -> "Build Android release" (flavor selectable: prod/alpha/dev).
+#
+name: Build Android release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: "Product flavor"
+        required: true
+        default: "prod"
+        type: choice
+        options: [prod, alpha, dev]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Assemble ${{ inputs.flavor || 'prod' }} release
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          platforms: "android-35"
+          build-tools: "35.0.0"
+          cmdtools: "latest"
+
+      - name: Prepare dummy google-services.json
+        run: |
+          if [ ! -f app/google-services.json ]; then
+            cp config/google-services/dummy-google-services.json app/google-services.json
+          fi
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Restore release signing key from repository secrets
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_KEYSTORE_PROPS: ${{ secrets.RELEASE_KEYSTORE_PROPS }}
+        run: |
+          mkdir -p keystore
+          test -n "$RELEASE_KEYSTORE_BASE64" || { echo "::error::RELEASE_KEYSTORE_BASE64 secret missing"; exit 1; }
+          printf '%s' "$RELEASE_KEYSTORE_BASE64" | base64 -d > keystore/release.keystore
+          test -s keystore/release.keystore || { echo "::error::RELEASE_KEYSTORE_BASE64 did not decode to a file"; exit 1; }
+          test -n "$RELEASE_KEYSTORE_PROPS" || { echo "::error::RELEASE_KEYSTORE_PROPS secret missing"; exit 1; }
+          printf '%s\n' "$RELEASE_KEYSTORE_PROPS" > keystore/release.properties
+          grep -q '^keyAlias=' keystore/release.properties || { echo "::error::malformed RELEASE_KEYSTORE_PROPS"; exit 1; }
+          STOREPASS=$(grep '^storePassword=' keystore/release.properties | cut -d= -f2-)
+          ALIAS=$(grep '^keyAlias=' keystore/release.properties | cut -d= -f2-)
+          "$JAVA_HOME/bin/keytool" -list -keystore keystore/release.keystore -storepass "$STOREPASS" -alias "$ALIAS" >/dev/null             || { echo "::error::restored keystore is unreadable with the secret credentials"; exit 1; }
+          echo "Release keystore restored and verified (alias: $ALIAS)."
+
+      - name: Build release APK
+        env:
+          FLAVOR: ${{ inputs.flavor || 'prod' }}
+        run: |
+          ./gradlew ":app:assemble${FLAVOR}Release" -x lint -x lintVitalProdRelease --stacktrace
+        timeout-minutes: 60
+
+      - name: Rename APK
+        id: artifact
+        env:
+          FLAVOR: ${{ inputs.flavor || 'prod' }}
+        run: |
+          SHA=$(git rev-parse --short=7 HEAD)
+          SRC="app/build/outputs/apk/${FLAVOR}/release/app-${FLAVOR}-release.apk"
+          OUT="${FLAVOR}-${SHA}.apk"
+          if [ ! -f "$SRC" ]; then
+            echo "::error::Expected APK not found: $SRC"
+            exit 1
+          fi
+          mv "$SRC" "$OUT"
+          echo "name=${OUT}" >> "$GITHUB_OUTPUT"
+          ls -lh "$OUT"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: proton-mail-${{ inputs.flavor || 'prod' }}
+          path: ${{ steps.artifact.outputs.name }}
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        if: ${{ (inputs.flavor || 'prod') == 'prod' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          SHA=$(git rev-parse --short=7 HEAD)
+          TAG="build-${SHA}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; replacing assets."
+            gh release delete "$TAG" --yes --cleanup-tag
+          fi
+          gh release create "$TAG" \
+            --title "proton-mail-${{ inputs.flavor || 'prod' }}-${SHA}" \
+            --notes "Automated CI build ${{ inputs.flavor || 'prod' }} @ ${SHA} (run ${{ github.run_id }}). Direct download of this build." \
+            --latest=false \
+            "${{ steps.artifact.outputs.name }}"
+          echo "Published: https://github.com/${{ github.repository }}/releases/tag/$TAG"

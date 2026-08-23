@@ -55,6 +55,10 @@ android {
         minSdk = AppConfiguration.minSdk.get()
         targetSdk = AppConfiguration.targetSdk.get()
         ndkVersion = AppConfiguration.ndkVersion.get()
+        ndk {
+            // Ship a single ABI to keep the APK small (arm64-v8a).
+            abiFilters += setOf("arm64-v8a")
+        }
         versionCode = AppConfiguration.versionCode.get()
         versionName = AppConfiguration.versionName.get()
 
@@ -88,6 +92,23 @@ android {
                 keyPassword = "android"
             }
         }
+        create("release") {
+            // Release signing key is restored by CI from GitHub repository
+            // secrets (keystore/release.keystore + keystore/release.properties).
+            // It is a private key and never exists in this repository.
+            val releaseKeystore = file("$rootDir/keystore/release.keystore")
+            if (releaseKeystore.exists()) {
+                // Plain-text parse: `java.util.*` does not resolve in this
+                // Kotlin DSL script (the `java` extension shadows the package).
+                val props = file("$rootDir/keystore/release.properties").readLines()
+                    .filter { it.isNotBlank() }
+                    .associate { it.substringBefore('=') to it.substringAfter('=') }
+                storeFile = releaseKeystore
+                storePassword = props.getValue("storePassword")
+                keyAlias = props.getValue("keyAlias")
+                keyPassword = props.getValue("keyPassword")
+            }
+        }
     }
 
     buildTypes {
@@ -111,7 +132,7 @@ android {
             )
 
             manifestPlaceholders["isFcmServiceEnabled"] = isFcmServiceEnabled
-            signingConfig = signingConfigs["debug"]
+            signingConfig = signingConfigs["release"]
         }
         create("benchmark") {
             initWith(getByName("release"))
@@ -304,9 +325,9 @@ dependencies {
     kspAndroidTest(project(":test:robot:ksp:processor"))
 }
 
-fun isSentryAutoUploadEnabled(): Boolean = gradle.startParameter.taskNames.any {
-    it.contains("release", true)
-}
+fun isSentryAutoUploadEnabled(): Boolean =
+    gradle.startParameter.taskNames.any { it.contains("release", true) } &&
+        System.getenv("SENTRY_AUTH_TOKEN") != null
 
 sentry {
     autoInstallation {
