@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import androidx.activity.result.ActivityResultCaller
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.security.MessageDigest
 import java.util.Base64
 import me.proton.core.auth.fido.domain.entity.Fido2PublicKeyCredentialRequestOptions
@@ -39,7 +40,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class NativeSecurityKeyUseCase @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
 ) : PerformTwoFaWithSecurityKey<ActivityResultCaller, Activity> {
 
     @Volatile
