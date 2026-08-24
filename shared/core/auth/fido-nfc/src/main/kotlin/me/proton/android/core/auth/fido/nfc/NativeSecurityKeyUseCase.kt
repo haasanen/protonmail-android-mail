@@ -51,6 +51,10 @@ class NativeSecurityKeyUseCase @Inject constructor(
     @Volatile
     private var inProgress = false
 
+    /** The activity that started the current flow; the guard is scoped to it. */
+    @Volatile
+    private var inProgressActivity: Activity? = null
+
     override fun register(
         caller: ActivityResultCaller,
         onResult: (Result, Fido2PublicKeyCredentialRequestOptions) -> Unit,
@@ -71,7 +75,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
                 FidoNativeException("NFC is disabled on this device"),
             )
         }
-        if (inProgress) {
+        if (inProgress && activity === inProgressActivity) {
             return LaunchResult.Failure(
                 FidoNativeException("A security key operation is already in progress"),
             )
@@ -79,10 +83,12 @@ class NativeSecurityKeyUseCase @Inject constructor(
 
         currentOptions = publicKey
         inProgress = true
+        inProgressActivity = activity
 
         val started = NfcReader { tag -> onTag(tag) }.start(activity)
         if (!started) {
             inProgress = false
+            inProgressActivity = null
             return LaunchResult.Failure(
                 FidoNativeException("Could not start the NFC security key reader"),
             )
@@ -97,6 +103,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
         val options = currentOptions ?: return
         val callback = onResult ?: return
         inProgress = false
+        inProgressActivity = null
         currentOptions = null
         // The CTAP2 exchange blocks on IsoDep transceives: off the main thread.
         Thread {
