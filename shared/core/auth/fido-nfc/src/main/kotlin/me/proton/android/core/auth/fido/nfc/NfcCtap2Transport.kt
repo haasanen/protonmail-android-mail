@@ -16,16 +16,17 @@ class Ctap2Error(
 ) : RuntimeException(message, cause)
 
 /**
- * CTAP2 over NFC (ISO 14443-4 / IsoDep) transport, per CTAP2 spec §11.3.
+ * CTAP2 over NFC (ISO 14443-4 / IsoDep) transport, per CTAP2 spec §8.2 (NFC).
  *
- * Framing:
- *  - applet select: 00 A4 04 00 Lc AID. Success SW 9000.
- *  - message:       80 10 00 00 Lc <CBOR> Le=00.
+ * Framing (spec §8.2.4):
+ *  - applet select: 00 A4 04 00 Lc <AID>. Success SW 9000.
+ *  - command:       80 10 00 00 Lc <CTAP command byte || CBOR> Le.
+ *                   The data field is the single CTAP command byte (0x02 for
+ *                   authenticatorGetAssertion) followed by the CBOR parameters.
  *  - response:      SW 9000 + data, where data = CTAP status byte (1) || CBOR.
- *                   91 00 = status update, keep polling with GETRESPONSE.
- *                   61 xx = xx trailing bytes, read with GETRESPONSE.
- *  - GETRESPONSE:   80 C0 00 00 (Le omitted; authenticator chooses max). 0xC0 per
- *                   the spec's normative YubiKey trace.
+ *                   91 00 = status update, 61 xx = xx more bytes; both are
+ *                   followed with a GETRESPONSE.
+ *  - GETRESPONSE:   80 C0 00 00 [Le]. INS 0xC0 per the spec's normative trace.
  */
 class NfcCtap2Transport {
 
@@ -53,7 +54,7 @@ class NfcCtap2Transport {
     }
 
     /**
-     * FIDO2 applet select (spec §11.3.3). Returns true when the applet is present.
+     * FIDO2 applet select (spec §8.2.3). Returns true when the applet is present.
      */
     fun selectFidoApplet(): Boolean {
         val dep = isoDep ?: return false
@@ -87,18 +88,20 @@ class NfcCtap2Transport {
 
     private fun sendCommand(payload: ByteArray): ByteArray {
         val dep = isoDep ?: throw Ctap2Error("NFC transport not bound")
-        if (payload.size > MAX_SHORT_DATA) {
-            throw Ctap2Error("getAssertion CBOR too large for short APDU: ${payload.size}")
+        // Spec §8.2.4.1: data field = CTAP command byte (0x02) || CBOR parameters.
+        val data = byteArrayOf(CTAP_GET_ASSERTION) + payload
+        if (data.size > MAX_SHORT_DATA) {
+            throw Ctap2Error("getAssertion request too large for short APDU: ${data.size}")
         }
-        // Single short APDU: 80 10 00 00 Lc <CBOR> Le=00
-        val apdu = byteArrayOf(0x80.toByte(), 0x10, 0x00, 0x00, payload.size.toByte()) + payload + byteArrayOf(0x00)
+        // Single short (case-4) APDU: 80 10 00 00 Lc <02 || CBOR> Le=00.
+        val apdu = byteArrayOf(0x80.toByte(), 0x10, 0x00, 0x00, data.size.toByte()) + data + byteArrayOf(0x00)
         return unwrapResponse(transceive(dep, apdu), dep)
     }
 
     /**
      * Unwraps the ISO 7816 layer: strips status words, follows 9100 (status update)
-     * and 61xx (trailing bytes) chains. Returns the application data, i.e.
-     * CTAP status byte || CBOR.
+     * and 61xx (xx trailing bytes) chains via GETRESPONSE. Returns the application
+     * data, i.e. CTAP status byte || CBOR.
      */
     private fun unwrapResponse(first: ByteArray, dep: IsoDep): ByteArray {
         val out = java.io.ByteArrayOutputStream()
@@ -112,13 +115,13 @@ class NfcCtap2Transport {
                 }
                 sw == 0x9100 -> {
                     // Status update — poll for data.
-                    resp = getResponse(dep)
+                    resp = getResponse(dep, 0)
                     sw = statusWord(resp)
                 }
                 (sw and 0xFF00) == 0x6100 -> {
-                    // xx trailing bytes available.
+                    // xx trailing bytes available; request exactly that many.
                     out.write(bodyOf(resp))
-                    resp = getResponse(dep)
+                    resp = getResponse(dep, sw and 0xFF)
                     sw = statusWord(resp)
                 }
                 else -> throw Ctap2Error("NFC rejected, SW 0x${sw.toString(16).uppercase()}")
@@ -126,9 +129,18 @@ class NfcCtap2Transport {
         }
     }
 
-    /** GETRESPONSE, INS 0xC0 per the spec's normative YubiKey trace (80 C0 00 00). */
-    private fun getResponse(dep: IsoDep): ByteArray =
-        transceive(dep, byteArrayOf(0x80.toByte(), INS_GETRESPONSE, 0x00, 0x00))
+    /**
+     * GETRESPONSE (INS 0xC0, per the spec's normative trace). [le] is the number of
+     * bytes to request; 0 = up to 256 (Le omitted / 0x00 in short form).
+     */
+    private fun getResponse(dep: IsoDep, le: Int): ByteArray {
+        val apdu = if (le == 0) {
+            byteArrayOf(0x80.toByte(), INS_GETRESPONSE, 0x00, 0x00)
+        } else {
+            byteArrayOf(0x80.toByte(), INS_GETRESPONSE, 0x00, 0x00, le.toByte())
+        }
+        return transceive(dep, apdu)
+    }
 
     private fun transceive(dep: IsoDep, apdu: ByteArray): ByteArray {
         dep.setTimeout(TIMEOUT_MS)
@@ -150,6 +162,8 @@ class NfcCtap2Transport {
         private const val TIMEOUT_MS = 5000
         private const val MAX_SHORT_DATA = 255
         private const val INS_GETRESPONSE: Byte = 0xC0.toByte()
+        // authenticatorGetAssertion CTAP command byte (spec §5.2).
+        private const val CTAP_GET_ASSERTION: Byte = 0x02
         // FIDO2 AID: RID A0 00 00 06 47, PIX 2F 00 01.
         private val AID = byteArrayOf(0xA0.toByte(), 0x00, 0x00, 0x06, 0x47.toByte(), 0x2F, 0x00, 0x01)
     }
