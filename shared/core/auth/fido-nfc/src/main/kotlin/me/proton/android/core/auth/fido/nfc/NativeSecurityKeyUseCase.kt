@@ -120,20 +120,23 @@ class NativeSecurityKeyUseCase @Inject constructor(
             }
 
             val appId = options.extensions?.appId?.takeIf { it.isNotBlank() }
-            // WebAuthn: when the legacy appid extension is present, the origin is
-            // the AppID but the RP id (and thus the rpIdHash) is NOT changed.
             val rpId = options.rpId
                 ?: return Error(
                     ErrorData(ErrorCode.CONSTRAINT_ERR, "Missing relying party id"),
                 )
-            val origin = if (appId != null) appId else facetId()
+            // WebAuthn L2 §10.1 (appid): when the legacy appid extension is present the
+            // AppID replaces the RP id in the CTAP2 request (U2F credentials are scoped
+            // to the AppID), and the clientData origin is the AppID, not the facet.
+            // Without it the origin is this app's android:apk-key-hash facet.
+            val rpIdForKey = appId ?: rpId
+            val origin = appId ?: facetId()
             if (origin.isEmpty()) {
                 throw FidoNativeException("Could not determine the WebAuthn origin for this app")
             }
             val clientDataJson = buildClientDataJson(bytesOfUByteArray(options.challenge), origin)
             val clientDataHash = MessageDigest.getInstance("SHA-256").digest(clientDataJson.toByteArray())
             val request = Ctap2Cbor.encodeGetAssertion(
-                rpId = rpId,
+                rpId = rpIdForKey,
                 clientDataHash = clientDataHash,
                 allowCredentials = options.allowCredentials,
                 appId = appId,
@@ -141,7 +144,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
             )
 
             val response = transport.getAssertion(request)
-            val ctap = Ctap2Cbor.decodeGetAssertion(response)
+            val ctap = Ctap2Cbor.decodeGetAssertion(response, options.allowCredentials)
 
             Success(
                 rawId = ctap.credentialId,
@@ -161,17 +164,27 @@ class NativeSecurityKeyUseCase @Inject constructor(
         }
     }
 
+    /**
+     * Maps CTAP2 status codes (spec §6.3) to the domain [ErrorCode]s. Note these are
+     * CTAP2 codes — the legacy CTAP1 codes (0x04, 0x05…) are not used by FIDO2 keys.
+     */
     private fun errorResult(ex: Throwable): Result {
         val status = (ex as? Ctap2Error)?.ctapStatus
         val (code, message) = when (status) {
-            0x04 -> ErrorCode.NOT_ALLOWED_ERR to "No matching credential on this security key"
-            0x05 -> ErrorCode.TIMEOUT_ERR to "The security key timed out waiting for user presence"
-            0x06 -> ErrorCode.NOT_SUPPORTED_ERR to "Unsupported security key command"
-            0x0B -> ErrorCode.NOT_ALLOWED_ERR to "A security key operation is already in progress"
-            0x0C -> ErrorCode.NOT_SUPPORTED_ERR to "Unsupported security key algorithm"
+            0x2E -> ErrorCode.CONSTRAINT_ERR to "No matching credential on this security key"
+            0x2F -> ErrorCode.TIMEOUT_ERR to "The security key timed out waiting for user presence"
+            0x3A -> ErrorCode.TIMEOUT_ERR to "The security key timed out"
+            0x27 -> ErrorCode.NOT_ALLOWED_ERR to "The security key did not authorize the operation"
+            0x30 -> ErrorCode.NOT_ALLOWED_ERR to "The security key did not allow the operation"
+            0x12 -> ErrorCode.ENCODING_ERR to "The security key rejected the request (malformed CBOR)"
+            0x11 -> ErrorCode.ENCODING_ERR to "The security key rejected the request (unexpected CBOR)"
+            0x2B -> ErrorCode.NOT_SUPPORTED_ERR to "The security key does not support a requested option"
+            0x2C -> ErrorCode.NOT_SUPPORTED_ERR to "The security key does not accept a requested option"
+            0x26 -> ErrorCode.NOT_SUPPORTED_ERR to "The security key does not support the requested algorithm"
+            0x39 -> ErrorCode.NOT_SUPPORTED_ERR to "The request is too large for this security key"
             else -> ErrorCode.UNKNOWN_ERR to (ex.message ?: "Security key operation failed")
         }
-        return if (status == 0x04) {
+        return if (status == 0x2E) {
             NoCredentialsResponse(ex)
         } else {
             Error(ErrorData(code, message))
@@ -199,14 +212,16 @@ class NativeSecurityKeyUseCase @Inject constructor(
     }
 
     /**
-     * clientDataJSON for an assertion. Per W3C WebAuthn L2: type is "webauthn.get",
-     * challenge is base64url (no padding), origin is the request origin.
-     * AppID extension (L2 §10.1): when present it is the origin (and the rpId).
+     * clientDataJSON for an assertion. Per W3C WebAuthn L2 (CollectedClientData):
+     * type is "webauthn.get", challenge is base64url (no padding), origin is the
+     * request origin (AppID when the appid extension is in use, else the facet),
+     * crossOrigin is false for a top-level app window.
      */
     private fun buildClientDataJson(challenge: ByteArray, origin: String): String = buildString {
         append("{\"type\":\"webauthn.get\",")
         append("\"challenge\":\"").append(base64UrlNoPad(challenge)).append("\",")
-        append("\"origin\":\"").append(origin).append("\"}")
+        append("\"origin\":\"").append(origin).append("\",")
+        append("\"crossOrigin\":false}")
     }
 
     private fun base64UrlNoPad(data: ByteArray): String =
