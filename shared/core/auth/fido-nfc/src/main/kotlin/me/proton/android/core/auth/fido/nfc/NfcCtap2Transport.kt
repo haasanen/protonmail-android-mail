@@ -171,7 +171,8 @@ class NfcCtap2Transport {
 
 /**
  * Holds the host activity in NFC reader mode for the duration of a key tap; every
- * IsoDep-capable tag is forwarded to [onTag]. The returned lambda stops the reader.
+ * IsoDep-capable tag is forwarded to [onTag]. Ending the activity tears the reader
+ * down (Android disables reader mode with the activity).
  */
 class NfcReader(private val onTag: (Tag) -> Unit) {
 
@@ -189,14 +190,5 @@ class NfcReader(private val onTag: (Tag) -> Unit) {
             return false
         }
         return true
-    }
-
-    fun stop(activity: Activity) {
-        val adapter = NfcAdapter.getDefaultAdapter(activity) ?: return
-        try {
-            adapter.disableReaderMode(activity)
-        } catch (e: Exception) {
-            // best-effort
-        }
     }
 }

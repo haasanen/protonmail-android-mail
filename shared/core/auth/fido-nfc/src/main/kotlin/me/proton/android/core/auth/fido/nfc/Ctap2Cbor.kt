@@ -8,8 +8,6 @@ import com.upokecenter.cbor.CBOREncodeOptions
 import com.upokecenter.cbor.CBORObject
 import com.upokecenter.cbor.CBORType
 import me.proton.core.auth.fido.domain.entity.Fido2PublicKeyCredentialDescriptor
-import java.security.MessageDigest
-import java.util.Base64
 
 /**
  * Minimal CBOR codec for the CTAP2 `authenticatorGetAssertion` (0x02) command and its
@@ -118,10 +116,4 @@ internal object Ctap2Cbor {
             else -> throw IllegalStateException("CTAP2 response field $field is not a byte string")
         }
     }
-
-    fun b64urlEncode(data: ByteArray): String =
-        Base64.getUrlEncoder().withoutPadding().encodeToString(data)
-
-    fun sha256(data: ByteArray): ByteArray =
-        MessageDigest.getInstance("SHA-256").digest(data)
 }
