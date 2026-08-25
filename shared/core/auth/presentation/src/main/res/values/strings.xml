@@ -131,6 +131,7 @@
     <string name="auth_fido_reading_key_error">Error reading security key.</string>
     <string name="auth_fido_submit_key_error">Error submitting key data.</string>
     <string name="auth_fido_authenticating_in_progress">Authenticating with security key.</string>
+    <string name="auth_fido_tap_security_key_hint">Tap the security key to the back of your phone.</string>
     <string name="auth_fido_security_key">Security Key</string>
 
     <plurals name="password_validator_min_length_error">
