@@ -183,7 +183,7 @@ class NfcReader(private val onTag: (Tag) -> Unit) {
             adapter.enableReaderMode(
                 activity,
                 { tag -> onTag(tag) },
-                NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK or NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS,
+                NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK or NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS,
                 null,
             )
         } catch (e: Exception) {
