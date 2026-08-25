@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
 import android.nfc.Tag
+import android.util.Log
 import androidx.activity.result.ActivityResultCaller
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.security.MessageDigest
@@ -101,6 +102,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
     }
 
     private fun onTag(tag: Tag) {
+        Log.d(NfcCtap2Transport.TAG, "tag received: ${tag.techList?.joinToString { it.javaClass.simpleName }}")
         val options = currentOptions ?: return
         val callback = onResult ?: return
         inProgress = false
@@ -109,7 +111,10 @@ class NativeSecurityKeyUseCase @Inject constructor(
         // The CTAP2 exchange blocks on IsoDep transceives: off the main thread.
         Thread {
             val result = runCatching { performAssertion(tag, options) }
-                .getOrElse { ex -> errorResult(ex) }
+                .getOrElse { ex ->
+                    Log.e(NfcCtap2Transport.TAG, "assertion flow failed", ex)
+                    errorResult(ex)
+                }
             callback(result, options)
         }.apply { isDaemon = true }.start()
     }
@@ -126,6 +131,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
             if (!transport.selectFidoApplet()) {
                 throw FidoNativeException("No FIDO2 security key applet found on the tag")
             }
+            Log.d(NfcCtap2Transport.TAG, "applet selected, building getAssertion")
 
             val appId = options.extensions?.appId?.takeIf { it.isNotBlank() }
             val rpId = options.rpId
@@ -152,7 +158,17 @@ class NativeSecurityKeyUseCase @Inject constructor(
             )
 
             val response = transport.getAssertion(request)
+            Log.d(
+                NfcCtap2Transport.TAG,
+                "assertion body len=${response.size} hex=[${
+                    response.joinToString(" ") { (it.toInt() and 0xFF).toString(16).uppercase().padStart(2, '0') }
+                }]"
+            )
             val ctap = Ctap2Cbor.decodeGetAssertion(response, options.allowCredentials)
+            Log.d(
+                NfcCtap2Transport.TAG,
+                "decoded: cred=${ctap.credentialId.size} authData=${ctap.authenticatorData.size} sig=${ctap.signature.size}"
+            )
 
             Success(
                 rawId = ctap.credentialId,

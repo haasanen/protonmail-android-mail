@@ -8,6 +8,7 @@ import android.app.Activity
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
+import android.util.Log
 
 class Ctap2Error(
     message: String,
@@ -77,6 +78,7 @@ class NfcCtap2Transport {
         if (raw.isEmpty()) throw Ctap2Error("empty NFC response")
         val ctapStatus = raw[0].toInt()
         val body = raw.copyOfRange(1, raw.size)
+        Log.d(TAG, "ctap status=0x${ctapStatus.toString(16).uppercase()} bodyLen=${body.size}")
         if (ctapStatus != 0x00) {
             throw Ctap2Error(
                 "CTAP getAssertion failed, status 0x${ctapStatus.toString(16).uppercase()}",
@@ -144,9 +146,13 @@ class NfcCtap2Transport {
 
     private fun transceive(dep: IsoDep, apdu: ByteArray): ByteArray {
         dep.setTimeout(TIMEOUT_MS)
+        Log.d(TAG, "transceive req=[${apdu.toHex()}]")
         return try {
-            dep.transceive(apdu)
+            val resp = dep.transceive(apdu)
+            Log.d(TAG, "transceive resp len=${resp.size} sw=0x${statusWord(resp).toString(16).uppercase()}")
+            resp
         } catch (e: Exception) {
+            Log.e(TAG, "transceive failed req=[${apdu.toHex()}]", e)
             throw Ctap2Error("NFC transceive failed: ${e.message}", cause = e)
         }
     }
@@ -154,11 +160,15 @@ class NfcCtap2Transport {
     private fun bodyOf(resp: ByteArray): ByteArray =
         if (resp.size <= 2) ByteArray(0) else resp.copyOfRange(0, resp.size - 2)
 
+    private fun ByteArray.toHex(): String =
+        joinToString(" ") { (it.toInt() and 0xFF).toString(16).uppercase().padStart(2, '0') }
+
     private fun statusWord(resp: ByteArray): Int =
         if (resp.size < 2) -1
         else ((resp[resp.size - 2].toInt() and 0xFF) shl 8) or (resp[resp.size - 1].toInt() and 0xFF)
 
     companion object {
+        const val TAG = "FidoNfc"
         private const val TIMEOUT_MS = 5000
         private const val MAX_SHORT_DATA = 255
         private const val INS_GETRESPONSE: Byte = 0xC0.toByte()

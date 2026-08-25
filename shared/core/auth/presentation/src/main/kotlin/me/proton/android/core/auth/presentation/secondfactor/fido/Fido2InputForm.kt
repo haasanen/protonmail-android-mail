@@ -135,11 +135,19 @@ fun Fido2InputContent(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        Fido2InstructionText()
+        val waitingForTap = state is Fido2InputState.InitiatedReadingSecurityKey ||
+            state is Fido2InputState.ReadingSecurityKey
+        val isAuthenticating = state is Fido2InputState.Authenticating
+
+        when {
+            waitingForTap -> Fido2WaitingText()
+            isAuthenticating -> Fido2AuthenticatingText()
+            else -> Fido2InstructionText()
+        }
 
         Fido2AuthenticateButton(
             onClick = onAuthenticate,
-            isLoading = state is Fido2InputState.InitiatedReadingSecurityKey || state is Fido2InputState.Authenticating,
+            isLoading = waitingForTap || isAuthenticating,
             isEnabled = state.isInteractionEnabled()
         )
 
@@ -158,6 +166,16 @@ private fun Fido2Logo(@DrawableRes logoRes: Int, modifier: Modifier = Modifier) 
         contentDescription = null,
         alignment = Alignment.Center
     )
+}
+
+@Composable
+private fun Fido2WaitingText() {
+    Text(text = stringResource(R.string.auth_fido_tap_security_key_hint))
+}
+
+@Composable
+private fun Fido2AuthenticatingText() {
+    Text(text = stringResource(R.string.auth_fido_authenticating_in_progress))
 }
 
 @Composable
