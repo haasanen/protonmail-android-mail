@@ -143,7 +143,10 @@ class NativeSecurityKeyUseCase @Inject constructor(
             // to the AppID), and the clientData origin is the AppID, not the facet.
             // Without it the origin is this app's android:apk-key-hash facet.
             val rpIdForKey = appId ?: rpId
-            val origin = appId ?: facetId()
+            // Origin: AppID > official Proton origin (for the Proton RP only) > this app's
+            // own facet. The Proton server expects the official app's facet; this fork is
+            // re-signed, so its own facet is rejected. See OFFICIAL_PROTON_CERT_SHA256_HEX.
+            val origin = appId ?: if (isProtonRpid(rpId)) officialProtonOrigin() else facetId()
             if (origin.isEmpty()) {
                 throw FidoNativeException("Could not determine the WebAuthn origin for this app")
             }
@@ -213,6 +216,44 @@ class NativeSecurityKeyUseCase @Inject constructor(
         } else {
             Error(ErrorData(code, message))
         }
+    }
+
+    /**
+     * The Proton RP id as the server reports it. The official-origin override is
+     * scoped to this RP only so we never present Proton's facet to another relying
+     * party.
+     */
+    private fun isProtonRpid(rpId: String): Boolean =
+        rpId.equals("proton.me", ignoreCase = true) ||
+            rpId.endsWith(".proton.me", ignoreCase = true)
+
+    /**
+     * The SHA-256 of the official Proton Mail Android signing certificate.
+     *
+     * Verified against the official APK (ProtonMail-7.10.4_17667.apk) downloaded from
+     * Proton's own release channel (github.com/ProtonMail/android-mail/releases, the
+     * source linked from proton.me/mail/download):
+     *   - apksigner verify --print-certs: v3 scheme, cert SHA-256 matches below
+     *   - independent re-hash of the X.509 DER cert extracted from the APK v3
+     *     signing block: same digest
+     * The cert is RSA-2048, CN=Proton Technologies AG (Geneva, CH).
+     */
+    private val OFFICIAL_PROTON_CERT_SHA256_HEX =
+        "dcc9439ec1a6c6a8d0203f3423ee42bcc8b970628e53cb73a0393f398dd5b853"
+
+    /**
+     * The official app's Android WebAuthn origin (facet):
+     * android:apk-key-hash:<base64url-no-pad(SHA-256(official cert DER))>.
+     * Derived from [OFFICIAL_PROTON_CERT_SHA256_HEX], not a magic string.
+     */
+    private fun officialProtonOrigin(): String {
+        val hex = OFFICIAL_PROTON_CERT_SHA256_HEX
+        val digest = ByteArray(hex.length / 2) { i ->
+            val hi = hex[i * 2].digitToInt(16)
+            val lo = hex[i * 2 + 1].digitToInt(16)
+            ((hi shl 4) or lo).toByte()
+        }
+        return "android:apk-key-hash:" + base64UrlNoPad(digest)
     }
 
     /**
