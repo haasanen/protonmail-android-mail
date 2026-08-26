@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Proton Technologies AG
+ * Copyright (c) 2026 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,16 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.domain.system
+package ch.protonmail.android.mailsession.domain.background
 
 /**
- * Single source of truth for the app's notification channel ids, shared across layers so that both
- * presentation-side builders and data-side workers reference the same values.
+ * Schedules background work that carries a just-queued send through to completion, so the message is
+ * delivered even if the app is torn down right afterwards (e.g. sending from an external share closes
+ * the task before Rust's send queue drains).
  */
-object NotificationChannelId {
+interface SendCompletionScheduler {
 
-    const val Email = "v7_email_channel_id"
-    const val Login = "v7_login_channel_id"
-    const val ContentSearch = "v7_content_search_channel_id"
-    const val Sending = "v7_sending_channel_id"
+    fun scheduleSendCompletion()
 }
