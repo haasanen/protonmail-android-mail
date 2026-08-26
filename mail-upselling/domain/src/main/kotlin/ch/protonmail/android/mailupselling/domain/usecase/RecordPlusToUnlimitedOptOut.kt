@@ -16,14 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailupselling.domain.repository
+package ch.protonmail.android.mailupselling.domain.usecase
 
-import ch.protonmail.android.mailupselling.domain.usecase.UpsellVariantPlan
+import ch.protonmail.android.mailfeatureflags.domain.model.PlusToUnlimitedUpsellOptOut
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-interface UpsellEligibilityRepository {
+class RecordPlusToUnlimitedOptOut @Inject constructor(
+    private val userSessionRepository: UserSessionRepository
+) {
 
-    suspend fun getEligibleUpsellPlan(userId: UserId): UpsellVariantPlan?
-
-    suspend fun getPlusToUnlimitedEligibility(userId: UserId): Boolean
+    suspend operator fun invoke(userId: UserId) {
+        userSessionRepository.overrideFeatureFlag(userId, PlusToUnlimitedUpsellOptOut.key, true)
+    }
 }
