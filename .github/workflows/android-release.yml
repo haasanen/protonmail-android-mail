@@ -131,4 +131,14 @@ jobs:
             --notes "$NOTES" \
             --latest=false \
             "${{ steps.artifact.outputs.name }}"
+          # Keep exactly one "normal" (non-prerelease) release so GitHub's
+          # "Latest" badge always points at the newest build: demote all
+          # other non-draft releases to prerelease.
+          NEW_ID=$(gh release view "$TAG" --json databaseId --jq .databaseId)
+          gh api -X PATCH "repos/${{ github.repository }}/releases/$NEW_ID" -f prerelease=false
+          for RID in $(gh api "repos/${{ github.repository }}/releases?per_page=100" --jq '.[] | select(.draft == false) | .id'); do
+            if [ "$RID" != "$NEW_ID" ]; then
+              gh api -X PATCH "repos/${{ github.repository }}/releases/$RID" -f prerelease=true
+            fi
+          done
           echo "Published: https://github.com/${{ github.repository }}/releases/tag/$TAG"
