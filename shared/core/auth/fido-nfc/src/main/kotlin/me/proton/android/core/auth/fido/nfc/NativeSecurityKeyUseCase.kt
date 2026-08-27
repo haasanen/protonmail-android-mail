@@ -242,9 +242,11 @@ class NativeSecurityKeyUseCase @Inject constructor(
             override fun onReceive(c: Context, intent: Intent) {
                 unregisterUsbReceiver()
                 if (!intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                    Log.i(UsbCtap2Transport.TAG, "USB access was not granted")
                     deliverError(FidoNativeException("USB access was not granted"))
                     return
                 }
+                Log.i(UsbCtap2Transport.TAG, "USB access granted; starting USB flow")
                 startUsbFlow(device)
             }
         }
