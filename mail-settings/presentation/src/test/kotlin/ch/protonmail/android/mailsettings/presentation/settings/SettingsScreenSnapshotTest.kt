@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.settings
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import ch.protonmail.android.design.compose.paparazzi.protonSnapshot
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,6 +38,7 @@ class SettingsScreenSnapshotTest {
         paparazzi.protonSnapshot {
             MainSettingsScreen(
                 state = SettingsScreenPreviewData.Data,
+                backgroundSyncInterval = BackgroundSyncInterval.EVERY_15_MINUTES,
                 actions = SettingsScreenPreviewData.Actions
             )
         }

@@ -36,8 +36,11 @@ import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryAccount
 import ch.protonmail.android.mailsession.presentation.mapper.AccountInformationMapper
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
 import ch.protonmail.android.mailsettings.domain.model.StorageQuota
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveStorageQuotaUseCase
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObserveBackgroundSyncInterval
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateBackgroundSyncInterval
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsViewModel
@@ -85,6 +88,14 @@ class SettingsViewModelTest {
         coEvery { this@mockk.get() } returns true
     }
 
+    private val observeBackgroundSyncInterval = mockk<ObserveBackgroundSyncInterval> {
+        every { this@mockk.invoke() } returns flowOf(
+            Either.Right(BackgroundSyncInterval.EVERY_15_MINUTES)
+        )
+    }
+
+    private val updateBackgroundSyncInterval = mockk<UpdateBackgroundSyncInterval>()
+
     private lateinit var viewModel: SettingsViewModel
 
     @Before
@@ -95,7 +106,9 @@ class SettingsViewModelTest {
             observePrimaryAccount = observePrimaryAccount,
             observeStorageQuotaUseCase = observeStorageQuotaUseCase,
             accountInformationMapper = accountInformationMapper,
-            contentSearchEnabled = contentSearchEnabled
+            contentSearchEnabled = contentSearchEnabled,
+            observeBackgroundSyncInterval = observeBackgroundSyncInterval,
+            updateBackgroundSyncInterval = updateBackgroundSyncInterval
         )
     }
 

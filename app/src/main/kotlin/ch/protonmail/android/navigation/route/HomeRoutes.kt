@@ -49,7 +49,9 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
+import ch.protonmail.android.mailsettings.presentation.settings.SettingsViewModel
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.transitions.RouteTransitionSpec
 import ch.protonmail.android.navigation.transitions.composableWithTransitions
@@ -263,7 +265,9 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController, activ
         transitions = RouteTransitionSpec.Settings
     ) {
         ProtonInvertedTheme {
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
             MainSettingsScreen(
+                settingsViewModel = settingsViewModel,
                 actions = MainSettingsScreen.Actions(
                     onAccountClick = {
                         navController.navigate(Destination.Screen.AccountSettings.route)
@@ -294,6 +298,9 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController, activ
                     },
                     onContentSearchSettingsClick = {
                         navController.navigate(Destination.Screen.ContentSearchSettings.route)
+                    },
+                    onBackgroundSyncIntervalSelected = { interval ->
+                        settingsViewModel.onBackgroundSyncIntervalSelected(interval)
                     }
                 )
             )

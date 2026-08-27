@@ -38,6 +38,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
@@ -51,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonMainSettingsIcon
 import ch.protonmail.android.design.compose.component.ProtonMainSettingsItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.model.VisibilityUiModel
@@ -61,10 +66,13 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
+import ch.protonmail.android.mailsettings.presentation.settings.privacy.BackgroundSyncIntervalPickerDialog
+import ch.protonmail.android.mailsettings.presentation.settings.privacy.labelRes
 import me.proton.android.core.devicemigration.presentation.origin.settings.SignInOnTargetDeviceItem
 import me.proton.core.domain.entity.UserId
 
@@ -88,10 +96,13 @@ fun MainSettingsScreen(
             actions.onBackClick()
         }
     )
+    val backgroundSyncInterval =
+        settingsViewModel.backgroundSyncInterval.collectAsStateWithLifecycle().value
     when (val settingsState = settingsViewModel.state.collectAsStateWithLifecycle(Loading).value) {
         is Data -> MainSettingsScreen(
             modifier = modifier,
             state = settingsState,
+            backgroundSyncInterval = backgroundSyncInterval,
             actions = mainActions
         )
 
@@ -105,9 +116,11 @@ fun MainSettingsScreen(
 @Composable
 fun MainSettingsScreen(
     state: Data,
+    backgroundSyncInterval: BackgroundSyncInterval,
     actions: MainSettingsScreen.Actions,
     modifier: Modifier = Modifier
 ) {
+    var showIntervalPicker by remember { mutableStateOf(false) }
     Scaffold(
         modifier = modifier
             .testTag(SettingsScreenTestTags.RootItem),
@@ -193,6 +206,30 @@ fun MainSettingsScreen(
                         iconRes = R.drawable.ic_proton_mobile,
                         onClick = actions.onAppSettingsClick
                     )
+                    SettingsItemDivider()
+                    ProtonMainSettingsItem(
+                        name = stringResource(id = string.mail_settings_privacy_background_sync_interval),
+                        icon = {
+                            ProtonMainSettingsIcon(
+                                iconRes = R.drawable.ic_proton_clock,
+                                contentDescription = stringResource(
+                                    id = string.mail_settings_privacy_background_sync_interval
+                                ),
+                                tint = ProtonTheme.colors.textNorm
+                            )
+                        },
+                        hint = {
+                            Text(
+                                modifier = Modifier
+                                    .clearAndSetSemantics {}
+                                    .padding(top = ProtonDimens.Spacing.Small),
+                                text = stringResource(id = backgroundSyncInterval.labelRes()),
+                                color = ProtonTheme.colors.textHint,
+                                style = ProtonTheme.typography.bodyMedium
+                            )
+                        },
+                        onClick = { showIntervalPicker = true }
+                    )
 
                     if (state.isContentSearchEnabled) {
                         SettingsItemDivider()
@@ -202,10 +239,20 @@ fun MainSettingsScreen(
                             onClick = actions.onContentSearchSettingsClick
                         )
                     }
-                    SettingsItemDivider()
                 }
             }
             Spacer(Modifier.padding(vertical = ProtonDimens.Spacing.Large))
+
+            if (showIntervalPicker) {
+                BackgroundSyncIntervalPickerDialog(
+                    selected = backgroundSyncInterval,
+                    onDismissRequest = { showIntervalPicker = false },
+                    onValueSelected = { interval ->
+                        actions.onBackgroundSyncIntervalSelected(interval)
+                        showIntervalPicker = false
+                    }
+                )
+            }
         }
     }
 }
@@ -333,6 +380,7 @@ object MainSettingsScreen {
         val onAccountStorageClicked: () -> Unit,
         val onSignatureClicked: () -> Unit,
         val onContentSearchSettingsClick: () -> Unit,
+        val onBackgroundSyncIntervalSelected: (BackgroundSyncInterval) -> Unit,
         val onBackClick: () -> Unit
     )
 }
@@ -352,6 +400,7 @@ fun PreviewMainSettingsScreen() {
     ProtonInvertedTheme {
         MainSettingsScreen(
             state = SettingsScreenPreviewData.Data,
+            backgroundSyncInterval = BackgroundSyncInterval.EVERY_15_MINUTES,
             actions = SettingsScreenPreviewData.Actions
         )
     }
