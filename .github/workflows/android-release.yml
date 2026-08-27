@@ -112,7 +112,16 @@ jobs:
         run: |
           SHA=$(git rev-parse --short=7 HEAD)
           TAG="${VERSION}-${SHA}-notif-fix"
-          NOTES=$(printf '%s\n' "### What's new" "" "- New-mail notifications without Google Play Services. Upstream, new-mail notifications arrive only via FCM push (a Google Play service); on a device without Google Play Store the app syncs mail but never notifies. This build posts the new-mail notification locally, from the app's own background sync, so it works without Google Play Services." "" "Built from upstream ${VERSION} plus the feature above.")
+          NOTES=$(printf '%s\n' \
+          "### What's new" \
+          "" \
+          "- **New-mail notifications without Google Play Services.** Upstream, new-mail notifications arrive only via FCM push (a Google Play service); on a device without Google Play Store the app syncs mail but never notifies. This build posts the new-mail notification locally, from the app's own background sync, so it works without Google Play Services." \
+          "" \
+          "- **Security Keys (FIDO2) without Google Play Services.** Two-factor with an NFC security key (YubiKey and compatible) works without Google Play Services: the fork's fido-nfc module drives the key directly over CTAP2 via NFC, replacing the GMS-only Play Services FIDO path." \
+          "" \
+          "- **Configurable background sync interval.** Settings > Privacy > \"Background sync interval\": 15 min (default) / 30 min / 1 h / 2 h / 3 h / 5 h / 12 h / 24 h / Never. WorkManager periodic work (same mechanism as K-9 Mail); the OS batches wake-ups for battery efficiency; 15 min is the platform minimum." \
+          "" \
+          "Built from upstream ${VERSION} plus the features above.")
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release $TAG already exists; replacing assets."
             gh release delete "$TAG" --yes --cleanup-tag
