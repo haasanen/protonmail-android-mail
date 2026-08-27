@@ -16,6 +16,8 @@ import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.result.ActivityResultCaller
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -38,14 +40,17 @@ import javax.inject.Singleton
  * FIDO2 assertion flow (CTAP2) without GMS, over USB (CTAPHID) and NFC
  * (ISO 14443 / IsoDep) with the same code path after transport selection.
  *
- * Transport selection is automatic: when a supported USB security key is plugged
- * in, the USB transport is used; otherwise NFC reader mode is armed. The user
- * does not choose.
+ * Transport selection is automatic and concurrent: a plugged-in USB key and an
+ * NFC tap are both watched at the same time, and whichever becomes available
+ * first wins the challenge. A key plugged in after the button press is picked
+ * up by the USB-attach listener (covering the OS enumeration delay), so the
+ * user chooses no transport and needs no specific key order.
  *
  * Contract mirrors the platform (GMS) implementation:
  *  - [register] stores the result callback (activity calls it in onCreate).
  *  - [invoke] is called on the main thread from lifecycleScope. It either starts
- *    the USB flow or arms NFC reader mode, and returns [LaunchResult.Success]
+ *    the USB flow, or arms NFC reader mode and the USB-attach watch (whichever
+ *    key becomes available first wins), and returns [LaunchResult.Success]
  *    immediately ("dialog launched"); the actual [Result] arrives later through
  *    the callback, when the security key interaction completes.
  *  - The caller tears the flow down by finishing the activity; Android disables
@@ -75,6 +80,25 @@ class NativeSecurityKeyUseCase @Inject constructor(
     @Volatile
     private var usbPermissionReceiver: BroadcastReceiver? = null
 
+    /** Receiver waiting for a YubiKey to attach late while the flow is active. */
+    @Volatile
+    private var usbAttachReceiver: BroadcastReceiver? = null
+
+    /** The activity the attach receiver was registered on, if any. */
+    private var lateWatchActivity: Activity? = null
+
+    /** Start of the late-attach window; bounds the polling safety net. */
+    private var lateWatchStartMs = 0L
+
+    /** The armed NFC reader; stopped when USB wins the race. */
+    @Volatile
+    private var nfcReader: NfcReader? = null
+
+    /** Handles the bounded poll that watches for a late USB attach. */
+    private val lateAttachHandler = Handler(Looper.getMainLooper())
+
+    private val lateAttachPoll = Runnable { checkForLateUsbAttach() }
+
     override fun register(
         caller: ActivityResultCaller,
         onResult: (Result, Fido2PublicKeyCredentialRequestOptions) -> Unit,
@@ -96,7 +120,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
         inProgress = true
         inProgressActivity = activity
 
-        // USB first: a plugged-in key means the user intends to use it.
+        // Fast path: a key is already plugged in and known — go straight to USB.
         val usbDevice = findUsbSecurityKey()
         if (usbDevice != null) {
             if (hasUsbPermission(usbDevice)) {
@@ -107,36 +131,35 @@ class NativeSecurityKeyUseCase @Inject constructor(
             return LaunchResult.Success
         }
 
-        // NFC fallback.
+        // No key yet: arm both transports at once (first-wins). NFC reader mode
+        // covers a tap; the late-attach watch covers a key plugged in now or
+        // appearing a few seconds later during OS enumeration.
         val adapter = NfcAdapter.getDefaultAdapter(activity)
-            ?: return withReset {
-                LaunchResult.Failure(
-                    FidoNativeException("No security key connected and NFC is not available on this device"),
-                )
-            }
-        if (!adapter.isEnabled) {
-            return withReset {
-                LaunchResult.Failure(
-                    FidoNativeException("Plug in the USB security key or enable NFC on this device"),
-                )
-            }
+        if (adapter == null || !adapter.isEnabled) {
+            // No NFC on this device (or it is off): wait for a USB key only.
+            startLateUsbWatch(activity)
+            return LaunchResult.Success
         }
 
-        val started = NfcReader { tag -> onTag(tag) }.start(activity)
-        if (!started) {
-            return withReset {
-                LaunchResult.Failure(
-                    FidoNativeException("Could not start the NFC security key reader"),
-                )
-            }
+        val reader = NfcReader { tag -> onTag(tag) }
+        if (reader.start(activity)) {
+            nfcReader = reader
+        } else {
+            Log.e(NfcCtap2Transport.TAG, "could not arm NFC reader mode; watching USB only")
         }
 
-        // Reader mode is armed: behave like the GMS dialog launch. The result
-        // is delivered through the registered callback when the key is tapped.
+        startLateUsbWatch(activity)
+
+        // Both transports armed (or the best available one): behave like the
+        // GMS dialog launch. The result is delivered through the registered
+        // callback when the key is tapped (NFC) or a USB key attaches.
         return LaunchResult.Success
     }
 
     private fun onTag(tag: Tag) {
+        // NFC won the race: stop the USB-attach watch so a key plugged in
+        // moments later cannot start a second flow while this one runs.
+        stopLateUsbWatch()
         val options = currentOptions ?: return
         val callback = onResult ?: return
         resetFlowState()
@@ -252,6 +275,87 @@ class NativeSecurityKeyUseCase @Inject constructor(
         usbPermissionReceiver = null
     }
 
+    /**
+     * Arms the late-attach watch so a USB key that appears after the button
+     * press can still win the flow. Two layers, both on the main thread:
+     *  1. a runtime receiver for ACTION_USB_DEVICE_ATTACHED (primary, passive —
+     *     no polling cost), and
+     *  2. a bounded poll of deviceList as a safety net, because on some devices
+     *     the OS takes several seconds to bring up a new device. The poll stops
+     *     after [LATE_ATTACH_WATCH_WINDOW_MS]; the receiver stays until reset.
+     */
+    private fun startLateUsbWatch(activity: Activity) {
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(c: Context, intent: Intent) {
+                val device = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
+                if (device == null || device.vendorId != USB_VENDOR_YUBICO) return
+                onLateUsbAttach(device)
+            }
+        }
+        usbAttachReceiver = receiver
+        lateWatchActivity = activity
+        lateWatchStartMs = System.currentTimeMillis()
+        val filter = IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                activity.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+            } else {
+                activity.registerReceiver(receiver, filter)
+            }
+        } catch (e: Exception) {
+            Log.e(UsbCtap2Transport.TAG, "registerReceiver (USB attach) failed", e)
+        }
+        lateAttachHandler.removeCallbacks(lateAttachPoll)
+        lateAttachHandler.postDelayed(lateAttachPoll, LATE_ATTACH_POLL_INTERVAL_MS)
+    }
+
+    /**
+     * A YubiKey attached while the flow is active: USB wins the race. Release
+     * the NFC arm and start the USB flow (requesting permission if needed).
+     */
+    private fun onLateUsbAttach(device: UsbDevice) {
+        if (!inProgress) return
+        val activity = inProgressActivity ?: return
+        Log.i(UsbCtap2Transport.TAG, "USB key attached during flow; switching NFC -> USB")
+        nfcReader?.stop(activity)
+        nfcReader = null
+        stopLateUsbWatch()
+        if (hasUsbPermission(device)) {
+            startUsbFlow(device)
+        } else {
+            requestUsbPermission(activity, device)
+        }
+    }
+
+    /**
+     * One tick of the bounded late-attach poll: if a YubiKey is present it wins
+     * the race; otherwise reschedule until the watch window is over.
+     */
+    private fun checkForLateUsbAttach() {
+        val device = findUsbSecurityKey()
+        if (device != null) {
+            onLateUsbAttach(device)
+        } else if (System.currentTimeMillis() - lateWatchStartMs < LATE_ATTACH_WATCH_WINDOW_MS) {
+            lateAttachHandler.postDelayed(lateAttachPoll, LATE_ATTACH_POLL_INTERVAL_MS)
+        }
+    }
+
+    private fun stopLateUsbWatch() {
+        lateAttachHandler.removeCallbacks(lateAttachPoll)
+        usbAttachReceiver?.let { receiver ->
+            val activity = lateWatchActivity
+            if (activity != null) {
+                try {
+                    activity.unregisterReceiver(receiver)
+                } catch (e: Exception) {
+                    // receiver already released with the activity
+                }
+            }
+        }
+        usbAttachReceiver = null
+        lateWatchActivity = null
+    }
+
     private fun deliverError(ex: Exception) {
         val options = currentOptions
         val callback = onResult
@@ -264,6 +368,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
         inProgress = false
         inProgressActivity = null
         unregisterUsbReceiver()
+        stopLateUsbWatch()
     }
 
     /** Runs the shared CTAP2 assertion on any transport [session]. */
@@ -450,6 +555,8 @@ class NativeSecurityKeyUseCase @Inject constructor(
     companion object {
         private const val USB_PERMISSION_ACTION = "me.proton.android.core.auth.fido.USB_PERMISSION"
         private const val USB_VENDOR_YUBICO = 0x1050
+        private const val LATE_ATTACH_POLL_INTERVAL_MS = 500L
+        private const val LATE_ATTACH_WATCH_WINDOW_MS = 60_000L
     }
 }
 

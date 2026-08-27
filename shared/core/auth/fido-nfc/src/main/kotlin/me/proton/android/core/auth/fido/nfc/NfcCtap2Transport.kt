@@ -197,4 +197,17 @@ class NfcReader(private val onTag: (Tag) -> Unit) {
         }
         return true
     }
+
+    /**
+     * Disables reader mode on [activity]. Called when the USB transport wins
+     * the first-wins race while reader mode is armed.
+     */
+    fun stop(activity: Activity) {
+        val adapter = NfcAdapter.getDefaultAdapter(activity) ?: return
+        try {
+            adapter.disableReaderMode(activity)
+        } catch (e: Exception) {
+            // best-effort
+        }
+    }
 }
