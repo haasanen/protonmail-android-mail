@@ -90,7 +90,6 @@
     <string name="mail_settings_privacy_background_sync">Background sync</string>
     <string name="mail_settings_privacy_background_sync_description">If this option is enabled, the app will sync with the server in the background. Disabling this feature will also disable push notifications.</string>
     <string name="mail_settings_privacy_background_sync_interval">Background sync interval</string>
-    <string name="mail_settings_background_sync_interval_real_time">Real-time</string>
     <string name="mail_settings_background_sync_interval_15_min">15 minutes</string>
     <string name="mail_settings_background_sync_interval_30_min">30 minutes</string>
     <string name="mail_settings_background_sync_interval_1_hour">1 hour</string>

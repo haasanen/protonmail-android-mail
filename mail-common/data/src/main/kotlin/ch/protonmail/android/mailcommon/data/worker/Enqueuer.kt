@@ -267,7 +267,7 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
         constraints: Constraints?,
         tag: String,
         backoffCriteria: BackoffCriteria = BackoffCriteria.DefaultLinear,
-        repeatedInterval: Long = 30,
+        repeatedInterval: Long = 15,
         repeatedIntervalUnit: TimeUnit = TimeUnit.MINUTES,
         initialDelay: Duration = 30.seconds.toJavaDuration()
     ): PeriodicWorkRequest {

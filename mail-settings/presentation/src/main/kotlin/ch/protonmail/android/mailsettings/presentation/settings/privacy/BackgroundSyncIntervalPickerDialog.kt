@@ -30,7 +30,6 @@ fun BackgroundSyncIntervalPickerDialog(
 }
 
 internal fun BackgroundSyncInterval.labelRes(): Int = when (this) {
-    BackgroundSyncInterval.REAL_TIME -> R.string.mail_settings_background_sync_interval_real_time
     BackgroundSyncInterval.EVERY_15_MINUTES -> R.string.mail_settings_background_sync_interval_15_min
     BackgroundSyncInterval.EVERY_30_MINUTES -> R.string.mail_settings_background_sync_interval_30_min
     BackgroundSyncInterval.EVERY_1_HOUR -> R.string.mail_settings_background_sync_interval_1_hour

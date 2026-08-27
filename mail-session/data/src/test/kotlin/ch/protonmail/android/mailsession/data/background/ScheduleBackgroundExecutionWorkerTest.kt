@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
@@ -39,6 +40,14 @@ internal class ScheduleBackgroundExecutionWorkerTest {
     private val enqueuer = mockk<Enqueuer>()
     private val bgProcessingNewConstraintEnabled = mockk<FeatureFlag<Boolean>>()
     private val params = mockk<WorkerParameters>()
+
+    init {
+        // Inc3: doWork() reads the interval from inputData; the strict mock must
+        // answer that or runCatching swallows the exception and returns retry().
+        every { params.inputData } returns androidx.work.Data.Builder()
+            .putLong(ScheduleBackgroundExecutionWorker.ATTRIBUTE_INTERVAL_MINUTES, 15L)
+            .build()
+    }
 
     private val worker = ScheduleBackgroundExecutionWorker(
         mockk(),
@@ -54,6 +63,7 @@ internal class ScheduleBackgroundExecutionWorkerTest {
         coEvery {
             enqueuer.enqueueUniquePeriodicWork(
                 workerId = WORKER_ID,
+                intervalMinutes = 15L,
                 tag = BACKGROUND_WORK_TAG,
                 worker = BackgroundExecutionWorker::class.java,
                 constraints = any(),
@@ -69,6 +79,7 @@ internal class ScheduleBackgroundExecutionWorkerTest {
         coVerify(exactly = 1) {
             enqueuer.enqueueUniquePeriodicWork(
                 workerId = WORKER_ID,
+                intervalMinutes = 15L,
                 tag = BACKGROUND_WORK_TAG,
                 worker = BackgroundExecutionWorker::class.java,
                 constraints = expectedConstraints(requiresBatteryNotLow = true),
@@ -84,6 +95,7 @@ internal class ScheduleBackgroundExecutionWorkerTest {
         coEvery {
             enqueuer.enqueueUniquePeriodicWork(
                 workerId = WORKER_ID,
+                intervalMinutes = 15L,
                 tag = BACKGROUND_WORK_TAG,
                 worker = BackgroundExecutionWorker::class.java,
                 constraints = any(),
@@ -99,6 +111,7 @@ internal class ScheduleBackgroundExecutionWorkerTest {
         coVerify(exactly = 1) {
             enqueuer.enqueueUniquePeriodicWork(
                 workerId = WORKER_ID,
+                intervalMinutes = 15L,
                 tag = BACKGROUND_WORK_TAG,
                 worker = BackgroundExecutionWorker::class.java,
                 constraints = expectedConstraints(requiresBatteryNotLow = false),

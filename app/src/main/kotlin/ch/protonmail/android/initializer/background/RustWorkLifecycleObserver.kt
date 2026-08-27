@@ -18,10 +18,7 @@
 
 package ch.protonmail.android.initializer.background
 
-import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.DefaultLifecycleObserver
-import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arrow.core.getOrElse
@@ -41,7 +38,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class RustWorkLifecycleObserver @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val mailSessionRepository: MailSessionRepository,
     private val backgroundExecutionWorkScheduler: BackgroundExecutionWorkScheduler,
     observeBackgroundSyncInterval: ObserveBackgroundSyncInterval,
@@ -50,17 +46,16 @@ class RustWorkLifecycleObserver @Inject constructor(
 
     private val backgroundSyncInterval: StateFlow<BackgroundSyncInterval> =
         observeBackgroundSyncInterval()
-            .map { it.getOrElse { BackgroundSyncInterval.REAL_TIME } }
-            .stateIn(appScope, SharingStarted.Eagerly, BackgroundSyncInterval.REAL_TIME)
+            .map { it.getOrElse { BackgroundSyncInterval.EVERY_15_MINUTES } }
+            .stateIn(appScope, SharingStarted.Eagerly, BackgroundSyncInterval.EVERY_15_MINUTES)
 
     init {
         appScope.launch {
-            backgroundSyncInterval.collect { applyForegroundServiceState(it) }
+            backgroundSyncInterval.collect { applyBackgroundSyncInterval() }
         }
     }
 
     override fun onStart(owner: LifecycleOwner) {
-        applyForegroundServiceState(backgroundSyncInterval.value)
         owner.lifecycleScope.launch {
             backgroundExecutionWorkScheduler.cancelPendingWork()
             onRustEnterForeground()
@@ -69,36 +64,22 @@ class RustWorkLifecycleObserver @Inject constructor(
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        appScope.launch { applyBackgroundSyncIntervalInBackground() }
+        appScope.launch { applyBackgroundSyncInterval() }
         onRustExitForeground()
         Timber.d("onStop finished - background sync interval applied + onExitForeground")
     }
 
-    private suspend fun applyBackgroundSyncIntervalInBackground() {
+    private suspend fun applyBackgroundSyncInterval() {
         when (val interval = backgroundSyncInterval.value) {
             BackgroundSyncInterval.NEVER -> {
                 backgroundExecutionWorkScheduler.cancelPendingWork()
                 Timber.d("Background sync disabled by user; canceling pending work")
             }
 
-            BackgroundSyncInterval.REAL_TIME -> {
-                // Stock 30-minute safety net; the foreground service keeps the stream live.
-                backgroundExecutionWorkScheduler.scheduleWork()
-            }
-
             else -> {
-                backgroundExecutionWorkScheduler.scheduleWork(
-                    interval.intervalMinutes() ?: 30L
-                )
+                backgroundExecutionWorkScheduler.scheduleWork(interval.intervalMinutes() ?: 15L)
+                Timber.d("Background sync interval applied: ${interval.name}")
             }
-        }
-    }
-
-    private fun applyForegroundServiceState(interval: BackgroundSyncInterval) {
-        if (interval.isRealTime) {
-            startMailSyncService()
-        } else {
-            context.stopService(Intent(context, MailSyncForegroundService::class.java))
         }
     }
 
@@ -108,18 +89,5 @@ class RustWorkLifecycleObserver @Inject constructor(
 
     private fun onRustEnterForeground() {
         mailSessionRepository.getMailSession().onEnterForeground()
-    }
-
-    private fun startMailSyncService() {
-        try {
-            if (!mailSessionRepository.isMailSessionInitialised()) {
-                return
-            }
-            context.startForegroundService(Intent(context, MailSyncForegroundService::class.java))
-        } catch (e: Exception) {
-            // Session may not be initialised yet (lateinit) or start may be rejected
-            // (app in background). The scheduled work is the fallback.
-            Timber.w(e, "Failed to start mail sync service")
-        }
     }
 }

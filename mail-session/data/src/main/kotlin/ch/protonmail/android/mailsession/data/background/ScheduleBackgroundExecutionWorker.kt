@@ -70,6 +70,6 @@ internal class ScheduleBackgroundExecutionWorker @AssistedInject constructor(
 
         const val WORKER_ID = "schedule_background_execution"
         const val ATTRIBUTE_INTERVAL_MINUTES = "interval_minutes"
-        const val DEFAULT_INTERVAL_MINUTES = 30L
+        const val DEFAULT_INTERVAL_MINUTES = 15L
     }
 }
