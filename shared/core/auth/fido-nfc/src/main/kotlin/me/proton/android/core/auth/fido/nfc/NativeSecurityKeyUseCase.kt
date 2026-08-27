@@ -5,10 +5,17 @@
 package me.proton.android.core.auth.fido.nfc
 
 import android.app.Activity
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
 import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
 import android.nfc.Tag
+import android.os.Build
 import android.util.Log
 import androidx.activity.result.ActivityResultCaller
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -28,18 +35,25 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * FIDO2 assertion flow over NFC (CTAP2, ISO 14443 / IsoDep) without GMS.
+ * FIDO2 assertion flow (CTAP2) without GMS, over USB (CTAPHID) and NFC
+ * (ISO 14443 / IsoDep) with the same code path after transport selection.
+ *
+ * Transport selection is automatic: when a supported USB security key is plugged
+ * in, the USB transport is used; otherwise NFC reader mode is armed. The user
+ * does not choose.
  *
  * Contract mirrors the platform (GMS) implementation:
  *  - [register] stores the result callback (activity calls it in onCreate).
- *  - [invoke] is called on the main thread from lifecycleScope. It arms NFC
- *    reader mode and returns [LaunchResult.Success] immediately ("dialog
- *    launched"); the actual [Result] arrives later through the callback,
- *    when the security key is tapped and the CTAP2 exchange completes.
- *  - The caller tears the flow down by finishing the activity; Android
- *    disables reader mode with the activity.
+ *  - [invoke] is called on the main thread from lifecycleScope. It either starts
+ *    the USB flow or arms NFC reader mode, and returns [LaunchResult.Success]
+ *    immediately ("dialog launched"); the actual [Result] arrives later through
+ *    the callback, when the security key interaction completes.
+ *  - The caller tears the flow down by finishing the activity; Android disables
+ *    reader mode with the activity, and a USB permission receiver registered in
+ *    the activity is released with it.
  */
 @Singleton
+@Suppress("TooGenericExceptionCaught")
 class NativeSecurityKeyUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : PerformTwoFaWithSecurityKey<ActivityResultCaller, Activity> {
@@ -57,6 +71,10 @@ class NativeSecurityKeyUseCase @Inject constructor(
     @Volatile
     private var inProgressActivity: Activity? = null
 
+    /** Receiver waiting for the USB permission result (USB path only). */
+    @Volatile
+    private var usbPermissionReceiver: BroadcastReceiver? = null
+
     override fun register(
         caller: ActivityResultCaller,
         onResult: (Result, Fido2PublicKeyCredentialRequestOptions) -> Unit,
@@ -68,15 +86,6 @@ class NativeSecurityKeyUseCase @Inject constructor(
         activity: Activity,
         publicKey: Fido2PublicKeyCredentialRequestOptions,
     ): LaunchResult {
-        val adapter = NfcAdapter.getDefaultAdapter(activity)
-            ?: return LaunchResult.Failure(
-                FidoNativeException("NFC is not available on this device"),
-            )
-        if (!adapter.isEnabled) {
-            return LaunchResult.Failure(
-                FidoNativeException("NFC is disabled on this device"),
-            )
-        }
         if (inProgress && activity === inProgressActivity) {
             return LaunchResult.Failure(
                 FidoNativeException("A security key operation is already in progress"),
@@ -87,13 +96,39 @@ class NativeSecurityKeyUseCase @Inject constructor(
         inProgress = true
         inProgressActivity = activity
 
+        // USB first: a plugged-in key means the user intends to use it.
+        val usbDevice = findUsbSecurityKey()
+        if (usbDevice != null) {
+            if (hasUsbPermission(usbDevice)) {
+                startUsbFlow(usbDevice)
+            } else {
+                requestUsbPermission(activity, usbDevice)
+            }
+            return LaunchResult.Success
+        }
+
+        // NFC fallback.
+        val adapter = NfcAdapter.getDefaultAdapter(activity)
+            ?: return withReset {
+                LaunchResult.Failure(
+                    FidoNativeException("No security key connected and NFC is not available on this device"),
+                )
+            }
+        if (!adapter.isEnabled) {
+            return withReset {
+                LaunchResult.Failure(
+                    FidoNativeException("Plug in the USB security key or enable NFC on this device"),
+                )
+            }
+        }
+
         val started = NfcReader { tag -> onTag(tag) }.start(activity)
         if (!started) {
-            inProgress = false
-            inProgressActivity = null
-            return LaunchResult.Failure(
-                FidoNativeException("Could not start the NFC security key reader"),
-            )
+            return withReset {
+                LaunchResult.Failure(
+                    FidoNativeException("Could not start the NFC security key reader"),
+                )
+            }
         }
 
         // Reader mode is armed: behave like the GMS dialog launch. The result
@@ -104,31 +139,141 @@ class NativeSecurityKeyUseCase @Inject constructor(
     private fun onTag(tag: Tag) {
         val options = currentOptions ?: return
         val callback = onResult ?: return
-        inProgress = false
-        inProgressActivity = null
+        resetFlowState()
         currentOptions = null
         // The CTAP2 exchange blocks on IsoDep transceives: off the main thread.
         Thread {
-            val result = runCatching { performAssertion(tag, options) }
+            val session = try {
+                NfcSession(tag)
+            } catch (e: Exception) {
+                callback(errorResult(e), options)
+                return@Thread
+            }
+            val result = runCatching { performAssertion(session, options) }
                 .getOrElse { ex ->
                     Log.e(NfcCtap2Transport.TAG, "assertion flow failed", ex)
                     errorResult(ex)
                 }
+            session.close()
             callback(result, options)
         }.apply { isDaemon = true }.start()
     }
 
+    /**
+     * Starts the USB assertion flow on a worker thread: bind the HID interface,
+     * allocate the CTAPHID channel, run the assertion. The result is delivered
+     * through the registered callback.
+     */
+    private fun startUsbFlow(device: UsbDevice) {
+        val options = currentOptions ?: return
+        val callback = onResult ?: return
+        resetFlowState()
+        currentOptions = null
+        Thread {
+            val usb = usbManager()
+            val transport = UsbCtap2Transport()
+            val session = try {
+                if (usb == null || !transport.bindDevice(device, usb)) {
+                    throw FidoNativeException("Could not open the USB security key")
+                }
+                UsbSession(transport)
+            } catch (e: Exception) {
+                transport.release()
+                callback(errorResult(e), options)
+                return@Thread
+            }
+            val result = runCatching { performAssertion(session, options) }
+                .getOrElse { ex ->
+                    Log.e(UsbCtap2Transport.TAG, "assertion flow failed", ex)
+                    errorResult(ex)
+                }
+            session.close()
+            callback(result, options)
+        }.apply { isDaemon = true }.start()
+    }
+
+    /**
+     * Requests USB access through the system dialog. The receiver is registered
+     * in the activity, so it is released with the activity; on grant the USB
+     * flow starts, on denial an error is delivered through the callback.
+     */
+    private fun requestUsbPermission(activity: Activity, device: UsbDevice) {
+        val usb = usbManager() ?: run {
+            deliverError(FidoNativeException("USB is not available on this device"))
+            return
+        }
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(c: Context, intent: Intent) {
+                unregisterUsbReceiver()
+                if (!intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                    deliverError(FidoNativeException("USB access was not granted"))
+                    return
+                }
+                startUsbFlow(device)
+            }
+        }
+        usbPermissionReceiver = receiver
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE
+        } else {
+            PendingIntent.FLAG_NO_CREATE
+        }
+        val intent = Intent(USB_PERMISSION_ACTION).setPackage(context.packageName)
+        val pending = PendingIntent.getBroadcast(context, 0, intent, flags)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                activity.registerReceiver(
+                    receiver,
+                    IntentFilter(USB_PERMISSION_ACTION),
+                    Context.RECEIVER_NOT_EXPORTED,
+                )
+            } else {
+                activity.registerReceiver(receiver, IntentFilter(USB_PERMISSION_ACTION))
+            }
+        } catch (e: Exception) {
+            Log.e(UsbCtap2Transport.TAG, "registerReceiver failed", e)
+        }
+        try {
+            usb.requestPermission(device, pending)
+        } catch (e: Exception) {
+            unregisterUsbReceiver()
+            deliverError(FidoNativeException("Could not request USB access"))
+        }
+    }
+
+    private fun unregisterUsbReceiver() {
+        usbPermissionReceiver?.let { receiver ->
+            try {
+                inProgressActivity?.unregisterReceiver(receiver)
+            } catch (e: Exception) {
+                // receiver already released with the activity
+            }
+        }
+        usbPermissionReceiver = null
+    }
+
+    private fun deliverError(ex: Exception) {
+        val options = currentOptions
+        val callback = onResult
+        resetFlowState()
+        currentOptions = null
+        if (options != null && callback != null) callback(errorResult(ex), options)
+    }
+
+    private fun resetFlowState() {
+        inProgress = false
+        inProgressActivity = null
+        unregisterUsbReceiver()
+    }
+
+    /** Runs the shared CTAP2 assertion on any transport [session]. */
     private fun performAssertion(
-        tag: Tag,
+        session: Ctap2Session,
         options: Fido2PublicKeyCredentialRequestOptions,
     ): Result {
-        val transport = NfcCtap2Transport()
         return try {
-            if (!transport.bindTag(tag)) {
-                throw FidoNativeException("The tag does not support contactless (IsoDep) exchange")
-            }
-            if (!transport.selectFidoApplet()) {
-                throw FidoNativeException("No FIDO2 security key applet found on the tag")
+            if (!session.prepare()) {
+                throw FidoNativeException("Could not reach the FIDO2 applet on the security key")
             }
 
             val appId = options.extensions?.appId?.takeIf { it.isNotBlank() }
@@ -158,7 +303,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
                 userVerification = options.userVerification,
             )
 
-            val response = transport.getAssertion(request)
+            val response = session.getAssertion(request)
             val ctap = Ctap2Cbor.decodeGetAssertion(response, options.allowCredentials)
 
             Success(
@@ -174,8 +319,6 @@ class NativeSecurityKeyUseCase @Inject constructor(
             )
         } catch (e: Ctap2Error) {
             errorResult(e)
-        } finally {
-            transport.release()
         }
     }
 
@@ -205,6 +348,21 @@ class NativeSecurityKeyUseCase @Inject constructor(
             Error(ErrorData(code, message))
         }
     }
+
+    /**
+     * Finds a plugged-in USB security key. Currently matches Yubico devices
+     * (the key used by this fork); widen the filter to support other vendors.
+     */
+    private fun findUsbSecurityKey(): UsbDevice? {
+        val usb = usbManager() ?: return null
+        return usb.deviceList.values.firstOrNull { it.vendorId == USB_VENDOR_YUBICO }
+    }
+
+    private fun hasUsbPermission(device: UsbDevice): Boolean =
+        usbManager()?.hasPermission(device) ?: false
+
+    private fun usbManager(): UsbManager? =
+        context.applicationContext.getSystemService(UsbManager::class.java)
 
     /**
      * The Proton RP id as the server reports it. The official-origin override is
@@ -282,6 +440,62 @@ class NativeSecurityKeyUseCase @Inject constructor(
 
     private fun bytesOfUByteArray(data: UByteArray): ByteArray =
         ByteArray(data.size) { data[it].toByte() }
+
+    private inline fun withReset(block: () -> LaunchResult): LaunchResult {
+        resetFlowState()
+        currentOptions = null
+        return block()
+    }
+
+    companion object {
+        private const val USB_PERMISSION_ACTION = "me.proton.android.core.auth.fido.USB_PERMISSION"
+        private const val USB_VENDOR_YUBICO = 0x1050
+    }
+}
+
+/**
+ * A bound CTAP2 channel, transport-agnostic. [prepare] makes the FIDO2 applet
+ * reachable (NFC: applet select; USB: CTAPHID channel allocation) and [getAssertion]
+ * runs authenticatorGetAssertion, returning the CBOR response body (CTAP status
+ * 0x00) or throwing [Ctap2Error] with the CTAP status code.
+ */
+internal interface Ctap2Session {
+    fun prepare(): Boolean
+    fun getAssertion(cbor: ByteArray): ByteArray
+    fun close()
+}
+
+internal class NfcSession(tag: Tag) : Ctap2Session {
+    private val transport = NfcCtap2Transport()
+
+    init {
+        if (!transport.bindTag(tag)) {
+            throw FidoNativeException("The tag does not support contactless (IsoDep) exchange")
+        }
+    }
+
+    override fun prepare(): Boolean = transport.selectFidoApplet()
+
+    override fun getAssertion(cbor: ByteArray): ByteArray = transport.getAssertion(cbor)
+
+    override fun close() {
+        transport.release()
+    }
+}
+
+internal class UsbSession(private val transport: UsbCtap2Transport) : Ctap2Session {
+    override fun prepare(): Boolean {
+        if (!transport.initialize()) {
+            throw FidoNativeException("The USB security key did not respond (channel allocation failed)")
+        }
+        return true
+    }
+
+    override fun getAssertion(cbor: ByteArray): ByteArray = transport.getAssertion(cbor)
+
+    override fun close() {
+        transport.release()
+    }
 }
 
 /** Marker exception for transport-level failures of the native FIDO flow. */

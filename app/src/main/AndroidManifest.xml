@@ -26,6 +26,11 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- Security Key (FIDO2) over USB: optional, keeps the app installable without USB host. -->
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />

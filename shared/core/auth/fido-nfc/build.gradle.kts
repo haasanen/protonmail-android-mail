@@ -39,6 +39,8 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
 
+    testImplementation(libs.bundles.test)
+
     implementation(libs.kotlin.coroutines.core)
     implementation(libs.dagger.hilt.android)
     implementation(libs.androidx.activity.ktx)
