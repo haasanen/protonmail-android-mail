@@ -102,7 +102,6 @@ class NativeSecurityKeyUseCase @Inject constructor(
     }
 
     private fun onTag(tag: Tag) {
-        Log.d(NfcCtap2Transport.TAG, "tag received: ${tag.techList?.joinToString { it.javaClass.simpleName }}")
         val options = currentOptions ?: return
         val callback = onResult ?: return
         inProgress = false
@@ -131,7 +130,6 @@ class NativeSecurityKeyUseCase @Inject constructor(
             if (!transport.selectFidoApplet()) {
                 throw FidoNativeException("No FIDO2 security key applet found on the tag")
             }
-            Log.d(NfcCtap2Transport.TAG, "applet selected, building getAssertion")
 
             val appId = options.extensions?.appId?.takeIf { it.isNotBlank() }
             val rpId = options.rpId
@@ -161,17 +159,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
             )
 
             val response = transport.getAssertion(request)
-            Log.d(
-                NfcCtap2Transport.TAG,
-                "assertion body len=${response.size} hex=[${
-                    response.joinToString(" ") { (it.toInt() and 0xFF).toString(16).uppercase().padStart(2, '0') }
-                }]"
-            )
             val ctap = Ctap2Cbor.decodeGetAssertion(response, options.allowCredentials)
-            Log.d(
-                NfcCtap2Transport.TAG,
-                "decoded: cred=${ctap.credentialId.size} authData=${ctap.authenticatorData.size} sig=${ctap.signature.size}"
-            )
 
             Success(
                 rawId = ctap.credentialId,

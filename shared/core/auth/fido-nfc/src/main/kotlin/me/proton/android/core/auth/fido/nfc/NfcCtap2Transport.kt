@@ -78,7 +78,6 @@ class NfcCtap2Transport {
         if (raw.isEmpty()) throw Ctap2Error("empty NFC response")
         val ctapStatus = raw[0].toInt()
         val body = raw.copyOfRange(1, raw.size)
-        Log.d(TAG, "ctap status=0x${ctapStatus.toString(16).uppercase()} bodyLen=${body.size}")
         if (ctapStatus != 0x00) {
             throw Ctap2Error(
                 "CTAP getAssertion failed, status 0x${ctapStatus.toString(16).uppercase()}",
@@ -146,11 +145,8 @@ class NfcCtap2Transport {
 
     private fun transceive(dep: IsoDep, apdu: ByteArray): ByteArray {
         dep.setTimeout(TIMEOUT_MS)
-        Log.d(TAG, "transceive req=[${apdu.toHex()}]")
         return try {
-            val resp = dep.transceive(apdu)
-            Log.d(TAG, "transceive resp len=${resp.size} sw=0x${statusWord(resp).toString(16).uppercase()}")
-            resp
+            dep.transceive(apdu)
         } catch (e: Exception) {
             Log.e(TAG, "transceive failed req=[${apdu.toHex()}]", e)
             throw Ctap2Error("NFC transceive failed: ${e.message}", cause = e)
