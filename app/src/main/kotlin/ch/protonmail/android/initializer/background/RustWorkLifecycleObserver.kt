@@ -18,7 +18,10 @@
 
 package ch.protonmail.android.initializer.background
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.DefaultLifecycleObserver
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import ch.protonmail.android.mailsession.data.background.BackgroundExecutionWorkScheduler
@@ -28,11 +31,13 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class RustWorkLifecycleObserver @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val mailSessionRepository: MailSessionRepository,
     private val backgroundExecutionWorkScheduler: BackgroundExecutionWorkScheduler
 ) : DefaultLifecycleObserver {
 
     override fun onStart(owner: LifecycleOwner) {
+        startMailSyncService()
         owner.lifecycleScope.launch {
             backgroundExecutionWorkScheduler.cancelPendingWork()
             onRustEnterForeground()
@@ -52,5 +57,18 @@ class RustWorkLifecycleObserver @Inject constructor(
 
     private fun onRustEnterForeground() {
         mailSessionRepository.getMailSession().onEnterForeground()
+    }
+
+    private fun startMailSyncService() {
+        try {
+            if (!mailSessionRepository.isMailSessionInitialised()) {
+                return
+            }
+            context.startForegroundService(Intent(context, MailSyncForegroundService::class.java))
+        } catch (e: Exception) {
+            // Session may not be initialised yet (lateinit) or start may be rejected
+            // (app in background). The 30-minute work schedule is the fallback.
+            Timber.w(e, "Failed to start mail sync service")
+        }
     }
 }
