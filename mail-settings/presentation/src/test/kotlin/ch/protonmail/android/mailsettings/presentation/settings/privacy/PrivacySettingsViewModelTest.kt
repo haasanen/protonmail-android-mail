@@ -24,9 +24,12 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObserveBackgroundSyncInterval
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateAutoShowEmbeddedImagesSetting
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateBackgroundSyncInterval
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateBackgroundSyncSetting
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdatePreventScreenshotsSetting
@@ -63,6 +66,8 @@ internal class PrivacySettingsViewModelTest {
     private val updatePreventScreenshotsSetting = mockk<UpdatePreventScreenshotsSetting>()
     private val updateLinkConfirmationSetting = mockk<UpdateLinkConfirmationSetting>()
     private val updateBackgroundSyncSetting = mockk<UpdateBackgroundSyncSetting>()
+    private val observeBackgroundSyncInterval = mockk<ObserveBackgroundSyncInterval>()
+    private val updateBackgroundSyncInterval = mockk<UpdateBackgroundSyncInterval>()
     private val privacySettingsReducer = spyk<PrivacySettingsReducer>()
     private val viewModel: PrivacySettingsViewModel by lazy {
         PrivacySettingsViewModel(
@@ -73,6 +78,8 @@ internal class PrivacySettingsViewModelTest {
             updateLinkConfirmationSetting,
             updatePreventScreenshotsSetting,
             updateBackgroundSyncSetting,
+            observeBackgroundSyncInterval,
+            updateBackgroundSyncInterval,
             privacySettingsReducer
         )
     }
@@ -80,6 +87,7 @@ internal class PrivacySettingsViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
+        every { observeBackgroundSyncInterval.invoke() } returns flowOf(BackgroundSyncInterval.REAL_TIME.right())
     }
 
     @After

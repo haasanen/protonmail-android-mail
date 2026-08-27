@@ -22,7 +22,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObserveBackgroundSyncInterval
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateBackgroundSyncInterval
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateAutoShowEmbeddedImagesSetting
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateBackgroundSyncSetting
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
@@ -33,7 +36,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -48,13 +54,23 @@ class PrivacySettingsViewModel @Inject constructor(
     private val updateLinkConfirmationSetting: UpdateLinkConfirmationSetting,
     private val updatePreventScreenshotsSetting: UpdatePreventScreenshotsSetting,
     private val updateBackgroundSyncSetting: UpdateBackgroundSyncSetting,
+    observeBackgroundSyncInterval: ObserveBackgroundSyncInterval,
+    private val updateBackgroundSyncInterval: UpdateBackgroundSyncInterval,
     private val privacySettingsReducer: PrivacySettingsReducer
 ) : ViewModel() {
+
+    private val _backgroundSyncInterval = MutableStateFlow(BackgroundSyncInterval.REAL_TIME)
+    val backgroundSyncInterval: StateFlow<BackgroundSyncInterval> = _backgroundSyncInterval.asStateFlow()
 
     private val mutableState = MutableStateFlow<PrivacySettingsState>(PrivacySettingsState.Loading)
     val state = mutableState.asStateFlow()
 
     init {
+        observeBackgroundSyncInterval()
+            .map { it.getOrElse { BackgroundSyncInterval.REAL_TIME } }
+            .onEach { _backgroundSyncInterval.value = it }
+            .launchIn(viewModelScope)
+
         observePrimaryUserId().mapLatest { userId ->
             userId ?: return@mapLatest emitNewStateFrom(PrivacySettingsEvent.Error.LoadingError)
 
@@ -103,6 +119,13 @@ class PrivacySettingsViewModel @Inject constructor(
             updateBackgroundSyncSetting(newValue)
                 .onLeft { emitNewStateFrom(PrivacySettingsEvent.Error.UpdateError) }
                 .onRight { emitNewStateFrom(PrivacySettingsEvent.Data.AllowBackgroundSyncChanged(newValue)) }
+        }
+    }
+
+    fun onBackgroundSyncIntervalSelected(interval: BackgroundSyncInterval) {
+        viewModelScope.launch {
+            updateBackgroundSyncInterval(interval)
+                .onLeft { emitNewStateFrom(PrivacySettingsEvent.Error.UpdateError) }
         }
     }
 

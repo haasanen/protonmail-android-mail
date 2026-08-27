@@ -51,14 +51,17 @@ class BackgroundExecutionWorkScheduler @Inject constructor(
         workManager.enqueueUniqueWork(SEND_DRAIN_WORKER_ID, ExistingWorkPolicy.KEEP, request)
     }
 
-    fun scheduleWork() {
+    fun scheduleWork(intervalMinutes: Long = ScheduleBackgroundExecutionWorker.DEFAULT_INTERVAL_MINUTES) {
         enqueuer.enqueueUniqueWork(
             workerId = ScheduleBackgroundExecutionWorker.WORKER_ID,
             worker = ScheduleBackgroundExecutionWorker::class.java,
-            existingWorkPolicy = ExistingWorkPolicy.REPLACE
+            existingWorkPolicy = ExistingWorkPolicy.REPLACE,
+            params = mapOf(
+                ScheduleBackgroundExecutionWorker.ATTRIBUTE_INTERVAL_MINUTES to intervalMinutes
+            )
         )
 
-        Timber.d("Schedule background execution worker enqueued.")
+        Timber.d("Schedule background execution worker enqueued (interval=${intervalMinutes} min).")
     }
 
     suspend fun cancelPendingWork() {
