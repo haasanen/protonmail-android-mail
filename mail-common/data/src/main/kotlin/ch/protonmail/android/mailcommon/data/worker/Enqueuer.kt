@@ -213,6 +213,7 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
     fun enqueueUniquePeriodicWork(
         workerId: String,
         worker: Class<out ListenableWorker>,
+        intervalMinutes: Long = 30L,
         constraints: Constraints = buildDefaultPeriodicConstraints(),
         tag: String,
         existingPeriodicWorkPolicy: ExistingPeriodicWorkPolicy,
@@ -224,6 +225,7 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
             constraints = constraints,
             tag = tag,
             backoffCriteria = backoffCriteria,
+            repeatedInterval = intervalMinutes,
             initialDelay = initialDelay
         )
 

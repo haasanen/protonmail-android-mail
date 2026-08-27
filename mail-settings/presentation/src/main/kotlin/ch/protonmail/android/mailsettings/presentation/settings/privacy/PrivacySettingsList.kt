@@ -23,7 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
 import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.uicomponents.settings.SettingsItem
 import ch.protonmail.android.uicomponents.settings.SettingsToggleItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsList
 
@@ -31,6 +33,7 @@ import ch.protonmail.android.design.compose.component.ProtonSettingsList
 fun PrivacySettingsList(
     modifier: Modifier,
     state: PrivacySettingsState.WithData,
+    backgroundSyncInterval: BackgroundSyncInterval,
     actions: PrivacySettingsScreen.Actions
 ) {
     ProtonSettingsList(
@@ -75,6 +78,14 @@ fun PrivacySettingsList(
                 hint = stringResource(id = R.string.mail_settings_privacy_background_sync_description),
                 value = state.settings.allowBackgroundSync,
                 onToggle = actions.onAllowBackgroundSync
+            )
+        }
+        item { HorizontalDivider() }
+        item {
+            SettingsItem(
+                name = stringResource(id = R.string.mail_settings_privacy_background_sync_interval),
+                hint = stringResource(id = backgroundSyncInterval.labelRes()),
+                onClick = actions.onShowBackgroundSyncIntervalPicker
             )
         }
     }

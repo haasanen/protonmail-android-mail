@@ -36,6 +36,7 @@ import ch.protonmail.android.mailsettings.data.local.SwipeNextDataSourceImpl
 import ch.protonmail.android.mailsettings.data.local.ToolbarActionSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AutoAdvanceRepositoryImpl
+import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncIntervalRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncSettingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.CombinedContactsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.LocalStorageDataRepositoryImpl
@@ -48,6 +49,7 @@ import ch.protonmail.android.mailsettings.data.repository.ToolbarActionsReposito
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.AutoAdvanceRepository
+import ch.protonmail.android.mailsettings.domain.repository.BackgroundSyncIntervalRepository
 import ch.protonmail.android.mailsettings.domain.repository.BackgroundSyncSettingRepository
 import ch.protonmail.android.mailsettings.domain.repository.CombinedContactsRepository
 import ch.protonmail.android.mailsettings.domain.repository.InMemoryToolbarActionsRepository
@@ -130,6 +132,12 @@ object SettingsModule {
         @Binds
         @Reusable
         fun provideBackgroundSyncRepository(impl: BackgroundSyncSettingRepositoryImpl): BackgroundSyncSettingRepository
+
+        @Binds
+        @Reusable
+        fun provideBackgroundSyncIntervalRepository(
+            impl: BackgroundSyncIntervalRepositoryImpl
+        ): BackgroundSyncIntervalRepository
 
         @Binds
         @Reusable

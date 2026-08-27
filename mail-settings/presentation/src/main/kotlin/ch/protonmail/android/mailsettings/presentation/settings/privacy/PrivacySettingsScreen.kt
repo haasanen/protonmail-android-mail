@@ -38,6 +38,7 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -49,6 +50,8 @@ fun PrivacySettingsScreen(
     viewModel: PrivacySettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val backgroundSyncInterval by viewModel.backgroundSyncInterval.collectAsState()
+    val showBackgroundSyncIntervalPicker = remember { mutableStateOf(false) }
     val actions = remember {
         mutableStateOf(
             PrivacySettingsScreen.Actions(
@@ -57,7 +60,9 @@ fun PrivacySettingsScreen(
                 onShowEmbeddedImages = viewModel::onAutoShowEmbeddedImagesToggled,
                 onRequestLinkConfirmation = viewModel::onConfirmLinkToggled,
                 onPreventScreenshots = viewModel::onPreventScreenshotsToggled,
-                onAllowBackgroundSync = viewModel::onAllowBackgroundSyncToggled
+                onAllowBackgroundSync = viewModel::onAllowBackgroundSyncToggled,
+                onShowBackgroundSyncIntervalPicker = { showBackgroundSyncIntervalPicker.value = true },
+                onBackgroundSyncIntervalSelected = viewModel::onBackgroundSyncIntervalSelected
             )
         )
     }
@@ -65,8 +70,17 @@ fun PrivacySettingsScreen(
     PrivacySettingsScreen(
         modifier = modifier.testTag(PrivacySettingsTestTags.RootItem),
         state = state,
+        backgroundSyncInterval = backgroundSyncInterval,
         actions = actions.value
     )
+
+    if (showBackgroundSyncIntervalPicker.value) {
+        BackgroundSyncIntervalPickerDialog(
+            selected = backgroundSyncInterval,
+            onDismissRequest = { showBackgroundSyncIntervalPicker.value = false },
+            onValueSelected = { actions.value.onBackgroundSyncIntervalSelected(it) }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,6 +88,7 @@ fun PrivacySettingsScreen(
 fun PrivacySettingsScreen(
     modifier: Modifier = Modifier,
     state: PrivacySettingsState,
+    backgroundSyncInterval: BackgroundSyncInterval,
     actions: PrivacySettingsScreen.Actions
 ) {
     val snackbarHostState = ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR)
@@ -96,6 +111,7 @@ fun PrivacySettingsScreen(
                     PrivacySettingsList(
                         modifier = Modifier.padding(paddingValues),
                         state = state,
+                        backgroundSyncInterval = backgroundSyncInterval,
                         actions = actions
                     )
                     ConsumableLaunchedEffect(state.updateSettingsError) {
@@ -114,7 +130,9 @@ object PrivacySettingsScreen {
         val onShowEmbeddedImages: (Boolean) -> Unit,
         val onPreventScreenshots: (Boolean) -> Unit,
         val onRequestLinkConfirmation: (Boolean) -> Unit,
-        val onAllowBackgroundSync: (Boolean) -> Unit
+        val onAllowBackgroundSync: (Boolean) -> Unit,
+        val onShowBackgroundSyncIntervalPicker: () -> Unit,
+        val onBackgroundSyncIntervalSelected: (BackgroundSyncInterval) -> Unit
     )
 }
 
@@ -133,13 +151,16 @@ private fun PrivacySettingsScreenPreview() {
                 ),
                 updateSettingsError = Effect.empty()
             ),
+            backgroundSyncInterval = BackgroundSyncInterval.REAL_TIME,
             actions = PrivacySettingsScreen.Actions(
                 onBackClick = {},
                 onShowRemoteContent = {},
                 onShowEmbeddedImages = {},
                 onPreventScreenshots = {},
                 onRequestLinkConfirmation = {},
-                onAllowBackgroundSync = {}
+                onAllowBackgroundSync = {},
+                onShowBackgroundSyncIntervalPicker = {},
+                onBackgroundSyncIntervalSelected = {}
             )
         )
     }

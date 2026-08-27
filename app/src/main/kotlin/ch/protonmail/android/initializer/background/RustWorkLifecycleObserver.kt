@@ -24,8 +24,18 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import arrow.core.getOrElse
+import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailsession.data.background.BackgroundExecutionWorkScheduler
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObserveBackgroundSyncInterval
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -33,11 +43,24 @@ import javax.inject.Inject
 class RustWorkLifecycleObserver @Inject constructor(
     @ApplicationContext private val context: Context,
     private val mailSessionRepository: MailSessionRepository,
-    private val backgroundExecutionWorkScheduler: BackgroundExecutionWorkScheduler
+    private val backgroundExecutionWorkScheduler: BackgroundExecutionWorkScheduler,
+    observeBackgroundSyncInterval: ObserveBackgroundSyncInterval,
+    @AppScope private val appScope: CoroutineScope
 ) : DefaultLifecycleObserver {
 
+    private val backgroundSyncInterval: StateFlow<BackgroundSyncInterval> =
+        observeBackgroundSyncInterval()
+            .map { it.getOrElse { BackgroundSyncInterval.REAL_TIME } }
+            .stateIn(appScope, SharingStarted.Eagerly, BackgroundSyncInterval.REAL_TIME)
+
+    init {
+        appScope.launch {
+            backgroundSyncInterval.collect { applyForegroundServiceState(it) }
+        }
+    }
+
     override fun onStart(owner: LifecycleOwner) {
-        startMailSyncService()
+        applyForegroundServiceState(backgroundSyncInterval.value)
         owner.lifecycleScope.launch {
             backgroundExecutionWorkScheduler.cancelPendingWork()
             onRustEnterForeground()
@@ -46,9 +69,37 @@ class RustWorkLifecycleObserver @Inject constructor(
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        backgroundExecutionWorkScheduler.scheduleWork()
+        appScope.launch { applyBackgroundSyncIntervalInBackground() }
         onRustExitForeground()
-        Timber.d("onStop finished - schedule work called + onExitForeground")
+        Timber.d("onStop finished - background sync interval applied + onExitForeground")
+    }
+
+    private suspend fun applyBackgroundSyncIntervalInBackground() {
+        when (val interval = backgroundSyncInterval.value) {
+            BackgroundSyncInterval.NEVER -> {
+                backgroundExecutionWorkScheduler.cancelPendingWork()
+                Timber.d("Background sync disabled by user; canceling pending work")
+            }
+
+            BackgroundSyncInterval.REAL_TIME -> {
+                // Stock 30-minute safety net; the foreground service keeps the stream live.
+                backgroundExecutionWorkScheduler.scheduleWork()
+            }
+
+            else -> {
+                backgroundExecutionWorkScheduler.scheduleWork(
+                    interval.intervalMinutes() ?: 30L
+                )
+            }
+        }
+    }
+
+    private fun applyForegroundServiceState(interval: BackgroundSyncInterval) {
+        if (interval.isRealTime) {
+            startMailSyncService()
+        } else {
+            context.stopService(Intent(context, MailSyncForegroundService::class.java))
+        }
     }
 
     private fun onRustExitForeground() {
@@ -67,7 +118,7 @@ class RustWorkLifecycleObserver @Inject constructor(
             context.startForegroundService(Intent(context, MailSyncForegroundService::class.java))
         } catch (e: Exception) {
             // Session may not be initialised yet (lateinit) or start may be rejected
-            // (app in background). The 30-minute work schedule is the fallback.
+            // (app in background). The scheduled work is the fallback.
             Timber.w(e, "Failed to start mail sync service")
         }
     }

@@ -47,8 +47,12 @@ internal class ScheduleBackgroundExecutionWorker @AssistedInject constructor(
             .setRequiresBatteryNotLow(requiresBatteryNotLow)
             .build()
 
+        val intervalMinutes = inputData.getLong(ATTRIBUTE_INTERVAL_MINUTES, DEFAULT_INTERVAL_MINUTES)
+        Timber.d("Scheduling background execution every $intervalMinutes minutes")
+
         enqueuer.enqueueUniquePeriodicWork(
             workerId = BackgroundExecutionWorkScheduler.WORKER_ID,
+            intervalMinutes = intervalMinutes,
             tag = BackgroundExecutionWorkScheduler.BACKGROUND_WORK_TAG,
             worker = BackgroundExecutionWorker::class.java,
             constraints = constraints,
@@ -65,5 +69,7 @@ internal class ScheduleBackgroundExecutionWorker @AssistedInject constructor(
     internal companion object {
 
         const val WORKER_ID = "schedule_background_execution"
+        const val ATTRIBUTE_INTERVAL_MINUTES = "interval_minutes"
+        const val DEFAULT_INTERVAL_MINUTES = 30L
     }
 }
