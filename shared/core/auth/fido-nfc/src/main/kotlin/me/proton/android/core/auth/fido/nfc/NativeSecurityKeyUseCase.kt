@@ -99,6 +99,19 @@ class NativeSecurityKeyUseCase @Inject constructor(
 
     private val lateAttachPoll = Runnable { checkForLateUsbAttach() }
 
+    /**
+     * Bounds the wait for the USB permission dialog result. If the system
+     * dialog never delivers a grant or denial (e.g. a broken dialog
+     * implementation), the flow errors out with a retry hint instead of
+     * hanging until the activity is finished.
+     */
+    private val grantTimeout = Runnable {
+        if (usbPermissionReceiver != null) {
+            Log.i(UsbCtap2Transport.TAG, "USB permission dialog did not complete in time")
+            deliverError(FidoNativeException("The USB access dialog did not complete - please try again"))
+        }
+    }
+
     override fun register(
         caller: ActivityResultCaller,
         onResult: (Result, Fido2PublicKeyCredentialRequestOptions) -> Unit,
@@ -236,13 +249,22 @@ class NativeSecurityKeyUseCase @Inject constructor(
             }
         }
         usbPermissionReceiver = receiver
+        // FLAG_UPDATE_CURRENT, never FLAG_NO_CREATE: with FLAG_NO_CREATE the
+        // first call returns a null PendingIntent (nothing to reuse yet) and
+        // the system dialog would be started without a response channel -
+        // confirming it crashes the dialog and the grant is lost.
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         } else {
-            PendingIntent.FLAG_NO_CREATE
+            PendingIntent.FLAG_UPDATE_CURRENT
         }
         val intent = Intent(USB_PERMISSION_ACTION).setPackage(context.packageName)
         val pending = PendingIntent.getBroadcast(context, 0, intent, flags)
+        if (pending == null) {
+            unregisterUsbReceiver()
+            deliverError(FidoNativeException("Could not prepare the USB access request"))
+            return
+        }
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 activity.registerReceiver(
@@ -262,9 +284,12 @@ class NativeSecurityKeyUseCase @Inject constructor(
             unregisterUsbReceiver()
             deliverError(FidoNativeException("Could not request USB access"))
         }
+        lateAttachHandler.removeCallbacks(grantTimeout)
+        lateAttachHandler.postDelayed(grantTimeout, USB_GRANT_TIMEOUT_MS)
     }
 
     private fun unregisterUsbReceiver() {
+        lateAttachHandler.removeCallbacks(grantTimeout)
         usbPermissionReceiver?.let { receiver ->
             try {
                 inProgressActivity?.unregisterReceiver(receiver)
@@ -321,6 +346,10 @@ class NativeSecurityKeyUseCase @Inject constructor(
         nfcReader = null
         stopLateUsbWatch()
         if (hasUsbPermission(device)) {
+            Log.i(
+                UsbCtap2Transport.TAG,
+                "USB access already granted from a previous allow; starting USB flow",
+            )
             startUsbFlow(device)
         } else {
             requestUsbPermission(activity, device)
@@ -557,6 +586,7 @@ class NativeSecurityKeyUseCase @Inject constructor(
         private const val USB_VENDOR_YUBICO = 0x1050
         private const val LATE_ATTACH_POLL_INTERVAL_MS = 500L
         private const val LATE_ATTACH_WATCH_WINDOW_MS = 60_000L
+        private const val USB_GRANT_TIMEOUT_MS = 45_000L
     }
 }
 
