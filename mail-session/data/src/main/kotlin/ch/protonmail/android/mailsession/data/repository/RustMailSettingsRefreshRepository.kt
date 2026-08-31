@@ -16,24 +16,26 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.domain.usecase
+package ch.protonmail.android.mailsession.data.repository
 
-import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.repository.MailSettingsRefreshRepository
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import kotlinx.coroutines.flow.firstOrNull
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class HandleCloseWebSettings @Inject constructor(
-    private val observePrimaryUserId: ObservePrimaryUserId,
-    private val eventLoopRepository: EventLoopRepository,
-    private val mailSettingsRefreshRepository: MailSettingsRefreshRepository
-) {
+class RustMailSettingsRefreshRepository @Inject constructor(
+    private val userSessionRepository: UserSessionRepository
+) : MailSettingsRefreshRepository {
 
-    suspend operator fun invoke() {
-        observePrimaryUserId().firstOrNull()?.let {
-            eventLoopRepository.trigger(it)
-            mailSettingsRefreshRepository.refresh(it)
+    override suspend fun refresh(userId: UserId) {
+        val userSession = userSessionRepository.getUserSession(userId)
+        if (userSession == null) {
+            Timber.w("rust-settings: mail settings refresh triggered for $userId but no session found. Stopping...")
+            return
         }
+        userSession.refreshMailSettings()
+            .onRight { Timber.d("rust-settings: refreshed mail settings for $userId") }
+            .onLeft { Timber.e("rust-settings: failed to refresh mail settings for $userId: $it") }
     }
 }

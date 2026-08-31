@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Proton Technologies AG
+ * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,17 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailtelemetry.domain.model
+package ch.protonmail.android.mailsession.domain.repository
 
-data class PlanSpecificDimensions(
-    val selectedPlan: String,
-    val selectedCycle: String,
-    val upsellIsPromotional: Boolean,
-    val purchaseFlow: PurchaseFlow?
-)
+import me.proton.core.domain.entity.UserId
 
-enum class PurchaseFlow {
+interface MailSettingsRefreshRepository {
 
-    SDK,
-    LEGACY
+    suspend fun refresh(userId: UserId)
 }
