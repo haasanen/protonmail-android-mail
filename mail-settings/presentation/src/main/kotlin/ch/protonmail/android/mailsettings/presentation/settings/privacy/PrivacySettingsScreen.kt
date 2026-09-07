@@ -151,7 +151,7 @@ private fun PrivacySettingsScreenPreview() {
                 ),
                 updateSettingsError = Effect.empty()
             ),
-            backgroundSyncInterval = BackgroundSyncInterval.REAL_TIME,
+            backgroundSyncInterval = BackgroundSyncInterval.EVERY_15_MINUTES,
             actions = PrivacySettingsScreen.Actions(
                 onBackClick = {},
                 onShowRemoteContent = {},

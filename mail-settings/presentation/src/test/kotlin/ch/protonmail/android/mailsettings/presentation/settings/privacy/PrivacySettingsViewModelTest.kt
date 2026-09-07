@@ -87,7 +87,7 @@ internal class PrivacySettingsViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
-        every { observeBackgroundSyncInterval.invoke() } returns flowOf(BackgroundSyncInterval.REAL_TIME.right())
+        every { observeBackgroundSyncInterval.invoke() } returns flowOf(BackgroundSyncInterval.EVERY_15_MINUTES.right())
     }
 
     @After

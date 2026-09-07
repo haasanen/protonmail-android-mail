@@ -59,7 +59,7 @@ class PrivacySettingsViewModel @Inject constructor(
     private val privacySettingsReducer: PrivacySettingsReducer
 ) : ViewModel() {
 
-    private val _backgroundSyncInterval = MutableStateFlow(BackgroundSyncInterval.REAL_TIME)
+    private val _backgroundSyncInterval = MutableStateFlow(BackgroundSyncInterval.EVERY_15_MINUTES)
     val backgroundSyncInterval: StateFlow<BackgroundSyncInterval> = _backgroundSyncInterval.asStateFlow()
 
     private val mutableState = MutableStateFlow<PrivacySettingsState>(PrivacySettingsState.Loading)
@@ -67,7 +67,7 @@ class PrivacySettingsViewModel @Inject constructor(
 
     init {
         observeBackgroundSyncInterval()
-            .map { it.getOrElse { BackgroundSyncInterval.REAL_TIME } }
+            .map { it.getOrElse { BackgroundSyncInterval.EVERY_15_MINUTES } }
             .onEach { _backgroundSyncInterval.value = it }
             .launchIn(viewModelScope)
 

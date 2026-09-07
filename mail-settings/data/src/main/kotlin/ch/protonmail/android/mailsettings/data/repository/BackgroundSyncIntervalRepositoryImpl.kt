@@ -29,7 +29,7 @@ class BackgroundSyncIntervalRepositoryImpl @Inject constructor(
             preferences.map { prefs ->
                 val name = prefs[backgroundSyncIntervalKey] ?: DefaultValue
                 runCatching { BackgroundSyncInterval.valueOf(name) }
-                    .getOrDefault(BackgroundSyncInterval.REAL_TIME)
+                    .getOrDefault(BackgroundSyncInterval.EVERY_15_MINUTES)
             }
         }
 
@@ -41,6 +41,6 @@ class BackgroundSyncIntervalRepositoryImpl @Inject constructor(
 
     private companion object {
 
-        const val DefaultValue = "REAL_TIME"
+        const val DefaultValue = "EVERY_15_MINUTES"
     }
 }

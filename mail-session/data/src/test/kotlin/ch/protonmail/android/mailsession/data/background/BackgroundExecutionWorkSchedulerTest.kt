@@ -50,7 +50,11 @@ internal class BackgroundExecutionWorkSchedulerTest {
             enqueuer.enqueueUniqueWork(
                 workerId = SCHEDULER_WORKER_ID,
                 worker = ScheduleBackgroundExecutionWorker::class.java,
-                existingWorkPolicy = ExistingWorkPolicy.REPLACE
+                existingWorkPolicy = ExistingWorkPolicy.REPLACE,
+                params = mapOf(
+                    ScheduleBackgroundExecutionWorker.ATTRIBUTE_INTERVAL_MINUTES to
+                        ScheduleBackgroundExecutionWorker.DEFAULT_INTERVAL_MINUTES
+                )
             )
         } just runs
 
@@ -62,7 +66,11 @@ internal class BackgroundExecutionWorkSchedulerTest {
             enqueuer.enqueueUniqueWork(
                 workerId = SCHEDULER_WORKER_ID,
                 worker = ScheduleBackgroundExecutionWorker::class.java,
-                existingWorkPolicy = ExistingWorkPolicy.REPLACE
+                existingWorkPolicy = ExistingWorkPolicy.REPLACE,
+                params = mapOf(
+                    ScheduleBackgroundExecutionWorker.ATTRIBUTE_INTERVAL_MINUTES to
+                        ScheduleBackgroundExecutionWorker.DEFAULT_INTERVAL_MINUTES
+                )
             )
         }
     }
