@@ -18,21 +18,26 @@
 
 package ch.protonmail.android.initializer.background
 
+import arrow.core.right
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.testing.TestLifecycleOwner
 import ch.protonmail.android.mailsession.data.background.BackgroundExecutionWorkScheduler
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.background.PendingSendTracker
 import ch.protonmail.android.mailsession.domain.background.SendCompletionScheduler
+import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncInterval
+import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObserveBackgroundSyncInterval
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import me.proton.core.test.kotlin.TestDispatcherProvider
@@ -48,20 +53,38 @@ internal class RustWorkLifecycleObserverTest {
 
     private val scheduler = mockk<BackgroundExecutionWorkScheduler>()
     private val mailSessionRepository = mockk<MailSessionRepository>()
+    private val observeBackgroundSyncInterval = mockk<ObserveBackgroundSyncInterval>()
+    private val appScope = CoroutineScope(dispatcher + SupervisorJob())
     private val sendCompletionScheduler = mockk<SendCompletionScheduler>(relaxUnitFun = true)
     private val pendingSendTracker = mockk<PendingSendTracker>(relaxUnitFun = true)
-    private val observer = RustWorkLifecycleObserver(
-        mailSessionRepository,
-        scheduler,
-        sendCompletionScheduler,
-        pendingSendTracker
-    )
+
+    // Constructed AFTER stubbing inside each test: the observer's init block
+    // starts collecting observeBackgroundSyncInterval() immediately, so the mock
+    // must already have an answer or strict-mockk throws.
+    private fun buildObserver(
+        interval: BackgroundSyncInterval,
+        pendingSends: Boolean
+    ): RustWorkLifecycleObserver {
+        every { observeBackgroundSyncInterval.invoke() } returns
+            flowOf(interval.right())
+        every { pendingSendTracker.hasPendingSends() } returns pendingSends
+        return RustWorkLifecycleObserver(
+            mailSessionRepository,
+            scheduler,
+            observeBackgroundSyncInterval,
+            appScope,
+            sendCompletionScheduler,
+            pendingSendTracker
+        )
+    }
 
     @Test
     fun `should cancel background execution and resume work when onStart is triggered`() = runTest {
         // Given
         coEvery { scheduler.cancelPendingWork() } just runs
+        every { scheduler.scheduleWork(any()) } just runs
         every { mailSessionRepository.getMailSession().onEnterForeground() } just runs
+        val observer = buildObserver(BackgroundSyncInterval.EVERY_15_MINUTES, pendingSends = false)
         val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.CREATED, dispatcher)
 
         // When
@@ -71,34 +94,35 @@ internal class RustWorkLifecycleObserverTest {
         // Then
         coVerify(exactly = 1) { scheduler.cancelPendingWork() }
         coVerify(exactly = 1) { mailSessionRepository.getMailSession().onEnterForeground() }
-        confirmVerified(mailSessionRepository, scheduler)
+        verify(exactly = 1) { pendingSendTracker.reset() }
     }
 
     @Test
-    fun `should schedule background execution and pause work when onStop is triggered`() = runTest {
+    fun `should apply background sync interval when onStop is triggered`() = runTest {
         // Given
-        every { scheduler.scheduleWork() } just runs
+        coEvery { scheduler.cancelPendingWork() } just runs
+        every { scheduler.scheduleWork(any()) } just runs
         every { mailSessionRepository.getMailSession().onExitForeground() } just runs
-        every { pendingSendTracker.hasPendingSends() } returns false
+        val observer = buildObserver(BackgroundSyncInterval.EVERY_15_MINUTES, pendingSends = false)
         val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.CREATED, dispatcher)
 
         // When
         observer.onStop(lifecycleOwner)
         advanceUntilIdle()
 
-        // Then
-        verify(exactly = 1) { scheduler.scheduleWork() }
+        // Then: the interval collector (init) schedules once at 15 min, onStop again
         coVerify(exactly = 1) { mailSessionRepository.getMailSession().onExitForeground() }
+        verify(exactly = 2) { scheduler.scheduleWork(15L) }
         verify(exactly = 0) { sendCompletionScheduler.scheduleSendCompletion() }
-        confirmVerified(mailSessionRepository, scheduler)
     }
 
     @Test
     fun `should schedule send completion on onStop when a send is pending`() = runTest {
         // Given
-        every { scheduler.scheduleWork() } just runs
+        coEvery { scheduler.cancelPendingWork() } just runs
+        every { scheduler.scheduleWork(any()) } just runs
         every { mailSessionRepository.getMailSession().onExitForeground() } just runs
-        every { pendingSendTracker.hasPendingSends() } returns true
+        val observer = buildObserver(BackgroundSyncInterval.EVERY_15_MINUTES, pendingSends = true)
         val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.CREATED, dispatcher)
 
         // When
