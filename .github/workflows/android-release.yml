@@ -47,16 +47,23 @@ jobs:
           fi
 
       - name: Stamp monotonic versionCode (F-Droid compatibility)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # The F-Droid client identifies updates by the APK versionCode.
           # Upstream keeps versionCode=1, which would make every build look
           # identical to F-Droid and block updates. Stamp a monotonic code
-          # from the total commit count — it only ever increases (weekly
-          # upstream syncs and fork commits all add history). Build-time
+          # from the branch's total commit count, taken from the GitHub API's
+          # pagination header (the Actions checkout is shallow, so git can
+          # only see 1 commit). The count only ever increases: weekly
+          # upstream syncs and fork commits both add history. Build-time
           # only: the tracked file stays as-is to keep weekly syncs
           # conflict-free.
-          CODE=$(git rev-list --count HEAD)
+          CODE=$(gh api "repos/${GITHUB_REPOSITORY}/commits?per_page=1" -i \
+            | grep -oi 'page=[0-9]*>; rel="last"' | grep -o '[0-9]*' | head -1)
+          test -n "$CODE" || { echo "::error::could not determine commit count"; exit 1; }
           echo "versionCode for this build: $CODE"
+          test "$CODE" -gt 1 || { echo "::error::implausible commit count: $CODE"; exit 1; }
           sed -i "s/^versionCode=.*/versionCode=$CODE/" app-configuration.properties
           grep '^versionCode=' app-configuration.properties
 
