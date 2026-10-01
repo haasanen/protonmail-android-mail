@@ -36,9 +36,12 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
-          platforms: "android-35"
-          build-tools: "35.0.0"
-          cmdtools: "latest"
+          # v3 only reads cmdline-tools-version + packages. Its packages
+          # DEFAULT is "tools platform-tools", and Google removed the legacy
+          # 'tools' package from the SDK repo, so the default install now
+          # fails: "Failed to find package 'tools'" (run 36922801224). Pin to
+          # platform-tools only; the build uses the SDK the runner ships.
+          packages: "platform-tools"
 
       - name: Prepare dummy google-services.json
         run: |
