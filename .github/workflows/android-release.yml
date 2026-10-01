@@ -67,6 +67,29 @@ jobs:
           sed -i "s/^versionCode=.*/versionCode=$CODE/" app-configuration.properties
           grep '^versionCode=' app-configuration.properties
 
+      - name: Stamp fork version suffix (upstream version + our build number)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The versionName must carry BOTH the upstream version and our fork's
+          # build number, so updates are visible in the F-Droid client (which
+          # shows versionNames, not versionCodes) and every build is
+          # distinguishable from upstream and from each other.
+          # Format: <upstream>-h<N>  (h = haasanen), e.g. 7.12.0-h1.
+          # N = 1 + the highest -h<N> already published in this repo, so the
+          # counter increments on EVERY build and is monotonic across weekly
+          # upstream syncs. Build-time only: the tracked file keeps upstream's
+          # value, so weekly syncs stay conflict-free (same pattern as the
+          # versionCode stamp above).
+          LAST=$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
+            --jq '[.[] | .tag_name | capture("-h(?<n>[0-9]+)-[0-9a-f]{7}-notif-fix$").n | tonumber] | max // 0')
+          N=$((LAST + 1))
+          echo "fork build number: h${N} (highest published: ${LAST:-none})"
+          BASE=$(grep '^versionName=' app-configuration.properties | cut -d= -f2- | tr -d '[:space:]')
+          test -n "$BASE" || { echo "::error::versionName missing from app-configuration.properties"; exit 1; }
+          sed -i "s/^versionName=.*/versionName=${BASE}-h${N}/" app-configuration.properties
+          grep '^versionName=' app-configuration.properties
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
