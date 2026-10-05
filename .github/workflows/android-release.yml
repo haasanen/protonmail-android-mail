@@ -96,6 +96,17 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Run unit tests
+        # Fork-owned gate: the 22 JVM unit tests in app/src/test (upstream's
+        # own tests, already in the tree) must pass before we build/sign a
+        # release. Task name: AGP 8.13 keeps testBuildType=debug, and the
+        # 'prod' flavor matches the variant we ship (assembleProdRelease).
+        # testOptions.execution=ANDROIDX_TEST_ORCHESTRATOR governs
+        # instrumentation tests only — it does not gate local JVM tests.
+        run: |
+          ./gradlew :app:testProdDebugUnitTest --stacktrace
+        timeout-minutes: 45
+
       - name: Restore release signing key from repository secrets
         env:
           RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
