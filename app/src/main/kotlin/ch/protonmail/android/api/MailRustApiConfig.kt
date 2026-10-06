@@ -37,7 +37,7 @@ class MailRustApiConfig @Inject constructor(
     override val product: String
         get() = "mail"
     override val appVersion: String
-        get() = BuildConfig.VERSION_NAME
+        get() = BuildConfig.UPSTREAM_VERSION_NAME
     override val userAgent: String
         get() = buildUserAgent()
     override val proxy: String?

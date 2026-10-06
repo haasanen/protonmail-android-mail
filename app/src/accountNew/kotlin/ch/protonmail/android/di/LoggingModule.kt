@@ -51,7 +51,8 @@ object LoggingModule {
         ) { options ->
             options.dsn = BuildConfig.MAIL_APP_SENTRY_DSN
             options.environment = "$platformName-$productName@prod"
-            options.release = "android-mail@${BuildConfig.VERSION_NAME}"
+            // Proton-hosted crash backend: upstream's version only.
+            options.release = "android-mail@${BuildConfig.UPSTREAM_VERSION_NAME}"
             options.installDefaultInterceptors(
                 context = context,
                 isCrashReportsDisabled = { accountApi.isCrashReportsDisabled() },

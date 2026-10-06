@@ -28,6 +28,7 @@ class AppInfoProviderImpl @Inject constructor() : AppInfoProvider {
     override fun getAppInfo(): AppInfo = AppInfo(
         packageName = BuildConfig.APPLICATION_ID,
         identifier = BuildConfig.APPLICATION_ID,
-        version = BuildConfig.VERSION_NAME
+        // Telemetry goes to Proton's events API: report upstream's version.
+        version = BuildConfig.UPSTREAM_VERSION_NAME
     )
 }

@@ -41,6 +41,7 @@ abstract class ConfigExtension(project: Project) {
     abstract val testInstrumentationRunner: Property<String>
     abstract val versionCode: Property<Int>
     abstract val versionName: Property<String>
+    abstract val upstreamVersionName: Property<String>
 
     init {
         val gradleProperties = project.rootProject.file("app-configuration.properties")
@@ -57,5 +58,14 @@ abstract class ConfigExtension(project: Project) {
         testInstrumentationRunner.convention(properties.getProperty("testInstrumentationRunner"))
         versionCode.convention(properties.getProperty("versionCode").toInt())
         versionName.convention(properties.getProperty("versionName"))
+        // The version reported to Proton's servers must be upstream's own
+        // version: their API validates it and rejects fork build suffixes
+        // (error 2064). Falls back to versionName for local dev builds,
+        // which never carry a fork suffix.
+        val upstream = properties.getProperty("upstreamVersionName") ?: properties.getProperty("versionName")
+        check(!Regex("-h[0-9]+$").containsMatchIn(upstream)) {
+            "upstreamVersionName must not carry the fork suffix (-hN): got '$upstream'"
+        }
+        upstreamVersionName.convention(upstream)
     }
 }

@@ -36,7 +36,8 @@ android {
         minSdk = AppConfiguration.minSdk.get()
         lint.targetSdk = AppConfiguration.targetSdk.get()
 
-        buildConfigField("String", "WEBVIEW_APP_VERSION", "\"android-mail@${AppConfiguration.versionName.get()}\"")
+        // Rendered into a proton.me web-settings URL: upstream's version only.
+        buildConfigField("String", "WEBVIEW_APP_VERSION", "\"android-mail@${AppConfiguration.upstreamVersionName.get()}\"")
     }
 
     compileOptions {

@@ -22,5 +22,7 @@ import ch.protonmail.android.BuildConfig
 import javax.inject.Inject
 
 class GetAppVersion @Inject constructor() {
-    operator fun invoke(): String = BuildConfig.VERSION_NAME
+    // Server-facing: must be upstream's version, never the fork's -hN build
+    // suffix (Proton's API rejects unknown version formats with error 2064).
+    operator fun invoke(): String = BuildConfig.UPSTREAM_VERSION_NAME
 }

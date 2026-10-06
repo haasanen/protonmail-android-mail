@@ -69,6 +69,12 @@ android {
         buildConfigField("String", "SENTRY_DSN", sentryDSN.toBuildConfigValue())
         buildConfigField("String", "ACCOUNT_SENTRY_DSN", accountSentryDSN.toBuildConfigValue())
         buildConfigField("String", "RUST_SDK_VERSION", "\"${libs.versions.proton.rust.core.get()}\"")
+        // Upstream's own version string, for anything that leaves the device
+        // (API headers, User-Agent, telemetry). Proton's API validates the
+        // app-version header and rejects our fork suffix (-hN) with error
+        // 2064, so VERSION_NAME (which carries the fork suffix for F-Droid
+        // and the OS app info) must never be sent to their servers.
+        buildConfigField("String", "UPSTREAM_VERSION_NAME", "\"${AppConfiguration.upstreamVersionName.get()}\"")
 
         setAssetLinksResValue("proton.me")
     }

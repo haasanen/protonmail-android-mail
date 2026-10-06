@@ -44,7 +44,9 @@ class SentryInitializer : Initializer<Unit> {
 
         SentryAndroid.init(context.applicationContext) { options: SentryOptions ->
             options.dsn = BuildConfig.SENTRY_DSN
-            options.release = BuildConfig.VERSION_NAME
+            // Proton-hosted crash backend: report upstream's version, not
+            // the fork's -hN build suffix.
+            options.release = BuildConfig.UPSTREAM_VERSION_NAME
             options.environment = BuildConfig.API_HOST
             options.addIntegration(
                 SentryTimberIntegration(

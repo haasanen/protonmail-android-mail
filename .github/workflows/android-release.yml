@@ -89,7 +89,13 @@ jobs:
           N=$((LAST + 1))
           echo "fork build number: h${N} (highest published: ${LAST:-none})"
           BASE=$(grep '^versionName=' app-configuration.properties | cut -d= -f2- | tr -d '[:space:]')
-          test -n "$BASE" || { echo "::error::versionName missing from app-configuration.properties"; exit 1; }
+          test -n "$BASE" || { echo "::error::versionName missing from app-configuration.properties" ; exit 1; }
+          # The version sent to Proton's servers must stay upstream's own
+          # string (their API rejects fork suffixes with error 2064). Pin it
+          # to the pre-stamp BASE before versionName gains the -hN suffix.
+          sed -i "s/^upstreamVersionName=.*/upstreamVersionName=${BASE}/" app-configuration.properties
+          grep -q '^upstreamVersionName=' app-configuration.properties || echo "upstreamVersionName=${BASE}" >> app-configuration.properties
+          grep '^upstreamVersionName=' app-configuration.properties
           sed -i "s/^versionName=.*/versionName=${BASE}-h${N}/" app-configuration.properties
           grep '^versionName=' app-configuration.properties
 

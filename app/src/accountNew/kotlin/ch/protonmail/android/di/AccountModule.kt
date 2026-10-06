@@ -31,7 +31,7 @@ object AccountModule {
     @Singleton
     @ClientVersionName
     @Suppress("FunctionOnlyReturningConstant")
-    fun provideVersionName(): String = BuildConfig.VERSION_NAME
+    fun provideVersionName(): String = BuildConfig.UPSTREAM_VERSION_NAME
 
     @Provides
     @Singleton
