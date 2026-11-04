@@ -401,6 +401,9 @@ internal class ConversationDetailViewModelIntegrationTest {
     private val isWebViewDarkModeFallbackEnabled = mockk<FeatureFlag<Boolean>> {
         coEvery { this@mockk.get() } returns true
     }
+    private val isMessageWebViewPoolEnabled = mockk<FeatureFlag<Boolean>> {
+        coEvery { this@mockk.get() } returns true
+    }
 
     // endregion
 
@@ -1557,7 +1560,9 @@ internal class ConversationDetailViewModelIntegrationTest {
                 mimeType = " text/calendar",
                 uri = expectedUri,
                 openMode = openMode,
-                name = "file.txt"
+                name = "file.txt",
+                userId = userId,
+                attachmentId = AttachmentId(AttachmentMetadataSamples.Ids.ID_CALENDAR)
             ).right()
 
             val viewModel = buildConversationDetailViewModel()
@@ -2513,6 +2518,7 @@ internal class ConversationDetailViewModelIntegrationTest {
         unsubscribeFromNewsletter = unsubscribeFromNewsletter,
         toolbarRefreshSignal = toolbarRefreshSignal,
         resolveSystemLabelId = resolveSystemLabelId,
+        findLocalSystemLabelId = mockk(),
         executeWhenOnline = executeOnOnline,
         conversationId = conversationId,
         isSingleMessageModeEnabled = false,
@@ -2522,7 +2528,9 @@ internal class ConversationDetailViewModelIntegrationTest {
         searchQuery = "",
         isAutoExpandEnabled = isAutoExpandEnabled,
         isWebViewDarkModeFallbackEnabled = isWebViewDarkModeFallbackEnabled,
-        applyWebViewDarkModeFallback = applyWebViewDarkModeFallback
+        isMessageWebViewPoolEnabled = isMessageWebViewPoolEnabled,
+        applyWebViewDarkModeFallback = applyWebViewDarkModeFallback,
+        getSearchMatchedTerms = mockk()
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

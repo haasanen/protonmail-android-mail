@@ -35,7 +35,21 @@
   <string name="upselling_unlimited_title">Upgrade naar Proton Unlimited</string>
   <string name="upselling_do_not_show_again">Toon deze aanbieding niet opnieuw</string>
   <string name="upselling_stay_on_mail_plus">Blijf bij Mail Plus</string>
+  <string name="upselling_black_friday_do_not_show_again">Niet meer weergeven</string>
   <string name="upselling_pu_choose_plan">Kies uw abonnement</string>
+  <string name="upselling_pu_whats_included">Wat is inbegrepen</string>
+  <string name="upselling_pu_cta">Kies Proton Unlimited</string>
+  <!-- Upselling: Monthly to Yearly -->
+  <string name="upselling_monthly_to_yearly_row_title">Betaal jaarlijks en bespaar %s</string>
+  <string name="upselling_monthly_to_yearly_row_subtitle">Wijzig uw factureringscyclus</string>
+  <string name="upselling_monthly_to_yearly_sidebar_title">Bespaar %s</string>
+  <string name="upselling_monthly_to_yearly_title">Bespaar flink met jaarlijkse facturering</string>
+  <string name="upselling_monthly_to_yearly_subtitle">Verzeker u van een korting op %s</string>
+  <string name="upselling_monthly_to_yearly_one_year">1 jaar</string>
+  <string name="upselling_monthly_to_yearly_currently">Momenteel</string>
+  <string name="upselling_monthly_to_yearly_yearly_plan">Abonnement van 12 maanden</string>
+  <string name="upselling_monthly_to_yearly_cta">Wijzig en sla op %s</string>
+  <string name="upselling_monthly_to_yearly_stay_on_monthly">Behoud maandelijks</string>
   <!-- Upselling: Plus to Unlimited themed titles -->
   <string name="upselling_pu_generic_title">Verbeter uw online privacy verder met Proton Unlimited</string>
   <string name="upselling_pu_threat_protection_title">Bescherm uw account tegen bedreigingen met Proton Sentinel</string>
@@ -101,8 +115,10 @@
   <string name="upselling_comparison_table_dark_web_monitoring">Dark Web Monitoring</string>
   <string name="upselling_comparison_table_premium_access">Premium toegang tot Mail, VPN, Drive, Pass en Calendar</string>
   <string name="upselling_comparison_table_unlimited_aliases">Onbeperkt aliassen om je identiteit te verbergen</string>
-  <string name="upselling_comparison_table_unlimited_folders_filters_labels">Onbeperkt mappen, filters, labels</string>
   <string name="upselling_comparison_table_ultrafast_vpn">Ultrasnelle VPN in 110+ landen</string>
+  <string name="upselling_comparison_table_password_manager">Versleutelde wachtwoordbeheerder</string>
+  <string name="upselling_comparison_table_threat_protection">Geavanceerde bedreigingsbeveiliging</string>
+  <string name="upselling_comparison_table_unlimited_folders_filters_labels">Onbeperkt mappen, filters, labels</string>
   <!-- Rectangular plan buttons -->
   <string name="upselling_select_plan">Abonnement kiezen</string>
   <string name="upselling_select_plan_year">12 maanden</string>
@@ -128,7 +144,7 @@
   <string name="upselling_auto_renew_text_promo">Welkomstaanbieding. Automatisch verlengen op %s%s tenzij u annuleert</string>
   <string name="upselling_auto_renew_text_bfriday">Kortingen zijn gebaseerd op de standaard maandelijkse tarieven. Wordt automatisch verlengd voor %s%s totdat u annuleert.</string>
   <string name="upselling_auto_renew_text_promo_short">Welkomstaanbieding, verlengt automatisch op %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Wordt automatisch verlengt op %s%s tenzij geannuleerd.</string>
+  <string name="upselling_auto_renew_text_standard">Wordt automatisch verlengt op %s%s, tenzij geannuleerd.</string>
   <string name="upselling_social_proof_reviews">2k+ RECENSIES</string>
   <string name="upselling_description_social_proof">Upgrade naar de ervaring waar miljoenen abonnees enthousiast over zijn.</string>
   <string name="upselling_month">/maand</string>
@@ -138,4 +154,5 @@
   <string name="upselling_snackbar_error_no_user_id">Er is iets fout gegaan.</string>
   <string name="upselling_snackbar_error_no_subscriptions">Abonnementen kunnen niet worden opgehaald.</string>
   <!-- Snackbar texts -->
+  <string name="upselling_black_friday">Black Friday</string>
 </resources>

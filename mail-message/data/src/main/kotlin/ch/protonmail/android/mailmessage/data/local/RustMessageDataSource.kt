@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.data.mapper.LocalSearchMatchPosition
 import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.SenderImageTheme
@@ -35,6 +36,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageScrollerFetchNewSta
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.IncludeFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginatorTotal
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -55,6 +57,14 @@ interface RustMessageDataSource {
     suspend fun terminatePaginator(userId: UserId)
 
     suspend fun supportsIncludeFilter(): Boolean
+
+    fun observeTotalItemsCount(userId: UserId, pageKey: PageKey): Flow<PaginatorTotal>
+
+    suspend fun getSearchMatchPositions(
+        userId: UserId,
+        pageKey: PageKey,
+        messageIds: List<LocalMessageId>
+    ): Either<PaginationError, Map<String, List<LocalSearchMatchPosition>>>
 
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalMessageMetadata>
     suspend fun getMessage(userId: UserId, messageId: RemoteMessageId): Either<DataError, LocalMessageMetadata>

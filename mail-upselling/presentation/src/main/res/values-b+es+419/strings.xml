@@ -35,7 +35,21 @@
   <string name="upselling_unlimited_title">Actualice a Proton Unlimited</string>
   <string name="upselling_do_not_show_again">No volver a mostrar esta oferta</string>
   <string name="upselling_stay_on_mail_plus">Seguir en Mail Plus</string>
+  <string name="upselling_black_friday_do_not_show_again">No volver a mostrar</string>
   <string name="upselling_pu_choose_plan">Elija su plan</string>
+  <string name="upselling_pu_whats_included">¿Qué incluye?</string>
+  <string name="upselling_pu_cta">Obtener Proton Unlimited</string>
+  <!-- Upselling: Monthly to Yearly -->
+  <string name="upselling_monthly_to_yearly_row_title">Pague anualmente y ahorre %s</string>
+  <string name="upselling_monthly_to_yearly_row_subtitle">Cambie su ciclo de facturación</string>
+  <string name="upselling_monthly_to_yearly_sidebar_title">Ahorre un %s</string>
+  <string name="upselling_monthly_to_yearly_title">Ahorre más con facturación anual</string>
+  <string name="upselling_monthly_to_yearly_subtitle">Asegure un descuento en %s</string>
+  <string name="upselling_monthly_to_yearly_one_year">1 año</string>
+  <string name="upselling_monthly_to_yearly_currently">Actualmente</string>
+  <string name="upselling_monthly_to_yearly_yearly_plan">Plan de 12 meses</string>
+  <string name="upselling_monthly_to_yearly_cta">Cambie y ahorre %s</string>
+  <string name="upselling_monthly_to_yearly_stay_on_monthly">Mantenerse mensualmente</string>
   <!-- Upselling: Plus to Unlimited themed titles -->
   <string name="upselling_pu_generic_title">Lleve su privacidad en línea un paso más allá con Proton Unlimited</string>
   <string name="upselling_pu_threat_protection_title">Proteja su cuenta de amenazas con Proton Sentinel</string>
@@ -101,8 +115,10 @@
   <string name="upselling_comparison_table_dark_web_monitoring">Monitoreo de la Dark Web</string>
   <string name="upselling_comparison_table_premium_access">Acceso premium a Mail, VPN, Drive, Pass y Calendar</string>
   <string name="upselling_comparison_table_unlimited_aliases">Alias ilimitados para ocultar su identidad</string>
-  <string name="upselling_comparison_table_unlimited_folders_filters_labels">Carpetas, filtros y etiquetas ilimitados</string>
   <string name="upselling_comparison_table_ultrafast_vpn">VPN ultrarrápida con más de 110 países</string>
+  <string name="upselling_comparison_table_password_manager">Gestor de contraseñas cifrado</string>
+  <string name="upselling_comparison_table_threat_protection">Protección avanzada contra amenazas</string>
+  <string name="upselling_comparison_table_unlimited_folders_filters_labels">Carpetas, filtros y etiquetas ilimitados</string>
   <!-- Rectangular plan buttons -->
   <string name="upselling_select_plan">Elegir suscripción</string>
   <string name="upselling_select_plan_year">12 meses</string>
@@ -132,10 +148,11 @@
   <string name="upselling_social_proof_reviews">Más de 2000 reseñas</string>
   <string name="upselling_description_social_proof">Actualice a la experiencia que millones de suscriptores están elogiando.</string>
   <string name="upselling_month">/mes</string>
-  <string name="upselling_month_only">solamente %s /mes</string>
+  <string name="upselling_month_only">solo %s /mes</string>
   <string name="upselling_year">/año</string>
   <!-- Errors -->
   <string name="upselling_snackbar_error_no_user_id">Ocurrió un error.</string>
   <string name="upselling_snackbar_error_no_subscriptions">No se pueden obtener las suscripciones.</string>
   <!-- Snackbar texts -->
+  <string name="upselling_black_friday">Black Friday</string>
 </resources>

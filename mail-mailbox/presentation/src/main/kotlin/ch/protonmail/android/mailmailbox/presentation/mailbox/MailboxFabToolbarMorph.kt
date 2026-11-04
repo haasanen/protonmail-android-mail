@@ -68,8 +68,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 
 /**
  * Hosts the floating bottom controls and orchestrates which are visible:
- * - the unread filter pill (start), shown only while idle,
- * - the search FAB (end), shown only while idle,
+ * - the unread filter pill (start), shown only while not selecting,
+ * - the search FAB (end), shown only while not selecting,
  * - the compose FAB that morphs into the selection toolbar (center/end).
  *
  * Each control owns its own enter/exit animation; this function only decides visibility.
@@ -78,8 +78,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 @Composable
 internal fun MailboxFabToolbarMorph(
     isInSelectionMode: Boolean,
-    isInSearch: Boolean,
-    showBottomUnreadFilter: Boolean,
     unreadFilterState: UnreadFilterState,
     bottomBarState: BottomBarState,
     bottomBarActions: BottomActionBar.Actions,
@@ -87,7 +85,6 @@ internal fun MailboxFabToolbarMorph(
     onSearchClick: () -> Unit,
     onUnreadFilterEnabled: () -> Unit,
     onUnreadFilterDisabled: () -> Unit,
-    isSearchButtonVisible: Boolean = false,
     snackbarHeight: Dp = 0.dp,
     modifier: Modifier = Modifier
 ) {
@@ -107,10 +104,6 @@ internal fun MailboxFabToolbarMorph(
 
     val hasWindowFocus by rememberWindowFocusState()
 
-    // The unread filter and the search FAB are only relevant in the idle list,
-    // i.e. neither selecting items nor searching.
-    val isIdle = !isInSelectionMode && !isInSearch
-
     BoxWithConstraints(
         modifier = modifier
             .padding(bottom = bottomPadding)
@@ -119,15 +112,12 @@ internal fun MailboxFabToolbarMorph(
         // The three controls are aligned independently, so nothing stops the unread pill from
         // growing under the FABs on locales with a long label. Cap it at whatever the FABs leave
         // free; the label inside ellipsizes once it no longer fits.
-        val reservedForFabs = if (isSearchButtonVisible && isIdle) {
-            FabSize + SearchFabSpacing + FabSize
-        } else {
-            FabSize
-        }
+        // Selection mode hides both of them, so only the compose FAB is reserved for then.
+        val reservedForFabs = if (isInSelectionMode) FabSize else FabSize + SearchFabSpacing + FabSize
         val unreadMaxWidth = (maxWidth - reservedForFabs - UnreadFabGap).coerceAtLeast(0.dp)
 
         UnreadFilterFab(
-            visible = showBottomUnreadFilter && isIdle,
+            visible = !isInSelectionMode,
             hasWindowFocus = hasWindowFocus,
             state = unreadFilterState,
             onFilterEnabled = onUnreadFilterEnabled,
@@ -138,8 +128,7 @@ internal fun MailboxFabToolbarMorph(
         )
 
         SearchFab(
-            visible = isSearchButtonVisible && isIdle,
-            enabled = !isInSelectionMode,
+            visible = !isInSelectionMode,
             hasWindowFocus = hasWindowFocus,
             onClick = onSearchClick,
             modifier = Modifier.align(Alignment.CenterEnd)
@@ -147,7 +136,6 @@ internal fun MailboxFabToolbarMorph(
 
         ComposeFabToolbarMorph(
             isInSelectionMode = isInSelectionMode,
-            isInSearch = isInSearch,
             hasWindowFocus = hasWindowFocus,
             bottomBarState = bottomBarState,
             bottomBarActions = bottomBarActions,
@@ -204,7 +192,6 @@ private fun UnreadFilterFab(
 @Composable
 private fun SearchFab(
     visible: Boolean,
-    enabled: Boolean,
     hasWindowFocus: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -243,11 +230,11 @@ private fun SearchFab(
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.clickable(enabled = enabled) { onClick() }
+                    modifier = Modifier.clickable(enabled = visible) { onClick() }
                 ) {
                     Icon(
                         modifier = Modifier.size(ProtonDimens.IconSize.Default),
-                        painter = painterResource(id = R.drawable.ic_proton_magnifier),
+                        painter = painterResource(id = R.drawable.ic_mailbox_search),
                         contentDescription = stringResource(
                             id = R.string.mailbox_toolbar_search_button_content_description
                         ),
@@ -262,7 +249,6 @@ private fun SearchFab(
 @Composable
 private fun ComposeFabToolbarMorph(
     isInSelectionMode: Boolean,
-    isInSearch: Boolean,
     hasWindowFocus: Boolean,
     bottomBarState: BottomBarState,
     bottomBarActions: BottomActionBar.Actions,
@@ -301,25 +287,11 @@ private fun ComposeFabToolbarMorph(
         label = "horizontalBias"
     ) { inSelection -> if (inSelection) 0f else 1f }
 
-    // --- search fade: hide the bottom bar while searching, but never while selecting ---
-    val fadeForSearch = isInSearch && !isInSelectionMode
-    val searchAlpha by animateFloatAsState(if (fadeForSearch) 0f else 1f, PopInSpring, label = "composeAlpha")
-    val searchScale by animateFloatAsState(
-        if (fadeForSearch) POP_IN_HIDDEN_SCALE else 1f, PopInSpring, label = "composeScale"
-    )
-    val searchTranslationY by animateFloatAsState(
-        if (fadeForSearch) POP_IN_HIDDEN_TRANSLATION_Y else 0f, PopInSpring, label = "composeTranslationY"
-    )
-
-    if (hasWindowFocus && (!fadeForSearch || searchAlpha > 0f)) {
+    if (hasWindowFocus) {
         Box(
             modifier = modifier
                 .padding(ShadowClipGuard)
                 .graphicsLayer {
-                    alpha = searchAlpha
-                    scaleX = searchScale
-                    scaleY = searchScale
-                    translationY = searchTranslationY
                     // Fade without an offscreen buffer: ModulateAlpha clips the drop
                     // shadow drawn outside the layer bounds while alpha < 1.
                     compositingStrategy = CompositingStrategy.ModulateAlpha
@@ -340,7 +312,7 @@ private fun ComposeFabToolbarMorph(
                 ) {
                     // FAB icon
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_proton_pen_square),
+                        painter = painterResource(id = R.drawable.ic_mailbox_compose),
                         contentDescription = stringResource(
                             id = R.string.mailbox_fab_compose_button_content_description
                         ),
@@ -376,7 +348,7 @@ private fun ComposeFabToolbarMorph(
     }
 }
 
-private val FabSize = 56.dp
+private val FabSize = MailDimens.FloatingControlHeight
 private val SearchFabSpacing = 12.dp
 private val UnreadFabGap = 8.dp
 private val ToolbarHorizontalPadding = 12.dp

@@ -37,12 +37,11 @@
   <string name="mailbox_message_sending_offline">Εκτός σύνδεσης: το μήνυμα τέθηκε σε αναμονή για αποστολή</string>
   <string name="mailbox_message_sending_success">Το μήνυμα στάλθηκε</string>
   <string name="mailbox_message_sending_error_action">Μετάβαση στο Πρόχειρο</string>
-  <string name="notification_switched_account">Μετάβαση στον λογαριασμό %s</string>
+  <string name="notification_switched_account">Έγινε αλλαγή σε λογαριασμό %s</string>
   <string name="mailbox_message_scheduling">Γίνεται προγραμματισμός μηνύματος…</string>
   <string name="mailbox_message_scheduling_offline">Εκτός σύνδεσης: το μήνυμα τέθηκε σε αναμονή για προγραμματισμό</string>
   <string name="mailbox_message_scheduled_for_sending_success">Αυτό το μήνυμα θα αποσταλεί στις %1$s</string>
   <string name="launcher_alert_duplicate_account_description">Ο χρήστης έχει συνδεθεί ήδη</string>
-  <string name="home_event_loop_error_snackbar">Δεν μπορέσαμε να συγχρονίσουμε την αλληλογραφία σας. Δοκιμάστε να αποσυνδεθείτε και να συνδεθείτε ξανά. Αν αυτό δεν λειτουργήσει, παρακαλούμε υποβάλετε αναφορά σφάλματος.</string>
   <string name="home_content_search_error_snackbar">Δεν ήταν δυνατή η προετοιμασία της αναζήτησης περιεχομένου ηλεκτρονικού ταχυδρομείου.</string>
   <string name="home_content_search_error_snackbar_action">Αναθεώρηση</string>
 </resources>

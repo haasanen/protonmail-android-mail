@@ -42,19 +42,19 @@ data object OnboardingUpsellingEnabled : FeatureFlagDefinition(
     defaultValue = true
 )
 
-data object MailBlackFriday2025Enabled : FeatureFlagDefinition(
-    key = "MailBlackFriday2025",
-    name = "Enable BF (Wave 1)",
+data object MailBlackFriday2026Enabled : FeatureFlagDefinition(
+    key = "MailMobileBlackFriday2026Wave1",
+    name = "Enable BF 26 (Wave 1)",
     category = FeatureFlagCategory.Upselling,
-    description = "Enables BF offers.",
+    description = "Enables BF 26 wave 1.",
     defaultValue = false
 )
 
-data object MailBlackFriday2025Wave2Enabled : FeatureFlagDefinition(
-    key = "MailBlackFriday2025Wave2",
-    name = "Enable BF (Wave 2)",
+data object MailBlackFriday2026Wave2Enabled : FeatureFlagDefinition(
+    key = "MailMobileBlackFriday2026Wave2",
+    name = "Enable BF 26 (Wave 2)",
     category = FeatureFlagCategory.Upselling,
-    description = "Enables BF offers.",
+    description = "Enables BF 26 wave 2.",
     defaultValue = false
 )
 
@@ -146,11 +146,43 @@ data object RestrictMessageWebViewHeight : FeatureFlagDefinition(
     defaultValue = false
 )
 
+data object ConversationDetailMessageWebViewPoolEnabled : FeatureFlagDefinition(
+    key = "MailAndroidV7MessageWebViewPool",
+    name = "Conversation WebView pooling",
+    category = FeatureFlagCategory.Details,
+    description = "Reuse message WebViews when scrolling back in a conversation to reduce reloads and blank content.",
+    defaultValue = false
+)
+
+data object ConversationDetailMessageBodyImageCacheEnabled : FeatureFlagDefinition(
+    key = "MailAndroidV7MessageBodyImageCache",
+    name = "Conversation image cache",
+    category = FeatureFlagCategory.Details,
+    description = "Keep loaded message body images in memory while a conversation is open, so reloads skip the proxy.",
+    defaultValue = false
+)
+
 data object ShowRatingBoosterEnabled : FeatureFlagDefinition(
     key = "RatingAndroidMail",
     name = "Show rating booster",
     category = FeatureFlagCategory.Rating,
     description = "Show the rating app store dialog",
+    defaultValue = false
+)
+
+data object NpsUserTargeted : FeatureFlagDefinition(
+    key = "NPSFeedbackAndroidMail",
+    name = "NPS survey: user targeted (backend)",
+    category = FeatureFlagCategory.Rating,
+    description = "Set by the backend for users it wants to survey, and turned off once they answer.",
+    defaultValue = false
+)
+
+data object NpsEnabledInApp : FeatureFlagDefinition(
+    key = "MailAndroidV7NpsSurvey",
+    name = "NPS survey: enabled in this app (client)",
+    category = FeatureFlagCategory.Rating,
+    description = "Turns the survey on for this app version. Users still need the backend flag.",
     defaultValue = false
 )
 
@@ -210,19 +242,11 @@ data object UpsellPlanExperiment : FeatureFlagDefinition(
     defaultValue = false
 )
 
-data object ContentSearchEnabled : FeatureFlagDefinition(
-    key = "MailMobileContentSearch",
-    name = "Enable Content Search",
+data object ContentSearchEarlyAccess : FeatureFlagDefinition(
+    key = "ContentSearchEarlyAccess",
+    name = "Content Search early access",
     category = FeatureFlagCategory.Settings,
-    description = "Shows the new content search entry points",
-    defaultValue = false
-)
-
-data object ContentSearchScreenEnabled : FeatureFlagDefinition(
-    key = "MailAndroidV7ContentSearchScreen",
-    name = "Enable Content Search Screen",
-    category = FeatureFlagCategory.Mailbox,
-    description = "Opens the new standalone search screen instead of the in-mailbox search mode",
+    description = "Grants content search access. Only Rust reads it, the app asks Rust instead.",
     defaultValue = false
 )
 
@@ -255,5 +279,29 @@ data object PlusToUnlimitedUpsellOptOut : FeatureFlagDefinition(
     name = "Plus to Unlimited upsell opt-out",
     category = FeatureFlagCategory.Upselling,
     description = "Set when a user hides the Plus to Unlimited upsell. It stays hidden on all their devices.",
+    defaultValue = false
+)
+
+data object MonthlyToYearlyUpsellExperiment : FeatureFlagDefinition(
+    key = "MailMobileMonthlyToYearlyUpsell",
+    name = "Monthly to yearly upsell experiment",
+    category = FeatureFlagCategory.Upselling,
+    description = "Turns the monthly to yearly billing upsell on or off. When off, no entry points are shown.",
+    defaultValue = false
+)
+
+data object MonthlyToYearlyUpsellOptOut : FeatureFlagDefinition(
+    key = "MailMonthlyToYearlyUpsellOptOut",
+    name = "Monthly to yearly upsell opt-out",
+    category = FeatureFlagCategory.Upselling,
+    description = "Set when a user hides the monthly to yearly upsell. It stays hidden on all their devices.",
+    defaultValue = false
+)
+
+data object BlackFridayUpsellOptOut : FeatureFlagDefinition(
+    key = "MailBlackFridayUpsellOptOut",
+    name = "Black Friday upsell opt-out",
+    category = FeatureFlagCategory.Upselling,
+    description = "Set when a user hides the Black Friday upsell. It stays hidden on all their devices.",
     defaultValue = false
 )

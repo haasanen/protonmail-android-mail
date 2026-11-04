@@ -27,15 +27,18 @@ import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
 import ch.protonmail.android.mailcontentsearch.domain.usecase.ClearContentSearchLocalData
 import ch.protonmail.android.mailcontentsearch.domain.usecase.DisableContentSearch
 import ch.protonmail.android.mailcontentsearch.domain.usecase.EnableContentSearch
+import ch.protonmail.android.mailcontentsearch.domain.usecase.GetContentSearchIndexSize
 import ch.protonmail.android.mailcontentsearch.domain.usecase.GetContentSearchIndexingStatus
 import ch.protonmail.android.mailcontentsearch.domain.usecase.IsContentSearchAllowedOnMobileData
 import ch.protonmail.android.mailcontentsearch.domain.usecase.IsContentSearchEnabled
 import ch.protonmail.android.mailcontentsearch.domain.usecase.IsContentSearchFeatureEnabled
 import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveContentSearchEnabled
 import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveContentSearchIndexingStatus
+import ch.protonmail.android.mailcontentsearch.domain.usecase.PauseContentIndexing
 import ch.protonmail.android.mailcontentsearch.domain.usecase.SetAllowContentSearchOnMobileData
 import ch.protonmail.android.mailcontentsearch.domain.usecase.StartContentIndexingForUser
 import ch.protonmail.android.mailcontentsearch.presentation.R
+import ch.protonmail.android.mailcontentsearch.presentation.settings.model.IndexSizeUiModel
 import ch.protonmail.android.mailcontentsearch.presentation.settings.reducer.ContentSearchSettingsReducer
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -43,6 +46,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,6 +73,7 @@ internal class ContentSearchSettingsViewModelTest {
     private val ownIndexingStatus = MutableStateFlow<ContentIndexingState>(ContentIndexingState.Idle)
     private val enabledFlow = MutableStateFlow(true)
 
+    private val scheduler get() = mainDispatcherRule.testDispatcher.scheduler
     private val reducer = ContentSearchSettingsReducer()
     private val isContentSearchEnabled = mockk<IsContentSearchEnabled> {
         coEvery { this@mockk.invoke(userId) } returns true.right()
@@ -83,7 +88,13 @@ internal class ContentSearchSettingsViewModelTest {
     }
     private val clearContentSearchLocalData = mockk<ClearContentSearchLocalData>()
     private val getContentSearchIndexingStatus = mockk<GetContentSearchIndexingStatus> {
-        coEvery { this@mockk.invoke(userId) } returns ContentIndexingState.Idle
+        coEvery { this@mockk.invoke(userId) } returns ContentIndexingState.Running(30.0)
+    }
+    private val getContentSearchIndexSize = mockk<GetContentSearchIndexSize> {
+        coEvery { this@mockk.invoke(userId) } returns null
+    }
+    private val pauseContentIndexing = mockk<PauseContentIndexing> {
+        coEvery { this@mockk.invoke(userId) } returns Unit.right()
     }
     private val observeContentSearchEnabled = mockk<ObserveContentSearchEnabled> {
         every { this@mockk.invoke(userId) } returns enabledFlow
@@ -108,6 +119,8 @@ internal class ContentSearchSettingsViewModelTest {
         isContentSearchFeatureEnabled = isContentSearchFeatureEnabled,
         clearContentSearchLocalData = clearContentSearchLocalData,
         getContentSearchIndexingStatus = getContentSearchIndexingStatus,
+        getContentSearchIndexSize = getContentSearchIndexSize,
+        pauseContentIndexing = pauseContentIndexing,
         observeContentSearchEnabled = observeContentSearchEnabled,
         observeContentSearchIndexingStatus = observeContentSearchIndexingStatus,
         isContentSearchAllowedOnMobileData = isContentSearchAllowedOnMobileData,
@@ -131,7 +144,7 @@ internal class ContentSearchSettingsViewModelTest {
     @Test
     fun `reports a failed account, and keeps the toggle on`() = runTest {
         // Given
-        ownIndexingStatus.value = ContentIndexingState.Failed
+        ownIndexingStatus.value = ContentIndexingState.Failed()
 
         // When
         val state = viewModel().state.value.asData()
@@ -146,7 +159,7 @@ internal class ContentSearchSettingsViewModelTest {
     @Test
     fun `stops reporting a failure once rust starts the account again`() = runTest {
         // Given
-        ownIndexingStatus.value = ContentIndexingState.Failed
+        ownIndexingStatus.value = ContentIndexingState.Failed()
         val viewModel = viewModel()
 
         // When
@@ -162,7 +175,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `does not report a failure while content search is disabled`() = runTest {
         // Given
         enabledFlow.value = false
-        ownIndexingStatus.value = ContentIndexingState.Failed
+        ownIndexingStatus.value = ContentIndexingState.Failed()
 
         // When
         val state = viewModel().state.value.asData()
@@ -174,7 +187,7 @@ internal class ContentSearchSettingsViewModelTest {
     @Test
     fun `submit RetryIndexing hands the account back to the orchestrator`() = runTest {
         // Given
-        ownIndexingStatus.value = ContentIndexingState.Failed
+        ownIndexingStatus.value = ContentIndexingState.Failed()
 
         // When
         viewModel().submit(ContentSearchSettingsViewAction.RetryIndexing)
@@ -188,7 +201,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `clears the failure when the retry finds nothing left to index`() = runTest {
         // Given
         every { observeContentSearchIndexingStatus(userId) } returns emptyFlow()
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
         coEvery { startContentIndexingForUser(userId) } returns
             ContentIndexingStartOutcome.AlreadyCompleted.right()
         val viewModel = viewModel()
@@ -207,7 +220,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `marks the retry as pending until rust answers`() = runTest {
         // Given
         every { observeContentSearchIndexingStatus(userId) } returns emptyFlow()
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
         coEvery { startContentIndexingForUser(userId) } coAnswers {
             delay(RustRoundTripMillis.milliseconds)
             ContentIndexingStartOutcome.Started.right()
@@ -227,7 +240,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `clears the failure as soon as rust takes the account back`() = runTest {
         // Given
         every { observeContentSearchIndexingStatus(userId) } returns emptyFlow()
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
         coEvery { startContentIndexingForUser(userId) } returns ContentIndexingStartOutcome.Started.right()
         val viewModel = viewModel()
         assertTrue(viewModel.state.value.asData().isIndexingFailed)
@@ -247,7 +260,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `clears the failure when rust was already indexing the account`() = runTest {
         // Given
         every { observeContentSearchIndexingStatus(userId) } returns emptyFlow()
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
         coEvery { startContentIndexingForUser(userId) } returns
             ContentIndexingStartOutcome.AlreadyRunning.right()
         val viewModel = viewModel()
@@ -265,14 +278,14 @@ internal class ContentSearchSettingsViewModelTest {
     @Test
     fun `lets a later progress event overrule an accepted retry`() = runTest {
         // Given
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
         coEvery { startContentIndexingForUser(userId) } returns ContentIndexingStartOutcome.Started.right()
         val viewModel = viewModel()
         viewModel.submit(ContentSearchSettingsViewAction.RetryIndexing)
         advanceUntilIdle()
 
         // When
-        ownIndexingStatus.value = ContentIndexingState.Failed
+        ownIndexingStatus.value = ContentIndexingState.Failed()
 
         // Then
         val state = viewModel.state.value.asData()
@@ -284,7 +297,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `keeps the failure and reports an error when the retry is refused`() = runTest {
         // Given
         every { observeContentSearchIndexingStatus(userId) } returns emptyFlow()
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
         coEvery { startContentIndexingForUser(userId) } returns ContentIndexingStartOutcome.Refused.right()
         val viewModel = viewModel()
 
@@ -303,7 +316,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `reports an error when the retry never reaches rust`() = runTest {
         // Given
         every { observeContentSearchIndexingStatus(userId) } returns emptyFlow()
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
         coEvery { startContentIndexingForUser(userId) } returns DataError.Local.Unknown.left()
         val viewModel = viewModel()
 
@@ -324,7 +337,7 @@ internal class ContentSearchSettingsViewModelTest {
         coEvery { isContentSearchEnabled(userId) } returns false.right()
         enabledFlow.value = false
         every { observeContentSearchIndexingStatus(userId) } returns emptyFlow()
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
 
         // When
         val state = viewModel().state.value.asData()
@@ -338,7 +351,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `asks rust for the account state when the screen opens`() = runTest {
         // Given
         every { observeContentSearchIndexingStatus(userId) } returns emptyFlow()
-        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed
+        coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Failed()
 
         // When
         val state = viewModel().state.value.asData()
@@ -399,7 +412,7 @@ internal class ContentSearchSettingsViewModelTest {
             advanceUntilIdle()
 
             // When - the user drops off Wi-Fi with mobile data indexing turned off.
-            ownIndexingStatus.value = ContentIndexingState.WaitingForUnmeteredConnection
+            ownIndexingStatus.value = ContentIndexingState.WaitingForUnmeteredConnection()
             advanceUntilIdle()
             val state = viewModel.state.value.asData()
 
@@ -413,7 +426,7 @@ internal class ContentSearchSettingsViewModelTest {
     fun `clears the wait for an unmetered connection once rust resumes`() =
         runTest(mainDispatcherRule.testDispatcher.scheduler) {
             // Given
-            ownIndexingStatus.value = ContentIndexingState.WaitingForUnmeteredConnection
+            ownIndexingStatus.value = ContentIndexingState.WaitingForUnmeteredConnection()
             val viewModel = viewModel()
             advanceUntilIdle()
             assertTrue(viewModel.state.value.asData().isWaitingForUnmeteredConnection)
@@ -507,6 +520,25 @@ internal class ContentSearchSettingsViewModelTest {
 
             // Then
             assertTrue(viewModel.state.value.asData().isIndexingActive)
+        }
+
+    @Test
+    fun `reads the index size again after clearing local data`() =
+        runTest(mainDispatcherRule.testDispatcher.scheduler) {
+            // Given
+            coEvery { disableContentSearch(userId) } returns Unit.right()
+            coEvery { clearContentSearchLocalData(userId) } returns Unit.right()
+            coEvery { getContentSearchIndexSize(userId) } returnsMany listOf(1_024L, 0L)
+            val viewModel = viewModel()
+            advanceUntilIdle()
+
+            // When
+            viewModel.submit(ContentSearchSettingsViewAction.ClearLocalData)
+            advanceUntilIdle()
+
+            // Then
+            assertEquals(IndexSizeUiModel.Loaded(0L), viewModel.state.value.asData().indexSize)
+            coVerify(exactly = 2) { getContentSearchIndexSize(userId) }
         }
 
     @Test
@@ -620,6 +652,110 @@ internal class ContentSearchSettingsViewModelTest {
         coVerify { disableContentSearch(userId) }
         coVerify(exactly = 0) { clearContentSearchLocalData(userId) }
     }
+
+    @Test
+    fun `submit PauseIndexing pauses the account and reads the state back`() =
+        runTest(mainDispatcherRule.testDispatcher.scheduler) {
+            // Given - Rust owns the pause, so the card only shows one it has read back.
+            coEvery { getContentSearchIndexingStatus(userId) } returns ContentIndexingState.Paused(42.5)
+            val viewModel = viewModel()
+
+            // When
+            viewModel.submit(ContentSearchSettingsViewAction.PauseIndexing)
+            advanceUntilIdle()
+
+            // Then
+            coVerify(exactly = 1) { pauseContentIndexing(userId) }
+            assertTrue(viewModel.state.value.asData().isIndexingPaused)
+        }
+
+    @Test
+    fun `a pause that fails leaves the card as it was`() = runTest(mainDispatcherRule.testDispatcher.scheduler) {
+        // Given
+        coEvery { pauseContentIndexing(userId) } returns DataError.Local.Unknown.left()
+        val viewModel = viewModel()
+
+        // When
+        viewModel.submit(ContentSearchSettingsViewAction.PauseIndexing)
+        advanceUntilIdle()
+
+        // Then
+        assertFalse(viewModel.state.value.asData().isIndexingPaused)
+    }
+
+    @Test
+    fun `submit ResumeIndexing hands the account back to the orchestrator`() =
+        runTest(mainDispatcherRule.testDispatcher.scheduler) {
+            // Given
+            coEvery { startContentIndexingForUser(userId) } returns ContentIndexingStartOutcome.Started.right()
+            val viewModel = viewModel()
+            viewModel.submit(ContentSearchSettingsViewAction.PauseIndexing)
+            advanceUntilIdle()
+
+            // When
+            viewModel.submit(ContentSearchSettingsViewAction.ResumeIndexing)
+            advanceUntilIdle()
+
+            // Then
+            coVerify(exactly = 1) { startContentIndexingForUser(userId) }
+            assertFalse(viewModel.state.value.asData().isIndexingPaused)
+        }
+
+    @Test
+    fun `submit ResumeIndexing does not show the retry loading state`() =
+        runTest(mainDispatcherRule.testDispatcher.scheduler) {
+            // Given
+            val viewModel = viewModel()
+            var wasLoadingDuringStart = true
+            coEvery { startContentIndexingForUser(userId) } answers {
+                wasLoadingDuringStart = viewModel.state.value.asData().isRetryingIndexing
+                ContentIndexingStartOutcome.Started.right()
+            }
+            advanceUntilIdle()
+
+            // When
+            viewModel.submit(ContentSearchSettingsViewAction.ResumeIndexing)
+            advanceUntilIdle()
+
+            // Then
+            assertFalse(wasLoadingDuringStart)
+        }
+
+    @Test
+    fun `reads the index size once the screen opens`() = runTest(mainDispatcherRule.testDispatcher.scheduler) {
+        // Given
+        coEvery { getContentSearchIndexSize(userId) } returns 1_024L
+
+        // When
+        val viewModel = viewModel()
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(IndexSizeUiModel.Loaded(1_024L), viewModel.state.value.asData().indexSize)
+    }
+
+    @Test
+    fun `indexing progress shows while the index size is still being read`() =
+        runTest(mainDispatcherRule.testDispatcher.scheduler) {
+            // Given
+            val sizeRead = CompletableDeferred<Long?>()
+            coEvery { getContentSearchIndexSize(userId) } coAnswers { sizeRead.await() }
+            val viewModel = viewModel()
+            advanceUntilIdle()
+
+            // When
+            ownIndexingStatus.value = ContentIndexingState.Running(percentage = 42.0)
+            advanceUntilIdle()
+
+            // Then
+            val state = viewModel.state.value.asData()
+            assertEquals(42.0, state.syncPercentage)
+            assertEquals(IndexSizeUiModel.Loading, state.indexSize)
+
+            sizeRead.complete(1_024L)
+            advanceUntilIdle()
+            assertEquals(IndexSizeUiModel.Loaded(1_024L), viewModel.state.value.asData().indexSize)
+        }
 
     private fun ContentSearchSettingsState.asData(): ContentSearchSettingsState.Data {
         assertTrue(this is ContentSearchSettingsState.Data, "Expected WithData, was $this")

@@ -73,7 +73,6 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultStrongNorm
 import me.proton.core.compose.util.LaunchOnScreenView
 import me.proton.core.compose.util.LaunchResumeEffect
-import me.proton.core.util.kotlin.CoreLogger
 import okhttp3.OkHttpClient
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -315,13 +314,7 @@ private fun HumanVerificationWebView(
     }
     val webChromeClient = remember {
         object : AccompanistWebChromeClient() {
-            override fun onConsoleMessage(message: ConsoleMessage): Boolean {
-                CoreLogger.i(
-                    LogTag.DEFAULT,
-                    "Web console: ${message.message()} -- file ${message.sourceId()}(${message.lineNumber()})"
-                )
-                return true
-            }
+            override fun onConsoleMessage(message: ConsoleMessage): Boolean = true
 
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)

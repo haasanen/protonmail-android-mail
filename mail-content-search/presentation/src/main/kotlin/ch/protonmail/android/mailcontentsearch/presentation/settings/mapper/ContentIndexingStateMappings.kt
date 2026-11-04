@@ -26,15 +26,23 @@ internal fun ContentIndexingState.toPercentage(): Double? = backfillPercentage
 internal fun ContentIndexingState.isActive(): Boolean = when (this) {
     ContentIndexingState.Initializing,
     // Parked, not finished: the account still has a backfill waiting on a connection it may use.
-    ContentIndexingState.WaitingForUnmeteredConnection -> true
+    is ContentIndexingState.WaitingForUnmeteredConnection -> true
 
-    is ContentIndexingState.Running -> !isBackfillDone
+    // A caught-up account is mapped to Completed upstream, so this is normally a live backfill. Still
+    // asked of [backfillPercentage] rather than trusting that: left alone the screen would sit on
+    // "Preparing 100.00%", which reads as stuck.
+    is ContentIndexingState.Running -> backfillPercentage != null
 
+    is ContentIndexingState.Paused,
     ContentIndexingState.Idle,
     ContentIndexingState.Completed,
     ContentIndexingState.Cancelled,
-    ContentIndexingState.Failed -> false
+    is ContentIndexingState.Failed -> false
 }
+
+internal fun ContentIndexingState.isCompleted(): Boolean = this is ContentIndexingState.Completed
+
+internal fun ContentIndexingState.isPaused(): Boolean = this is ContentIndexingState.Paused
 
 internal fun ContentIndexingState.isWaitingForUnmeteredConnection(): Boolean =
     this is ContentIndexingState.WaitingForUnmeteredConnection
@@ -44,11 +52,3 @@ internal fun ContentIndexingState.isWaitingForUnmeteredConnection(): Boolean =
  * until the user retries or clears the local data - it is reported rather than waited out.
  */
 internal fun ContentIndexingState.isFailed(): Boolean = this is ContentIndexingState.Failed
-
-/**
- * Rust keeps the account in `Running` once the backfill has caught up - it stays subscribed for new
- * mail - and it does not reliably publish `Completed`. Left alone the settings screen would sit on
- * "Preparing 100.00%", which reads as stuck rather than finished.
- */
-private val ContentIndexingState.Running.isBackfillDone: Boolean
-    get() = backfillPercentage == null

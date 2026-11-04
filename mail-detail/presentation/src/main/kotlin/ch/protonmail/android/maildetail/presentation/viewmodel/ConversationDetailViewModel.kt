@@ -100,12 +100,14 @@ import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserA
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageWebViewPoolEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsWebViewDarkModeFallbackEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.extension.isOutbox
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ResolveSystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
@@ -131,6 +133,7 @@ import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageBodyWithClickableLinks
+import ch.protonmail.android.mailmessage.domain.usecase.GetSearchMatchedTerms
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
@@ -150,6 +153,7 @@ import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfi
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedTrackersBottomSheetEvent
+import ch.protonmail.android.uicomponents.text.buildSearchHighlightText
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -189,7 +193,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
     @Assisted val conversationId: ConversationId,
     @Assisted val isSingleMessageModeEnabled: Boolean,
     @Assisted val initialScrollToMessageId: MessageIdUiModel?,
-    @Assisted val openedFromLocation: LabelId,
+    @Assisted openedFromLocation: LabelId,
     @Assisted val conversationEntryPoint: ConversationDetailEntryPoint,
     @Assisted val searchQuery: String,
     observePrimaryUserId: ObservePrimaryUserId,
@@ -241,9 +245,12 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val toolbarRefreshSignal: ToolbarActionsRefreshSignal,
     private val executeWhenOnline: ExecuteWhenOnline,
     private val resolveSystemLabelId: ResolveSystemLabelId,
+    private val findLocalSystemLabelId: FindLocalSystemLabelId,
     @IsLastMessageAutoExpandEnabled private val isAutoExpandEnabled: FeatureFlag<Boolean>,
     @IsWebViewDarkModeFallbackEnabled private val isWebViewDarkModeFallbackEnabled: FeatureFlag<Boolean>,
-    private val applyWebViewDarkModeFallback: ApplyWebViewDarkModeFallback
+    @IsMessageWebViewPoolEnabled private val isMessageWebViewPoolEnabled: FeatureFlag<Boolean>,
+    private val applyWebViewDarkModeFallback: ApplyWebViewDarkModeFallback,
+    private val getSearchMatchedTerms: GetSearchMatchedTerms
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -284,6 +291,24 @@ class ConversationDetailViewModel @AssistedInject constructor(
     private val mutableDetailState = MutableStateFlow(initialState)
     private val attachmentsState = MutableStateFlow<Map<MessageId, List<AttachmentMetadata>>>(emptyMap())
     private val showAllMessages = MutableStateFlow(false)
+    private val location = MutableStateFlow(openedFromLocation)
+
+    /**
+     * True once the conversation has loaded.
+     *
+     * After that, a missing conversation was moved while open, so the screen exits.
+     * It is only read and written inside the conversation data flow.
+     */
+    private var hasShownConversation = false
+
+    /**
+     * The label the conversation is shown in.
+     *
+     * It starts as the label given by the caller. It changes to All Mail when a search result is no longer there.
+     * See [reopenSearchResultFromAllMail].
+     */
+    val openedFromLocation: LabelId
+        get() = location.value
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
 
@@ -293,6 +318,32 @@ class ConversationDetailViewModel @AssistedInject constructor(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
         initialValue = false
+    )
+
+    val messageWebViewPoolEnabled: StateFlow<Boolean> = flow {
+        emit(isMessageWebViewPoolEnabled.get())
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        initialValue = false
+    )
+
+    /**
+     * The highlight for the subject and addresses: the query plus what search matched in the opened result.
+     *
+     * Each pager page has its own view model, so each page reads the terms of its own message.
+     * A message outside the active search gets no terms and highlights the query only.
+     * The body keeps highlighting the raw [searchQuery].
+     */
+    val highlightText: StateFlow<String> = flow {
+        val messageId = initialScrollToMessageId?.let { MessageId(it.id) }
+        if (searchQuery.isBlank() || messageId == null) return@flow
+        val terms = getSearchMatchedTerms(primaryUserId.first(), searchQuery, messageId)
+        emit(buildSearchHighlightText(searchQuery, terms))
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        initialValue = searchQuery
     )
 
     init {
@@ -581,12 +632,12 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
     @Suppress("LongMethod")
     private fun observeConversationData(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
-        showAllMessages.flatMapLatest { showAllMessages ->
+        combine(location, showAllMessages, ::Pair).flatMapLatest { (location, showAllMessages) ->
             combine(
                 observeConversationWithMessages(
                     userId,
                     conversationId,
-                    openedFromLocation,
+                    location,
                     conversationEntryPoint,
                     showAllMessages
                 ),
@@ -606,7 +657,12 @@ class ConversationDetailViewModel @AssistedInject constructor(
                         }
 
                         error is ConversationError.NullValueReturned -> {
-                            ConversationDataLoadingResult.Exit
+                            // Null emits nothing while the conversation reloads from All Mail.
+                            if (reopenSearchResultFromAllMail(userId, location)) {
+                                null
+                            } else {
+                                ConversationDataLoadingResult.Exit
+                            }
                         }
 
                         else -> {
@@ -673,6 +729,7 @@ class ConversationDetailViewModel @AssistedInject constructor(
                         )
                     }
 
+                hasShownConversation = true
                 ConversationDataLoadingResult.Success(
                     conversationData = metadataEvent,
                     messagesData = messagesEvent
@@ -1718,6 +1775,33 @@ class ConversationDetailViewModel @AssistedInject constructor(
     }
 
     /**
+     * Reloads a search result from All Mail when the opened label no longer contains it.
+     *
+     * A result can move to Trash or Spam after the search ran. Swiping to it then finds nothing in the opened
+     * label, and the screen would close. All Mail contains every message, so the result loads from there.
+     * This matches what the results list does when the same row is tapped.
+     *
+     * This only applies before the conversation first loads. One that disappears later was moved while open,
+     * for example trashed by the user, and the screen exits as usual.
+     *
+     * Returns true when the conversation is about to load again from All Mail.
+     */
+    private suspend fun reopenSearchResultFromAllMail(userId: UserId, currentLocation: LabelId): Boolean {
+        if (searchQuery.isBlank() || hasShownConversation) return false
+
+        val allMail = findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId
+            ?.takeIf { it != currentLocation }
+            ?: return false
+
+        Timber.d("Search result not found in $currentLocation, loading it from All Mail")
+        // Opening from All Mail shows trashed messages too, as in resolveInitialShowAll.
+        // It is set before the location, so the All Mail reload never hides them.
+        showAllMessages.value = true
+        location.value = allMail
+        return true
+    }
+
+    /**
      * Resolves the initial state of the `showAllMessages` parameter.
      *
      * This is required as when the message is opened from the AllMail folder (not Almost All Mail)
@@ -1754,6 +1838,19 @@ class ConversationDetailViewModel @AssistedInject constructor(
 
     private fun <T> Flow<T>.restartableOn(signal: Flow<Unit>): Flow<T> = signal.onStart { emit(Unit) }
         .flatMapLatest { this@restartableOn }
+
+    /**
+     * Drops the images kept for this conversation, so they are only kept while it is shown: swiping to another
+     * conversation and back loads them again.
+     */
+    fun clearLoadedImages() {
+        loadImageAvoidDuplicatedExecution.clearCache()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        loadImageAvoidDuplicatedExecution.clearCache()
+    }
 
     @AssistedFactory
     interface Factory {

@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
 import android.net.Uri
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.core.net.toUri
@@ -610,6 +611,7 @@ class ComposerViewModel @AssistedInject constructor(
 
                 is ComposerAction.AddFileAttachments -> onFileAttachmentsAdded(action.uriList)
                 is ComposerAction.AddAttachments -> onAttachmentsAdded(action.uriList)
+                is ComposerAction.AddPastedInlineImage -> onPastedInlineImage(action.base64)
                 is ComposerAction.RemoveAttachment -> onAttachmentsRemoved(action.attachmentId)
                 is ComposerAction.RemoveInlineAttachment -> onRemoveInlineImage(action.contentId, true)
                 is ComposerAction.InlineAttachmentDeletedFromBody -> onRemoveInlineImage(action.contentId, false)
@@ -779,6 +781,19 @@ class ComposerViewModel @AssistedInject constructor(
         if (contentIds.isNotEmpty()) {
             emitNewStateFor(EffectsEvent.AttachmentEvent.InlineAttachmentsAdded(contentIds))
         }
+    }
+
+    private suspend fun onPastedInlineImage(base64: String) {
+        addAttachment.fromPastedImage(base64, currentMimeType())
+            .onLeft {
+                Timber.e("Failed to add pasted inline image: $it")
+                emitNewStateFor(EffectsEvent.AttachmentEvent.AddAttachmentError(it))
+            }
+            .onRight {
+                if (it is AddAttachment.AddAttachmentResult.InlineAttachmentAdded) {
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.InlineAttachmentsAdded(listOf(it.cid)))
+                }
+            }
     }
 
     private suspend fun onFileAttachmentsAdded(uriList: List<Uri>) {
@@ -1020,6 +1035,19 @@ class ComposerViewModel @AssistedInject constructor(
         Timber
             .tag("ComposerViewModel")
             .d("Action ${action::class.java.simpleName} ${System.identityHashCode(action)} - $message")
+    }
+
+    /**
+     * Mirrors the WebView body into [bodyTextField], which keeps no undo history in HTML mode.
+     *
+     * Each programmatic edit adds the whole body to the undo history, up to 100 entries.
+     * On large drafts this retains ~100 copies of the body and runs out of memory.
+     * The WebView has its own undo, so nothing reads this history.
+     */
+    @OptIn(ExperimentalFoundationApi::class)
+    internal fun onHtmlBodyChanged(body: String) {
+        bodyTextField.replaceText(body)
+        bodyTextField.undoState.clearHistory()
     }
 
     fun sanitizePastedText(mimeType: String?, text: String): String {

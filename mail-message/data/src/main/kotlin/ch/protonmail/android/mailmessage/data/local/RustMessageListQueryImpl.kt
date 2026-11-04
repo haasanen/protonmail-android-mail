@@ -25,6 +25,9 @@ import ch.protonmail.android.mailcategory.data.mapper.toCategoryViewStatus
 import ch.protonmail.android.mailcategory.domain.model.CategoryViewStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalCategoryLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalItemId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalSearchMatchPosition
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLocalCategoryLabelId
@@ -37,6 +40,7 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
 import ch.protonmail.android.mailmessage.data.util.awaitWithTimeout
 import ch.protonmail.android.mailmessage.data.wrapper.MailMessageCursorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailmessage.data.wrapper.SearchMessagePaginatorWrapper
 import ch.protonmail.android.mailpagination.data.model.scroller.PendingRequest
 import ch.protonmail.android.mailpagination.data.model.scroller.RequestType
 import ch.protonmail.android.mailpagination.data.model.scroller.isCompleted
@@ -47,6 +51,7 @@ import ch.protonmail.android.mailpagination.data.scroller.itemCount
 import ch.protonmail.android.mailpagination.domain.model.IncludeFilter
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginatorTotal
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
@@ -54,7 +59,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -65,8 +72,10 @@ import uniffi.mail_uniffi.MessageScrollerListUpdate
 import uniffi.mail_uniffi.MessageScrollerLiveQueryCallback
 import uniffi.mail_uniffi.MessageScrollerStatusUpdate
 import uniffi.mail_uniffi.MessageScrollerUpdate
+import uniffi.mail_uniffi.ScrollerTotal
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class RustMessageListQueryImpl @Inject constructor(
     private val rustMailboxFactory: RustMailboxFactory,
     private val createRustMessagesPaginator: CreateRustMessagesPaginator,
@@ -80,6 +89,7 @@ class RustMessageListQueryImpl @Inject constructor(
 
     private val scrollerFetchNewStatusFlow = MutableStateFlow<MessageScrollerStatusUpdate?>(null)
     private val categoryViewStatusFlow = MutableStateFlow<CategoryViewStatus?>(null)
+    private val totalItemsCountFlow = MutableStateFlow<TotalItemsCount?>(null)
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> {
 
@@ -174,36 +184,46 @@ class RustMessageListQueryImpl @Inject constructor(
         labelId: LabelId,
         categoryLabelId: CategoryLabelId?,
         firstPage: LocalConversationId
-    ): Either<PaginationError, MailMessageCursorWrapper>? {
-        val pageDescriptor = PageDescriptor.Default(
-            userId = userId,
-            labelId = labelId, categoryLabelId = categoryLabelId
-        )
+    ): Either<PaginationError, MailMessageCursorWrapper>? = getCursorFromActivePaginator(
+        pageDescriptor = PageDescriptor.Default(userId = userId, labelId = labelId, categoryLabelId = categoryLabelId),
+        anchorItemId = firstPage
+    )
 
-        return paginatorMutex.withLock {
-            val state = paginatorState
-            when {
-                state == null -> {
-                    Timber.d("rust-message-query: No active paginator to reuse for cursor")
-                    null
-                }
+    override suspend fun getSearchCursorFromActivePaginator(
+        userId: UserId,
+        keyword: String,
+        anchorItemId: LocalItemId
+    ): Either<PaginationError, MailMessageCursorWrapper>? = getCursorFromActivePaginator(
+        pageDescriptor = PageDescriptor.Search(userId = userId, keyword = keyword),
+        anchorItemId = anchorItemId
+    )
 
-                state.pageDescriptor != pageDescriptor -> {
-                    Timber.d(
-                        "rust-message-query: Active paginator cannot be reused for cursor. active=%s requested=%s",
-                        state.pageDescriptor,
-                        pageDescriptor
-                    )
-                    null
-                }
+    private suspend fun getCursorFromActivePaginator(
+        pageDescriptor: PageDescriptor,
+        anchorItemId: LocalItemId
+    ): Either<PaginationError, MailMessageCursorWrapper>? = paginatorMutex.withLock {
+        val state = paginatorState
+        when {
+            state == null -> {
+                Timber.d("rust-message-query: No active paginator to reuse for cursor")
+                null
+            }
 
-                else -> {
-                    Timber.d(
-                        "rust-message-query: Reusing active mailbox paginator for cursor, scrollerId=%s",
-                        state.paginatorWrapper.getScrollerId()
-                    )
-                    state.paginatorWrapper.getCursor(firstPage)
-                }
+            state.pageDescriptor != pageDescriptor -> {
+                Timber.d(
+                    "rust-message-query: Active paginator cannot be reused for cursor. active=%s requested=%s",
+                    state.pageDescriptor,
+                    pageDescriptor
+                )
+                null
+            }
+
+            else -> {
+                Timber.d(
+                    "rust-message-query: Reusing active paginator for cursor, scrollerId=%s",
+                    state.paginatorWrapper.getScrollerId()
+                )
+                state.paginatorWrapper.getCursor(anchorItemId)
             }
         }
     }
@@ -212,6 +232,14 @@ class RustMessageListQueryImpl @Inject constructor(
         scrollerFetchNewStatusFlow.filterNotNull()
 
     override fun observeCategoryViewStatus(): Flow<CategoryViewStatus> = categoryViewStatusFlow.filterNotNull()
+
+    override fun observeTotalItemsCount(userId: UserId, pageKey: PageKey): Flow<PaginatorTotal> {
+        val requested = pageKey.toPageDescriptor(userId)
+        return totalItemsCountFlow
+            .filterNotNull()
+            .filter { it.pageDescriptor == requested }
+            .map { it.total }
+    }
 
     override suspend fun terminatePaginator(userId: UserId) {
         if (paginatorState?.pageDescriptor?.userId == userId) {
@@ -224,6 +252,42 @@ class RustMessageListQueryImpl @Inject constructor(
     }
 
     override suspend fun supportsIncludeFilter() = paginatorState?.paginatorWrapper?.supportsIncludeFilter() == true
+
+    /**
+     * Positions are cached with the paginator, so only messages not seen yet reach Rust.
+     *
+     * The call queues behind any fetch in flight on the scroller. Without the cache, every refresh served by
+     * [reloadMessages] would wait on Rust again for positions we already have.
+     */
+    override suspend fun getSearchMatchPositions(
+        userId: UserId,
+        pageKey: PageKey,
+        messageIds: List<LocalMessageId>
+    ): Either<PaginationError, Map<String, List<LocalSearchMatchPosition>>> {
+        val requested = pageKey.toPageDescriptor(userId)
+        val state = paginatorMutex.withLock { paginatorState }
+        val searchPaginator = state
+            ?.takeIf { it.pageDescriptor == requested }
+            ?.paginatorWrapper as? SearchMessagePaginatorWrapper
+            ?: return emptyMap<String, List<LocalSearchMatchPosition>>().right()
+
+        val ids = messageIds.mapTo(HashSet()) { it.value.toString() }
+        val missingIds = messageIds.filterNot { it.value.toString() in state.searchMatchPositions }
+        if (missingIds.isEmpty()) return state.searchMatchPositions.filterKeys { it in ids }.right()
+
+        return searchPaginator.getMatchPositions(missingIds, state.mailbox).map { fetched ->
+            // Messages without a match are cached too, so they are not asked for again.
+            val positions = missingIds.map { it.value.toString() }.associateWith { fetched[it].orEmpty() }
+            paginatorMutex.withLock {
+                val current = paginatorState
+                // A paginator created while Rust answered belongs to another search.
+                if (current?.paginatorWrapper === searchPaginator) {
+                    paginatorState = current.copy(searchMatchPositions = current.searchMatchPositions + positions)
+                }
+            }
+            (state.searchMatchPositions + positions).filterKeys { it in ids }
+        }
+    }
 
     override suspend fun setActiveCategoryLabel(categoryLabelId: LocalCategoryLabelId): Either<PaginationError, Unit> =
         paginatorState?.paginatorWrapper?.changeCategoryView(categoryLabelId) ?: run {
@@ -255,20 +319,21 @@ class RustMessageListQueryImpl @Inject constructor(
             is PageDescriptor.Default -> createRustMessagesPaginator(
                 mailbox = mailbox,
                 enabledCategoryId = pageDescriptor.categoryLabelId?.toLocalCategoryLabelId(),
-                callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
+                callback = messagesUpdatedCallback(pageDescriptor, scrollerOnUpdateHandler)
             )
 
             is PageDescriptor.Search -> createRustSearchPaginator(
                 mailbox = mailbox,
                 keyword = pageDescriptor.keyword,
-                callback = messagesUpdatedCallback(scrollerOnUpdateHandler)
+                callback = messagesUpdatedCallback(pageDescriptor, scrollerOnUpdateHandler)
             )
         }.onRight { wrapper ->
             Timber.d("rust-message-query: Paginator instance created, id=${wrapper.getScrollerId()}")
             paginatorState = PaginatorState(
                 paginatorWrapper = wrapper,
                 pageDescriptor = pageDescriptor,
-                scrollerCache = ScrollerCache()
+                scrollerCache = ScrollerCache(),
+                mailbox = mailbox
             )
 
             // Get initial category view status
@@ -278,7 +343,7 @@ class RustMessageListQueryImpl @Inject constructor(
         }
     }
 
-    private fun messagesUpdatedCallback(onUpdateHandler: ScrollerOnUpdateHandler<Message>) =
+    private fun messagesUpdatedCallback(descriptor: PageDescriptor, onUpdateHandler: ScrollerOnUpdateHandler<Message>) =
         object : MessageScrollerLiveQueryCallback {
             override fun onUpdate(update: MessageScrollerUpdate) {
                 coroutineScope.launch {
@@ -299,6 +364,12 @@ class RustMessageListQueryImpl @Inject constructor(
                                         "${update.categoryView.available}"
                                 )
                                 categoryViewStatusFlow.value = update.categoryView.toCategoryViewStatus()
+                                return@withLock
+                            }
+
+                            is MessageScrollerUpdate.TotalChanged -> {
+                                Timber.d("rust-message-query: Total changed: %s", update.total)
+                                totalItemsCountFlow.value = TotalItemsCount(descriptor, update.total.toPaginatorTotal())
                                 return@withLock
                             }
                         }
@@ -350,6 +421,7 @@ class RustMessageListQueryImpl @Inject constructor(
             )
             paginatorState?.paginatorWrapper?.disconnect()
             paginatorState = null
+            totalItemsCountFlow.value = null
         }
     }
 
@@ -457,7 +529,9 @@ class RustMessageListQueryImpl @Inject constructor(
         val paginatorWrapper: MessagePaginatorWrapper,
         val pageDescriptor: PageDescriptor,
         val scrollerCache: ScrollerCache<Message>,
-        val pendingRequest: PendingRequest<Message>? = null
+        val mailbox: MailboxWrapper,
+        val pendingRequest: PendingRequest<Message>? = null,
+        val searchMatchPositions: Map<String, List<LocalSearchMatchPosition>> = emptyMap()
     )
 
     private fun PaginatorState.withFollowUpResponse(): PaginatorState {
@@ -467,6 +541,13 @@ class RustMessageListQueryImpl @Inject constructor(
         val newPending = currentPending.copy(followUpResponse = CompletableDeferred())
 
         return this.copy(pendingRequest = newPending)
+    }
+
+    private data class TotalItemsCount(val pageDescriptor: PageDescriptor, val total: PaginatorTotal)
+
+    private fun ScrollerTotal.toPaginatorTotal() = when (this) {
+        is ScrollerTotal.Pending -> PaginatorTotal.Pending
+        is ScrollerTotal.Known -> PaginatorTotal.Known(total.toLong())
     }
 
     private sealed interface PageDescriptor {
@@ -540,6 +621,7 @@ fun MessageScrollerUpdate.debugTypeName(): String = when (this) {
     is MessageScrollerUpdate.Status -> this.v1.debugTypeName()
     is MessageScrollerUpdate.Error -> "Error"
     is MessageScrollerUpdate.CategoryViewChanged -> "CategoryViewChanged"
+    is MessageScrollerUpdate.TotalChanged -> "TotalChanged"
 }
 
 fun MessageScrollerListUpdate.debugTypeName(): String = when (this) {

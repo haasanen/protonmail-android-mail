@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailbugreport.presentation.ui
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
@@ -67,10 +68,10 @@ fun ApplicationLogsScreen(
     val screenListActions = ApplicationLogsScreenList.Actions(
         onExport = { fileSaveLauncher.launch(EventsFileNameHelper.generateTimestampedFilename()) },
         onShare = { viewModel.submit(Export.ShareLogs) },
+        onSendByEmail = actions.onComposeWithLogs?.let { { viewModel.submit(Export.SendLogsByEmail) } },
         onShowLogcat = { viewModel.submit(View.ViewLogcat) },
         onShowRustEvents = { viewModel.submit(View.ViewRustEvents) },
-        onShowAppEvents = { viewModel.submit(View.ViewAppEvents) },
-        onFeatureFlagNavigation = actions.onFeatureFlagsNavigation
+        onShowAppEvents = { viewModel.submit(View.ViewAppEvents) }
     )
 
     ConsumableLaunchedEffect(state.showApplicationLogs) {
@@ -87,6 +88,10 @@ fun ApplicationLogsScreen(
 
     ConsumableLaunchedEffect(state.share) {
         context.shareLogs(it)
+    }
+
+    ConsumableLaunchedEffect(state.sendByEmail) {
+        actions.onComposeWithLogs?.invoke(it)
     }
 
     ConsumableTextEffect(state.error) { message ->
@@ -111,7 +116,6 @@ fun ApplicationLogsScreen(
         content = { paddingValues ->
             ApplicationLogsScreenList(
                 modifier = Modifier.padding(paddingValues),
-                appVersion = state.appVersion,
                 actions = screenListActions,
                 isStandalone = isStandalone
             )
@@ -123,6 +127,10 @@ object ApplicationLogsScreen {
     data class Actions(
         val onBackClick: () -> Unit,
         val onViewItemClick: (ApplicationLogsViewItemMode) -> Unit,
-        val onFeatureFlagsNavigation: () -> Unit
+        /**
+         * Attaches the aggregated logs zip to a new draft in process. Null where no user is logged in (the
+         * standalone entry point reachable from the login screen), as there is no composer to navigate to.
+         */
+        val onComposeWithLogs: ((Uri) -> Unit)?
     )
 }

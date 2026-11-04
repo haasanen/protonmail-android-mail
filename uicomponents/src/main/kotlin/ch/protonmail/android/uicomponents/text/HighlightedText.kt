@@ -153,7 +153,8 @@ fun buildMultiWordHighlightedText(
             if (words.isEmpty()) {
                 append(text)
             } else {
-                val pattern = words.joinToString("|") { Regex.escape(it) }
+                // Longest first, so "gov" doesn't cut a match for "government" short
+                val pattern = words.sortedByDescending { it.length }.joinToString("|") { Regex.escape(it) }
                 val regex = Regex(pattern, RegexOption.IGNORE_CASE)
 
                 var currentIndex = 0
@@ -193,3 +194,17 @@ fun buildMultiWordHighlightedText(
         }
     }
 }
+
+/**
+ * The query's words plus the text search matched, as one highlight for [MultiWordHighlightedText].
+ *
+ * Including the matched text highlights fuzzy matches too, such as "government" for "governmnt". The
+ * highlight splits this on whitespace again. Matched terms are single words or addresses, so they stay whole.
+ */
+fun buildSearchHighlightText(query: String, searchMatchedTerms: List<String>): String =
+    (query.split(Whitespace) + searchMatchedTerms)
+        .filter { it.isNotBlank() }
+        .distinctBy { it.lowercase() }
+        .joinToString(" ")
+
+private val Whitespace = Regex("\\s+")

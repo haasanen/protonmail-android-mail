@@ -28,6 +28,14 @@ import kotlin.test.assertTrue
 internal class ContentIndexingStateMappingsTest {
 
     @Test
+    fun `only a completed account reads as completed`() {
+        // Then
+        assertTrue(ContentIndexingState.Completed.isCompleted())
+        assertFalse(ContentIndexingState.Running(percentage = 100.0).isCompleted())
+        assertFalse(ContentIndexingState.Idle.isCompleted())
+    }
+
+    @Test
     fun `an account mid-backfill reports its percentage and counts as active`() {
         // Given
         val state = ContentIndexingState.Running(percentage = 42.5)
@@ -68,12 +76,21 @@ internal class ContentIndexingStateMappingsTest {
     fun `waiting for an unmetered connection is a pause, not an end`() {
         // Given - Rust parked the queue and will resume it on its own, so the account still has a
         // backfill to run and the screen says so rather than showing a stalled percentage.
-        val state = ContentIndexingState.WaitingForUnmeteredConnection
+        val state = ContentIndexingState.WaitingForUnmeteredConnection()
 
         // Then
         assertTrue(state.isWaitingForUnmeteredConnection())
         assertTrue(state.isActive())
         assertNull(state.toPercentage())
+    }
+
+    @Test
+    fun `a parked account still reports the ground it covered`() {
+        // Given - the queue is waiting on Wi-Fi, with the percentage it had reached.
+        val state = ContentIndexingState.WaitingForUnmeteredConnection(percentage = 42.5)
+
+        // Then - the bar stays where it stopped instead of dropping back to zero.
+        assertEquals(42.5, state.toPercentage())
     }
 
     @Test
@@ -84,7 +101,7 @@ internal class ContentIndexingStateMappingsTest {
             ContentIndexingState.Running(percentage = 42.5),
             ContentIndexingState.Completed,
             ContentIndexingState.Cancelled,
-            ContentIndexingState.Failed
+            ContentIndexingState.Failed()
         ).forEach { state ->
             assertFalse(state.isWaitingForUnmeteredConnection(), "$state should not be waiting on Wi-Fi")
         }
@@ -93,7 +110,7 @@ internal class ContentIndexingStateMappingsTest {
     @Test
     fun `a failed account is reported as failed and nothing else`() {
         // Given
-        val state = ContentIndexingState.Failed
+        val state = ContentIndexingState.Failed()
 
         // Then
         assertTrue(state.isFailed())
@@ -107,7 +124,7 @@ internal class ContentIndexingStateMappingsTest {
         listOf(
             ContentIndexingState.Idle,
             ContentIndexingState.Initializing,
-            ContentIndexingState.WaitingForUnmeteredConnection,
+            ContentIndexingState.WaitingForUnmeteredConnection(),
             ContentIndexingState.Running(percentage = 42.5),
             ContentIndexingState.Completed,
             ContentIndexingState.Cancelled
@@ -122,7 +139,7 @@ internal class ContentIndexingStateMappingsTest {
             ContentIndexingState.Idle,
             ContentIndexingState.Completed,
             ContentIndexingState.Cancelled,
-            ContentIndexingState.Failed
+            ContentIndexingState.Failed()
         ).forEach { state ->
             assertNull(state.toPercentage(), "$state should not report a percentage")
             assertFalse(state.isActive(), "$state should not be active")

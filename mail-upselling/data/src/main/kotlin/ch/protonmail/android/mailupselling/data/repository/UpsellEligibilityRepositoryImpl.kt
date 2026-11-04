@@ -18,12 +18,16 @@
 
 package ch.protonmail.android.mailupselling.data.repository
 
+import arrow.core.Either
+import arrow.core.flatten
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
+import ch.protonmail.android.mailupselling.domain.model.PlusToUnlimitedOffer
 import ch.protonmail.android.mailupselling.domain.repository.UpsellEligibilityRepository
 import ch.protonmail.android.mailupselling.domain.usecase.UpsellVariantPlan
 import me.proton.core.domain.entity.UserId
-import uniffi.mail_uniffi.MailUserSessionPlusToUnlimitedEligibilityResult
 import uniffi.mail_uniffi.MailUserSessionUpsellEligibilityResult
+import uniffi.mail_uniffi.PlusToUnlimitedEligibility
 import uniffi.mail_uniffi.UpsellEligibility
 import uniffi.mail_uniffi.UpsellType
 import uniffi.mail_uniffi.plusToUnlimitedExperimentFlag
@@ -42,15 +46,22 @@ class UpsellEligibilityRepositoryImpl @Inject constructor(
             }
         }.getOrNull()
 
-    override suspend fun getPlusToUnlimitedEligibility(userId: UserId): Boolean =
+    override suspend fun getPlusToUnlimitedEligibility(userId: UserId): Either<DataError, PlusToUnlimitedOffer> =
         executeWithUserSession(userId) { session ->
-            val result = session.getRustUserSession()
-                .plusToUnlimitedEligibility(plusToUnlimitedExperimentFlag())
-            when (result) {
-                is MailUserSessionPlusToUnlimitedEligibilityResult.Ok -> result.v1
-                is MailUserSessionPlusToUnlimitedEligibilityResult.Error -> false
-            }
-        }.getOrNull() ?: false
+            session.plusToUnlimitedEligibility(plusToUnlimitedExperimentFlag())
+                .map { it.toPlusToUnlimitedOffer() }
+        }.flatten()
+
+    override suspend fun getMonthlyToYearlyEligibility(userId: UserId): Either<DataError, Boolean> =
+        executeWithUserSession(userId) { session ->
+            session.monthlyToYearlyEligibility()
+        }.flatten()
+}
+
+private fun PlusToUnlimitedEligibility.toPlusToUnlimitedOffer() = when (this) {
+    PlusToUnlimitedEligibility.NOT_ELIGIBLE -> PlusToUnlimitedOffer.None
+    PlusToUnlimitedEligibility.REGULAR -> PlusToUnlimitedOffer.Regular
+    PlusToUnlimitedEligibility.BLACK_FRIDAY -> PlusToUnlimitedOffer.BlackFriday
 }
 
 private fun UpsellEligibility.toUpsellPlan(): UpsellVariantPlan? = when (this) {

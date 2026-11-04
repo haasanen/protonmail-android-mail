@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailupselling.domain.usecase
 
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayUpsellOptedOut
+import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.cache.AvailableUpgradesCache
 import ch.protonmail.android.mailupselling.domain.model.BlackFridayPhase
@@ -26,16 +28,21 @@ import ch.protonmail.android.mailupselling.domain.model.FallPromoPhase
 import ch.protonmail.android.mailupselling.domain.model.FallPromoSupported
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeIds
 import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeSupportedTags
+import ch.protonmail.android.mailupselling.domain.model.PlusToUnlimitedOffer
 import ch.protonmail.android.mailupselling.domain.model.SpringPromoPhase
 import ch.protonmail.android.mailupselling.domain.model.SpringPromoSupported
 import ch.protonmail.android.mailupselling.domain.model.SummerCampaignPhase
 import ch.protonmail.android.mailupselling.domain.model.SummerCampaignSupported
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.domain.repository.UpsellEligibilityRepository
+import ch.protonmail.android.mailupselling.domain.repository.UpsellOptOutRepository
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.android.core.payment.domain.model.filterForTags
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class ObservePlanUpgrades @Inject constructor(
@@ -46,17 +53,32 @@ class ObservePlanUpgrades @Inject constructor(
     private val getCurrentSummerCampaignPhase: GetCurrentSummerCampaignPhase,
     private val getCurrentFallPromoPhase: GetCurrentFallPromoPhase,
     private val isEligibleForBlackFridayPromotion: IsEligibleForBlackFridayPromotion,
-    private val resolveUpsellVariant: ResolveUpsellVariant
+    private val resolveUpsellVariant: ResolveUpsellVariant,
+    private val upsellEligibilityRepository: UpsellEligibilityRepository,
+    private val upsellOptOutRepository: UpsellOptOutRepository,
+    @IsBlackFridayUpsellOptedOut private val blackFridayOptedOut: FeatureFlag<Boolean>
 ) {
 
-    operator fun invoke(entryPoint: UpsellingEntryPoint.Feature) = observePrimaryUserId().flatMapLatest { userId ->
+    operator fun invoke(entryPoint: UpsellingEntryPoint.Feature) = combine(
+        observePrimaryUserId(),
+        upsellOptOutRepository.observeOptOutChanges()
+    ) { userId, _ -> userId }.flatMapLatest { userId ->
         userId ?: return@flatMapLatest flowOf(emptyList())
 
+        if (entryPoint == UpsellingEntryPoint.Feature.PlusUnlimited && isPlusToUnlimitedBlackFriday(userId)) {
+            return@flatMapLatest cache.observe(userId).map { upgrades ->
+                upgrades.filterForTags(primaryTag = PlanUpgradeSupportedTags.BlackFriday.value)
+                    .filterForPlan(PlanUpgradeIds.UnlimitedPlanId)
+            }
+        }
+
         val flowSupportsBlackFriday = entryPoint is BlackFridaySupported
-        val isBlackFridayOngoing = getCurrentBlackFridayPhase() != BlackFridayPhase.None
+        val blackFridayPhase = getCurrentBlackFridayPhase()
+        val isBlackFridayOngoing = blackFridayPhase != BlackFridayPhase.None
         val supportsBlackFridayPromo = flowSupportsBlackFriday &&
             isBlackFridayOngoing &&
-            isEligibleForBlackFridayPromotion(userId)
+            isEligibleForBlackFridayPromotion(userId) &&
+            !blackFridayOptedOut.get()
 
         val flowSupportsSpringPromo = entryPoint is SpringPromoSupported
         val isSpringPromoOngoing = getCurrentSpringPromoPhase() != SpringPromoPhase.None
@@ -77,11 +99,15 @@ class ObservePlanUpgrades @Inject constructor(
             isEligibleForBlackFridayPromotion(userId)
 
         val offersTag = when {
+            supportsBlackFridayPromo -> PlanUpgradeSupportedTags.BlackFriday
             supportsFallPromo -> PlanUpgradeSupportedTags.FallPromo
             supportsSummerCampaign -> PlanUpgradeSupportedTags.SummerCampaign
             supportsSpringPromo -> PlanUpgradeSupportedTags.SpringOffer
-            supportsBlackFridayPromo -> PlanUpgradeSupportedTags.BlackFriday
             else -> PlanUpgradeSupportedTags.IntroductoryPrice
+        }
+        val promoTargetPlan = when (offersTag) {
+            PlanUpgradeSupportedTags.BlackFriday -> blackFridayPhase.targetPlan()
+            else -> offersTag.targetPlan
         }
 
         val forceUnlimited = entryPoint == UpsellingEntryPoint.Feature.PlusUnlimited
@@ -96,9 +122,23 @@ class ObservePlanUpgrades @Inject constructor(
                 eligibleOffers.filterForPlan(PlanUpgradeIds.UnlimitedPlanId)
             } else {
                 val eligibleOffers = upgrades.filterForTags(primaryTag = offersTag.value)
-                eligibleOffers.filterForPlan(offersTag.targetPlan)
+                val targetPlan = if (hasPromoOffers) promoTargetPlan else PlanUpgradeIds.PlusPlanId
+                eligibleOffers.filterForPlan(targetPlan)
             }
         }
+    }
+
+    private suspend fun isPlusToUnlimitedBlackFriday(userId: UserId): Boolean {
+        val eligibility = upsellEligibilityRepository.getPlusToUnlimitedEligibility(userId).getOrNull()
+        return eligibility == PlusToUnlimitedOffer.BlackFriday &&
+            isEligibleForBlackFridayPromotion(userId) &&
+            !blackFridayOptedOut.get()
+    }
+
+    private fun BlackFridayPhase.targetPlan() = when (this) {
+        BlackFridayPhase.Active.Wave1 -> PlanUpgradeIds.UnlimitedPlanId
+        BlackFridayPhase.Active.Wave2 -> PlanUpgradeIds.PlusPlanId
+        BlackFridayPhase.None -> PlanUpgradeIds.PlusPlanId
     }
 
     private fun List<ProductOfferDetail>.filterForPlan(planName: String) = filter { it.metadata.planName == planName }

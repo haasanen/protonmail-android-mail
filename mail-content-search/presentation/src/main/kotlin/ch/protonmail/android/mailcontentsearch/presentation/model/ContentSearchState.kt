@@ -38,6 +38,7 @@ import kotlinx.collections.immutable.persistentListOf
 data class ContentSearchState(
     val query: String,
     val phase: Phase,
+    val resultsTotal: ResultsTotalUiState,
     val includeFilter: IncludeFilter,
     val isConversationGrouping: Boolean,
     val openedFromLocation: LabelId,
@@ -56,14 +57,30 @@ data class ContentSearchState(
     val avatarImages: AvatarImagesUiModel,
     val downloadingAttachmentId: AttachmentIdUiModel?,
     val openAttachment: Effect<OpenAttachmentIntentValues>,
-    val errorMessage: Effect<TextUiModel>
+    val errorMessage: Effect<TextUiModel>,
+    val closeScreen: Effect<Unit>
 ) {
     val inSelectionMode: Boolean get() = selectionState.inSelectionMode
+
+    /**
+     * Whether a search is on screen — results or the loading they reload into — and so is the
+     * spam/trash chip. Loading counts so that retyping and resubmitting a query doesn't make the
+     * chip vanish and jump back as each new search spins up.
+     */
+    val isSearchLive: Boolean get() = phase != Phase.Idle
 
     sealed interface Phase {
         data object Idle : Phase
         data object Loading : Phase
+
+        /**
+         * [count] is how many rows the paging list holds, so it decides whether there is a list to
+         * show at all. The header shows how many results the search has in all, from [resultsTotal].
+         */
         data class Results(val count: Int) : Phase
+
+        /** The search could not run. The user can retry it. */
+        data object Failed : Phase
     }
 
     companion object {
@@ -71,6 +88,7 @@ data class ContentSearchState(
         val Initial = ContentSearchState(
             query = "",
             phase = Phase.Idle,
+            resultsTotal = ResultsTotalUiState.Initial,
             includeFilter = IncludeFilter.None,
             isConversationGrouping = false,
             openedFromLocation = SystemLabelId.AlmostAllMail.labelId,
@@ -84,7 +102,8 @@ data class ContentSearchState(
             avatarImages = AvatarImagesUiModel.Empty,
             downloadingAttachmentId = null,
             openAttachment = Effect.empty(),
-            errorMessage = Effect.empty()
+            errorMessage = Effect.empty(),
+            closeScreen = Effect.empty()
         )
     }
 }

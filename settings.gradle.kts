@@ -190,6 +190,11 @@ include(":mail-padlocks:data")
 include(":mail-padlocks:domain")
 include(":mail-padlocks:presentation")
 
+include(":mail-nps:dagger")
+include(":mail-nps:data")
+include(":mail-nps:domain")
+include(":mail-nps:presentation")
+
 include(":mail-sidebar:dagger")
 include(":mail-sidebar:data")
 include(":mail-sidebar:domain")
@@ -226,11 +231,13 @@ include(":mail-crash-record:domain")
 
 include(":mail-telemetry:dagger")
 include(":mail-telemetry:data")
+include(":mail-telemetry:debug")
 include(":mail-telemetry:domain")
 
 include(":uicomponents")
 include(":design-system")
 include(":presentation-compose")
+include(":presentation-vendored")
 
 include(":test:annotations")
 include(":test:network-mocks")

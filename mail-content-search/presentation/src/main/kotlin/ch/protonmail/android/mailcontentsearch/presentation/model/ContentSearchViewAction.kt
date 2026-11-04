@@ -20,7 +20,9 @@ package ch.protonmail.android.mailcontentsearch.presentation.model
 
 import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
+import ch.protonmail.android.mailcontentsearch.presentation.ui.TURN_ON_CONTENT_SEARCH_KEY
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 
 sealed interface ContentSearchViewAction {
 
@@ -30,11 +32,15 @@ sealed interface ContentSearchViewAction {
 
     data object ClearQuery : ContentSearchViewAction
 
-    data object ToggleIncludeSpam : ContentSearchViewAction
+    data object ToggleIncludeSpamTrash : ContentSearchViewAction
 
-    data object ToggleIncludeTrash : ContentSearchViewAction
+    /** The set-up page asked to turn content search on. See [TURN_ON_CONTENT_SEARCH_KEY]. */
+    data object TurnOnContentSearchRequested : ContentSearchViewAction
 
     data class ResultsLoaded(val count: Int) : ContentSearchViewAction
+
+    /** [error] is null when the failure did not come from the paginator. */
+    data class SearchFailed(val error: PaginationError?) : ContentSearchViewAction
 
     data class StarAction(val itemId: String, val isStarred: Boolean) : ContentSearchViewAction
 
@@ -51,7 +57,7 @@ sealed interface ContentSearchViewAction {
 
     data object ExitSelectionMode : ContentSearchViewAction
 
-    data class ItemsRemovedFromSelection(val itemIds: List<String>) : ContentSearchViewAction
+    data class ItemsChanged(val itemIds: List<String>) : ContentSearchViewAction
 
     // Bottom toolbar actions on the current selection
     data object MarkAsRead : ContentSearchViewAction

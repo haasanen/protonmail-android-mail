@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import arrow.core.nonEmptyListOf
+import ch.protonmail.android.mailcategory.presentation.model.CategoryViewState
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
@@ -40,7 +41,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 import ch.protonmail.android.test.annotations.suite.RegressionTest
@@ -93,8 +93,6 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             refreshErrorEffect = Effect.empty(),
             refreshOngoing = false,
             swipeActions = null,
-            searchState = MailboxSearchStateSampleData.NotSearching,
-            shouldShowFab = true,
             avatarImagesUiModel = AvatarImagesUiModel.Empty,
             paginatorInvalidationEffect = Effect.empty(),
             loadingBarState = LoadingBarUiState.Hide,
@@ -121,8 +119,6 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             refreshErrorEffect = Effect.empty(),
             refreshOngoing = false,
             swipeActions = null,
-            searchState = MailboxSearchStateSampleData.NotSearching,
-            shouldShowFab = true,
             avatarImagesUiModel = AvatarImagesUiModel.Empty,
             paginatorInvalidationEffect = Effect.empty(),
             loadingBarState = LoadingBarUiState.Hide,
@@ -168,8 +164,6 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                     refreshErrorEffect = Effect.empty(),
                     refreshOngoing = false,
                     swipeActions = null,
-                    searchState = MailboxSearchStateSampleData.NotSearching,
-                    shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty,
                     paginatorInvalidationEffect = Effect.empty(),
                     loadingBarState = LoadingBarUiState.Hide,
@@ -180,6 +174,7 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                     currentLabelName = systemLabel.text(),
                     primaryAvatarItem = null
                 ),
+                categoryViewState = CategoryViewState.NotAvailable,
                 unreadFilterState = UnreadFilterState.Loading,
                 showSpamTrashIncludeFilterState = ShowSpamTrashIncludeFilterState.Loading,
                 bottomAppBarState = BottomBarState.Data.Hidden(
@@ -192,7 +187,8 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                 actionResult = Effect.empty(),
                 composerNavigationState = MailboxComposerNavigationState.Enabled(),
                 error = Effect.empty(),
-                showRatingBooster = Effect.empty()
+                showRatingBooster = Effect.empty(),
+                showNps = Effect.empty()
             )
         }
 

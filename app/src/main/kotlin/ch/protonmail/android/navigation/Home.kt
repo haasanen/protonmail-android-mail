@@ -68,11 +68,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.R
+import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetDefaults
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.feature.contentsearch.HomeContentSearchBottomSheetViewAction
 import ch.protonmail.android.feature.contentsearch.HomeContentSearchBottomSheetViewModel
 import ch.protonmail.android.feature.spotlight.HomeFeatureSpotlightViewModel
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -95,11 +97,17 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionStateType
 import ch.protonmail.android.mailnotifications.presentation.viewmodel.NotificationsPermissionViewModel
 import ch.protonmail.android.mailnotifications.ui.NotificationsPermissionBottomSheet
+import ch.protonmail.android.mailnps.presentation.R as NpsR
+import ch.protonmail.android.mailnps.presentation.model.NpsOperation.NpsAction
+import ch.protonmail.android.mailnps.presentation.ui.NpsBottomSheet
+import ch.protonmail.android.mailnps.presentation.ui.NpsBottomSheetContent
+import ch.protonmail.android.mailnps.presentation.viewmodel.NpsViewModel
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
+import ch.protonmail.android.mailtelemetry.domain.model.UpsellEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
 import ch.protonmail.android.mailupselling.presentation.viewmodel.BlackFridayModalUpsellViewModel
@@ -124,6 +132,7 @@ import ch.protonmail.android.navigation.route.addContactGroupDetails
 import ch.protonmail.android.navigation.route.addContactSearch
 import ch.protonmail.android.navigation.route.addContacts
 import ch.protonmail.android.navigation.route.addContentSearchScreen
+import ch.protonmail.android.navigation.route.addContentSearchSetUp
 import ch.protonmail.android.navigation.route.addContentSearchSettings
 import ch.protonmail.android.navigation.route.addConversationDetail
 import ch.protonmail.android.navigation.route.addCustomizeToolbarSettings
@@ -136,6 +145,7 @@ import ch.protonmail.android.navigation.route.addFeatureSpotlight
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
 import ch.protonmail.android.navigation.route.addMobileSignatureSettings
+import ch.protonmail.android.navigation.route.addMonthlyToYearlyUpsellSheet
 import ch.protonmail.android.navigation.route.addNotificationsSettings
 import ch.protonmail.android.navigation.route.addPinDialog
 import ch.protonmail.android.navigation.route.addPrivacySettings
@@ -179,7 +189,8 @@ fun Home(
     summerCampaignModalUpsellViewModel: SummerCampaignModalUpsellViewModel = hiltViewModel(),
     fallPromoModalUpsellViewModel: FallPromoModalUpsellViewModel = hiltViewModel(),
     featureSpotlightViewModel: HomeFeatureSpotlightViewModel = hiltViewModel(),
-    contentSearchBottomSheetViewModel: HomeContentSearchBottomSheetViewModel = hiltViewModel()
+    contentSearchBottomSheetViewModel: HomeContentSearchBottomSheetViewModel = hiltViewModel(),
+    npsViewModel: NpsViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController().withSentryObservableEffect()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -190,7 +201,6 @@ fun Home(
     // floating controls so multi-line snackbars never overlap them.
     var snackbarHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
-    val isDrawerSwipeGestureEnabled = remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     val state by viewModel.state.collectAsStateWithLifecycle(HomeState.Initial)
     val onboardingEligibilityState by onboardingStepViewModel.onboardingEligibilityState.collectAsStateWithLifecycle()
@@ -202,6 +212,7 @@ fun Home(
     val featureSpotlightState by featureSpotlightViewModel.state.collectAsStateWithLifecycle()
     val contentSearchBottomSheetState by contentSearchBottomSheetViewModel.state.collectAsStateWithLifecycle()
     val isSearchMobileDataOn by contentSearchBottomSheetViewModel.isMobileDataEnabled.collectAsStateWithLifecycle()
+    val npsState by npsViewModel.state.collectAsStateWithLifecycle()
 
     val interstitialPriority by remember {
         derivedStateOf {
@@ -225,6 +236,7 @@ fun Home(
     }
 
     val featureMissingSnackbarMessage = stringResource(id = R.string.feature_coming_soon)
+    val npsThankYouMessage = stringResource(id = NpsR.string.nps_thank_you)
     fun showFeatureMissingSnackbar() {
         scope.launch {
             snackbarHost.showSnackbar(message = featureMissingSnackbarMessage, type = ProtonSnackbarType.NORM)
@@ -467,14 +479,54 @@ fun Home(
                     }
 
                     BottomSheetType.ContentSearch -> {
-                        contentSearchBottomSheetViewModel.markShown()
+                        contentSearchBottomSheetViewModel.submit(HomeContentSearchBottomSheetViewAction.Dismiss)
                     }
+
+                    BottomSheetType.Nps -> npsViewModel.submit(NpsAction.SheetDismissed)
                 }
 
                 if (!bottomSheetState.isVisible) {
                     showBottomSheet = false
                 }
             }
+    }
+
+    // Dismissing the content search sheet opts the user in, so every dismissal path starts indexing.
+    val onContentSearchSheetDismissed: () -> Unit = {
+        contentSearchBottomSheetViewModel.submit(HomeContentSearchBottomSheetViewAction.EnableForPrimaryUser)
+        onBottomSheetDismissed()
+        preventBottomSheetDismissal = false
+    }
+
+    // A notification deep-link navigates away while the sheet stays on top of the new screen.
+    // Treat leaving the mailbox as a dismissal so the sheet closes and indexing still starts.
+    // The sheet state is a key because showBottomSheet only turns true once the show animation ends.
+    // The deep-link can land before that.
+    LaunchedEffect(currentDestinationRoute, showBottomSheet, bottomSheetType) {
+        if (showBottomSheet &&
+            bottomSheetType == BottomSheetType.ContentSearch &&
+            currentDestinationRoute != Screen.Mailbox.route
+        ) {
+            onContentSearchSheetDismissed()
+        }
+    }
+
+    // Offered by the mailbox once the user is back from the message reader, unless another sheet is open.
+    fun showNpsSurvey() {
+        if (bottomSheetState.isVisible) return
+        bottomSheetType = BottomSheetType.Nps
+        // The sheet can be swiped away, and a previous sheet may have blocked that.
+        preventBottomSheetDismissal = false
+        // ModalBottomSheet slides itself in when it enters the composition, so no show() beforehand.
+        showBottomSheet = true
+    }
+
+    // The NPS ViewModel closes the sheet after Share and thanks the user.
+    ConsumableLaunchedEffect(npsState.dismiss) {
+        onBottomSheetDismissed()
+    }
+    ConsumableLaunchedEffect(npsState.showThankYou) {
+        showNormalSnackbar(npsThankYouMessage)
     }
 
     LaunchedEffect(interstitialPriority) {
@@ -551,17 +603,6 @@ fun Home(
         }
     }
 
-    val eventLoopErrorString = stringResource(R.string.home_event_loop_error_snackbar)
-    LaunchedEffect(Unit) {
-        viewModel.eventLoopErrors.collect { error ->
-            snackbarHost.showSnackbar(
-                message = eventLoopErrorString,
-                duration = SnackbarDuration.Long,
-                type = ProtonSnackbarType.ERROR
-            )
-        }
-    }
-
     val contentSearchErrorString = stringResource(R.string.home_content_search_error_snackbar)
     val contentSearchErrorActionString = stringResource(R.string.home_content_search_error_snackbar_action)
     ConsumableLaunchedEffect(state.contentIndexingErrorEffect) {
@@ -611,12 +652,18 @@ fun Home(
         }
     }
 
+    // The NPS sheet draws its gradient and drag handle itself, over the whole sheet.
+    val isNpsSheet = bottomSheetType is BottomSheetType.Nps
+
     ProtonModalBottomSheetLayout(
         showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
         contentWindowInsets = {
             if (isSheetWidthCapped) WindowInsets(0) else WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
         },
+        shape = if (isNpsSheet) NpsBottomSheet.Shape else ProtonTheme.shapes.bottomSheet,
+        containerColor = if (isNpsSheet) Color.Transparent else ProtonTheme.colors.backgroundInvertedNorm,
+        dragHandle = if (isNpsSheet) null else ProtonModalBottomSheetDefaults.DragHandle,
         sheetContent = {
             when (val type = bottomSheetType) {
                 is BottomSheetType.NotificationsPermissions -> NotificationsPermissionBottomSheet(
@@ -639,17 +686,29 @@ fun Home(
                     preventBottomSheetDismissal = true
                 }
 
-                is BottomSheetType.ContentSearch -> ContentSearchBottomSheet(
+                BottomSheetType.ContentSearch -> ContentSearchBottomSheet(
                     isMobileDataEnabled = isSearchMobileDataOn,
                     actions = ContentSearchBottomSheet.Actions(
-                        onDismiss = {
-                            onBottomSheetDismissed()
-                            preventBottomSheetDismissal = false
-                        },
-                        onToggleMobileData = contentSearchBottomSheetViewModel::toggleMobileData
+                        onDismiss = onContentSearchSheetDismissed,
+                        onToggleMobileData = { enabled ->
+                            contentSearchBottomSheetViewModel.submit(
+                                HomeContentSearchBottomSheetViewAction.ToggleMobileData(enabled)
+                            )
+                        }
                     )
                 ).also {
                     preventBottomSheetDismissal = true
+                }
+
+                is BottomSheetType.Nps -> NpsBottomSheetContent(
+                    state = npsState,
+                    actions = NpsBottomSheet.Actions(
+                        onScoreSelected = { npsViewModel.submit(NpsAction.ScoreSelected(it)) },
+                        onCommentChanged = { npsViewModel.submit(NpsAction.CommentChanged(it)) },
+                        onShareClicked = { npsViewModel.submit(NpsAction.ShareClicked) }
+                    )
+                ).also {
+                    preventBottomSheetDismissal = false
                 }
             }
         },
@@ -676,7 +735,7 @@ fun Home(
 
             },
             scrimColor = ProtonTheme.colors.blenderNorm,
-            gesturesEnabled = currentDestinationRoute == Screen.Mailbox.route && isDrawerSwipeGestureEnabled.value
+            gesturesEnabled = currentDestinationRoute == Screen.Mailbox.route
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Scaffold(
@@ -801,11 +860,11 @@ fun Home(
                         addMailbox(
                             navController,
                             openDrawerMenu = { scope.launch { drawerState.open() } },
-                            setDrawerEnabled = { isDrawerSwipeGestureEnabled.value = it },
                             showSnackbar = { showSnackbar(it) },
                             onEvent = eventHandler,
                             showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
                             onShowRatingBooster = activityActions.launchRatingBooster,
+                            onShowNps = { showNpsSurvey() },
                             snackbarHeight = { snackbarHeight }
                         )
                         addContentSearchScreen(
@@ -833,6 +892,7 @@ fun Home(
                         addSetMessagePassword(navController)
                         addSignOutAccountDialog(navController)
                         addRemoveAccountDialog(navController)
+                        addMonthlyToYearlyUpsellSheet(navController)
                         addSettings(navController, activityActions)
                         addAppSettings(navController, showFeatureMissingSnackbar = { showFeatureMissingSnackbar() })
                         // settings
@@ -927,7 +987,22 @@ fun Home(
                                 onError = { message -> scope.launch { showErrorSnackbar(message) } }
                             )
                         )
-                        addFeatureSpotlight(onBack = { navController.navigateBack() })
+                        addFeatureSpotlight(
+                            // Either answer to the spotlight is an answer to the offer of content
+                            // search, so the search screen stops making it in its banner.
+                            onBack = {
+                                featureSpotlightViewModel.onSpotlightAnswered()
+                                navController.navigateBack()
+                            },
+                            onTurnOn = {
+                                featureSpotlightViewModel.onSpotlightAnswered()
+                                navController.navigateBack()
+                                contentSearchBottomSheetViewModel.submit(
+                                    HomeContentSearchBottomSheetViewAction.RequestToEnable
+                                )
+                            }
+                        )
+                        addContentSearchSetUp(navController)
                     }
                 }
 
@@ -957,12 +1032,17 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onSubscription = launcherActions.onSubscription,
         onContacts = { navController.navigate(Screen.Contacts.route) },
         onReportBug = { navController.navigate(Screen.BugReporting.route) },
-        onUpselling = { entryPoint, type -> navController.navigate(Screen.FeatureUpselling(entryPoint, type)) }
+        onApplicationLogs = { navController.navigate(Screen.ApplicationLogs.route) },
+        onUpselling = { entryPoint, type -> navController.navigate(Screen.FeatureUpselling(entryPoint, type)) },
+        onMonthlyToYearlyUpselling = {
+            navController.navigate(Dialog.MonthlyToYearlyUpsell(UpsellEntryPoint.NAVBAR_UPSELL))
+        }
     )
 
 private sealed interface BottomSheetType {
     data object Onboarding : BottomSheetType
     data class NotificationsPermissions(val permissionsState: NotificationsPermissionStateType) : BottomSheetType
     data object ContentSearch : BottomSheetType
+    data object Nps : BottomSheetType
 }
 

@@ -20,7 +20,7 @@ document.getElementById('$EDITOR_ID').addEventListener('paste', function (event)
     event.preventDefault();
     event.stopPropagation();
 
-    const cd = event.clipboardData || event.originalEvent?.clipboardData || window.clipboardData;
+    const cd = event.clipboardData || (event.originalEvent && event.originalEvent.clipboardData) || window.clipboardData;
     if (!cd) {
         debugLog("No clipboard data available on paste event.");
         return;
@@ -40,8 +40,17 @@ document.getElementById('$EDITOR_ID').addEventListener('paste', function (event)
     const plainItem = items.find(item => item.kind === 'string' && item.type === 'text/plain');
     const chosenTextItem = htmlItem || plainItem;
 
+    // Capture the selection now, synchronously. Reading the clipboard text below is asynchronous, and
+    // by the time it resolves the paste gesture may have collapsed the selection - inserting then would
+    // land at the caret instead of replacing the selection. Restoring this range before inserting makes
+    // paste replace a selection as expected (ET-6560).
+    const pasteSelection = window.getSelection();
+    const savedRange = (pasteSelection && pasteSelection.rangeCount > 0)
+        ? pasteSelection.getRangeAt(0).cloneRange()
+        : null;
+
     if (chosenTextItem) {
-        handleTextPaste(chosenTextItem);
+        handleTextPaste(chosenTextItem, savedRange);
     }
 
     // Update caret position after paste
@@ -242,7 +251,7 @@ function updateCaretPosition() {
 document.addEventListener('click', function (e) {
     const quote = e.target.closest('.protonmail_quote');
     if (quote) {
-        const parentQuote = quote.parentElement?.closest('.protonmail_quote');
+        const parentQuote = quote.parentElement && quote.parentElement.closest('.protonmail_quote');
         if (!parentQuote && !quote.hasAttribute('data-expanded')) {
             quote.setAttribute('data-expanded', '');
             e.preventDefault();
@@ -264,7 +273,7 @@ document.addEventListener('keydown', function (e) {
             let quoteToMove = null;
 
             allQuotes.forEach(quote => {
-                const isTopLevel = !quote.parentElement?.closest('.protonmail_quote');
+                const isTopLevel = !(quote.parentElement && quote.parentElement.closest('.protonmail_quote'));
                 if (isTopLevel) {
                     const position = currentElement.compareDocumentPosition(quote);
                     if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
@@ -330,12 +339,12 @@ document.addEventListener('selectionchange', function () {
         let element = container.nodeType === Node.TEXT_NODE ? container.parentElement : container;
 
         // Allow normal editing when the quote is expanded
-        const expandedQuote = element?.closest('.protonmail_quote[data-expanded]');
+        const expandedQuote = element && element.closest('.protonmail_quote[data-expanded]');
         if (expandedQuote) {
             return;
         }
 
-        const collapsedQuote = element?.closest('.protonmail_quote:not([data-expanded])');
+        const collapsedQuote = element && element.closest('.protonmail_quote:not([data-expanded])');
 
         if (collapsedQuote) {
             selection.removeAllRanges();
@@ -688,18 +697,18 @@ function handleFilePaste(item) {
     reader.readAsDataURL(file);
 }
 
-function handleTextPaste(item) {
+function handleTextPaste(item, savedRange) {
     const mimeType = item.type || "text/plain";
 
     item.getAsString(function (text) {
         const rawText = text || "";
         const sanitizedText =  $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onSanitizePastedText(mimeType, rawText) || rawText;
 
-        insertHtmlAtCurrentPosition(sanitizedText);
+        insertHtmlAtCurrentPosition(sanitizedText, savedRange);
     });
 }
 
-function insertHtmlAtCurrentPosition(html) {
+function insertHtmlAtCurrentPosition(html, savedRange) {
     const editor = document.getElementById('$EDITOR_ID');
     const selection = window.getSelection();
 
@@ -708,18 +717,35 @@ function insertHtmlAtCurrentPosition(html) {
         return;
     }
 
-    // Ensure cursor is inside the editor
-    const editorHasCursor =
-        document.activeElement === editor &&
-        selection &&
-        selection.rangeCount > 0;
+    // The saved range was captured before the async clipboard read, so by now its containers may have
+    // been detached (a concurrent image paste, or the app replacing the body). Only restore it while it
+    // is still connected and inside the editor - otherwise execCommand would insert outside the editor,
+    // which the old activeElement guard used to prevent. Fall back to the caret otherwise (ET-6560).
+    const savedRangeIsUsable = savedRange &&
+        savedRange.startContainer.isConnected &&
+        editor.contains(savedRange.commonAncestorContainer);
 
-    if (!editorHasCursor && selection) {
-        const range = document.createRange();
-        range.setStart(editor, 0);
-        range.collapse(true);
+    if (savedRangeIsUsable && selection) {
+        // execCommand('insertHTML') acts on the live selection, so focus the editor and restore the
+        // range captured at paste time, replacing a selected range instead of inserting at the caret.
+        editor.focus();
         selection.removeAllRanges();
-        selection.addRange(range);
+        selection.addRange(savedRange);
+    } else {
+        // No usable captured range: ensure the cursor is at least inside the editor. Evaluated before
+        // any focus() so the "caret at editor start" fallback still applies when focus is elsewhere.
+        const editorHasCursor =
+            document.activeElement === editor &&
+            selection &&
+            selection.rangeCount > 0;
+
+        if (!editorHasCursor && selection) {
+            const range = document.createRange();
+            range.setStart(editor, 0);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
 
     debugLog("Inserting sanitized HTML at current position. Length = " + html.length);

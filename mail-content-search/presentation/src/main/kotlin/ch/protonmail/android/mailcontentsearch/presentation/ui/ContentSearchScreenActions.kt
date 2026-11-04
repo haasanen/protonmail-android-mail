@@ -31,6 +31,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
  * @param searchQuery forwarded so the detail view highlights the terms the message was found by. Empty
  * when no query is known for it.
  * @param shouldOpenInComposer true for drafts, which open in the composer rather than in the detail view.
+ * @param isRecentSearchResult true for an item from the search history. The detail view then has nothing to swipe to.
  */
 data class OpenSearchResultRequest(
     val messageId: MessageId,
@@ -38,12 +39,31 @@ data class OpenSearchResultRequest(
     val searchQuery: String,
     val isConversationGrouping: Boolean,
     val openedFromLocation: LabelId,
-    val shouldOpenInComposer: Boolean
+    val shouldOpenInComposer: Boolean,
+    val isRecentSearchResult: Boolean
 )
+
+/**
+ * Key the set-up page leaves on the search screen's back stack entry to ask for content search to be
+ * turned on.
+ *
+ * The screen reacts to it twice over: it resets itself, so the results found without content search
+ * don't sit there as if they were the answer, and it puts up the sheet that does the turning on.
+ */
+const val TURN_ON_CONTENT_SEARCH_KEY = "turnOnContentSearch"
+
+/**
+ * Key the set-up page leaves on the search screen's back stack entry when the user taps "Not now".
+ *
+ * It answers the set-up banner for good.
+ */
+const val DECLINE_CONTENT_SEARCH_KEY = "declineContentSearch"
 
 data class ContentSearchScreenActions(
     val onClose: () -> Unit,
     val onOpenItem: (request: OpenSearchResultRequest) -> Unit,
+    val onSeeIndexingDetails: () -> Unit,
+    val onSetUpContentSearch: () -> Unit,
     val showSnackbar: (SnackbarType) -> Unit,
     val snackbarHeight: () -> Dp = { 0.dp }
 )

@@ -25,18 +25,22 @@ import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
 import ch.protonmail.android.mailcontentsearch.domain.usecase.ClearContentSearchLocalData
 import ch.protonmail.android.mailcontentsearch.domain.usecase.DisableContentSearch
 import ch.protonmail.android.mailcontentsearch.domain.usecase.EnableContentSearch
+import ch.protonmail.android.mailcontentsearch.domain.usecase.GetContentSearchIndexSize
 import ch.protonmail.android.mailcontentsearch.domain.usecase.GetContentSearchIndexingStatus
 import ch.protonmail.android.mailcontentsearch.domain.usecase.IsContentSearchAllowedOnMobileData
 import ch.protonmail.android.mailcontentsearch.domain.usecase.IsContentSearchEnabled
 import ch.protonmail.android.mailcontentsearch.domain.usecase.IsContentSearchFeatureEnabled
 import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveContentSearchEnabled
 import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveContentSearchIndexingStatus
+import ch.protonmail.android.mailcontentsearch.domain.usecase.PauseContentIndexing
 import ch.protonmail.android.mailcontentsearch.domain.usecase.SetAllowContentSearchOnMobileData
 import ch.protonmail.android.mailcontentsearch.domain.usecase.StartContentIndexingForUser
 import ch.protonmail.android.mailcontentsearch.presentation.settings.ContentSearchSettingsEvent.Data
 import ch.protonmail.android.mailcontentsearch.presentation.settings.ContentSearchSettingsEvent.Error
 import ch.protonmail.android.mailcontentsearch.presentation.settings.mapper.isActive
+import ch.protonmail.android.mailcontentsearch.presentation.settings.mapper.isCompleted
 import ch.protonmail.android.mailcontentsearch.presentation.settings.mapper.isFailed
+import ch.protonmail.android.mailcontentsearch.presentation.settings.mapper.isPaused
 import ch.protonmail.android.mailcontentsearch.presentation.settings.mapper.isWaitingForUnmeteredConnection
 import ch.protonmail.android.mailcontentsearch.presentation.settings.mapper.toPercentage
 import ch.protonmail.android.mailcontentsearch.presentation.settings.reducer.ContentSearchSettingsReducer
@@ -72,6 +76,8 @@ class ContentSearchSettingsViewModel @Inject constructor(
     private val isContentSearchFeatureEnabled: IsContentSearchFeatureEnabled,
     private val clearContentSearchLocalData: ClearContentSearchLocalData,
     private val getContentSearchIndexingStatus: GetContentSearchIndexingStatus,
+    private val getContentSearchIndexSize: GetContentSearchIndexSize,
+    private val pauseContentIndexing: PauseContentIndexing,
     private val observeContentSearchEnabled: ObserveContentSearchEnabled,
     private val observeContentSearchIndexingStatus: ObserveContentSearchIndexingStatus,
     private val isContentSearchAllowedOnMobileData: IsContentSearchAllowedOnMobileData,
@@ -93,6 +99,7 @@ class ContentSearchSettingsViewModel @Inject constructor(
             val userId = currentUserId()
             val isEnabled = loadInitialState(userId) ?: return@launch
             if (isEnabled) readIndexingStatus(userId)
+            launch { readIndexSize(userId) }
             observeIndexingProgress(userId)
             observeEnabledChanges(userId)
         }
@@ -122,8 +129,13 @@ class ContentSearchSettingsViewModel @Inject constructor(
         }
     )
 
-    private suspend fun readIndexingStatus(userId: UserId) {
-        emitNewStateFor(getContentSearchIndexingStatus(userId).toIndexingProgress())
+    private suspend fun readIndexingStatus(userId: UserId): ContentIndexingState =
+        getContentSearchIndexingStatus(userId).also { emitNewStateFor(it.toIndexingProgress()) }
+
+    // Read once per screen, not observed: the index only grows as messages are indexed, and a size
+    // ticking up while the user reads it is noise. Launched on its own so the observers do not wait for it.
+    private suspend fun readIndexSize(userId: UserId) {
+        emitNewStateFor(Data.IndexSizeLoaded(getContentSearchIndexSize(userId)))
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -136,7 +148,9 @@ class ContentSearchSettingsViewModel @Inject constructor(
                         Data.IndexingProgress(
                             percentage = null,
                             isActive = false,
+                            isCompleted = false,
                             isWaitingForUnmeteredConnection = false,
+                            isPaused = false,
                             isFailed = false
                         )
                     )
@@ -164,8 +178,21 @@ class ContentSearchSettingsViewModel @Inject constructor(
             is ContentSearchSettingsViewAction.ToggleContentSearch -> handleToggleContentSearch(action.enabled)
             is ContentSearchSettingsViewAction.ToggleAllowMobileData -> handleToggleAllowMobileData(action.enabled)
             ContentSearchSettingsViewAction.ClearLocalData -> handleClearLocalData()
-            ContentSearchSettingsViewAction.RetryIndexing -> handleRetryIndexing()
+            ContentSearchSettingsViewAction.RetryIndexing -> handleRetryIndexing(showLoading = true)
+            ContentSearchSettingsViewAction.PauseIndexing -> handlePauseIndexing()
+            ContentSearchSettingsViewAction.ResumeIndexing -> handleRetryIndexing(showLoading = false)
         }
+    }
+
+    /**
+     * Pauses the account's backfill.
+     */
+    private suspend fun handlePauseIndexing() {
+        val userId = currentUserId()
+        pauseContentIndexing(userId).fold(
+            ifLeft = { emitNewStateFor(Error.UpdateError) },
+            ifRight = { readIndexingStatus(userId) }
+        )
     }
 
     private suspend fun handleToggleContentSearch(newValue: Boolean) {
@@ -188,11 +215,13 @@ class ContentSearchSettingsViewModel @Inject constructor(
     /**
      * Hands the account back to the orchestrator, which is the only way out of a failure: Rust holds
      * the account in a failed state until something starts it again, and never retries on its own.
+     *
+     * Resume skips the loading state. Its start call returns at once, so the spinner only flashed.
      */
-    private suspend fun handleRetryIndexing() {
+    private suspend fun handleRetryIndexing(showLoading: Boolean) {
         val userId = currentUserId()
 
-        emitNewStateFor(Data.IndexingRetryStarted)
+        if (showLoading) emitNewStateFor(Data.IndexingRetryStarted)
         startContentIndexingForUser(userId).fold(
             ifLeft = { emitNewStateFor(Error.IndexingRetryFailed) },
             ifRight = { outcome ->
@@ -208,9 +237,9 @@ class ContentSearchSettingsViewModel @Inject constructor(
                     // the state back, or the card sits on a failure Rust no longer has.
                     ContentIndexingStartOutcome.AlreadyCompleted -> readIndexingStatus(userId)
 
-                    // The one outcome that leaves the account exactly as it was, failure and all:
-                    // content search is off for it, or Rust is holding its runtime lock.
-                    ContentIndexingStartOutcome.Refused -> {
+                    // A start clears a pause, so Paused is not expected here either.
+                    ContentIndexingStartOutcome.Refused,
+                    ContentIndexingStartOutcome.Paused -> {
                         Timber.w("content-search: the orchestrator refused to retry $userId")
                         emitNewStateFor(Error.IndexingRetryFailed)
                     }
@@ -240,12 +269,16 @@ class ContentSearchSettingsViewModel @Inject constructor(
         // account is re-enabled, observeIndexingProgress re-seeds isAccountIndexed from the (now
         // reset) Rust status, so the latch is never mutated from this coroutine.
         emitNewStateFor(Data.LocalSearchDataCleared)
+        // Rust may keep some of the index after a reset, so ask it rather than assume zero.
+        viewModelScope.launch { readIndexSize(userId) }
     }
 
     private fun ContentIndexingState.toIndexingProgress() = Data.IndexingProgress(
         percentage = toPercentage(),
         isActive = isActive(),
+        isCompleted = isCompleted(),
         isWaitingForUnmeteredConnection = isWaitingForUnmeteredConnection(),
+        isPaused = isPaused(),
         isFailed = isFailed()
     )
 

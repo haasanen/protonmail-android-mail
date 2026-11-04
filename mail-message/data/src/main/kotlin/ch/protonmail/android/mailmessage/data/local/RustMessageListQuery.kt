@@ -22,11 +22,14 @@ import arrow.core.Either
 import ch.protonmail.android.mailcategory.domain.model.CategoryViewStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalCategoryLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalItemId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalSearchMatchPosition
 import ch.protonmail.android.maillabel.domain.model.CategoryLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.wrapper.MailMessageCursorWrapper
 import ch.protonmail.android.mailpagination.domain.model.IncludeFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginatorTotal
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -39,6 +42,20 @@ interface RustMessageListQuery {
 
     suspend fun supportsIncludeFilter(): Boolean
 
+    /**
+     * The total Rust sends for the paginator of [pageKey] whenever it changes.
+     *
+     * Rust sends it even when the loaded items stay the same, as when a remote page lands past them.
+     * It is [PaginatorTotal.Pending] while a remote page that will change it is on its way.
+     */
+    fun observeTotalItemsCount(userId: UserId, pageKey: PageKey): Flow<PaginatorTotal>
+
+    suspend fun getSearchMatchPositions(
+        userId: UserId,
+        pageKey: PageKey,
+        messageIds: List<LocalMessageId>
+    ): Either<PaginationError, Map<String, List<LocalSearchMatchPosition>>>
+
     suspend fun updateUnreadFilter(filterUnread: Boolean)
 
     suspend fun updateIncludeFilter(filter: IncludeFilter)
@@ -47,6 +64,17 @@ interface RustMessageListQuery {
         userId: UserId,
         labelId: LabelId,
         categoryLabelId: CategoryLabelId?,
+        anchorItemId: LocalItemId
+    ): Either<PaginationError, MailMessageCursorWrapper>?
+
+    /**
+     * A cursor over the results of the active search for [keyword].
+     *
+     * Null when no search for [keyword] is active, as there are then no results to walk through.
+     */
+    suspend fun getSearchCursorFromActivePaginator(
+        userId: UserId,
+        keyword: String,
         anchorItemId: LocalItemId
     ): Either<PaginationError, MailMessageCursorWrapper>?
 

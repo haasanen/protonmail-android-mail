@@ -23,7 +23,10 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcontentsearch.data.usecase.CreateSearchIndex
+import ch.protonmail.android.mailcontentsearch.data.wrapper.SearchIndexWrapper
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingActivity
+import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingOrchestratorStatus
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingStartOutcome
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
@@ -43,6 +46,7 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
+import uniffi.mail_uniffi.SearchIndexStats
 import uniffi.mail_uniffi.SyncEvent
 import uniffi.mail_uniffi.SyncEventStream
 import uniffi.mail_uniffi.SyncOrchestratorEvent
@@ -52,8 +56,7 @@ import uniffi.mail_uniffi.SyncStartOutcome
 import uniffi.mail_uniffi.SyncStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.seconds
 
 internal class ContentSearchRepositoryImplTest {
@@ -71,10 +74,15 @@ internal class ContentSearchRepositoryImplTest {
         every { observeUserSessionAvailable(userId) } returns flowOf(userId)
     }
     private val executeWithUserSession = ExecuteWithUserSession(userSessionRepository, dispatcher)
+    private val searchIndex = mockk<SearchIndexWrapper>()
+    private val createSearchIndex = mockk<CreateSearchIndex> {
+        every { this@mockk(wrapper) } returns searchIndex
+    }
 
     private val repository = ContentSearchRepositoryImpl(
         executeWithUserSession = executeWithUserSession,
         syncService = syncServiceWrapper,
+        createSearchIndex = createSearchIndex,
         userSessionRepository = userSessionRepository,
         ioDispatcher = dispatcher,
         appScope = CoroutineScope(dispatcher)
@@ -100,6 +108,19 @@ internal class ContentSearchRepositoryImplTest {
     }
 
     @Test
+    fun `getOrchestratorStatus reads the status rust reports`() = runTest(dispatcher) {
+        // Given
+        coEvery { syncServiceWrapper.status() } returns SyncStatus.OFFLINE.right()
+
+        // When
+        val result = repository.getOrchestratorStatus()
+
+        // Then
+        assertEquals(ContentIndexingOrchestratorStatus.Offline.right(), result)
+        coVerify(exactly = 0) { syncServiceWrapper.start() }
+    }
+
+    @Test
     fun `startIndexingForUser reports the outcome rust answered`() = runTest(dispatcher) {
         // Given
         coEvery { syncServiceWrapper.startUser(wrapper) } returns SyncStartOutcome.COMPLETED.right()
@@ -112,19 +133,68 @@ internal class ContentSearchRepositoryImplTest {
     }
 
     @Test
-    fun `isFeatureEnabled reflects what the sdk reports for the account`() = runTest(dispatcher) {
-        every { wrapper.isContentSearchFFEnabled() } returns true
+    fun `pausing pauses the account rather than the whole orchestrator`() = runTest(dispatcher) {
+        // Given
+        coEvery { syncServiceWrapper.pauseUser(wrapper) } returns Unit.right()
 
-        assertTrue(repository.isFeatureEnabled(userId))
+        // When
+        val result = repository.pauseIndexing(userId)
+
+        // Then
+        assertEquals(Unit.right(), result)
+        coVerify(exactly = 1) { syncServiceWrapper.pauseUser(wrapper) }
+        coVerify(exactly = 0) { syncServiceWrapper.stop() }
     }
 
     @Test
-    fun `isFeatureEnabled is false when the account has no session`() = runTest(dispatcher) {
-        coEvery { userSessionRepository.getUserSession(userId) } returns null
+    fun `a pause that rust refuses is reported as an error`() = runTest(dispatcher) {
+        // Given
+        coEvery { syncServiceWrapper.pauseUser(wrapper) } returns DataError.Local.Unknown.left()
 
-        assertFalse(repository.isFeatureEnabled(userId))
+        // When
+        val result = repository.pauseIndexing(userId)
 
-        verify(exactly = 0) { wrapper.isContentSearchFFEnabled() }
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
+    @Test
+    fun `the index size is the compressed size rust reports`() = runTest(dispatcher) {
+        // Given
+        coEvery { searchIndex.stats() } returns SearchIndexStats(
+            indexedMessageCount = 42uL,
+            compressedBytes = 1_288_490_188uL
+        ).right()
+
+        // When
+        val result = repository.getIndexSizeBytes(userId)
+
+        // Then
+        assertEquals(1_288_490_188L, result)
+    }
+
+    @Test
+    fun `the index size is unknown for an account content search is unavailable for`() = runTest(dispatcher) {
+        // Given
+        coEvery { searchIndex.stats() } returns null.right()
+
+        // When
+        val result = repository.getIndexSizeBytes(userId)
+
+        // Then
+        assertNull(result)
+    }
+
+    @Test
+    fun `the index size is unknown when rust fails to read it`() = runTest(dispatcher) {
+        // Given
+        coEvery { searchIndex.stats() } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = repository.getIndexSizeBytes(userId)
+
+        // Then
+        assertNull(result)
     }
 
     @Test
@@ -201,7 +271,7 @@ internal class ContentSearchRepositoryImplTest {
         val result = repository.getIndexingStatus(userId)
 
         // Then
-        assertEquals(ContentIndexingState.Failed, result)
+        assertEquals(ContentIndexingState.Failed(), result)
     }
 
     @Test
@@ -229,7 +299,7 @@ internal class ContentSearchRepositoryImplTest {
         val result = repository.getIndexingStatus(userId)
 
         // Then
-        assertEquals(ContentIndexingState.Failed, result)
+        assertEquals(ContentIndexingState.Failed(), result)
     }
 
     @Test
@@ -377,30 +447,6 @@ internal class ContentSearchRepositoryImplTest {
             cancelAndIgnoreRemainingEvents()
         }
         coVerify(atLeast = 2) { syncServiceWrapper.subscribeUser(wrapper) }
-    }
-
-    @Test
-    fun `shouldShowMobileBottomSheet returns the sync service value`() = runTest(dispatcher) {
-        // Given
-        coEvery { syncServiceWrapper.shouldShowMobileSheet(wrapper) } returns true.right()
-
-        // When
-        val result = repository.shouldShowMobileBottomSheet(userId)
-
-        // Then
-        assertEquals(true, result)
-    }
-
-    @Test
-    fun `shouldShowMobileBottomSheet falls back to false when the sync service call fails`() = runTest(dispatcher) {
-        // Given
-        coEvery { syncServiceWrapper.shouldShowMobileSheet(wrapper) } returns DataError.Local.Unknown.left()
-
-        // When
-        val result = repository.shouldShowMobileBottomSheet(userId)
-
-        // Then
-        assertEquals(false, result)
     }
 
 }

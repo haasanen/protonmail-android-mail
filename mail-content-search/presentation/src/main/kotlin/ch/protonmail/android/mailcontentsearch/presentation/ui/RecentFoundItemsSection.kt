@@ -63,7 +63,10 @@ internal fun RecentFoundItemsSection(
     }
 
     Column(modifier = modifier) {
-        SectionHeader(text = stringResource(R.string.content_search_previously_found_title))
+        ClearableSectionHeader(
+            text = stringResource(R.string.content_search_previously_found_title),
+            onClearClicked = actions.onClearFoundItemsClicked
+        )
         items.forEach { found ->
             MailboxItem(
                 item = found.item,

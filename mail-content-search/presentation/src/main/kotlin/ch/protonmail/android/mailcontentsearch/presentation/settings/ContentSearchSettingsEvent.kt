@@ -31,9 +31,13 @@ sealed interface ContentSearchSettingsEvent : ContentSearchSettingsOperation {
         data class IndexingProgress(
             val percentage: Double?,
             val isActive: Boolean,
+            val isCompleted: Boolean,
             val isWaitingForUnmeteredConnection: Boolean,
+            val isPaused: Boolean,
             val isFailed: Boolean
         ) : Data
+
+        data class IndexSizeLoaded(val bytes: Long?) : Data
 
         /** The account has been handed to the orchestrator and Rust has yet to answer. */
         data object IndexingRetryStarted : Data

@@ -29,9 +29,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -48,6 +50,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,18 +66,19 @@ import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailspotlight.presentation.R
 import ch.protonmail.android.mailspotlight.presentation.model.FeatureItem
+import ch.protonmail.android.mailspotlight.presentation.model.SpotlightActions
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun OverviewPage(
     featureItems: ImmutableList<FeatureItem>,
     modifier: Modifier = Modifier,
-    onGotIt: (() -> Unit)? = null
+    inlineActions: (@Composable () -> Unit)? = null
 ) {
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     if (isLandscape) {
-        LandscapeOverviewPage(featureItems, modifier, onGotIt)
+        LandscapeOverviewPage(featureItems, modifier, inlineActions)
     } else {
         PortraitOverviewPage(featureItems, modifier)
     }
@@ -90,31 +94,28 @@ private fun PortraitOverviewPage(featureItems: ImmutableList<FeatureItem>, modif
             .padding(horizontal = ProtonDimens.Spacing.Large),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val topOffset = LocalConfiguration.current.screenHeightDp.dp * PORTRAIT_TOP_OFFSET_FRACTION
+        SpotlightPageHeader {
+            Image(
+                painter = painterResource(id = R.drawable.spotlight_celebration),
+                contentDescription = NO_CONTENT_DESCRIPTION,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .heightIn(max = SpotlightIllustrationHeight)
+                    .weight(1f, fill = false)
+            )
 
-        Spacer(modifier = Modifier.height(topOffset))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
 
-        Image(
-            painter = painterResource(id = R.drawable.spotlight_celebration),
-            contentDescription = NO_CONTENT_DESCRIPTION
-        )
+            WhatsNewPill()
 
-        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
-        Text(
-            text = stringResource(R.string.spotlight_screen_content_search_title),
-            style = ProtonTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
-
-        Text(
-            text = stringResource(R.string.spotlight_screen_content_search_subtitle),
-            style = ProtonTheme.typography.bodyMedium,
-            color = ProtonTheme.colors.textWeak,
-            textAlign = TextAlign.Center
-        )
+            Text(
+                text = stringResource(R.string.spotlight_screen_content_search_title),
+                style = ProtonTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Center
+            )
+        }
 
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
 
@@ -128,61 +129,46 @@ private fun PortraitOverviewPage(featureItems: ImmutableList<FeatureItem>, modif
 private fun LandscapeOverviewPage(
     featureItems: ImmutableList<FeatureItem>,
     modifier: Modifier = Modifier,
-    onGotIt: (() -> Unit)? = null
+    inlineActions: (@Composable () -> Unit)? = null
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
+            .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
             .padding(horizontal = ProtonDimens.Spacing.Large)
-            .padding(vertical = ProtonDimens.Spacing.ExtraLarge),
+            .padding(vertical = ProtonDimens.Spacing.Medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
+        LandscapeSpotlightHeader(
+            illustration = {
+                Image(
+                    painter = painterResource(id = R.drawable.spotlight_celebration),
+                    contentDescription = NO_CONTENT_DESCRIPTION,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.heightIn(max = LANDSCAPE_ILLUSTRATION_MAX_HEIGHT)
+                )
+            },
+            inlineActions = inlineActions,
             modifier = Modifier
                 .weight(1f)
-                .padding(end = ProtonDimens.Spacing.Large),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(end = ProtonDimens.Spacing.Large)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.spotlight_celebration),
-                contentDescription = NO_CONTENT_DESCRIPTION
-            )
+            WhatsNewPill()
 
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
 
             Text(
                 text = stringResource(R.string.spotlight_screen_content_search_title),
                 style = ProtonTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                 textAlign = TextAlign.Center
             )
-
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
-
-            Text(
-                text = stringResource(R.string.spotlight_screen_content_search_subtitle),
-                style = ProtonTheme.typography.bodyMedium,
-                color = ProtonTheme.colors.textWeak,
-                textAlign = TextAlign.Center
-            )
-
-            if (onGotIt != null) {
-                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
-
-                PrimaryButton(
-                    text = stringResource(R.string.spotlight_screen_got_it),
-                    onClick = onGotIt,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
         }
 
         Column(
             modifier = Modifier
-                .weight(1f),
-            verticalArrangement = Arrangement.Center
+                .weight(1f)
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
         ) {
             FeatureCard(featureItems)
         }
@@ -192,8 +178,10 @@ private fun LandscapeOverviewPage(
 @Composable
 private fun FeatureCard(featureItems: ImmutableList<FeatureItem>) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = ProtonTheme.shapes.large,
+        modifier = Modifier
+            .fillMaxWidth()
+            .spotlightCardBorder(),
+        shape = spotlightCardShape,
         colors = CardDefaults.cardColors(
             containerColor = ProtonTheme.colors.backgroundNorm
         )
@@ -203,7 +191,7 @@ private fun FeatureCard(featureItems: ImmutableList<FeatureItem>) {
             if (index < featureItems.lastIndex) {
                 HorizontalDivider(
                     modifier = Modifier.padding(start = ProtonDimens.Spacing.Jumbo),
-                    color = ProtonTheme.colors.separatorNorm
+                    color = ProtonTheme.colors.borderNorm
                 )
             }
         }
@@ -219,7 +207,8 @@ private fun FeatureRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.Spacing.Large),
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .padding(top = ProtonDimens.Spacing.ExtraLarge, bottom = ProtonDimens.Spacing.Large),
         horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large),
         verticalAlignment = Alignment.Top
     ) {
@@ -227,7 +216,7 @@ private fun FeatureRow(
             modifier = Modifier
                 .size(ProtonDimens.IconSize.SemiLarge)
                 .background(
-                    color = ProtonTheme.colors.backgroundDeep,
+                    color = SpotlightColors.badgeBackground,
                     shape = ProtonTheme.shapes.large
                 ),
             contentAlignment = Alignment.Center
@@ -255,7 +244,7 @@ private fun FeatureRow(
     }
 }
 
-private const val PORTRAIT_TOP_OFFSET_FRACTION = 0.1f
+private val LANDSCAPE_ILLUSTRATION_MAX_HEIGHT = 120.dp
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -281,7 +270,7 @@ private fun OverviewPageLandscapePreview() {
         SpotlightGradientBackground {
             OverviewPage(
                 featureItems = SpotlightPreviewData.previewFeatures,
-                onGotIt = {}
+                inlineActions = { SpotlightBottomBar(actions = SpotlightActions({}, {}, {})) }
             )
         }
     }

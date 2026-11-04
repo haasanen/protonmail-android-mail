@@ -75,7 +75,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerBottomSheetContent
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerUiModel
-import ch.protonmail.android.mailcommon.presentation.ui.replaceText
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
@@ -135,14 +134,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val discardDraftDialogState = rememberSaveable { mutableStateOf(false) }
     val showExpirationTimeDialog = rememberSaveable { mutableStateOf(false) }
 
-    val featureMissingSnackbarMessage = stringResource(id = R.string.feature_coming_soon)
     val scope = rememberCoroutineScope()
-    fun showFeatureMissingSnackbar() = scope.launch {
-        snackbarHostState.showSnackbar(
-            message = featureMissingSnackbarMessage,
-            type = ProtonSnackbarType.NORM
-        )
-    }
 
     val displayBody by viewModel.displayBody.collectAsStateWithLifecycle()
     val bodyTextFieldState = viewModel.bodyTextField
@@ -392,8 +384,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         changeFocusToField = effectsState.changeFocusToField,
                         initialFocusField = mainState.initialFocusedField,
                         actions = ComposerForm.Actions(
-                            onBodyChanged = { newBody ->
-                                viewModel.bodyTextField.replaceText(newBody)
+                            onHtmlBodyChanged = { newBody ->
+                                viewModel.onHtmlBodyChanged(newBody)
                             },
                             onChangeSender = {
                                 bottomSheetType.value = BottomSheetType.ChangeSender
@@ -426,9 +418,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 viewModel.submit(ComposerAction.InlineImageActionsRequested)
                             },
                             onInlineImageAdded = { viewModel.submit(ComposerAction.AddAttachments(listOf(it))) },
-                            onInlineImagePasted = {
-                                showFeatureMissingSnackbar()
-                            }
+                            onInlineImagePasted = { viewModel.submit(ComposerAction.AddPastedInlineImage(it)) }
                         ),
                         senderEmail = mainState.sender.email,
                         draftType = mainState.draftType,

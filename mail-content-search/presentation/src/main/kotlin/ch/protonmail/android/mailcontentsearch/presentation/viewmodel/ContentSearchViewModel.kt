@@ -41,6 +41,8 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveContentSearchEnabled
+import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveSearchResultsTotal
 import ch.protonmail.android.mailcontentsearch.presentation.model.ContentSearchOperation
 import ch.protonmail.android.mailcontentsearch.presentation.model.ContentSearchResultUiModel
 import ch.protonmail.android.mailcontentsearch.presentation.model.ContentSearchState
@@ -61,6 +63,7 @@ import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
+import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxLoadingBarControllerFactory
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.BottomBarStateFactory
@@ -82,6 +85,7 @@ import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidati
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserIdWithValidSession
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
+import ch.protonmail.android.uicomponents.text.buildSearchHighlightText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -122,6 +126,9 @@ class ContentSearchViewModel @Inject constructor(
     private val getCurrentViewModeForLabel: GetCurrentViewModeForLabel,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val observePageInvalidationEvents: ObservePageInvalidationEvents,
+    private val observeContentSearchEnabled: ObserveContentSearchEnabled,
+    private val observeSearchResultsTotal: ObserveSearchResultsTotal,
+    private val loadingBarControllerFactory: MailboxLoadingBarControllerFactory,
     private val mailboxActionExecutor: MailboxActionExecutor,
     private val bottomBarStateFactory: BottomBarStateFactory,
     private val getBottomSheetActions: GetBottomSheetActions,
@@ -154,18 +161,23 @@ class ContentSearchViewModel @Inject constructor(
 
     private val submittedQuery = MutableStateFlow(savedStateHandle.get<String>(KEY_SUBMITTED_QUERY).orEmpty())
 
-    private var hasAutoFocusedSearchField = false
+    private val searches = combine(observePrimaryUserId().filterNotNull(), submittedQuery, ::Pair)
+        .distinctUntilChanged()
+
+    /** When the search field takes its focus on its own. Outlives the screen's composition. */
+    val searchFieldFocus = SearchFieldFocusHandOver()
 
     private var attachmentDownloadJob: Job? = null
+
+    private val resultsTotalController = ResultsTotalController(loadingBarControllerFactory.create(viewModelScope))
+
+    /** The ids last reported by the results list, used to spot the ones that leave it. */
+    private var displayedItemIds: List<String> = emptyList()
 
     private var allMailLocalLabelId: LabelId = SystemLabelId.AllMail.labelId
     private var almostAllMailLocalLabelId: LabelId = SystemLabelId.AlmostAllMail.labelId
 
-    val items: Flow<PagingData<ContentSearchResultUiModel>> = combine(
-        observePrimaryUserId().filterNotNull(),
-        submittedQuery
-    ) { userId, query -> userId to query }
-        .distinctUntilChanged()
+    val items: Flow<PagingData<ContentSearchResultUiModel>> = searches
         .flatMapLatest { (userId, query) ->
             if (query.isBlank()) {
                 mutableState.update { it.copy(query = "", phase = ContentSearchState.Phase.Idle) }
@@ -180,8 +192,43 @@ class ContentSearchViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
     init {
+        observePrimaryUserId()
+            .filterNotNull()
+            .distinctUntilChanged()
+            .drop(1)
+            .onEach { applyOperation(ContentSearchOperation.ActiveAccountChanged) }
+            .launchIn(viewModelScope)
+
         observePageInvalidationEvents()
             .onEach { applyOperation(ContentSearchOperation.ReloadResults) }
+            .launchIn(viewModelScope)
+
+        // Rust sends the total when it changes, even when no page loads. A remote page that lands past
+        // the loaded rows changes it without one.
+        searches
+            // A blank query has no paginator, so it gets no total.
+            .flatMapLatest { (userId, query) ->
+                observeSearchResultsTotal(userId, query).onStart { resultsTotalController.reset() }
+            }
+            .onEach(resultsTotalController::onTotal)
+            .launchIn(viewModelScope)
+
+        resultsTotalController.state
+            .onEach { applyOperation(ContentSearchOperation.ResultsTotalUpdated(it)) }
+            .launchIn(viewModelScope)
+
+        observePrimaryUserId()
+            .filterNotNull()
+            .distinctUntilChanged()
+            // Dropped per account, not once for the whole stream. Switching to an account that
+            // already has content search on is not that account turning it on, and clearing the
+            // query for it would take the field away from the user.
+            .flatMapLatest { userId ->
+                observeContentSearchEnabled(userId)
+                    .distinctUntilChanged()
+                    .drop(1)
+            }
+            .onEach { isEnabled -> if (isEnabled) clearQuery() }
             .launchIn(viewModelScope)
 
         // Kept off the [items] flow so editing the field has these effects even while nothing is
@@ -277,25 +324,12 @@ class ContentSearchViewModel @Inject constructor(
                         ),
                         // Read while the domain item is still in hand: the mapped row keeps the location
                         // icons but not the label ids they were derived from.
-                        isInTrashOrSpam = item.isInTrashOrSpam()
+                        isInTrashOrSpam = item.isInTrashOrSpam(),
+                        highlightText = buildSearchHighlightText(query, item.searchMatchedTerms)
                     )
                 }
             }
         }
-    }
-
-    /**
-     * Whether the search field should take focus, and so raise the keyboard, right now. True only the
-     * first time the screen is shown: coming back from a message, leaving selection mode or rotating all
-     * re-create the field, and re-focusing then would cover the results the user came back to read.
-     *
-     * Kept here rather than in the composition because navigating to a message tears the screen's
-     * composition (and any `remember`) down, while this ViewModel outlives it on the back stack.
-     */
-    fun consumeSearchFieldAutoFocus(): Boolean {
-        if (hasAutoFocusedSearchField) return false
-        hasAutoFocusedSearchField = true
-        return true
     }
 
     fun submit(action: ContentSearchViewAction) {
@@ -303,9 +337,12 @@ class ContentSearchViewModel @Inject constructor(
             ContentSearchViewAction.Search -> submitSearch(queryState.text.toString())
             is ContentSearchViewAction.SuggestionSelected -> setQuery(action.query)
             ContentSearchViewAction.ClearQuery -> clearQuery()
-            ContentSearchViewAction.ToggleIncludeSpam -> toggleInclude { it.copy(includeSpam = !it.includeSpam) }
-            ContentSearchViewAction.ToggleIncludeTrash -> toggleInclude { it.copy(includeTrash = !it.includeTrash) }
+            // Resetting here, rather than once content search is actually on, puts the idle page
+            // behind the sheet that turns it on instead of results the user is about to lose.
+            ContentSearchViewAction.TurnOnContentSearchRequested -> clearQuery()
+            ContentSearchViewAction.ToggleIncludeSpamTrash -> toggleInclude()
             is ContentSearchViewAction.ResultsLoaded -> onResultsLoaded(action.count)
+            is ContentSearchViewAction.SearchFailed -> applyOperation(ContentSearchOperation.SearchFailed(action.error))
             is ContentSearchViewAction.StarAction -> handleStarAction(action)
             is ContentSearchViewAction.AvatarImageLoadRequested -> action.item.participantAvatar()?.let { avatar ->
                 viewModelScope.launch { loadAvatarImage(avatar.address, avatar.bimiSelector) }
@@ -329,8 +366,7 @@ class ContentSearchViewModel @Inject constructor(
                 applyOperation(ContentSearchOperation.ToggleSelection(action.item))
 
             ContentSearchViewAction.ExitSelectionMode -> applyOperation(ContentSearchOperation.ExitSelectionMode)
-            is ContentSearchViewAction.ItemsRemovedFromSelection ->
-                applyOperation(ContentSearchOperation.ItemsRemovedFromSelection(action.itemIds))
+            is ContentSearchViewAction.ItemsChanged -> handleItemsChanged(action.itemIds)
 
             ContentSearchViewAction.MarkAsRead -> handleMarkAsRead()
             ContentSearchViewAction.MarkAsUnread -> handleMarkAsUnread()
@@ -654,10 +690,14 @@ class ContentSearchViewModel @Inject constructor(
         applyOperation(ContentSearchOperation.AttachmentDownloadCancelled)
     }
 
-    // Spam and trash are independent scopes: each menu item flips only its own flag and the whole
+    // The chip includes or excludes both scopes at once, like the mailbox filter, and the whole
     // filter is handed to the live search scroller, which re-emits the results in place.
-    private fun toggleInclude(transform: (IncludeFilter) -> IncludeFilter) {
-        val updatedFilter = transform(mutableState.value.includeFilter)
+    private fun toggleInclude() {
+        val updatedFilter = if (mutableState.value.includeFilter.includesAny) {
+            IncludeFilter.None
+        } else {
+            IncludeFilter.spamAndTrash(include = true)
+        }
         mutableState.update {
             it.copy(
                 includeFilter = updatedFilter,
@@ -667,6 +707,25 @@ class ContentSearchViewModel @Inject constructor(
 
         viewModelScope.launch {
             updateIncludeFilter(updatedFilter, MessageViewMode)
+        }
+    }
+
+    /**
+     * Drops from the selection every item that has left the results list (mirrors Mailbox).
+     *
+     * This allows de-selecting items if the user has Spam/Trash items selected and then turns off
+     * the "Include Spam/Trash" option.
+     */
+    private fun handleItemsChanged(itemIds: List<String>) {
+        val removedIds = displayedItemIds.filterNot { it in itemIds }
+        displayedItemIds = itemIds
+        if (removedIds.isEmpty()) return
+
+        val removedFromSelection = mutableState.value.selectionState.selectedItems
+            .map { it.id }
+            .filter { it in removedIds }
+        if (removedFromSelection.isNotEmpty()) {
+            applyOperation(ContentSearchOperation.ItemsRemovedFromSelection(removedFromSelection))
         }
     }
 

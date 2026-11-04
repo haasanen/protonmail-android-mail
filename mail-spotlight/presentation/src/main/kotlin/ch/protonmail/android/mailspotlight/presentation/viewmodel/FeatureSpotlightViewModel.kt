@@ -24,6 +24,8 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailspotlight.domain.usecase.MarkFeatureSpotlightSeen
 import ch.protonmail.android.mailspotlight.presentation.R
 import ch.protonmail.android.mailspotlight.presentation.model.FeatureItem
+import ch.protonmail.android.mailspotlight.presentation.model.HowItWorksStep
+import ch.protonmail.android.mailspotlight.presentation.model.contentSearchHowItWorksSteps
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -37,31 +39,39 @@ internal class FeatureSpotlightViewModel @Inject constructor(
     private val markFeatureSpotlightSeen: MarkFeatureSpotlightSeen
 ) : ViewModel() {
 
-    private val _closeScreenEvent = MutableSharedFlow<Unit>()
-    val closeScreenEvent = _closeScreenEvent.asSharedFlow()
+    private val mutableDismissEvent = MutableSharedFlow<FeatureSpotlightViewAction>()
+    val dismissEvent = mutableDismissEvent.asSharedFlow()
 
     val overviewFeatures: ImmutableList<FeatureItem> = persistentListOf(
         FeatureItem(
-            icon = R.drawable.ic_file_download,
+            icon = R.drawable.ic_magnifier,
             title = TextUiModel.TextRes(R.string.spotlight_screen_content_search_message_content_title),
             description = TextUiModel.TextRes(R.string.spotlight_screen_content_search_message_content_subtitle)
         ),
         FeatureItem(
-            icon = R.drawable.ic_magnifier,
-            title = TextUiModel.TextRes(R.string.spotlight_screen_content_search_bottom_bar_title),
-            description = TextUiModel.TextRes(R.string.spotlight_screen_content_search_bottom_bar_subtitle)
+            icon = R.drawable.ic_lock,
+            title = TextUiModel.TextRes(R.string.spotlight_screen_content_search_encryption_title),
+            description = TextUiModel.TextRes(R.string.spotlight_screen_content_search_encryption_subtitle)
         ),
         FeatureItem(
-            icon = R.drawable.ic_mark_unread,
+            icon = R.drawable.ic_letter,
             title = TextUiModel.TextRes(R.string.spotlight_screen_content_search_recent_searches_title),
             description = TextUiModel.TextRes(R.string.spotlight_screen_content_search_recent_searches_subtitle)
         )
     )
 
-    fun onGotIt() {
+    val howItWorksSteps: ImmutableList<HowItWorksStep> = contentSearchHowItWorksSteps
+
+    /**
+     * Marks the spotlight seen and reports which action closed it.
+     *
+     * Note: Content search is never turned on here. [FeatureSpotlightViewAction.TurnOn] only hands over
+     * to the enabling bottomsheet.
+     */
+    fun submit(action: FeatureSpotlightViewAction) {
         viewModelScope.launch {
             markFeatureSpotlightSeen()
-            _closeScreenEvent.emit(Unit)
+            mutableDismissEvent.emit(action)
         }
     }
 }

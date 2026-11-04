@@ -120,6 +120,15 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun supportsIncludeFilter() = rustMessageListQuery.supportsIncludeFilter()
 
+    override fun observeTotalItemsCount(userId: UserId, pageKey: PageKey) =
+        rustMessageListQuery.observeTotalItemsCount(userId, pageKey)
+
+    override suspend fun getSearchMatchPositions(
+        userId: UserId,
+        pageKey: PageKey,
+        messageIds: List<LocalMessageId>
+    ) = rustMessageListQuery.getSearchMatchPositions(userId, pageKey, messageIds)
+
     override suspend fun getMessage(
         userId: UserId,
         messageId: LocalMessageId

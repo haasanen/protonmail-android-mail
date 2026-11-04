@@ -21,12 +21,10 @@
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Stäng valläget</string>
   <string name="mailbox_toolbar_menu_button_content_description">Meny</string>
   <string name="mailbox_toolbar_search_button_content_description">Sök</string>
-  <string name="mailbox_toolbar_exit_search_mode_content_description">Avsluta sökläge</string>
-  <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Rensa sökfråga</string>
   <string name="filter_unread_button_text">Oläst</string>
   <string name="include_spam_trash_text">Inkludera skräppost/papperskorg</string>
   <plurals name="mailbox_toolbar_selected_count">
-    <item quantity="one">%d valt</item>
+    <item quantity="one">%d valda</item>
     <item quantity="other">%d valda</item>
   </plurals>
   <string name="mailbox_default_recipient">(Ingen mottagare)</string>
@@ -74,15 +72,12 @@
   <string name="mailbox_action_trash_message">Meddelandet flyttades till papperskorgen</string>
   <string name="mailbox_action_archive_message">Meddelande flyttades till arkiv</string>
   <string name="mailbox_action_spam_message">Meddelandet flyttades till skräppost</string>
-  <string name="mailbox_search_placeholder_text">Sök meddelanden</string>
-  <string name="mailbox_search_no_results_title">Inga matchningar</string>
-  <string name="mailbox_search_no_results_explanation">Du kan antingen uppdatera din sökfråga eller rensa den.</string>
   <plurals name="mailbox_action_move_conversation">
     <item quantity="one">Konversation flyttad till %s</item>
     <item quantity="other">Konversationer flyttad till %s</item>
   </plurals>
   <plurals name="mailbox_action_move_message">
-    <item quantity="one">Meddelandet flyttat till %s</item>
+    <item quantity="one">Meddelande flyttat till %s</item>
     <item quantity="other">Meddelanden flyttade till %s</item>
   </plurals>
   <string name="mailbox_action_button_clear_trash">Töm papperskorg</string>

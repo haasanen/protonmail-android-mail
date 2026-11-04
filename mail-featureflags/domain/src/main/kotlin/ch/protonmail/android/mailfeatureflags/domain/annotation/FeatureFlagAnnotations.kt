@@ -78,6 +78,14 @@ annotation class IsWebViewDarkModeFallbackEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class IsMessageWebViewPoolEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsMessageBodyImageCacheEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class IsInjectCssOverrideEnabled
 
 @Qualifier
@@ -87,6 +95,18 @@ annotation class IsRestrictMessageWebViewHeightEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsShowRatingBoosterEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsNpsUserTargeted
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsNpsEnabledInApp
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsBlackFridayUpsellOptedOut
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -110,12 +130,12 @@ annotation class IsBgProcessingRelaxedBatteryConstraintEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsContentSearchScreenEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class IsSdkUpgradesReadEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsSdkUpgradesPurchaseEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsPlusToUnlimitedUpsellEnabled

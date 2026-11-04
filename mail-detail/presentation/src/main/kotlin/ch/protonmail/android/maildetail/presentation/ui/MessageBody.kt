@@ -46,6 +46,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
+import ch.protonmail.android.mailmessage.presentation.ui.LocalMessageBodyWebViewPool
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
 import ch.protonmail.android.mailmessage.presentation.ui.ZoomableWebView
 import timber.log.Timber
@@ -57,7 +58,11 @@ fun MessageBody(
     messageBodyUiModel: MessageBodyUiModel,
     actions: MessageBody.Actions,
     downloadingAttachmentId: AttachmentId? = null,
-    onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> }
+    // The body's last settled height in px, forwarded so a pooled WebView re-attached on scroll-back reports
+    // its real height immediately instead of a transient 0.
+    cachedWebViewHeightPx: Int = 0,
+    onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
+    onMessageBodyLoadCompleted: (messageId: MessageId) -> Unit = {}
 ) {
     val hasWebView = LocalDeviceCapabilitiesProvider.current.hasWebView
 
@@ -114,12 +119,20 @@ fun MessageBody(
     }
 
     if (hasWebView) {
-        val webViewCache = remember(messageBodyUiModel.messageId) {
+        val messageId = messageBodyUiModel.messageId
+        // When a pool is in scope (conversation list) the WebView is acquired from it and kept alive across
+        // recycling; otherwise fall back to a per-composable WebView created and destroyed with the item.
+        val pool = LocalMessageBodyWebViewPool.current
+        val webViewCache = remember(messageId) {
             mutableStateOf<ZoomableWebView?>(null)
         }
 
-        val stableOnBuildWebView = remember(messageBodyUiModel.messageId) {
-            onBuildWebView(webViewCache)
+        val stableOnBuildWebView = remember(messageId, pool) {
+            if (pool != null) {
+                { context: Context -> pool.acquire(messageId.id) { ZoomableWebView(context) } }
+            } else {
+                onBuildWebView(webViewCache)
+            }
         }
 
         MessageBodyWebView(
@@ -133,9 +146,12 @@ fun MessageBody(
                 loadImage = actions.loadImage,
                 onPrint = actions.onPrint,
                 onDownloadImage = actions.onDownloadImage,
-                onViewEntireMessageClicked = actions.onViewEntireMessageClicked
+                onViewEntireMessageClicked = actions.onViewEntireMessageClicked,
+                onMessageBodyLoadCompleted = onMessageBodyLoadCompleted
             ),
             onBuildWebView = stableOnBuildWebView,
+            pool = pool,
+            cachedWebViewHeightPx = cachedWebViewHeightPx,
             onMessageBodyLoaded = onMessageBodyLoaded
         )
     } else {

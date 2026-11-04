@@ -25,6 +25,7 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.file.IntentExtraKeys
+import ch.protonmail.android.mailcommon.data.file.ShareUriValidator
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
@@ -48,7 +49,6 @@ import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
-import ch.protonmail.android.mailsession.domain.eventloop.EventLoopErrorSignal
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.navigation.mapper.IntentMapper
 import ch.protonmail.android.navigation.model.Destination
@@ -121,10 +121,6 @@ class HomeViewModelTest {
     private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>(relaxUnitFun = true)
     private val markMessageSendingStatusesAsSeen = mockk<MarkMessageSendingStatusesAsSeen>(relaxUnitFun = true)
 
-    private val eventLoopErrorSignal = mockk<EventLoopErrorSignal> {
-        every { this@mockk.observeEventLoopErrors() } returns flowOf()
-    }
-
     private val primaryIndexingStatus = MutableSharedFlow<ContentIndexingState>(replay = 1)
     private val otherIndexingStatus = MutableSharedFlow<ContentIndexingState>(replay = 1)
     private val observeContentSearchIndexingStatus = mockk<ObserveContentSearchIndexingStatus> {
@@ -143,7 +139,11 @@ class HomeViewModelTest {
     }
 
     private val formatFullDate = mockk<FormatFullDate>()
-    private val intentMapper = IntentMapper()
+    private val shareUriValidator = mockk<ShareUriValidator> {
+        every { isAllowed(any()) } returns true
+        every { filterAllowed(any()) } answers { firstArg() }
+    }
+    private val intentMapper = IntentMapper(shareUriValidator)
     private val navigationEventsReducer = HomeNavigationEventsReducer()
 
     private val homeViewModel by lazy {
@@ -155,7 +155,6 @@ class HomeViewModelTest {
             markMessageSendingStatusesAsSeen,
             formatFullDate,
             cancelScheduleSendMessage,
-            eventLoopErrorSignal,
             isContentSearchFeatureEnabled,
             observeContentSearchEnabled,
             observeContentSearchIndexingStatus,
@@ -338,7 +337,7 @@ class HomeViewModelTest {
         every { shareIntent.scheme } returns ""
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
-        every { any<Intent>().getShareInfo() } returns intentShareInfo
+        every { any<Intent>().getShareInfo(any()) } returns intentShareInfo
 
         every { shouldPresentPinInsertionScreen() } returns flowOf()
         every { newIntentObserver() } returns flowOf(shareIntent)
@@ -364,7 +363,7 @@ class HomeViewModelTest {
         every { shareIntent.scheme } returns ""
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
-        every { any<Intent>().getShareInfo() } returns IntentShareInfo.Empty
+        every { any<Intent>().getShareInfo(any()) } returns IntentShareInfo.Empty
 
         every { shouldPresentPinInsertionScreen() } returns flowOf()
         every { newIntentObserver() } returns flowOf(shareIntent)
@@ -401,7 +400,7 @@ class HomeViewModelTest {
             every { shareIntent.scheme } returns ""
             // Mock the extension function
             mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
-            every { any<Intent>().getShareInfo() } returns intentShareInfo
+            every { any<Intent>().getShareInfo(any()) } returns intentShareInfo
 
             every { shouldPresentPinInsertionScreen() } returns flowOf()
             every { newIntentObserver() } returns flowOf(mainIntent, shareIntent)
@@ -437,7 +436,7 @@ class HomeViewModelTest {
         every { shareIntent.scheme } returns ""
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
-        every { any<Intent>().getShareInfo() } returns intentShareInfo
+        every { any<Intent>().getShareInfo(any()) } returns intentShareInfo
 
         every { shouldPresentPinInsertionScreen() } returns flowOf()
         every { newIntentObserver() } returns flowOf(mainIntent, shareIntent)
@@ -630,7 +629,7 @@ class HomeViewModelTest {
     @Test
     fun `reports an indexing failure on the primary account`() = runTest {
         // Given
-        primaryIndexingStatus.emit(ContentIndexingState.Failed)
+        primaryIndexingStatus.emit(ContentIndexingState.Failed())
 
         // When
         advanceUntilIdle()
@@ -642,12 +641,12 @@ class HomeViewModelTest {
     @Test
     fun `reports the same failure once`() = runTest {
         // Given
-        primaryIndexingStatus.emit(ContentIndexingState.Failed)
+        primaryIndexingStatus.emit(ContentIndexingState.Failed())
         advanceUntilIdle()
         assertNotNull(homeViewModel.state.value.contentIndexingErrorEffect.consume())
 
         // When
-        primaryIndexingStatus.emit(ContentIndexingState.Failed)
+        primaryIndexingStatus.emit(ContentIndexingState.Failed())
         advanceUntilIdle()
 
         // Then
@@ -659,7 +658,7 @@ class HomeViewModelTest {
         // Given
         val primaryUserId = MutableStateFlow<UserId?>(otherUserId)
         every { observePrimaryUserId() } returns primaryUserId
-        primaryIndexingStatus.emit(ContentIndexingState.Failed)
+        primaryIndexingStatus.emit(ContentIndexingState.Failed())
         otherIndexingStatus.emit(ContentIndexingState.Completed)
         advanceUntilIdle()
         assertNull(homeViewModel.state.value.contentIndexingErrorEffect.consume())
@@ -676,7 +675,7 @@ class HomeViewModelTest {
     fun `says nothing about an indexing failure on another account`() = runTest {
         // Given
         primaryIndexingStatus.emit(ContentIndexingState.Running(50.0))
-        otherIndexingStatus.emit(ContentIndexingState.Failed)
+        otherIndexingStatus.emit(ContentIndexingState.Failed())
 
         // When
         advanceUntilIdle()
@@ -689,7 +688,7 @@ class HomeViewModelTest {
     fun `says nothing about an account with content search switched off`() = runTest {
         // Given
         primaryContentSearchEnabled.emit(false)
-        primaryIndexingStatus.emit(ContentIndexingState.Failed)
+        primaryIndexingStatus.emit(ContentIndexingState.Failed())
 
         // When
         advanceUntilIdle()
@@ -702,8 +701,8 @@ class HomeViewModelTest {
     @Test
     fun `says nothing about an account content search is unavailable for`() = runTest {
         // Given
-        coEvery { isContentSearchFeatureEnabled(userId) } returns false
-        primaryIndexingStatus.emit(ContentIndexingState.Failed)
+        coEvery { isContentSearchFeatureEnabled(any()) } returns false
+        primaryIndexingStatus.emit(ContentIndexingState.Failed())
 
         // When
         advanceUntilIdle()
@@ -717,7 +716,7 @@ class HomeViewModelTest {
     fun `says nothing about a failure the enable that just happened is on its way to clearing`() = runTest {
         // Given
         primaryContentSearchEnabled.emit(false)
-        primaryIndexingStatus.emit(ContentIndexingState.Failed)
+        primaryIndexingStatus.emit(ContentIndexingState.Failed())
         advanceUntilIdle()
 
         // When
@@ -733,7 +732,7 @@ class HomeViewModelTest {
     fun `reports a failure that outlives the enable`() = runTest {
         // Given
         primaryContentSearchEnabled.emit(false)
-        primaryIndexingStatus.emit(ContentIndexingState.Failed)
+        primaryIndexingStatus.emit(ContentIndexingState.Failed())
         advanceUntilIdle()
 
         // When

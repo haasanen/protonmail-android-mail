@@ -27,11 +27,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailtelemetry.domain.model.UpsellModalVariant
+import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.extension.toTelemetryPayload
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
@@ -45,7 +47,9 @@ internal fun PaymentButtonsSeasonalPromo(
     instance: PlanUpgradeInstanceUiModel,
     buttonVariant: MailPurchaseButtonVariant = MailPurchaseButtonVariant.Default,
     actions: UpsellingScreen.Actions,
-    colors: UpsellingVariantColors? = null
+    colors: UpsellingVariantColors? = null,
+    modalVariant: UpsellModalVariant,
+    showDoNotShowAgain: Boolean
 ) {
     Column {
         Box(
@@ -65,7 +69,7 @@ internal fun PaymentButtonsSeasonalPromo(
 
         Box(modifier = Modifier.fillMaxWidth()) {
             val upsellingTelemetryPayload = instance.toTelemetryPayload(
-                modalVariant = UpsellModalVariant.COMPARISON_PLUS,
+                modalVariant = modalVariant,
                 upsellIsPromotional = true,
                 isIntroOffer = false
             )
@@ -81,6 +85,19 @@ internal fun PaymentButtonsSeasonalPromo(
                     actions.onUpgradeErrored(upsellingTelemetryPayload)
                     actions.onError(it)
                 }
+            )
+        }
+
+        if (showDoNotShowAgain) {
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
+
+            UpsellingSecondaryButton(
+                text = stringResource(R.string.upselling_black_friday_do_not_show_again),
+                textColor = colors?.cycleCardTextColor ?: UpsellingLayoutValues.PaymentButtons.planNameColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = ProtonDimens.Spacing.Large),
+                onClick = { actions.onDoNotShowAgain() }
             )
         }
 
@@ -105,7 +122,9 @@ private fun PaymentButtonsHorizontalLayoutPreview() {
             PaymentButtonsSeasonalPromo(
                 instance = BlackFridayList.shorterCycle,
                 actions = UpsellingScreen.Actions.Empty,
-                buttonVariant = MailPurchaseButtonVariant.BlackFriday
+                buttonVariant = MailPurchaseButtonVariant.BlackFriday,
+                modalVariant = UpsellModalVariant.COMPARISON_PLUS,
+                showDoNotShowAgain = true
             )
         }
     }

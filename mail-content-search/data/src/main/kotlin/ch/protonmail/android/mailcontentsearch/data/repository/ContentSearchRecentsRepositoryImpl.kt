@@ -64,11 +64,17 @@ class ContentSearchRecentsRepositoryImpl @Inject constructor(
     override suspend fun dismissSearchTerm(userId: UserId, query: String): Either<DataError, Unit> =
         withRecents(userId) { it.dismissRecentSearchTerm(query) }
 
+    override suspend fun dismissAllSearchTerms(userId: UserId): Either<DataError, Unit> =
+        withRecents(userId) { it.dismissAllRecentSearchTerms() }
+
     override suspend fun touchFoundItem(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         withRecents(userId) { it.touchRecentFoundItem(messageId.toLocalMessageId()) }
 
     override suspend fun dismissFoundItem(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         withRecents(userId) { it.dismissRecentFoundItem(messageId.toLocalMessageId()) }
+
+    override suspend fun dismissAllFoundItems(userId: UserId): Either<DataError, Unit> =
+        withRecents(userId) { it.dismissAllRecentFoundItems() }
 
     override suspend fun recordSearchOpen(
         userId: UserId,

@@ -21,14 +21,16 @@ package ch.protonmail.android.di
 import ch.protonmail.android.BuildConfig
 import ch.protonmail.android.mailevents.domain.model.AppInfo
 import ch.protonmail.android.mailevents.domain.repository.AppInfoProvider
+import ch.protonmail.android.useragent.GetAppVersion
 import javax.inject.Inject
 
-class AppInfoProviderImpl @Inject constructor() : AppInfoProvider {
+class AppInfoProviderImpl @Inject constructor(
+    private val getAppVersion: GetAppVersion
+) : AppInfoProvider {
 
     override fun getAppInfo(): AppInfo = AppInfo(
         packageName = BuildConfig.APPLICATION_ID,
         identifier = BuildConfig.APPLICATION_ID,
-        // Telemetry goes to Proton's events API: report upstream's version.
-        version = BuildConfig.UPSTREAM_VERSION_NAME
+        version = getAppVersion()
     )
 }

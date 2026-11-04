@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcontentsearch.data.mapper
 
+import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingOrchestratorStatus
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
 import uniffi.mail_uniffi.SyncDriverEvent
 import uniffi.mail_uniffi.SyncEvent
@@ -33,6 +34,19 @@ import kotlin.test.assertTrue
 internal class ContentIndexingStatusMapperTest {
 
     @Test
+    fun `maps every orchestrator status to its domain counterpart`() {
+        val expected = mapOf(
+            SyncStatus.PENDING to ContentIndexingOrchestratorStatus.Pending,
+            SyncStatus.ONGOING to ContentIndexingOrchestratorStatus.Ongoing,
+            SyncStatus.OFFLINE to ContentIndexingOrchestratorStatus.Offline,
+            SyncStatus.COMPLETED to ContentIndexingOrchestratorStatus.Completed,
+            SyncStatus.PAUSED to ContentIndexingOrchestratorStatus.Paused,
+            SyncStatus.FAILURE to ContentIndexingOrchestratorStatus.Failed
+        )
+        assertEquals(expected, SyncStatus.entries.associateWith { it.toOrchestratorStatus() })
+    }
+
+    @Test
     fun `maps PENDING status to Idle`() {
         assertEquals(ContentIndexingState.Idle, SyncStatus.PENDING.toIndexingState(null))
     }
@@ -43,8 +57,28 @@ internal class ContentIndexingStatusMapperTest {
     }
 
     @Test
+    fun `maps PAUSED status to Paused, keeping the progress the account had reached`() {
+        assertEquals(ContentIndexingState.Paused(42.5), SyncStatus.PAUSED.toIndexingState(42.5))
+    }
+
+    @Test
+    fun `a pause event carries the percentage it was handed`() {
+        // Given - the event has no progress of its own, so the caller reads it separately and passes
+        // it in. Without it the settings card would drop to zero on a pause.
+        assertEquals(
+            ContentIndexingState.Paused(42.5),
+            SyncEvent.Paused.toIndexingState(stalledPercentage = 42.5)
+        )
+    }
+
+    @Test
     fun `maps FAILURE status to Failed`() {
-        assertEquals(ContentIndexingState.Failed, SyncStatus.FAILURE.toIndexingState(null))
+        assertEquals(ContentIndexingState.Failed(), SyncStatus.FAILURE.toIndexingState(null))
+    }
+
+    @Test
+    fun `keeps the progress on a FAILURE status`() {
+        assertEquals(ContentIndexingState.Failed(42.5), SyncStatus.FAILURE.toIndexingState(42.5))
     }
 
     @Test
@@ -53,8 +87,35 @@ internal class ContentIndexingStatusMapperTest {
     }
 
     @Test
+    fun `reads an ONGOING account that has reached 100 percent as completed`() {
+        // Rust answers ONGOING from the outcome recorded when the sync task started and never
+        // revises it, so a finished account keeps reporting it for the life of the process.
+        assertEquals(ContentIndexingState.Completed, SyncStatus.ONGOING.toIndexingState(100.0))
+    }
+
+    @Test
+    fun `reads an ONGOING account past 100 percent as completed`() {
+        assertEquals(ContentIndexingState.Completed, SyncStatus.ONGOING.toIndexingState(104.5))
+    }
+
+    @Test
     fun `maps ONGOING status with no progress to Initializing`() {
         assertEquals(ContentIndexingState.Initializing, SyncStatus.ONGOING.toIndexingState(null))
+    }
+
+    @Test
+    fun `maps OFFLINE status to Running with the given progress`() {
+        assertEquals(ContentIndexingState.Running(42.0), SyncStatus.OFFLINE.toIndexingState(42.0))
+    }
+
+    @Test
+    fun `maps OFFLINE status with no progress to Initializing`() {
+        assertEquals(ContentIndexingState.Initializing, SyncStatus.OFFLINE.toIndexingState(null))
+    }
+
+    @Test
+    fun `Offline event maps to null so the last progress stays on screen`() {
+        assertNull(SyncEvent.Offline.toIndexingState())
     }
 
     @Test
@@ -67,8 +128,18 @@ internal class ContentIndexingStatusMapperTest {
         // Given - the queue is parked, which the settings screen reports as waiting for Wi-Fi
         // rather than as another flavour of "preparing".
         assertEquals(
-            ContentIndexingState.WaitingForUnmeteredConnection,
-            SyncEvent.WaitingForUnmeteredConnection.toIndexingState()
+            SyncEvent.WaitingForUnmeteredConnection.toIndexingState(),
+            ContentIndexingState.WaitingForUnmeteredConnection()
+        )
+    }
+
+    @Test
+    fun `a parked event carries the percentage it was handed`() {
+        // Given - the event has no progress of its own, so the caller reads it separately and
+        // passes it in. Without it the settings card would drop to zero while waiting for Wi-Fi.
+        assertEquals(
+            SyncEvent.WaitingForUnmeteredConnection.toIndexingState(stalledPercentage = 42.5),
+            ContentIndexingState.WaitingForUnmeteredConnection(percentage = 42.5)
         )
     }
 
@@ -77,6 +148,14 @@ internal class ContentIndexingStatusMapperTest {
         assertEquals(
             ContentIndexingState.Running(64.0),
             SyncEvent.Progress(SyncProgress(processed = 64uL, total = 100uL, percentage = 64.0)).toIndexingState()
+        )
+    }
+
+    @Test
+    fun `maps a Progress event that reaches 100 percent to Completed`() {
+        assertEquals(
+            ContentIndexingState.Completed,
+            SyncEvent.Progress(SyncProgress(processed = 100uL, total = 100uL, percentage = 100.0)).toIndexingState()
         )
     }
 
@@ -93,7 +172,7 @@ internal class ContentIndexingStatusMapperTest {
     @Test
     fun `maps Driver Failure event to Failed`() {
         assertEquals(
-            ContentIndexingState.Failed,
+            ContentIndexingState.Failed(),
             SyncEvent.Driver(SyncDriverEvent.Failure("boom")).toIndexingState()
         )
     }
@@ -112,7 +191,7 @@ internal class ContentIndexingStatusMapperTest {
     fun `maps Worker Failure event to Failed`() {
         // Given
         assertEquals(
-            ContentIndexingState.Failed,
+            ContentIndexingState.Failed(),
             SyncEvent.Worker(SyncWorkerEvent.Failure("name", 1u, "boom")).toIndexingState()
         )
     }
@@ -121,6 +200,7 @@ internal class ContentIndexingStatusMapperTest {
     fun `terminal events are reported as terminal`() {
         assertTrue(SyncEvent.Completed.isTerminal())
         assertTrue(SyncEvent.Stopped.isTerminal())
+        assertTrue(SyncEvent.Paused.isTerminal())
         assertTrue(SyncEvent.Driver(SyncDriverEvent.Failure("boom")).isTerminal())
         assertTrue(SyncEvent.Worker(SyncWorkerEvent.Failure("name", 1u, "boom")).isTerminal())
     }
@@ -129,6 +209,7 @@ internal class ContentIndexingStatusMapperTest {
     fun `non-terminal events are reported as non-terminal`() {
         assertFalse(SyncEvent.Started.isTerminal())
         assertFalse(SyncEvent.WaitingForUnmeteredConnection.isTerminal())
+        assertFalse(SyncEvent.Offline.isTerminal())
         assertFalse(SyncEvent.Progress(SyncProgress(processed = 10uL, total = 100uL, percentage = 10.0)).isTerminal())
         assertFalse(SyncEvent.Driver(SyncDriverEvent.Completed).isTerminal())
         assertFalse(SyncEvent.Worker(SyncWorkerEvent.Processed("name", 1u)).isTerminal())

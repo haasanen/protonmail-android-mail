@@ -28,9 +28,12 @@ import ch.protonmail.android.mailcontentsearch.data.mapper.isTerminal
 import ch.protonmail.android.mailcontentsearch.data.mapper.log
 import ch.protonmail.android.mailcontentsearch.data.mapper.toIndexingActivity
 import ch.protonmail.android.mailcontentsearch.data.mapper.toIndexingState
+import ch.protonmail.android.mailcontentsearch.data.mapper.toOrchestratorStatus
 import ch.protonmail.android.mailcontentsearch.data.mapper.toStartOutcome
 import ch.protonmail.android.mailcontentsearch.data.mapper.toStartSummary
+import ch.protonmail.android.mailcontentsearch.data.usecase.CreateSearchIndex
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingActivity
+import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingOrchestratorStatus
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingStartOutcome
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingStartSummary
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
@@ -63,6 +66,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.mail_uniffi.SyncEvent
 import uniffi.mail_uniffi.SyncOrchestratorEventStream
 import javax.inject.Inject
 import kotlin.time.Duration
@@ -72,6 +76,7 @@ import kotlin.time.Duration.Companion.seconds
 class ContentSearchRepositoryImpl @Inject constructor(
     private val executeWithUserSession: ExecuteWithUserSession,
     private val syncService: SyncServiceWrapper,
+    private val createSearchIndex: CreateSearchIndex,
     private val userSessionRepository: UserSessionRepository,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     @AppScope private val appScope: CoroutineScope
@@ -124,14 +129,6 @@ class ContentSearchRepositoryImpl @Inject constructor(
     }.flowOn(ioDispatcher)
         .shareIn(appScope, SharingStarted.WhileSubscribed(stopTimeoutMillis = SharingStopTimeoutMillis))
 
-    // Answered by the user session, so an account without one - signed out, or still unlocking -
-    // reads as unavailable.
-    override suspend fun isFeatureEnabled(userId: UserId): Boolean =
-        executeWithUserSession(userId) { wrapper -> wrapper.isContentSearchFFEnabled() }.getOrElse { error ->
-            Timber.d("content-search: availability could not be resolved for the account: $error")
-            false
-        }
-
     // Only reset: stop() is global as of the sync orchestrator, so it would halt indexing for
     // every other account too. reset() already re-prepares this user and hands the orchestrator
     // its next candidate.
@@ -141,6 +138,9 @@ class ContentSearchRepositoryImpl @Inject constructor(
     override suspend fun startIndexing(): Either<DataError, ContentIndexingStartSummary> =
         withContext(ioDispatcher) { syncService.start().map { it.toStartSummary() } }
 
+    override suspend fun getOrchestratorStatus(): Either<DataError, ContentIndexingOrchestratorStatus> =
+        withContext(ioDispatcher) { syncService.status().map { it.toOrchestratorStatus() } }
+
     override suspend fun startIndexingForUser(userId: UserId): Either<DataError, ContentIndexingStartOutcome> =
         executeWithUserSession(userId) { wrapper ->
             syncService.startUser(wrapper).map { it.toStartOutcome() }
@@ -148,6 +148,18 @@ class ContentSearchRepositoryImpl @Inject constructor(
             .onRight { outcome -> Timber.d("content-search: start for $userId answered $outcome") }
 
     override suspend fun stopIndexing(): Either<DataError, Unit> = withContext(ioDispatcher) { syncService.stop() }
+
+    override suspend fun pauseIndexing(userId: UserId): Either<DataError, Unit> =
+        executeWithUserSession(userId) { wrapper -> syncService.pauseUser(wrapper) }.flatten()
+
+    // Rust sums the stored blobs, not the whole database file. It walks the table, so it is not free.
+    override suspend fun getIndexSizeBytes(userId: UserId): Long? = executeWithUserSession(userId) { wrapper ->
+        createSearchIndex(wrapper).stats()
+    }.flatten()
+        .onLeft { error -> Timber.e("content-search: could not read the index size of $userId: $error") }
+        .getOrNull()
+        ?.compressedBytes
+        ?.toLong()
 
     override fun observeIndexingActivity(): Flow<ContentIndexingActivity> = indexingActivity
 
@@ -200,11 +212,6 @@ class ContentSearchRepositoryImpl @Inject constructor(
         ContentIndexingState.Idle
     }
 
-    override suspend fun shouldShowMobileBottomSheet(userId: UserId): Boolean =
-        executeWithUserSession(userId) { wrapper ->
-            syncService.shouldShowMobileSheet(wrapper)
-        }.flatten().getOrElse { false }
-
     private suspend fun readIndexingState(userId: UserId): ContentIndexingState? =
         executeWithUserSession(userId) { wrapper -> currentIndexingState(wrapper) }.getOrNull()
 
@@ -217,12 +224,12 @@ class ContentSearchRepositoryImpl @Inject constructor(
     private suspend fun currentIndexingState(wrapper: MailUserSessionWrapper): ContentIndexingState {
         val status = syncService.userStatus(wrapper).getOrElse { error ->
             Timber.e("content-search: the account could not report its indexing status: $error")
-            return ContentIndexingState.Failed
+            return ContentIndexingState.Failed()
         }
         val progress = syncService.userProgress(wrapper).getOrElse { error ->
             if (syncService.isEnabled(wrapper).getOrElse { false }) {
                 Timber.e("content-search: the account could not report its indexing progress: $error")
-                return ContentIndexingState.Failed
+                return ContentIndexingState.Failed()
             }
             Timber.d("content-search: no indexing progress for an account with content search off: $error")
             null
@@ -230,6 +237,17 @@ class ContentSearchRepositoryImpl @Inject constructor(
         // No totals yet means Rust has not sized the backfill: report "preparing" rather than 0%.
         return status.toIndexingState(progress?.takeIf { it.total > 0uL }?.percentage)
     }
+
+    /**
+     * How far [userId]'s backfill had got, or null when Rust cannot say.
+     *
+     * Read when the backfill stops short - the queue parks, or the user pauses. Neither event carries
+     * progress, so without this the settings card would drop to 0% while the account sits there. A
+     * failed read only costs the percentage.
+     */
+    private suspend fun readStalledPercentage(userId: UserId): Double? = executeWithUserSession(userId) { wrapper ->
+        syncService.userProgress(wrapper).getOrNull()?.takeIf { it.total > 0uL }?.percentage
+    }.getOrNull()
 
     private fun observeForUser(userId: UserId): Flow<ContentIndexingState> = callbackFlow {
         // Subscribe before reading the snapshot: the stream has no replay, so anything
@@ -267,7 +285,12 @@ class ContentSearchRepositoryImpl @Inject constructor(
                     break
                 }
 
-                event.toIndexingState()?.let { trySend(it) }
+                val stalled = when (event) {
+                    is SyncEvent.WaitingForUnmeteredConnection,
+                    is SyncEvent.Paused -> readStalledPercentage(userId)
+                    else -> null
+                }
+                event.toIndexingState(stalled)?.let { trySend(it) }
                 if (event.isTerminal()) {
                     // Throttle the resubscribe in observeIndexingStatus so a session that fails
                     // immediately on every subscribe can't spin the loop with no backoff.

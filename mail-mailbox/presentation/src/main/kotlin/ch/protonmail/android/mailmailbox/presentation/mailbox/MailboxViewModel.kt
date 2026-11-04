@@ -51,11 +51,8 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.SelectionState
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
-import ch.protonmail.android.mailcontentsearch.domain.usecase.IsContentSearchFeatureEnabled
 import ch.protonmail.android.mailconversation.domain.usecase.IsExpandableLocation
 import ch.protonmail.android.mailconversation.domain.usecase.TerminateConversationPaginator
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsContentSearchScreenEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlag
 import ch.protonmail.android.maillabel.domain.extension.isOutbox
 import ch.protonmail.android.maillabel.domain.model.CategoryLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -111,6 +108,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveVal
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.SetActiveCategoryLabel
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShouldShowNps
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateIncludeFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.UpdateUnreadFilter
@@ -128,7 +126,6 @@ import ch.protonmail.android.mailpagination.domain.model.IncludeFilter
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.usecase.HasValidUserSession
-import ch.protonmail.android.mailsession.domain.usecase.IsCategoryViewEnabled
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserIdWithValidSession
 import ch.protonmail.android.mailsettings.domain.model.ToolbarActionsRefreshSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -163,6 +160,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -220,12 +218,10 @@ class MailboxViewModel @Inject constructor(
     private val loadingBarControllerFactory: MailboxLoadingBarControllerFactory,
     private val shouldShowRatingBooster: ShouldShowRatingBooster,
     private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered,
+    private val shouldShowNps: ShouldShowNps,
     private val observeCategoryViewStatus: ObserveCategoryViewStatus,
     private val setActiveCategoryLabel: SetActiveCategoryLabel,
-    private val selectCategory: SelectCategory,
-    private val categoryViewEnabled: IsCategoryViewEnabled,
-    private val isContentSearchFeatureEnabled: IsContentSearchFeatureEnabled,
-    @IsContentSearchScreenEnabled private val isContentSearchScreenFeatureEnabled: FeatureFlag<Boolean>
+    private val selectCategory: SelectCategory
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserIdWithValidSession().filterNotNull()
@@ -247,16 +243,6 @@ class MailboxViewModel @Inject constructor(
     val primaryUserIdState: StateFlow<UserId?> = primaryUserId
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val isCategoryViewEnabled: StateFlow<Boolean> = primaryUserId
-        .mapLatest { categoryViewEnabled(it) }
-        .distinctUntilChanged()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    val isContentSearchScreenEnabled: StateFlow<Boolean> = primaryUserId
-        .mapLatest { isContentSearchScreenFeatureEnabled.get() }
-        .distinctUntilChanged()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val state: StateFlow<MailboxState> = mutableState.asStateFlow()
     val items: Flow<PagingData<MailboxItemUiModel>> = observePagingData().cachedIn(viewModelScope)
@@ -337,12 +323,7 @@ class MailboxViewModel @Inject constructor(
         observeCategoryViewStatusUpdates()
             .onEach { categoryViewStatus ->
                 Timber.d("Received category view status update: $categoryViewStatus")
-                // While in search mode the pager runs against AllMail with no category, so the Rust
-                // status reports the default (Primary) category. Resetting here would wipe the user's
-                // selection and push them back to Primary when they exit search, so we skip it.
-                if (categoryViewStatus.activeCategoryOrNull()?.isDefault() == true &&
-                    !state.value.isInSearchMode()
-                ) {
+                if (categoryViewStatus.activeCategoryOrNull()?.isDefault() == true) {
                     selectMailLabelId.resetSelectedCategory()
                 }
 
@@ -430,6 +411,13 @@ class MailboxViewModel @Inject constructor(
                 emitNewStateFrom(MailboxEvent.ShowRatingBooster)
             }
             .launchIn(viewModelScope)
+
+        // Offered once per session: the flag only turns off with a later refresh, after the response is sent.
+        primaryUserId.flatMapLatest { shouldShowNps() }
+            .filter { it }
+            .take(1)
+            .onEach { emitNewStateFrom(MailboxEvent.ShowNps) }
+            .launchIn(viewModelScope)
     }
 
     override fun onCleared() {
@@ -510,10 +498,6 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.UnStar -> handleUnStarAction(viewAction)
                 is MailboxViewAction.MoveToArchive -> handleMoveToArchiveAction()
                 is MailboxViewAction.MoveToSpam -> handleMoveToSpamAction()
-                is MailboxViewAction.EnterSearchMode -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.ExitSearchMode -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.SearchQuery -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.SearchResult -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.NavigateToInboxLabel -> handleNavigateToInbox()
                 is MailboxViewAction.SelectAll -> handleSelectAllAction(viewAction)
                 is MailboxViewAction.DeselectAll -> handleDeselectAllAction()
@@ -616,11 +600,7 @@ class MailboxViewModel @Inject constructor(
     }
 
     private fun handleDeselectAllAction() {
-        if (state.value.isInSearchMode()) {
-            emitNewStateFrom(MailboxViewAction.ExitSelectionMode)
-        } else {
-            emitNewStateFrom(MailboxEvent.AllItemsDeselected)
-        }
+        emitNewStateFrom(MailboxEvent.AllItemsDeselected)
     }
 
     private suspend fun handleMailboxItemChanged(updatedItemIds: List<String>) {
@@ -663,37 +643,18 @@ class MailboxViewModel @Inject constructor(
         } else {
             val user = primaryUserId.filterNotNull().first()
             val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
-            val isInSearchMode = state.value.isInSearchMode()
-            val subItemId = if (item.type == MailboxItemType.Message || isInSearchMode) {
-                item.id
-            } else {
-                null
-            }
-            val labelId = getFromLabelIdSearchAware()
-            val isConversationGrouping =
-                getViewModeForCurrentLocation(getSelectedMailLabelId()) == ViewMode.ConversationGrouping
+            val subItemId = if (item.type == MailboxItemType.Message) item.id else null
+            val labelId = getFromLabelId()
+            val isConversationGrouping = viewMode == ViewMode.ConversationGrouping
+            val categoryId = observeSelectedLabelWithCategory().firstOrNull()?.categoryLabelId
 
-            // The category belongs to the location we searched from, not to the search-aware label
-            // resolved above, so pairing the two would ask for a category-filtered All Mail.
-            val categoryId = if (isInSearchMode) {
-                null
-            } else {
-                observeSelectedLabelWithCategory().firstOrNull()?.categoryLabelId
-            }
-            // Highlight matches in the opened item only when content search is on.
-            val searchQuery = if (isInSearchMode && isContentSearchFeatureEnabled(user)) {
-                (state.value.mailboxListState as? MailboxListState.Data)?.searchState?.searchQuery.orEmpty()
-            } else {
-                ""
-            }
             emitNewStateFrom(
                 MailboxEvent.ItemClicked.ItemDetailsOpened(
                     item = item,
                     contextLabel = labelId,
                     viewModeIsConversationGrouping = isConversationGrouping,
                     subitemId = subItemId,
-                    openedFromCategory = categoryId,
-                    searchQuery = searchQuery
+                    openedFromCategory = categoryId
                 )
             )
         }
@@ -775,74 +736,67 @@ class MailboxViewModel @Inject constructor(
     private fun LabelId.selectionModeEnabledForLabel() = this.isOutbox().not()
 
     /**
-     * Creates a [MailboxPagerFactory] and observes the emitted paging data. The Pager is re-created, when:
-     * - The selected Mail Label (ie. Mailbox location) changes
-     * - Entering/exiting search mode)
+     * Creates a [MailboxPagerFactory] and observes the emitted paging data. The Pager is re-created when
+     * the selected Mail Label (ie. Mailbox location) changes.
      *
-     * This method keeps track of the "selected mail label" and the "search mode state" it's been called
-     * to be able to hide the displayed items and show a loader as soon as such params change (avoiding
-     * the old location's items from being displayed till the new ones are loaded).
+     * This method keeps track of the "selected mail label" it's been called with, to be able to hide the
+     * displayed items and show a loader as soon as it changes (avoiding the old location's items from
+     * being displayed till the new ones are loaded).
      * This is achieved through `pagingDataFlow.emit(PagingData.empty())`
      */
     @Suppress("LongMethod")
     private fun observePagingData(): Flow<PagingData<MailboxItemUiModel>> {
         val pagingDataFlow = MutableStateFlow<PagingData<MailboxItemUiModel>>(PagingData.empty())
         var currentMailLabel: MailLabel? = null
-        var currentSearchModeState: Boolean? = null
 
         primaryUserId.filterNotNull().flatMapLatest { userId ->
 
             // Reset state and emit empty data when userId changes
             currentMailLabel = null
-            currentSearchModeState = null
             pagingDataFlow.tryEmit(
                 PagingData.empty(
                     LoadStates(LoadState.Loading, LoadState.Loading, LoadState.Loading)
                 )
             )
 
-            // Create new pager when mail label, search mode or view mode changes. Changes in
-            // search query, unread filter and showSpamTrash will be handled by the existing pager.
+            // Create a new pager when the mail label or the view mode changes. Changes in the unread
+            // filter and showSpamTrash are handled by the existing pager.
             combine(
                 observeMailLabelChangeRequests(),
-                state.observeSearchQuery(),
                 observeViewModeChanged(userId)
-            ) { selectedMailLabel, query, _ ->
+            ) { selectedMailLabel, _ ->
 
-                val isInSearchMode = state.value.isInSearchMode()
-                if (selectedMailLabel != currentMailLabel || currentSearchModeState != isInSearchMode) {
+                if (selectedMailLabel != currentMailLabel) {
                     pagingDataFlow.emit(
                         PagingData.empty(
                             LoadStates(LoadState.Loading, LoadState.Loading, LoadState.Loading)
                         )
                     )
                     currentMailLabel = selectedMailLabel
-                    currentSearchModeState = isInSearchMode
                 }
 
                 val viewMode = getViewModeForCurrentLocation(selectedMailLabel.id)
 
-                // Carry over the currently selected category so a freshly created pager (e.g. when
-                // returning from search on the same location) loads and reports that category instead
-                // of defaulting to Primary. Real location changes clear the category upstream, so this
-                // only preserves it across recreations that keep the same mail label (like search).
+                // Carry over the currently selected category so a freshly created pager loads and
+                // reports that category instead of defaulting to Primary. Real location changes clear
+                // the category upstream, so this only preserves it across recreations that keep the
+                // same mail label.
                 val categoryLabelId = observeSelectedLabelWithCategory().firstOrNull()?.categoryLabelId
 
                 mailboxPagerFactory.create(
                     userId = userId,
                     selectedMailLabelId = selectedMailLabel.id,
-                    type = if (!isInSearchMode) viewMode.toMailboxItemType() else MailboxItemType.Message,
-                    searchQuery = query,
+                    type = viewMode.toMailboxItemType(),
+                    searchQuery = "",
                     categoryLabelId = categoryLabelId
-                ) to (query to viewMode)
+                ) to viewMode
             }
-                .flatMapLatest { (pager, searchAndViewMode) ->
-                    val (query, viewMode) = searchAndViewMode
+                .flatMapLatest { (pager, viewMode) ->
 
                     channelFlow {
                         Timber.d(
                             "New Pager created for label=${currentMailLabel?.id?.labelId?.id} " +
-                                "query=$query viewMode=$viewMode"
+                                "viewMode=$viewMode"
                         )
 
                         // Start paging immediately and send items downstream.
@@ -885,7 +839,7 @@ class MailboxViewModel @Inject constructor(
 
                         // Start observers after the first page and skip their initial snapshots.
                         // This will ensure that new Rust scroller has been created and is ready to
-                        // accept updates to the filters and search query.
+                        // accept updates to the filters.
                         firstPageArrived.await()
 
                         val jobs = mutableListOf<Job>()
@@ -911,25 +865,22 @@ class MailboxViewModel @Inject constructor(
                         }
 
                         jobs += launch {
-                            combine(
-                                observeLoadedMailLabelId()
-                                    .mapToExistingLabel()
-                                    .distinctUntilChanged(),
-                                state.observeSearchDataReady()
-                            ) { loadedMailLabel, dataReady ->
-                                val userId = primaryUserId.filterNotNull().first()
-                                val viewMode = if (dataReady) {
-                                    ViewMode.NoConversationGrouping
-                                } else {
-                                    getCurrentViewModeForLabel(userId, loadedMailLabel.id.labelId)
-                                }
+                            observeLoadedMailLabelId()
+                                .mapToExistingLabel()
+                                .distinctUntilChanged()
+                                .map { loadedMailLabel ->
+                                    val userId = primaryUserId.filterNotNull().first()
+                                    val labelViewMode = getCurrentViewModeForLabel(
+                                        userId,
+                                        loadedMailLabel.id.labelId
+                                    )
 
-                                if (isExpandableLocation(viewMode)) {
-                                    MailboxEvent.ShowSpamTrashFilter
-                                } else {
-                                    MailboxEvent.HideSpamTrashFilter
+                                    if (isExpandableLocation(labelViewMode)) {
+                                        MailboxEvent.ShowSpamTrashFilter
+                                    } else {
+                                        MailboxEvent.HideSpamTrashFilter
+                                    }
                                 }
-                            }
                                 .distinctUntilChanged()
                                 .onEach { emitNewStateFrom(it) }
                                 .collect()
@@ -962,7 +913,7 @@ class MailboxViewModel @Inject constructor(
                     withContext(dispatchersProvider.Comp) {
                         mailboxItemMapper.toUiModel(
                             userId, it, folderColorSettingsValue,
-                            state.value.isShowingSearchResults()
+                            isShowingSearchResults = false
                         )
                     }
                 }
@@ -983,7 +934,7 @@ class MailboxViewModel @Inject constructor(
             userId = user,
             viewMode = viewMode,
             itemIds = selectionModeDataState.selectedMailboxItems.map { it.id },
-            labelId = getFromLabelIdSearchAware()
+            labelId = getFromLabelId()
         )
         emitNewStateFrom(markAsReadOperation)
     }
@@ -1000,7 +951,7 @@ class MailboxViewModel @Inject constructor(
             userId = userId,
             viewMode = viewMode,
             itemIds = selectionModeDataState.selectedMailboxItems.map { it.id },
-            labelId = getFromLabelIdSearchAware()
+            labelId = getFromLabelId()
         )
         emitNewStateFrom(markAsReadOperation)
     }
@@ -1009,7 +960,7 @@ class MailboxViewModel @Inject constructor(
         val userId = primaryUserId.filterNotNull().first()
         val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
         val itemIds = listOf(swipeReadAction.itemId)
-        val labelId = getFromLabelIdSearchAware()
+        val labelId = getFromLabelId()
         if (swipeReadAction.isRead) {
             mailboxActionExecutor.markUnread(userId, viewMode, itemIds, labelId)
         } else {
@@ -1115,8 +1066,7 @@ class MailboxViewModel @Inject constructor(
             val currentMailLabel = getSelectedMailLabelId()
             val viewMode = getViewModeForCurrentLocation(currentMailLabel)
 
-            // In search mode the destinations must be resolved against AllMail/AlmostAllMail
-            val fromLabelId = getFromLabelIdSearchAware()
+            val fromLabelId = getFromLabelId()
 
             val (entryPoint, selectedItemIds) = when (operation) {
                 is MailboxViewAction.RequestMoveToBottomSheet -> {
@@ -1404,7 +1354,7 @@ class MailboxViewModel @Inject constructor(
     private suspend fun getViewModeForCurrentLocation(currentMailLabel: MailLabelId): ViewMode {
         val userId = primaryUserId.firstOrNull()
 
-        return if (userId == null || state.value.isInSearchMode()) {
+        return if (userId == null) {
             GetCurrentViewModeForLabel.DefaultViewMode
         } else {
             getCurrentViewModeForLabel(userId, currentMailLabel.labelId)
@@ -1469,22 +1419,6 @@ class MailboxViewModel @Inject constructor(
         .mapToExistingLabel()
         .distinctUntilChangedBy { it.id }
 
-    private fun Flow<MailboxState>.observeSearchQuery() = this.map { it.mailboxListState as? MailboxListState.Data }
-        .mapNotNull { it?.searchState?.searchQuery }
-        .distinctUntilChanged()
-
-    private fun Flow<MailboxState>.observeSearchDataReady() = this.map { it.mailboxListState as? MailboxListState.Data }
-        .map { it?.searchState?.hasData() ?: false }
-        .distinctUntilChanged()
-
-    private fun MailboxState.isInSearchMode() =
-        this.mailboxListState is MailboxListState.Data && this.mailboxListState.searchState.isInSearch()
-
-    private fun MailboxState.isShowingSearchResults(): Boolean {
-        val data = this.mailboxListState as? MailboxListState.Data ?: return false
-        return data.searchState.isInSearch() && data.searchState.searchQuery.isNotBlank()
-    }
-
     // Emits the selected items while in selection mode, or null when not in selection mode.
     // Emitting null (rather than filtering it out) ensures the combined bottom bar flow does not
     // keep a stale non-empty selection cached after selection mode is exited.
@@ -1506,21 +1440,13 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getFromLabelIdSearchAware(): LabelId {
+    private suspend fun getFromLabelId(): LabelId {
         val currentLabelId = getSelectedMailLabelId().labelId
+        if (!isSpamTrashFilterEnabled()) return currentLabelId
+
         val userId = primaryUserId.filterNotNull().first()
-
-        val systemLabelId = when {
-            !state.value.isInSearchMode() && !isSpamTrashFilterEnabled() -> return currentLabelId
-            isSpamTrashFilterEnabled() || isSpamTrashFilterHidden() -> SystemLabelId.AllMail
-            else -> SystemLabelId.AlmostAllMail
-        }
-
-        return findLocalSystemLabelId(userId, systemLabelId)?.labelId ?: currentLabelId
+        return findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId ?: currentLabelId
     }
-
-    private fun isSpamTrashFilterHidden() =
-        state.value.showSpamTrashIncludeFilterState is ShowSpamTrashIncludeFilterState.Data.Hidden
 
     private fun isSpamTrashFilterEnabled() =
         (state.value.showSpamTrashIncludeFilterState as? ShowSpamTrashIncludeFilterState.Data.Shown)?.enabled == true
@@ -1580,7 +1506,8 @@ class MailboxViewModel @Inject constructor(
             actionResult = Effect.empty(),
             composerNavigationState = MailboxComposerNavigationState.Enabled(),
             error = Effect.empty(),
-            showRatingBooster = Effect.empty()
+            showRatingBooster = Effect.empty(),
+            showNps = Effect.empty()
         )
     }
 }

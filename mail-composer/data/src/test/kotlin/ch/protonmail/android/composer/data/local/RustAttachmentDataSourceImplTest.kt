@@ -55,13 +55,14 @@ import uniffi.mail_uniffi.DraftAttachmentRemoveErrorReason
 import uniffi.mail_uniffi.DraftAttachmentState
 import uniffi.mail_uniffi.DraftAttachmentUploadError
 import uniffi.mail_uniffi.DraftAttachmentUploadErrorReason
+import uniffi.mail_uniffi.Id
 import uniffi.mail_uniffi.OtherErrorReason
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import uniffi.mail_uniffi.ProtonError as LocalProtonError
 
-class RustAttachmentDataSourceImplTest {
+internal class RustAttachmentDataSourceImplTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -86,11 +87,13 @@ class RustAttachmentDataSourceImplTest {
         val draftAttachment = DraftAttachment(
             state = DraftAttachmentState.Uploaded,
             attachment = attachment,
-            stateModifiedTimestamp = 0L
+            stateModifiedTimestamp = 0L,
+            id = Id(1UL)
         )
 
+        // The draft attachment id is used, as Rust removes draft attachments by it.
         val expectedMetadataWithState = AttachmentMetadataWithState(
-            attachmentMetadata = attachment.toAttachmentMetadata(),
+            attachmentMetadata = attachment.toAttachmentMetadata().copy(attachmentId = AttachmentId("1")),
             attachmentState = AttachmentState.Uploaded
         )
 
@@ -108,9 +111,7 @@ class RustAttachmentDataSourceImplTest {
             assertTrue(emission.isRight())
             assertEquals(listOf(expectedMetadataWithState), emission.getOrNull())
             cancelAndIgnoreRemainingEvents()
-
         }
-
     }
 
     @Test

@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcontentsearch.data.worker
 
+import androidx.work.ForegroundUpdater
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import arrow.core.left
@@ -27,8 +28,10 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.system.DeviceArchitectureProvider
 import ch.protonmail.android.mailcontentsearch.data.background.ContentIndexingWorkScheduler
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingActivity
+import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingOrchestratorStatus
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingStartSummary
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
+import ch.protonmail.android.mailcontentsearch.domain.usecase.GetContentIndexingOrchestratorStatus
 import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveContentIndexingActivity
 import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveContentSearchIndexingStatus
 import ch.protonmail.android.mailcontentsearch.domain.usecase.StartContentIndexing
@@ -54,6 +57,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import uniffi.mail_uniffi.MailBackgroundExecScope
@@ -61,7 +65,10 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 internal class ContentIndexingWorkerTest {
 
@@ -89,6 +96,10 @@ internal class ContentIndexingWorkerTest {
     private val startContentIndexing = mockk<StartContentIndexing> {
         coEvery { this@mockk.invoke() } returns startSummary(pending = 1).right()
     }
+    // Pending by default, so a silent orchestrator releases the service at the first idle timeout.
+    private val getContentIndexingOrchestratorStatus = mockk<GetContentIndexingOrchestratorStatus> {
+        coEvery { this@mockk.invoke() } returns ContentIndexingOrchestratorStatus.Pending.right()
+    }
     private val appInBackground = MutableStateFlow(false)
     private val appInBackgroundState = mockk<AppInBackgroundState> {
         every { observe() } returns appInBackground
@@ -104,6 +115,18 @@ internal class ContentIndexingWorkerTest {
     // never consider itself promoted, which is the distinction most of what follows turns on.
     private var isPromotionGranted = true
 
+    private val platformForegroundUpdater = mockk<ForegroundUpdater> {
+        every { setForegroundAsync(any(), any(), any()) } answers {
+            mockk {
+                every { isDone } returns true
+                every { get() } answers {
+                    if (isPromotionGranted) null else throw IllegalStateException("promotion refused")
+                }
+                every { addListener(any(), any()) } answers { firstArg<Runnable>().run() }
+            }
+        }
+    }
+
     @BeforeTest
     fun setUp() {
         mockkObject(ContentIndexingNotification)
@@ -116,17 +139,7 @@ internal class ContentIndexingWorkerTest {
     fun tearDown() = unmockkObject(ContentIndexingNotification)
 
     private fun workerParameters() = mockk<WorkerParameters>(relaxed = true) {
-        every { foregroundUpdater } returns mockk {
-            every { setForegroundAsync(any(), any(), any()) } answers {
-                mockk {
-                    every { isDone } returns true
-                    every { get() } answers {
-                        if (isPromotionGranted) null else throw IllegalStateException("promotion refused")
-                    }
-                    every { addListener(any(), any()) } answers { firstArg<Runnable>().run() }
-                }
-            }
-        }
+        every { foregroundUpdater } returns platformForegroundUpdater
     }
 
     @Test
@@ -151,17 +164,18 @@ internal class ContentIndexingWorkerTest {
         observeContentIndexingActivity = observeContentIndexingActivity,
         observeContentSearchIndexingStatus = observeContentSearchIndexingStatus,
         startContentIndexing = startContentIndexing,
+        getContentIndexingOrchestratorStatus = getContentIndexingOrchestratorStatus,
         appInBackgroundState = appInBackgroundState,
         workScheduler = workScheduler,
         deviceArchitectureProvider = deviceArchitectureProvider
     )
 
     @Test
-    fun `finishes once the orchestrator enters forward mode`() = runTest {
+    fun `finishes once the orchestrator enters forward mode with every account done`() = runTest {
         // Given
         givenActivity(
             flowOf(
-                progress(),
+                progress(completedUsers = 2),
                 ContentIndexingActivity.ForwardMode(FirstUser),
                 progress()
             )
@@ -184,6 +198,281 @@ internal class ContentIndexingWorkerTest {
 
         // Then
         assertEquals(ListenableWorker.Result.success(), result)
+    }
+
+    @Test
+    fun `stays alive while the orchestrator hands over to the next account`() = runTest {
+        // Given
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(completedUsers = 1, userCount = 2))
+        runCurrent()
+
+        // When
+        activity.emit(ContentIndexingActivity.WaitingOnUsers)
+        runCurrent()
+        advanceTimeBy((ContentIndexingWorker.HandoverTimeout.inWholeMilliseconds - 1).milliseconds)
+
+        // Then
+        assertTrue(work.isActive)
+        activity.emit(progress(activeUserId = SecondUser, completedUsers = 1, userCount = 2))
+        runCurrent()
+        // Back on the long timeout, rather than still counting down the handover.
+        advanceTimeBy((ContentIndexingWorker.HandoverTimeout.inWholeMilliseconds + 1).milliseconds)
+        assertTrue(work.isActive)
+        work.cancel()
+    }
+
+    @Test
+    fun `finishes when the orchestrator settles with no accounts left`() = runTest {
+        // Given
+        coEvery { startContentIndexing() } returnsMany listOf(
+            startSummary(pending = 1).right(),
+            startSummary(completed = 2).right()
+        )
+        givenActivity(
+            flow {
+                emit(progress(completedUsers = 2, userCount = 2))
+                emit(ContentIndexingActivity.WaitingOnUsers)
+                awaitCancellation()
+            }
+        )
+
+        // When
+        val result = worker().doWork()
+
+        // Then
+        assertEquals(ListenableWorker.Result.success(), result)
+    }
+
+    @Test
+    fun `gives up on a handover the orchestrator never resolves`() = runTest {
+        // Given
+        givenActivity(
+            flow {
+                emit(progress(completedUsers = 1, userCount = 2))
+                emit(ContentIndexingActivity.WaitingOnUsers)
+                awaitCancellation()
+            }
+        )
+
+        // When
+        val work = async { worker().doWork() }
+        advanceTimeBy((ContentIndexingWorker.HandoverTimeout.inWholeMilliseconds + 1).milliseconds)
+
+        // Then
+        assertEquals(ListenableWorker.Result.success(), work.await())
+    }
+
+    @Test
+    fun `releases without a handover wait when the orchestrator has nothing left`() = runTest {
+        // Given
+        coEvery { startContentIndexing() } returnsMany listOf(
+            startSummary(pending = 1).right(),
+            startSummary(completed = 2).right()
+        )
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(completedUsers = 1, userCount = 2))
+        runCurrent()
+
+        // When
+        activity.emit(ContentIndexingActivity.ForwardMode(FirstUser))
+        runCurrent()
+
+        // Then
+        assertFalse(work.isActive)
+        assertEquals(ListenableWorker.Result.success(), work.await())
+    }
+
+    @Test
+    fun `asks the orchestrator for another account when one settles into forward mode`() = runTest {
+        // Given
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(completedUsers = 1, userCount = 2))
+        runCurrent()
+
+        // When
+        activity.emit(ContentIndexingActivity.ForwardMode(FirstUser))
+        runCurrent()
+
+        // Then
+        coVerify(exactly = 2) { startContentIndexing() }
+        assertTrue(work.isActive)
+        work.cancel()
+    }
+
+    @Test
+    fun `assumes an account is still coming when the orchestrator cannot be asked at a handover`() = runTest {
+        // Given
+        coEvery { startContentIndexing() } returnsMany listOf(
+            startSummary(pending = 1).right(),
+            DataError.Local.Unknown.left()
+        )
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(completedUsers = 1, userCount = 2))
+        runCurrent()
+
+        // When
+        activity.emit(ContentIndexingActivity.ForwardMode(FirstUser))
+        runCurrent()
+
+        // Then
+        assertTrue(work.isActive)
+        advanceTimeBy((ContentIndexingWorker.HandoverTimeout.inWholeMilliseconds + 1).milliseconds)
+        assertEquals(ListenableWorker.Result.success(), work.await())
+    }
+
+    @Test
+    fun `keeps the notification it is showing through a handover`() = runTest {
+        // Given
+        appInBackground.value = true
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(activeUserId = FirstUser, completedUsers = 1, userCount = 2))
+        indexingStates.getValue(FirstUser).value = ContentIndexingState.Running(percentage = 41.6)
+        runCurrent()
+
+        // When
+        activity.emit(ContentIndexingActivity.WaitingOnUsers)
+        runCurrent()
+
+        // Then
+        val percentages = mutableListOf<Double?>()
+        verify { ContentIndexingNotification.build(any(), any(), captureNullable(percentages)) }
+        assertEquals(41.6, percentages.last())
+        work.cancel()
+    }
+
+    @Test
+    fun `holds the last percentage when the outgoing account reports itself caught up`() = runTest {
+        // Given
+        appInBackground.value = true
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(activeUserId = FirstUser, completedUsers = 1, userCount = 2))
+        indexingStates.getValue(FirstUser).value = ContentIndexingState.Running(percentage = 98.0)
+        runCurrent()
+
+        // When
+        indexingStates.getValue(FirstUser).value = ContentIndexingState.Completed
+        activity.emit(ContentIndexingActivity.WaitingOnUsers)
+        runCurrent()
+
+        // Then
+        val percentages = mutableListOf<Double?>()
+        verify { ContentIndexingNotification.build(any(), any(), captureNullable(percentages)) }
+        assertEquals(98.0, percentages.last())
+        work.cancel()
+    }
+
+    @Test
+    fun `reports the incoming account once it publishes progress of its own`() = runTest {
+        // Given
+        appInBackground.value = true
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(activeUserId = FirstUser, completedUsers = 1, userCount = 2))
+        indexingStates.getValue(FirstUser).value = ContentIndexingState.Completed
+        activity.emit(ContentIndexingActivity.WaitingOnUsers)
+        runCurrent()
+
+        // When
+        activity.emit(progress(activeUserId = SecondUser, completedUsers = 1, userCount = 2))
+        indexingStates.getValue(SecondUser).value = ContentIndexingState.Running(percentage = 3.0)
+        runCurrent()
+
+        // Then
+        verify { ContentIndexingNotification.build(any(), "user-2@proton.me", 3.0) }
+        work.cancel()
+    }
+
+    @Test
+    fun `takes the service while the orchestrator is between accounts`() = runTest {
+        // Given - an account is still to come, and standby quota is charged from the moment the app
+        // leaves the screen, so the promotion cannot wait for that account's first progress.
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(activeUserId = FirstUser, completedUsers = 1, userCount = 2))
+        indexingStates.getValue(FirstUser).value = ContentIndexingState.Running(percentage = 62.5)
+        activity.emit(ContentIndexingActivity.ForwardMode(FirstUser))
+        runCurrent()
+
+        // When - the app leaves the screen mid-handover.
+        appInBackground.value = true
+        runCurrent()
+
+        // Then - showing the outgoing account, rather than nothing at all.
+        verify { ContentIndexingNotification.build(any(), "user-1@proton.me", 62.5) }
+        work.cancel()
+    }
+
+    @Test
+    fun `gives up when the orchestrator never answers whether it has work`() = runTest {
+        // Given
+        coEvery { startContentIndexing() } coAnswers { awaitCancellation() }
+        givenActivity(flow { awaitCancellation() })
+
+        // When
+        val work = async { worker().doWork() }
+        advanceTimeBy((ContentIndexingWorker.OrchestratorAskTimeout.inWholeMilliseconds + 1).milliseconds)
+
+        // Then
+        assertTrue(work.isActive)
+        advanceTimeBy((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds + 1).milliseconds)
+        assertEquals(ListenableWorker.Result.success(), work.await())
+    }
+
+    @Test
+    fun `takes the service once the next account actually starts indexing`() = runTest {
+        // Given
+        val activity = MutableSharedFlow<ContentIndexingActivity>()
+        givenActivity(activity)
+        val work = async { worker().doWork() }
+        runCurrent()
+        activity.emit(progress(activeUserId = FirstUser, completedUsers = 1, userCount = 2))
+        activity.emit(ContentIndexingActivity.WaitingOnUsers)
+        runCurrent()
+        appInBackground.value = true
+        runCurrent()
+
+        // When
+        activity.emit(progress(activeUserId = SecondUser, completedUsers = 1, userCount = 2))
+        runCurrent()
+
+        // Then
+        verify(atLeast = 1) { ContentIndexingNotification.build(any(), any(), any()) }
+        work.cancel()
+    }
+
+    @Test
+    fun `tells the scheduler it is leaving before it unwinds`() = runTest {
+        // Given.
+        givenActivity(flowOf(progress(completedUsers = 2), ContentIndexingActivity.Stopped))
+
+        // When
+        worker().doWork()
+
+        // Then
+        verify { workScheduler.markWorkerExiting() }
     }
 
     @Test
@@ -219,7 +508,7 @@ internal class ContentIndexingWorkerTest {
 
         // When
         val work = async { worker().doWork() }
-        advanceTimeBy(ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds + 1).milliseconds)
 
         // Then
         assertEquals(ListenableWorker.Result.success(), work.await())
@@ -230,7 +519,7 @@ internal class ContentIndexingWorkerTest {
         // Given - a large first backfill can stay quiet for a while before the first event.
         givenActivity(
             flow {
-                delay(ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds * 3)
+                delay((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds * 3).milliseconds)
                 emit(progress())
                 emit(ContentIndexingActivity.Stopped)
             }
@@ -238,7 +527,7 @@ internal class ContentIndexingWorkerTest {
 
         // When
         val work = async { worker().doWork() }
-        advanceTimeBy(ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds * 3 + 1)
+        advanceTimeBy((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds * 3 + 1).milliseconds)
 
         // Then
         assertEquals(ListenableWorker.Result.success(), work.await())
@@ -253,14 +542,14 @@ internal class ContentIndexingWorkerTest {
         givenActivity(
             flow {
                 emit(progress())
-                delay(ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds * 3)
+                delay((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds * 3).milliseconds)
                 emit(ContentIndexingActivity.Stopped)
             }
         )
 
         // When
         val work = async { worker().doWork() }
-        advanceTimeBy(ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds * 3 + 1)
+        advanceTimeBy((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds * 3 + 1).milliseconds)
 
         // Then
         assertEquals(ListenableWorker.Result.success(), work.await())
@@ -274,12 +563,81 @@ internal class ContentIndexingWorkerTest {
 
         // When
         val work = async { worker().doWork() }
-        advanceTimeBy(ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds + 1).milliseconds)
 
-        // Then - still waiting, on the long timeout.
+        // Then - still waiting, past the short timeout but not for ever.
         assertTrue(work.isActive)
-        advanceTimeBy(ContentIndexingWorker.IdleTimeout.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.StartupTimeout.inWholeMilliseconds + 1).milliseconds)
         assertEquals(ListenableWorker.Result.success(), work.await())
+    }
+
+    @Test
+    fun `gives up when the orchestrator promises work and then publishes none`() = runTest {
+        // Given - and Rust does not report an account indexing either.
+        coEvery { startContentIndexing() } returns startSummary(pending = 1).right()
+        appInBackground.value = true
+        givenActivity(flow { awaitCancellation() })
+
+        // When
+        val work = async { worker().doWork() }
+        advanceTimeBy((ContentIndexingWorker.StartupTimeout.inWholeMilliseconds - 1).milliseconds)
+
+        // Then
+        assertTrue(work.isActive)
+        advanceTimeBy(2.milliseconds)
+        assertEquals(ListenableWorker.Result.success(), work.await())
+    }
+
+    @Test
+    fun `holds through a slow first batch while the orchestrator is indexing`() = runTest {
+        // Given - a worker that replaces another one often starts in the middle of a batch.
+        coEvery { startContentIndexing() } returns startSummary(pending = 1).right()
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+        givenActivity(flow { awaitCancellation() })
+
+        // When
+        val work = async { worker().doWork() }
+        advanceTimeBy(ContentIndexingWorker.StartupTimeout + 1.milliseconds)
+
+        // Then
+        assertTrue(work.isActive)
+        coVerify(exactly = 1) { getContentIndexingOrchestratorStatus() }
+        work.cancel()
+    }
+
+    @Test
+    fun `ends a silent start after the longest silence whatever the orchestrator reports`() = runTest {
+        // Given
+        appInBackground.value = true
+        coEvery { startContentIndexing() } returns startSummary(pending = 1).right()
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+        givenActivity(flow { awaitCancellation() })
+        val work = async { worker().doWork() }
+
+        // When
+        advanceTimeBy(ContentIndexingWorker.MaxSilence - 1.milliseconds)
+        val isHoldingBeforeTheCap = work.isActive
+        advanceTimeBy(2.milliseconds)
+
+        // Then
+        assertTrue(isHoldingBeforeTheCap)
+        assertEquals(ListenableWorker.Result.success(), work.await())
+    }
+
+    @Test
+    fun `does not ask the orchestrator when there was nothing to index`() = runTest {
+        // Given
+        coEvery { startContentIndexing() } returns startSummary(completed = 1).right()
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+        givenActivity(flow { awaitCancellation() })
+
+        // When
+        val work = async { worker().doWork() }
+        advanceTimeBy(ContentIndexingWorker.NoWorkTimeout + 1.milliseconds)
+
+        // Then
+        assertEquals(ListenableWorker.Result.success(), work.await())
+        coVerify(exactly = 0) { getContentIndexingOrchestratorStatus() }
     }
 
     private fun startSummary(pending: Long = 0, completed: Long = 0) = ContentIndexingStartSummary(
@@ -298,7 +656,7 @@ internal class ContentIndexingWorkerTest {
             flow {
                 emit(progress())
                 repeat(4) {
-                    delay(ContentIndexingWorker.IdleTimeout.inWholeMilliseconds / 2)
+                    delay((ContentIndexingWorker.IdleTimeout.inWholeMilliseconds / 2).milliseconds)
                     emit(progress())
                 }
                 emit(ContentIndexingActivity.Stopped)
@@ -310,6 +668,162 @@ internal class ContentIndexingWorkerTest {
 
         // Then
         assertEquals(ListenableWorker.Result.success(), result)
+    }
+
+    @Test
+    fun `holds through a silent batch while the orchestrator is still indexing`() = runTest {
+        // Given - Rust publishes progress only after a whole batch, and one batch can take minutes.
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+
+        // When
+        val work = startSilentAfterProgress()
+        advanceTimeBy(ContentIndexingWorker.IdleTimeout + 1.milliseconds)
+
+        // Then
+        assertTrue(work.isActive)
+        work.cancel()
+    }
+
+    @Test
+    fun `holds through a silent batch while the orchestrator is offline`() = runTest {
+        // Given - a batch in progress is local work and finishes without the network.
+        givenStatus(ContentIndexingOrchestratorStatus.Offline)
+
+        // When
+        val work = startSilentAfterProgress()
+        advanceTimeBy(ContentIndexingWorker.IdleTimeout + 1.milliseconds)
+
+        // Then
+        assertTrue(work.isActive)
+        work.cancel()
+    }
+
+    @Test
+    fun `releases after a silent batch when the orchestrator status cannot be read`() = runTest {
+        // Given
+        coEvery { getContentIndexingOrchestratorStatus() } returns DataError.Local.Unknown.left()
+
+        // When
+        val work = startSilentAfterProgress()
+        advanceTimeBy(ContentIndexingWorker.IdleTimeout + 1.milliseconds)
+
+        // Then
+        assertFalse(work.isActive)
+    }
+
+    @Test
+    fun `releases after a silent batch once the orchestrator is no longer indexing`() = runTest {
+        val notIndexing = listOf(
+            ContentIndexingOrchestratorStatus.Pending,
+            ContentIndexingOrchestratorStatus.Completed,
+            ContentIndexingOrchestratorStatus.Paused,
+            ContentIndexingOrchestratorStatus.Failed
+        )
+        notIndexing.forEach { status ->
+            // Given
+            givenStatus(status)
+
+            // When
+            val work = startSilentAfterProgress()
+            advanceTimeBy(ContentIndexingWorker.IdleTimeout + 1.milliseconds)
+
+            // Then
+            assertFalse(work.isActive, "still holding for $status")
+        }
+    }
+
+    @Test
+    fun `reads the orchestrator status rather than starting it again`() = runTest {
+        // Given - a start could restart an account that was stopped on purpose.
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+
+        // When
+        val work = startSilentAfterProgress()
+        advanceTimeBy(ContentIndexingWorker.IdleTimeout + 1.milliseconds)
+
+        // Then
+        coVerify(exactly = 1) { startContentIndexing() }
+        coVerify(exactly = 1) { getContentIndexingOrchestratorStatus() }
+        work.cancel()
+    }
+
+    @Test
+    fun `releases after the longest silence whatever the orchestrator reports`() = runTest {
+        // Given - an account can stay Ongoing without moving at all.
+        appInBackground.value = true
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+        val work = startSilentAfterProgress()
+
+        // When
+        advanceTimeBy(ContentIndexingWorker.MaxSilence - 1.milliseconds)
+        val isHoldingBeforeTheCap = work.isActive
+        advanceTimeBy(2.milliseconds)
+
+        // Then
+        assertTrue(isHoldingBeforeTheCap)
+        assertEquals(ListenableWorker.Result.success(), work.await())
+    }
+
+    @Test
+    fun `waits through a silent batch on screen without using up the longest silence`() = runTest {
+        // Given - no service is held, so there is no notification and no budget to protect.
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+        val work = startSilentAfterProgress()
+
+        // When
+        advanceTimeBy(ContentIndexingWorker.MaxSilence * 2)
+
+        // Then
+        assertTrue(work.isActive)
+        work.cancel()
+    }
+
+    @Test
+    fun `asks the orchestrator before giving up on a handover`() = runTest {
+        // Given - the next account's first batch can run longer than the handover wait.
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+        givenActivity(
+            flow {
+                emit(progress(completedUsers = 1, userCount = 2))
+                emit(ContentIndexingActivity.WaitingOnUsers)
+                awaitCancellation()
+            }
+        )
+
+        // When
+        val work = async { worker().doWork() }
+        advanceTimeBy(ContentIndexingWorker.HandoverTimeout + 1.milliseconds)
+
+        // Then
+        assertTrue(work.isActive)
+        coVerify(exactly = 1) { getContentIndexingOrchestratorStatus() }
+        work.cancel()
+    }
+
+    @Test
+    fun `progress starts the longest silence over`() = runTest {
+        // Given
+        appInBackground.value = true
+        givenStatus(ContentIndexingOrchestratorStatus.Ongoing)
+        val progressAgainAfter = 12.minutes
+        givenActivity(
+            flow {
+                emit(progress())
+                delay(progressAgainAfter)
+                emit(progress())
+                awaitCancellation()
+            }
+        )
+        val work = async { worker().doWork() }
+
+        // When
+        advanceTimeBy(ContentIndexingWorker.MaxSilence + 1.milliseconds)
+        val isHoldingPastTheFirstCap = work.isActive
+        advanceTimeBy(progressAgainAfter)
+
+        // Then
+        assertTrue(isHoldingPastTheFirstCap)
+        assertEquals(ListenableWorker.Result.success(), work.await())
     }
 
     @Test
@@ -451,10 +965,10 @@ internal class ContentIndexingWorkerTest {
 
         // When
         appInBackground.value = false
-        advanceTimeBy(ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1).milliseconds)
 
         // Then - it has a service to hand back, so it ends itself to do it.
-        verify(exactly = 1) { workScheduler.restart() }
+        coVerify(exactly = 1) { workScheduler.restart() }
         work.cancel()
     }
 
@@ -470,10 +984,10 @@ internal class ContentIndexingWorkerTest {
 
         // When
         appInBackground.value = false
-        advanceTimeBy(ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1).milliseconds)
 
         // Then - nothing was ever acquired, so there is nothing to give back either.
-        verify(exactly = 0) { workScheduler.restart() }
+        coVerify(exactly = 0) { workScheduler.restart() }
         work.cancel()
     }
 
@@ -485,7 +999,7 @@ internal class ContentIndexingWorkerTest {
         coEvery { startContentIndexing() } returns startSummary(completed = 1).right()
         givenActivity(
             flow {
-                delay(ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds / 2)
+                delay((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds / 2).milliseconds)
                 emit(progress())
                 awaitCancellation()
             }
@@ -493,7 +1007,7 @@ internal class ContentIndexingWorkerTest {
 
         // When
         val work = async { worker().doWork() }
-        advanceTimeBy(ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds / 2 + 1)
+        advanceTimeBy((ContentIndexingWorker.NoWorkTimeout.inWholeMilliseconds / 2 + 1).milliseconds)
 
         // Then - the account address is read, which only happens to build a notification.
         coVerify(atLeast = 1) { userSessionRepository.getAccount(FirstUser) }
@@ -510,29 +1024,99 @@ internal class ContentIndexingWorkerTest {
 
         // When
         appInBackground.value = false
-        advanceTimeBy(ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1).milliseconds)
 
         // Then - the only way to give the foreground service back is to end this worker.
-        verify(exactly = 1) { workScheduler.restart() }
+        coVerify(exactly = 1) { workScheduler.restart() }
         work.cancel()
     }
 
     @Test
-    fun `does not replace itself when the promotion was refused`() = runTest {
-        // Given - the platform turned the foreground service down, so there is none to hand back and
-        // replacing this worker would cost a background execution scope for nothing.
+    fun `replaces itself when the app comes back after a refused promotion`() = runTest {
+        // Given - the platform turned the foreground service down, and this worker never asks again.
         isPromotionGranted = false
         appInBackground.value = true
         givenActivity(flow { awaitCancellation() })
         val work = async { worker().doWork() }
-        advanceTimeBy(ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1).milliseconds)
 
         // When
         appInBackground.value = false
-        advanceTimeBy(ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1).milliseconds)
+
+        // Then - a replacement enqueued while the app is on screen can promote next time it leaves.
+        coVerify(exactly = 1) { workScheduler.restart() }
+        work.cancel()
+    }
+
+    @Test
+    fun `does not ask for the service again after a refusal`() = runTest {
+        // Given - after a refusal, WorkManager answers a retry as granted without starting anything.
+        isPromotionGranted = false
+        appInBackground.value = true
+        givenActivity(
+            flow {
+                repeat(3) { emit(progress()) }
+                awaitCancellation()
+            }
+        )
+
+        // When
+        val work = async { worker().doWork() }
+        runCurrent()
 
         // Then
-        verify(exactly = 0) { workScheduler.restart() }
+        verify(exactly = 1) { platformForegroundUpdater.setForegroundAsync(any(), any(), any()) }
+        work.cancel()
+    }
+
+    @Test
+    fun `ends an unprotected run once the grace period is over`() = runTest {
+        // Given - refused, but Rust keeps publishing progress, so the watchdog never fires.
+        isPromotionGranted = false
+        appInBackground.value = true
+        givenActivity(
+            flow {
+                while (true) {
+                    emit(progress())
+                    delay((ContentIndexingWorker.IdleTimeout.inWholeMilliseconds / 2).milliseconds)
+                }
+            }
+        )
+        val work = async { worker().doWork() }
+        runCurrent()
+
+        // When
+        advanceTimeBy((ContentIndexingWorker.UnpromotedGrace.inWholeMilliseconds - 1).milliseconds)
+        val isRunningBeforeGraceEnds = work.isActive
+        advanceTimeBy(2.milliseconds)
+
+        // Then
+        assertTrue(isRunningBeforeGraceEnds)
+        assertEquals(ListenableWorker.Result.success(), work.await())
+        coVerify { workScheduler.markWorkerExiting() }
+    }
+
+    @Test
+    fun `is not bounded by the grace period when the service is held`() = runTest {
+        // Given
+        appInBackground.value = true
+        givenActivity(
+            flow {
+                while (true) {
+                    emit(progress())
+                    delay((ContentIndexingWorker.IdleTimeout.inWholeMilliseconds / 2).milliseconds)
+                }
+            }
+        )
+        val work = async { worker().doWork() }
+        runCurrent()
+
+        // When
+        advanceTimeBy((ContentIndexingWorker.UnpromotedGrace.inWholeMilliseconds * 2).milliseconds)
+
+        // Then
+        assertTrue(work.isActive)
         work.cancel()
     }
 
@@ -543,10 +1127,10 @@ internal class ContentIndexingWorkerTest {
         val work = async { worker().doWork() }
 
         // When - a foreground app that stays foregrounded holds no service to give back.
-        advanceTimeBy(ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1).milliseconds)
 
         // Then
-        verify(exactly = 0) { workScheduler.restart() }
+        coVerify(exactly = 0) { workScheduler.restart() }
         work.cancel()
     }
 
@@ -560,17 +1144,31 @@ internal class ContentIndexingWorkerTest {
 
         // When
         appInBackground.value = false
-        advanceTimeBy(ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds / 2)
+        advanceTimeBy((ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds / 2).milliseconds)
         appInBackground.value = true
-        advanceTimeBy(ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1)
+        advanceTimeBy((ContentIndexingWorker.ForegroundReturnDebounce.inWholeMilliseconds + 1).milliseconds)
 
         // Then - replacing the worker here would drop and re-acquire the service for nothing.
-        verify(exactly = 0) { workScheduler.restart() }
+        coVerify(exactly = 0) { workScheduler.restart() }
         work.cancel()
     }
 
     private fun account(userId: UserId) = mockk<Account> {
         every { primaryAddress } returns "${userId.id}@proton.me"
+    }
+
+    private fun givenStatus(status: ContentIndexingOrchestratorStatus) {
+        coEvery { getContentIndexingOrchestratorStatus() } returns status.right()
+    }
+
+    private fun TestScope.startSilentAfterProgress() = run {
+        givenActivity(
+            flow {
+                emit(progress())
+                awaitCancellation()
+            }
+        )
+        async { worker().doWork() }.also { runCurrent() }
     }
 
     private fun givenActivity(flow: Flow<ContentIndexingActivity>) {

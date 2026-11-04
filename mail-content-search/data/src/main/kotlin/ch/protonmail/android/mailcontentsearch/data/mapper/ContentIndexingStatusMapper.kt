@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailcontentsearch.data.mapper
 
+import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingOrchestratorStatus
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingStartOutcome
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
+import ch.protonmail.android.mailcontentsearch.domain.model.FULLY_INDEXED_PERCENTAGE
 import uniffi.mail_uniffi.SyncDriverEvent
 import uniffi.mail_uniffi.SyncEvent
 import uniffi.mail_uniffi.SyncStartOutcome
@@ -31,34 +33,70 @@ internal fun SyncStartOutcome.toStartOutcome(): ContentIndexingStartOutcome = wh
     SyncStartOutcome.ONGOING -> ContentIndexingStartOutcome.AlreadyRunning
     SyncStartOutcome.DISABLED -> ContentIndexingStartOutcome.Refused
     SyncStartOutcome.COMPLETED -> ContentIndexingStartOutcome.AlreadyCompleted
+    SyncStartOutcome.PAUSED -> ContentIndexingStartOutcome.Paused
+}
+
+internal fun SyncStatus.toOrchestratorStatus(): ContentIndexingOrchestratorStatus = when (this) {
+    SyncStatus.PENDING -> ContentIndexingOrchestratorStatus.Pending
+    SyncStatus.ONGOING -> ContentIndexingOrchestratorStatus.Ongoing
+    SyncStatus.OFFLINE -> ContentIndexingOrchestratorStatus.Offline
+    SyncStatus.COMPLETED -> ContentIndexingOrchestratorStatus.Completed
+    SyncStatus.PAUSED -> ContentIndexingOrchestratorStatus.Paused
+    SyncStatus.FAILURE -> ContentIndexingOrchestratorStatus.Failed
 }
 
 internal fun SyncStatus.toIndexingState(progress: Double?): ContentIndexingState = when (this) {
     SyncStatus.PENDING -> ContentIndexingState.Idle
-    // No known progress yet (e.g. a fresh one-shot read before any live event arrived):
-    // Initializing rather than Running(0.0), so the UI shows a "preparing" placeholder
-    // instead of a misleading 0%.
-    SyncStatus.ONGOING -> progress?.let { ContentIndexingState.Running(it) } ?: ContentIndexingState.Initializing
+    // Rust reports Offline while it waits for the network to come back. The backfill resumes on
+    // its own, so the UI keeps showing it as running with its real percentage.
+    SyncStatus.ONGOING,
+    SyncStatus.OFFLINE -> progress.toRunningState()
     SyncStatus.COMPLETED -> ContentIndexingState.Completed
-    SyncStatus.FAILURE -> ContentIndexingState.Failed
+    SyncStatus.FAILURE -> ContentIndexingState.Failed(progress)
+    SyncStatus.PAUSED -> ContentIndexingState.Paused(progress)
+}
+
+/**
+ * What an account that Rust reports as syncing is really doing.
+ *
+ * `Ongoing` says only that a sync task is alive: Rust records it when the task starts and never
+ * revises it, so an account that has since finished its backfill and is only subscribed for new mail
+ * keeps reporting `Ongoing` for the life of the process. The progress counters can tell them apart.
+ *
+ * No progress at all means Rust has not sized the backfill yet: Initializing rather than
+ * Running(0.0), so the UI shows a "preparing" placeholder instead of a misleading 0%.
+ */
+private fun Double?.toRunningState(): ContentIndexingState = when {
+    this == null -> ContentIndexingState.Initializing
+    this >= FULLY_INDEXED_PERCENTAGE -> ContentIndexingState.Completed
+    else -> ContentIndexingState.Running(this)
 }
 
 /**
  * Returns null for events that don't map to a UI-visible state change (e.g. per-item
  * worker events), so callers can filter them out of the stream.
  */
-internal fun SyncEvent.toIndexingState(): ContentIndexingState? = when (this) {
+internal fun SyncEvent.toIndexingState(stalledPercentage: Double? = null): ContentIndexingState? = when (this) {
     is SyncEvent.Started -> ContentIndexingState.Initializing
 
     // Published once when the queue is parked; Rust re-emits the last Progress on resume, so this
     // state clears itself without any prompting from us.
-    is SyncEvent.WaitingForUnmeteredConnection -> ContentIndexingState.WaitingForUnmeteredConnection
+    // [stalledPercentage] has to be supplied: the event carries no progress of its own.
+    is SyncEvent.WaitingForUnmeteredConnection ->
+        ContentIndexingState.WaitingForUnmeteredConnection(stalledPercentage)
+    is SyncEvent.Progress -> this.v1.percentage.toRunningState()
 
-    is SyncEvent.Progress -> ContentIndexingState.Running(this.v1.percentage)
+    // Published when the user pauses the account. Rust keeps the pause across restarts, so this
+    // state only clears when something starts the account again.
+    // [stalledPercentage] has to be supplied here too: the event carries no progress of its own.
+    is SyncEvent.Paused -> ContentIndexingState.Paused(stalledPercentage)
     is SyncEvent.Completed -> ContentIndexingState.Completed
     is SyncEvent.Stopped -> ContentIndexingState.Cancelled
+
+    // Dropped so the UI keeps the last percentage. Rust resumes the backfill once the network is back.
+    is SyncEvent.Offline -> null
     is SyncEvent.Driver -> when (this.v1) {
-        is SyncDriverEvent.Failure -> ContentIndexingState.Failed
+        is SyncDriverEvent.Failure -> ContentIndexingState.Failed()
         is SyncDriverEvent.Completed -> null
     }
 
@@ -66,18 +104,23 @@ internal fun SyncEvent.toIndexingState(): ContentIndexingState? = when (this) {
     // failure and stops - so it cannot be dropped as a per-item event: the stream would then fall
     // silent on the last percentage and never report the account as failed.
     is SyncEvent.Worker -> when (this.v1) {
-        is SyncWorkerEvent.Failure -> ContentIndexingState.Failed
+        is SyncWorkerEvent.Failure -> ContentIndexingState.Failed()
         is SyncWorkerEvent.Processed -> null
     }
 }
 
 internal fun SyncEvent.isTerminal(): Boolean = when (this) {
     is SyncEvent.Completed,
-    is SyncEvent.Stopped -> true
+    is SyncEvent.Stopped,
+
+    // Rust stops the account's sync on a pause and remembers it, so no further event is coming
+    // until the account is started again.
+    is SyncEvent.Paused -> true
 
     is SyncEvent.Driver -> this.v1 is SyncDriverEvent.Failure
     is SyncEvent.Worker -> this.v1 is SyncWorkerEvent.Failure
     is SyncEvent.Started,
     is SyncEvent.WaitingForUnmeteredConnection,
+    is SyncEvent.Offline,
     is SyncEvent.Progress -> false
 }

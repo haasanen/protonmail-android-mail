@@ -34,9 +34,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -45,13 +47,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -81,8 +90,11 @@ import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
+import ch.protonmail.android.mailmessage.presentation.ui.WEB_VIEW_FIXED_MAX_HEIGHT
 import ch.protonmail.android.mailpadlocks.presentation.model.EncryptionInfoUiModel
 import ch.protonmail.android.mailtrackingprotection.presentation.model.BlockedElementsUiModel
+import kotlinx.coroutines.delay
+import timber.log.Timber
 
 @Composable
 @Suppress("LongParameterList")
@@ -101,12 +113,19 @@ fun ConversationDetailItem(
     // we need to know when the parent view has finished resizing and scrolling as it calculates and adjusts item
     // heights. We should only reveal the expanded card once we have finished loading the parent view and
     // have calculated all the heights
-    finishedResizing: Boolean
+    finishedResizing: Boolean,
+    // true while the list is scrolling, so a settled card can hold its height and ignore transient re-measurements
+    isListScrolling: Boolean = false
 ) {
     val avatarActions = ParticipantAvatar.Actions.Empty.copy(
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested
     )
     val cardShape = if (isLastMessage) ProtonTheme.shapes.large else ProtonTheme.shapes.conversation
+    val cardClipShape = if (isLastMessage) {
+        ProtonTheme.shapes.large
+    } else {
+        TopRoundedClipShape(ProtonTheme.shapes.conversation)
+    }
     // The bottom padding exists so the next card can overlap into it via the -32.dp stacking arrangement. The last
     // card has nothing stacked below it, so it only needs the header Row's own vertical padding - otherwise it shows
     // a large empty gap at the bottom.
@@ -114,7 +133,7 @@ fun ConversationDetailItem(
 
     when (uiModel) {
         is Collapsed -> {
-            ConversationDetailCard(shape = cardShape, modifier = modifier) {
+            ConversationDetailCard(shape = cardShape, clipShape = cardClipShape, modifier = modifier) {
                 ConversationDetailCollapsedMessageHeader(
                     uiModel = uiModel,
                     avatarActions = avatarActions,
@@ -131,7 +150,7 @@ fun ConversationDetailItem(
         }
 
         is Expanding -> {
-            ConversationDetailCard(shape = cardShape, modifier = modifier) {
+            ConversationDetailCard(shape = cardShape, clipShape = cardClipShape, modifier = modifier) {
                 ConversationDetailExpandingItem(
                     uiModel = uiModel,
                     avatarActions = avatarActions
@@ -140,23 +159,35 @@ fun ConversationDetailItem(
         }
 
         is Expanded -> {
-            ConversationDetailCard(shape = cardShape, modifier = modifier) {
+            ConversationDetailCard(shape = cardShape, clipShape = cardClipShape, modifier = modifier) {
                 ConversationDetailExpandedItem(
                     uiModel = uiModel,
                     actions = actions,
                     downloadingAttachmentId = downloadingAttachmentId,
                     onMessageBodyLoadFinished = onMessageBodyLoadFinished,
                     cachedWebContentHeight = previouslyLoadedHeight,
-                    finishedResizing = finishedResizing
+                    finishedResizing = finishedResizing,
+                    isListScrolling = isListScrolling
                 )
             }
         }
     }
 }
 
+/**
+ * Draws the card border and shadow with [shape], and clips the content with [clipShape].
+ *
+ * The two shapes differ on purpose. Compose hit-tests a clipped layer against its outline. A round rect with mixed
+ * radii (rounded top, square bottom) becomes a path outline. Path hit-testing drops taps on tall layers, so the
+ * bottom of a long message and its Reply/Forward buttons stop responding (google issue 429387112 / ET-4775).
+ *
+ * The shadow does not clip, so it can keep the path outline. The seam corners stay square and transparent, so
+ * stacked cards keep a continuous vertical border.
+ */
 @Composable
 private fun ConversationDetailCard(
     shape: Shape,
+    clipShape: Shape,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -168,12 +199,6 @@ private fun ConversationDetailCard(
                 color = ProtonTheme.colors.borderNorm,
                 shape = shape
             )
-            // The .shadow() modifier both draws the shadow and clips the card to `shape` (clip defaults to true for a
-            // non-zero elevation). Clipping here - rather than via the ElevatedCard `shape` param - is deliberate:
-            // a non-uniform shape (rounded top, square bottom) on the Card itself breaks touch handling on long
-            // messages (Reply/Reply all become unresponsive, google issue 429387112 / ET-4775). A modifier-level clip
-            // leaves the seam corners square AND transparent, so stacked cards keep a continuous vertical border
-            // (this replaces the old opaque-background Box hack that painted over the previous card's border).
             .shadow(
                 elevation = if (isSystemInDarkTheme()) {
                     ProtonDimens.ShadowElevation.Raised
@@ -181,9 +206,11 @@ private fun ConversationDetailCard(
                     ProtonDimens.ShadowElevation.Lifted
                 },
                 shape = shape,
+                clip = false,
                 ambientColor = ProtonTheme.colors.shadowSoft,
                 spotColor = ProtonTheme.colors.shadowSoft
-            ),
+            )
+            .clip(clipShape),
         shape = RectangleShape,
         colors = CardDefaults.elevatedCardColors(
             containerColor = ProtonTheme.colors.backgroundNorm
@@ -196,6 +223,33 @@ private fun ConversationDetailCard(
         ),
         content = content
     )
+}
+
+/**
+ * Clips to rounded top corners and square bottom corners, while keeping a simple round rect outline.
+ *
+ * The radius is the top-start radius of [shape], so the clip always matches the border and shadow.
+ * All four radii are equal, which keeps Compose on the round rect hit-test instead of the path hit-test.
+ * The bottom edge sits one radius below the layout bounds, so the bottom corners fall outside the card.
+ */
+private data class TopRoundedClipShape(private val shape: CornerBasedShape) : Shape {
+
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        val radius = shape.topStart.toPx(size, density)
+        return Outline.Rounded(
+            RoundRect(
+                left = 0f,
+                top = 0f,
+                right = size.width,
+                bottom = size.height + radius,
+                cornerRadius = CornerRadius(radius)
+            )
+        )
+    }
 }
 
 @Composable
@@ -227,14 +281,53 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     // we need to know when the parent view has finished resizing and scrolling as it calculates and adjusts item
     // heights. We should only reveal the expanded card once we have finished loading the parent view and
     // have calculated all the heights
-    finishedResizing: Boolean
+    finishedResizing: Boolean,
+    // true while the list is scrolling, so a settled card can hold its height and ignore transient re-measurements
+    isListScrolling: Boolean = false
 ) {
     val id = uiModel.messageId
-    // we are likely scrolling back to the view in the list
-    val viewPreviouslyLoaded = remember(id) { cachedWebContentHeight != null }
+    // we are likely scrolling back to the view in the list. A cached height of 0 is a pre-render placeholder,
+    // not a real height, so treat it as not-yet-loaded - otherwise the recycle hold pins the card to 0.
+    val viewPreviouslyLoaded = remember(id) { cachedWebContentHeight != null && cachedWebContentHeight > 0 }
     val isExpanding = rememberSaveable(id) { mutableStateOf(!viewPreviouslyLoaded) }
     val isWebViewLoading = remember(id) { mutableStateOf(true) }
     val columnHeight = rememberSaveable(id) { mutableIntStateOf(0) }
+    // The WebView's own last settled height (body only, no chrome). rememberSaveable so it survives the card
+    // being recycled while scrolling. Used to decide when a recycle-reload has grown back - comparing like
+    // for like against the WebView measurement, unlike columnHeight which also includes RSVP/banners/attachments.
+    val lastWebViewHeightPx = rememberSaveable(id) { mutableIntStateOf(0) }
+    // Bumped on every WebView height report (see onMessageBodyLoaded) so the safety timer below is load-aware:
+    // each report restarts the window, so it only fires after the reload has been quiet for the timeout - it
+    // never cuts off a reload that is still reporting new heights (slow device, large message, remote images).
+    val lastBodyReport = remember(id) { mutableIntStateOf(0) }
+    // The reloading body's latest reported height, and whether its load has fully finished. While a recycled card
+    // reloads it holds its previous height; these decide when that hold may end.
+    val latestBodyHeightPx = remember(id) { mutableIntStateOf(0) }
+    val isBodyLoadCompleted = remember(id) { mutableStateOf(false) }
+
+    // End of the recycle-reload hold when the body did not grow back to its previous height in onMessageBodyLoaded:
+    // only once the reload has fully finished and its height has settled (the content is genuinely shorter now), so
+    // a slow reload never releases the card while its body is still empty or partly laid out - that shrank the
+    // card, down to just its header, and grew it back seconds later, moving the content around it. A long safety
+    // window covers a reload that never reports finishing. Keyed on lastBodyReport so each height report restarts
+    // the wait, and gated on !isListScrolling so it never releases mid-scroll (the scroll-pin holds the card).
+    if (viewPreviouslyLoaded) {
+        LaunchedEffect(
+            id, isWebViewLoading.value, isBodyLoadCompleted.value, lastBodyReport.intValue, isListScrolling
+        ) {
+            if (!isWebViewLoading.value || isListScrolling) return@LaunchedEffect
+            val canRelease = isBodyLoadCompleted.value && latestBodyHeightPx.intValue > 0
+            delay(if (canRelease) RELOAD_FINISHED_SETTLE_MS else RELOAD_HOLD_SAFETY_TIMEOUT_MS)
+            if (!canRelease) {
+                Timber.d(
+                    "ReloadHold: safety timeout id=%s held=%d body=%d",
+                    id.id, lastWebViewHeightPx.intValue, latestBodyHeightPx.intValue
+                )
+            }
+            if (latestBodyHeightPx.intValue > 0) lastWebViewHeightPx.intValue = latestBodyHeightPx.intValue
+            isWebViewLoading.value = false
+        }
+    }
 
     // play reveal animation on first load, do not play if we are expanding content or if we are scrolling back to
     // the content.
@@ -311,7 +404,9 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                 .reveal(
                     id = id.id,
                     itemState = itemState,
-                    snap = viewPreviouslyLoaded
+                    snap = viewPreviouslyLoaded,
+                    isListScrolling = isListScrolling,
+                    isBodyLoadCompleted = isBodyLoadCompleted.value
                 )
                 .onSizeChanged {
                     columnHeight.intValue = it.height
@@ -352,6 +447,9 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             MessageBody(
                 messageBodyUiModel = uiModel.messageBodyUiModel,
                 downloadingAttachmentId = downloadingAttachmentId,
+                // The body's own last settled height survives recycling here, so a pooled WebView re-attached on
+                // scroll-back reports it immediately rather than a transient 0.
+                cachedWebViewHeightPx = lastWebViewHeightPx.intValue,
                 actions = MessageBody.Actions(
                     onMessageBodyLinkClicked = { actions.onMessageBodyLinkClicked(uiModel.messageId, it) },
                     onShowAllAttachments = { actions.onShowAllAttachmentsForMessage(uiModel.messageId) },
@@ -377,12 +475,31 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                     onLoadImagesAfterImageProxyFailure = actions.onLoadImagesAfterImageProxyFailure,
                     onViewEntireMessageClicked = actions.onViewEntireMessageClicked
                 ),
-                onMessageBodyLoaded = { id: MessageId, i: Int ->
+                onMessageBodyLoaded = { id: MessageId, measuredHeight: Int ->
                     // now that the webview is loaded send the more recent height so it can be cached
                     onMessageBodyLoadFinished(id, columnHeight.intValue)
                     isExpanding.value = false
-                    isWebViewLoading.value = false
-                }
+                    // Signal the safety timer that the reload is still reporting, so it resets its window.
+                    lastBodyReport.intValue++
+                    // On a recycle-reload of an already-seen card the WebView reports an intermediate
+                    // (pre-image) height before images settle. Keep holding the cached height until the
+                    // reload grows back, so the card does not briefly shrink then grow. Compare like for like -
+                    // the WebView measurement against its own previous height, not the full column height (which
+                    // also includes chrome, so it would never match for messages with RSVP/banners/attachments and
+                    // would always fall through to the timeout). A card that was not previously loaded releases
+                    // immediately; the safety timeout above covers genuine shrinks. Use !viewPreviouslyLoaded so
+                    // this agrees with the ReLoading gate and the safety-timer arm on the same "is loaded" check.
+                    // While holding, keep the previous height as the target: lowering it to an intermediate report
+                    // made the next intermediate report count as "grown back" and release the card too early.
+                    latestBodyHeightPx.intValue = measuredHeight
+                    val isHoldingReload = viewPreviouslyLoaded && isWebViewLoading.value
+                    val hasGrownBack = measuredHeight >= lastWebViewHeightPx.intValue
+                    if (!isHoldingReload || hasGrownBack) {
+                        if (measuredHeight > 0) lastWebViewHeightPx.intValue = measuredHeight
+                        isWebViewLoading.value = false
+                    }
+                },
+                onMessageBodyLoadCompleted = { isBodyLoadCompleted.value = true }
             )
         }
     }
@@ -522,7 +639,9 @@ fun Modifier.show(isVisible: Boolean, shouldAnimate: Boolean): Modifier {
 fun Modifier.reveal(
     id: String,
     itemState: ItemState,
-    snap: Boolean
+    snap: Boolean,
+    isListScrolling: Boolean,
+    isBodyLoadCompleted: Boolean
 ): Modifier {
     var lastHeightPx by rememberSaveable(id) { mutableIntStateOf(0) }
 
@@ -533,23 +652,35 @@ fun Modifier.reveal(
 
         ItemState.Expanding -> lastHeightPx
 
-        ItemState.Visible -> null
+        // Pin a settled card to its last stable height while the list is scrolling. A WebView can report a
+        // transient height during a scroll re-layout (it briefly measures at its max cap); pinning stops that
+        // from moving the layout. lastHeightPx is guarded below to exclude such unsettled measurements, so it
+        // is always a real, Constraints-representable height. Released once the scroll settles.
+        ItemState.Visible -> if (isListScrolling && lastHeightPx > 0) lastHeightPx else null
     }
 
-    // Cache height when actually visible
-    val cacheHeightModifier = if (itemState == ItemState.Visible) {
-        Modifier.onSizeChanged { size ->
-            if (size.height > 0) lastHeightPx = size.height
+    // Cache the height only when settled (visible, not scrolling, body fully loaded), and never store an unsettled
+    // measurement: a WebView momentarily reports its max cap, which is also larger than Compose can lay out - keep
+    // the last real height instead. This keeps every held value safe to feed into requiredHeight(). A body that is
+    // still loading is not settled either: a card scrolled away mid-load kept its partial height, was pinned to it
+    // on the next scroll and then jumped to its real height, thousands of px, when the scroll stopped.
+    // The modifier itself is kept stable (the settled/scrolling check is inside onSizeChanged, not around it) so
+    // the modifier chain does not change shape on every scroll edge, which would relayout the card each fling.
+    val cacheHeightModifier = Modifier.onSizeChanged { size ->
+        val isSettled = itemState == ItemState.Visible && isBodyLoadCompleted && !isListScrolling
+        if (isSettled && size.height in 1 until MAX_STABLE_CARD_HEIGHT_PX) {
+            lastHeightPx = size.height
         }
-    } else {
-        Modifier
     }
 
     val animationModifier = if (snap) Modifier else Modifier.animateContentSize()
 
-    val heightModifier = when (holdHeightPx) {
-        null -> Modifier
-        else -> Modifier.requiredHeight(holdHeightPx.pxToDp())
+    val heightModifier = when {
+        holdHeightPx == null -> Modifier
+        // Final safety net: never requiredHeight an oversized value - Constraints cannot represent it and it
+        // would crash. Any such value means "not settled", so let it lay out freely this frame.
+        holdHeightPx in 0 until MAX_STABLE_CARD_HEIGHT_PX -> Modifier.requiredHeight(holdHeightPx.pxToDp())
+        else -> Modifier
     }
 
     return this
@@ -558,6 +689,24 @@ fun Modifier.reveal(
         .then(heightModifier)
         .then(cacheHeightModifier)
 }
+
+// Upper bound for a card height that may be pinned via requiredHeight. This is primarily a crash guard:
+// requiredHeight cannot represent a value at or near the Compose Constraints limit
+// (262_143 = WEB_VIEW_FIXED_MAX_HEIGHT), so any height in that band must lay out freely instead of being pinned.
+// It doubles as an at-cap transient filter only on the unrestricted WebView path, whose applied cap IS that same
+// limit; on the height-restricted path the applied cap is far lower (WEB_VIEW_SAFE_PHYSICAL_MAX_HEIGHT_PX), so
+// those measurements are real and pass through. The margin is derived from the cap so the two can never silently
+// drift apart.
+private const val NEAR_CAP_MARGIN_PX = 62_143
+private const val MAX_STABLE_CARD_HEIGHT_PX = WEB_VIEW_FIXED_MAX_HEIGHT - NEAR_CAP_MARGIN_PX
+
+// How long a recycled card holds its cached height while the WebView reloads before releasing regardless, so it
+// can never stick at a stale height if the reloaded content genuinely settles shorter.
+// After a reloading body has fully finished, how long its height must stay unchanged before the hold ends.
+private const val RELOAD_FINISHED_SETTLE_MS = 500L
+
+// Last-resort end of the hold for a reload that never reports finishing, so a card can never stick.
+private const val RELOAD_HOLD_SAFETY_TIMEOUT_MS = 10_000L
 
 sealed class ItemState {
     object Loading : ItemState()

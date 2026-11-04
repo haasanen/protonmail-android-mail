@@ -26,24 +26,50 @@ sealed interface ContentIndexingState {
      * Rust has parked the account's queue because the connection is metered and the user has not
      * allowed indexing over mobile data. It resumes on its own once an unmetered connection is
      * back, so this is a pause rather than an end.
+     *
+     * [percentage] is how far the backfill had got when it parked. The event itself carries no
+     * progress, so it is read separately. Null when Rust has not sized the backfill yet.
      */
-    data object WaitingForUnmeteredConnection : ContentIndexingState
+    data class WaitingForUnmeteredConnection(val percentage: Double? = null) : ContentIndexingState
     data class Running(val percentage: Double) : ContentIndexingState
+
+    /**
+     * The user has paused the account's backfill. Rust records the choice, so it outlives the
+     * process and only a start clears it.
+     *
+     * [percentage] is how far the backfill had got when it stopped. The event carries no progress,
+     * so it is read separately. Null when Rust has not sized the backfill yet.
+     */
+    data class Paused(val percentage: Double? = null) : ContentIndexingState
     data object Completed : ContentIndexingState
     data object Cancelled : ContentIndexingState
-    data object Failed : ContentIndexingState
+
+    /**
+     * Rust has stopped the account's backfill on an error. It records the failure, so it outlives
+     * the process and only a retry clears it.
+     *
+     * [percentageBackfilled] is how far the backfill had got when it failed. Only the status read carries it.
+     * Null for a failure event, or when Rust has not sized the backfill yet.
+     */
+    data class Failed(val percentageBackfilled: Double? = null) : ContentIndexingState
 }
 
 /**
  * How far this account's backfill has got, or null when there is no determinate progress to show.
  *
- * Rust keeps the account in [ContentIndexingState.Running] once the backfill has caught up - it
- * stays subscribed for new mail - and it does not reliably publish
- * [ContentIndexingState.Completed], so a percentage at or above 100 is read as done rather than
- * reported as "100%" forever. Shared by every surface that shows the account's progress, so the
- * settings screen and the indexing notification cannot disagree about it.
+ * Shared by every surface that shows the account's progress, so the settings screen and the
+ * indexing notification cannot disagree about it. A percentage at or above
+ * [FULLY_INDEXED_PERCENTAGE] is not expected here - the state is mapped to
+ * [ContentIndexingState.Completed] before it gets this far - but it is still read as done rather
+ * than reported as "100%" forever.
  */
 val ContentIndexingState.backfillPercentage: Double?
-    get() = (this as? ContentIndexingState.Running)?.percentage?.takeIf { it < FULLY_INDEXED_PERCENTAGE }
+    get() = when (this) {
+        is ContentIndexingState.Running -> percentage
+        is ContentIndexingState.WaitingForUnmeteredConnection -> percentage
+        is ContentIndexingState.Paused -> percentage
+        else -> null
+    }?.takeIf { it < FULLY_INDEXED_PERCENTAGE }
 
-private const val FULLY_INDEXED_PERCENTAGE = 100.0
+/** The point at which an account's backfill has nothing left to do. */
+const val FULLY_INDEXED_PERCENTAGE = 100.0

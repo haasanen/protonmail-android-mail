@@ -55,6 +55,7 @@ object SettingsScreenPreviewData {
         onSignatureClicked = {},
         onContentSearchSettingsClick = {},
         onPlusToUnlimitedUpsellClick = {},
-        onBackgroundSyncIntervalSelected = {}
+        onBackgroundSyncIntervalSelected = {},
+        onMonthlyToYearlyUpsellClick = {}
     )
 }

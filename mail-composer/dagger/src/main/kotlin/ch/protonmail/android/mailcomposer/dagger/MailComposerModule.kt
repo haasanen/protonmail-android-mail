@@ -29,6 +29,7 @@ import ch.protonmail.android.composer.data.local.RustSendingStatusDataSourceImpl
 import ch.protonmail.android.composer.data.repository.ActiveComposerInMemoryRepository
 import ch.protonmail.android.composer.data.repository.AttachmentRepositoryImpl
 import ch.protonmail.android.composer.data.repository.CameraTempImageFileRepository
+import ch.protonmail.android.composer.data.repository.PastedImageRepositoryImpl
 import ch.protonmail.android.composer.data.repository.ContactsPermissionRepositoryImpl
 import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepositoryImpl
@@ -39,6 +40,7 @@ import ch.protonmail.android.composer.data.usecase.RustSanitizePastedContent
 import ch.protonmail.android.mailcomposer.domain.repository.ActiveComposerRepository
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
+import ch.protonmail.android.mailcomposer.domain.repository.PastedImageRepository
 import ch.protonmail.android.mailcomposer.domain.repository.ComposerCspRepository
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
@@ -82,10 +84,6 @@ abstract class MailComposerModule {
     ): MessageExpirationTimeRepository
 
     @Binds
-    @Reusable
-    abstract fun bindsCameraTempImageRepository(impl: CameraTempImageFileRepository): CameraTempImageRepository
-
-    @Binds
     @ViewModelScoped
     abstract fun bindsRustAttachmentDataSource(impl: RustAttachmentDataSourceImpl): RustAttachmentDataSource
 
@@ -123,5 +121,13 @@ abstract class SendingStatusModule {
     @Binds
     @Singleton
     abstract fun bindsActiveComposerRepository(impl: ActiveComposerInMemoryRepository): ActiveComposerRepository
+
+    @Binds
+    @Reusable
+    abstract fun bindsCameraTempImageRepository(impl: CameraTempImageFileRepository): CameraTempImageRepository
+
+    @Binds
+    @Reusable
+    abstract fun bindsPastedImageRepository(impl: PastedImageRepositoryImpl): PastedImageRepository
 
 }

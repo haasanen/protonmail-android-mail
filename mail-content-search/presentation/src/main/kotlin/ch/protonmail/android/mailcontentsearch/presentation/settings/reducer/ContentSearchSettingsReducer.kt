@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcontentsearch.presentation.R
 import ch.protonmail.android.mailcontentsearch.presentation.settings.ContentSearchSettingsEvent
 import ch.protonmail.android.mailcontentsearch.presentation.settings.ContentSearchSettingsOperation
 import ch.protonmail.android.mailcontentsearch.presentation.settings.ContentSearchSettingsState
+import ch.protonmail.android.mailcontentsearch.presentation.settings.model.IndexSizeUiModel
 import javax.inject.Inject
 
 class ContentSearchSettingsReducer @Inject constructor() {
@@ -47,54 +48,69 @@ class ContentSearchSettingsReducer @Inject constructor() {
             else -> this
         }
 
-        is ContentSearchSettingsState.Data -> when (event) {
-            // Only the toggle. The indexing fields belong to IndexingProgress, which reports them
-            // for a disabled account too, and clearing them here as well wiped the failure the
-            // screen had just read: the enabled observer replays its current value on open.
-            is ContentSearchSettingsEvent.Data.ContentSearchToggled -> copy(
-                isContentSearchEnabled = event.newValue
-            )
-            is ContentSearchSettingsEvent.Data.AllowMobileDataToggled -> copy(
-                isAllowMobileDataEnabled = event.newValue
-            )
-            is ContentSearchSettingsEvent.Data.LocalSearchDataCleared -> copy(
-                isContentSearchEnabled = false,
-                syncPercentage = null,
-                isIndexingActive = false,
-                isWaitingForUnmeteredConnection = false,
-                isIndexingFailed = false
-            )
-            // Supersedes an in-flight retry: Rust reporting where the account stands is a better
-            // answer than the one the button is still waiting for.
-            is ContentSearchSettingsEvent.Data.IndexingProgress -> copy(
-                syncPercentage = event.percentage,
-                isIndexingActive = event.isActive,
-                isWaitingForUnmeteredConnection = event.isWaitingForUnmeteredConnection,
-                isIndexingFailed = event.isFailed,
-                isRetryingIndexing = false
-            )
-            is ContentSearchSettingsEvent.Data.IndexingRetryStarted -> copy(isRetryingIndexing = true)
+        is ContentSearchSettingsState.Data -> toNewStateFromDataOperation(event)
 
-            is ContentSearchSettingsEvent.Data.IndexingRetryAccepted -> copy(
-                isRetryingIndexing = false,
-                isIndexingFailed = false,
-                isIndexingActive = true
-            )
-            is ContentSearchSettingsEvent.Error.UpdateError -> copy(
-                isRetryingIndexing = false,
-                updateErrorEffect = Effect.of(
-                    TextUiModel.TextRes(R.string.mail_settings_content_search_update_error)
-                )
-            )
-            is ContentSearchSettingsEvent.Error.IndexingRetryFailed -> copy(
-                isRetryingIndexing = false,
-                updateErrorEffect = Effect.of(
-                    TextUiModel.TextRes(R.string.mail_settings_content_search_retry_error)
-                )
-            )
-            else -> this
-        }
+        else -> this
+    }
 
+    private fun ContentSearchSettingsState.Data.toNewStateFromDataOperation(
+        event: ContentSearchSettingsOperation
+    ): ContentSearchSettingsState = when (event) {
+        // Only the toggle. The indexing fields belong to IndexingProgress, which reports them
+        // for a disabled account too, and clearing them here as well wiped the failure the
+        // screen had just read: the enabled observer replays its current value on open.
+        is ContentSearchSettingsEvent.Data.ContentSearchToggled -> copy(
+            isContentSearchEnabled = event.newValue,
+            // Nothing is paused for an account that is off, and turning it back on starts it again.
+            isIndexingPaused = false
+        )
+        is ContentSearchSettingsEvent.Data.AllowMobileDataToggled -> copy(
+            isAllowMobileDataEnabled = event.newValue
+        )
+        is ContentSearchSettingsEvent.Data.LocalSearchDataCleared -> copy(
+            isContentSearchEnabled = false,
+            syncPercentage = null,
+            isIndexingActive = false,
+            isIndexingCompleted = false,
+            isIndexingPaused = false,
+            isWaitingForUnmeteredConnection = false,
+            isIndexingFailed = false,
+            indexSize = IndexSizeUiModel.Loading
+        )
+        // Supersedes an in-flight retry: Rust reporting where the account stands is a better
+        // answer than the one the button is still waiting for.
+        is ContentSearchSettingsEvent.Data.IndexingProgress -> copy(
+            syncPercentage = event.percentage,
+            isIndexingActive = event.isActive,
+            isIndexingCompleted = event.isCompleted,
+            isWaitingForUnmeteredConnection = event.isWaitingForUnmeteredConnection,
+            isIndexingPaused = event.isPaused,
+            isIndexingFailed = event.isFailed,
+            isRetryingIndexing = false
+        )
+        is ContentSearchSettingsEvent.Data.IndexSizeLoaded -> copy(
+            indexSize = event.bytes?.let(IndexSizeUiModel::Loaded) ?: IndexSizeUiModel.Unavailable
+        )
+        is ContentSearchSettingsEvent.Data.IndexingRetryStarted -> copy(isRetryingIndexing = true)
+
+        is ContentSearchSettingsEvent.Data.IndexingRetryAccepted -> copy(
+            isRetryingIndexing = false,
+            isIndexingFailed = false,
+            isIndexingPaused = false,
+            isIndexingActive = true
+        )
+        is ContentSearchSettingsEvent.Error.UpdateError -> copy(
+            isRetryingIndexing = false,
+            updateErrorEffect = Effect.of(
+                TextUiModel.TextRes(R.string.mail_settings_content_search_update_error)
+            )
+        )
+        is ContentSearchSettingsEvent.Error.IndexingRetryFailed -> copy(
+            isRetryingIndexing = false,
+            updateErrorEffect = Effect.of(
+                TextUiModel.TextRes(R.string.mail_settings_content_search_retry_error)
+            )
+        )
         else -> this
     }
 }

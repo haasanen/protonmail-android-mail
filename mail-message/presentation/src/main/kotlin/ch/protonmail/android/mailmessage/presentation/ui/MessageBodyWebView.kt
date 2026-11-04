@@ -21,8 +21,11 @@ package ch.protonmail.android.mailmessage.presentation.ui
 import java.io.ByteArrayInputStream
 import android.content.Context
 import android.net.Uri
+import android.os.SystemClock
 import android.view.MotionEvent
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
@@ -53,6 +56,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -108,6 +112,13 @@ fun MessageBodyWebView(
     onBuildWebView: (Context) -> ZoomableWebView,
     shouldAllowViewingEntireMessage: Boolean = true,
     fillContainerHeight: Boolean = false,
+    // When non-null, the WebView is owned by this pool: it is kept alive across recycling instead of being
+    // destroyed on dispose, and its content is not reloaded when it is re-attached with the same content.
+    pool: MessageBodyWebViewPool? = null,
+    // The body's last settled height in px, if known. Seeds the measured-height state so a pooled WebView
+    // re-attached on scroll-back reports its real height immediately (this composable is recreated on
+    // re-attach, resetting the state) instead of a transient 0 that would stall the instant reveal.
+    cachedWebViewHeightPx: Int = 0,
     onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
     viewModel: MessageBodyWebViewViewModel = hiltViewModel()
 ) {
@@ -122,7 +133,7 @@ fun MessageBodyWebView(
     // During loading phase, WebView size can change multiple times. It may both
     // increase and decrease in size. We will track measured heights and loading state to decide
     // on the final height when it's loaded.
-    var lastMeasuredWebViewHeight by remember(messageId) { mutableIntStateOf(0) }
+    var lastMeasuredWebViewHeight by remember(messageId) { mutableIntStateOf(cachedWebViewHeightPx) }
 
     val actions = webViewActions.copy(
         onMessageBodyLinkLongClicked = {
@@ -152,6 +163,8 @@ fun MessageBodyWebView(
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
     val contentLoaded = remember(messageId) { mutableStateOf(false) }
+    // When the current load started, to log loads that take long to finish, images included.
+    val loadStartMs = remember(messageId) { mutableLongStateOf(0L) }
 
     val client = remember(messageId, messageBodyUiModel.messageBody) {
         object : WebViewClient() {
@@ -192,19 +205,54 @@ fun MessageBodyWebView(
                 }
             }
 
-            // Kept only for logging/debugging.
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                Timber.d("message-webview: onPageFinished")
-            }
-
             // Using onPageCommitVisible improves perceived loading time since
             // onPageFinished fires much later (after most resources load), delaying
             // when the WebView can be shown.
             override fun onPageCommitVisible(view: WebView?, url: String?) {
                 super.onPageCommitVisible(view, url)
-                Timber.d("message-webview: onPageCommitVisible")
                 contentLoaded.value = true
+            }
+
+            // The full load (including remote images) has finished, so the pooled entry is no longer in
+            // flight and may be evicted. Clearing here - not in onPageCommitVisible, which fires before
+            // images - keeps a still-loading body from being destroyed mid-load.
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                pool?.markLoading(messageId.id, false)
+                // onPageCommitVisible is not guaranteed: a page that loads very fast (images already cached) while
+                // the card still holds the body at no height can finish without it, leaving the body hidden.
+                contentLoaded.value = true
+                // A finish below full progress is the late callback of a load that a reload interrupted.
+                if (view?.progress == FULL_PROGRESS) {
+                    logSlowLoad(messageId, loadStartMs.longValue)
+                    loadStartMs.longValue = 0L
+                    actions.onMessageBodyLoadCompleted(messageId)
+                }
+            }
+
+            // The renderer process - shared by every WebView in the app - has died, OOM-killed to reclaim
+            // memory (the usual cause) or crashed. Every pooled view is backed by it and is now defunct, and an
+            // OS kill is itself a strong memory-pressure signal - stronger than what onTrimMemory still gives us
+            // on Android 14+. So treat it like severe pressure: release the whole cache, not just this view.
+            // Returning true keeps the host app process alive - the default, false, tears the app down with the
+            // renderer, which pooling makes likelier by holding more WebViews on the one renderer.
+            override fun onRenderProcessGone(view: WebView?, detail: RenderProcessGoneDetail?): Boolean {
+                // Telemetry: forwarded to Sentry by SentryTimberIntegration (min event level = WARNING). Logged
+                // before the purge so poolSize reflects how many WebViews were alive when the renderer died;
+                // crashed=false means an OS/OOM kill. Fires once per affected view - Sentry groups by template.
+                Timber.w(
+                    "WebView renderer gone: crashed=%s priorityAtExit=%s pooled=%s pool=%s",
+                    detail?.didCrash(), detail?.rendererPriorityAtExit(), pool != null, pool?.snapshot()
+                )
+                view?.let { dead ->
+                    if (pool != null) {
+                        pool.onRenderProcessGone(dead)
+                    } else {
+                        (dead.parent as? ViewGroup)?.removeView(dead)
+                        dead.destroy()
+                    }
+                }
+                return true
             }
         }
     }
@@ -212,17 +260,38 @@ fun MessageBodyWebView(
     val webView = remember(messageId) { onBuildWebView(context) }
 
     ConsumableLaunchedEffect(messageBodyUiModel.reloadMessageEffect) {
+        pool?.markLoading(messageId.id, true)
+        loadStartMs.longValue = SystemClock.uptimeMillis()
         webView.reload()
     }
 
     val shouldRestrictHeight = messageBodyUiModel.shouldRestrictWebViewHeight && shouldAllowViewingEntireMessage
+
+    // The exact content the WebView should hold. If a pooled WebView already holds this content, re-attaching
+    // it must not reload - that reload is the blank-and-repaint we are removing.
+    val loadedContent = remember(messageBodyUiModel.messageBody, messageBodyUiModel.viewModePreference) {
+        MessageBodyWebViewPool.LoadedContent(
+            messageBodyUiModel.messageBody,
+            messageBodyUiModel.viewModePreference
+        )
+    }
 
     LaunchedEffect(
         messageId,
         messageBodyUiModel.messageBody,
         messageBodyUiModel.viewModePreference
     ) {
-        Timber.d("message-webview: setting initial value on webview ${webView.hashCode()} ($messageId)")
+        if (pool != null && pool.loadedContent(messageId.id) == loadedContent) {
+            // Re-attached from the pool with identical content: skip the load. Mark it ready so the height
+            // and reveal paths proceed without waiting for an onPageCommitVisible that will never come.
+            Timber.d("WebViewPool: reattach key=%s (skip reload)", messageId.id)
+            contentLoaded.value = true
+            onMessageBodyLoaded(messageId, lastMeasuredWebViewHeight)
+            return@LaunchedEffect
+        }
+
+        pool?.markLoading(messageId.id, true)
+        loadStartMs.longValue = SystemClock.uptimeMillis()
         when (val body = messageBodyUiModel.messageBody) {
             is MessageBodyContent.Text -> {
                 webView.loadDataWithBaseURL(null, body.value, MimeType.Html.value, "utf-8", null)
@@ -231,6 +300,7 @@ fun MessageBodyWebView(
                 webView.loadUrl(localBodyUrl(messageId))
             }
         }
+        pool?.markLoaded(messageId.id, loadedContent)
     }
 
     LaunchedEffect(messageId) {
@@ -252,7 +322,13 @@ fun MessageBodyWebView(
 
     DisposableEffect(messageId) {
         onDispose {
-            webViewCleanup(webView, messageId)
+            if (pool != null) {
+                // Keep the rendered WebView alive in the pool; only detach it from this FrameLayout so it can
+                // be re-parented on scroll-back. The pool destroys it on eviction or when the screen leaves.
+                (webView.parent as? ViewGroup)?.removeView(webView)
+            } else {
+                webViewCleanup(webView, messageId)
+            }
         }
     }
 
@@ -268,6 +344,10 @@ fun MessageBodyWebView(
         Box(modifier = if (fillContainerHeight) Modifier.fillMaxSize() else Modifier) {
             AndroidView(
                 factory = { context ->
+                    val staleParent = webView.parent as? ViewGroup
+                    // Defensive: a pooled view may still be attached to a FrameLayout whose dispose hasn't run
+                    // yet; addView would throw "already has a parent". Detach first so re-parenting is safe.
+                    staleParent?.removeView(webView)
                     FrameLayout(context).apply {
                         addView(
                             webView,
@@ -444,10 +524,15 @@ private fun configureOnTouchListener(webView: ZoomableWebView) {
     }
 }
 
+// WebView teardown following Google's "Manage and diagnose WebView memory": detach from the parent so the
+// view tree can't pin the host Activity, stop in-flight loading, blank the current page and clear its history
+// to drop the live DOM, then destroy.
 private fun webViewCleanup(webView: WebView, messageId: MessageId) {
     runCatching {
+        (webView.parent as? ViewGroup)?.removeView(webView)
         webView.stopLoading()
-        webView.loadUrl("about:blank")
+        // No loadUrl("about:blank") before destroy: that async navigation's loadingStateChanged callback lands
+        // on the already-destroyed view. destroy() frees it; blanking is for a WebView being kept alive.
         webView.destroy()
     }.onFailure { e ->
         Timber.e(e, "Failed to clean up webView: $messageId")
@@ -527,7 +612,10 @@ object MessageBodyWebView {
         val loadImage: (messageId: MessageId, url: String) -> MessageBodyImage?,
         val onPrint: (MessageId) -> Unit,
         val onDownloadImage: (messageId: MessageId, imageUrl: String) -> Unit,
-        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit
+        val onViewEntireMessageClicked: (MessageId, Boolean, Boolean, ViewModePreference) -> Unit,
+        // Called once the body's load has fully finished (images included), so a card holding its previous height
+        // while the body reloads knows the reload is done even if the new height is smaller.
+        val onMessageBodyLoadCompleted: (MessageId) -> Unit = {}
     )
 }
 
@@ -537,11 +625,22 @@ object MessageBodyWebViewTestTags {
 }
 
 private const val WEB_PAGE_CONTENT_LOAD_TIMEOUT = 250L
+private const val FULL_PROGRESS = 100
+
+// A body load (images included) slower than this is logged.
+private const val SLOW_LOAD_THRESHOLD_MS = 3_000L
+
+private fun logSlowLoad(messageId: MessageId, startMs: Long) {
+    if (startMs == 0L) return
+    val durationMs = SystemClock.uptimeMillis() - startMs
+    if (durationMs > SLOW_LOAD_THRESHOLD_MS) Timber.d("BodyLoad: slow message=%s ms=%d", messageId.id, durationMs)
+}
 
 // Max constraint for WebView height. If the height is greater
 // than this value, we will not fix the height of the WebView or it will crash.
 // (Limit set in androidx.compose.ui.unit.Constraints)
-private const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
+// Public so the conversation-detail scroll-pin can derive its own at-cap guard from the same value.
+const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
 
 // Safe upper bound for the WebView's physical measured height. Leaves ~2400px of headroom below
 // the 16383 GL_MAX_TEXTURE_SIZE reported by most Adreno/Mali GPUs, so the Chromium compositor

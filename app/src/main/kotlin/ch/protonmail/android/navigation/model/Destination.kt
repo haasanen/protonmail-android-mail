@@ -31,6 +31,7 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactD
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.CONTACT_GROUP_DETAILS_ID_KEY
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
 import ch.protonmail.android.maildetail.domain.model.ConversationOpenMode
+import ch.protonmail.android.maildetail.presentation.model.ConversationPagerSource
 import ch.protonmail.android.maildetail.presentation.model.RawMessageDataType
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationDetailEntryPointNameKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
@@ -43,6 +44,7 @@ import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen.INPUT_PARAMS_KEY
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen.MESSAGE_ID_KEY
 import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen.LocationViewModeIsConversation
+import ch.protonmail.android.maildetail.presentation.ui.PagedConversationDetailScreen.PagerSourceKey
 import ch.protonmail.android.maildetail.presentation.ui.RawMessageDataScreen
 import ch.protonmail.android.maildetail.presentation.ui.RawMessageDataScreen.RAW_DATA_TYPE_KEY
 import ch.protonmail.android.maillabel.domain.model.CategoryLabelId
@@ -58,10 +60,12 @@ import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import ch.protonmail.android.mailsettings.presentation.settings.toolbar.ui.CustomizeToolbarEditScreen
+import ch.protonmail.android.mailtelemetry.domain.model.UpsellEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen.UpsellingEntryPointKey
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen.UpsellingTypeKey
+import ch.protonmail.android.mailupselling.presentation.viewmodel.MonthlyToYearlyUpsellSheetViewModel.Companion.EntryPointKey
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.serialize
 
@@ -77,7 +81,8 @@ sealed class Destination(val route: String) {
                 "/${ConversationDetailEntryPointNameKey.wrap()}/${LocationViewModeIsConversation.wrap()}" +
                 "/${ConversationOpenModeKey.wrap()}" +
                 "/${OpenedFromCategoryKey.wrap()}" +
-                "?$SearchQueryKey={$SearchQueryKey}"
+                "?$SearchQueryKey={$SearchQueryKey}" +
+                "&$PagerSourceKey={$PagerSourceKey}"
         ) {
 
             operator fun invoke(
@@ -88,7 +93,8 @@ sealed class Destination(val route: String) {
                 locationViewModeIsConversation: Boolean,
                 conversationOpenMode: ConversationOpenMode = ConversationOpenMode.UseUserPreference,
                 searchQuery: String = "",
-                openedFromCategory: CategoryLabelId? = null
+                openedFromCategory: CategoryLabelId? = null,
+                pagerSource: ConversationPagerSource = ConversationPagerSource.Mailbox
             ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
                 .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
                 .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
@@ -97,6 +103,7 @@ sealed class Destination(val route: String) {
                 .replace(LocationViewModeIsConversation.wrap(), locationViewModeIsConversation.toString())
                 .replace(OpenedFromCategoryKey.wrap(), openedFromCategory?.id ?: "null")
                 .replace("{$SearchQueryKey}", Uri.encode(searchQuery))
+                .replace("{$PagerSourceKey}", pagerSource.name)
         }
 
         data object EntireMessageBody : Destination(
@@ -208,6 +215,8 @@ sealed class Destination(val route: String) {
         object ApplicationDebug : Destination("settings/appDebug")
         object ApplicationDebugDangerZone : Destination("settings/appDebug/dangerZone")
         object ApplicationDebugDatabaseExport : Destination("settings/appDebug/databaseExport")
+        object ApplicationDebugTelemetry : Destination("settings/appDebug/telemetry")
+        object ApplicationDebugAppState : Destination("settings/appDebug/appState")
         object ApplicationLogs : Destination("settings/applicationLogs")
         object ApplicationLogsView : Destination("settings/applicationLogs/view/${ApplicationLogsViewMode.wrap()}") {
 
@@ -252,6 +261,8 @@ sealed class Destination(val route: String) {
         }
 
         object FeatureSpotlight : Destination("featureSpotlight")
+
+        object ContentSearchSetUp : Destination("contentSearch/setUp")
     }
 
     object Dialog {
@@ -263,6 +274,11 @@ sealed class Destination(val route: String) {
         object RemoveAccount : Destination("remove/${USER_ID_KEY.wrap()}") {
 
             operator fun invoke(userId: UserId?) = route.replace(USER_ID_KEY.wrap(), userId?.id ?: " ")
+        }
+
+        object MonthlyToYearlyUpsell : Destination("upselling/monthlyToYearly/${EntryPointKey.wrap()}") {
+
+            operator fun invoke(entryPoint: UpsellEntryPoint) = route.replace(EntryPointKey.wrap(), entryPoint.name)
         }
     }
 }

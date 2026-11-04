@@ -222,6 +222,8 @@ fun ProtonSecondaryButton(
     loading: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: ButtonColors = ButtonDefaults.protonSecondaryButtonColors(loading),
+    shape: Shape = ProtonTheme.shapes.medium,
+    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
     content: @Composable () -> Unit
 ) {
     ProtonButton(
@@ -231,10 +233,10 @@ fun ProtonSecondaryButton(
         loading = loading,
         interactionSource = interactionSource,
         elevation = null,
-        shape = ProtonTheme.shapes.medium,
+        shape = shape,
         border = null,
         colors = colors,
-        contentPadding = ButtonDefaults.TextButtonContentPadding,
+        contentPadding = contentPadding,
         content = content
     )
 }
@@ -257,8 +259,8 @@ fun ButtonDefaults.protonSecondaryButtonColors(
 ): ButtonColors = buttonColors(
     containerColor = backgroundColor,
     contentColor = contentColor,
-    disabledContainerColor = disabledContentColor,
-    disabledContentColor = disabledBackgroundColor
+    disabledContainerColor = disabledBackgroundColor,
+    disabledContentColor = disabledContentColor
 )
 
 @Suppress("LongParameterList")
@@ -434,7 +436,11 @@ private inline fun PreviewRowHelper(
         Box(Modifier.width(320.dp)) {
             button(enabled, false, loading)
         }
-        Box(Modifier.width(320.dp).padding(start = 20.dp)) {
+        Box(
+            Modifier
+                .width(320.dp)
+                .padding(start = 20.dp)
+        ) {
             button(enabled, true, loading)
         }
     }

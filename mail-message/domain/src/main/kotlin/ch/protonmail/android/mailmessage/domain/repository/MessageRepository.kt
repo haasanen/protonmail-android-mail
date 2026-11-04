@@ -33,9 +33,11 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageScrollerFetchNewStatus
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
+import ch.protonmail.android.mailmessage.domain.model.SearchMatchPosition
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.IncludeFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginatorTotal
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -49,6 +51,24 @@ interface MessageRepository {
     suspend fun terminatePaginator(userId: UserId)
 
     suspend fun supportsIncludeFilter(): Boolean
+
+    /**
+     * The total of the paginator for [pageKey], sent again whenever it changes.
+     *
+     * It can change while the loaded items stay the same, as when a remote search page lands past them.
+     * It is [PaginatorTotal.Pending] while a remote page that will change it is on its way.
+     */
+    fun observeTotalItemsCount(userId: UserId, pageKey: PageKey): Flow<PaginatorTotal>
+
+    /**
+     * Where the search behind [pageKey] matched in each of [messageIds], keyed by message.
+     * Empty when that search is no longer the active one.
+     */
+    suspend fun getSearchMatchPositions(
+        userId: UserId,
+        pageKey: PageKey,
+        messageIds: List<MessageId>
+    ): Either<PaginationError, Map<MessageId, List<SearchMatchPosition>>>
 
     suspend fun getSenderImage(
         userId: UserId,
@@ -91,6 +111,17 @@ interface MessageRepository {
         userId: UserId,
         labelId: LabelId,
         categoryLabelId: CategoryLabelId?
+    ): Either<ConversationCursorError, ConversationCursor>
+
+    /**
+     * Like [getConversationCursor], but walks through the results of the active search for [keyword].
+     *
+     * Fails when that search is no longer active.
+     */
+    suspend fun getSearchCursor(
+        anchorItemId: CursorId,
+        userId: UserId,
+        keyword: String
     ): Either<ConversationCursorError, ConversationCursor>
 
     /**

@@ -36,6 +36,8 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.reducer.SelectionStateReducer
+import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveContentSearchEnabled
+import ch.protonmail.android.mailcontentsearch.domain.usecase.ObserveSearchResultsTotal
 import ch.protonmail.android.mailcontentsearch.presentation.model.ContentSearchState
 import ch.protonmail.android.mailcontentsearch.presentation.model.ContentSearchViewAction
 import ch.protonmail.android.mailcontentsearch.presentation.reducer.ContentSearchReducer
@@ -49,7 +51,9 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
+import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxLoadingBarControllerFactory
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUiState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.BottomBarStateFactory
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.BulkActionMessageFactory
@@ -65,6 +69,8 @@ import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailpagination.domain.model.IncludeFilter
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
+import ch.protonmail.android.mailpagination.domain.model.PaginatorTotal
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserIdWithValidSession
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
@@ -77,12 +83,18 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import me.proton.core.test.kotlin.TestDispatcherProvider
@@ -90,6 +102,7 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -102,13 +115,16 @@ internal class ContentSearchViewModelTest {
     val mainDispatcherRule = MainDispatcherRule(testDispatcher)
 
     private val userId = UserId("user-id")
+    private val otherUserId = UserId("other-user-id")
     private val itemId = "item-id"
     private val attachmentId = AttachmentIdUiModel("1")
     private val intentValues = OpenAttachmentIntentValues(
         openMode = AttachmentOpenMode.Open,
         name = "invoice.pdf",
         mimeType = "application/pdf",
-        uri = mockk()
+        uri = mockk(),
+        userId = userId,
+        attachmentId = AttachmentId(attachmentId.value)
     )
 
     private val searchPager = mockk<Pager<MailboxPageKey, MailboxItem>> {
@@ -134,6 +150,15 @@ internal class ContentSearchViewModelTest {
     }
     private val observePageInvalidationEvents = mockk<ObservePageInvalidationEvents> {
         every { this@mockk.invoke() } returns emptyFlow()
+    }
+    private val savedStateHandle = SavedStateHandle()
+    private val contentSearchEnabled = MutableStateFlow(true)
+    private val observeContentSearchEnabled = mockk<ObserveContentSearchEnabled> {
+        every { this@mockk.invoke(any()) } returns contentSearchEnabled
+    }
+    private val observedSearchResultsTotal = MutableSharedFlow<PaginatorTotal>()
+    private val observeSearchResultsTotal = mockk<ObserveSearchResultsTotal> {
+        every { this@mockk.invoke(any(), any()) } returns observedSearchResultsTotal
     }
     // The executor owns the conversation-vs-message fork and is covered by its own test, so the
     // view model is asserted against it rather than through it to the individual use cases.
@@ -199,6 +224,9 @@ internal class ContentSearchViewModelTest {
             getCurrentViewModeForLabel = getCurrentViewModeForLabel,
             findLocalSystemLabelId = findLocalSystemLabelId,
             observePageInvalidationEvents = observePageInvalidationEvents,
+            observeContentSearchEnabled = observeContentSearchEnabled,
+            loadingBarControllerFactory = MailboxLoadingBarControllerFactory(),
+            observeSearchResultsTotal = observeSearchResultsTotal,
             mailboxActionExecutor = mailboxActionExecutor,
             bottomBarStateFactory = bottomBarStateFactory,
             getBottomSheetActions = getBottomSheetActions,
@@ -214,8 +242,35 @@ internal class ContentSearchViewModelTest {
             handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
             avatarImageUiModelMapper = avatarImageUiModelMapper,
             dispatchers = TestDispatcherProvider(),
-            savedStateHandle = SavedStateHandle()
+            savedStateHandle = savedStateHandle
         )
+    }
+
+    @Test
+    fun `should close the screen when the active account changes`() = runTest(testDispatcher) {
+        val primaryUserId = MutableStateFlow<UserId?>(userId)
+        every { observePrimaryUserId() } returns primaryUserId
+        val sut = viewModel()
+        advanceUntilIdle()
+        assertNull(sut.state.value.closeScreen.consume())
+
+        primaryUserId.emit(otherUserId)
+        advanceUntilIdle()
+
+        assertNotNull(sut.state.value.closeScreen.consume())
+    }
+
+    @Test
+    fun `should stay open when the active account is re-emitted unchanged`() = runTest(testDispatcher) {
+        val primaryUserId = MutableStateFlow<UserId?>(userId)
+        every { observePrimaryUserId() } returns primaryUserId
+        val sut = viewModel()
+        advanceUntilIdle()
+
+        primaryUserId.emit(userId)
+        advanceUntilIdle()
+
+        assertNull(sut.state.value.closeScreen.consume())
     }
 
     @Test
@@ -249,58 +304,37 @@ internal class ContentSearchViewModelTest {
     }
 
     @Test
-    fun `should include only spam when the spam toggle is submitted`() = runTest(testDispatcher) {
+    fun `should include both scopes when the chip is activated`() = runTest(testDispatcher) {
         val sut = viewModel()
 
-        sut.submit(ContentSearchViewAction.ToggleIncludeSpam)
-        advanceUntilIdle()
-
-        assertEquals(IncludeFilter(includeSpam = true, includeTrash = false), sut.state.value.includeFilter)
-    }
-
-    @Test
-    fun `should include only trash when the trash toggle is submitted`() = runTest(testDispatcher) {
-        val sut = viewModel()
-
-        sut.submit(ContentSearchViewAction.ToggleIncludeTrash)
-        advanceUntilIdle()
-
-        assertEquals(IncludeFilter(includeSpam = false, includeTrash = true), sut.state.value.includeFilter)
-    }
-
-    @Test
-    fun `should include both scopes when both toggles are submitted`() = runTest(testDispatcher) {
-        val sut = viewModel()
-
-        sut.submit(ContentSearchViewAction.ToggleIncludeSpam)
-        sut.submit(ContentSearchViewAction.ToggleIncludeTrash)
+        sut.submit(ContentSearchViewAction.ToggleIncludeSpamTrash)
         advanceUntilIdle()
 
         assertEquals(IncludeFilter.spamAndTrash(true), sut.state.value.includeFilter)
     }
 
     @Test
-    fun `should drop a scope again when its toggle is submitted twice`() = runTest(testDispatcher) {
+    fun `should drop both scopes when the chip is submitted while enabled`() = runTest(testDispatcher) {
         val sut = viewModel()
 
-        sut.submit(ContentSearchViewAction.ToggleIncludeSpam)
-        sut.submit(ContentSearchViewAction.ToggleIncludeSpam)
+        sut.submit(ContentSearchViewAction.ToggleIncludeSpamTrash)
+        sut.submit(ContentSearchViewAction.ToggleIncludeSpamTrash)
         advanceUntilIdle()
 
         assertEquals(IncludeFilter.None, sut.state.value.includeFilter)
     }
 
     @Test
-    fun `should update live paginator filter in place when toggle is submitted`() = runTest(testDispatcher) {
+    fun `should update live paginator filter in place when chip is toggled`() = runTest(testDispatcher) {
         val sut = viewModel()
 
-        sut.submit(ContentSearchViewAction.ToggleIncludeTrash)
+        sut.submit(ContentSearchViewAction.ToggleIncludeSpamTrash)
         advanceUntilIdle()
 
         // Search results are always messages, so the message paginator's filter is mutated.
         coVerify {
             updateIncludeFilter(
-                IncludeFilter(includeSpam = false, includeTrash = true),
+                IncludeFilter.spamAndTrash(true),
                 ViewMode.NoConversationGrouping
             )
         }
@@ -327,6 +361,34 @@ internal class ContentSearchViewModelTest {
         advanceUntilIdle()
 
         assertFalse(sut.state.value.inSelectionMode)
+    }
+
+    @Test
+    fun `should deselect items that left the results list`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        val kept = selectableItem(id = "kept")
+        val removed = selectableItem(id = "removed")
+        sut.submit(ContentSearchViewAction.ItemsChanged(listOf("kept", "removed")))
+        sut.submit(ContentSearchViewAction.ItemLongClicked(kept))
+        sut.submit(ContentSearchViewAction.ToggleItemSelection(removed))
+
+        sut.submit(ContentSearchViewAction.ItemsChanged(listOf("kept")))
+        advanceUntilIdle()
+
+        assertTrue(sut.state.value.inSelectionMode)
+        assertEquals(setOf("kept"), sut.state.value.selectionState.selectedItems.map { it.id }.toSet())
+    }
+
+    @Test
+    fun `should keep the selection when the results list only gains items`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        sut.submit(ContentSearchViewAction.ItemsChanged(listOf(itemId)))
+        sut.submit(ContentSearchViewAction.ItemLongClicked(selectableItem()))
+
+        sut.submit(ContentSearchViewAction.ItemsChanged(listOf(itemId, "another")))
+        advanceUntilIdle()
+
+        assertEquals(setOf(itemId), sut.state.value.selectionState.selectedItems.map { it.id }.toSet())
     }
 
     @Test
@@ -468,16 +530,6 @@ internal class ContentSearchViewModelTest {
     }
 
     @Test
-    fun `should grant the search field auto focus only once`() = runTest(testDispatcher) {
-        val sut = viewModel()
-
-        // Re-entering the bar on the way back from a message or from selection mode asks again, and
-        // must not raise the keyboard over the results the user came back to read.
-        assertTrue(sut.consumeSearchFieldAutoFocus())
-        assertFalse(sut.consumeSearchFieldAutoFocus())
-    }
-
-    @Test
     fun `should keep a running attachment download while the query is edited`() = runTest(testDispatcher) {
         val sut = viewModel()
         coEvery { getAttachmentIntentValues(any(), any(), any()) } coAnswers { awaitCancellation() }
@@ -599,6 +651,116 @@ internal class ContentSearchViewModelTest {
     }
 
     @Test
+    fun `should show the total only once the remote search ends`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+        val shownTotals = mutableListOf<Int?>()
+        val collectingTotals = launch {
+            sut.state.map { it.resultsTotal.shownCount }.distinctUntilChanged().toList(shownTotals)
+        }
+        sut.type("invoice")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        observedSearchResultsTotal.emit(PaginatorTotal.Pending)
+        runCurrent()
+        assertIs<LoadingBarUiState.Show>(sut.state.value.resultsTotal.loadingBar)
+
+        // The bar finishes its cycle before it hides, and the number waits for it.
+        observedSearchResultsTotal.emit(PaginatorTotal.Known(14_314))
+        runCurrent()
+        assertNull(sut.state.value.resultsTotal.shownCount)
+
+        advanceUntilIdle()
+        assertEquals(LoadingBarUiState.Hide, sut.state.value.resultsTotal.loadingBar)
+        assertEquals(listOf(null, 14_314), shownTotals)
+        collectingTotals.cancel()
+        collectingItems.cancel()
+    }
+
+    @Test
+    fun `should show a total that comes with no remote search straight away`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+        sut.type("invoice")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        // Offline, Rust sends the local total without a pending one before it.
+        observedSearchResultsTotal.emit(PaginatorTotal.Known(1_036))
+        runCurrent()
+
+        assertEquals(1_036, sut.state.value.resultsTotal.shownCount)
+        collectingItems.cancel()
+    }
+
+    @Test
+    fun `should not show the previous search's total for a new search`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+        sut.type("invoice")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+        observedSearchResultsTotal.emit(PaginatorTotal.Known(300))
+        advanceUntilIdle()
+
+        sut.type("receipt")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        assertNull(sut.state.value.resultsTotal.shownCount)
+        collectingItems.cancel()
+    }
+
+    @Test
+    fun `should show no results when the server rejects the query`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+        sut.type("%%%")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        sut.submit(ContentSearchViewAction.SearchFailed(PaginationError.Other(DataError.Remote.BadRequest)))
+        advanceUntilIdle()
+
+        assertEquals(ContentSearchState.Phase.Results(count = 0), sut.state.value.phase)
+        collectingItems.cancel()
+    }
+
+    @Test
+    fun `should show the failed state when the search fails for another reason`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+        sut.type("invoice")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        sut.submit(ContentSearchViewAction.SearchFailed(PaginationError.Other(DataError.Remote.ServerError)))
+        advanceUntilIdle()
+
+        assertEquals(ContentSearchState.Phase.Failed, sut.state.value.phase)
+        collectingItems.cancel()
+    }
+
+    @Test
+    fun `should reload and go back to loading when a failed search is run again`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+        sut.type("invoice")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+        sut.submit(ContentSearchViewAction.SearchFailed(PaginationError.Offline))
+        advanceUntilIdle()
+
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        assertNotNull(sut.state.value.reloadResults.consume())
+        assertEquals(ContentSearchState.Phase.Loading, sut.state.value.phase)
+        collectingItems.cancel()
+    }
+
+    @Test
     fun `should ask for a reload once when the results are invalidated`() = runTest(testDispatcher) {
         every { observePageInvalidationEvents() } returns flowOf(PageInvalidationEvent.MessagesInvalidated())
 
@@ -652,6 +814,81 @@ internal class ContentSearchViewModelTest {
         assertEquals("", sut.queryState.text.toString())
         assertEquals("", sut.state.value.query)
         assertEquals(ContentSearchState.Phase.Idle, sut.state.value.phase)
+        collectingItems.cancel()
+    }
+
+    @Test
+    fun `should go back to the idle page as soon as the set-up page asks to turn content search on`() =
+        runTest(testDispatcher) {
+            val sut = viewModel()
+            val collectingItems = launch { sut.items.collect() }
+            sut.type("invoice")
+            sut.submit(ContentSearchViewAction.Search)
+            advanceUntilIdle()
+
+            sut.submit(ContentSearchViewAction.TurnOnContentSearchRequested)
+            advanceUntilIdle()
+
+            assertEquals("", sut.queryState.text.toString())
+            assertEquals("", sut.state.value.query)
+            assertEquals(ContentSearchState.Phase.Idle, sut.state.value.phase)
+            collectingItems.cancel()
+        }
+
+    @Test
+    fun `should go back to the idle page when content search is turned on`() = runTest(testDispatcher) {
+        contentSearchEnabled.value = false
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+        sut.type("invoice")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        contentSearchEnabled.value = true
+        advanceUntilIdle()
+
+        assertEquals("", sut.queryState.text.toString())
+        assertEquals("", sut.state.value.query)
+        assertEquals(ContentSearchState.Phase.Idle, sut.state.value.phase)
+        collectingItems.cancel()
+    }
+
+    @Test
+    fun `should keep the query when the account switched to already has content search on`() = runTest(testDispatcher) {
+        val primaryUserId = MutableStateFlow<UserId?>(userId)
+        every { observePrimaryUserId() } returns primaryUserId
+        every { observeContentSearchEnabled(userId) } returns flowOf(false)
+        every { observeContentSearchEnabled(otherUserId) } returns flowOf(true)
+        // The switch rebuilds the paging flow for the account switched to.
+        every { observeFolderColorSettings(otherUserId) } returns flowOf(
+            FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
+        )
+        coEvery { getCurrentViewModeForLabel(otherUserId, any()) } returns ViewMode.NoConversationGrouping
+        coEvery { findLocalSystemLabelId(otherUserId, any()) } returns null
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+        sut.type("invoice")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        primaryUserId.emit(otherUserId)
+        advanceUntilIdle()
+
+        assertEquals("invoice", sut.queryState.text.toString())
+        assertEquals("invoice", sut.state.value.query)
+        collectingItems.cancel()
+    }
+
+    @Test
+    fun `should keep the results when content search was already on`() = runTest(testDispatcher) {
+        val sut = viewModel()
+        val collectingItems = launch { sut.items.collect() }
+
+        sut.type("invoice")
+        sut.submit(ContentSearchViewAction.Search)
+        advanceUntilIdle()
+
+        assertEquals("invoice", sut.state.value.query)
         collectingItems.cancel()
     }
 

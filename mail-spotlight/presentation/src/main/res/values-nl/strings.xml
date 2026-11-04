@@ -17,7 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="spotlight_screen_version_text">Versie %s</string>
   <string name="spotlight_screen_title">Nieuw in Proton Mail</string>
   <string name="spotlight_feature_item_discreet_icon_title">Onopvallend app-icoon</string>
   <string name="spotlight_feature_item_discreet_icon_description">Houd het standaard Proton Mail-pictogram of vermom het met een generiek pictogram voor meer privacy.</string>
@@ -53,11 +52,23 @@
   <string name="spotlight_screen_category_view_button_dismiss">Inbox behouden zoals voorheen</string>
   <!-- Content Search Spotlight -->
   <string name="spotlight_screen_content_search_title">Zoeken is nu nog beter geworden.</string>
-  <string name="spotlight_screen_content_search_subtitle">Find what matters, without giving up your privacy.</string>
-  <string name="spotlight_screen_content_search_message_content_title">Vind meer in elke e-mail</string>
+  <string name="spotlight_screen_content_search_subtitle">Ontdek wat echt belangrijk is, zonder uw privacy op te geven.</string>
+  <string name="spotlight_screen_content_search_message_content_title">Elk woord, nu doorzoekbaar</string>
   <string name="spotlight_screen_content_search_message_content_subtitle">Vind e-mails op berichtinhoud, niet alleen op onderwerp of afzender.</string>
-  <string name="spotlight_screen_content_search_bottom_bar_title">Gemakkelijker te bereiken</string>
-  <string name="spotlight_screen_content_search_bottom_bar_subtitle">De zoekfunctie bevindt zich nu onderaan het scherm, zodat u deze eenvoudig met één hand kunt gebruiken.</string>
+  <string name="spotlight_screen_content_search_encryption_title">Nog steeds end-to-end versleuteld</string>
+  <string name="spotlight_screen_content_search_encryption_subtitle">Het indexeren gebeurt op uw apparaat, gecodeerd met uw sleutel. Er wordt niets naar Proton gestuurd.</string>
   <string name="spotlight_screen_content_search_recent_searches_title">Ga verder waar u was gebleven</string>
-  <string name="spotlight_screen_content_search_recent_searches_subtitle">Easily revisit recent searches. Stored on your device to preserve end-to-end encryption.</string>
+  <string name="spotlight_screen_content_search_recent_searches_subtitle">Bekijk snel recente zoekopdrachten en resultaten. Deze worden op uw apparaat opgeslagen om end-to-end versleuteling te behouden.</string>
+  <string name="spotlight_screen_whats_new_pill">Nieuw</string>
+  <string name="spotlight_screen_content_search_button_continue">Doorgaan</string>
+  <string name="spotlight_screen_content_search_button_turn_on">Zet aan</string>
+  <string name="spotlight_screen_content_search_button_not_now">Niet nu</string>
+  <!-- How email content search works -->
+  <string name="spotlight_screen_content_search_how_it_works_title">Hoe het zoeken naar e-mailinhoud werkt</string>
+  <string name="spotlight_screen_content_search_how_it_works_download_title">Uw e-mails worden naar deze telefoon gedownload</string>
+  <string name="spotlight_screen_content_search_how_it_works_download_subtitle">Om uw e-mailinhoud te doorzoeken, downloadt Proton Mail veilig een kopie naar dit apparaat.</string>
+  <string name="spotlight_screen_content_search_how_it_works_index_title">Er wordt een privé-index op het apparaat gebouwd</string>
+  <string name="spotlight_screen_content_search_how_it_works_index_subtitle">Er wordt lokaal op uw apparaat een afgeslankte zoekindex gemaakt. Zie het als een kaart waarop u de berichten kunt vinden die u zoekt.</string>
+  <string name="spotlight_screen_content_search_how_it_works_search_now_title">We indexeren op de achtergrond</string>
+  <string name="spotlight_screen_content_search_how_it_works_search_now_subtitle">Het indexeren van uw e-mails zal enige tijd in beslag nemen, maar u kunt mail blijven gebruiken zoals u gewend bent terwijl wij op de achtergrond werken.</string>
 </resources>

@@ -30,11 +30,14 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemU
  *
  * Wrapped here rather than added to [MailboxItemUiModel] because only this screen opens items against a
  * location derived from a filter, and the mailbox has no use for the flag.
+ *
+ * @param highlightText the query's words plus the text search matched in this result, built once per row.
  */
 @Immutable
 data class ContentSearchResultUiModel(
     val item: MailboxItemUiModel,
-    val isInTrashOrSpam: Boolean
+    val isInTrashOrSpam: Boolean,
+    val highlightText: String
 ) {
 
     val id: String get() = item.id

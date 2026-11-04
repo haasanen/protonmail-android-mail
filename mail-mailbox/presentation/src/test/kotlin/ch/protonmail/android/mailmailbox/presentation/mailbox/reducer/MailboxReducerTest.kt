@@ -43,7 +43,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAp
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
@@ -208,8 +207,6 @@ internal class MailboxReducerTest(
                 refreshErrorEffect = Effect.empty(),
                 refreshOngoing = false,
                 swipeActions = null,
-                searchState = MailboxSearchStateSampleData.NotSearching,
-                shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModel.Empty,
                 loadingBarState = LoadingBarUiState.Hide
             ),
@@ -232,7 +229,8 @@ internal class MailboxReducerTest(
             bottomSheetState = null,
             composerNavigationState = MailboxComposerNavigationState.Enabled(),
             error = Effect.empty(),
-            showRatingBooster = Effect.empty()
+            showRatingBooster = Effect.empty(),
+            showNps = Effect.empty()
         )
 
         private val actions = listOf(
@@ -262,18 +260,6 @@ internal class MailboxReducerTest(
             ),
             TestInput(
                 MailboxViewAction.ExitSelectionMode,
-                shouldReduceMailboxListState = true,
-                shouldReduceTopAppBarState = true,
-                shouldReduceUnreadFilterState = false,
-                shouldReduceSpamTrashFilterState = false,
-                shouldReduceBottomAppBarState = true,
-                shouldReduceActionMessage = false,
-                shouldReduceDeleteDialog = false,
-                shouldReduceClearAllDialog = false,
-                shouldReduceBottomSheetState = false
-            ),
-            TestInput(
-                MailboxViewAction.ExitSearchMode,
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
@@ -509,8 +495,7 @@ internal class MailboxReducerTest(
                     contextLabel = LabelIdSample.RustLabel1,
                     viewModeIsConversationGrouping = true,
                     subitemId = null,
-                    openedFromCategory = null,
-                    searchQuery = ""
+                    openedFromCategory = null
                 ),
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,
@@ -686,6 +671,18 @@ internal class MailboxReducerTest(
                 shouldReduceBottomSheetState = false,
                 shouldReduceClearAllDialog = false,
                 showRatingBooster = Effect.of(Unit)
+            ),
+            TestInput(
+                MailboxEvent.ShowNps,
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceSpamTrashFilterState = false,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = false,
+                shouldReduceClearAllDialog = false
             ),
             TestInput(
                 MailboxEvent.ClearAll(SpamOrTrash.Spam),

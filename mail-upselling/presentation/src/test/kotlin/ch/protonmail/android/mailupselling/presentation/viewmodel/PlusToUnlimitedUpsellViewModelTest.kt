@@ -19,13 +19,28 @@
 package ch.protonmail.android.mailupselling.presentation.viewmodel
 
 import app.cash.turbine.test
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailtelemetry.domain.model.GeneralDimensions
+import ch.protonmail.android.mailtelemetry.domain.model.UpsellEntryPoint
+import ch.protonmail.android.mailtelemetry.domain.model.UpsellExperimentFlag
+import ch.protonmail.android.mailtelemetry.domain.model.UpsellModalVariant
+import ch.protonmail.android.mailtelemetry.domain.usecase.RecordUpsellButtonTapped
+import ch.protonmail.android.mailupselling.domain.model.PlusToUnlimitedOffer
 import ch.protonmail.android.mailupselling.domain.usecase.ObservePlusToUnlimitedEligibility
+import ch.protonmail.android.mailupselling.domain.usecase.ResolvePlanBeforeUpgrade
+import ch.protonmail.android.mailupselling.presentation.model.PlusToUnlimitedEntryPointState
 import ch.protonmail.android.mailupselling.presentation.model.UpsellContentTheme
 import ch.protonmail.android.mailupselling.presentation.usecase.ResolveActiveUpsellTheme
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,10 +65,19 @@ internal class PlusToUnlimitedUpsellViewModelTest {
         every { this@mockk(UserIdTestData.userId) } returns UpsellContentTheme.Drive
     }
 
+    private val resolvePlanBeforeUpgrade = mockk<ResolvePlanBeforeUpgrade> {
+        coEvery { this@mockk() } returns "mail2022"
+    }
+    private val recordUpsellButtonTapped = mockk<RecordUpsellButtonTapped> {
+        coEvery { this@mockk(any(), any()) } just Runs
+    }
+
     private fun viewModel() = PlusToUnlimitedUpsellViewModel(
         observePrimaryUserId,
         observePlusToUnlimitedEligibility,
-        resolveActiveUpsellTheme
+        resolveActiveUpsellTheme,
+        resolvePlanBeforeUpgrade,
+        recordUpsellButtonTapped
     )
 
     @AfterTest
@@ -64,22 +88,105 @@ internal class PlusToUnlimitedUpsellViewModelTest {
     @Test
     fun `resolves the active theme when the user is eligible`() = runTest {
         // Given
-        every { observePlusToUnlimitedEligibility(UserIdTestData.userId) } returns flowOf(true)
+        every { observePlusToUnlimitedEligibility(UserIdTestData.userId) } returns
+            flowOf(PlusToUnlimitedOffer.Regular.right())
 
         // When / Then
-        viewModel().theme.test {
-            assertEquals(UpsellContentTheme.Drive, awaitItem())
+        viewModel().state.test {
+            assertEquals(PlusToUnlimitedEntryPointState(UpsellContentTheme.Drive, isBlackFriday = false), awaitItem())
+        }
+    }
+
+    @Test
+    fun `resolves the active theme when the user is eligible for Black Friday`() = runTest {
+        // Given
+        every { observePlusToUnlimitedEligibility(UserIdTestData.userId) } returns
+            flowOf(PlusToUnlimitedOffer.BlackFriday.right())
+
+        // When / Then
+        viewModel().state.test {
+            assertEquals(PlusToUnlimitedEntryPointState(UpsellContentTheme.Drive, isBlackFriday = true), awaitItem())
         }
     }
 
     @Test
     fun `has no theme when the user is not eligible`() = runTest {
         // Given
-        every { observePlusToUnlimitedEligibility(UserIdTestData.userId) } returns flowOf(false)
+        every { observePlusToUnlimitedEligibility(UserIdTestData.userId) } returns
+            flowOf(PlusToUnlimitedOffer.None.right())
 
         // When / Then
-        viewModel().theme.test {
+        viewModel().state.test {
             assertEquals(null, awaitItem())
+        }
+    }
+
+    @Test
+    fun `keeps the last known verdict when the eligibility check fails`() = runTest {
+        // Given
+        every { observePlusToUnlimitedEligibility(UserIdTestData.userId) } returns
+            flowOf(PlusToUnlimitedOffer.Regular.right(), DataError.Local.Unknown.left())
+
+        // When / Then
+        viewModel().state.test {
+            assertEquals(PlusToUnlimitedEntryPointState(UpsellContentTheme.Drive, isBlackFriday = false), awaitItem())
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `records the upsell button tap with the plus to unlimited dimensions`() = runTest {
+        // Given
+        every { observePlusToUnlimitedEligibility(UserIdTestData.userId) } returns
+            flowOf(PlusToUnlimitedOffer.Regular.right())
+        val viewModel = viewModel()
+
+        // When
+        viewModel.state.test {
+            awaitItem()
+            viewModel.recordUpsellButtonTapped(UpsellEntryPoint.NAVBAR_UPSELL)
+        }
+
+        // Then
+        coVerify {
+            recordUpsellButtonTapped(
+                userId = UserIdTestData.userId,
+                generalDimensions = GeneralDimensions(
+                    upsellEntryPoint = UpsellEntryPoint.NAVBAR_UPSELL,
+                    planBeforeUpgrade = "mail2022",
+                    modalVariant = UpsellModalVariant.COMPARISON_UNLIMITED,
+                    upsellExperimentFlag = UpsellExperimentFlag(flagName = "MailAndroidV7PlusToUnlimitedUpsell"),
+                    promoCampaign = "drive"
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `records the black friday campaign on the upsell button tap during black friday`() = runTest {
+        // Given
+        every { observePlusToUnlimitedEligibility(UserIdTestData.userId) } returns
+            flowOf(PlusToUnlimitedOffer.BlackFriday.right())
+        val viewModel = viewModel()
+
+        // When
+        viewModel.state.test {
+            awaitItem()
+            viewModel.recordUpsellButtonTapped(UpsellEntryPoint.MAILBOX_TOP_BAR_PROMO)
+        }
+
+        // Then
+        coVerify {
+            recordUpsellButtonTapped(
+                userId = UserIdTestData.userId,
+                generalDimensions = GeneralDimensions(
+                    upsellEntryPoint = UpsellEntryPoint.MAILBOX_TOP_BAR_PROMO,
+                    planBeforeUpgrade = "mail2022",
+                    modalVariant = UpsellModalVariant.COMPARISON_UNLIMITED,
+                    upsellExperimentFlag = UpsellExperimentFlag(flagName = "MailAndroidV7PlusToUnlimitedUpsell"),
+                    promoCampaign = "bf26_wave1"
+                )
+            )
         }
     }
 }

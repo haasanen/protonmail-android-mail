@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarTarget
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
 import ch.protonmail.android.mailcommon.presentation.model.CappedNumberUiModel
+import ch.protonmail.android.mailcommon.presentation.model.SelectionState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
@@ -38,8 +39,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.LoadingBarUi
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
-import ch.protonmail.android.mailcommon.presentation.model.SelectionState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ShowSpamTrashIncludeFilterState
@@ -81,7 +80,8 @@ object MailboxStateSampleData {
         bottomSheetState = null,
         composerNavigationState = MailboxComposerNavigationState.Enabled(),
         error = Effect.empty(),
-        showRatingBooster = Effect.empty()
+        showRatingBooster = Effect.empty(),
+        showNps = Effect.empty()
     )
 
     val Inbox = MailboxState(
@@ -96,8 +96,6 @@ object MailboxStateSampleData {
                 start = SwipeUiModelSampleData.Trash,
                 end = SwipeUiModelSampleData.Archive
             ),
-            searchState = MailboxSearchStateSampleData.NotSearching,
-            shouldShowFab = true,
             avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
@@ -125,7 +123,8 @@ object MailboxStateSampleData {
         bottomSheetState = null,
         composerNavigationState = MailboxComposerNavigationState.Enabled(),
         error = Effect.empty(),
-        showRatingBooster = Effect.empty()
+        showRatingBooster = Effect.empty(),
+        showNps = Effect.empty()
     )
 
     val AllMail = MailboxState(
@@ -140,8 +139,6 @@ object MailboxStateSampleData {
                 start = SwipeUiModelSampleData.Trash,
                 end = SwipeUiModelSampleData.Archive
             ),
-            searchState = MailboxSearchStateSampleData.NotSearching,
-            shouldShowFab = true,
             avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
@@ -166,7 +163,8 @@ object MailboxStateSampleData {
         bottomSheetState = null,
         composerNavigationState = MailboxComposerNavigationState.Enabled(),
         error = Effect.empty(),
-        showRatingBooster = Effect.empty()
+        showRatingBooster = Effect.empty(),
+        showNps = Effect.empty()
     )
 
     val Trash = Inbox.copy(
@@ -182,7 +180,7 @@ object MailboxStateSampleData {
         bottomSheetState: BottomSheetState? = null,
         error: Effect<TextUiModel> = Effect.empty(),
         showRatingBooster: Effect<Unit> = Effect.empty(),
-        searchState: MailboxSearchState = MailboxSearchState.NotSearching
+        showNps: Effect<Unit> = Effect.empty()
     ) = MailboxState(
         mailboxListState = MailboxListState.Data.SelectionMode(
             currentMailLabel = currentMailLabel,
@@ -193,8 +191,6 @@ object MailboxStateSampleData {
                 start = SwipeUiModelSampleData.Trash,
                 end = SwipeUiModelSampleData.Archive
             ),
-            searchState = searchState,
-            shouldShowFab = false,
             avatarImagesUiModel = AvatarImagesUiModel.Empty,
             areAllItemsSelected = false,
             refreshOngoing = false,
@@ -221,6 +217,7 @@ object MailboxStateSampleData {
         bottomSheetState = bottomSheetState,
         composerNavigationState = MailboxComposerNavigationState.Enabled(),
         error = error,
-        showRatingBooster = showRatingBooster
+        showRatingBooster = showRatingBooster,
+        showNps = showNps
     )
 }

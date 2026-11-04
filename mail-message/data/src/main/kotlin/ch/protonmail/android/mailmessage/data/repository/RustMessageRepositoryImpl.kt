@@ -36,11 +36,13 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toSearchMatchPosition
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageScrollerFetchNewStatus
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
+import ch.protonmail.android.mailmessage.domain.model.SearchMatchPosition
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailmessage.domain.repository.MessageCursorRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -73,6 +75,9 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     override suspend fun supportsIncludeFilter() = rustMessageDataSource.supportsIncludeFilter()
 
+    override fun observeTotalItemsCount(userId: UserId, pageKey: PageKey) =
+        rustMessageDataSource.observeTotalItemsCount(userId, pageKey)
+
     override suspend fun getSenderImage(
         userId: UserId,
         address: String,
@@ -88,6 +93,18 @@ class RustMessageRepositoryImpl @Inject constructor(
         return rustMessageDataSource.getMessages(userId, pageKey)
             .map { list -> list.map { it.toMessage() } }
     }
+
+    override suspend fun getSearchMatchPositions(
+        userId: UserId,
+        pageKey: PageKey,
+        messageIds: List<MessageId>
+    ): Either<PaginationError, Map<MessageId, List<SearchMatchPosition>>> =
+        rustMessageDataSource.getSearchMatchPositions(userId, pageKey, messageIds.map { it.toLocalMessageId() })
+            .map { positionsById ->
+                positionsById.entries.associate { (id, positions) ->
+                    MessageId(id) to positions.mapNotNull { it.toSearchMatchPosition() }
+                }
+            }
 
     override suspend fun getMessage(userId: UserId, messageId: MessageId): Either<DataError, Message> =
         rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
@@ -111,6 +128,13 @@ class RustMessageRepositoryImpl @Inject constructor(
         categoryLabelId: CategoryLabelId?
     ): Either<ConversationCursorError, ConversationCursor> =
         messageCursorRepository.getCursor(anchorItemId, userId, labelId, categoryLabelId)
+
+    override suspend fun getSearchCursor(
+        anchorItemId: CursorId,
+        userId: UserId,
+        keyword: String
+    ): Either<ConversationCursorError, ConversationCursor> =
+        messageCursorRepository.getSearchCursor(anchorItemId, userId, keyword)
 
     override suspend fun moveTo(
         userId: UserId,

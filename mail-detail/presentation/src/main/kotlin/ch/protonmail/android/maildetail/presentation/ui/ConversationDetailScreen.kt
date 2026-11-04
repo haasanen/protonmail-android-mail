@@ -127,7 +127,9 @@ import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendD
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.ui.localcomposition.LocalHighlightQuery
+import ch.protonmail.android.maildetail.presentation.ui.localcomposition.LocalIsActiveConversationPage
 import ch.protonmail.android.maildetail.presentation.ui.localcomposition.LocalIsLastMessageAutoExpandEnabled
+import ch.protonmail.android.maildetail.presentation.ui.localcomposition.LocalIsMessageWebViewPoolEnabled
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
@@ -146,6 +148,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
+import ch.protonmail.android.mailmessage.presentation.ui.LocalMessageBodyWebViewPool
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ContactActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.DetailMoreActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.messageBodyImageSaver
@@ -194,6 +197,12 @@ fun ConversationDetailScreen(
         )
     }
 
+    // Images are kept only while this conversation is on screen: a page swiped away leaves the composition (its
+    // ViewModel stays), so swiping back to it loads its images again, as without the cache.
+    DisposableEffect(viewModel) {
+        onDispose { viewModel.clearLoadedImages() }
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -202,6 +211,8 @@ fun ConversationDetailScreen(
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val isSingleMessageMode = viewModel.isSingleMessageModeEnabled
     val isLastMessageAutoExpandEnabled by viewModel.autoExpandLastMessageEnabled.collectAsStateWithLifecycle()
+    val isMessageWebViewPoolEnabled by viewModel.messageWebViewPoolEnabled.collectAsStateWithLifecycle()
+    val highlightText by viewModel.highlightText.collectAsStateWithLifecycle()
     var showBottomSheet by remember { mutableStateOf(false) }
     val currentAppTheme = if (isSystemInDarkTheme())
         MessageTheme.Dark
@@ -211,6 +222,7 @@ fun ConversationDetailScreen(
     topBarState.messages.value = if (isSingleMessageMode) null else uiModel?.messageCount
     topBarState.title.value = uiModel?.subject ?: DetailScreenTopBar.NoTitle
     topBarState.isStarred.value = uiModel?.isStarred
+    topBarState.highlightText.value = highlightText
 
     fun dismissBottomSheet(continuation: () -> Unit = {}) {
         scope.launch { bottomSheetState.hide() }
@@ -556,7 +568,8 @@ fun ConversationDetailScreen(
     ) {
         CompositionLocalProvider(
             LocalIsLastMessageAutoExpandEnabled provides isLastMessageAutoExpandEnabled,
-            LocalHighlightQuery provides navigationArgs.searchQuery
+            LocalIsMessageWebViewPoolEnabled provides isMessageWebViewPoolEnabled,
+            LocalHighlightQuery provides highlightText
         ) {
             ConversationDetailScreen(
                 modifier = modifier,
@@ -820,12 +833,12 @@ private fun ConversationDetailScreen(
     }
     ConsumableLaunchedEffect(effect = state.openAttachmentEffect) {
         when (it.openMode) {
-            AttachmentOpenMode.Download -> fileSaver(FileContent(it.name, it.uri, it.mimeType))
+            AttachmentOpenMode.Download -> fileSaver(FileContent(it.name, it.mimeType, it.userId, it.attachmentId))
             AttachmentOpenMode.Open -> {
                 if (IntentHelper.canOpenFile(context, OpenAttachmentInput(it.uri, it.mimeType))) {
                     openAttachment(OpenAttachmentInput(it.uri, it.mimeType))
                 } else {
-                    fileSaver(FileContent(it.name, it.uri, it.mimeType))
+                    fileSaver(FileContent(it.name, it.mimeType, it.userId, it.attachmentId))
                 }
             }
         }
@@ -1038,6 +1051,17 @@ private fun MessagesContent(
     val listState = rememberLazyListState()
     val loadedItemsHeight = remember(conversationId) { mutableStateMapOf<String, Int>() }
 
+    // Keeps a small number of message-body WebViews alive across recycling so scrolling back re-attaches an
+    // already-rendered WebView instead of rebuilding and reloading it (ET-6844); null when pooling is off for
+    // this device. See rememberConversationMessageWebViewPool for the retention and memory-pressure policy.
+    val webViewPool = rememberConversationMessageWebViewPool(
+        conversationId = conversationId,
+        uiModels = uiModels,
+        listState = listState,
+        loadedItemsHeight = loadedItemsHeight,
+        hiddenMessagesBannerState = hiddenMessagesBannerState
+    )
+
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
     val itemsHeight = remember(conversationId) { mutableStateMapOf<Int, Int>() }
@@ -1072,14 +1096,15 @@ private fun MessagesContent(
     // key and therefore does NOT re-trigger auto-expansion, while a genuine draft->sent flip (isDraft true -> false)
     // still does.
     val isAutoExpandEnabled = LocalIsLastMessageAutoExpandEnabled.current
+    val isActivePage = LocalIsActiveConversationPage.current
     val lastMessage = uiModels.lastOrNull()
     val lastMessageIsDraft = when (lastMessage) {
         is ConversationDetailMessageUiModel.Collapsed -> lastMessage.isDraft
         is ConversationDetailMessageUiModel.Expanding -> lastMessage.collapsed.isDraft
         else -> false
     }
-    LaunchedEffect(lastMessage?.messageId?.id, lastMessageIsDraft) {
-        if (!isAutoExpandEnabled) return@LaunchedEffect
+    LaunchedEffect(lastMessage?.messageId?.id, lastMessageIsDraft, isActivePage) {
+        if (!isAutoExpandEnabled || !isActivePage) return@LaunchedEffect
 
         val lastCollapsedMessage = lastMessage as? ConversationDetailMessageUiModel.Collapsed ?: return@LaunchedEffect
         val scrollToMessageId = scrollToMessageState.getScrollTargetMessageIdOrNull()
@@ -1145,7 +1170,8 @@ private fun MessagesContent(
 
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
-    LaunchedEffect(scrollToMessageState) {
+    LaunchedEffect(scrollToMessageState, isActivePage) {
+        if (!isActivePage) return@LaunchedEffect
         val scrollRequest = scrollToMessageState as? ScrollToMessageState.ScrollRequested
             ?: return@LaunchedEffect
 
@@ -1169,94 +1195,98 @@ private fun MessagesContent(
             }
     }
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxHeight()
-            .testTag(ConversationDetailScreenTestTags.MessagesList)
-            .pointerInteropFilter { event ->
-                if (!userTapped && event.action == MotionEvent.ACTION_DOWN) {
-                    userTapped = true
-                }
-                false // Allow the event to propagate
-            },
-        verticalArrangement = Arrangement.spacedBy(-MailDimens.ConversationCollapseHeaderOverlapHeight),
-        state = listState,
-        contentPadding = PaddingValues(bottom = 100.dp)
-    ) {
-        item(key = "subject_header") {
-            ConversationSubjectHeader(
-                subject = subject,
-                modifier = Modifier
-                    .onSizeChanged {
-                        itemsHeight[0] = it.height
+    CompositionLocalProvider(LocalMessageBodyWebViewPool provides webViewPool) {
+        LazyColumn(
+            modifier = modifier
+                .fillMaxHeight()
+                .testTag(ConversationDetailScreenTestTags.MessagesList)
+                .pointerInteropFilter { event ->
+                    if (!userTapped && event.action == MotionEvent.ACTION_DOWN) {
+                        userTapped = true
                     }
-                    .padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight), // Subject does NOT stack
-                isDirectionForwards = isDirectionForwards
-            )
-        }
-
-        when (hiddenMessagesBannerState) {
-            is HiddenMessagesBannerState.Shown -> {
-                item {
-                    HiddenMessagesBanner(
-                        modifier = Modifier.onSizeChanged {
-                            itemsHeight[-1] = it.height
-                        },
-                        state = hiddenMessagesBannerState,
-                        onCheckedChange = onHiddenMessagesBannerClick
-                    )
-                }
+                    false // Allow the event to propagate
+                },
+            verticalArrangement = Arrangement.spacedBy(-MailDimens.ConversationCollapseHeaderOverlapHeight),
+            state = listState,
+            contentPadding = PaddingValues(bottom = 100.dp)
+        ) {
+            item(key = "subject_header") {
+                ConversationSubjectHeader(
+                    subject = subject,
+                    modifier = Modifier
+                        .onSizeChanged {
+                            itemsHeight[0] = it.height
+                        }
+                        .padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight), // Subject does NOT stack
+                    isDirectionForwards = isDirectionForwards
+                )
             }
 
-            is HiddenMessagesBannerState.Hidden -> Unit
-        }
-
-        itemsIndexed(
-            items = uiModels,
-            key = { _, uiModel -> uiModel.messageId.id }
-        ) { index, uiModel ->
-            val isLastItem = index == uiModels.size - 1
-            val rememberCachedHeight = remember(conversationId) { loadedItemsHeight[uiModel.messageId.id] }
-            val itemFinishedResizing = finishedResizingOperations && loadedItemsHeight.contains(uiModel.messageId.id)
-
-            ConversationDetailItem(
-                uiModel = uiModel,
-                actions = actions,
-                downloadingAttachmentId = downloadingAttachmentId,
-                isLastMessage = isLastItem,
-                modifier = when (uiModel) {
-                    is ConversationDetailMessageUiModel.Collapsed,
-                    is ConversationDetailMessageUiModel.Expanding -> {
-                        loadedItemsHeight.remove(uiModel.messageId.id)
-                        Modifier.animateItem()
+            when (hiddenMessagesBannerState) {
+                is HiddenMessagesBannerState.Shown -> {
+                    item {
+                        HiddenMessagesBanner(
+                            modifier = Modifier.onSizeChanged {
+                                itemsHeight[-1] = it.height
+                            },
+                            state = hiddenMessagesBannerState,
+                            onCheckedChange = onHiddenMessagesBannerClick
+                        )
                     }
+                }
 
-                    is ConversationDetailMessageUiModel.Expanded -> {
-                        if (isLastItem) {
-                            if (scrollToMessageMinimumHeightPx > 0) {
-                                Modifier.heightIn(min = scrollToMessageMinimumHeightPx.pxToDp())
-                            } else Modifier
-                        } else {
-                            Modifier.padding(bottom = MailDimens.ConversationItemBottomPadding)
+                is HiddenMessagesBannerState.Hidden -> Unit
+            }
+
+            itemsIndexed(
+                items = uiModels,
+                key = { _, uiModel -> uiModel.messageId.id }
+            ) { index, uiModel ->
+                val isLastItem = index == uiModels.size - 1
+                val rememberCachedHeight = remember(conversationId) { loadedItemsHeight[uiModel.messageId.id] }
+                val itemFinishedResizing =
+                    finishedResizingOperations && loadedItemsHeight.contains(uiModel.messageId.id)
+
+                ConversationDetailItem(
+                    uiModel = uiModel,
+                    actions = actions,
+                    downloadingAttachmentId = downloadingAttachmentId,
+                    isLastMessage = isLastItem,
+                    modifier = when (uiModel) {
+                        is ConversationDetailMessageUiModel.Collapsed,
+                        is ConversationDetailMessageUiModel.Expanding -> {
+                            loadedItemsHeight.remove(uiModel.messageId.id)
+                            Modifier.animateItem()
                         }
-                    }
-                }.onSizeChanged {
-                    val adjustedIndex = when (hiddenMessagesBannerState) {
-                        is HiddenMessagesBannerState.Shown -> index + 2 // subject + banner + messages
-                        is HiddenMessagesBannerState.Hidden -> index + 1 // subject + messages
-                    }
-                    itemsHeight[adjustedIndex] = it.height
-                },
-                onMessageBodyLoadFinished = { messageId, height ->
-                    loadedItemsHeight[messageId.id] = height
-                    val scrollToMessageId = scrollToMessageState.getScrollTargetMessageIdOrNull()
-                    if (messageId.id == scrollToMessageId || scrollToMessageId == null) {
-                        isScrollToMessageWebViewLoaded = true
-                    }
-                },
-                previouslyLoadedHeight = rememberCachedHeight,
-                finishedResizing = itemFinishedResizing
-            )
+
+                        is ConversationDetailMessageUiModel.Expanded -> {
+                            if (isLastItem) {
+                                if (scrollToMessageMinimumHeightPx > 0) {
+                                    Modifier.heightIn(min = scrollToMessageMinimumHeightPx.pxToDp())
+                                } else Modifier
+                            } else {
+                                Modifier.padding(bottom = MailDimens.ConversationItemBottomPadding)
+                            }
+                        }
+                    }.onSizeChanged {
+                        val adjustedIndex = when (hiddenMessagesBannerState) {
+                            is HiddenMessagesBannerState.Shown -> index + 2 // subject + banner + messages
+                            is HiddenMessagesBannerState.Hidden -> index + 1 // subject + messages
+                        }
+                        itemsHeight[adjustedIndex] = it.height
+                    },
+                    onMessageBodyLoadFinished = { messageId, height ->
+                        loadedItemsHeight[messageId.id] = height
+                        val scrollToMessageId = scrollToMessageState.getScrollTargetMessageIdOrNull()
+                        if (messageId.id == scrollToMessageId || scrollToMessageId == null) {
+                            isScrollToMessageWebViewLoaded = true
+                        }
+                    },
+                    previouslyLoadedHeight = rememberCachedHeight,
+                    finishedResizing = itemFinishedResizing,
+                    isListScrolling = listState.isScrollInProgress
+                )
+            }
         }
     }
 }

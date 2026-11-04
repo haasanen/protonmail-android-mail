@@ -19,8 +19,16 @@
 package ch.protonmail.android.navigation.route
 
 import android.net.Uri
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -31,6 +39,7 @@ import ch.protonmail.android.design.compose.navigation.get
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.feature.account.RemoveAccountDialog
 import ch.protonmail.android.feature.account.SignOutAccountDialog
+import ch.protonmail.android.feature.contentsearch.ContentSearchEnableSheetHost
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.SnackbarType
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
@@ -43,7 +52,12 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactList
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
 import ch.protonmail.android.mailcontentsearch.presentation.ui.ContentSearchScreen
 import ch.protonmail.android.mailcontentsearch.presentation.ui.ContentSearchScreenActions
+import ch.protonmail.android.mailcontentsearch.presentation.ui.DECLINE_CONTENT_SEARCH_KEY
+import ch.protonmail.android.mailcontentsearch.presentation.ui.OpenSearchResultRequest
+import ch.protonmail.android.mailcontentsearch.presentation.ui.TURN_ON_CONTENT_SEARCH_KEY
+import ch.protonmail.android.mailcontentsearch.presentation.viewmodel.ContentSearchSetUpPromptViewModel
 import ch.protonmail.android.mailconversation.domain.entity.ConversationDetailEntryPoint
+import ch.protonmail.android.maildetail.presentation.model.ConversationPagerSource
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.EntireMessageBodyScreen
@@ -53,11 +67,12 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.domain.model.ToolbarType
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsViewModel
+import ch.protonmail.android.mailtelemetry.domain.model.UpsellEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.ui.screen.MonthlyToYearlyUpsellBottomSheet
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.transitions.RouteTransitionSpec
 import ch.protonmail.android.navigation.transitions.composableWithTransitions
@@ -77,6 +92,10 @@ internal fun NavGraphBuilder.addConversationDetail(
             navArgument(ConversationDetailScreen.SearchQueryKey) {
                 type = NavType.StringType
                 defaultValue = ""
+            },
+            navArgument(PagedConversationDetailScreen.PagerSourceKey) {
+                type = NavType.StringType
+                defaultValue = ConversationPagerSource.Mailbox.name
             }
         )
     ) {
@@ -91,11 +110,11 @@ internal fun NavGraphBuilder.addConversationDetail(
 internal fun NavGraphBuilder.addMailbox(
     navController: NavHostController,
     openDrawerMenu: () -> Unit,
-    setDrawerEnabled: (Boolean) -> Unit,
     onEvent: (AccountSwitchEvent) -> Unit,
     showSnackbar: (type: SnackbarType) -> Unit,
     showFeatureMissingSnackbar: () -> Unit,
     onShowRatingBooster: () -> Unit,
+    onShowNps: () -> Unit,
     snackbarHeight: () -> Dp = { 0.dp }
 ) {
     composableWithTransitions(
@@ -115,8 +134,7 @@ internal fun NavGraphBuilder.addMailbox(
                             openedFromLocation = request.openedFromLocation,
                             openedFromCategory = request.openedFromCategory,
                             locationViewModeIsConversation = request.locationViewModeIsConversation,
-                            entryPoint = ConversationDetailEntryPoint.Mailbox,
-                            searchQuery = request.searchQuery
+                            entryPoint = ConversationDetailEntryPoint.Mailbox
                         )
                     }
                     navController.navigate(destination)
@@ -132,20 +150,18 @@ internal fun NavGraphBuilder.addMailbox(
                 onNavigateToUpselling = { entryPoint, type ->
                     navController.navigate(Destination.Screen.FeatureUpselling(entryPoint, type))
                 },
-                showMissingFeature = showFeatureMissingSnackbar,
-                onEnterSearchMode = {
-                    setDrawerEnabled(false)
+                onNavigateToMonthlyToYearlyUpsell = {
+                    navController.navigate(Destination.Dialog.MonthlyToYearlyUpsell(UpsellEntryPoint.NAVBAR_UPSELL))
                 },
+                showMissingFeature = showFeatureMissingSnackbar,
                 onNavigateToContentSearch = {
                     navController.navigate(Destination.Screen.ContentSearch.route)
-                },
-                onExitSearchMode = {
-                    setDrawerEnabled(true)
                 },
                 onCustomizeToolbar = {
                     navController.navigate(Destination.Screen.EditToolbarScreen(ToolbarType.List))
                 },
-                onShowRatingBooster = onShowRatingBooster
+                onShowRatingBooster = onShowRatingBooster,
+                onShowNps = onShowNps
             ),
             onEvent = onEvent,
             snackbarHeight = snackbarHeight()
@@ -268,6 +284,15 @@ internal fun NavGraphBuilder.addRemoveAccountDialog(navController: NavHostContro
     }
 }
 
+internal fun NavGraphBuilder.addMonthlyToYearlyUpsellSheet(navController: NavHostController) {
+    dialog(
+        route = Destination.Dialog.MonthlyToYearlyUpsell.route,
+        dialogProperties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        MonthlyToYearlyUpsellBottomSheet(onDismiss = { navController.navigateBack() })
+    }
+}
+
 internal fun NavGraphBuilder.addSettings(navController: NavHostController, activityActions: MainActivity.Actions) {
     composableWithTransitions(
         route = Destination.Screen.Settings.route,
@@ -318,6 +343,11 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController, activ
                     },
                     onBackgroundSyncIntervalSelected = { interval ->
                         settingsViewModel.onBackgroundSyncIntervalSelected(interval)
+                    },
+                    onMonthlyToYearlyUpsellClick = {
+                        navController.navigate(
+                            Destination.Dialog.MonthlyToYearlyUpsell(UpsellEntryPoint.SETTINGS_UPSELL)
+                        )
                     }
                 )
             )
@@ -447,30 +477,83 @@ internal fun NavGraphBuilder.addContentSearchScreen(
     showSnackbar: (type: SnackbarType) -> Unit,
     snackbarHeight: () -> Dp = { 0.dp }
 ) {
-    composableWithTransitions(route = Destination.Screen.ContentSearch.route) {
-        ContentSearchScreen(
-            ContentSearchScreenActions(
-                showSnackbar = showSnackbar,
-                snackbarHeight = snackbarHeight,
-                onClose = { navController.navigateBack() },
-                onOpenItem = { request ->
-                    val destination = when (request.shouldOpenInComposer) {
-                        true -> Destination.Screen.EditDraftComposer(request.messageId)
-                        false -> Destination.Screen.Conversation(
-                            conversationId = request.conversationId,
-                            scrollToMessageId = request.messageId,
-                            openedFromLocation = request.openedFromLocation,
-                            openedFromCategory = null,
-                            locationViewModeIsConversation = request.isConversationGrouping,
-                            entryPoint = ConversationDetailEntryPoint.Mailbox,
-                            searchQuery = request.searchQuery
-                        )
-                    }
-                    navController.navigate(destination)
-                }
+    composableWithTransitions(route = Destination.Screen.ContentSearch.route) { entry ->
+        // The set-up page leaves its request here on the way out, so the sheet comes up over the
+        // results, once that page is gone.
+        val navRequest by entry.savedStateHandle
+            .getStateFlow(TURN_ON_CONTENT_SEARCH_KEY, false)
+            .collectAsStateWithLifecycle()
+
+        // The request is a one-shot, so it comes off the entry as soon as it is read. Left there it
+        // would only be cleared by the sheet closing, and a second Turn on would write true over a
+        // true that was never taken away.
+        //
+        // Held here rather than consumed by either reader. Both the sheet and the screen below it
+        // act on this request, and they have to see the same value.
+        var turnOnRequested by remember { mutableStateOf(false) }
+        LaunchedEffect(navRequest) {
+            if (navRequest) {
+                turnOnRequested = true
+                entry.savedStateHandle[TURN_ON_CONTENT_SEARCH_KEY] = false
+            }
+        }
+
+        // The entry's value is readable on the first frame back, while the copy above lands a frame
+        // later. The screen decides on that first frame whether to raise the keyboard, so it has to
+        // see the request by then. Otherwise the keyboard comes up and the sheet pushes it down.
+        val isTurnOnRequested = turnOnRequested || navRequest
+
+        // Same instance as the screen's own, as both are scoped to this back stack entry.
+        val setUpPromptViewModel: ContentSearchSetUpPromptViewModel = hiltViewModel()
+        val declineRequest by entry.savedStateHandle
+            .getStateFlow(DECLINE_CONTENT_SEARCH_KEY, false)
+            .collectAsStateWithLifecycle()
+        LaunchedEffect(declineRequest) {
+            if (declineRequest) {
+                setUpPromptViewModel.declineSetUp()
+                entry.savedStateHandle[DECLINE_CONTENT_SEARCH_KEY] = false
+            }
+        }
+
+        ContentSearchEnableSheetHost(
+            showRequested = isTurnOnRequested,
+            onDismissed = { turnOnRequested = false }
+        ) {
+            ContentSearchScreen(
+                ContentSearchScreenActions(
+                    showSnackbar = showSnackbar,
+                    snackbarHeight = snackbarHeight,
+                    onClose = { navController.navigateBack() },
+                    onSeeIndexingDetails = {
+                        navController.navigate(Destination.Screen.ContentSearchSettings.route)
+                    },
+                    onSetUpContentSearch = {
+                        navController.navigate(Destination.Screen.ContentSearchSetUp.route)
+                    },
+                    onOpenItem = { request -> navController.navigate(request.toDestination()) }
+                ),
+                turnOnContentSearchRequested = isTurnOnRequested
             )
-        )
+        }
     }
+}
+
+private fun OpenSearchResultRequest.toDestination(): String = when (shouldOpenInComposer) {
+    true -> Destination.Screen.EditDraftComposer(messageId)
+    false -> Destination.Screen.Conversation(
+        conversationId = conversationId,
+        scrollToMessageId = messageId,
+        openedFromLocation = openedFromLocation,
+        openedFromCategory = null,
+        locationViewModeIsConversation = isConversationGrouping,
+        entryPoint = ConversationDetailEntryPoint.Mailbox,
+        searchQuery = searchQuery,
+        pagerSource = if (isRecentSearchResult) {
+            ConversationPagerSource.SingleItem
+        } else {
+            ConversationPagerSource.SearchResults
+        }
+    )
 }
 
 internal fun NavGraphBuilder.addContactSearch(navController: NavHostController) {

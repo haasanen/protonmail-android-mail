@@ -21,6 +21,7 @@ package ch.protonmail.android.mailupselling.presentation.mapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
+import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlements.BlackFridayMailPlusEntitlements
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlements.FallPromoEntitlements
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlements.MailPlusEntitlements
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlements.PlusToUnlimitedEntitlements
@@ -41,14 +42,28 @@ class PlanUpgradeEntitlementsUiMapper @Inject constructor() {
         mapToComparisonTable(variant, entryPoint)
 
     private fun mapToComparisonTable(variant: PlanUpgradeVariant, entryPoint: UpsellingEntryPoint.Feature) = when {
-        entryPoint == UpsellingEntryPoint.Feature.PlusUnlimited ->
+        entryPoint == UpsellingEntryPoint.Feature.PlusUnlimited && variant is PlanUpgradeVariant.BlackFriday ->
             PlanUpgradeEntitlementsListUiModel.ComparisonTableList(
                 items = PlusToUnlimitedEntitlements,
                 baseColumnLabel = TextUiModel.TextRes(R.string.upselling_plus_plan)
             )
 
+        entryPoint == UpsellingEntryPoint.Feature.PlusUnlimited ->
+            PlanUpgradeEntitlementsListUiModel.ComparisonTableList(
+                items = PlusToUnlimitedEntitlements,
+                baseColumnLabel = TextUiModel.TextRes(R.string.upselling_plus_plan),
+                titleLabel = TextUiModel.TextRes(R.string.upselling_pu_whats_included),
+                paidColumnLabel = TextUiModel.TextRes(R.string.upselling_unlimited_plan)
+            )
+
         variant is PlanUpgradeVariant.FallPromo ->
             PlanUpgradeEntitlementsListUiModel.ComparisonTableList(FallPromoEntitlements)
+
+        variant == PlanUpgradeVariant.BlackFriday.Wave1 ->
+            PlanUpgradeEntitlementsListUiModel.ComparisonTableList(FallPromoEntitlements)
+
+        variant == PlanUpgradeVariant.BlackFriday.Wave2 ->
+            PlanUpgradeEntitlementsListUiModel.ComparisonTableList(BlackFridayMailPlusEntitlements)
 
         variant is UnlimitedPlanVariant ->
             PlanUpgradeEntitlementsListUiModel.ComparisonTableList(UnlimitedEntitlements)

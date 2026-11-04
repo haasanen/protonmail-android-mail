@@ -18,8 +18,11 @@
 
 package ch.protonmail.android.mailcontentsearch.domain.usecase
 
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.system.DeviceArchitectureProvider
-import ch.protonmail.android.mailcontentsearch.domain.repository.ContentSearchRepository
+import ch.protonmail.android.mailcontentsearch.domain.repository.ContentSearchSettingsRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -27,25 +30,25 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class IsContentSearchFeatureEnabledTest {
 
     private val userId = UserId("user-1")
-    private val repository = mockk<ContentSearchRepository>()
-    private val deviceArchitectureProvider = mockk<DeviceArchitectureProvider>()
+    private val contentSearchSettingsRepository = mockk<ContentSearchSettingsRepository>()
+    private val deviceArchitectureProvider = mockk<DeviceArchitectureProvider> {
+        every { is64Bit() } returns true
+    }
     private val isContentSearchFeatureEnabled = IsContentSearchFeatureEnabled(
-        repository,
+        contentSearchSettingsRepository,
         deviceArchitectureProvider
     )
 
     @Test
-    fun `returns the availability reported for the account on a 64-bit process`() = runTest {
+    fun `returns true when Rust grants access`() = runTest {
         // Given
-        every { deviceArchitectureProvider.is64Bit() } returns true
-        coEvery { repository.isFeatureEnabled(userId) } returns true
+        coEvery { contentSearchSettingsRepository.isFeatureEnabled(userId) } returns true.right()
 
         // When
         val result = isContentSearchFeatureEnabled(userId)
@@ -55,10 +58,9 @@ internal class IsContentSearchFeatureEnabledTest {
     }
 
     @Test
-    fun `returns false when the account reports the feature unavailable`() = runTest {
+    fun `returns false when Rust denies access`() = runTest {
         // Given
-        every { deviceArchitectureProvider.is64Bit() } returns true
-        coEvery { repository.isFeatureEnabled(userId) } returns false
+        coEvery { contentSearchSettingsRepository.isFeatureEnabled(userId) } returns false.right()
 
         // When
         val result = isContentSearchFeatureEnabled(userId)
@@ -68,7 +70,21 @@ internal class IsContentSearchFeatureEnabledTest {
     }
 
     @Test
-    fun `returns false without asking the account on a 32-bit process`() = runTest {
+    fun `returns false when the read fails`() = runTest {
+        // Given
+        coEvery {
+            contentSearchSettingsRepository.isFeatureEnabled(userId)
+        } returns DataError.Local.NoUserSession.left()
+
+        // When
+        val result = isContentSearchFeatureEnabled(userId)
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `returns false without asking Rust on a 32-bit process`() = runTest {
         // Given
         every { deviceArchitectureProvider.is64Bit() } returns false
 
@@ -76,7 +92,7 @@ internal class IsContentSearchFeatureEnabledTest {
         val result = isContentSearchFeatureEnabled(userId)
 
         // Then
-        assertEquals(false, result)
-        coVerify(exactly = 0) { repository.isFeatureEnabled(any()) }
+        assertFalse(result)
+        coVerify(exactly = 0) { contentSearchSettingsRepository.isFeatureEnabled(any()) }
     }
 }

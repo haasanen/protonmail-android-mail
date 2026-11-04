@@ -19,24 +19,24 @@
 package ch.protonmail.android.mailcontentsearch.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.system.DeviceArchitectureProvider
-import ch.protonmail.android.mailcontentsearch.domain.repository.ContentSearchRepository
+import ch.protonmail.android.mailcontentsearch.domain.repository.ContentSearchSettingsRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 /**
- * Whether the content search feature is available on this build for [userId].
+ * Whether the content search feature is available to the given account.
  *
- * The SDK answers this from the user session, so an account with no session yet - signed out, or
- * still unlocking - reads as unavailable rather than as an app-wide "off".
+ * Rust owns the answer. It reads the launch flags and rules out 32-bit devices.
+ * A failed read counts as unavailable.
  *
- * Not to be confused with [IsContentSearchEnabled], which reports whether the *user* has switched
- * content search on in settings.
+ * The 64-bit check repeats the one in Rust on purpose.
+ * It keeps 32-bit devices out once the launch flags are removed.
  */
 class IsContentSearchFeatureEnabled @Inject constructor(
-    private val contentSearchRepository: ContentSearchRepository,
+    private val contentSearchSettingsRepository: ContentSearchSettingsRepository,
     private val deviceArchitectureProvider: DeviceArchitectureProvider
 ) {
 
-    suspend operator fun invoke(userId: UserId): Boolean =
-        deviceArchitectureProvider.is64Bit() && contentSearchRepository.isFeatureEnabled(userId)
+    suspend operator fun invoke(userId: UserId): Boolean = deviceArchitectureProvider.is64Bit() &&
+        contentSearchSettingsRepository.isFeatureEnabled(userId).getOrNull() == true
 }

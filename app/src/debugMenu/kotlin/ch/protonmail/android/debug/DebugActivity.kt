@@ -60,6 +60,15 @@ internal class DebugActivity : AppCompatActivity() {
                                 },
                                 onDatabaseExportNavigation = {
                                     navController.navigate(Screen.ApplicationDebugDatabaseExport.route)
+                                },
+                                onTelemetryNavigation = {
+                                    navController.navigate(Screen.ApplicationDebugTelemetry.route)
+                                },
+                                onAppStateNavigation = {
+                                    navController.navigate(Screen.ApplicationDebugAppState.route)
+                                },
+                                onFeatureFlagsNavigation = {
+                                    navController.navigate(Screen.FeatureFlagsOverrides.route)
                                 }
                             )
                         )
@@ -77,15 +86,26 @@ internal class DebugActivity : AppCompatActivity() {
                         )
                     }
 
+                    composable(route = Screen.ApplicationDebugTelemetry.route) {
+                        TelemetryDebugScreen(
+                            onBackClick = { navController.navigateBack() }
+                        )
+                    }
+
+                    composable(route = Screen.ApplicationDebugAppState.route) {
+                        AppStateScreen(
+                            onBackClick = { navController.navigateBack() }
+                        )
+                    }
+
                     composable(route = Screen.ApplicationLogs.route) {
                         CompositionLocalProvider(LocalAppLogsEntryPointIsStandalone provides true) {
                             ApplicationLogsScreen(
                                 actions = ApplicationLogsScreen.Actions(
                                     onBackClick = { navController.navigateBack() },
                                     onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) },
-                                    onFeatureFlagsNavigation = {
-                                        navController.navigate(Screen.FeatureFlagsOverrides.route)
-                                    }
+                                    // Standalone debug NavHost, no composer route to navigate to.
+                                    onComposeWithLogs = null
                                 )
                             )
                         }

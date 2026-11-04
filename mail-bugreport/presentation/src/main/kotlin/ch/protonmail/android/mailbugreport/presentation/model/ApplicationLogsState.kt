@@ -23,11 +23,11 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 data class ApplicationLogsState(
-    val appVersion: String,
     val error: Effect<TextUiModel>,
     val showApplicationLogs: Effect<Unit>,
     val showRustLogs: Effect<Unit>,
     val showLogcat: Effect<Unit>,
     val share: Effect<Uri>,
+    val sendByEmail: Effect<Uri>,
     val export: Effect<Uri>
 )

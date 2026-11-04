@@ -145,9 +145,9 @@
   <string name="rsvp_widget_you">Вы</string>
   <plurals name="rsvp_widget_participants">
     <item quantity="one">%1$d удзельнік</item>
-    <item quantity="few">%1$d удзельнікі</item>
-    <item quantity="many">%1$d удзельнікаў</item>
-    <item quantity="other">%1$d удзельнікаў</item>
+    <item quantity="few">Удзельнікаў: %1$d</item>
+    <item quantity="many">Удзельнікаў: %1$d</item>
+    <item quantity="other">Удзельнікаў: %1$d</item>
   </plurals>
   <string name="rsvp_widget_happening_now">Адбываецца <b>цяпер</b></string>
   <string name="rsvp_widget_event_ended">Падзея <b>завяршылася</b></string>
@@ -162,7 +162,7 @@
   <string name="rsvp_widget_today">Сёння</string>
   <string name="rsvp_widget_tomorrow">Заўтра</string>
   <string name="rsvp_widget_invite_details_unavailable">Падрабязнасці запрашэння недаступны</string>
-  <string name="rsvp_widget_could_not_load">Не ўдалося загрузіць інфармацыю.\nПаспрабуйце яшчэ раз.</string>
+  <string name="rsvp_widget_could_not_load">Не ўдалося загрузіць інфармацыю.\nПаўтарыце спробу.</string>
   <string name="rsvp_widget_button_retry">Паўтарыць</string>
   <string name="rsvp_widget_error_answering">Адбылася памылка пры адказе на гэтую падзею</string>
   <string name="rsvp_widget_open_in_proton_calendar">Адкрыць у Proton Calendar</string>

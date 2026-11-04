@@ -25,17 +25,22 @@ import ch.protonmail.android.mailfeatureflags.data.local.factory.BooleanFeatureF
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagOverrideManager
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBgProcessingRelaxedBatteryConstraintEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayUpsellOptedOut
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave1Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsBlackFridayWave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsComposerFormatMenuEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsContentSearchScreenEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsFallPromo2026Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsFallPromo2026Wave2Enabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsFeatureSpotlightEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsInjectCssOverrideEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLastMessageAutoExpandEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageBodyImageCacheEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageWebViewPoolEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsNpsEnabledInApp
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsNpsUserTargeted
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsOnboardingUpsellEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsPlusToUnlimitedUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsPushProcessingWithoutWorkerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRateOnUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsRegisterDeviceTokenWithWorkerEnabled
@@ -52,18 +57,24 @@ import ch.protonmail.android.mailfeatureflags.domain.annotation.IsWebViewDarkMod
 import ch.protonmail.android.mailfeatureflags.domain.model.BgProcessingRelaxedBatteryConstraint
 import ch.protonmail.android.mailfeatureflags.domain.model.CategoryView
 import ch.protonmail.android.mailfeatureflags.domain.model.ComposerFormatMenu
-import ch.protonmail.android.mailfeatureflags.domain.model.ContentSearchEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.ContentSearchScreenEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.ContentSearchEarlyAccess
 import ch.protonmail.android.mailfeatureflags.domain.model.ConversationDetailAutoExpandLastMessageEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.ConversationDetailMessageBodyImageCacheEnabled
+import ch.protonmail.android.mailfeatureflags.domain.model.ConversationDetailMessageWebViewPoolEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.ConversationDetailWebViewDarkModeFallbackEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FallPromo2026Enabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FallPromo2026Wave2Enabled
+import ch.protonmail.android.mailfeatureflags.domain.model.BlackFridayUpsellOptOut
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureSpotlight
 import ch.protonmail.android.mailfeatureflags.domain.model.InjectDetailCssOverrideEnabled
-import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Enabled
-import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2025Wave2Enabled
+import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2026Enabled
+import ch.protonmail.android.mailfeatureflags.domain.model.MailBlackFriday2026Wave2Enabled
+import ch.protonmail.android.mailfeatureflags.domain.model.MonthlyToYearlyUpsellExperiment
+import ch.protonmail.android.mailfeatureflags.domain.model.MonthlyToYearlyUpsellOptOut
+import ch.protonmail.android.mailfeatureflags.domain.model.NpsEnabledInApp
+import ch.protonmail.android.mailfeatureflags.domain.model.NpsUserTargeted
 import ch.protonmail.android.mailfeatureflags.domain.model.OnboardingUpsellingEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.PlusToUnlimitedUpsellExperiment
 import ch.protonmail.android.mailfeatureflags.domain.model.PlusToUnlimitedUpsellOptOut
@@ -115,6 +126,28 @@ object FeatureFlagsModule {
         ConversationDetailWebViewDarkModeFallbackEnabled
 
     @Provides
+    @Singleton
+    @IsMessageWebViewPoolEnabled
+    fun provideMessageWebViewPoolEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(ConversationDetailMessageWebViewPoolEnabled.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideMessageWebViewPoolDefinition(): FeatureFlagDefinition = ConversationDetailMessageWebViewPoolEnabled
+
+    @Provides
+    @Singleton
+    @IsMessageBodyImageCacheEnabled
+    fun provideMessageBodyImageCacheEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(ConversationDetailMessageBodyImageCacheEnabled.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideMessageBodyImageCacheDefinition(): FeatureFlagDefinition = ConversationDetailMessageBodyImageCacheEnabled
+
+    @Provides
     @IntoSet
     @Singleton
     fun provideDetailCssOverrideDefinitions(): FeatureFlagDefinition = InjectDetailCssOverrideEnabled
@@ -140,13 +173,13 @@ object FeatureFlagsModule {
     @Singleton
     @IsBlackFridayWave1Enabled
     fun provideBlackFridayWave1Enabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(key = MailBlackFriday2025Enabled.key, false)
+        factory.create(key = MailBlackFriday2026Enabled.key, false)
 
     @Provides
     @Singleton
     @IsBlackFridayWave2Enabled
     fun provideBlackFridayWave2Enabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(key = MailBlackFriday2025Wave2Enabled.key, false)
+        factory.create(key = MailBlackFriday2026Wave2Enabled.key, false)
 
     @Provides
     @Singleton
@@ -183,6 +216,12 @@ object FeatureFlagsModule {
     @IsFallPromo2026Wave2Enabled
     fun provideFallPromo2026Wave2Enabled(factory: BooleanFeatureFlagFactory) =
         factory.create(key = FallPromo2026Wave2Enabled.key, false)
+
+    @Provides
+    @Singleton
+    @IsPlusToUnlimitedUpsellEnabled
+    fun providePlusToUnlimitedUpsellEnabled(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = PlusToUnlimitedUpsellExperiment.key, false)
 
     @Provides
     @Singleton
@@ -246,6 +285,32 @@ object FeatureFlagsModule {
     @IsShowRatingBoosterEnabled
     fun provideIsShowRatingBoosterEnabled(factory: BooleanFeatureFlagFactory) =
         factory.create(key = ShowRatingBoosterEnabled.key, false)
+
+    @Provides
+    @Singleton
+    @IsNpsUserTargeted
+    fun provideIsNpsUserTargeted(factory: BooleanFeatureFlagFactory) = factory.create(key = NpsUserTargeted.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideNpsUserTargetedDef(): FeatureFlagDefinition = NpsUserTargeted
+
+    @Provides
+    @Singleton
+    @IsNpsEnabledInApp
+    fun provideIsNpsEnabledInApp(factory: BooleanFeatureFlagFactory) = factory.create(key = NpsEnabledInApp.key, false)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideNpsEnabledInAppDef(): FeatureFlagDefinition = NpsEnabledInApp
+
+    @Provides
+    @Singleton
+    @IsBlackFridayUpsellOptedOut
+    fun provideIsBlackFridayUpsellOptedOut(factory: BooleanFeatureFlagFactory) =
+        factory.create(key = BlackFridayUpsellOptOut.key, false)
 
     @Provides
     @Singleton
@@ -315,18 +380,7 @@ object FeatureFlagsModule {
     @Provides
     @IntoSet
     @Singleton
-    fun provideContentSearchEnabledDef(): FeatureFlagDefinition = ContentSearchEnabled
-
-    @Provides
-    @Singleton
-    @IsContentSearchScreenEnabled
-    fun provideContentSearchScreenEnabled(factory: BooleanFeatureFlagFactory) =
-        factory.create(key = ContentSearchScreenEnabled.key, false)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideContentSearchScreenEnabledDef(): FeatureFlagDefinition = ContentSearchScreenEnabled
+    fun provideContentSearchEarlyAccessDef(): FeatureFlagDefinition = ContentSearchEarlyAccess
 
     @Provides
     @IntoSet
@@ -353,4 +407,19 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun providePlusToUnlimitedOptOutDef(): FeatureFlagDefinition = PlusToUnlimitedUpsellOptOut
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideMonthlyToYearlyExperimentDef(): FeatureFlagDefinition = MonthlyToYearlyUpsellExperiment
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideMonthlyToYearlyOptOutDef(): FeatureFlagDefinition = MonthlyToYearlyUpsellOptOut
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideBlackFridayOptOutDef(): FeatureFlagDefinition = BlackFridayUpsellOptOut
 }

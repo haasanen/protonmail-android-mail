@@ -30,8 +30,8 @@ import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState.Enabled
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState.Disabled
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxComposerNavigationState.Enabled
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
@@ -70,7 +70,8 @@ class MailboxReducer @Inject constructor(
             actionResult = currentState.toNewActionMessageStateFrom(operation),
             composerNavigationState = currentState.toComposerNavigationState(operation),
             error = currentState.toNewErrorBarState(operation),
-            showRatingBooster = currentState.toNewShowRatingBoosterState(operation)
+            showRatingBooster = currentState.toNewShowRatingBoosterState(operation),
+            showNps = currentState.toNewShowNpsState(operation)
         )
 
     private fun MailboxState.toNewCategoryViewStateFrom(operation: MailboxOperation): CategoryViewState {
@@ -122,7 +123,6 @@ class MailboxReducer @Inject constructor(
                 is MailboxEvent.EnterSelectionMode -> BottomBarEvent.ShowBottomSheet
                 is MailboxEvent.MessageBottomBarEvent -> operation.bottomBarEvent
                 is MailboxEvent.DeleteConfirmed,
-                is MailboxViewAction.ExitSearchMode,
                 is MailboxEvent.MoveToConfirmed,
                 is MailboxEvent.LabelAsConfirmed,
                 is MailboxViewAction.MoveToArchive,
@@ -244,6 +244,14 @@ class MailboxReducer @Inject constructor(
             Effect.of(Unit)
         } else {
             showRatingBooster
+        }
+    }
+
+    private fun MailboxState.toNewShowNpsState(operation: MailboxOperation): Effect<Unit> {
+        return if (operation is MailboxEvent.ShowNps) {
+            Effect.of(Unit)
+        } else {
+            showNps
         }
     }
 }

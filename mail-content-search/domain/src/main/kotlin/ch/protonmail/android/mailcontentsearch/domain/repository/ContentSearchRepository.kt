@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcontentsearch.domain.repository
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingActivity
+import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingOrchestratorStatus
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingStartOutcome
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingStartSummary
 import ch.protonmail.android.mailcontentsearch.domain.model.ContentIndexingState
@@ -28,16 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
 interface ContentSearchRepository {
-
-    /**
-     * Whether the feature is available for [userId], as answered by the Rust SDK.
-     *
-     * Not the plain feature flag: the SDK combines it with any additional eligibility rule, and applies
-     * device-local debug overrides itself, so this must not be read through the feature flag resolver.
-     * Answered by the user session, so it is false for an account that has no session yet - there is
-     * nobody to ask before the account is ready.
-     */
-    suspend fun isFeatureEnabled(userId: UserId): Boolean
 
     suspend fun clearLocalData(userId: UserId): Either<DataError, Unit>
 
@@ -49,6 +40,9 @@ interface ContentSearchRepository {
      */
     suspend fun startIndexing(): Either<DataError, ContentIndexingStartSummary>
 
+    /** The orchestrator's status across every account. Read-only: it starts nothing. */
+    suspend fun getOrchestratorStatus(): Either<DataError, ContentIndexingOrchestratorStatus>
+
     /**
      * Starts indexing [userId] specifically, which is the only way out of a recorded failure: Rust
      * clears it on the way to taking the account, and never retries one on its own.
@@ -58,11 +52,24 @@ interface ContentSearchRepository {
     /** Stops the orchestrator for every account: there is no per-account stop. */
     suspend fun stopIndexing(): Either<DataError, Unit>
 
+    /**
+     * Pauses [userId]'s backfill, keeping everything already indexed.
+     *
+     * Rust records the pause, so it outlives the process. Only [startIndexingForUser] clears it.
+     */
+    suspend fun pauseIndexing(userId: UserId): Either<DataError, Unit>
+
+    /**
+     * The size of [userId]'s local index in bytes, or null when it cannot be read.
+     *
+     * Null also covers an account that content search is unavailable for.
+     */
+    suspend fun getIndexSizeBytes(userId: UserId): Long?
+
     fun observeIndexingActivity(): Flow<ContentIndexingActivity>
 
     fun observeIndexingStatus(userId: UserId): Flow<ContentIndexingState>
 
     suspend fun getIndexingStatus(userId: UserId): ContentIndexingState
 
-    suspend fun shouldShowMobileBottomSheet(userId: UserId): Boolean
 }

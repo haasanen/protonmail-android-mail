@@ -25,8 +25,14 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -36,10 +42,13 @@ import ch.protonmail.android.mailcontentsearch.presentation.model.RecentSearches
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxItemUiModelPreviewData
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
+import ch.protonmail.android.uicomponents.dismissKeyboard
 import kotlinx.collections.immutable.persistentListOf
 
 /**
  * The idle page shown when the user has search history: recent queries, then previously found items.
+ *
+ * [header] is laid out as the first row of the list, so it scrolls away with it.
  */
 @Composable
 internal fun RecentSearchesPage(
@@ -47,27 +56,41 @@ internal fun RecentSearchesPage(
     avatarImages: AvatarImagesUiModel,
     actions: RecentSearchesActions,
     downloadingAttachmentId: AttachmentIdUiModel?,
+    listState: LazyListState = rememberLazyListState(),
+    header: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     // When the keyboard is open its inset already covers the nav bar, so take whichever is larger.
     val navInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val imeInset = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
 
+    // Browsing the history means the user is done typing, so dismiss the keyboard as soon as the page
+    // scrolls. The search field scrolls away with it, and it must not stay under an open keyboard.
+    val context = LocalContext.current
+    val view = LocalView.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (listState.isScrollInProgress) dismissKeyboard(context, view, keyboardController)
+    }
+
     LazyColumn(
+        state = listState,
         modifier = modifier,
         // Nothing floats over this page — the history rows aren't selectable — so a trailing gap is all
         // it needs beyond the keyboard / navigation bar.
         contentPadding = PaddingValues(bottom = maxOf(navInset, imeInset) + ProtonDimens.Spacing.Large)
     ) {
-        item(key = "recent-terms") {
-            RecentSearchTermsSection(terms = state.terms, actions = actions)
+        if (header != null) {
+            item(key = "recents-header") { header() }
         }
+        recentSearchTermsSection(terms = state.terms, actions = actions)
         item(key = "recent-found-items") {
             RecentFoundItemsSection(
                 items = state.foundItems,
                 avatarImages = avatarImages,
                 actions = actions,
-                downloadingAttachmentId = downloadingAttachmentId
+                downloadingAttachmentId = downloadingAttachmentId,
+                modifier = Modifier.animateItem()
             )
         }
     }
@@ -79,6 +102,7 @@ data class RecentSearchesActions(
     val onClearTermsClicked: () -> Unit,
     val onFoundItemClicked: (RecentFoundItemUiModel) -> Unit,
     val onFoundItemStarClicked: (RecentFoundItemUiModel) -> Unit,
+    val onClearFoundItemsClicked: () -> Unit,
     // Sender images are owned by the search view model, since one global store feeds both lists.
     val onAvatarImageLoadRequested: (MailboxItemUiModel) -> Unit,
     val onAvatarImageLoadFailed: (MailboxItemUiModel) -> Unit,
@@ -95,6 +119,7 @@ data class RecentSearchesActions(
             onClearTermsClicked = {},
             onFoundItemClicked = {},
             onFoundItemStarClicked = {},
+            onClearFoundItemsClicked = {},
             onAvatarImageLoadRequested = {},
             onAvatarImageLoadFailed = {},
             onAttachmentClicked = {}

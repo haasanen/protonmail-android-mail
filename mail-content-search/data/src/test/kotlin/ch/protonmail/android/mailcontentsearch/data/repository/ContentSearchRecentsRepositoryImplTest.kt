@@ -179,6 +179,32 @@ internal class ContentSearchRecentsRepositoryImplTest {
     }
 
     @Test
+    fun `dismissAllSearchTerms clears the whole term history in one call`() = runTest(dispatcher) {
+        // Given
+        coEvery { recents.dismissAllRecentSearchTerms() } returns Unit.right()
+
+        // When
+        val result = repository.dismissAllSearchTerms(userId)
+
+        // Then
+        assertEquals(Unit.right(), result)
+        coVerify(exactly = 1) { recents.dismissAllRecentSearchTerms() }
+    }
+
+    @Test
+    fun `dismissAllFoundItems clears the whole found item history in one call`() = runTest(dispatcher) {
+        // Given
+        coEvery { recents.dismissAllRecentFoundItems() } returns Unit.right()
+
+        // When
+        val result = repository.dismissAllFoundItems(userId)
+
+        // Then
+        assertEquals(Unit.right(), result)
+        coVerify(exactly = 1) { recents.dismissAllRecentFoundItems() }
+    }
+
+    @Test
     fun `errors from the rust layer are surfaced instead of being flattened into unknown`() = runTest(dispatcher) {
         // Given
         coEvery { recents.recentFoundItems(5u) } returns DataError.Local.NotFound.left()

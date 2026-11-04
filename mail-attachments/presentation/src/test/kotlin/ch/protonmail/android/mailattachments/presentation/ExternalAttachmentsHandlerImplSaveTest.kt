@@ -19,35 +19,36 @@
 package ch.protonmail.android.mailattachments.presentation
 
 import java.io.ByteArrayOutputStream
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import arrow.core.left
-import ch.protonmail.android.mailattachments.presentation.model.FileContent
 import ch.protonmail.android.mailattachments.presentation.usecase.GenerateUniqueFileName
+import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.mockkConstructor
+import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@RunWith(RobolectricTestRunner::class)
 internal class ExternalAttachmentsHandlerImplSaveTest {
 
     private lateinit var context: Context
+    private lateinit var contentResolver: ContentResolver
     private lateinit var attachmentsHandler: ExternalAttachmentsHandlerImpl
 
     private val generateUniqueFileName = mockk<GenerateUniqueFileName> {
@@ -56,35 +57,36 @@ internal class ExternalAttachmentsHandlerImplSaveTest {
 
     @BeforeTest
     fun setup() {
-        context = spyk(RuntimeEnvironment.getApplication().applicationContext)
+        val resolver = mockk<ContentResolver>(relaxed = true)
+        contentResolver = resolver
+        context = mockk { every { contentResolver } returns resolver }
+        // ContentValues is a stub in the mockable android.jar; record the puts instead.
+        mockkConstructor(ContentValues::class)
+        every { anyConstructed<ContentValues>().put(any(), any<String>()) } just Runs
         attachmentsHandler = ExternalAttachmentsHandlerImpl(context, Dispatchers.Unconfined, generateUniqueFileName)
     }
 
     @AfterTest
     fun teardown() {
         clearAllMocks()
+        unmockkAll()
     }
 
     @Test
     fun `saveFileToDownloadsFolder should emit an Error when the destination URI can't be determined`() = runTest {
         // Given
         val sourceUri = mockk<Uri>()
-        val fileContent = FileContent(FileName, sourceUri, MimeType)
 
-        val contentValues = ContentValues().apply {
-            put(MediaStore.Downloads.DISPLAY_NAME, FileName)
-            put(MediaStore.Downloads.MIME_TYPE, fileContent.mimeType)
-        }
-
-        every { context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues) } returns null
+        every { contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, any()) } returns null
 
         // When
-        val actual = attachmentsHandler.saveFileToDownloadsFolder(fileContent)
+        val actual = attachmentsHandler.saveFileToDownloadsFolder(sourceUri, FileName, MimeType)
 
         // Then
+        verifyDownloadsEntry(FileName)
         assertEquals(ExternalAttachmentErrorResult.UnableToCreateUri.left(), actual)
-        verify(exactly = 1) { context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues) }
-        confirmVerified(context.contentResolver)
+        verify(exactly = 1) { contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, any()) }
+        confirmVerified(contentResolver)
     }
 
     @Test
@@ -93,7 +95,6 @@ internal class ExternalAttachmentsHandlerImplSaveTest {
         val sourceUri = mockk<Uri>()
         val destinationUri = mockk<Uri>()
         val exception = IOException("Copy failed")
-        val attachmentInput = FileContent(FileName, sourceUri, MimeType)
 
         val inputStream = object : InputStream() {
             override fun read(): Int {
@@ -103,25 +104,47 @@ internal class ExternalAttachmentsHandlerImplSaveTest {
 
         val outputStream = ByteArrayOutputStream()
 
-        val contentValues = ContentValues().apply {
-            put(MediaStore.Downloads.DISPLAY_NAME, FileName)
-            put(MediaStore.Downloads.MIME_TYPE, attachmentInput.mimeType)
-        }
-
         every {
-            context.contentResolver.insert(
+            contentResolver.insert(
                 MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-                contentValues
+                any()
             )
         } returns destinationUri
-        every { context.contentResolver.openInputStream(sourceUri) } returns inputStream
-        every { context.contentResolver.openOutputStream(destinationUri) } returns outputStream
+        every { contentResolver.openInputStream(sourceUri) } returns inputStream
+        every { contentResolver.openOutputStream(destinationUri) } returns outputStream
 
         // When
-        val actual = attachmentsHandler.saveFileToDownloadsFolder(attachmentInput)
+        val actual = attachmentsHandler.saveFileToDownloadsFolder(sourceUri, FileName, MimeType)
 
         // Then
+        verifyDownloadsEntry(FileName)
         assertEquals(ExternalAttachmentErrorResult.UnableToCopy.left(), actual)
+        verify(exactly = 1) { contentResolver.delete(destinationUri, null, null) }
+    }
+
+    @Test
+    fun `saveFileToDownloadsFolder should emit an Error when the source file no longer exists`() = runTest {
+        // Given
+        val sourceUri = mockk<Uri>()
+        val destinationUri = mockk<Uri>()
+
+        every {
+            contentResolver.insert(
+                MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                any()
+            )
+        } returns destinationUri
+        every {
+            contentResolver.openInputStream(sourceUri)
+        } throws FileNotFoundException("open failed: ENOENT (No such file or directory)")
+
+        // When
+        val actual = attachmentsHandler.saveFileToDownloadsFolder(sourceUri, FileName, MimeType)
+
+        // Then
+        verifyDownloadsEntry(FileName)
+        assertEquals(ExternalAttachmentErrorResult.UnableToCopy.left(), actual)
+        verify(exactly = 1) { contentResolver.delete(destinationUri, null, null) }
     }
 
     @Test
@@ -130,20 +153,16 @@ internal class ExternalAttachmentsHandlerImplSaveTest {
         val fileName = "test_image.png"
         val data = byteArrayOf(1, 2, 3, 4)
 
-        val contentValues = ContentValues().apply {
-            put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-            put(MediaStore.Downloads.MIME_TYPE, MimeType)
-        }
-
-        every { context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues) } returns null
+        every { contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, any()) } returns null
 
         // When
         val actual = attachmentsHandler.saveDataToDownloads(fileName, MimeType, data)
 
         // Then
+        verifyDownloadsEntry(fileName)
         assertEquals(ExternalAttachmentErrorResult.UnableToCreateUri.left(), actual)
-        verify(exactly = 1) { context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues) }
-        confirmVerified(context.contentResolver)
+        verify(exactly = 1) { contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, any()) }
+        confirmVerified(contentResolver)
     }
 
     @Test
@@ -160,24 +179,27 @@ internal class ExternalAttachmentsHandlerImplSaveTest {
             }
         }
 
-        val contentValues = ContentValues().apply {
-            put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-            put(MediaStore.Downloads.MIME_TYPE, MimeType)
-        }
-
         every {
-            context.contentResolver.insert(
+            contentResolver.insert(
                 MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-                contentValues
+                any()
             )
         } returns destinationUri
-        every { context.contentResolver.openOutputStream(destinationUri) } returns outputStream
+        every { contentResolver.openOutputStream(destinationUri) } returns outputStream
 
         // When
         val actual = attachmentsHandler.saveDataToDownloads(fileName, MimeType, data)
 
         // Then
+        verifyDownloadsEntry(fileName)
         assertEquals(ExternalAttachmentErrorResult.UnableToCopy.left(), actual)
+    }
+
+    private fun verifyDownloadsEntry(displayName: String) {
+        verify {
+            anyConstructed<ContentValues>().put(MediaStore.Downloads.DISPLAY_NAME, displayName)
+            anyConstructed<ContentValues>().put(MediaStore.Downloads.MIME_TYPE, MimeType)
+        }
     }
 
     private companion object {

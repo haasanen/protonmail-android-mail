@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontentsearch.presentation.R
 import ch.protonmail.android.mailcontentsearch.presentation.settings.ContentSearchSettingsEvent
 import ch.protonmail.android.mailcontentsearch.presentation.settings.ContentSearchSettingsState
+import ch.protonmail.android.mailcontentsearch.presentation.settings.model.IndexSizeUiModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -82,6 +83,113 @@ internal class ContentSearchSettingsReducerTest {
     }
 
     @Test
+    fun `a pause is taken from the progress event, which is the only thing that reports one`() {
+        // When
+        val result = reducer.newStateFrom(EnabledState, PausedProgress)
+
+        // Then
+        assertTrue(result.asData().isIndexingPaused)
+    }
+
+    @Test
+    fun `a running backfill clears the pause`() {
+        // Given
+        val paused = reducer.newStateFrom(EnabledState, PausedProgress)
+
+        // When
+        val result = reducer.newStateFrom(
+            paused,
+            ContentSearchSettingsEvent.Data.IndexingProgress(
+                percentage = 31.0,
+                isActive = true,
+                isCompleted = false,
+                isWaitingForUnmeteredConnection = false,
+                isPaused = false,
+                isFailed = false
+            )
+        )
+
+        // Then
+        assertFalse(result.asData().isIndexingPaused)
+    }
+
+    @Test
+    fun `switching the account off clears the pause with it`() {
+        // Given
+        val paused = reducer.newStateFrom(EnabledState, PausedProgress)
+
+        // When - nothing is paused for an account that is off, and turning it on starts it again.
+        val result = reducer.newStateFrom(
+            paused,
+            ContentSearchSettingsEvent.Data.ContentSearchToggled(newValue = false)
+        )
+
+        // Then
+        assertFalse(result.asData().isIndexingPaused)
+    }
+
+    @Test
+    fun `resuming clears the pause`() {
+        // Given
+        val paused = reducer.newStateFrom(EnabledState, PausedProgress)
+
+        // When
+        val result = reducer.newStateFrom(paused, ContentSearchSettingsEvent.Data.IndexingRetryAccepted)
+
+        // Then
+        assertFalse(result.asData().isIndexingPaused)
+    }
+
+    @Test
+    fun `a completed account is marked as such, so the card can say 100 percent`() {
+        // When
+        val result = reducer.newStateFrom(
+            EnabledState,
+            ContentSearchSettingsEvent.Data.IndexingProgress(
+                percentage = null,
+                isActive = false,
+                isCompleted = true,
+                isWaitingForUnmeteredConnection = false,
+                isPaused = false,
+                isFailed = false
+            )
+        )
+
+        // Then
+        assertTrue(result.asData().isIndexingCompleted)
+    }
+
+    @Test
+    fun `the index size is kept as read`() {
+        // When
+        val result = reducer.newStateFrom(EnabledState, ContentSearchSettingsEvent.Data.IndexSizeLoaded(1_024L))
+
+        // Then
+        assertEquals(IndexSizeUiModel.Loaded(1_024L), result.asData().indexSize)
+    }
+
+    @Test
+    fun `an index size rust cannot read hides the row`() {
+        // When
+        val result = reducer.newStateFrom(EnabledState, ContentSearchSettingsEvent.Data.IndexSizeLoaded(null))
+
+        // Then
+        assertEquals(IndexSizeUiModel.Unavailable, result.asData().indexSize)
+    }
+
+    @Test
+    fun `clearing the local data measures the index size again`() {
+        // Given
+        val withSize = reducer.newStateFrom(EnabledState, ContentSearchSettingsEvent.Data.IndexSizeLoaded(1_024L))
+
+        // When
+        val result = reducer.newStateFrom(withSize, ContentSearchSettingsEvent.Data.LocalSearchDataCleared)
+
+        // Then
+        assertEquals(IndexSizeUiModel.Loading, result.asData().indexSize)
+    }
+
+    @Test
     fun `a progress event overrules a retry that is still pending`() {
         // Given
         val current = FailedState.copy(isRetryingIndexing = true)
@@ -92,7 +200,9 @@ internal class ContentSearchSettingsReducerTest {
             ContentSearchSettingsEvent.Data.IndexingProgress(
                 percentage = 12.0,
                 isActive = true,
+                isCompleted = false,
                 isWaitingForUnmeteredConnection = false,
+                isPaused = false,
                 isFailed = false
             )
         )
@@ -138,3 +248,21 @@ internal class ContentSearchSettingsReducerTest {
         )
     }
 }
+
+private val PausedProgress = ContentSearchSettingsEvent.Data.IndexingProgress(
+    percentage = 30.0,
+    isActive = false,
+    isCompleted = false,
+    isWaitingForUnmeteredConnection = false,
+    isPaused = true,
+    isFailed = false
+)
+
+private val EnabledState = ContentSearchSettingsState.Data(
+    isContentSearchEnabled = true,
+    isAllowMobileDataEnabled = true,
+    syncPercentage = 30.0,
+    isIndexingActive = true
+)
+
+private fun ContentSearchSettingsState.asData() = this as ContentSearchSettingsState.Data

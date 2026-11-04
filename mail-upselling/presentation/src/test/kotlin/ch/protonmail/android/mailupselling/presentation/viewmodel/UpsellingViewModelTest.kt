@@ -38,9 +38,12 @@ import ch.protonmail.android.mailtelemetry.domain.usecase.RecordUpgradeSuccess
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.repository.UpsellRatingTriggerRepository
 import ch.protonmail.android.mailupselling.domain.usecase.ObservePlanUpgrades
+import ch.protonmail.android.mailupselling.domain.usecase.RecordBlackFridayOptOut
 import ch.protonmail.android.mailupselling.domain.usecase.RecordPlusToUnlimitedOptOut
 import ch.protonmail.android.mailupselling.domain.usecase.ResetPlanUpgradesCache
+import ch.protonmail.android.mailupselling.domain.usecase.ResolvePlanBeforeUpgrade
 import ch.protonmail.android.mailupselling.presentation.UpsellingContentReducer
+import ch.protonmail.android.mailupselling.presentation.model.UpsellContentTheme
 import ch.protonmail.android.mailupselling.presentation.usecase.ResolveActiveUpsellTheme
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
@@ -96,6 +99,10 @@ internal class UpsellingViewModelTest {
     private val upsellRatingTriggerRepository = mockk<UpsellRatingTriggerRepository>(relaxUnitFun = true)
     private val resolveActiveUpsellTheme = mockk<ResolveActiveUpsellTheme>(relaxed = true)
     private val recordPlusToUnlimitedOptOut = mockk<RecordPlusToUnlimitedOptOut>(relaxUnitFun = true)
+    private val recordBlackFridayOptOut = mockk<RecordBlackFridayOptOut>(relaxUnitFun = true)
+    private val resolvePlanBeforeUpgrade = mockk<ResolvePlanBeforeUpgrade> {
+        coEvery { this@mockk() } returns "Free plan"
+    }
     private val sdkPurchaseEnabled = mockk<FeatureFlag<Boolean>> {
         coEvery { get() } returns false
     }
@@ -231,7 +238,7 @@ internal class UpsellingViewModelTest {
         }
 
         // Then
-        coVerify(exactly = 1) { appEventBroadcaster.emit(AppEvent.OfferReceived("black_friday_wave1")) }
+        coVerify(exactly = 1) { appEventBroadcaster.emit(AppEvent.OfferReceived("bf26_wave1")) }
     }
 
     @Test
@@ -334,6 +341,54 @@ internal class UpsellingViewModelTest {
                 planSpecificDimensions = PlanSpecificDimensions(
                     selectedPlan = "Mail Plus",
                     selectedCycle = "Monthly",
+                    upsellIsPromotional = false,
+                    purchaseFlow = PurchaseFlow.LEGACY
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `should record upgrade attempt with the plus to unlimited plan, flag and theme`() = runTest {
+        // Given
+        every {
+            savedStateHandle.get<String>(UpsellingEntryPointKey)
+        } returns Json.encodeToString<UpsellingEntryPoint>(UpsellingEntryPoint.Feature.PlusUnlimited)
+        coEvery { resolvePlanBeforeUpgrade() } returns "mail2022"
+        every { resolveActiveUpsellTheme(UserIdTestData.userId) } returns UpsellContentTheme.Drive
+        val expectedList = listOf<ProductOfferDetail>(mockk(), mockk())
+        coEvery { observePlanUpgrades(UpsellingEntryPoint.Feature.PlusUnlimited) } returns flowOf(expectedList)
+        val expectedModel = mockk<UpsellingScreenContentState.Data> {
+            every { plans } returns mockk { every { variant } returns PlanUpgradeVariant.Normal.Unlimited }
+        }
+        coEvery { upsellingContentReducer.newStateFrom(any()) } returns expectedModel
+
+        // When
+        val vm = viewModel()
+        vm.recordUpgradeAttempt(
+            UpsellingTelemetryPayload(
+                selectedPlan = "Proton Unlimited",
+                selectedCycle = "Yearly",
+                upsellIsPromotional = false,
+                modalVariant = UpsellModalVariant.COMPARISON_UNLIMITED,
+                isIntroOffer = false
+            )
+        )
+
+        // Then
+        coVerify(exactly = 1) {
+            recordUpgradeAttempt(
+                userId = UserIdTestData.userId,
+                generalDimensions = GeneralDimensions(
+                    upsellEntryPoint = UpsellEntryPoint.NAVBAR_UPSELL,
+                    planBeforeUpgrade = "mail2022",
+                    modalVariant = UpsellModalVariant.COMPARISON_UNLIMITED,
+                    upsellExperimentFlag = UpsellExperimentFlag(flagName = "MailAndroidV7PlusToUnlimitedUpsell"),
+                    promoCampaign = "drive"
+                ),
+                planSpecificDimensions = PlanSpecificDimensions(
+                    selectedPlan = "Proton Unlimited",
+                    selectedCycle = "Yearly",
                     upsellIsPromotional = false,
                     purchaseFlow = PurchaseFlow.LEGACY
                 )
@@ -496,6 +551,79 @@ internal class UpsellingViewModelTest {
         verify(exactly = 1) { upsellRatingTriggerRepository.emitUpsellSuccess() }
     }
 
+    @Test
+    fun `should opt out of Black Friday offers after a Black Friday purchase`() = runTest {
+        // Given
+        val expectedList = listOf<ProductOfferDetail>(mockk(), mockk())
+        coEvery { observePlanUpgrades(UpsellingEntryPoint.Feature.Navbar) } returns flowOf(expectedList)
+        val expectedModel = mockk<UpsellingScreenContentState.Data> {
+            every { plans } returns mockk { every { variant } returns PlanUpgradeVariant.BlackFriday.Wave2 }
+        }
+        coEvery { upsellingContentReducer.newStateFrom(any()) } returns expectedModel
+
+        // When
+        viewModel().optOutOfBlackFridayAfterPurchase()
+
+        // Then
+        coVerify(exactly = 1) { recordBlackFridayOptOut(UserIdTestData.userId) }
+        coVerify(exactly = 0) { recordPlusToUnlimitedOptOut(any()) }
+    }
+
+    @Test
+    fun `should not opt out after a normal purchase`() = runTest {
+        // Given
+        val expectedList = listOf<ProductOfferDetail>(mockk(), mockk())
+        coEvery { observePlanUpgrades(UpsellingEntryPoint.Feature.Navbar) } returns flowOf(expectedList)
+        val expectedModel = mockk<UpsellingScreenContentState.Data> {
+            every { plans } returns mockk { every { variant } returns PlanUpgradeVariant.Normal.MailPlus }
+        }
+        coEvery { upsellingContentReducer.newStateFrom(any()) } returns expectedModel
+
+        // When
+        viewModel().optOutOfBlackFridayAfterPurchase()
+
+        // Then
+        coVerify(exactly = 0) { recordBlackFridayOptOut(any()) }
+        coVerify(exactly = 0) { recordPlusToUnlimitedOptOut(any()) }
+    }
+
+    @Test
+    fun `should record the Black Friday opt-out when not showing again from a Black Friday offer`() = runTest {
+        // Given
+        val viewModel = viewModelShowing(PlanUpgradeVariant.BlackFriday.Wave2)
+
+        // When
+        viewModel.recordDoNotShowAgain()
+
+        // Then
+        coVerify(exactly = 1) { recordBlackFridayOptOut(UserIdTestData.userId) }
+        coVerify(exactly = 0) { recordPlusToUnlimitedOptOut(any()) }
+    }
+
+    @Test
+    fun `should record the Plus to Unlimited opt-out when not showing again from a regular offer`() = runTest {
+        // Given
+        val viewModel = viewModelShowing(PlanUpgradeVariant.Normal.Unlimited)
+
+        // When
+        viewModel.recordDoNotShowAgain()
+
+        // Then
+        coVerify(exactly = 1) { recordPlusToUnlimitedOptOut(UserIdTestData.userId) }
+        coVerify(exactly = 0) { recordBlackFridayOptOut(any()) }
+    }
+
+    private suspend fun viewModelShowing(variant: PlanUpgradeVariant): UpsellingViewModel {
+        coEvery { observePlanUpgrades(any()) } returns flowOf(listOf<ProductOfferDetail>(mockk(), mockk()))
+        val model = mockk<UpsellingScreenContentState.Data> {
+            every { plans } returns mockk { every { this@mockk.variant } returns variant }
+        }
+        coEvery { upsellingContentReducer.newStateFrom(any()) } returns model
+        return viewModel().also { viewModel ->
+            viewModel.state.test { assertEquals(model, awaitItem()) }
+        }
+    }
+
     private fun viewModel() = UpsellingViewModel(
         savedStateHandle,
         observePlanUpgrades,
@@ -512,6 +640,8 @@ internal class UpsellingViewModelTest {
         upsellRatingTriggerRepository,
         resolveActiveUpsellTheme,
         recordPlusToUnlimitedOptOut,
+        recordBlackFridayOptOut,
+        resolvePlanBeforeUpgrade,
         sdkPurchaseEnabled
     )
 }

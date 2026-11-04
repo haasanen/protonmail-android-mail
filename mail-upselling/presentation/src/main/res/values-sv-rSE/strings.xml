@@ -35,14 +35,28 @@
   <string name="upselling_unlimited_title">Uppgradera till Proton Unlimited</string>
   <string name="upselling_do_not_show_again">Visa inte detta erbjudande igen</string>
   <string name="upselling_stay_on_mail_plus">Stanna på Mail Plus</string>
+  <string name="upselling_black_friday_do_not_show_again">Visa inte igen</string>
   <string name="upselling_pu_choose_plan">Välj ditt paket</string>
+  <string name="upselling_pu_whats_included">Vad som är inkluderat</string>
+  <string name="upselling_pu_cta">Skaffa Proton Unlimited</string>
+  <!-- Upselling: Monthly to Yearly -->
+  <string name="upselling_monthly_to_yearly_row_title">Betala årligen och spara %s</string>
+  <string name="upselling_monthly_to_yearly_row_subtitle">Ändra din faktureringsperiod</string>
+  <string name="upselling_monthly_to_yearly_sidebar_title">Spara %s</string>
+  <string name="upselling_monthly_to_yearly_title">Spara stort med årlig fakturering</string>
+  <string name="upselling_monthly_to_yearly_subtitle">Lås in en rabatt på %s</string>
+  <string name="upselling_monthly_to_yearly_one_year">1 år</string>
+  <string name="upselling_monthly_to_yearly_currently">Nuvarande</string>
+  <string name="upselling_monthly_to_yearly_yearly_plan">12-month plan</string>
+  <string name="upselling_monthly_to_yearly_cta">Ändra och spara %s</string>
+  <string name="upselling_monthly_to_yearly_stay_on_monthly">Stay on monthly</string>
   <!-- Upselling: Plus to Unlimited themed titles -->
   <string name="upselling_pu_generic_title">Ta din integritet online ett steg längre med Proton Unlimited</string>
   <string name="upselling_pu_threat_protection_title">Skydda ditt konto från hot med Proton Sentinel</string>
   <string name="upselling_pu_aliases_title">Skaffa obegränsade alias för att skydda din identitet</string>
   <string name="upselling_pu_drive_title">Skaffa 500 GB för att säkert lagra filer och foton</string>
   <string name="upselling_pu_vpn_browse_title">Skaffa åtkomst till ultrasnabb VPN med servrar i fler än 110 länder</string>
-  <string name="upselling_pu_vpn_streaming_title">Access content on streaming services worldwide</string>
+  <string name="upselling_pu_vpn_streaming_title">Få åtkomst till innehåll på streamingtjänster globalt</string>
   <string name="upselling_pu_pass_title">Håll dina lösenord säkra och organiserade med valv</string>
   <string name="upselling_pu_subtitle">Få det bästa av Proton med Unlimited</string>
   <!-- Upselling: Plus to Unlimited entry point rows (title + subtitle per theme) -->
@@ -56,7 +70,7 @@
   <string name="upselling_pu_row_drive_subtitle">Skaffa 500 GB för att lagra filer och foton</string>
   <string name="upselling_pu_row_vpn_browse_title">Surfa säkert</string>
   <string name="upselling_pu_row_vpn_browse_subtitle">Få åtkomst till ultrasnabb VPN</string>
-  <string name="upselling_pu_row_vpn_streaming_title">Unblock streaming content</string>
+  <string name="upselling_pu_row_vpn_streaming_title">Avblockera streaminginnehåll</string>
   <string name="upselling_pu_row_vpn_streaming_subtitle">Streama fritt med Proton VPN</string>
   <string name="upselling_pu_row_pass_title">Håll lösenord säkra</string>
   <string name="upselling_pu_row_pass_subtitle">Proton Pass</string>
@@ -99,10 +113,12 @@
   <string name="upselling_comparison_table_folders_labels">Mappar och etiketter</string>
   <string name="upselling_comparison_table_premium_products">Premium-VPN, lösenordshanterare och molnlagring</string>
   <string name="upselling_comparison_table_dark_web_monitoring">Övervakning av mörka webben</string>
-  <string name="upselling_comparison_table_premium_access">Premium access to Mail, VPN, Drive, Pass, and Calendar</string>
+  <string name="upselling_comparison_table_premium_access">Premiumåtkomst till Mail, VPN, Drive, Pass och Calendar</string>
   <string name="upselling_comparison_table_unlimited_aliases">Obegränsade alias för att dölja din identitet</string>
-  <string name="upselling_comparison_table_unlimited_folders_filters_labels">Obegränsat antal mappar, filter, etiketter</string>
   <string name="upselling_comparison_table_ultrafast_vpn">Ultrasnabb VPN med över 110 länder</string>
+  <string name="upselling_comparison_table_password_manager">Krypterad lösenordshanterare</string>
+  <string name="upselling_comparison_table_threat_protection">Avancerat hotskydd</string>
+  <string name="upselling_comparison_table_unlimited_folders_filters_labels">Obegränsat antal mappar, filter, etiketter</string>
   <!-- Rectangular plan buttons -->
   <string name="upselling_select_plan">Välj prenumeration</string>
   <string name="upselling_select_plan_year">12 månader</string>
@@ -125,8 +141,8 @@
   <!-- Other UI Items -->
   <string name="upselling_unlimited_description_override">För att låsa upp mer lagringsutrymme och premiumfunktioner.</string>
   <string name="upselling_auto_renew_text">Autoförnyas med samma pris och villkor tills uppsägning</string>
-  <string name="upselling_auto_renew_text_promo">Välkomsterbjudande. Förnyas automatiskt till %s%s om det inte avbryts.</string>
-  <string name="upselling_auto_renew_text_bfriday">Rabatter är baserade på ordinarie månadspriser. Förnyas automatiskt för %s%s tills det avbryts.</string>
+  <string name="upselling_auto_renew_text_promo">Välkomsterbjudande. Förnyas automatiskt med %s%s om det inte avbryts</string>
+  <string name="upselling_auto_renew_text_bfriday">Rabatter är baserade på ordinarie månadspriser. Förnyas automatiskt med %s%s tills det avbryts.</string>
   <string name="upselling_auto_renew_text_promo_short">Välkomsterbjudande. Förnyas automatiskt med %s%s.</string>
   <string name="upselling_auto_renew_text_standard">Förnyas automatiskt för %s%s om prenumerationen inte avslutas.</string>
   <string name="upselling_social_proof_reviews">2 000+ RECENSIONER</string>
@@ -138,4 +154,5 @@
   <string name="upselling_snackbar_error_no_user_id">Ett fel uppstod.</string>
   <string name="upselling_snackbar_error_no_subscriptions">Kan inte hämta prenumerationer.</string>
   <!-- Snackbar texts -->
+  <string name="upselling_black_friday">Black Friday</string>
 </resources>

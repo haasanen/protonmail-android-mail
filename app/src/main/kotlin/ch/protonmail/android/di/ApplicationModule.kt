@@ -26,6 +26,8 @@ import ch.protonmail.android.mailcommon.domain.model.ApiEnvironment
 import ch.protonmail.android.mailevents.domain.repository.AppInfoProvider
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHelperImpl
+import ch.protonmail.android.useragent.GetAppVersion
+import ch.protonmail.android.useragent.model.AppBuildInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.Binds
@@ -53,9 +55,20 @@ object ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideAppInfo(apiEnvironment: ApiEnvironment): AppInformation = AppInformation(
+    fun provideAppBuildInfo(): AppBuildInfo = AppBuildInfo(
+        // Fork fix (Proton API error 2064): every server-facing consumer of
+        // AppBuildInfo (user agent, Rust API config, telemetry, client version)
+        // must carry upstream's version — never the fork's -hN display suffix.
+        versionName = BuildConfig.UPSTREAM_VERSION_NAME,
+        flavor = BuildConfig.FLAVOR
+    )
+
+    @Provides
+    @Singleton
+    fun provideAppInfo(apiEnvironment: ApiEnvironment, getAppVersion: GetAppVersion): AppInformation = AppInformation(
         appName = "Proton Mail",
         appVersionName = BuildConfig.VERSION_NAME,
+        appInstallSourceSuffix = getAppVersion.installSourceSuffix,
         appVersionCode = BuildConfig.VERSION_CODE,
         appBuildType = BuildConfig.BUILD_TYPE,
         appBuildFlavor = BuildConfig.FLAVOR,

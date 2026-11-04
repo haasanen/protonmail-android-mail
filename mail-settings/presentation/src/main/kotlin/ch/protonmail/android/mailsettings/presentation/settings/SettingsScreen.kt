@@ -73,6 +73,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Da
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import ch.protonmail.android.mailsettings.presentation.settings.privacy.BackgroundSyncIntervalPickerDialog
 import ch.protonmail.android.mailsettings.presentation.settings.privacy.labelRes
+import ch.protonmail.android.mailupselling.presentation.ui.screen.MonthlyToYearlyUpsellItem
 import ch.protonmail.android.mailupselling.presentation.ui.screen.PlusToUnlimitedUpsellItem
 import me.proton.android.core.devicemigration.presentation.origin.settings.SignInOnTargetDeviceItem
 import me.proton.core.domain.entity.UserId
@@ -153,6 +154,8 @@ fun MainSettingsScreen(
 
             PlusToUnlimitedUpsellItem(onClick = actions.onPlusToUnlimitedUpsellClick)
 
+            MonthlyToYearlyUpsellItem(onClick = actions.onMonthlyToYearlyUpsellClick)
+
             MainSettingsHeader(titleRes = string.mail_settings_preferences)
 
             Card(
@@ -169,7 +172,6 @@ fun MainSettingsScreen(
                     ProtonMainSettingsItem(
                         name = stringResource(id = string.mail_settings_mailbox),
                         iconRes = R.drawable.ic_proton_envelopes,
-                        badge = { NewBadge() },
                         onClick = actions.onEmailSettingsClick
                     )
                     SettingsItemDivider()
@@ -239,6 +241,7 @@ fun MainSettingsScreen(
                         SettingsItemDivider()
                         ProtonMainSettingsItem(
                             name = stringResource(id = string.mail_settings_content_search),
+                            badge = { NewBadge() },
                             iconRes = R.drawable.ic_proton_magnifier,
                             onClick = actions.onContentSearchSettingsClick
                         )
@@ -386,6 +389,7 @@ object MainSettingsScreen {
         val onContentSearchSettingsClick: () -> Unit,
         val onPlusToUnlimitedUpsellClick: () -> Unit,
         val onBackgroundSyncIntervalSelected: (BackgroundSyncInterval) -> Unit,
+        val onMonthlyToYearlyUpsellClick: () -> Unit,
         val onBackClick: () -> Unit
     )
 }

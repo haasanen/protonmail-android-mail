@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -55,7 +56,14 @@ internal fun ComparisonTable(
     val colors = planUpgradeVariantColors(variant)
     var highlightHeight by remember { mutableStateOf(0.dp) }
     var plusCellHeaderWidth by remember { mutableStateOf(0.dp) }
+    var freeColumnWidth by remember(entitlementsUiModel) { mutableStateOf(0.dp) }
+    val onFreeCellPlaced: (Dp) -> Unit = { freeColumnWidth = maxOf(freeColumnWidth, it) }
     val localDensity = LocalDensity.current
+    val highlightBarShape = if (entitlementsUiModel.paidColumnLabel != null) {
+        UpsellingLayoutValues.PlusUnlimited.highlightBarShape
+    } else {
+        UpsellingLayoutValues.ComparisonTable.highlightBarShape
+    }
 
     Box(modifier = modifier.padding(horizontal = ProtonDimens.Spacing.Small)) {
         Box(
@@ -64,7 +72,7 @@ internal fun ComparisonTable(
                 .padding(end = ProtonDimens.Spacing.Standard)
                 .background(
                     color = colors.tableHighlightColor,
-                    shape = UpsellingLayoutValues.ComparisonTable.highlightBarShape
+                    shape = highlightBarShape
                 )
                 .width(plusCellHeaderWidth)
                 .height(highlightHeight)
@@ -83,6 +91,10 @@ internal fun ComparisonTable(
                 variant = variant,
                 colors = colors,
                 baseColumnLabel = entitlementsUiModel.baseColumnLabel,
+                titleLabel = entitlementsUiModel.titleLabel,
+                paidColumnLabel = entitlementsUiModel.paidColumnLabel,
+                baseColumnWidth = freeColumnWidth,
+                onBaseColumnPlaced = onFreeCellPlaced,
                 onPaidColumnPlaced = { plusCellHeaderWidth = it }
             )
 
@@ -91,7 +103,9 @@ internal fun ComparisonTable(
                     modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Compact),
                     colors = colors,
                     uiModel = item,
-                    plusCellWidth = plusCellHeaderWidth
+                    freeCellWidth = freeColumnWidth,
+                    plusCellWidth = plusCellHeaderWidth,
+                    onFreeCellPlaced = onFreeCellPlaced
                 )
 
                 if (index < entitlementsUiModel.items.size - 1) {
