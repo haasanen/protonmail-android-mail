@@ -25,16 +25,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.4.0
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.9.1
         with:
           distribution: temurin
           java-version: "17"
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v3.2.2
         with:
           # v3 only reads cmdline-tools-version + packages. Its packages
           # DEFAULT is "tools platform-tools", and Google removed the legacy
@@ -163,7 +163,7 @@ jobs:
           ls -lh "$OUT"
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: proton-mail
           path: ${{ steps.artifact.outputs.name }}
